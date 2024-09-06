@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetErrorGeneral interface {
 	BACnetError
 	// GetError returns Error (property field)
 	GetError() Error
-}
-
-// BACnetErrorGeneralExactly can be used when we want exactly this type and not a type which fulfills BACnetErrorGeneral.
-// This is useful for switch cases.
-type BACnetErrorGeneralExactly interface {
-	BACnetErrorGeneral
-	isBACnetErrorGeneral() bool
+	// IsBACnetErrorGeneral is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetErrorGeneral()
 }
 
 // _BACnetErrorGeneral is the data-structure of this message
 type _BACnetErrorGeneral struct {
-	*_BACnetError
+	BACnetErrorContract
 	Error Error
 }
+
+var _ BACnetErrorGeneral = (*_BACnetErrorGeneral)(nil)
+var _ BACnetErrorRequirements = (*_BACnetErrorGeneral)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_BACnetErrorGeneral) GetErrorChoice() BACnetConfirmedServiceChoice {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetErrorGeneral) InitializeParent(parent BACnetError) {}
-
-func (m *_BACnetErrorGeneral) GetParent() BACnetError {
-	return m._BACnetError
+func (m *_BACnetErrorGeneral) GetParent() BACnetErrorContract {
+	return m.BACnetErrorContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_BACnetErrorGeneral) GetError() Error {
 
 // NewBACnetErrorGeneral factory function for _BACnetErrorGeneral
 func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
-	_result := &_BACnetErrorGeneral{
-		Error:        error,
-		_BACnetError: NewBACnetError(),
+	if error == nil {
+		panic("error of type Error for BACnetErrorGeneral must not be nil")
 	}
-	_result._BACnetError._BACnetErrorChildRequirements = _result
+	_result := &_BACnetErrorGeneral{
+		BACnetErrorContract: NewBACnetError(),
+		Error:               error,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_BACnetErrorGeneral) GetTypeName() string {
 }
 
 func (m *_BACnetErrorGeneral) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (error)
 	lengthInBits += m.Error.GetLengthInBits(ctx)
@@ -126,45 +127,28 @@ func (m *_BACnetErrorGeneral) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetErrorGeneralParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (BACnetErrorGeneral, error) {
-	return BACnetErrorGeneralParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
-}
-
-func BACnetErrorGeneralParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetErrorGeneral, error) {
+func (m *_BACnetErrorGeneral) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__bACnetErrorGeneral BACnetErrorGeneral, err error) {
+	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetErrorGeneral"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetErrorGeneral")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (error)
-	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for error")
+	error, err := ReadSimpleField[Error](ctx, "error", ReadComplex[Error](ErrorParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
-	_error, _errorErr := ErrorParseWithBuffer(ctx, readBuffer)
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of BACnetErrorGeneral")
-	}
-	error := _error.(Error)
-	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for error")
-	}
+	m.Error = error
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorGeneral"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetErrorGeneral")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetErrorGeneral{
-		_BACnetError: &_BACnetError{},
-		Error:        error,
-	}
-	_child._BACnetError._BACnetErrorChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetErrorGeneral) Serialize() ([]byte, error) {
@@ -185,16 +169,8 @@ func (m *_BACnetErrorGeneral) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for BACnetErrorGeneral")
 		}
 
-		// Simple Field (error)
-		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for error")
-		}
-		_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
-		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for error")
-		}
-		if _errorErr != nil {
-			return errors.Wrap(_errorErr, "Error serializing 'error' field")
+		if err := WriteSimpleField[Error](ctx, "error", m.GetError(), WriteComplex[Error](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'error' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetErrorGeneral"); popErr != nil {
@@ -202,12 +178,10 @@ func (m *_BACnetErrorGeneral) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetErrorContract.(*_BACnetError).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetErrorGeneral) isBACnetErrorGeneral() bool {
-	return true
-}
+func (m *_BACnetErrorGeneral) IsBACnetErrorGeneral() {}
 
 func (m *_BACnetErrorGeneral) String() string {
 	if m == nil {

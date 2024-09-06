@@ -94,14 +94,14 @@ public class ExpandedNodeId implements Message {
     writeSimpleField("serverIndexSpecified", serverIndexSpecified, writeBoolean(writeBuffer));
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String identifier = getIdentifier();
     writeBuffer.writeVirtual("identifier", identifier);
 
     // Optional Field (namespaceURI) (Can be skipped, if the value is null)
-    writeOptionalField("namespaceURI", namespaceURI, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("namespaceURI", namespaceURI, writeComplex(writeBuffer));
 
     // Optional Field (serverIndex) (Can be skipped, if the value is null)
     writeOptionalField("serverIndex", serverIndex, writeUnsignedLong(writeBuffer, 32));
@@ -156,15 +156,13 @@ public class ExpandedNodeId implements Message {
 
     NodeIdTypeDefinition nodeId =
         readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(
-                () -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
+            "nodeId", readComplex(() -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
     String identifier = readVirtualField("identifier", String.class, nodeId.getIdentifier());
 
     PascalString namespaceURI =
         readOptionalField(
             "namespaceURI",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             namespaceURISpecified);
 
     Long serverIndex =

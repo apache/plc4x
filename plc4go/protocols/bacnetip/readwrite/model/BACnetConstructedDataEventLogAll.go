@@ -37,19 +37,17 @@ type BACnetConstructedDataEventLogAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
-}
-
-// BACnetConstructedDataEventLogAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventLogAll.
-// This is useful for switch cases.
-type BACnetConstructedDataEventLogAllExactly interface {
-	BACnetConstructedDataEventLogAll
-	isBACnetConstructedDataEventLogAll() bool
+	// IsBACnetConstructedDataEventLogAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventLogAll()
 }
 
 // _BACnetConstructedDataEventLogAll is the data-structure of this message
 type _BACnetConstructedDataEventLogAll struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 }
+
+var _ BACnetConstructedDataEventLogAll = (*_BACnetConstructedDataEventLogAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventLogAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,22 +67,16 @@ func (m *_BACnetConstructedDataEventLogAll) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataEventLogAll) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataEventLogAll) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataEventLogAll) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 // NewBACnetConstructedDataEventLogAll factory function for _BACnetConstructedDataEventLogAll
 func NewBACnetConstructedDataEventLogAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventLogAll {
 	_result := &_BACnetConstructedDataEventLogAll{
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -104,7 +96,7 @@ func (m *_BACnetConstructedDataEventLogAll) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEventLogAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +105,11 @@ func (m *_BACnetConstructedDataEventLogAll) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataEventLogAllParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventLogAll, error) {
-	return BACnetConstructedDataEventLogAllParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataEventLogAllParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventLogAll, error) {
+func (m *_BACnetConstructedDataEventLogAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEventLogAll BACnetConstructedDataEventLogAll, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventLogAll"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEventLogAll")
 	}
@@ -130,22 +118,14 @@ func BACnetConstructedDataEventLogAllParseWithBuffer(ctx context.Context, readBu
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "All should never occur in context of constructed data. If it does please report"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventLogAll"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventLogAll")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataEventLogAll{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataEventLogAll) Serialize() ([]byte, error) {
@@ -171,12 +151,10 @@ func (m *_BACnetConstructedDataEventLogAll) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataEventLogAll) isBACnetConstructedDataEventLogAll() bool {
-	return true
-}
+func (m *_BACnetConstructedDataEventLogAll) IsBACnetConstructedDataEventLogAll() {}
 
 func (m *_BACnetConstructedDataEventLogAll) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type CALDataWrite interface {
 	GetCode() byte
 	// GetParameterValue returns ParameterValue (property field)
 	GetParameterValue() ParameterValue
-}
-
-// CALDataWriteExactly can be used when we want exactly this type and not a type which fulfills CALDataWrite.
-// This is useful for switch cases.
-type CALDataWriteExactly interface {
-	CALDataWrite
-	isCALDataWrite() bool
+	// IsCALDataWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataWrite()
 }
 
 // _CALDataWrite is the data-structure of this message
 type _CALDataWrite struct {
-	*_CALData
+	CALDataContract
 	ParamNo        Parameter
 	Code           byte
 	ParameterValue ParameterValue
 }
+
+var _ CALDataWrite = (*_CALDataWrite)(nil)
+var _ CALDataRequirements = (*_CALDataWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,13 +70,8 @@ type _CALDataWrite struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataWrite) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.AdditionalData = additionalData
-}
-
-func (m *_CALDataWrite) GetParent() CALData {
-	return m._CALData
+func (m *_CALDataWrite) GetParent() CALDataContract {
+	return m.CALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -103,13 +98,16 @@ func (m *_CALDataWrite) GetParameterValue() ParameterValue {
 
 // NewCALDataWrite factory function for _CALDataWrite
 func NewCALDataWrite(paramNo Parameter, code byte, parameterValue ParameterValue, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataWrite {
-	_result := &_CALDataWrite{
-		ParamNo:        paramNo,
-		Code:           code,
-		ParameterValue: parameterValue,
-		_CALData:       NewCALData(commandTypeContainer, additionalData, requestContext),
+	if parameterValue == nil {
+		panic("parameterValue of type ParameterValue for CALDataWrite must not be nil")
 	}
-	_result._CALData._CALDataChildRequirements = _result
+	_result := &_CALDataWrite{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		Code:            code,
+		ParameterValue:  parameterValue,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 
@@ -129,7 +127,7 @@ func (m *_CALDataWrite) GetTypeName() string {
 }
 
 func (m *_CALDataWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -147,69 +145,40 @@ func (m *_CALDataWrite) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataWriteParse(ctx context.Context, theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataWrite, error) {
-	return CALDataWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
-}
-
-func CALDataWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataWrite, error) {
+func (m *_CALDataWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (__cALDataWrite CALDataWrite, err error) {
+	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALDataWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALDataWrite")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (paramNo)
-	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
-	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataWrite")
-	}
-	paramNo := _paramNo
-	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
-	}
+	m.ParamNo = paramNo
 
-	// Simple Field (code)
-	_code, _codeErr := readBuffer.ReadByte("code")
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of CALDataWrite")
+	code, err := ReadSimpleField(ctx, "code", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
-	code := _code
+	m.Code = code
 
-	// Simple Field (parameterValue)
-	if pullErr := readBuffer.PullContext("parameterValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameterValue")
+	parameterValue, err := ReadSimpleField[ParameterValue](ctx, "parameterValue", ReadComplex[ParameterValue](ParameterValueParseWithBufferProducer[ParameterValue]((ParameterType)(paramNo.ParameterType()), (uint8)(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterValue' field"))
 	}
-	_parameterValue, _parameterValueErr := ParameterValueParseWithBuffer(ctx, readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2))))
-	if _parameterValueErr != nil {
-		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CALDataWrite")
-	}
-	parameterValue := _parameterValue.(ParameterValue)
-	if closeErr := readBuffer.CloseContext("parameterValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameterValue")
-	}
+	m.ParameterValue = parameterValue
 
 	if closeErr := readBuffer.CloseContext("CALDataWrite"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALDataWrite")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CALDataWrite{
-		_CALData: &_CALData{
-			RequestContext: requestContext,
-		},
-		ParamNo:        paramNo,
-		Code:           code,
-		ParameterValue: parameterValue,
-	}
-	_child._CALData._CALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CALDataWrite) Serialize() ([]byte, error) {
@@ -230,35 +199,16 @@ func (m *_CALDataWrite) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for CALDataWrite")
 		}
 
-		// Simple Field (paramNo)
-		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for paramNo")
-		}
-		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
-		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for paramNo")
-		}
-		if _paramNoErr != nil {
-			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
+		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'paramNo' field")
 		}
 
-		// Simple Field (code)
-		code := byte(m.GetCode())
-		_codeErr := writeBuffer.WriteByte("code", (code))
-		if _codeErr != nil {
-			return errors.Wrap(_codeErr, "Error serializing 'code' field")
+		if err := WriteSimpleField[byte](ctx, "code", m.GetCode(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'code' field")
 		}
 
-		// Simple Field (parameterValue)
-		if pushErr := writeBuffer.PushContext("parameterValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameterValue")
-		}
-		_parameterValueErr := writeBuffer.WriteSerializable(ctx, m.GetParameterValue())
-		if popErr := writeBuffer.PopContext("parameterValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameterValue")
-		}
-		if _parameterValueErr != nil {
-			return errors.Wrap(_parameterValueErr, "Error serializing 'parameterValue' field")
+		if err := WriteSimpleField[ParameterValue](ctx, "parameterValue", m.GetParameterValue(), WriteComplex[ParameterValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameterValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataWrite"); popErr != nil {
@@ -266,12 +216,10 @@ func (m *_CALDataWrite) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CALDataContract.(*_CALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CALDataWrite) isCALDataWrite() bool {
-	return true
-}
+func (m *_CALDataWrite) IsCALDataWrite() {}
 
 func (m *_CALDataWrite) String() string {
 	if m == nil {

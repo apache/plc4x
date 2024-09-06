@@ -82,8 +82,7 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataProtocolVersion");
 
     // Simple Field (protocolVersion)
-    writeSimpleField(
-        "protocolVersion", protocolVersion, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("protocolVersion", protocolVersion, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +124,7 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger protocolVersion =
         readSimpleField(
             "protocolVersion",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -36,18 +36,15 @@ type Index interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// IndexExactly can be used when we want exactly this type and not a type which fulfills Index.
-// This is useful for switch cases.
-type IndexExactly interface {
-	Index
-	isIndex() bool
+	// IsIndex is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIndex()
 }
 
 // _Index is the data-structure of this message
 type _Index struct {
 }
+
+var _ Index = (*_Index)(nil)
 
 // NewIndex factory function for _Index
 func NewIndex() *_Index {
@@ -83,11 +80,23 @@ func IndexParse(ctx context.Context, theBytes []byte) (Index, error) {
 	return IndexParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func IndexParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Index, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Index, error) {
+		return IndexParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func IndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Index, error) {
+	v, err := (&_Index{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_Index) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__index Index, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Index"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Index")
 	}
@@ -98,8 +107,7 @@ func IndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ind
 		return nil, errors.Wrap(closeErr, "Error closing for Index")
 	}
 
-	// Create the instance
-	return &_Index{}, nil
+	return m, nil
 }
 
 func (m *_Index) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_Index) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 	return nil
 }
 
-func (m *_Index) isIndex() bool {
-	return true
-}
+func (m *_Index) IsIndex() {}
 
 func (m *_Index) String() string {
 	if m == nil {

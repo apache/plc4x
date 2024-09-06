@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,20 +45,18 @@ type MediaTransportControlDataPauseResume interface {
 	GetIsPause() bool
 	// GetIsResume returns IsResume (virtual field)
 	GetIsResume() bool
-}
-
-// MediaTransportControlDataPauseResumeExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataPauseResume.
-// This is useful for switch cases.
-type MediaTransportControlDataPauseResumeExactly interface {
-	MediaTransportControlDataPauseResume
-	isMediaTransportControlDataPauseResume() bool
+	// IsMediaTransportControlDataPauseResume is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataPauseResume()
 }
 
 // _MediaTransportControlDataPauseResume is the data-structure of this message
 type _MediaTransportControlDataPauseResume struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	Operation byte
 }
+
+var _ MediaTransportControlDataPauseResume = (*_MediaTransportControlDataPauseResume)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataPauseResume)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,13 +68,8 @@ type _MediaTransportControlDataPauseResume struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataPauseResume) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataPauseResume) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataPauseResume) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,10 +110,10 @@ func (m *_MediaTransportControlDataPauseResume) GetIsResume() bool {
 // NewMediaTransportControlDataPauseResume factory function for _MediaTransportControlDataPauseResume
 func NewMediaTransportControlDataPauseResume(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataPauseResume {
 	_result := &_MediaTransportControlDataPauseResume{
-		Operation:                  operation,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -138,7 +133,7 @@ func (m *_MediaTransportControlDataPauseResume) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataPauseResume) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -154,49 +149,40 @@ func (m *_MediaTransportControlDataPauseResume) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataPauseResumeParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataPauseResume, error) {
-	return MediaTransportControlDataPauseResumeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MediaTransportControlDataPauseResumeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataPauseResume, error) {
+func (m *_MediaTransportControlDataPauseResume) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataPauseResume MediaTransportControlDataPauseResume, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataPauseResume"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataPauseResume")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (operation)
-	_operation, _operationErr := readBuffer.ReadByte("operation")
-	if _operationErr != nil {
-		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of MediaTransportControlDataPauseResume")
+	operation, err := ReadSimpleField(ctx, "operation", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operation' field"))
 	}
-	operation := _operation
+	m.Operation = operation
 
-	// Virtual field
-	_isPause := bool((operation) == (0x00))
-	isPause := bool(_isPause)
+	isPause, err := ReadVirtualField[bool](ctx, "isPause", (*bool)(nil), bool((operation) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPause' field"))
+	}
 	_ = isPause
 
-	// Virtual field
-	_isResume := bool((operation) > (0xFE))
-	isResume := bool(_isResume)
+	isResume, err := ReadVirtualField[bool](ctx, "isResume", (*bool)(nil), bool((operation) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isResume' field"))
+	}
 	_ = isResume
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataPauseResume"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataPauseResume")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataPauseResume{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		Operation:                  operation,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataPauseResume) Serialize() ([]byte, error) {
@@ -217,11 +203,8 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataPauseResume")
 		}
 
-		// Simple Field (operation)
-		operation := byte(m.GetOperation())
-		_operationErr := writeBuffer.WriteByte("operation", (operation))
-		if _operationErr != nil {
-			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
+		if err := WriteSimpleField[byte](ctx, "operation", m.GetOperation(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'operation' field")
 		}
 		// Virtual field
 		isPause := m.GetIsPause()
@@ -241,12 +224,10 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataPauseResume) isMediaTransportControlDataPauseResume() bool {
-	return true
-}
+func (m *_MediaTransportControlDataPauseResume) IsMediaTransportControlDataPauseResume() {}
 
 func (m *_MediaTransportControlDataPauseResume) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired interface {
 	GetMaintenanceRequired() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyZoneMaintenanceRequired.
-// This is useful for switch cases.
-type BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredExactly interface {
-	BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
-	isBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() bool
+	// IsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired()
 }
 
 // _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MaintenanceRequired BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataLifeSafetyZoneMaintenanceRequired = (*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetPropertyIde
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetActualValue
 
 // NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired factory function for _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
 func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(maintenanceRequired BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
-	_result := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
-		MaintenanceRequired:    maintenanceRequired,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if maintenanceRequired == nil {
+		panic("maintenanceRequired of type BACnetApplicationTagBoolean for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaintenanceRequired:           maintenanceRequired,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetTypeName() 
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maintenanceRequired)
 	lengthInBits += m.MaintenanceRequired.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInByt
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
-	return BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLifeSafetyZoneMaintenanceRequired BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maintenanceRequired)
-	if pullErr := readBuffer.PullContext("maintenanceRequired"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maintenanceRequired")
+	maintenanceRequired, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "maintenanceRequired", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maintenanceRequired' field"))
 	}
-	_maintenanceRequired, _maintenanceRequiredErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maintenanceRequiredErr != nil {
-		return nil, errors.Wrap(_maintenanceRequiredErr, "Error parsing 'maintenanceRequired' field of BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
-	}
-	maintenanceRequired := _maintenanceRequired.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("maintenanceRequired"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maintenanceRequired")
-	}
+	m.MaintenanceRequired = maintenanceRequired
 
-	// Virtual field
-	_actualValue := maintenanceRequired
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), maintenanceRequired)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MaintenanceRequired: maintenanceRequired,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) SerializeWithW
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 		}
 
-		// Simple Field (maintenanceRequired)
-		if pushErr := writeBuffer.PushContext("maintenanceRequired"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maintenanceRequired")
-		}
-		_maintenanceRequiredErr := writeBuffer.WriteSerializable(ctx, m.GetMaintenanceRequired())
-		if popErr := writeBuffer.PopContext("maintenanceRequired"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maintenanceRequired")
-		}
-		if _maintenanceRequiredErr != nil {
-			return errors.Wrap(_maintenanceRequiredErr, "Error serializing 'maintenanceRequired' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "maintenanceRequired", m.GetMaintenanceRequired(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maintenanceRequired' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) SerializeWithW
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) isBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() bool {
-	return true
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) IsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() {
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) String() string {

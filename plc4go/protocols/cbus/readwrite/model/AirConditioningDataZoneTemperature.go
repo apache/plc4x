@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type AirConditioningDataZoneTemperature interface {
 	GetTemperature() HVACTemperature
 	// GetSensorStatus returns SensorStatus (property field)
 	GetSensorStatus() HVACSensorStatus
-}
-
-// AirConditioningDataZoneTemperatureExactly can be used when we want exactly this type and not a type which fulfills AirConditioningDataZoneTemperature.
-// This is useful for switch cases.
-type AirConditioningDataZoneTemperatureExactly interface {
-	AirConditioningDataZoneTemperature
-	isAirConditioningDataZoneTemperature() bool
+	// IsAirConditioningDataZoneTemperature is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataZoneTemperature()
 }
 
 // _AirConditioningDataZoneTemperature is the data-structure of this message
 type _AirConditioningDataZoneTemperature struct {
-	*_AirConditioningData
+	AirConditioningDataContract
 	ZoneGroup    byte
 	ZoneList     HVACZoneList
 	Temperature  HVACTemperature
 	SensorStatus HVACSensorStatus
 }
+
+var _ AirConditioningDataZoneTemperature = (*_AirConditioningDataZoneTemperature)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataZoneTemperature)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,12 +73,8 @@ type _AirConditioningDataZoneTemperature struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AirConditioningDataZoneTemperature) InitializeParent(parent AirConditioningData, commandTypeContainer AirConditioningCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_AirConditioningDataZoneTemperature) GetParent() AirConditioningData {
-	return m._AirConditioningData
+func (m *_AirConditioningDataZoneTemperature) GetParent() AirConditioningDataContract {
+	return m.AirConditioningDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,14 +105,20 @@ func (m *_AirConditioningDataZoneTemperature) GetSensorStatus() HVACSensorStatus
 
 // NewAirConditioningDataZoneTemperature factory function for _AirConditioningDataZoneTemperature
 func NewAirConditioningDataZoneTemperature(zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataZoneTemperature {
-	_result := &_AirConditioningDataZoneTemperature{
-		ZoneGroup:            zoneGroup,
-		ZoneList:             zoneList,
-		Temperature:          temperature,
-		SensorStatus:         sensorStatus,
-		_AirConditioningData: NewAirConditioningData(commandTypeContainer),
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataZoneTemperature must not be nil")
 	}
-	_result._AirConditioningData._AirConditioningDataChildRequirements = _result
+	if temperature == nil {
+		panic("temperature of type HVACTemperature for AirConditioningDataZoneTemperature must not be nil")
+	}
+	_result := &_AirConditioningDataZoneTemperature{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Temperature:                 temperature,
+		SensorStatus:                sensorStatus,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 
@@ -136,7 +138,7 @@ func (m *_AirConditioningDataZoneTemperature) GetTypeName() string {
 }
 
 func (m *_AirConditioningDataZoneTemperature) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -157,81 +159,46 @@ func (m *_AirConditioningDataZoneTemperature) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataZoneTemperatureParse(ctx context.Context, theBytes []byte) (AirConditioningDataZoneTemperature, error) {
-	return AirConditioningDataZoneTemperatureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AirConditioningDataZoneTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataZoneTemperature, error) {
+func (m *_AirConditioningDataZoneTemperature) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataZoneTemperature AirConditioningDataZoneTemperature, err error) {
+	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataZoneTemperature"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataZoneTemperature")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataZoneTemperature")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
-	zoneGroup := _zoneGroup
+	m.ZoneGroup = zoneGroup
 
-	// Simple Field (zoneList)
-	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
+	zoneList, err := ReadSimpleField[HVACZoneList](ctx, "zoneList", ReadComplex[HVACZoneList](HVACZoneListParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneList' field"))
 	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
-	if _zoneListErr != nil {
-		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataZoneTemperature")
-	}
-	zoneList := _zoneList.(HVACZoneList)
-	if closeErr := readBuffer.CloseContext("zoneList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneList")
-	}
+	m.ZoneList = zoneList
 
-	// Simple Field (temperature)
-	if pullErr := readBuffer.PullContext("temperature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for temperature")
+	temperature, err := ReadSimpleField[HVACTemperature](ctx, "temperature", ReadComplex[HVACTemperature](HVACTemperatureParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperature' field"))
 	}
-	_temperature, _temperatureErr := HVACTemperatureParseWithBuffer(ctx, readBuffer)
-	if _temperatureErr != nil {
-		return nil, errors.Wrap(_temperatureErr, "Error parsing 'temperature' field of AirConditioningDataZoneTemperature")
-	}
-	temperature := _temperature.(HVACTemperature)
-	if closeErr := readBuffer.CloseContext("temperature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for temperature")
-	}
+	m.Temperature = temperature
 
-	// Simple Field (sensorStatus)
-	if pullErr := readBuffer.PullContext("sensorStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sensorStatus")
+	sensorStatus, err := ReadEnumField[HVACSensorStatus](ctx, "sensorStatus", "HVACSensorStatus", ReadEnum(HVACSensorStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sensorStatus' field"))
 	}
-	_sensorStatus, _sensorStatusErr := HVACSensorStatusParseWithBuffer(ctx, readBuffer)
-	if _sensorStatusErr != nil {
-		return nil, errors.Wrap(_sensorStatusErr, "Error parsing 'sensorStatus' field of AirConditioningDataZoneTemperature")
-	}
-	sensorStatus := _sensorStatus
-	if closeErr := readBuffer.CloseContext("sensorStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sensorStatus")
-	}
+	m.SensorStatus = sensorStatus
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataZoneTemperature"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AirConditioningDataZoneTemperature")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AirConditioningDataZoneTemperature{
-		_AirConditioningData: &_AirConditioningData{},
-		ZoneGroup:            zoneGroup,
-		ZoneList:             zoneList,
-		Temperature:          temperature,
-		SensorStatus:         sensorStatus,
-	}
-	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AirConditioningDataZoneTemperature) Serialize() ([]byte, error) {
@@ -252,47 +219,20 @@ func (m *_AirConditioningDataZoneTemperature) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataZoneTemperature")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
-		// Simple Field (zoneList)
-		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneList")
-		}
-		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
-		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneList")
-		}
-		if _zoneListErr != nil {
-			return errors.Wrap(_zoneListErr, "Error serializing 'zoneList' field")
+		if err := WriteSimpleField[HVACZoneList](ctx, "zoneList", m.GetZoneList(), WriteComplex[HVACZoneList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneList' field")
 		}
 
-		// Simple Field (temperature)
-		if pushErr := writeBuffer.PushContext("temperature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for temperature")
-		}
-		_temperatureErr := writeBuffer.WriteSerializable(ctx, m.GetTemperature())
-		if popErr := writeBuffer.PopContext("temperature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for temperature")
-		}
-		if _temperatureErr != nil {
-			return errors.Wrap(_temperatureErr, "Error serializing 'temperature' field")
+		if err := WriteSimpleField[HVACTemperature](ctx, "temperature", m.GetTemperature(), WriteComplex[HVACTemperature](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'temperature' field")
 		}
 
-		// Simple Field (sensorStatus)
-		if pushErr := writeBuffer.PushContext("sensorStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sensorStatus")
-		}
-		_sensorStatusErr := writeBuffer.WriteSerializable(ctx, m.GetSensorStatus())
-		if popErr := writeBuffer.PopContext("sensorStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sensorStatus")
-		}
-		if _sensorStatusErr != nil {
-			return errors.Wrap(_sensorStatusErr, "Error serializing 'sensorStatus' field")
+		if err := WriteSimpleEnumField[HVACSensorStatus](ctx, "sensorStatus", "HVACSensorStatus", m.GetSensorStatus(), WriteEnum[HVACSensorStatus, uint8](HVACSensorStatus.GetValue, HVACSensorStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'sensorStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataZoneTemperature"); popErr != nil {
@@ -300,12 +240,10 @@ func (m *_AirConditioningDataZoneTemperature) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AirConditioningDataContract.(*_AirConditioningData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AirConditioningDataZoneTemperature) isAirConditioningDataZoneTemperature() bool {
-	return true
-}
+func (m *_AirConditioningDataZoneTemperature) IsAirConditioningDataZoneTemperature() {}
 
 func (m *_AirConditioningDataZoneTemperature) String() string {
 	if m == nil {

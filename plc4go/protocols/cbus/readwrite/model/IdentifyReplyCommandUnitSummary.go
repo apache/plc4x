@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,13 +54,8 @@ type IdentifyReplyCommandUnitSummary interface {
 	GetClockGenerationEnabled() bool
 	// GetUnitGeneratingClock returns UnitGeneratingClock (property field)
 	GetUnitGeneratingClock() bool
-}
-
-// IdentifyReplyCommandUnitSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandUnitSummary.
-// This is useful for switch cases.
-type IdentifyReplyCommandUnitSummaryExactly interface {
-	IdentifyReplyCommandUnitSummary
-	isIdentifyReplyCommandUnitSummary() bool
+	// IsIdentifyReplyCommandUnitSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandUnitSummary()
 }
 
 // _IdentifyReplyCommandUnitSummary is the data-structure of this message
@@ -72,6 +69,8 @@ type _IdentifyReplyCommandUnitSummary struct {
 	ClockGenerationEnabled bool
 	UnitGeneratingClock    bool
 }
+
+var _ IdentifyReplyCommandUnitSummary = (*_IdentifyReplyCommandUnitSummary)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -173,88 +172,82 @@ func IdentifyReplyCommandUnitSummaryParse(ctx context.Context, theBytes []byte) 
 	return IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func IdentifyReplyCommandUnitSummaryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
+		return IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
+	v, err := (&_IdentifyReplyCommandUnitSummary{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_IdentifyReplyCommandUnitSummary) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__identifyReplyCommandUnitSummary IdentifyReplyCommandUnitSummary, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandUnitSummary"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandUnitSummary")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (assertingNetworkBurden)
-	_assertingNetworkBurden, _assertingNetworkBurdenErr := readBuffer.ReadBit("assertingNetworkBurden")
-	if _assertingNetworkBurdenErr != nil {
-		return nil, errors.Wrap(_assertingNetworkBurdenErr, "Error parsing 'assertingNetworkBurden' field of IdentifyReplyCommandUnitSummary")
+	assertingNetworkBurden, err := ReadSimpleField(ctx, "assertingNetworkBurden", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assertingNetworkBurden' field"))
 	}
-	assertingNetworkBurden := _assertingNetworkBurden
+	m.AssertingNetworkBurden = assertingNetworkBurden
 
-	// Simple Field (restrikeTimingActive)
-	_restrikeTimingActive, _restrikeTimingActiveErr := readBuffer.ReadBit("restrikeTimingActive")
-	if _restrikeTimingActiveErr != nil {
-		return nil, errors.Wrap(_restrikeTimingActiveErr, "Error parsing 'restrikeTimingActive' field of IdentifyReplyCommandUnitSummary")
+	restrikeTimingActive, err := ReadSimpleField(ctx, "restrikeTimingActive", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'restrikeTimingActive' field"))
 	}
-	restrikeTimingActive := _restrikeTimingActive
+	m.RestrikeTimingActive = restrikeTimingActive
 
-	// Simple Field (remoteOFFInputAsserted)
-	_remoteOFFInputAsserted, _remoteOFFInputAssertedErr := readBuffer.ReadBit("remoteOFFInputAsserted")
-	if _remoteOFFInputAssertedErr != nil {
-		return nil, errors.Wrap(_remoteOFFInputAssertedErr, "Error parsing 'remoteOFFInputAsserted' field of IdentifyReplyCommandUnitSummary")
+	remoteOFFInputAsserted, err := ReadSimpleField(ctx, "remoteOFFInputAsserted", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remoteOFFInputAsserted' field"))
 	}
-	remoteOFFInputAsserted := _remoteOFFInputAsserted
+	m.RemoteOFFInputAsserted = remoteOFFInputAsserted
 
-	// Simple Field (remoteONInputAsserted)
-	_remoteONInputAsserted, _remoteONInputAssertedErr := readBuffer.ReadBit("remoteONInputAsserted")
-	if _remoteONInputAssertedErr != nil {
-		return nil, errors.Wrap(_remoteONInputAssertedErr, "Error parsing 'remoteONInputAsserted' field of IdentifyReplyCommandUnitSummary")
+	remoteONInputAsserted, err := ReadSimpleField(ctx, "remoteONInputAsserted", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remoteONInputAsserted' field"))
 	}
-	remoteONInputAsserted := _remoteONInputAsserted
+	m.RemoteONInputAsserted = remoteONInputAsserted
 
-	// Simple Field (localToggleEnabled)
-	_localToggleEnabled, _localToggleEnabledErr := readBuffer.ReadBit("localToggleEnabled")
-	if _localToggleEnabledErr != nil {
-		return nil, errors.Wrap(_localToggleEnabledErr, "Error parsing 'localToggleEnabled' field of IdentifyReplyCommandUnitSummary")
+	localToggleEnabled, err := ReadSimpleField(ctx, "localToggleEnabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localToggleEnabled' field"))
 	}
-	localToggleEnabled := _localToggleEnabled
+	m.LocalToggleEnabled = localToggleEnabled
 
-	// Simple Field (localToggleActiveState)
-	_localToggleActiveState, _localToggleActiveStateErr := readBuffer.ReadBit("localToggleActiveState")
-	if _localToggleActiveStateErr != nil {
-		return nil, errors.Wrap(_localToggleActiveStateErr, "Error parsing 'localToggleActiveState' field of IdentifyReplyCommandUnitSummary")
+	localToggleActiveState, err := ReadSimpleField(ctx, "localToggleActiveState", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localToggleActiveState' field"))
 	}
-	localToggleActiveState := _localToggleActiveState
+	m.LocalToggleActiveState = localToggleActiveState
 
-	// Simple Field (clockGenerationEnabled)
-	_clockGenerationEnabled, _clockGenerationEnabledErr := readBuffer.ReadBit("clockGenerationEnabled")
-	if _clockGenerationEnabledErr != nil {
-		return nil, errors.Wrap(_clockGenerationEnabledErr, "Error parsing 'clockGenerationEnabled' field of IdentifyReplyCommandUnitSummary")
+	clockGenerationEnabled, err := ReadSimpleField(ctx, "clockGenerationEnabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clockGenerationEnabled' field"))
 	}
-	clockGenerationEnabled := _clockGenerationEnabled
+	m.ClockGenerationEnabled = clockGenerationEnabled
 
-	// Simple Field (unitGeneratingClock)
-	_unitGeneratingClock, _unitGeneratingClockErr := readBuffer.ReadBit("unitGeneratingClock")
-	if _unitGeneratingClockErr != nil {
-		return nil, errors.Wrap(_unitGeneratingClockErr, "Error parsing 'unitGeneratingClock' field of IdentifyReplyCommandUnitSummary")
+	unitGeneratingClock, err := ReadSimpleField(ctx, "unitGeneratingClock", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitGeneratingClock' field"))
 	}
-	unitGeneratingClock := _unitGeneratingClock
+	m.UnitGeneratingClock = unitGeneratingClock
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandUnitSummary"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandUnitSummary")
 	}
 
-	// Create the instance
-	return &_IdentifyReplyCommandUnitSummary{
-		AssertingNetworkBurden: assertingNetworkBurden,
-		RestrikeTimingActive:   restrikeTimingActive,
-		RemoteOFFInputAsserted: remoteOFFInputAsserted,
-		RemoteONInputAsserted:  remoteONInputAsserted,
-		LocalToggleEnabled:     localToggleEnabled,
-		LocalToggleActiveState: localToggleActiveState,
-		ClockGenerationEnabled: clockGenerationEnabled,
-		UnitGeneratingClock:    unitGeneratingClock,
-	}, nil
+	return m, nil
 }
 
 func (m *_IdentifyReplyCommandUnitSummary) Serialize() ([]byte, error) {
@@ -274,60 +267,36 @@ func (m *_IdentifyReplyCommandUnitSummary) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandUnitSummary")
 	}
 
-	// Simple Field (assertingNetworkBurden)
-	assertingNetworkBurden := bool(m.GetAssertingNetworkBurden())
-	_assertingNetworkBurdenErr := writeBuffer.WriteBit("assertingNetworkBurden", (assertingNetworkBurden))
-	if _assertingNetworkBurdenErr != nil {
-		return errors.Wrap(_assertingNetworkBurdenErr, "Error serializing 'assertingNetworkBurden' field")
+	if err := WriteSimpleField[bool](ctx, "assertingNetworkBurden", m.GetAssertingNetworkBurden(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assertingNetworkBurden' field")
 	}
 
-	// Simple Field (restrikeTimingActive)
-	restrikeTimingActive := bool(m.GetRestrikeTimingActive())
-	_restrikeTimingActiveErr := writeBuffer.WriteBit("restrikeTimingActive", (restrikeTimingActive))
-	if _restrikeTimingActiveErr != nil {
-		return errors.Wrap(_restrikeTimingActiveErr, "Error serializing 'restrikeTimingActive' field")
+	if err := WriteSimpleField[bool](ctx, "restrikeTimingActive", m.GetRestrikeTimingActive(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'restrikeTimingActive' field")
 	}
 
-	// Simple Field (remoteOFFInputAsserted)
-	remoteOFFInputAsserted := bool(m.GetRemoteOFFInputAsserted())
-	_remoteOFFInputAssertedErr := writeBuffer.WriteBit("remoteOFFInputAsserted", (remoteOFFInputAsserted))
-	if _remoteOFFInputAssertedErr != nil {
-		return errors.Wrap(_remoteOFFInputAssertedErr, "Error serializing 'remoteOFFInputAsserted' field")
+	if err := WriteSimpleField[bool](ctx, "remoteOFFInputAsserted", m.GetRemoteOFFInputAsserted(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'remoteOFFInputAsserted' field")
 	}
 
-	// Simple Field (remoteONInputAsserted)
-	remoteONInputAsserted := bool(m.GetRemoteONInputAsserted())
-	_remoteONInputAssertedErr := writeBuffer.WriteBit("remoteONInputAsserted", (remoteONInputAsserted))
-	if _remoteONInputAssertedErr != nil {
-		return errors.Wrap(_remoteONInputAssertedErr, "Error serializing 'remoteONInputAsserted' field")
+	if err := WriteSimpleField[bool](ctx, "remoteONInputAsserted", m.GetRemoteONInputAsserted(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'remoteONInputAsserted' field")
 	}
 
-	// Simple Field (localToggleEnabled)
-	localToggleEnabled := bool(m.GetLocalToggleEnabled())
-	_localToggleEnabledErr := writeBuffer.WriteBit("localToggleEnabled", (localToggleEnabled))
-	if _localToggleEnabledErr != nil {
-		return errors.Wrap(_localToggleEnabledErr, "Error serializing 'localToggleEnabled' field")
+	if err := WriteSimpleField[bool](ctx, "localToggleEnabled", m.GetLocalToggleEnabled(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localToggleEnabled' field")
 	}
 
-	// Simple Field (localToggleActiveState)
-	localToggleActiveState := bool(m.GetLocalToggleActiveState())
-	_localToggleActiveStateErr := writeBuffer.WriteBit("localToggleActiveState", (localToggleActiveState))
-	if _localToggleActiveStateErr != nil {
-		return errors.Wrap(_localToggleActiveStateErr, "Error serializing 'localToggleActiveState' field")
+	if err := WriteSimpleField[bool](ctx, "localToggleActiveState", m.GetLocalToggleActiveState(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localToggleActiveState' field")
 	}
 
-	// Simple Field (clockGenerationEnabled)
-	clockGenerationEnabled := bool(m.GetClockGenerationEnabled())
-	_clockGenerationEnabledErr := writeBuffer.WriteBit("clockGenerationEnabled", (clockGenerationEnabled))
-	if _clockGenerationEnabledErr != nil {
-		return errors.Wrap(_clockGenerationEnabledErr, "Error serializing 'clockGenerationEnabled' field")
+	if err := WriteSimpleField[bool](ctx, "clockGenerationEnabled", m.GetClockGenerationEnabled(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'clockGenerationEnabled' field")
 	}
 
-	// Simple Field (unitGeneratingClock)
-	unitGeneratingClock := bool(m.GetUnitGeneratingClock())
-	_unitGeneratingClockErr := writeBuffer.WriteBit("unitGeneratingClock", (unitGeneratingClock))
-	if _unitGeneratingClockErr != nil {
-		return errors.Wrap(_unitGeneratingClockErr, "Error serializing 'unitGeneratingClock' field")
+	if err := WriteSimpleField[bool](ctx, "unitGeneratingClock", m.GetUnitGeneratingClock(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'unitGeneratingClock' field")
 	}
 
 	if popErr := writeBuffer.PopContext("IdentifyReplyCommandUnitSummary"); popErr != nil {
@@ -336,9 +305,7 @@ func (m *_IdentifyReplyCommandUnitSummary) SerializeWithWriteBuffer(ctx context.
 	return nil
 }
 
-func (m *_IdentifyReplyCommandUnitSummary) isIdentifyReplyCommandUnitSummary() bool {
-	return true
-}
+func (m *_IdentifyReplyCommandUnitSummary) IsIdentifyReplyCommandUnitSummary() {}
 
 func (m *_IdentifyReplyCommandUnitSummary) String() string {
 	if m == nil {

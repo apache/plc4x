@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataEnergyMeter interface {
 	GetEnergyMeter() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataEnergyMeterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEnergyMeter.
-// This is useful for switch cases.
-type BACnetConstructedDataEnergyMeterExactly interface {
-	BACnetConstructedDataEnergyMeter
-	isBACnetConstructedDataEnergyMeter() bool
+	// IsBACnetConstructedDataEnergyMeter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEnergyMeter()
 }
 
 // _BACnetConstructedDataEnergyMeter is the data-structure of this message
 type _BACnetConstructedDataEnergyMeter struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	EnergyMeter BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataEnergyMeter = (*_BACnetConstructedDataEnergyMeter)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnergyMeter)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataEnergyMeter) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataEnergyMeter) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataEnergyMeter) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataEnergyMeter) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataEnergyMeter) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataEnergyMeter factory function for _BACnetConstructedDataEnergyMeter
 func NewBACnetConstructedDataEnergyMeter(energyMeter BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeter {
-	_result := &_BACnetConstructedDataEnergyMeter{
-		EnergyMeter:            energyMeter,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if energyMeter == nil {
+		panic("energyMeter of type BACnetApplicationTagReal for BACnetConstructedDataEnergyMeter must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataEnergyMeter{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EnergyMeter:                   energyMeter,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataEnergyMeter) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (energyMeter)
 	lengthInBits += m.EnergyMeter.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataEnergyMeterParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
-	return BACnetConstructedDataEnergyMeterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataEnergyMeterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
+func (m *_BACnetConstructedDataEnergyMeter) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEnergyMeter BACnetConstructedDataEnergyMeter, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEnergyMeter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEnergyMeter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (energyMeter)
-	if pullErr := readBuffer.PullContext("energyMeter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for energyMeter")
+	energyMeter, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "energyMeter", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'energyMeter' field"))
 	}
-	_energyMeter, _energyMeterErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _energyMeterErr != nil {
-		return nil, errors.Wrap(_energyMeterErr, "Error parsing 'energyMeter' field of BACnetConstructedDataEnergyMeter")
-	}
-	energyMeter := _energyMeter.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("energyMeter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for energyMeter")
-	}
+	m.EnergyMeter = energyMeter
 
-	// Virtual field
-	_actualValue := energyMeter
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), energyMeter)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEnergyMeter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEnergyMeter")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataEnergyMeter{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		EnergyMeter: energyMeter,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataEnergyMeter) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEnergyMeter")
 		}
 
-		// Simple Field (energyMeter)
-		if pushErr := writeBuffer.PushContext("energyMeter"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for energyMeter")
-		}
-		_energyMeterErr := writeBuffer.WriteSerializable(ctx, m.GetEnergyMeter())
-		if popErr := writeBuffer.PopContext("energyMeter"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for energyMeter")
-		}
-		if _energyMeterErr != nil {
-			return errors.Wrap(_energyMeterErr, "Error serializing 'energyMeter' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "energyMeter", m.GetEnergyMeter(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'energyMeter' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataEnergyMeter) isBACnetConstructedDataEnergyMeter() bool {
-	return true
-}
+func (m *_BACnetConstructedDataEnergyMeter) IsBACnetConstructedDataEnergyMeter() {}
 
 func (m *_BACnetConstructedDataEnergyMeter) String() string {
 	if m == nil {

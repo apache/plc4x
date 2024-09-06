@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type HistoryReadResult interface {
 	GetContinuationPoint() PascalByteString
 	// GetHistoryData returns HistoryData (property field)
 	GetHistoryData() ExtensionObject
-}
-
-// HistoryReadResultExactly can be used when we want exactly this type and not a type which fulfills HistoryReadResult.
-// This is useful for switch cases.
-type HistoryReadResultExactly interface {
-	HistoryReadResult
-	isHistoryReadResult() bool
+	// IsHistoryReadResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryReadResult()
 }
 
 // _HistoryReadResult is the data-structure of this message
 type _HistoryReadResult struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	StatusCode        StatusCode
 	ContinuationPoint PascalByteString
 	HistoryData       ExtensionObject
 }
+
+var _ HistoryReadResult = (*_HistoryReadResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_HistoryReadResult) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_HistoryReadResult) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_HistoryReadResult) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_HistoryReadResult) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,22 @@ func (m *_HistoryReadResult) GetHistoryData() ExtensionObject {
 
 // NewHistoryReadResult factory function for _HistoryReadResult
 func NewHistoryReadResult(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) *_HistoryReadResult {
-	_result := &_HistoryReadResult{
-		StatusCode:                 statusCode,
-		ContinuationPoint:          continuationPoint,
-		HistoryData:                historyData,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for HistoryReadResult must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for HistoryReadResult must not be nil")
+	}
+	if historyData == nil {
+		panic("historyData of type ExtensionObject for HistoryReadResult must not be nil")
+	}
+	_result := &_HistoryReadResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		ContinuationPoint:                 continuationPoint,
+		HistoryData:                       historyData,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +137,7 @@ func (m *_HistoryReadResult) GetTypeName() string {
 }
 
 func (m *_HistoryReadResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -148,73 +155,40 @@ func (m *_HistoryReadResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HistoryReadResultParse(ctx context.Context, theBytes []byte, identifier string) (HistoryReadResult, error) {
-	return HistoryReadResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func HistoryReadResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryReadResult, error) {
+func (m *_HistoryReadResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyReadResult HistoryReadResult, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HistoryReadResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HistoryReadResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of HistoryReadResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
-	}
+	m.StatusCode = statusCode
 
-	// Simple Field (continuationPoint)
-	if pullErr := readBuffer.PullContext("continuationPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for continuationPoint")
+	continuationPoint, err := ReadSimpleField[PascalByteString](ctx, "continuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'continuationPoint' field"))
 	}
-	_continuationPoint, _continuationPointErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _continuationPointErr != nil {
-		return nil, errors.Wrap(_continuationPointErr, "Error parsing 'continuationPoint' field of HistoryReadResult")
-	}
-	continuationPoint := _continuationPoint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("continuationPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for continuationPoint")
-	}
+	m.ContinuationPoint = continuationPoint
 
-	// Simple Field (historyData)
-	if pullErr := readBuffer.PullContext("historyData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for historyData")
+	historyData, err := ReadSimpleField[ExtensionObject](ctx, "historyData", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyData' field"))
 	}
-	_historyData, _historyDataErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _historyDataErr != nil {
-		return nil, errors.Wrap(_historyDataErr, "Error parsing 'historyData' field of HistoryReadResult")
-	}
-	historyData := _historyData.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("historyData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for historyData")
-	}
+	m.HistoryData = historyData
 
 	if closeErr := readBuffer.CloseContext("HistoryReadResult"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HistoryReadResult")
 	}
 
-	// Create a partially initialized instance
-	_child := &_HistoryReadResult{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		StatusCode:                 statusCode,
-		ContinuationPoint:          continuationPoint,
-		HistoryData:                historyData,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_HistoryReadResult) Serialize() ([]byte, error) {
@@ -235,40 +209,16 @@ func (m *_HistoryReadResult) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for HistoryReadResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (continuationPoint)
-		if pushErr := writeBuffer.PushContext("continuationPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for continuationPoint")
-		}
-		_continuationPointErr := writeBuffer.WriteSerializable(ctx, m.GetContinuationPoint())
-		if popErr := writeBuffer.PopContext("continuationPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for continuationPoint")
-		}
-		if _continuationPointErr != nil {
-			return errors.Wrap(_continuationPointErr, "Error serializing 'continuationPoint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "continuationPoint", m.GetContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'continuationPoint' field")
 		}
 
-		// Simple Field (historyData)
-		if pushErr := writeBuffer.PushContext("historyData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for historyData")
-		}
-		_historyDataErr := writeBuffer.WriteSerializable(ctx, m.GetHistoryData())
-		if popErr := writeBuffer.PopContext("historyData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for historyData")
-		}
-		if _historyDataErr != nil {
-			return errors.Wrap(_historyDataErr, "Error serializing 'historyData' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "historyData", m.GetHistoryData(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'historyData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("HistoryReadResult"); popErr != nil {
@@ -276,12 +226,10 @@ func (m *_HistoryReadResult) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_HistoryReadResult) isHistoryReadResult() bool {
-	return true
-}
+func (m *_HistoryReadResult) IsHistoryReadResult() {}
 
 func (m *_HistoryReadResult) String() string {
 	if m == nil {

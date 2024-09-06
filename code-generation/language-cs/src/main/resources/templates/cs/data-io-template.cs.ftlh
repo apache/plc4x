@@ -99,8 +99,11 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                         <#if arrayField.loopExpression.contains("curPos")>
                 curPos = readBuffer.getPos() - startPos;
                         </#if>
+                        <#if elementTypeReference.isByteBased()>
+                var ${arrayField.name} = readBuffer.ReadByteArray("", ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)});
+                        <#else>
                 <#-- If this is a count array, we can directly initialize an array with the given size -->
-                        <#if field.isCountArrayField()>
+                            <#if field.isCountArrayField()>
                 // Count array
                 List<IPlcValue> ${arrayField.name};
                 {
@@ -111,40 +114,41 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                     }
                 }
                 <#-- In all other cases do we have to work with a list, that is later converted to an array -->
-                        <#else>
+                            <#else>
                 <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-                            <#if arrayField.isLengthArrayField()>
+                                <#if arrayField.isLengthArrayField()>
                 // Length array
                 var _${arrayField.name}Length = ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)};
                 var ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
                 var value = new List<IPlcValue>();
                 while(readBuffer.getPos() < ${arrayField.name}EndPos) {
                     value.Add(
-                <#if elementTypeReference.isSimpleTypeReference()>
+                    <#if elementTypeReference.isSimpleTypeReference()>
                         new ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})
-                <#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.StaticParse(readBuffer
-                    <#if elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.isPresent()>,
-                        <#list elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.orElseThrow() as parserArgument>
+                    <#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.StaticParse(readBuffer
+                        <#if elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.isPresent()>,
+                            <#list elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.orElseThrow() as parserArgument>
                                 (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(arrayField,elementTypeReference, parserArgument,parserArguments)})
-                            <#sep>, </#sep>
-                        </#list>
-                    </#if>
+                                <#sep>, </#sep>
+                            </#list>
+                        </#if>
                         )
-                </#if>
+                    </#if>
                     );
                 }
                 <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-                            <#elseif arrayField.isTerminatedArrayField()>
+                                <#elseif arrayField.isTerminatedArrayField()>
                 // Terminated array
                 var ${arrayField.name} = new List<${helper.getLanguageTypeNameForField(arrayField)}>();
                 while(!((boolean) (${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression,parserArguments)}))) {
                     ${arrayField.name}.Add(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.StaticParse(readBuffer<#if elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
                 <#-- After parsing, update the current position, but only if it's needed -->
-                                <#if arrayField.loopExpression.contains("curPos")>
+                                    <#if arrayField.loopExpression.contains("curPos")>
                     curPos = readBuffer.getPos() - startPos;
-                                </#if>
+                                    </#if>
                 }
+                                </#if>
                             </#if>
                         </#if>
                         <#if arrayField.name == "value">
@@ -218,8 +222,10 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 <#-- In this case we need to wrap each field in a IPlcValue that matches it's natural type -->
                 var _map = new Dictionary<string, IPlcValue>();
                 <#list case.fields as field>
-                    <#if field.isArrayField()>
+                    <#if field.isArrayField() && field.asArrayField().orElseThrow().type.elementTypeReference.isByteBased()>
                         <#assign field=field.asArrayField().orElseThrow()>
+                _map["${field.name}"] = new PlcRawByteArray(${field.name});
+                    <#elseif field.isArrayField()>
                 _map["${field.name}"] = new PlcList(${field.name});
                     <#elseif field.isPropertyField()>
                         <#assign field=field.asPropertyField().orElseThrow()>
@@ -321,7 +327,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 return new Plc${case.name}(value);
                 </#switch>
             </#if>
-            }<#sep> else </#sep></#list>
+            } </#list>
         <#if !defaultCaseOutput>
             return null;
         </#if>
@@ -422,7 +428,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 </#switch>
             </#list>
             return writeBuffer;
-        }<#sep> else </#sep></#list>
+        } </#list>
         <#if !defaultCaseOutput>
         return null;
         </#if>

@@ -36,18 +36,15 @@ type EccEncryptedSecret interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// EccEncryptedSecretExactly can be used when we want exactly this type and not a type which fulfills EccEncryptedSecret.
-// This is useful for switch cases.
-type EccEncryptedSecretExactly interface {
-	EccEncryptedSecret
-	isEccEncryptedSecret() bool
+	// IsEccEncryptedSecret is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEccEncryptedSecret()
 }
 
 // _EccEncryptedSecret is the data-structure of this message
 type _EccEncryptedSecret struct {
 }
+
+var _ EccEncryptedSecret = (*_EccEncryptedSecret)(nil)
 
 // NewEccEncryptedSecret factory function for _EccEncryptedSecret
 func NewEccEncryptedSecret() *_EccEncryptedSecret {
@@ -83,11 +80,23 @@ func EccEncryptedSecretParse(ctx context.Context, theBytes []byte) (EccEncrypted
 	return EccEncryptedSecretParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func EccEncryptedSecretParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (EccEncryptedSecret, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EccEncryptedSecret, error) {
+		return EccEncryptedSecretParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func EccEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EccEncryptedSecret, error) {
+	v, err := (&_EccEncryptedSecret{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_EccEncryptedSecret) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__eccEncryptedSecret EccEncryptedSecret, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EccEncryptedSecret"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EccEncryptedSecret")
 	}
@@ -98,8 +107,7 @@ func EccEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(closeErr, "Error closing for EccEncryptedSecret")
 	}
 
-	// Create the instance
-	return &_EccEncryptedSecret{}, nil
+	return m, nil
 }
 
 func (m *_EccEncryptedSecret) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_EccEncryptedSecret) SerializeWithWriteBuffer(ctx context.Context, writ
 	return nil
 }
 
-func (m *_EccEncryptedSecret) isEccEncryptedSecret() bool {
-	return true
-}
+func (m *_EccEncryptedSecret) IsEccEncryptedSecret() {}
 
 func (m *_EccEncryptedSecret) String() string {
 	if m == nil {

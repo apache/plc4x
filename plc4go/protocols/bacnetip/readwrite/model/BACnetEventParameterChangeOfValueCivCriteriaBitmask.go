@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetBitmask returns Bitmask (property field)
 	GetBitmask() BACnetContextTagBitString
-}
-
-// BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteriaBitmask.
-// This is useful for switch cases.
-type BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly interface {
-	BACnetEventParameterChangeOfValueCivCriteriaBitmask
-	isBACnetEventParameterChangeOfValueCivCriteriaBitmask() bool
+	// IsBACnetEventParameterChangeOfValueCivCriteriaBitmask is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfValueCivCriteriaBitmask()
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteriaBitmask is the data-structure of this message
 type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
-	*_BACnetEventParameterChangeOfValueCivCriteria
+	BACnetEventParameterChangeOfValueCivCriteriaContract
 	Bitmask BACnetContextTagBitString
 }
+
+var _ BACnetEventParameterChangeOfValueCivCriteriaBitmask = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
+var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) InitializeParent(parent BACnetEventParameterChangeOfValueCivCriteria, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetParent() BACnetEventParameterChangeOfValueCivCriteria {
-	return m._BACnetEventParameterChangeOfValueCivCriteria
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetParent() BACnetEventParameterChangeOfValueCivCriteriaContract {
+	return m.BACnetEventParameterChangeOfValueCivCriteriaContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetBitmask() BACn
 
 // NewBACnetEventParameterChangeOfValueCivCriteriaBitmask factory function for _BACnetEventParameterChangeOfValueCivCriteriaBitmask
 func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(bitmask BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
-	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
-		Bitmask: bitmask,
-		_BACnetEventParameterChangeOfValueCivCriteria: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if bitmask == nil {
+		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfValueCivCriteriaBitmask must not be nil")
 	}
-	_result._BACnetEventParameterChangeOfValueCivCriteria._BACnetEventParameterChangeOfValueCivCriteriaChildRequirements = _result
+	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
+		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+		Bitmask: bitmask,
+	}
+	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetTypeName() str
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).getLengthInBits(ctx))
 
 	// Simple field (bitmask)
 	lengthInBits += m.Bitmask.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes(
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
-	return BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameterChangeOfValueCivCriteria, tagNumber uint8) (__bACnetEventParameterChangeOfValueCivCriteriaBitmask BACnetEventParameterChangeOfValueCivCriteriaBitmask, err error) {
+	m.BACnetEventParameterChangeOfValueCivCriteriaContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bitmask)
-	if pullErr := readBuffer.PullContext("bitmask"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitmask")
+	bitmask, err := ReadSimpleField[BACnetContextTagBitString](ctx, "bitmask", ReadComplex[BACnetContextTagBitString](BACnetContextTagParseWithBufferProducer[BACnetContextTagBitString]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BIT_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitmask' field"))
 	}
-	_bitmask, _bitmaskErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
-	if _bitmaskErr != nil {
-		return nil, errors.Wrap(_bitmaskErr, "Error parsing 'bitmask' field of BACnetEventParameterChangeOfValueCivCriteriaBitmask")
-	}
-	bitmask := _bitmask.(BACnetContextTagBitString)
-	if closeErr := readBuffer.CloseContext("bitmask"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitmask")
-	}
+	m.Bitmask = bitmask
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
-		_BACnetEventParameterChangeOfValueCivCriteria: &_BACnetEventParameterChangeOfValueCivCriteria{
-			TagNumber: tagNumber,
-		},
-		Bitmask: bitmask,
-	}
-	_child._BACnetEventParameterChangeOfValueCivCriteria._BACnetEventParameterChangeOfValueCivCriteriaChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWrit
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 		}
 
-		// Simple Field (bitmask)
-		if pushErr := writeBuffer.PushContext("bitmask"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bitmask")
-		}
-		_bitmaskErr := writeBuffer.WriteSerializable(ctx, m.GetBitmask())
-		if popErr := writeBuffer.PopContext("bitmask"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bitmask")
-		}
-		if _bitmaskErr != nil {
-			return errors.Wrap(_bitmaskErr, "Error serializing 'bitmask' field")
+		if err := WriteSimpleField[BACnetContextTagBitString](ctx, "bitmask", m.GetBitmask(), WriteComplex[BACnetContextTagBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitmask' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); popErr != nil {
@@ -204,11 +174,10 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWrit
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) isBACnetEventParameterChangeOfValueCivCriteriaBitmask() bool {
-	return true
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) IsBACnetEventParameterChangeOfValueCivCriteriaBitmask() {
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) String() string {

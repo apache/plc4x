@@ -36,18 +36,15 @@ type NumericRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// NumericRangeExactly can be used when we want exactly this type and not a type which fulfills NumericRange.
-// This is useful for switch cases.
-type NumericRangeExactly interface {
-	NumericRange
-	isNumericRange() bool
+	// IsNumericRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNumericRange()
 }
 
 // _NumericRange is the data-structure of this message
 type _NumericRange struct {
 }
+
+var _ NumericRange = (*_NumericRange)(nil)
 
 // NewNumericRange factory function for _NumericRange
 func NewNumericRange() *_NumericRange {
@@ -83,11 +80,23 @@ func NumericRangeParse(ctx context.Context, theBytes []byte) (NumericRange, erro
 	return NumericRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NumericRangeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NumericRange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NumericRange, error) {
+		return NumericRangeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NumericRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NumericRange, error) {
+	v, err := (&_NumericRange{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_NumericRange) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__numericRange NumericRange, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NumericRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NumericRange")
 	}
@@ -98,8 +107,7 @@ func NumericRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for NumericRange")
 	}
 
-	// Create the instance
-	return &_NumericRange{}, nil
+	return m, nil
 }
 
 func (m *_NumericRange) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_NumericRange) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_NumericRange) isNumericRange() bool {
-	return true
-}
+func (m *_NumericRange) IsNumericRange() {}
 
 func (m *_NumericRange) String() string {
 	if m == nil {

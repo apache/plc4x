@@ -98,18 +98,17 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("HistoryReadRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (historyReadDetails)
-    writeSimpleField(
-        "historyReadDetails", historyReadDetails, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("historyReadDetails", historyReadDetails, writeComplex(writeBuffer));
 
     // Simple Field (timestampsToReturn)
     writeSimpleEnumField(
         "timestampsToReturn",
         "TimestampsToReturn",
         timestampsToReturn,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TimestampsToReturn::getValue,
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -180,22 +179,21 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObject historyReadDetails =
         readSimpleField(
             "historyReadDetails",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     TimestampsToReturn timestampsToReturn =
         readEnumField(
             "timestampsToReturn",
             "TimestampsToReturn",
-            new DataReaderEnumDefault<>(
-                TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -208,7 +206,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     List<ExtensionObjectDefinition> nodesToRead =
         readCountArrayField(
             "nodesToRead",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("637")),
                 readBuffer),
             noOfNodesToRead);

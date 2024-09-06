@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetRecipientProcessEnclosed interface {
 	GetRecipientProcess() BACnetRecipientProcess
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetRecipientProcessEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientProcessEnclosed.
-// This is useful for switch cases.
-type BACnetRecipientProcessEnclosedExactly interface {
-	BACnetRecipientProcessEnclosed
-	isBACnetRecipientProcessEnclosed() bool
+	// IsBACnetRecipientProcessEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientProcessEnclosed()
 }
 
 // _BACnetRecipientProcessEnclosed is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetRecipientProcessEnclosed struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetRecipientProcessEnclosed = (*_BACnetRecipientProcessEnclosed)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,15 @@ func (m *_BACnetRecipientProcessEnclosed) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetRecipientProcessEnclosed factory function for _BACnetRecipientProcessEnclosed
 func NewBACnetRecipientProcessEnclosed(openingTag BACnetOpeningTag, recipientProcess BACnetRecipientProcess, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetRecipientProcessEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetRecipientProcessEnclosed must not be nil")
+	}
+	if recipientProcess == nil {
+		panic("recipientProcess of type BACnetRecipientProcess for BACnetRecipientProcessEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetRecipientProcessEnclosed must not be nil")
+	}
 	return &_BACnetRecipientProcessEnclosed{OpeningTag: openingTag, RecipientProcess: recipientProcess, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -126,67 +134,52 @@ func BACnetRecipientProcessEnclosedParse(ctx context.Context, theBytes []byte, t
 	return BACnetRecipientProcessEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetRecipientProcessEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientProcessEnclosed, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientProcessEnclosed, error) {
+		return BACnetRecipientProcessEnclosedParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetRecipientProcessEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetRecipientProcessEnclosed, error) {
+	v, err := (&_BACnetRecipientProcessEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetRecipientProcessEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetRecipientProcessEnclosed BACnetRecipientProcessEnclosed, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRecipientProcessEnclosed"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRecipientProcessEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetRecipientProcessEnclosed")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (recipientProcess)
-	if pullErr := readBuffer.PullContext("recipientProcess"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for recipientProcess")
+	recipientProcess, err := ReadSimpleField[BACnetRecipientProcess](ctx, "recipientProcess", ReadComplex[BACnetRecipientProcess](BACnetRecipientProcessParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recipientProcess' field"))
 	}
-	_recipientProcess, _recipientProcessErr := BACnetRecipientProcessParseWithBuffer(ctx, readBuffer)
-	if _recipientProcessErr != nil {
-		return nil, errors.Wrap(_recipientProcessErr, "Error parsing 'recipientProcess' field of BACnetRecipientProcessEnclosed")
-	}
-	recipientProcess := _recipientProcess.(BACnetRecipientProcess)
-	if closeErr := readBuffer.CloseContext("recipientProcess"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for recipientProcess")
-	}
+	m.RecipientProcess = recipientProcess
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetRecipientProcessEnclosed")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipientProcessEnclosed"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRecipientProcessEnclosed")
 	}
 
-	// Create the instance
-	return &_BACnetRecipientProcessEnclosed{
-		TagNumber:        tagNumber,
-		OpeningTag:       openingTag,
-		RecipientProcess: recipientProcess,
-		ClosingTag:       closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetRecipientProcessEnclosed) Serialize() ([]byte, error) {
@@ -206,40 +199,16 @@ func (m *_BACnetRecipientProcessEnclosed) SerializeWithWriteBuffer(ctx context.C
 		return errors.Wrap(pushErr, "Error pushing for BACnetRecipientProcessEnclosed")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (recipientProcess)
-	if pushErr := writeBuffer.PushContext("recipientProcess"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for recipientProcess")
-	}
-	_recipientProcessErr := writeBuffer.WriteSerializable(ctx, m.GetRecipientProcess())
-	if popErr := writeBuffer.PopContext("recipientProcess"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for recipientProcess")
-	}
-	if _recipientProcessErr != nil {
-		return errors.Wrap(_recipientProcessErr, "Error serializing 'recipientProcess' field")
+	if err := WriteSimpleField[BACnetRecipientProcess](ctx, "recipientProcess", m.GetRecipientProcess(), WriteComplex[BACnetRecipientProcess](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'recipientProcess' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetRecipientProcessEnclosed"); popErr != nil {
@@ -258,9 +227,7 @@ func (m *_BACnetRecipientProcessEnclosed) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetRecipientProcessEnclosed) isBACnetRecipientProcessEnclosed() bool {
-	return true
-}
+func (m *_BACnetRecipientProcessEnclosed) IsBACnetRecipientProcessEnclosed() {}
 
 func (m *_BACnetRecipientProcessEnclosed) String() string {
 	if m == nil {

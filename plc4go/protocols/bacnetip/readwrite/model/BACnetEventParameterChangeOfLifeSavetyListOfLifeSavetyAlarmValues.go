@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues interface
 	GetListOfLifeSavetyAlarmValues() []BACnetLifeSafetyStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues.
-// This is useful for switch cases.
-type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesExactly interface {
-	BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
-	isBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues() bool
+	// IsBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues()
 }
 
 // _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues = (*_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,12 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Get
 
 // NewBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues factory function for _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
 func NewBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues(openingTag BACnetOpeningTag, listOfLifeSavetyAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues must not be nil")
+	}
 	return &_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues{OpeningTag: openingTag, ListOfLifeSavetyAlarmValues: listOfLifeSavetyAlarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -130,73 +135,52 @@ func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(ctx 
 	return BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, error) {
+		return BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, error) {
+	v, err := (&_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (listOfLifeSavetyAlarmValues)
-	if pullErr := readBuffer.PullContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfLifeSavetyAlarmValues")
+	listOfLifeSavetyAlarmValues, err := ReadTerminatedArrayField[BACnetLifeSafetyStateTagged](ctx, "listOfLifeSavetyAlarmValues", ReadComplex[BACnetLifeSafetyStateTagged](BACnetLifeSafetyStateTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfLifeSavetyAlarmValues' field"))
 	}
-	// Terminated array
-	var listOfLifeSavetyAlarmValues []BACnetLifeSafetyStateTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLifeSafetyStateTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfLifeSavetyAlarmValues' field of BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
-			}
-			listOfLifeSavetyAlarmValues = append(listOfLifeSavetyAlarmValues, _item.(BACnetLifeSafetyStateTagged))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfLifeSavetyAlarmValues")
-	}
+	m.ListOfLifeSavetyAlarmValues = listOfLifeSavetyAlarmValues
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
 	}
 
-	// Create the instance
-	return &_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues{
-		TagNumber:                   tagNumber,
-		OpeningTag:                  openingTag,
-		ListOfLifeSavetyAlarmValues: listOfLifeSavetyAlarmValues,
-		ClosingTag:                  closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Serialize() ([]byte, error) {
@@ -216,45 +200,16 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Ser
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfLifeSavetyAlarmValues)
-	if pushErr := writeBuffer.PushContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfLifeSavetyAlarmValues")
-	}
-	for _curItem, _element := range m.GetListOfLifeSavetyAlarmValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfLifeSavetyAlarmValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfLifeSavetyAlarmValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfLifeSavetyAlarmValues")
+	if err := WriteComplexTypeArrayField(ctx, "listOfLifeSavetyAlarmValues", m.GetListOfLifeSavetyAlarmValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfLifeSavetyAlarmValues' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues"); popErr != nil {
@@ -273,8 +228,7 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Get
 //
 ////
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) isBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues() bool {
-	return true
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) IsBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues() {
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) String() string {

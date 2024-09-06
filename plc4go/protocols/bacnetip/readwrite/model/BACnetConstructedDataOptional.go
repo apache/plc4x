@@ -37,19 +37,17 @@ type BACnetConstructedDataOptional interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
-}
-
-// BACnetConstructedDataOptionalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOptional.
-// This is useful for switch cases.
-type BACnetConstructedDataOptionalExactly interface {
-	BACnetConstructedDataOptional
-	isBACnetConstructedDataOptional() bool
+	// IsBACnetConstructedDataOptional is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataOptional()
 }
 
 // _BACnetConstructedDataOptional is the data-structure of this message
 type _BACnetConstructedDataOptional struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 }
+
+var _ BACnetConstructedDataOptional = (*_BACnetConstructedDataOptional)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOptional)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,22 +67,16 @@ func (m *_BACnetConstructedDataOptional) GetPropertyIdentifierArgument() BACnetP
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataOptional) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataOptional) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataOptional) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 // NewBACnetConstructedDataOptional factory function for _BACnetConstructedDataOptional
 func NewBACnetConstructedDataOptional(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOptional {
 	_result := &_BACnetConstructedDataOptional{
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -104,7 +96,7 @@ func (m *_BACnetConstructedDataOptional) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataOptional) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +105,11 @@ func (m *_BACnetConstructedDataOptional) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataOptionalParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOptional, error) {
-	return BACnetConstructedDataOptionalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataOptionalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOptional, error) {
+func (m *_BACnetConstructedDataOptional) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataOptional BACnetConstructedDataOptional, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOptional"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOptional")
 	}
@@ -130,22 +118,14 @@ func BACnetConstructedDataOptionalParseWithBuffer(ctx context.Context, readBuffe
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"An property identified by OPTIONAL should never occur in the wild"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "An property identified by OPTIONAL should never occur in the wild"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOptional"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOptional")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataOptional{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataOptional) Serialize() ([]byte, error) {
@@ -171,12 +151,10 @@ func (m *_BACnetConstructedDataOptional) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataOptional) isBACnetConstructedDataOptional() bool {
-	return true
-}
+func (m *_BACnetConstructedDataOptional) IsBACnetConstructedDataOptional() {}
 
 func (m *_BACnetConstructedDataOptional) String() string {
 	if m == nil {

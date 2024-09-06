@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogDataLogDataEntryRealValue interface {
 	BACnetLogDataLogDataEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetContextTagReal
-}
-
-// BACnetLogDataLogDataEntryRealValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryRealValue.
-// This is useful for switch cases.
-type BACnetLogDataLogDataEntryRealValueExactly interface {
-	BACnetLogDataLogDataEntryRealValue
-	isBACnetLogDataLogDataEntryRealValue() bool
+	// IsBACnetLogDataLogDataEntryRealValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryRealValue()
 }
 
 // _BACnetLogDataLogDataEntryRealValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryRealValue struct {
-	*_BACnetLogDataLogDataEntry
+	BACnetLogDataLogDataEntryContract
 	RealValue BACnetContextTagReal
 }
+
+var _ BACnetLogDataLogDataEntryRealValue = (*_BACnetLogDataLogDataEntryRealValue)(nil)
+var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryRealValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetLogDataLogDataEntryRealValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogDataLogDataEntryRealValue) InitializeParent(parent BACnetLogDataLogDataEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetLogDataLogDataEntryRealValue) GetParent() BACnetLogDataLogDataEntry {
-	return m._BACnetLogDataLogDataEntry
+func (m *_BACnetLogDataLogDataEntryRealValue) GetParent() BACnetLogDataLogDataEntryContract {
+	return m.BACnetLogDataLogDataEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetLogDataLogDataEntryRealValue) GetRealValue() BACnetContextTagRea
 
 // NewBACnetLogDataLogDataEntryRealValue factory function for _BACnetLogDataLogDataEntryRealValue
 func NewBACnetLogDataLogDataEntryRealValue(realValue BACnetContextTagReal, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryRealValue {
-	_result := &_BACnetLogDataLogDataEntryRealValue{
-		RealValue:                  realValue,
-		_BACnetLogDataLogDataEntry: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+	if realValue == nil {
+		panic("realValue of type BACnetContextTagReal for BACnetLogDataLogDataEntryRealValue must not be nil")
 	}
-	_result._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _result
+	_result := &_BACnetLogDataLogDataEntryRealValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		RealValue:                         realValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetLogDataLogDataEntryRealValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogDataLogDataEntryRealValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetLogDataLogDataEntryRealValue) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogDataLogDataEntryRealValueParse(ctx context.Context, theBytes []byte) (BACnetLogDataLogDataEntryRealValue, error) {
-	return BACnetLogDataLogDataEntryRealValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetLogDataLogDataEntryRealValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryRealValue, error) {
+func (m *_BACnetLogDataLogDataEntryRealValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogDataLogDataEntry) (__bACnetLogDataLogDataEntryRealValue BACnetLogDataLogDataEntryRealValue, err error) {
+	m.BACnetLogDataLogDataEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryRealValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryRealValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (realValue)
-	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
+	realValue, err := ReadSimpleField[BACnetContextTagReal](ctx, "realValue", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realValue' field"))
 	}
-	_realValue, _realValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
-	if _realValueErr != nil {
-		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetLogDataLogDataEntryRealValue")
-	}
-	realValue := _realValue.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for realValue")
-	}
+	m.RealValue = realValue
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryRealValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryRealValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogDataLogDataEntryRealValue{
-		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
-		RealValue:                  realValue,
-	}
-	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogDataLogDataEntryRealValue) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetLogDataLogDataEntryRealValue) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryRealValue")
 		}
 
-		// Simple Field (realValue)
-		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for realValue")
-		}
-		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
-		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for realValue")
-		}
-		if _realValueErr != nil {
-			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "realValue", m.GetRealValue(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'realValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryRealValue"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetLogDataLogDataEntryRealValue) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValue) isBACnetLogDataLogDataEntryRealValue() bool {
-	return true
-}
+func (m *_BACnetLogDataLogDataEntryRealValue) IsBACnetLogDataLogDataEntryRealValue() {}
 
 func (m *_BACnetLogDataLogDataEntryRealValue) String() string {
 	if m == nil {

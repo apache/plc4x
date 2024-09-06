@@ -173,7 +173,7 @@ public class HVACHumidityModeAndFlags implements Message {
         "mode",
         "HVACHumidityModeAndFlagsMode",
         mode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACHumidityModeAndFlagsMode::getValue,
             HVACHumidityModeAndFlagsMode::name,
             writeUnsignedByte(writeBuffer, 3)));
@@ -258,8 +258,7 @@ public class HVACHumidityModeAndFlags implements Message {
         readEnumField(
             "mode",
             "HVACHumidityModeAndFlagsMode",
-            new DataReaderEnumDefault<>(
-                HVACHumidityModeAndFlagsMode::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(HVACHumidityModeAndFlagsMode::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     readBuffer.closeContext("HVACHumidityModeAndFlags");
     // Create the instance

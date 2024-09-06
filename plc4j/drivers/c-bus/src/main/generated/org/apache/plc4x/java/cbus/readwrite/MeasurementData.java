@@ -68,7 +68,7 @@ public abstract class MeasurementData implements Message {
         "commandTypeContainer",
         "MeasurementCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MeasurementCommandTypeContainer::getValue,
             MeasurementCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -118,7 +118,7 @@ public abstract class MeasurementData implements Message {
         readEnumField(
             "commandTypeContainer",
             "MeasurementCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 MeasurementCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     MeasurementCommandType commandType =
         readVirtualField(

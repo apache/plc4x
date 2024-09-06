@@ -37,19 +37,17 @@ type BACnetConstructedDataBinaryOutputAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
-}
-
-// BACnetConstructedDataBinaryOutputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryOutputAll.
-// This is useful for switch cases.
-type BACnetConstructedDataBinaryOutputAllExactly interface {
-	BACnetConstructedDataBinaryOutputAll
-	isBACnetConstructedDataBinaryOutputAll() bool
+	// IsBACnetConstructedDataBinaryOutputAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBinaryOutputAll()
 }
 
 // _BACnetConstructedDataBinaryOutputAll is the data-structure of this message
 type _BACnetConstructedDataBinaryOutputAll struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 }
+
+var _ BACnetConstructedDataBinaryOutputAll = (*_BACnetConstructedDataBinaryOutputAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,22 +67,16 @@ func (m *_BACnetConstructedDataBinaryOutputAll) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataBinaryOutputAll) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataBinaryOutputAll) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataBinaryOutputAll) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 // NewBACnetConstructedDataBinaryOutputAll factory function for _BACnetConstructedDataBinaryOutputAll
 func NewBACnetConstructedDataBinaryOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputAll {
 	_result := &_BACnetConstructedDataBinaryOutputAll{
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -104,7 +96,7 @@ func (m *_BACnetConstructedDataBinaryOutputAll) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBinaryOutputAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +105,11 @@ func (m *_BACnetConstructedDataBinaryOutputAll) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataBinaryOutputAllParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputAll, error) {
-	return BACnetConstructedDataBinaryOutputAllParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataBinaryOutputAllParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputAll, error) {
+func (m *_BACnetConstructedDataBinaryOutputAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBinaryOutputAll BACnetConstructedDataBinaryOutputAll, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryOutputAll"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBinaryOutputAll")
 	}
@@ -130,22 +118,14 @@ func BACnetConstructedDataBinaryOutputAllParseWithBuffer(ctx context.Context, re
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "All should never occur in context of constructed data. If it does please report"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryOutputAll"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryOutputAll")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataBinaryOutputAll{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataBinaryOutputAll) Serialize() ([]byte, error) {
@@ -171,12 +151,10 @@ func (m *_BACnetConstructedDataBinaryOutputAll) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataBinaryOutputAll) isBACnetConstructedDataBinaryOutputAll() bool {
-	return true
-}
+func (m *_BACnetConstructedDataBinaryOutputAll) IsBACnetConstructedDataBinaryOutputAll() {}
 
 func (m *_BACnetConstructedDataBinaryOutputAll) String() string {
 	if m == nil {

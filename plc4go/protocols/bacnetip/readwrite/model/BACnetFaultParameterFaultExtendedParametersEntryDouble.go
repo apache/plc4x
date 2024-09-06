@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultExtendedParametersEntryDouble interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
-}
-
-// BACnetFaultParameterFaultExtendedParametersEntryDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryDouble.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultExtendedParametersEntryDoubleExactly interface {
-	BACnetFaultParameterFaultExtendedParametersEntryDouble
-	isBACnetFaultParameterFaultExtendedParametersEntryDouble() bool
+	// IsBACnetFaultParameterFaultExtendedParametersEntryDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryDouble()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryDouble is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryDouble struct {
-	*_BACnetFaultParameterFaultExtendedParametersEntry
+	BACnetFaultParameterFaultExtendedParametersEntryContract
 	DoubleValue BACnetApplicationTagDouble
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryDouble = (*_BACnetFaultParameterFaultExtendedParametersEntryDouble)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryDouble)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryDouble struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetParent() BACnetFaultParameterFaultExtendedParametersEntry {
-	return m._BACnetFaultParameterFaultExtendedParametersEntry
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetParent() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetDoubleValue
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryDouble factory function for _BACnetFaultParameterFaultExtendedParametersEntryDouble
 func NewBACnetFaultParameterFaultExtendedParametersEntryDouble(doubleValue BACnetApplicationTagDouble, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryDouble {
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDouble{
-		DoubleValue: doubleValue,
-		_BACnetFaultParameterFaultExtendedParametersEntry: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetFaultParameterFaultExtendedParametersEntryDouble must not be nil")
 	}
-	_result._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDouble{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		DoubleValue: doubleValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetTypeName() 
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (doubleValue)
 	lengthInBits += m.DoubleValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetLengthInByt
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryDoubleParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryDouble, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDouble, error) {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryDouble BACnetFaultParameterFaultExtendedParametersEntryDouble, err error) {
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryDouble"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryDouble")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doubleValue)
-	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
+	doubleValue, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doubleValue' field"))
 	}
-	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doubleValueErr != nil {
-		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetFaultParameterFaultExtendedParametersEntryDouble")
-	}
-	doubleValue := _doubleValue.(BACnetApplicationTagDouble)
-	if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doubleValue")
-	}
+	m.DoubleValue = doubleValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryDouble"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryDouble")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultExtendedParametersEntryDouble{
-		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
-		DoubleValue: doubleValue,
-	}
-	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) SerializeWithW
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryDouble")
 		}
 
-		// Simple Field (doubleValue)
-		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doubleValue")
-		}
-		_doubleValueErr := writeBuffer.WriteSerializable(ctx, m.GetDoubleValue())
-		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doubleValue")
-		}
-		if _doubleValueErr != nil {
-			return errors.Wrap(_doubleValueErr, "Error serializing 'doubleValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", m.GetDoubleValue(), WriteComplex[BACnetApplicationTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doubleValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryDouble"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) SerializeWithW
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) isBACnetFaultParameterFaultExtendedParametersEntryDouble() bool {
-	return true
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) IsBACnetFaultParameterFaultExtendedParametersEntryDouble() {
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) String() string {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SALDataAccessControl interface {
 	SALData
 	// GetAccessControlData returns AccessControlData (property field)
 	GetAccessControlData() AccessControlData
-}
-
-// SALDataAccessControlExactly can be used when we want exactly this type and not a type which fulfills SALDataAccessControl.
-// This is useful for switch cases.
-type SALDataAccessControlExactly interface {
-	SALDataAccessControl
-	isSALDataAccessControl() bool
+	// IsSALDataAccessControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataAccessControl()
 }
 
 // _SALDataAccessControl is the data-structure of this message
 type _SALDataAccessControl struct {
-	*_SALData
+	SALDataContract
 	AccessControlData AccessControlData
 }
+
+var _ SALDataAccessControl = (*_SALDataAccessControl)(nil)
+var _ SALDataRequirements = (*_SALDataAccessControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_SALDataAccessControl) GetApplicationId() ApplicationId {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataAccessControl) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataAccessControl) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataAccessControl) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_SALDataAccessControl) GetAccessControlData() AccessControlData {
 
 // NewSALDataAccessControl factory function for _SALDataAccessControl
 func NewSALDataAccessControl(accessControlData AccessControlData, salData SALData) *_SALDataAccessControl {
-	_result := &_SALDataAccessControl{
-		AccessControlData: accessControlData,
-		_SALData:          NewSALData(salData),
+	if accessControlData == nil {
+		panic("accessControlData of type AccessControlData for SALDataAccessControl must not be nil")
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result := &_SALDataAccessControl{
+		SALDataContract:   NewSALData(salData),
+		AccessControlData: accessControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_SALDataAccessControl) GetTypeName() string {
 }
 
 func (m *_SALDataAccessControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (accessControlData)
 	lengthInBits += m.AccessControlData.GetLengthInBits(ctx)
@@ -128,45 +127,28 @@ func (m *_SALDataAccessControl) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataAccessControlParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataAccessControl, error) {
-	return SALDataAccessControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataAccessControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAccessControl, error) {
+func (m *_SALDataAccessControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataAccessControl SALDataAccessControl, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataAccessControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataAccessControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessControlData)
-	if pullErr := readBuffer.PullContext("accessControlData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessControlData")
+	accessControlData, err := ReadSimpleField[AccessControlData](ctx, "accessControlData", ReadComplex[AccessControlData](AccessControlDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessControlData' field"))
 	}
-	_accessControlData, _accessControlDataErr := AccessControlDataParseWithBuffer(ctx, readBuffer)
-	if _accessControlDataErr != nil {
-		return nil, errors.Wrap(_accessControlDataErr, "Error parsing 'accessControlData' field of SALDataAccessControl")
-	}
-	accessControlData := _accessControlData.(AccessControlData)
-	if closeErr := readBuffer.CloseContext("accessControlData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessControlData")
-	}
+	m.AccessControlData = accessControlData
 
 	if closeErr := readBuffer.CloseContext("SALDataAccessControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataAccessControl")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataAccessControl{
-		_SALData:          &_SALData{},
-		AccessControlData: accessControlData,
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataAccessControl) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_SALDataAccessControl) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SALDataAccessControl")
 		}
 
-		// Simple Field (accessControlData)
-		if pushErr := writeBuffer.PushContext("accessControlData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessControlData")
-		}
-		_accessControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetAccessControlData())
-		if popErr := writeBuffer.PopContext("accessControlData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessControlData")
-		}
-		if _accessControlDataErr != nil {
-			return errors.Wrap(_accessControlDataErr, "Error serializing 'accessControlData' field")
+		if err := WriteSimpleField[AccessControlData](ctx, "accessControlData", m.GetAccessControlData(), WriteComplex[AccessControlData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataAccessControl"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_SALDataAccessControl) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataAccessControl) isSALDataAccessControl() bool {
-	return true
-}
+func (m *_SALDataAccessControl) IsSALDataAccessControl() {}
 
 func (m *_SALDataAccessControl) String() string {
 	if m == nil {

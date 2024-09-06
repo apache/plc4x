@@ -75,13 +75,13 @@ public class BACnetLiftCarCallListFloorList implements Message {
     writeBuffer.pushContext("BACnetLiftCarCallListFloorList");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (floorNumbers)
     writeComplexTypeArrayField("floorNumbers", floorNumbers, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLiftCarCallListFloorList");
   }
@@ -122,13 +122,13 @@ public class BACnetLiftCarCallListFloorList implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetApplicationTagUnsignedInteger> floorNumbers =
         readTerminatedArrayField(
             "floorNumbers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -141,7 +141,7 @@ public class BACnetLiftCarCallListFloorList implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetLiftCarCallListFloorList");

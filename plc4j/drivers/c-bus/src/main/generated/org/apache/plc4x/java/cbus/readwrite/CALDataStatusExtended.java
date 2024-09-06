@@ -114,15 +114,14 @@ public class CALDataStatusExtended extends CALData implements Message {
         "coding",
         "StatusCoding",
         coding,
-        new DataWriterEnumDefault<>(
-            StatusCoding::getValue, StatusCoding::name, writeByte(writeBuffer, 8)));
+        writeEnum(StatusCoding::getValue, StatusCoding::name, writeByte(writeBuffer, 8)));
 
     // Simple Field (application)
     writeSimpleEnumField(
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -205,14 +204,13 @@ public class CALDataStatusExtended extends CALData implements Message {
         readEnumField(
             "coding",
             "StatusCoding",
-            new DataReaderEnumDefault<>(StatusCoding::enumForValue, readByte(readBuffer, 8)));
+            readEnum(StatusCoding::enumForValue, readByte(readBuffer, 8)));
 
     ApplicationIdContainer application =
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short blockStart = readSimpleField("blockStart", readUnsignedShort(readBuffer, 8));
     byte numberOfStatusBytes =
@@ -235,14 +233,13 @@ public class CALDataStatusExtended extends CALData implements Message {
     List<StatusByte> statusBytes =
         readCountArrayField(
             "statusBytes",
-            new DataReaderComplexDefault<>(() -> StatusByte.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusByte.staticParse(readBuffer), readBuffer),
             numberOfStatusBytes);
 
     List<LevelInformation> levelInformation =
         readCountArrayField(
             "levelInformation",
-            new DataReaderComplexDefault<>(
-                () -> LevelInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LevelInformation.staticParse(readBuffer), readBuffer),
             numberOfLevelInformation);
 
     readBuffer.closeContext("CALDataStatusExtended");

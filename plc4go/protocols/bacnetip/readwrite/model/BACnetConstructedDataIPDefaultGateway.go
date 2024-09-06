@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataIPDefaultGateway interface {
 	GetIpDefaultGateway() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-}
-
-// BACnetConstructedDataIPDefaultGatewayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDefaultGateway.
-// This is useful for switch cases.
-type BACnetConstructedDataIPDefaultGatewayExactly interface {
-	BACnetConstructedDataIPDefaultGateway
-	isBACnetConstructedDataIPDefaultGateway() bool
+	// IsBACnetConstructedDataIPDefaultGateway is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPDefaultGateway()
 }
 
 // _BACnetConstructedDataIPDefaultGateway is the data-structure of this message
 type _BACnetConstructedDataIPDefaultGateway struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	IpDefaultGateway BACnetApplicationTagOctetString
 }
+
+var _ BACnetConstructedDataIPDefaultGateway = (*_BACnetConstructedDataIPDefaultGateway)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDefaultGateway)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataIPDefaultGateway) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataIPDefaultGateway) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataIPDefaultGateway) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataIPDefaultGateway factory function for _BACnetConstructedDataIPDefaultGateway
 func NewBACnetConstructedDataIPDefaultGateway(ipDefaultGateway BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDefaultGateway {
-	_result := &_BACnetConstructedDataIPDefaultGateway{
-		IpDefaultGateway:       ipDefaultGateway,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if ipDefaultGateway == nil {
+		panic("ipDefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPDefaultGateway must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataIPDefaultGateway{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpDefaultGateway:              ipDefaultGateway,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipDefaultGateway)
 	lengthInBits += m.IpDefaultGateway.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataIPDefaultGatewayParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDefaultGateway, error) {
-	return BACnetConstructedDataIPDefaultGatewayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataIPDefaultGatewayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDefaultGateway, error) {
+func (m *_BACnetConstructedDataIPDefaultGateway) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPDefaultGateway BACnetConstructedDataIPDefaultGateway, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDefaultGateway"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPDefaultGateway")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipDefaultGateway)
-	if pullErr := readBuffer.PullContext("ipDefaultGateway"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipDefaultGateway")
+	ipDefaultGateway, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipDefaultGateway", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDefaultGateway' field"))
 	}
-	_ipDefaultGateway, _ipDefaultGatewayErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipDefaultGatewayErr != nil {
-		return nil, errors.Wrap(_ipDefaultGatewayErr, "Error parsing 'ipDefaultGateway' field of BACnetConstructedDataIPDefaultGateway")
-	}
-	ipDefaultGateway := _ipDefaultGateway.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipDefaultGateway"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipDefaultGateway")
-	}
+	m.IpDefaultGateway = ipDefaultGateway
 
-	// Virtual field
-	_actualValue := ipDefaultGateway
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagOctetString](ctx, "actualValue", (*BACnetApplicationTagOctetString)(nil), ipDefaultGateway)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDefaultGateway"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPDefaultGateway")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataIPDefaultGateway{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		IpDefaultGateway: ipDefaultGateway,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataIPDefaultGateway) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataIPDefaultGateway) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPDefaultGateway")
 		}
 
-		// Simple Field (ipDefaultGateway)
-		if pushErr := writeBuffer.PushContext("ipDefaultGateway"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipDefaultGateway")
-		}
-		_ipDefaultGatewayErr := writeBuffer.WriteSerializable(ctx, m.GetIpDefaultGateway())
-		if popErr := writeBuffer.PopContext("ipDefaultGateway"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipDefaultGateway")
-		}
-		if _ipDefaultGatewayErr != nil {
-			return errors.Wrap(_ipDefaultGatewayErr, "Error serializing 'ipDefaultGateway' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "ipDefaultGateway", m.GetIpDefaultGateway(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipDefaultGateway' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataIPDefaultGateway) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataIPDefaultGateway) isBACnetConstructedDataIPDefaultGateway() bool {
-	return true
-}
+func (m *_BACnetConstructedDataIPDefaultGateway) IsBACnetConstructedDataIPDefaultGateway() {}
 
 func (m *_BACnetConstructedDataIPDefaultGateway) String() string {
 	if m == nil {

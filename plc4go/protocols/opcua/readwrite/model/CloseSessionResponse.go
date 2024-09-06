@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type CloseSessionResponse interface {
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
-}
-
-// CloseSessionResponseExactly can be used when we want exactly this type and not a type which fulfills CloseSessionResponse.
-// This is useful for switch cases.
-type CloseSessionResponseExactly interface {
-	CloseSessionResponse
-	isCloseSessionResponse() bool
+	// IsCloseSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCloseSessionResponse()
 }
 
 // _CloseSessionResponse is the data-structure of this message
 type _CloseSessionResponse struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader ExtensionObjectDefinition
 }
+
+var _ CloseSessionResponse = (*_CloseSessionResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_CloseSessionResponse) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CloseSessionResponse) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CloseSessionResponse) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CloseSessionResponse) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_CloseSessionResponse) GetResponseHeader() ExtensionObjectDefinition {
 
 // NewCloseSessionResponse factory function for _CloseSessionResponse
 func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSessionResponse {
-	_result := &_CloseSessionResponse{
-		ResponseHeader:             responseHeader,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CloseSessionResponse must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_CloseSessionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_CloseSessionResponse) GetTypeName() string {
 }
 
 func (m *_CloseSessionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -126,45 +127,28 @@ func (m *_CloseSessionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CloseSessionResponseParse(ctx context.Context, theBytes []byte, identifier string) (CloseSessionResponse, error) {
-	return CloseSessionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CloseSessionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CloseSessionResponse, error) {
+func (m *_CloseSessionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSessionResponse CloseSessionResponse, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CloseSessionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CloseSessionResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of CloseSessionResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
 	if closeErr := readBuffer.CloseContext("CloseSessionResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CloseSessionResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CloseSessionResponse{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CloseSessionResponse) Serialize() ([]byte, error) {
@@ -185,16 +169,8 @@ func (m *_CloseSessionResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for CloseSessionResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CloseSessionResponse"); popErr != nil {
@@ -202,12 +178,10 @@ func (m *_CloseSessionResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CloseSessionResponse) isCloseSessionResponse() bool {
-	return true
-}
+func (m *_CloseSessionResponse) IsCloseSessionResponse() {}
 
 func (m *_CloseSessionResponse) String() string {
 	if m == nil {

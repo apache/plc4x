@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,23 +41,21 @@ type BACnetConfirmedServiceRequestRequestKey interface {
 	BACnetConfirmedServiceRequest
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
-}
-
-// BACnetConfirmedServiceRequestRequestKeyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestRequestKey.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestRequestKeyExactly interface {
-	BACnetConfirmedServiceRequestRequestKey
-	isBACnetConfirmedServiceRequestRequestKey() bool
+	// IsBACnetConfirmedServiceRequestRequestKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestRequestKey()
 }
 
 // _BACnetConfirmedServiceRequestRequestKey is the data-structure of this message
 type _BACnetConfirmedServiceRequestRequestKey struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	BytesOfRemovedService []byte
 
 	// Arguments.
 	ServiceRequestPayloadLength uint32
 }
+
+var _ BACnetConfirmedServiceRequestRequestKey = (*_BACnetConfirmedServiceRequestRequestKey)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestRequestKey)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +71,8 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetServiceChoice() BACnetConf
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestRequestKey) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestRequestKey) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestRequestKey) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +92,10 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetBytesOfRemovedService() []
 // NewBACnetConfirmedServiceRequestRequestKey factory function for _BACnetConfirmedServiceRequestRequestKey
 func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRequestKey {
 	_result := &_BACnetConfirmedServiceRequestRequestKey{
-		BytesOfRemovedService:          bytesOfRemovedService,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		BytesOfRemovedService:                 bytesOfRemovedService,
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -118,7 +115,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
@@ -132,40 +129,28 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestRequestKeyParse(ctx context.Context, theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
-	return BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
+func (m *_BACnetConfirmedServiceRequestRequestKey) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestRequestKey BACnetConfirmedServiceRequestRequestKey, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRequestKey"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestRequestKey")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (bytesOfRemovedService)
-	numberOfBytesbytesOfRemovedService := int(serviceRequestPayloadLength)
-	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field of BACnetConfirmedServiceRequestRequestKey")
+
+	bytesOfRemovedService, err := readBuffer.ReadByteArray("bytesOfRemovedService", int(serviceRequestPayloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bytesOfRemovedService' field"))
 	}
+	m.BytesOfRemovedService = bytesOfRemovedService
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestRequestKey"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestRequestKey")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestRequestKey{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		BytesOfRemovedService: bytesOfRemovedService,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestRequestKey) Serialize() ([]byte, error) {
@@ -186,9 +171,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestRequestKey")
 		}
 
-		// Array Field (bytesOfRemovedService)
-		// Byte Array field (bytesOfRemovedService)
-		if err := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService()); err != nil {
+		if err := WriteByteArrayField(ctx, "bytesOfRemovedService", m.GetBytesOfRemovedService(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'bytesOfRemovedService' field")
 		}
 
@@ -197,7 +180,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) SerializeWithWriteBuffer(ctx 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -210,9 +193,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetServiceRequestPayloadLengt
 //
 ////
 
-func (m *_BACnetConfirmedServiceRequestRequestKey) isBACnetConfirmedServiceRequestRequestKey() bool {
-	return true
-}
+func (m *_BACnetConfirmedServiceRequestRequestKey) IsBACnetConfirmedServiceRequestRequestKey() {}
 
 func (m *_BACnetConfirmedServiceRequestRequestKey) String() string {
 	if m == nil {

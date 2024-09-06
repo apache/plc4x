@@ -20,27 +20,15 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 public class ManualProfinetIoDiscoveryTest {
 
     public static void main(String[] args) throws Exception {
         final PlcDriver profinetDriver = new DefaultPlcDriverManager().getDriver("profinet");
-        final PlcDiscoveryResponse plcDiscoveryResponse = profinetDriver.discoveryRequestBuilder().build().execute().get();
-        // As we can reach some devices from multiple network devices, aggregate them by connection url
-        Map<String, PlcDiscoveryItem> items = new TreeMap<>();
-        for (PlcDiscoveryItem responseValue : plcDiscoveryResponse.getValues()) {
-            items.put(responseValue.getConnectionUrl(), responseValue);
-        }
-        // Output the aggregated values.
-        for (Map.Entry<String, PlcDiscoveryItem> stringPlcDiscoveryItemEntry : items.entrySet()) {
-            PlcDiscoveryItem responseValue = stringPlcDiscoveryItemEntry.getValue();
-            System.out.println(responseValue.getName() + ":  " + responseValue.getConnectionUrl());
-        }
+        profinetDriver.discoveryRequestBuilder()
+            .build()
+            .executeWithHandler(discoveryItem -> System.out.println("Found new device: " + discoveryItem.getConnectionUrl() + " (" + discoveryItem.getName() + ")"))
+            .get();
     }
 
 }

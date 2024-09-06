@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type GetEndpointsRequest interface {
 	GetNoOfProfileUris() int32
 	// GetProfileUris returns ProfileUris (property field)
 	GetProfileUris() []PascalString
-}
-
-// GetEndpointsRequestExactly can be used when we want exactly this type and not a type which fulfills GetEndpointsRequest.
-// This is useful for switch cases.
-type GetEndpointsRequestExactly interface {
-	GetEndpointsRequest
-	isGetEndpointsRequest() bool
+	// IsGetEndpointsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGetEndpointsRequest()
 }
 
 // _GetEndpointsRequest is the data-structure of this message
 type _GetEndpointsRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader   ExtensionObjectDefinition
 	EndpointUrl     PascalString
 	NoOfLocaleIds   int32
@@ -68,6 +65,9 @@ type _GetEndpointsRequest struct {
 	NoOfProfileUris int32
 	ProfileUris     []PascalString
 }
+
+var _ GetEndpointsRequest = (*_GetEndpointsRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_GetEndpointsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,10 +83,8 @@ func (m *_GetEndpointsRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_GetEndpointsRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_GetEndpointsRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_GetEndpointsRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,16 +123,22 @@ func (m *_GetEndpointsRequest) GetProfileUris() []PascalString {
 
 // NewGetEndpointsRequest factory function for _GetEndpointsRequest
 func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) *_GetEndpointsRequest {
-	_result := &_GetEndpointsRequest{
-		RequestHeader:              requestHeader,
-		EndpointUrl:                endpointUrl,
-		NoOfLocaleIds:              noOfLocaleIds,
-		LocaleIds:                  localeIds,
-		NoOfProfileUris:            noOfProfileUris,
-		ProfileUris:                profileUris,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for GetEndpointsRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for GetEndpointsRequest must not be nil")
+	}
+	_result := &_GetEndpointsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		EndpointUrl:                       endpointUrl,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		NoOfProfileUris:                   noOfProfileUris,
+		ProfileUris:                       profileUris,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -154,7 +158,7 @@ func (m *_GetEndpointsRequest) GetTypeName() string {
 }
 
 func (m *_GetEndpointsRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -195,131 +199,58 @@ func (m *_GetEndpointsRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func GetEndpointsRequestParse(ctx context.Context, theBytes []byte, identifier string) (GetEndpointsRequest, error) {
-	return GetEndpointsRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func GetEndpointsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (GetEndpointsRequest, error) {
+func (m *_GetEndpointsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__getEndpointsRequest GetEndpointsRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GetEndpointsRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GetEndpointsRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of GetEndpointsRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (endpointUrl)
-	if pullErr := readBuffer.PullContext("endpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrl")
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
-	_endpointUrl, _endpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointUrlErr != nil {
-		return nil, errors.Wrap(_endpointUrlErr, "Error parsing 'endpointUrl' field of GetEndpointsRequest")
-	}
-	endpointUrl := _endpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrl")
-	}
+	m.EndpointUrl = endpointUrl
 
-	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
-	if _noOfLocaleIdsErr != nil {
-		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of GetEndpointsRequest")
+	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	noOfLocaleIds := _noOfLocaleIds
+	m.NoOfLocaleIds = noOfLocaleIds
 
-	// Array field (localeIds)
-	if pullErr := readBuffer.PullContext("localeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
+	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeIds' field"))
 	}
-	// Count array
-	localeIds := make([]PascalString, max(noOfLocaleIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(localeIds) == 0 {
-		localeIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfLocaleIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'localeIds' field of GetEndpointsRequest")
-			}
-			localeIds[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("localeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localeIds")
-	}
+	m.LocaleIds = localeIds
 
-	// Simple Field (noOfProfileUris)
-	_noOfProfileUris, _noOfProfileUrisErr := readBuffer.ReadInt32("noOfProfileUris", 32)
-	if _noOfProfileUrisErr != nil {
-		return nil, errors.Wrap(_noOfProfileUrisErr, "Error parsing 'noOfProfileUris' field of GetEndpointsRequest")
+	noOfProfileUris, err := ReadSimpleField(ctx, "noOfProfileUris", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfProfileUris' field"))
 	}
-	noOfProfileUris := _noOfProfileUris
+	m.NoOfProfileUris = noOfProfileUris
 
-	// Array field (profileUris)
-	if pullErr := readBuffer.PullContext("profileUris", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for profileUris")
+	profileUris, err := ReadCountArrayField[PascalString](ctx, "profileUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfProfileUris))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'profileUris' field"))
 	}
-	// Count array
-	profileUris := make([]PascalString, max(noOfProfileUris, 0))
-	// This happens when the size is set conditional to 0
-	if len(profileUris) == 0 {
-		profileUris = nil
-	}
-	{
-		_numItems := uint16(max(noOfProfileUris, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'profileUris' field of GetEndpointsRequest")
-			}
-			profileUris[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("profileUris", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for profileUris")
-	}
+	m.ProfileUris = profileUris
 
 	if closeErr := readBuffer.CloseContext("GetEndpointsRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for GetEndpointsRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_GetEndpointsRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		EndpointUrl:                endpointUrl,
-		NoOfLocaleIds:              noOfLocaleIds,
-		LocaleIds:                  localeIds,
-		NoOfProfileUris:            noOfProfileUris,
-		ProfileUris:                profileUris,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_GetEndpointsRequest) Serialize() ([]byte, error) {
@@ -340,76 +271,28 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for GetEndpointsRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (noOfLocaleIds)
-		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
-		if _noOfLocaleIdsErr != nil {
-			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
-		// Array Field (localeIds)
-		if pushErr := writeBuffer.PushContext("localeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localeIds")
-		}
-		for _curItem, _element := range m.GetLocaleIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLocaleIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'localeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("localeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localeIds")
+		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
 
-		// Simple Field (noOfProfileUris)
-		noOfProfileUris := int32(m.GetNoOfProfileUris())
-		_noOfProfileUrisErr := writeBuffer.WriteInt32("noOfProfileUris", 32, int32((noOfProfileUris)))
-		if _noOfProfileUrisErr != nil {
-			return errors.Wrap(_noOfProfileUrisErr, "Error serializing 'noOfProfileUris' field")
+		if err := WriteSimpleField[int32](ctx, "noOfProfileUris", m.GetNoOfProfileUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfProfileUris' field")
 		}
 
-		// Array Field (profileUris)
-		if pushErr := writeBuffer.PushContext("profileUris", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for profileUris")
-		}
-		for _curItem, _element := range m.GetProfileUris() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetProfileUris()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'profileUris' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("profileUris", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for profileUris")
+		if err := WriteComplexTypeArrayField(ctx, "profileUris", m.GetProfileUris(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'profileUris' field")
 		}
 
 		if popErr := writeBuffer.PopContext("GetEndpointsRequest"); popErr != nil {
@@ -417,12 +300,10 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_GetEndpointsRequest) isGetEndpointsRequest() bool {
-	return true
-}
+func (m *_GetEndpointsRequest) IsGetEndpointsRequest() {}
 
 func (m *_GetEndpointsRequest) String() string {
 	if m == nil {

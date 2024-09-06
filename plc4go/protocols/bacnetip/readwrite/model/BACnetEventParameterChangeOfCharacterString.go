@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type BACnetEventParameterChangeOfCharacterString interface {
 	GetListOfAlarmValues() BACnetEventParameterChangeOfCharacterStringListOfAlarmValues
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetEventParameterChangeOfCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfCharacterString.
-// This is useful for switch cases.
-type BACnetEventParameterChangeOfCharacterStringExactly interface {
-	BACnetEventParameterChangeOfCharacterString
-	isBACnetEventParameterChangeOfCharacterString() bool
+	// IsBACnetEventParameterChangeOfCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfCharacterString()
 }
 
 // _BACnetEventParameterChangeOfCharacterString is the data-structure of this message
 type _BACnetEventParameterChangeOfCharacterString struct {
-	*_BACnetEventParameter
+	BACnetEventParameterContract
 	OpeningTag        BACnetOpeningTag
 	TimeDelay         BACnetContextTagUnsignedInteger
 	ListOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues
 	ClosingTag        BACnetClosingTag
 }
+
+var _ BACnetEventParameterChangeOfCharacterString = (*_BACnetEventParameterChangeOfCharacterString)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfCharacterString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,12 +73,8 @@ type _BACnetEventParameterChangeOfCharacterString struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetEventParameterChangeOfCharacterString) InitializeParent(parent BACnetEventParameter, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetEventParameterChangeOfCharacterString) GetParent() BACnetEventParameter {
-	return m._BACnetEventParameter
+func (m *_BACnetEventParameterChangeOfCharacterString) GetParent() BACnetEventParameterContract {
+	return m.BACnetEventParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,14 +105,26 @@ func (m *_BACnetEventParameterChangeOfCharacterString) GetClosingTag() BACnetClo
 
 // NewBACnetEventParameterChangeOfCharacterString factory function for _BACnetEventParameterChangeOfCharacterString
 func NewBACnetEventParameterChangeOfCharacterString(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfCharacterString {
-	_result := &_BACnetEventParameterChangeOfCharacterString{
-		OpeningTag:            openingTag,
-		TimeDelay:             timeDelay,
-		ListOfAlarmValues:     listOfAlarmValues,
-		ClosingTag:            closingTag,
-		_BACnetEventParameter: NewBACnetEventParameter(peekedTagHeader),
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfCharacterString must not be nil")
 	}
-	_result._BACnetEventParameter._BACnetEventParameterChildRequirements = _result
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfCharacterString must not be nil")
+	}
+	if listOfAlarmValues == nil {
+		panic("listOfAlarmValues of type BACnetEventParameterChangeOfCharacterStringListOfAlarmValues for BACnetEventParameterChangeOfCharacterString must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfCharacterString must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfCharacterString{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		ListOfAlarmValues:            listOfAlarmValues,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 
@@ -136,7 +144,7 @@ func (m *_BACnetEventParameterChangeOfCharacterString) GetTypeName() string {
 }
 
 func (m *_BACnetEventParameterChangeOfCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -157,87 +165,46 @@ func (m *_BACnetEventParameterChangeOfCharacterString) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfCharacterStringParse(ctx context.Context, theBytes []byte) (BACnetEventParameterChangeOfCharacterString, error) {
-	return BACnetEventParameterChangeOfCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetEventParameterChangeOfCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfCharacterString, error) {
+func (m *_BACnetEventParameterChangeOfCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterChangeOfCharacterString BACnetEventParameterChangeOfCharacterString, err error) {
+	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfCharacterString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfCharacterString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(17))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(17)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfCharacterString")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (timeDelay)
-	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
+	timeDelay, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDelay' field"))
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfCharacterString")
-	}
-	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
-	}
+	m.TimeDelay = timeDelay
 
-	// Simple Field (listOfAlarmValues)
-	if pullErr := readBuffer.PullContext("listOfAlarmValues"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfAlarmValues")
+	listOfAlarmValues, err := ReadSimpleField[BACnetEventParameterChangeOfCharacterStringListOfAlarmValues](ctx, "listOfAlarmValues", ReadComplex[BACnetEventParameterChangeOfCharacterStringListOfAlarmValues](BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfAlarmValues' field"))
 	}
-	_listOfAlarmValues, _listOfAlarmValuesErr := BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _listOfAlarmValuesErr != nil {
-		return nil, errors.Wrap(_listOfAlarmValuesErr, "Error parsing 'listOfAlarmValues' field of BACnetEventParameterChangeOfCharacterString")
-	}
-	listOfAlarmValues := _listOfAlarmValues.(BACnetEventParameterChangeOfCharacterStringListOfAlarmValues)
-	if closeErr := readBuffer.CloseContext("listOfAlarmValues"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfAlarmValues")
-	}
+	m.ListOfAlarmValues = listOfAlarmValues
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(17))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(17)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfCharacterString")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfCharacterString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfCharacterString")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetEventParameterChangeOfCharacterString{
-		_BACnetEventParameter: &_BACnetEventParameter{},
-		OpeningTag:            openingTag,
-		TimeDelay:             timeDelay,
-		ListOfAlarmValues:     listOfAlarmValues,
-		ClosingTag:            closingTag,
-	}
-	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetEventParameterChangeOfCharacterString) Serialize() ([]byte, error) {
@@ -258,52 +225,20 @@ func (m *_BACnetEventParameterChangeOfCharacterString) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfCharacterString")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (timeDelay)
-		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelay")
-		}
-		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
-		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelay")
-		}
-		if _timeDelayErr != nil {
-			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", m.GetTimeDelay(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelay' field")
 		}
 
-		// Simple Field (listOfAlarmValues)
-		if pushErr := writeBuffer.PushContext("listOfAlarmValues"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfAlarmValues")
-		}
-		_listOfAlarmValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfAlarmValues())
-		if popErr := writeBuffer.PopContext("listOfAlarmValues"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfAlarmValues")
-		}
-		if _listOfAlarmValuesErr != nil {
-			return errors.Wrap(_listOfAlarmValuesErr, "Error serializing 'listOfAlarmValues' field")
+		if err := WriteSimpleField[BACnetEventParameterChangeOfCharacterStringListOfAlarmValues](ctx, "listOfAlarmValues", m.GetListOfAlarmValues(), WriteComplex[BACnetEventParameterChangeOfCharacterStringListOfAlarmValues](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfAlarmValues' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfCharacterString"); popErr != nil {
@@ -311,11 +246,10 @@ func (m *_BACnetEventParameterChangeOfCharacterString) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetEventParameterContract.(*_BACnetEventParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterString) isBACnetEventParameterChangeOfCharacterString() bool {
-	return true
+func (m *_BACnetEventParameterChangeOfCharacterString) IsBACnetEventParameterChangeOfCharacterString() {
 }
 
 func (m *_BACnetEventParameterChangeOfCharacterString) String() string {

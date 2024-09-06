@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDescriptionOfHalt interface {
 	GetDescriptionForHalt() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataDescriptionOfHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDescriptionOfHalt.
-// This is useful for switch cases.
-type BACnetConstructedDataDescriptionOfHaltExactly interface {
-	BACnetConstructedDataDescriptionOfHalt
-	isBACnetConstructedDataDescriptionOfHalt() bool
+	// IsBACnetConstructedDataDescriptionOfHalt is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDescriptionOfHalt()
 }
 
 // _BACnetConstructedDataDescriptionOfHalt is the data-structure of this message
 type _BACnetConstructedDataDescriptionOfHalt struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DescriptionForHalt BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataDescriptionOfHalt = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDescriptionOfHalt) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDescriptionOfHalt) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDescriptionOfHalt) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataDescriptionOfHalt factory function for _BACnetConstructedDataDescriptionOfHalt
 func NewBACnetConstructedDataDescriptionOfHalt(descriptionForHalt BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescriptionOfHalt {
-	_result := &_BACnetConstructedDataDescriptionOfHalt{
-		DescriptionForHalt:     descriptionForHalt,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if descriptionForHalt == nil {
+		panic("descriptionForHalt of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescriptionOfHalt must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDescriptionOfHalt{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DescriptionForHalt:            descriptionForHalt,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDescriptionOfHalt) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (descriptionForHalt)
 	lengthInBits += m.DescriptionForHalt.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDescriptionOfHaltParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDescriptionOfHalt, error) {
-	return BACnetConstructedDataDescriptionOfHaltParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDescriptionOfHaltParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDescriptionOfHalt, error) {
+func (m *_BACnetConstructedDataDescriptionOfHalt) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDescriptionOfHalt BACnetConstructedDataDescriptionOfHalt, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDescriptionOfHalt"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDescriptionOfHalt")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (descriptionForHalt)
-	if pullErr := readBuffer.PullContext("descriptionForHalt"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for descriptionForHalt")
+	descriptionForHalt, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "descriptionForHalt", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'descriptionForHalt' field"))
 	}
-	_descriptionForHalt, _descriptionForHaltErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _descriptionForHaltErr != nil {
-		return nil, errors.Wrap(_descriptionForHaltErr, "Error parsing 'descriptionForHalt' field of BACnetConstructedDataDescriptionOfHalt")
-	}
-	descriptionForHalt := _descriptionForHalt.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("descriptionForHalt"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for descriptionForHalt")
-	}
+	m.DescriptionForHalt = descriptionForHalt
 
-	// Virtual field
-	_actualValue := descriptionForHalt
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), descriptionForHalt)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDescriptionOfHalt"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDescriptionOfHalt")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDescriptionOfHalt{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DescriptionForHalt: descriptionForHalt,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDescriptionOfHalt) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDescriptionOfHalt")
 		}
 
-		// Simple Field (descriptionForHalt)
-		if pushErr := writeBuffer.PushContext("descriptionForHalt"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for descriptionForHalt")
-		}
-		_descriptionForHaltErr := writeBuffer.WriteSerializable(ctx, m.GetDescriptionForHalt())
-		if popErr := writeBuffer.PopContext("descriptionForHalt"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for descriptionForHalt")
-		}
-		if _descriptionForHaltErr != nil {
-			return errors.Wrap(_descriptionForHaltErr, "Error serializing 'descriptionForHalt' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "descriptionForHalt", m.GetDescriptionForHalt(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'descriptionForHalt' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDescriptionOfHalt) isBACnetConstructedDataDescriptionOfHalt() bool {
-	return true
-}
+func (m *_BACnetConstructedDataDescriptionOfHalt) IsBACnetConstructedDataDescriptionOfHalt() {}
 
 func (m *_BACnetConstructedDataDescriptionOfHalt) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetHostNPortEnclosed interface {
 	GetBacnetHostNPort() BACnetHostNPort
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetHostNPortEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetHostNPortEnclosed.
-// This is useful for switch cases.
-type BACnetHostNPortEnclosedExactly interface {
-	BACnetHostNPortEnclosed
-	isBACnetHostNPortEnclosed() bool
+	// IsBACnetHostNPortEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetHostNPortEnclosed()
 }
 
 // _BACnetHostNPortEnclosed is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetHostNPortEnclosed struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetHostNPortEnclosed = (*_BACnetHostNPortEnclosed)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,15 @@ func (m *_BACnetHostNPortEnclosed) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetHostNPortEnclosed factory function for _BACnetHostNPortEnclosed
 func NewBACnetHostNPortEnclosed(openingTag BACnetOpeningTag, bacnetHostNPort BACnetHostNPort, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetHostNPortEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetHostNPortEnclosed must not be nil")
+	}
+	if bacnetHostNPort == nil {
+		panic("bacnetHostNPort of type BACnetHostNPort for BACnetHostNPortEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetHostNPortEnclosed must not be nil")
+	}
 	return &_BACnetHostNPortEnclosed{OpeningTag: openingTag, BacnetHostNPort: bacnetHostNPort, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -126,67 +134,52 @@ func BACnetHostNPortEnclosedParse(ctx context.Context, theBytes []byte, tagNumbe
 	return BACnetHostNPortEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetHostNPortEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPortEnclosed, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPortEnclosed, error) {
+		return BACnetHostNPortEnclosedParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetHostNPortEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetHostNPortEnclosed, error) {
+	v, err := (&_BACnetHostNPortEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetHostNPortEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetHostNPortEnclosed BACnetHostNPortEnclosed, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetHostNPortEnclosed"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetHostNPortEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetHostNPortEnclosed")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (bacnetHostNPort)
-	if pullErr := readBuffer.PullContext("bacnetHostNPort"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bacnetHostNPort")
+	bacnetHostNPort, err := ReadSimpleField[BACnetHostNPort](ctx, "bacnetHostNPort", ReadComplex[BACnetHostNPort](BACnetHostNPortParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetHostNPort' field"))
 	}
-	_bacnetHostNPort, _bacnetHostNPortErr := BACnetHostNPortParseWithBuffer(ctx, readBuffer)
-	if _bacnetHostNPortErr != nil {
-		return nil, errors.Wrap(_bacnetHostNPortErr, "Error parsing 'bacnetHostNPort' field of BACnetHostNPortEnclosed")
-	}
-	bacnetHostNPort := _bacnetHostNPort.(BACnetHostNPort)
-	if closeErr := readBuffer.CloseContext("bacnetHostNPort"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bacnetHostNPort")
-	}
+	m.BacnetHostNPort = bacnetHostNPort
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetHostNPortEnclosed")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetHostNPortEnclosed"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetHostNPortEnclosed")
 	}
 
-	// Create the instance
-	return &_BACnetHostNPortEnclosed{
-		TagNumber:       tagNumber,
-		OpeningTag:      openingTag,
-		BacnetHostNPort: bacnetHostNPort,
-		ClosingTag:      closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetHostNPortEnclosed) Serialize() ([]byte, error) {
@@ -206,40 +199,16 @@ func (m *_BACnetHostNPortEnclosed) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetHostNPortEnclosed")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (bacnetHostNPort)
-	if pushErr := writeBuffer.PushContext("bacnetHostNPort"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for bacnetHostNPort")
-	}
-	_bacnetHostNPortErr := writeBuffer.WriteSerializable(ctx, m.GetBacnetHostNPort())
-	if popErr := writeBuffer.PopContext("bacnetHostNPort"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for bacnetHostNPort")
-	}
-	if _bacnetHostNPortErr != nil {
-		return errors.Wrap(_bacnetHostNPortErr, "Error serializing 'bacnetHostNPort' field")
+	if err := WriteSimpleField[BACnetHostNPort](ctx, "bacnetHostNPort", m.GetBacnetHostNPort(), WriteComplex[BACnetHostNPort](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'bacnetHostNPort' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetHostNPortEnclosed"); popErr != nil {
@@ -258,9 +227,7 @@ func (m *_BACnetHostNPortEnclosed) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetHostNPortEnclosed) isBACnetHostNPortEnclosed() bool {
-	return true
-}
+func (m *_BACnetHostNPortEnclosed) IsBACnetHostNPortEnclosed() {}
 
 func (m *_BACnetHostNPortEnclosed) String() string {
 	if m == nil {

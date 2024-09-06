@@ -61,8 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryCharacterString
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString");
 
     // Simple Field (characterStringValue)
-    writeSimpleField(
-        "characterStringValue", characterStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("characterStringValue", characterStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString");
   }
@@ -94,7 +93,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryCharacterString
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(
             "characterStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

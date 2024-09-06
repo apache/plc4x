@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPriorityValueDate interface {
 	BACnetPriorityValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
-}
-
-// BACnetPriorityValueDateExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueDate.
-// This is useful for switch cases.
-type BACnetPriorityValueDateExactly interface {
-	BACnetPriorityValueDate
-	isBACnetPriorityValueDate() bool
+	// IsBACnetPriorityValueDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueDate()
 }
 
 // _BACnetPriorityValueDate is the data-structure of this message
 type _BACnetPriorityValueDate struct {
-	*_BACnetPriorityValue
+	BACnetPriorityValueContract
 	DateValue BACnetApplicationTagDate
 }
+
+var _ BACnetPriorityValueDate = (*_BACnetPriorityValueDate)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueDate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPriorityValueDate struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPriorityValueDate) InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPriorityValueDate) GetParent() BACnetPriorityValue {
-	return m._BACnetPriorityValue
+func (m *_BACnetPriorityValueDate) GetParent() BACnetPriorityValueContract {
+	return m.BACnetPriorityValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPriorityValueDate) GetDateValue() BACnetApplicationTagDate {
 
 // NewBACnetPriorityValueDate factory function for _BACnetPriorityValueDate
 func NewBACnetPriorityValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDate {
-	_result := &_BACnetPriorityValueDate{
-		DateValue:            dateValue,
-		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetPriorityValueDate must not be nil")
 	}
-	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result
+	_result := &_BACnetPriorityValueDate{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		DateValue:                   dateValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPriorityValueDate) GetTypeName() string {
 }
 
 func (m *_BACnetPriorityValueDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (dateValue)
 	lengthInBits += m.DateValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetPriorityValueDate) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueDateParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDate, error) {
-	return BACnetPriorityValueDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetPriorityValueDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDate, error) {
+func (m *_BACnetPriorityValueDate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueDate BACnetPriorityValueDate, err error) {
+	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dateValue)
-	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
+	dateValue, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "dateValue", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateValue' field"))
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetPriorityValueDate")
-	}
-	dateValue := _dateValue.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateValue")
-	}
+	m.DateValue = dateValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueDate")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPriorityValueDate{
-		_BACnetPriorityValue: &_BACnetPriorityValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		DateValue: dateValue,
-	}
-	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPriorityValueDate) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetPriorityValueDate) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueDate")
 		}
 
-		// Simple Field (dateValue)
-		if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dateValue")
-		}
-		_dateValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateValue())
-		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dateValue")
-		}
-		if _dateValueErr != nil {
-			return errors.Wrap(_dateValueErr, "Error serializing 'dateValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "dateValue", m.GetDateValue(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dateValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueDate"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetPriorityValueDate) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPriorityValueContract.(*_BACnetPriorityValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPriorityValueDate) isBACnetPriorityValueDate() bool {
-	return true
-}
+func (m *_BACnetPriorityValueDate) IsBACnetPriorityValueDate() {}
 
 func (m *_BACnetPriorityValueDate) String() string {
 	if m == nil {

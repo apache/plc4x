@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesBoolean interface {
 	BACnetPropertyStates
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
-}
-
-// BACnetPropertyStatesBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBoolean.
-// This is useful for switch cases.
-type BACnetPropertyStatesBooleanExactly interface {
-	BACnetPropertyStatesBoolean
-	isBACnetPropertyStatesBoolean() bool
+	// IsBACnetPropertyStatesBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesBoolean()
 }
 
 // _BACnetPropertyStatesBoolean is the data-structure of this message
 type _BACnetPropertyStatesBoolean struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	BooleanValue BACnetContextTagBoolean
 }
+
+var _ BACnetPropertyStatesBoolean = (*_BACnetPropertyStatesBoolean)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBoolean)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesBoolean struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesBoolean) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesBoolean) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesBoolean) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesBoolean) GetBooleanValue() BACnetContextTagBoolean
 
 // NewBACnetPropertyStatesBoolean factory function for _BACnetPropertyStatesBoolean
 func NewBACnetPropertyStatesBoolean(booleanValue BACnetContextTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBoolean {
-	_result := &_BACnetPropertyStatesBoolean{
-		BooleanValue:          booleanValue,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetContextTagBoolean for BACnetPropertyStatesBoolean must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesBoolean{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BooleanValue:                 booleanValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesBoolean) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesBoolean) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (booleanValue)
 	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesBoolean) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesBooleanParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBoolean, error) {
-	return BACnetPropertyStatesBooleanParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBoolean, error) {
+func (m *_BACnetPropertyStatesBoolean) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesBoolean BACnetPropertyStatesBoolean, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBoolean"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesBoolean")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (booleanValue)
-	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
+	booleanValue, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "booleanValue", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'booleanValue' field"))
 	}
-	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _booleanValueErr != nil {
-		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetPropertyStatesBoolean")
-	}
-	booleanValue := _booleanValue.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for booleanValue")
-	}
+	m.BooleanValue = booleanValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesBoolean"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesBoolean")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesBoolean{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		BooleanValue:          booleanValue,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesBoolean) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesBoolean) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesBoolean")
 		}
 
-		// Simple Field (booleanValue)
-		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for booleanValue")
-		}
-		_booleanValueErr := writeBuffer.WriteSerializable(ctx, m.GetBooleanValue())
-		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for booleanValue")
-		}
-		if _booleanValueErr != nil {
-			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
+		if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "booleanValue", m.GetBooleanValue(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'booleanValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesBoolean"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesBoolean) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesBoolean) isBACnetPropertyStatesBoolean() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesBoolean) IsBACnetPropertyStatesBoolean() {}
 
 func (m *_BACnetPropertyStatesBoolean) String() string {
 	if m == nil {

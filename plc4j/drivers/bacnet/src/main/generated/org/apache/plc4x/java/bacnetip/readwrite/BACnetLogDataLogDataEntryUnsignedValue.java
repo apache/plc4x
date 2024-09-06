@@ -61,7 +61,7 @@ public class BACnetLogDataLogDataEntryUnsignedValue extends BACnetLogDataLogData
     writeBuffer.pushContext("BACnetLogDataLogDataEntryUnsignedValue");
 
     // Simple Field (unsignedValue)
-    writeSimpleField("unsignedValue", unsignedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryUnsignedValue");
   }
@@ -92,7 +92,7 @@ public class BACnetLogDataLogDataEntryUnsignedValue extends BACnetLogDataLogData
     BACnetContextTagUnsignedInteger unsignedValue =
         readSimpleField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

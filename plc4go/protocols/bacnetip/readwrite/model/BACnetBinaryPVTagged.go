@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetBinaryPVTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetBinaryPV
-}
-
-// BACnetBinaryPVTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetBinaryPVTagged.
-// This is useful for switch cases.
-type BACnetBinaryPVTaggedExactly interface {
-	BACnetBinaryPVTagged
-	isBACnetBinaryPVTagged() bool
+	// IsBACnetBinaryPVTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetBinaryPVTagged()
 }
 
 // _BACnetBinaryPVTagged is the data-structure of this message
@@ -58,6 +55,8 @@ type _BACnetBinaryPVTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetBinaryPVTagged = (*_BACnetBinaryPVTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,6 +78,9 @@ func (m *_BACnetBinaryPVTagged) GetValue() BACnetBinaryPV {
 
 // NewBACnetBinaryPVTagged factory function for _BACnetBinaryPVTagged
 func NewBACnetBinaryPVTagged(header BACnetTagHeader, value BACnetBinaryPV, tagNumber uint8, tagClass TagClass) *_BACnetBinaryPVTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetBinaryPVTagged must not be nil")
+	}
 	return &_BACnetBinaryPVTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -117,61 +119,56 @@ func BACnetBinaryPVTaggedParse(ctx context.Context, theBytes []byte, tagNumber u
 	return BACnetBinaryPVTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetBinaryPVTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBinaryPVTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBinaryPVTagged, error) {
+		return BACnetBinaryPVTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetBinaryPVTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
+	v, err := (&_BACnetBinaryPVTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetBinaryPVTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetBinaryPVTagged BACnetBinaryPVTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetBinaryPVTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetBinaryPVTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetBinaryPVTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetBinaryPV_INACTIVE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetBinaryPVTagged")
+	value, err := ReadManualField[BACnetBinaryPV](ctx, "value", readBuffer, EnsureType[BACnetBinaryPV](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetBinaryPV_INACTIVE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetBinaryPV
-	if _value != nil {
-		value = _value.(BACnetBinaryPV)
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetBinaryPVTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetBinaryPVTagged")
 	}
 
-	// Create the instance
-	return &_BACnetBinaryPVTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Value:     value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetBinaryPVTagged) Serialize() ([]byte, error) {
@@ -191,22 +188,12 @@ func (m *_BACnetBinaryPVTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetBinaryPVTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetBinaryPV](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetBinaryPVTagged"); popErr != nil {
@@ -228,9 +215,7 @@ func (m *_BACnetBinaryPVTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetBinaryPVTagged) isBACnetBinaryPVTagged() bool {
-	return true
-}
+func (m *_BACnetBinaryPVTagged) IsBACnetBinaryPVTagged() {}
 
 func (m *_BACnetBinaryPVTagged) String() string {
 	if m == nil {

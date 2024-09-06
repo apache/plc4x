@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,9 +35,17 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteria is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteria
 type BACnetEventParameterChangeOfValueCivCriteria interface {
+	BACnetEventParameterChangeOfValueCivCriteriaContract
+	BACnetEventParameterChangeOfValueCivCriteriaRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetEventParameterChangeOfValueCivCriteria is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfValueCivCriteria()
+}
+
+// BACnetEventParameterChangeOfValueCivCriteriaContract provides a set of functions which can be overwritten by a sub struct
+type BACnetEventParameterChangeOfValueCivCriteriaContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -44,18 +54,23 @@ type BACnetEventParameterChangeOfValueCivCriteria interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// GetTagNumber() returns a parser argument
+	GetTagNumber() uint8
+	// IsBACnetEventParameterChangeOfValueCivCriteria is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfValueCivCriteria()
 }
 
-// BACnetEventParameterChangeOfValueCivCriteriaExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteria.
-// This is useful for switch cases.
-type BACnetEventParameterChangeOfValueCivCriteriaExactly interface {
-	BACnetEventParameterChangeOfValueCivCriteria
-	isBACnetEventParameterChangeOfValueCivCriteria() bool
+// BACnetEventParameterChangeOfValueCivCriteriaRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetEventParameterChangeOfValueCivCriteriaRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteria is the data-structure of this message
 type _BACnetEventParameterChangeOfValueCivCriteria struct {
-	_BACnetEventParameterChangeOfValueCivCriteriaChildRequirements
+	_SubType        BACnetEventParameterChangeOfValueCivCriteria
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -64,25 +79,7 @@ type _BACnetEventParameterChangeOfValueCivCriteria struct {
 	TagNumber uint8
 }
 
-type _BACnetEventParameterChangeOfValueCivCriteriaChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetEventParameterChangeOfValueCivCriteriaParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetEventParameterChangeOfValueCivCriteria, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetEventParameterChangeOfValueCivCriteriaChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetEventParameterChangeOfValueCivCriteria, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
-	GetParent() *BACnetEventParameterChangeOfValueCivCriteria
-
-	GetTypeName() string
-	BACnetEventParameterChangeOfValueCivCriteria
-}
+var _ BACnetEventParameterChangeOfValueCivCriteriaContract = (*_BACnetEventParameterChangeOfValueCivCriteria)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +107,8 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetClosingTag() BACnetCl
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetEventParameterChangeOfValueCivCriteria) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -123,6 +121,15 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetPeekedTagNumber() uin
 
 // NewBACnetEventParameterChangeOfValueCivCriteria factory function for _BACnetEventParameterChangeOfValueCivCriteria
 func NewBACnetEventParameterChangeOfValueCivCriteria(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteria {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
 	return &_BACnetEventParameterChangeOfValueCivCriteria{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -141,7 +148,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetTypeName() string {
 	return "BACnetEventParameterChangeOfValueCivCriteria"
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
@@ -156,95 +163,89 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetParentLengthInBits(ct
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfValueCivCriteriaParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {
-	return BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetEventParameterChangeOfValueCivCriteriaParse[T BACnetEventParameterChangeOfValueCivCriteria](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {
+	return BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {
+func BACnetEventParameterChangeOfValueCivCriteriaParseWithBufferProducer[T BACnetEventParameterChangeOfValueCivCriteria](tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer[T](ctx, readBuffer, tagNumber)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer[T BACnetEventParameterChangeOfValueCivCriteria](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
+	v, err := (&_BACnetEventParameterChangeOfValueCivCriteria{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterChangeOfValueCivCriteria BACnetEventParameterChangeOfValueCivCriteria, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteria"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfValueCivCriteria")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfValueCivCriteria")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement interface {
-		BACnetEventParameterChangeOfValueCivCriteria
-		InitializeParent(BACnetEventParameterChangeOfValueCivCriteria, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
-		GetParent() BACnetEventParameterChangeOfValueCivCriteria
-	}
-	var _childTemp any
-	var _child BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetEventParameterChangeOfValueCivCriteria
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfValueCivCriteriaBitmask
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetEventParameterChangeOfValueCivCriteriaBitmask{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfValueCivCriteriaBitmask for type-switch of BACnetEventParameterChangeOfValueCivCriteria")
+		}
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement for type-switch of BACnetEventParameterChangeOfValueCivCriteria")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetEventParameterChangeOfValueCivCriteria")
-	}
-	_child = _childTemp.(BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement)
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfValueCivCriteria")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfValueCivCriteria"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfValueCivCriteria")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, openingTag, peekedTagHeader, closingTag)
 	return _child, nil
 }
 
-func (pm *_BACnetEventParameterChangeOfValueCivCriteria) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetEventParameterChangeOfValueCivCriteria, serializeChildFunction func() error) error {
+func (pm *_BACnetEventParameterChangeOfValueCivCriteria) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetEventParameterChangeOfValueCivCriteria, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -256,16 +257,8 @@ func (pm *_BACnetEventParameterChangeOfValueCivCriteria) SerializeParent(ctx con
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfValueCivCriteria")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
 	peekedTagNumber := m.GetPeekedTagNumber()
@@ -279,16 +272,8 @@ func (pm *_BACnetEventParameterChangeOfValueCivCriteria) SerializeParent(ctx con
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfValueCivCriteria"); popErr != nil {
@@ -307,17 +292,5 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteria) isBACnetEventParameterChangeOfValueCivCriteria() bool {
-	return true
-}
-
-func (m *_BACnetEventParameterChangeOfValueCivCriteria) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) IsBACnetEventParameterChangeOfValueCivCriteria() {
 }

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type BrowsePathTarget interface {
 	GetTargetId() ExpandedNodeId
 	// GetRemainingPathIndex returns RemainingPathIndex (property field)
 	GetRemainingPathIndex() uint32
-}
-
-// BrowsePathTargetExactly can be used when we want exactly this type and not a type which fulfills BrowsePathTarget.
-// This is useful for switch cases.
-type BrowsePathTargetExactly interface {
-	BrowsePathTarget
-	isBrowsePathTarget() bool
+	// IsBrowsePathTarget is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBrowsePathTarget()
 }
 
 // _BrowsePathTarget is the data-structure of this message
 type _BrowsePathTarget struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	TargetId           ExpandedNodeId
 	RemainingPathIndex uint32
 }
+
+var _ BrowsePathTarget = (*_BrowsePathTarget)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_BrowsePathTarget)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_BrowsePathTarget) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BrowsePathTarget) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_BrowsePathTarget) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_BrowsePathTarget) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,15 @@ func (m *_BrowsePathTarget) GetRemainingPathIndex() uint32 {
 
 // NewBrowsePathTarget factory function for _BrowsePathTarget
 func NewBrowsePathTarget(targetId ExpandedNodeId, remainingPathIndex uint32) *_BrowsePathTarget {
-	_result := &_BrowsePathTarget{
-		TargetId:                   targetId,
-		RemainingPathIndex:         remainingPathIndex,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if targetId == nil {
+		panic("targetId of type ExpandedNodeId for BrowsePathTarget must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_BrowsePathTarget{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TargetId:                          targetId,
+		RemainingPathIndex:                remainingPathIndex,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +123,7 @@ func (m *_BrowsePathTarget) GetTypeName() string {
 }
 
 func (m *_BrowsePathTarget) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (targetId)
 	lengthInBits += m.TargetId.GetLengthInBits(ctx)
@@ -137,53 +138,34 @@ func (m *_BrowsePathTarget) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BrowsePathTargetParse(ctx context.Context, theBytes []byte, identifier string) (BrowsePathTarget, error) {
-	return BrowsePathTargetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func BrowsePathTargetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowsePathTarget, error) {
+func (m *_BrowsePathTarget) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browsePathTarget BrowsePathTarget, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BrowsePathTarget"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BrowsePathTarget")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (targetId)
-	if pullErr := readBuffer.PullContext("targetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetId")
+	targetId, err := ReadSimpleField[ExpandedNodeId](ctx, "targetId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetId' field"))
 	}
-	_targetId, _targetIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetIdErr != nil {
-		return nil, errors.Wrap(_targetIdErr, "Error parsing 'targetId' field of BrowsePathTarget")
-	}
-	targetId := _targetId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetId")
-	}
+	m.TargetId = targetId
 
-	// Simple Field (remainingPathIndex)
-	_remainingPathIndex, _remainingPathIndexErr := readBuffer.ReadUint32("remainingPathIndex", 32)
-	if _remainingPathIndexErr != nil {
-		return nil, errors.Wrap(_remainingPathIndexErr, "Error parsing 'remainingPathIndex' field of BrowsePathTarget")
+	remainingPathIndex, err := ReadSimpleField(ctx, "remainingPathIndex", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remainingPathIndex' field"))
 	}
-	remainingPathIndex := _remainingPathIndex
+	m.RemainingPathIndex = remainingPathIndex
 
 	if closeErr := readBuffer.CloseContext("BrowsePathTarget"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BrowsePathTarget")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BrowsePathTarget{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		TargetId:                   targetId,
-		RemainingPathIndex:         remainingPathIndex,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BrowsePathTarget) Serialize() ([]byte, error) {
@@ -204,23 +186,12 @@ func (m *_BrowsePathTarget) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for BrowsePathTarget")
 		}
 
-		// Simple Field (targetId)
-		if pushErr := writeBuffer.PushContext("targetId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetId")
-		}
-		_targetIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetId())
-		if popErr := writeBuffer.PopContext("targetId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetId")
-		}
-		if _targetIdErr != nil {
-			return errors.Wrap(_targetIdErr, "Error serializing 'targetId' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "targetId", m.GetTargetId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetId' field")
 		}
 
-		// Simple Field (remainingPathIndex)
-		remainingPathIndex := uint32(m.GetRemainingPathIndex())
-		_remainingPathIndexErr := writeBuffer.WriteUint32("remainingPathIndex", 32, uint32((remainingPathIndex)))
-		if _remainingPathIndexErr != nil {
-			return errors.Wrap(_remainingPathIndexErr, "Error serializing 'remainingPathIndex' field")
+		if err := WriteSimpleField[uint32](ctx, "remainingPathIndex", m.GetRemainingPathIndex(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'remainingPathIndex' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BrowsePathTarget"); popErr != nil {
@@ -228,12 +199,10 @@ func (m *_BrowsePathTarget) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BrowsePathTarget) isBrowsePathTarget() bool {
-	return true
-}
+func (m *_BrowsePathTarget) IsBrowsePathTarget() {}
 
 func (m *_BrowsePathTarget) String() string {
 	if m == nil {

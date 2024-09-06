@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type TransactionErrorType interface {
 	GetError() StatusCode
 	// GetMessage returns Message (property field)
 	GetMessage() LocalizedText
-}
-
-// TransactionErrorTypeExactly can be used when we want exactly this type and not a type which fulfills TransactionErrorType.
-// This is useful for switch cases.
-type TransactionErrorTypeExactly interface {
-	TransactionErrorType
-	isTransactionErrorType() bool
+	// IsTransactionErrorType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTransactionErrorType()
 }
 
 // _TransactionErrorType is the data-structure of this message
 type _TransactionErrorType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	TargetId NodeId
 	Error    StatusCode
 	Message  LocalizedText
 }
+
+var _ TransactionErrorType = (*_TransactionErrorType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_TransactionErrorType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_TransactionErrorType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TransactionErrorType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_TransactionErrorType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_TransactionErrorType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,22 @@ func (m *_TransactionErrorType) GetMessage() LocalizedText {
 
 // NewTransactionErrorType factory function for _TransactionErrorType
 func NewTransactionErrorType(targetId NodeId, error StatusCode, message LocalizedText) *_TransactionErrorType {
-	_result := &_TransactionErrorType{
-		TargetId:                   targetId,
-		Error:                      error,
-		Message:                    message,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if targetId == nil {
+		panic("targetId of type NodeId for TransactionErrorType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if error == nil {
+		panic("error of type StatusCode for TransactionErrorType must not be nil")
+	}
+	if message == nil {
+		panic("message of type LocalizedText for TransactionErrorType must not be nil")
+	}
+	_result := &_TransactionErrorType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TargetId:                          targetId,
+		Error:                             error,
+		Message:                           message,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +137,7 @@ func (m *_TransactionErrorType) GetTypeName() string {
 }
 
 func (m *_TransactionErrorType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (targetId)
 	lengthInBits += m.TargetId.GetLengthInBits(ctx)
@@ -148,73 +155,40 @@ func (m *_TransactionErrorType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TransactionErrorTypeParse(ctx context.Context, theBytes []byte, identifier string) (TransactionErrorType, error) {
-	return TransactionErrorTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func TransactionErrorTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TransactionErrorType, error) {
+func (m *_TransactionErrorType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__transactionErrorType TransactionErrorType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TransactionErrorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TransactionErrorType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (targetId)
-	if pullErr := readBuffer.PullContext("targetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetId")
+	targetId, err := ReadSimpleField[NodeId](ctx, "targetId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetId' field"))
 	}
-	_targetId, _targetIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetIdErr != nil {
-		return nil, errors.Wrap(_targetIdErr, "Error parsing 'targetId' field of TransactionErrorType")
-	}
-	targetId := _targetId.(NodeId)
-	if closeErr := readBuffer.CloseContext("targetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetId")
-	}
+	m.TargetId = targetId
 
-	// Simple Field (error)
-	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for error")
+	error, err := ReadSimpleField[StatusCode](ctx, "error", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
-	_error, _errorErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of TransactionErrorType")
-	}
-	error := _error.(StatusCode)
-	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for error")
-	}
+	m.Error = error
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
+	message, err := ReadSimpleField[LocalizedText](ctx, "message", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
-	_message, _messageErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of TransactionErrorType")
-	}
-	message := _message.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
-	}
+	m.Message = message
 
 	if closeErr := readBuffer.CloseContext("TransactionErrorType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TransactionErrorType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TransactionErrorType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		TargetId:                   targetId,
-		Error:                      error,
-		Message:                    message,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TransactionErrorType) Serialize() ([]byte, error) {
@@ -235,40 +209,16 @@ func (m *_TransactionErrorType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for TransactionErrorType")
 		}
 
-		// Simple Field (targetId)
-		if pushErr := writeBuffer.PushContext("targetId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetId")
-		}
-		_targetIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetId())
-		if popErr := writeBuffer.PopContext("targetId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetId")
-		}
-		if _targetIdErr != nil {
-			return errors.Wrap(_targetIdErr, "Error serializing 'targetId' field")
+		if err := WriteSimpleField[NodeId](ctx, "targetId", m.GetTargetId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetId' field")
 		}
 
-		// Simple Field (error)
-		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for error")
-		}
-		_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
-		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for error")
-		}
-		if _errorErr != nil {
-			return errors.Wrap(_errorErr, "Error serializing 'error' field")
+		if err := WriteSimpleField[StatusCode](ctx, "error", m.GetError(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'error' field")
 		}
 
-		// Simple Field (message)
-		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for message")
-		}
-		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-		if popErr := writeBuffer.PopContext("message"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for message")
-		}
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "message", m.GetMessage(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TransactionErrorType"); popErr != nil {
@@ -276,12 +226,10 @@ func (m *_TransactionErrorType) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TransactionErrorType) isTransactionErrorType() bool {
-	return true
-}
+func (m *_TransactionErrorType) IsTransactionErrorType() {}
 
 func (m *_TransactionErrorType) String() string {
 	if m == nil {

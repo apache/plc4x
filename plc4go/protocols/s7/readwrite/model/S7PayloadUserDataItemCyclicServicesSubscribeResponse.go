@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type S7PayloadUserDataItemCyclicServicesSubscribeResponse interface {
 	GetItemsCount() uint16
 	// GetItems returns Items (property field)
 	GetItems() []AssociatedValueType
-}
-
-// S7PayloadUserDataItemCyclicServicesSubscribeResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCyclicServicesSubscribeResponse.
-// This is useful for switch cases.
-type S7PayloadUserDataItemCyclicServicesSubscribeResponseExactly interface {
-	S7PayloadUserDataItemCyclicServicesSubscribeResponse
-	isS7PayloadUserDataItemCyclicServicesSubscribeResponse() bool
+	// IsS7PayloadUserDataItemCyclicServicesSubscribeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesSubscribeResponse()
 }
 
 // _S7PayloadUserDataItemCyclicServicesSubscribeResponse is the data-structure of this message
 type _S7PayloadUserDataItemCyclicServicesSubscribeResponse struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 	ItemsCount uint16
 	Items      []AssociatedValueType
 }
+
+var _ S7PayloadUserDataItemCyclicServicesSubscribeResponse = (*_S7PayloadUserDataItemCyclicServicesSubscribeResponse)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesSubscribeResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,14 +79,8 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetCpuSubfunctio
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,11 +104,11 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetItems() []Ass
 // NewS7PayloadUserDataItemCyclicServicesSubscribeResponse factory function for _S7PayloadUserDataItemCyclicServicesSubscribeResponse
 func NewS7PayloadUserDataItemCyclicServicesSubscribeResponse(itemsCount uint16, items []AssociatedValueType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesSubscribeResponse {
 	_result := &_S7PayloadUserDataItemCyclicServicesSubscribeResponse{
-		ItemsCount:             itemsCount,
-		Items:                  items,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		ItemsCount:                    itemsCount,
+		Items:                         items,
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -134,7 +128,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetTypeName() st
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Simple field (itemsCount)
 	lengthInBits += 16
@@ -156,67 +150,34 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetLengthInBytes
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCyclicServicesSubscribeResponseParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesSubscribeResponse, error) {
-	return S7PayloadUserDataItemCyclicServicesSubscribeResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadUserDataItemCyclicServicesSubscribeResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesSubscribeResponse, error) {
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCyclicServicesSubscribeResponse S7PayloadUserDataItemCyclicServicesSubscribeResponse, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCyclicServicesSubscribeResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCyclicServicesSubscribeResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (itemsCount)
-	_itemsCount, _itemsCountErr := readBuffer.ReadUint16("itemsCount", 16)
-	if _itemsCountErr != nil {
-		return nil, errors.Wrap(_itemsCountErr, "Error parsing 'itemsCount' field of S7PayloadUserDataItemCyclicServicesSubscribeResponse")
+	itemsCount, err := ReadSimpleField(ctx, "itemsCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemsCount' field"))
 	}
-	itemsCount := _itemsCount
+	m.ItemsCount = itemsCount
 
-	// Array field (items)
-	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for items")
+	items, err := ReadCountArrayField[AssociatedValueType](ctx, "items", ReadComplex[AssociatedValueType](AssociatedValueTypeParseWithBuffer, readBuffer), uint64(itemsCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
-	// Count array
-	items := make([]AssociatedValueType, max(itemsCount, 0))
-	// This happens when the size is set conditional to 0
-	if len(items) == 0 {
-		items = nil
-	}
-	{
-		_numItems := uint16(max(itemsCount, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AssociatedValueTypeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadUserDataItemCyclicServicesSubscribeResponse")
-			}
-			items[_curItem] = _item.(AssociatedValueType)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for items")
-	}
+	m.Items = items
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCyclicServicesSubscribeResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCyclicServicesSubscribeResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadUserDataItemCyclicServicesSubscribeResponse{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		ItemsCount:             itemsCount,
-		Items:                  items,
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) Serialize() ([]byte, error) {
@@ -237,28 +198,12 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) SerializeWithWri
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCyclicServicesSubscribeResponse")
 		}
 
-		// Simple Field (itemsCount)
-		itemsCount := uint16(m.GetItemsCount())
-		_itemsCountErr := writeBuffer.WriteUint16("itemsCount", 16, uint16((itemsCount)))
-		if _itemsCountErr != nil {
-			return errors.Wrap(_itemsCountErr, "Error serializing 'itemsCount' field")
+		if err := WriteSimpleField[uint16](ctx, "itemsCount", m.GetItemsCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemsCount' field")
 		}
 
-		// Array Field (items)
-		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for items")
-		}
-		for _curItem, _element := range m.GetItems() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'items' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for items")
+		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'items' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCyclicServicesSubscribeResponse"); popErr != nil {
@@ -266,11 +211,10 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) SerializeWithWri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) isS7PayloadUserDataItemCyclicServicesSubscribeResponse() bool {
-	return true
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) IsS7PayloadUserDataItemCyclicServicesSubscribeResponse() {
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) String() string {

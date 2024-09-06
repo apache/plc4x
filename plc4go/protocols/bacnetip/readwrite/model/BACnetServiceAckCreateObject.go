@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetServiceAckCreateObject interface {
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
-}
-
-// BACnetServiceAckCreateObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckCreateObject.
-// This is useful for switch cases.
-type BACnetServiceAckCreateObjectExactly interface {
-	BACnetServiceAckCreateObject
-	isBACnetServiceAckCreateObject() bool
+	// IsBACnetServiceAckCreateObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckCreateObject()
 }
 
 // _BACnetServiceAckCreateObject is the data-structure of this message
 type _BACnetServiceAckCreateObject struct {
-	*_BACnetServiceAck
+	BACnetServiceAckContract
 	ObjectIdentifier BACnetApplicationTagObjectIdentifier
 }
+
+var _ BACnetServiceAckCreateObject = (*_BACnetServiceAckCreateObject)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckCreateObject)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_BACnetServiceAckCreateObject) GetServiceChoice() BACnetConfirmedServic
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetServiceAckCreateObject) InitializeParent(parent BACnetServiceAck) {}
-
-func (m *_BACnetServiceAckCreateObject) GetParent() BACnetServiceAck {
-	return m._BACnetServiceAck
+func (m *_BACnetServiceAckCreateObject) GetParent() BACnetServiceAckContract {
+	return m.BACnetServiceAckContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_BACnetServiceAckCreateObject) GetObjectIdentifier() BACnetApplicationT
 
 // NewBACnetServiceAckCreateObject factory function for _BACnetServiceAckCreateObject
 func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint32) *_BACnetServiceAckCreateObject {
-	_result := &_BACnetServiceAckCreateObject{
-		ObjectIdentifier:  objectIdentifier,
-		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckCreateObject must not be nil")
 	}
-	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
+	_result := &_BACnetServiceAckCreateObject{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ObjectIdentifier:         objectIdentifier,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_BACnetServiceAckCreateObject) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckCreateObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -126,47 +127,28 @@ func (m *_BACnetServiceAckCreateObject) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckCreateObjectParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
-	return BACnetServiceAckCreateObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
-}
-
-func BACnetServiceAckCreateObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
+func (m *_BACnetServiceAckCreateObject) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckCreateObject BACnetServiceAckCreateObject, err error) {
+	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckCreateObject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIdentifier)
-	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
+	objectIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckCreateObject")
-	}
-	objectIdentifier := _objectIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
-	}
+	m.ObjectIdentifier = objectIdentifier
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckCreateObject"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckCreateObject")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetServiceAckCreateObject{
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
-		ObjectIdentifier: objectIdentifier,
-	}
-	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetServiceAckCreateObject) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_BACnetServiceAckCreateObject) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckCreateObject")
 		}
 
-		// Simple Field (objectIdentifier)
-		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
-		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectIdentifier")
-		}
-		if _objectIdentifierErr != nil {
-			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", m.GetObjectIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckCreateObject"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_BACnetServiceAckCreateObject) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetServiceAckContract.(*_BACnetServiceAck).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetServiceAckCreateObject) isBACnetServiceAckCreateObject() bool {
-	return true
-}
+func (m *_BACnetServiceAckCreateObject) IsBACnetServiceAckCreateObject() {}
 
 func (m *_BACnetServiceAckCreateObject) String() string {
 	if m == nil {

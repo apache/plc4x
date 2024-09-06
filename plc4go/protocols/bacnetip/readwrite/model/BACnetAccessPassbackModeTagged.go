@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetAccessPassbackModeTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAccessPassbackMode
-}
-
-// BACnetAccessPassbackModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessPassbackModeTagged.
-// This is useful for switch cases.
-type BACnetAccessPassbackModeTaggedExactly interface {
-	BACnetAccessPassbackModeTagged
-	isBACnetAccessPassbackModeTagged() bool
+	// IsBACnetAccessPassbackModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessPassbackModeTagged()
 }
 
 // _BACnetAccessPassbackModeTagged is the data-structure of this message
@@ -58,6 +55,8 @@ type _BACnetAccessPassbackModeTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetAccessPassbackModeTagged = (*_BACnetAccessPassbackModeTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,6 +78,9 @@ func (m *_BACnetAccessPassbackModeTagged) GetValue() BACnetAccessPassbackMode {
 
 // NewBACnetAccessPassbackModeTagged factory function for _BACnetAccessPassbackModeTagged
 func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAccessPassbackMode, tagNumber uint8, tagClass TagClass) *_BACnetAccessPassbackModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessPassbackModeTagged must not be nil")
+	}
 	return &_BACnetAccessPassbackModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -117,61 +119,56 @@ func BACnetAccessPassbackModeTaggedParse(ctx context.Context, theBytes []byte, t
 	return BACnetAccessPassbackModeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetAccessPassbackModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessPassbackModeTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessPassbackModeTagged, error) {
+		return BACnetAccessPassbackModeTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetAccessPassbackModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessPassbackModeTagged, error) {
+	v, err := (&_BACnetAccessPassbackModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetAccessPassbackModeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAccessPassbackModeTagged BACnetAccessPassbackModeTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAccessPassbackModeTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAccessPassbackModeTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAccessPassbackModeTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessPassbackMode_PASSBACK_OFF)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessPassbackModeTagged")
+	value, err := ReadManualField[BACnetAccessPassbackMode](ctx, "value", readBuffer, EnsureType[BACnetAccessPassbackMode](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessPassbackMode_PASSBACK_OFF)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetAccessPassbackMode
-	if _value != nil {
-		value = _value.(BACnetAccessPassbackMode)
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessPassbackModeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessPassbackModeTagged")
 	}
 
-	// Create the instance
-	return &_BACnetAccessPassbackModeTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Value:     value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetAccessPassbackModeTagged) Serialize() ([]byte, error) {
@@ -191,22 +188,12 @@ func (m *_BACnetAccessPassbackModeTagged) SerializeWithWriteBuffer(ctx context.C
 		return errors.Wrap(pushErr, "Error pushing for BACnetAccessPassbackModeTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetAccessPassbackMode](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAccessPassbackModeTagged"); popErr != nil {
@@ -228,9 +215,7 @@ func (m *_BACnetAccessPassbackModeTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetAccessPassbackModeTagged) isBACnetAccessPassbackModeTagged() bool {
-	return true
-}
+func (m *_BACnetAccessPassbackModeTagged) IsBACnetAccessPassbackModeTagged() {}
 
 func (m *_BACnetAccessPassbackModeTagged) String() string {
 	if m == nil {

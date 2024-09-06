@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type KnxNetRemoteLogging interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
-}
-
-// KnxNetRemoteLoggingExactly can be used when we want exactly this type and not a type which fulfills KnxNetRemoteLogging.
-// This is useful for switch cases.
-type KnxNetRemoteLoggingExactly interface {
-	KnxNetRemoteLogging
-	isKnxNetRemoteLogging() bool
+	// IsKnxNetRemoteLogging is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetRemoteLogging()
 }
 
 // _KnxNetRemoteLogging is the data-structure of this message
 type _KnxNetRemoteLogging struct {
-	*_ServiceId
+	ServiceIdContract
 	Version uint8
 }
+
+var _ KnxNetRemoteLogging = (*_KnxNetRemoteLogging)(nil)
+var _ ServiceIdRequirements = (*_KnxNetRemoteLogging)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_KnxNetRemoteLogging) GetServiceType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_KnxNetRemoteLogging) InitializeParent(parent ServiceId) {}
-
-func (m *_KnxNetRemoteLogging) GetParent() ServiceId {
-	return m._ServiceId
+func (m *_KnxNetRemoteLogging) GetParent() ServiceIdContract {
+	return m.ServiceIdContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_KnxNetRemoteLogging) GetVersion() uint8 {
 // NewKnxNetRemoteLogging factory function for _KnxNetRemoteLogging
 func NewKnxNetRemoteLogging(version uint8) *_KnxNetRemoteLogging {
 	_result := &_KnxNetRemoteLogging{
-		Version:    version,
-		_ServiceId: NewServiceId(),
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
 	}
-	_result._ServiceId._ServiceIdChildRequirements = _result
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_KnxNetRemoteLogging) GetTypeName() string {
 }
 
 func (m *_KnxNetRemoteLogging) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ServiceIdContract.(*_ServiceId).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -126,39 +124,28 @@ func (m *_KnxNetRemoteLogging) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetRemoteLoggingParse(ctx context.Context, theBytes []byte) (KnxNetRemoteLogging, error) {
-	return KnxNetRemoteLoggingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func KnxNetRemoteLoggingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetRemoteLogging, error) {
+func (m *_KnxNetRemoteLogging) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetRemoteLogging KnxNetRemoteLogging, err error) {
+	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxNetRemoteLogging"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetRemoteLogging")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint8("version", 8)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of KnxNetRemoteLogging")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
+	m.Version = version
 
 	if closeErr := readBuffer.CloseContext("KnxNetRemoteLogging"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxNetRemoteLogging")
 	}
 
-	// Create a partially initialized instance
-	_child := &_KnxNetRemoteLogging{
-		_ServiceId: &_ServiceId{},
-		Version:    version,
-	}
-	_child._ServiceId._ServiceIdChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_KnxNetRemoteLogging) Serialize() ([]byte, error) {
@@ -179,11 +166,8 @@ func (m *_KnxNetRemoteLogging) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for KnxNetRemoteLogging")
 		}
 
-		// Simple Field (version)
-		version := uint8(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
-		if _versionErr != nil {
-			return errors.Wrap(_versionErr, "Error serializing 'version' field")
+		if err := WriteSimpleField[uint8](ctx, "version", m.GetVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 
 		if popErr := writeBuffer.PopContext("KnxNetRemoteLogging"); popErr != nil {
@@ -191,12 +175,10 @@ func (m *_KnxNetRemoteLogging) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ServiceIdContract.(*_ServiceId).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_KnxNetRemoteLogging) isKnxNetRemoteLogging() bool {
-	return true
-}
+func (m *_KnxNetRemoteLogging) IsKnxNetRemoteLogging() {}
 
 func (m *_KnxNetRemoteLogging) String() string {
 	if m == nil {

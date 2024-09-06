@@ -37,19 +37,17 @@ type SysexCommandSamplingInterval interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
-}
-
-// SysexCommandSamplingIntervalExactly can be used when we want exactly this type and not a type which fulfills SysexCommandSamplingInterval.
-// This is useful for switch cases.
-type SysexCommandSamplingIntervalExactly interface {
-	SysexCommandSamplingInterval
-	isSysexCommandSamplingInterval() bool
+	// IsSysexCommandSamplingInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandSamplingInterval()
 }
 
 // _SysexCommandSamplingInterval is the data-structure of this message
 type _SysexCommandSamplingInterval struct {
-	*_SysexCommand
+	SysexCommandContract
 }
+
+var _ SysexCommandSamplingInterval = (*_SysexCommandSamplingInterval)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandSamplingInterval)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,18 +67,16 @@ func (m *_SysexCommandSamplingInterval) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SysexCommandSamplingInterval) InitializeParent(parent SysexCommand) {}
-
-func (m *_SysexCommandSamplingInterval) GetParent() SysexCommand {
-	return m._SysexCommand
+func (m *_SysexCommandSamplingInterval) GetParent() SysexCommandContract {
+	return m.SysexCommandContract
 }
 
 // NewSysexCommandSamplingInterval factory function for _SysexCommandSamplingInterval
 func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
 	_result := &_SysexCommandSamplingInterval{
-		_SysexCommand: NewSysexCommand(),
+		SysexCommandContract: NewSysexCommand(),
 	}
-	_result._SysexCommand._SysexCommandChildRequirements = _result
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 
@@ -100,7 +96,7 @@ func (m *_SysexCommandSamplingInterval) GetTypeName() string {
 }
 
 func (m *_SysexCommandSamplingInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -109,15 +105,11 @@ func (m *_SysexCommandSamplingInterval) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandSamplingIntervalParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandSamplingInterval, error) {
-	return SysexCommandSamplingIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func SysexCommandSamplingIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandSamplingInterval, error) {
+func (m *_SysexCommandSamplingInterval) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandSamplingInterval SysexCommandSamplingInterval, err error) {
+	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandSamplingInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandSamplingInterval")
 	}
@@ -128,12 +120,7 @@ func SysexCommandSamplingIntervalParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandSamplingInterval")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SysexCommandSamplingInterval{
-		_SysexCommand: &_SysexCommand{},
-	}
-	_child._SysexCommand._SysexCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SysexCommandSamplingInterval) Serialize() ([]byte, error) {
@@ -159,12 +146,10 @@ func (m *_SysexCommandSamplingInterval) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SysexCommandContract.(*_SysexCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SysexCommandSamplingInterval) isSysexCommandSamplingInterval() bool {
-	return true
-}
+func (m *_SysexCommandSamplingInterval) IsSysexCommandSamplingInterval() {}
 
 func (m *_SysexCommandSamplingInterval) String() string {
 	if m == nil {

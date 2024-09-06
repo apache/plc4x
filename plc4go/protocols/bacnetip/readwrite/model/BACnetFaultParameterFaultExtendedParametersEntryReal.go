@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultExtendedParametersEntryReal interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-}
-
-// BACnetFaultParameterFaultExtendedParametersEntryRealExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryReal.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultExtendedParametersEntryRealExactly interface {
-	BACnetFaultParameterFaultExtendedParametersEntryReal
-	isBACnetFaultParameterFaultExtendedParametersEntryReal() bool
+	// IsBACnetFaultParameterFaultExtendedParametersEntryReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryReal()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryReal is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryReal struct {
-	*_BACnetFaultParameterFaultExtendedParametersEntry
+	BACnetFaultParameterFaultExtendedParametersEntryContract
 	RealValue BACnetApplicationTagReal
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryReal = (*_BACnetFaultParameterFaultExtendedParametersEntryReal)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryReal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryReal struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetParent() BACnetFaultParameterFaultExtendedParametersEntry {
-	return m._BACnetFaultParameterFaultExtendedParametersEntry
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetParent() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetRealValue() B
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryReal factory function for _BACnetFaultParameterFaultExtendedParametersEntryReal
 func NewBACnetFaultParameterFaultExtendedParametersEntryReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryReal {
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReal{
-		RealValue: realValue,
-		_BACnetFaultParameterFaultExtendedParametersEntry: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetFaultParameterFaultExtendedParametersEntryReal must not be nil")
 	}
-	_result._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReal{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		RealValue: realValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetTypeName() st
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetLengthInBytes
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryRealParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryReal, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryRealParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultExtendedParametersEntryRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReal, error) {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryReal BACnetFaultParameterFaultExtendedParametersEntryReal, err error) {
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryReal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryReal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (realValue)
-	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
+	realValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "realValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realValue' field"))
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _realValueErr != nil {
-		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetFaultParameterFaultExtendedParametersEntryReal")
-	}
-	realValue := _realValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for realValue")
-	}
+	m.RealValue = realValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryReal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryReal")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultExtendedParametersEntryReal{
-		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
-		RealValue: realValue,
-	}
-	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) SerializeWithWri
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryReal")
 		}
 
-		// Simple Field (realValue)
-		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for realValue")
-		}
-		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
-		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for realValue")
-		}
-		if _realValueErr != nil {
-			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "realValue", m.GetRealValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'realValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryReal"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) SerializeWithWri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) isBACnetFaultParameterFaultExtendedParametersEntryReal() bool {
-	return true
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) IsBACnetFaultParameterFaultExtendedParametersEntryReal() {
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) String() string {

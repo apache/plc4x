@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataZoneFrom interface {
 	GetZoneFrom() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-}
-
-// BACnetConstructedDataZoneFromExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataZoneFrom.
-// This is useful for switch cases.
-type BACnetConstructedDataZoneFromExactly interface {
-	BACnetConstructedDataZoneFrom
-	isBACnetConstructedDataZoneFrom() bool
+	// IsBACnetConstructedDataZoneFrom is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataZoneFrom()
 }
 
 // _BACnetConstructedDataZoneFrom is the data-structure of this message
 type _BACnetConstructedDataZoneFrom struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ZoneFrom BACnetDeviceObjectReference
 }
+
+var _ BACnetConstructedDataZoneFrom = (*_BACnetConstructedDataZoneFrom)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneFrom)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataZoneFrom) GetPropertyIdentifierArgument() BACnetP
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataZoneFrom) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataZoneFrom) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataZoneFrom) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataZoneFrom) GetActualValue() BACnetDeviceObjectRefe
 
 // NewBACnetConstructedDataZoneFrom factory function for _BACnetConstructedDataZoneFrom
 func NewBACnetConstructedDataZoneFrom(zoneFrom BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneFrom {
-	_result := &_BACnetConstructedDataZoneFrom{
-		ZoneFrom:               zoneFrom,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if zoneFrom == nil {
+		panic("zoneFrom of type BACnetDeviceObjectReference for BACnetConstructedDataZoneFrom must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataZoneFrom{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ZoneFrom:                      zoneFrom,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataZoneFrom) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataZoneFrom) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (zoneFrom)
 	lengthInBits += m.ZoneFrom.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataZoneFrom) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataZoneFromParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneFrom, error) {
-	return BACnetConstructedDataZoneFromParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataZoneFromParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneFrom, error) {
+func (m *_BACnetConstructedDataZoneFrom) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataZoneFrom BACnetConstructedDataZoneFrom, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataZoneFrom"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataZoneFrom")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneFrom)
-	if pullErr := readBuffer.PullContext("zoneFrom"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneFrom")
+	zoneFrom, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "zoneFrom", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneFrom' field"))
 	}
-	_zoneFrom, _zoneFromErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _zoneFromErr != nil {
-		return nil, errors.Wrap(_zoneFromErr, "Error parsing 'zoneFrom' field of BACnetConstructedDataZoneFrom")
-	}
-	zoneFrom := _zoneFrom.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("zoneFrom"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneFrom")
-	}
+	m.ZoneFrom = zoneFrom
 
-	// Virtual field
-	_actualValue := zoneFrom
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectReference](ctx, "actualValue", (*BACnetDeviceObjectReference)(nil), zoneFrom)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataZoneFrom"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataZoneFrom")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataZoneFrom{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ZoneFrom: zoneFrom,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataZoneFrom) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataZoneFrom) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataZoneFrom")
 		}
 
-		// Simple Field (zoneFrom)
-		if pushErr := writeBuffer.PushContext("zoneFrom"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneFrom")
-		}
-		_zoneFromErr := writeBuffer.WriteSerializable(ctx, m.GetZoneFrom())
-		if popErr := writeBuffer.PopContext("zoneFrom"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneFrom")
-		}
-		if _zoneFromErr != nil {
-			return errors.Wrap(_zoneFromErr, "Error serializing 'zoneFrom' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "zoneFrom", m.GetZoneFrom(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneFrom' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataZoneFrom) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataZoneFrom) isBACnetConstructedDataZoneFrom() bool {
-	return true
-}
+func (m *_BACnetConstructedDataZoneFrom) IsBACnetConstructedDataZoneFrom() {}
 
 func (m *_BACnetConstructedDataZoneFrom) String() string {
 	if m == nil {

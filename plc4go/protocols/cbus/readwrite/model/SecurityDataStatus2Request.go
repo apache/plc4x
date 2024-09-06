@@ -37,19 +37,17 @@ type SecurityDataStatus2Request interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataStatus2RequestExactly can be used when we want exactly this type and not a type which fulfills SecurityDataStatus2Request.
-// This is useful for switch cases.
-type SecurityDataStatus2RequestExactly interface {
-	SecurityDataStatus2Request
-	isSecurityDataStatus2Request() bool
+	// IsSecurityDataStatus2Request is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataStatus2Request()
 }
 
 // _SecurityDataStatus2Request is the data-structure of this message
 type _SecurityDataStatus2Request struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataStatus2Request = (*_SecurityDataStatus2Request)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataStatus2Request)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataStatus2Request struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataStatus2Request) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataStatus2Request) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataStatus2Request) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataStatus2Request factory function for _SecurityDataStatus2Request
 func NewSecurityDataStatus2Request(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatus2Request {
 	_result := &_SecurityDataStatus2Request{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataStatus2Request) GetTypeName() string {
 }
 
 func (m *_SecurityDataStatus2Request) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataStatus2Request) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataStatus2RequestParse(ctx context.Context, theBytes []byte) (SecurityDataStatus2Request, error) {
-	return SecurityDataStatus2RequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataStatus2RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatus2Request, error) {
+func (m *_SecurityDataStatus2Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataStatus2Request SecurityDataStatus2Request, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataStatus2Request"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataStatus2Request")
 	}
@@ -123,12 +112,7 @@ func SecurityDataStatus2RequestParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataStatus2Request")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataStatus2Request{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataStatus2Request) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataStatus2Request) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataStatus2Request) isSecurityDataStatus2Request() bool {
-	return true
-}
+func (m *_SecurityDataStatus2Request) IsSecurityDataStatus2Request() {}
 
 func (m *_SecurityDataStatus2Request) String() string {
 	if m == nil {

@@ -22,16 +22,9 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-public interface DataReader<T> extends ByteOrderAware {
+public interface DataReader<T> extends ByteOrderAware, PositionMover, ContextReader {
 
     T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
-
-    int getPos();
-
-    void setPos(int position);
-
-    void pullContext(String logicalName, WithReaderArgs... readerArgs);
-    void closeContext(String logicalName, WithReaderArgs... readerArgs);
 
     ReadBuffer getReadBuffer();
 

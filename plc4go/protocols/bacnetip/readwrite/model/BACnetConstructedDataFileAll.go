@@ -37,19 +37,17 @@ type BACnetConstructedDataFileAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
-}
-
-// BACnetConstructedDataFileAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileAll.
-// This is useful for switch cases.
-type BACnetConstructedDataFileAllExactly interface {
-	BACnetConstructedDataFileAll
-	isBACnetConstructedDataFileAll() bool
+	// IsBACnetConstructedDataFileAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFileAll()
 }
 
 // _BACnetConstructedDataFileAll is the data-structure of this message
 type _BACnetConstructedDataFileAll struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 }
+
+var _ BACnetConstructedDataFileAll = (*_BACnetConstructedDataFileAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,22 +67,16 @@ func (m *_BACnetConstructedDataFileAll) GetPropertyIdentifierArgument() BACnetPr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataFileAll) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataFileAll) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataFileAll) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 // NewBACnetConstructedDataFileAll factory function for _BACnetConstructedDataFileAll
 func NewBACnetConstructedDataFileAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAll {
 	_result := &_BACnetConstructedDataFileAll{
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -104,7 +96,7 @@ func (m *_BACnetConstructedDataFileAll) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFileAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +105,11 @@ func (m *_BACnetConstructedDataFileAll) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataFileAllParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileAll, error) {
-	return BACnetConstructedDataFileAllParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataFileAllParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileAll, error) {
+func (m *_BACnetConstructedDataFileAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFileAll BACnetConstructedDataFileAll, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileAll"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFileAll")
 	}
@@ -130,22 +118,14 @@ func BACnetConstructedDataFileAllParseWithBuffer(ctx context.Context, readBuffer
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "All should never occur in context of constructed data. If it does please report"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileAll"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileAll")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataFileAll{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataFileAll) Serialize() ([]byte, error) {
@@ -171,12 +151,10 @@ func (m *_BACnetConstructedDataFileAll) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataFileAll) isBACnetConstructedDataFileAll() bool {
-	return true
-}
+func (m *_BACnetConstructedDataFileAll) IsBACnetConstructedDataFileAll() {}
 
 func (m *_BACnetConstructedDataFileAll) String() string {
 	if m == nil {

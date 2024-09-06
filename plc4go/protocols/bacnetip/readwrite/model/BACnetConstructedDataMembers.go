@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataMembers interface {
 	BACnetConstructedData
 	// GetMembers returns Members (property field)
 	GetMembers() []BACnetDeviceObjectReference
-}
-
-// BACnetConstructedDataMembersExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMembers.
-// This is useful for switch cases.
-type BACnetConstructedDataMembersExactly interface {
-	BACnetConstructedDataMembers
-	isBACnetConstructedDataMembers() bool
+	// IsBACnetConstructedDataMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMembers()
 }
 
 // _BACnetConstructedDataMembers is the data-structure of this message
 type _BACnetConstructedDataMembers struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Members []BACnetDeviceObjectReference
 }
+
+var _ BACnetConstructedDataMembers = (*_BACnetConstructedDataMembers)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMembers)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataMembers) GetPropertyIdentifierArgument() BACnetPr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMembers) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMembers) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMembers) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataMembers) GetMembers() []BACnetDeviceObjectReferen
 // NewBACnetConstructedDataMembers factory function for _BACnetConstructedDataMembers
 func NewBACnetConstructedDataMembers(members []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMembers {
 	_result := &_BACnetConstructedDataMembers{
-		Members:                members,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Members:                       members,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataMembers) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMembers) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Members) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataMembers) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMembersParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMembers, error) {
-	return BACnetConstructedDataMembersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMembersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMembers, error) {
+func (m *_BACnetConstructedDataMembers) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMembers BACnetConstructedDataMembers, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMembers"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMembers")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (members)
-	if pullErr := readBuffer.PullContext("members", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for members")
+	members, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "members", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'members' field"))
 	}
-	// Terminated array
-	var members []BACnetDeviceObjectReference
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'members' field of BACnetConstructedDataMembers")
-			}
-			members = append(members, _item.(BACnetDeviceObjectReference))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("members", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for members")
-	}
+	m.Members = members
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMembers"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMembers")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMembers{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Members: members,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMembers) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataMembers) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMembers")
 		}
 
-		// Array Field (members)
-		if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for members")
-		}
-		for _curItem, _element := range m.GetMembers() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMembers()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'members' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for members")
+		if err := WriteComplexTypeArrayField(ctx, "members", m.GetMembers(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'members' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMembers"); popErr != nil {
@@ -228,12 +183,10 @@ func (m *_BACnetConstructedDataMembers) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMembers) isBACnetConstructedDataMembers() bool {
-	return true
-}
+func (m *_BACnetConstructedDataMembers) IsBACnetConstructedDataMembers() {}
 
 func (m *_BACnetConstructedDataMembers) String() string {
 	if m == nil {

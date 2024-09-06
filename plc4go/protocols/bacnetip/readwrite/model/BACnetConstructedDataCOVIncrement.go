@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataCOVIncrement interface {
 	GetCovIncrement() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataCOVIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCOVIncrement.
-// This is useful for switch cases.
-type BACnetConstructedDataCOVIncrementExactly interface {
-	BACnetConstructedDataCOVIncrement
-	isBACnetConstructedDataCOVIncrement() bool
+	// IsBACnetConstructedDataCOVIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCOVIncrement()
 }
 
 // _BACnetConstructedDataCOVIncrement is the data-structure of this message
 type _BACnetConstructedDataCOVIncrement struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	CovIncrement BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataCOVIncrement = (*_BACnetConstructedDataCOVIncrement)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVIncrement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataCOVIncrement) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCOVIncrement) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCOVIncrement) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCOVIncrement) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataCOVIncrement) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataCOVIncrement factory function for _BACnetConstructedDataCOVIncrement
 func NewBACnetConstructedDataCOVIncrement(covIncrement BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVIncrement {
-	_result := &_BACnetConstructedDataCOVIncrement{
-		CovIncrement:           covIncrement,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if covIncrement == nil {
+		panic("covIncrement of type BACnetApplicationTagReal for BACnetConstructedDataCOVIncrement must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataCOVIncrement{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovIncrement:                  covIncrement,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataCOVIncrement) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (covIncrement)
 	lengthInBits += m.CovIncrement.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCOVIncrementParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVIncrement, error) {
-	return BACnetConstructedDataCOVIncrementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCOVIncrementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVIncrement, error) {
+func (m *_BACnetConstructedDataCOVIncrement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCOVIncrement BACnetConstructedDataCOVIncrement, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCOVIncrement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (covIncrement)
-	if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
+	covIncrement, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "covIncrement", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covIncrement' field"))
 	}
-	_covIncrement, _covIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _covIncrementErr != nil {
-		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataCOVIncrement")
-	}
-	covIncrement := _covIncrement.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for covIncrement")
-	}
+	m.CovIncrement = covIncrement
 
-	// Virtual field
-	_actualValue := covIncrement
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), covIncrement)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVIncrement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCOVIncrement")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCOVIncrement{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		CovIncrement: covIncrement,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCOVIncrement) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCOVIncrement")
 		}
 
-		// Simple Field (covIncrement)
-		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covIncrement")
-		}
-		_covIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetCovIncrement())
-		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covIncrement")
-		}
-		if _covIncrementErr != nil {
-			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "covIncrement", m.GetCovIncrement(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'covIncrement' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCOVIncrement) isBACnetConstructedDataCOVIncrement() bool {
-	return true
-}
+func (m *_BACnetConstructedDataCOVIncrement) IsBACnetConstructedDataCOVIncrement() {}
 
 func (m *_BACnetConstructedDataCOVIncrement) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetFileAccessMethodTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetFileAccessMethod
-}
-
-// BACnetFileAccessMethodTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetFileAccessMethodTagged.
-// This is useful for switch cases.
-type BACnetFileAccessMethodTaggedExactly interface {
-	BACnetFileAccessMethodTagged
-	isBACnetFileAccessMethodTagged() bool
+	// IsBACnetFileAccessMethodTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFileAccessMethodTagged()
 }
 
 // _BACnetFileAccessMethodTagged is the data-structure of this message
@@ -58,6 +55,8 @@ type _BACnetFileAccessMethodTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetFileAccessMethodTagged = (*_BACnetFileAccessMethodTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,6 +78,9 @@ func (m *_BACnetFileAccessMethodTagged) GetValue() BACnetFileAccessMethod {
 
 // NewBACnetFileAccessMethodTagged factory function for _BACnetFileAccessMethodTagged
 func NewBACnetFileAccessMethodTagged(header BACnetTagHeader, value BACnetFileAccessMethod, tagNumber uint8, tagClass TagClass) *_BACnetFileAccessMethodTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetFileAccessMethodTagged must not be nil")
+	}
 	return &_BACnetFileAccessMethodTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -117,61 +119,56 @@ func BACnetFileAccessMethodTaggedParse(ctx context.Context, theBytes []byte, tag
 	return BACnetFileAccessMethodTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetFileAccessMethodTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFileAccessMethodTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFileAccessMethodTagged, error) {
+		return BACnetFileAccessMethodTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetFileAccessMethodTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetFileAccessMethodTagged, error) {
+	v, err := (&_BACnetFileAccessMethodTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetFileAccessMethodTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetFileAccessMethodTagged BACnetFileAccessMethodTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFileAccessMethodTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFileAccessMethodTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetFileAccessMethodTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetFileAccessMethod_RECORD_ACCESS)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetFileAccessMethodTagged")
+	value, err := ReadManualField[BACnetFileAccessMethod](ctx, "value", readBuffer, EnsureType[BACnetFileAccessMethod](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetFileAccessMethod_RECORD_ACCESS)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetFileAccessMethod
-	if _value != nil {
-		value = _value.(BACnetFileAccessMethod)
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetFileAccessMethodTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFileAccessMethodTagged")
 	}
 
-	// Create the instance
-	return &_BACnetFileAccessMethodTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Value:     value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetFileAccessMethodTagged) Serialize() ([]byte, error) {
@@ -191,22 +188,12 @@ func (m *_BACnetFileAccessMethodTagged) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(pushErr, "Error pushing for BACnetFileAccessMethodTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetFileAccessMethod](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetFileAccessMethodTagged"); popErr != nil {
@@ -228,9 +215,7 @@ func (m *_BACnetFileAccessMethodTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetFileAccessMethodTagged) isBACnetFileAccessMethodTagged() bool {
-	return true
-}
+func (m *_BACnetFileAccessMethodTagged) IsBACnetFileAccessMethodTagged() {}
 
 func (m *_BACnetFileAccessMethodTagged) String() string {
 	if m == nil {

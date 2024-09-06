@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ApduDataOther interface {
 	ApduData
 	// GetExtendedApdu returns ExtendedApdu (property field)
 	GetExtendedApdu() ApduDataExt
-}
-
-// ApduDataOtherExactly can be used when we want exactly this type and not a type which fulfills ApduDataOther.
-// This is useful for switch cases.
-type ApduDataOtherExactly interface {
-	ApduDataOther
-	isApduDataOther() bool
+	// IsApduDataOther is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataOther()
 }
 
 // _ApduDataOther is the data-structure of this message
 type _ApduDataOther struct {
-	*_ApduData
+	ApduDataContract
 	ExtendedApdu ApduDataExt
 }
+
+var _ ApduDataOther = (*_ApduDataOther)(nil)
+var _ ApduDataRequirements = (*_ApduDataOther)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_ApduDataOther) GetApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataOther) InitializeParent(parent ApduData) {}
-
-func (m *_ApduDataOther) GetParent() ApduData {
-	return m._ApduData
+func (m *_ApduDataOther) GetParent() ApduDataContract {
+	return m.ApduDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_ApduDataOther) GetExtendedApdu() ApduDataExt {
 
 // NewApduDataOther factory function for _ApduDataOther
 func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
-	_result := &_ApduDataOther{
-		ExtendedApdu: extendedApdu,
-		_ApduData:    NewApduData(dataLength),
+	if extendedApdu == nil {
+		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
 	}
-	_result._ApduData._ApduDataChildRequirements = _result
+	_result := &_ApduDataOther{
+		ApduDataContract: NewApduData(dataLength),
+		ExtendedApdu:     extendedApdu,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_ApduDataOther) GetTypeName() string {
 }
 
 func (m *_ApduDataOther) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (extendedApdu)
 	lengthInBits += m.ExtendedApdu.GetLengthInBits(ctx)
@@ -126,47 +127,28 @@ func (m *_ApduDataOther) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataOtherParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataOther, error) {
-	return ApduDataOtherParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
-}
-
-func ApduDataOtherParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataOther, error) {
+func (m *_ApduDataOther) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataOther ApduDataOther, err error) {
+	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataOther"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataOther")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (extendedApdu)
-	if pullErr := readBuffer.PullContext("extendedApdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for extendedApdu")
+	extendedApdu, err := ReadSimpleField[ApduDataExt](ctx, "extendedApdu", ReadComplex[ApduDataExt](ApduDataExtParseWithBufferProducer[ApduDataExt]((uint8)(dataLength)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedApdu' field"))
 	}
-	_extendedApdu, _extendedApduErr := ApduDataExtParseWithBuffer(ctx, readBuffer, uint8(dataLength))
-	if _extendedApduErr != nil {
-		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field of ApduDataOther")
-	}
-	extendedApdu := _extendedApdu.(ApduDataExt)
-	if closeErr := readBuffer.CloseContext("extendedApdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for extendedApdu")
-	}
+	m.ExtendedApdu = extendedApdu
 
 	if closeErr := readBuffer.CloseContext("ApduDataOther"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataOther")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataOther{
-		_ApduData: &_ApduData{
-			DataLength: dataLength,
-		},
-		ExtendedApdu: extendedApdu,
-	}
-	_child._ApduData._ApduDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataOther) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_ApduDataOther) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for ApduDataOther")
 		}
 
-		// Simple Field (extendedApdu)
-		if pushErr := writeBuffer.PushContext("extendedApdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for extendedApdu")
-		}
-		_extendedApduErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedApdu())
-		if popErr := writeBuffer.PopContext("extendedApdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for extendedApdu")
-		}
-		if _extendedApduErr != nil {
-			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
+		if err := WriteSimpleField[ApduDataExt](ctx, "extendedApdu", m.GetExtendedApdu(), WriteComplex[ApduDataExt](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedApdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataOther"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_ApduDataOther) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataContract.(*_ApduData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataOther) isApduDataOther() bool {
-	return true
-}
+func (m *_ApduDataOther) IsApduDataOther() {}
 
 func (m *_ApduDataOther) String() string {
 	if m == nil {

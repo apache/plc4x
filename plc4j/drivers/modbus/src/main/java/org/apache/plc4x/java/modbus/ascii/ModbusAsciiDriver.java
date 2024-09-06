@@ -21,6 +21,7 @@ package org.apache.plc4x.java.modbus.ascii;
 import io.netty.buffer.ByteBuf;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.modbus.ascii.context.ModbusAsciiContext;
 import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
 import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
@@ -135,8 +136,9 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
     protected ProtocolStackConfigurer<ModbusAsciiADU> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(ModbusAsciiADU.class, new ModbusAsciiInput(), new ModbusAsciiOutput())
             .withProtocol(ModbusAsciiProtocolLogic.class)
-            .withPacketSizeEstimator(ModbusAsciiDriver.ByteLengthEstimator.class)
-            .withCorruptPacketRemover(ModbusAsciiDriver.CorruptPackageCleaner.class)
+            .withDriverContext(ModbusAsciiContext.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .build();
     }
 

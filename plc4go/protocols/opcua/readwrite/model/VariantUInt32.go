@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,21 +43,19 @@ type VariantUInt32 interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []uint32
-}
-
-// VariantUInt32Exactly can be used when we want exactly this type and not a type which fulfills VariantUInt32.
-// This is useful for switch cases.
-type VariantUInt32Exactly interface {
-	VariantUInt32
-	isVariantUInt32() bool
+	// IsVariantUInt32 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantUInt32()
 }
 
 // _VariantUInt32 is the data-structure of this message
 type _VariantUInt32 struct {
-	*_Variant
+	VariantContract
 	ArrayLength *int32
 	Value       []uint32
 }
+
+var _ VariantUInt32 = (*_VariantUInt32)(nil)
+var _ VariantRequirements = (*_VariantUInt32)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,15 +71,8 @@ func (m *_VariantUInt32) GetVariantType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_VariantUInt32) InitializeParent(parent Variant, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) {
-	m.ArrayLengthSpecified = arrayLengthSpecified
-	m.ArrayDimensionsSpecified = arrayDimensionsSpecified
-	m.NoOfArrayDimensions = noOfArrayDimensions
-	m.ArrayDimensions = arrayDimensions
-}
-
-func (m *_VariantUInt32) GetParent() Variant {
-	return m._Variant
+func (m *_VariantUInt32) GetParent() VariantContract {
+	return m.VariantContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,11 +96,11 @@ func (m *_VariantUInt32) GetValue() []uint32 {
 // NewVariantUInt32 factory function for _VariantUInt32
 func NewVariantUInt32(arrayLength *int32, value []uint32, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantUInt32 {
 	_result := &_VariantUInt32{
-		ArrayLength: arrayLength,
-		Value:       value,
-		_Variant:    NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
 	}
-	_result._Variant._VariantChildRequirements = _result
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 
@@ -128,7 +120,7 @@ func (m *_VariantUInt32) GetTypeName() string {
 }
 
 func (m *_VariantUInt32) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -147,76 +139,35 @@ func (m *_VariantUInt32) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func VariantUInt32Parse(ctx context.Context, theBytes []byte, arrayLengthSpecified bool) (VariantUInt32, error) {
-	return VariantUInt32ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), arrayLengthSpecified)
-}
-
-func VariantUInt32ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantUInt32, error) {
+func (m *_VariantUInt32) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantUInt32 VariantUInt32, err error) {
+	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VariantUInt32"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VariantUInt32")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (arrayLength) (Can be skipped, if a given expression evaluates to false)
-	var arrayLength *int32 = nil
-	if arrayLengthSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt32("arrayLength", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'arrayLength' field of VariantUInt32")
-		default:
-			arrayLength = &_val
-		}
+	var arrayLength *int32
+	arrayLength, err = ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, uint8(32)), arrayLengthSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLength' field"))
 	}
+	m.ArrayLength = arrayLength
 
-	// Array field (value)
-	if pullErr := readBuffer.PullContext("value", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
+	value, err := ReadCountArrayField[uint32](ctx, "value", ReadUnsignedInt(readBuffer, uint8(32)), uint64(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return int32(int32(1)) }, func() any { return int32((*arrayLength)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	// Count array
-	value := make([]uint32, max(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(value) == 0 {
-		value = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'value' field of VariantUInt32")
-			}
-			value[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("value", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("VariantUInt32"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for VariantUInt32")
 	}
 
-	// Create a partially initialized instance
-	_child := &_VariantUInt32{
-		_Variant:    &_Variant{},
-		ArrayLength: arrayLength,
-		Value:       value,
-	}
-	_child._Variant._VariantChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_VariantUInt32) Serialize() ([]byte, error) {
@@ -237,29 +188,12 @@ func (m *_VariantUInt32) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for VariantUInt32")
 		}
 
-		// Optional Field (arrayLength) (Can be skipped, if the value is null)
-		var arrayLength *int32 = nil
-		if m.GetArrayLength() != nil {
-			arrayLength = m.GetArrayLength()
-			_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, int32(*(arrayLength)))
-			if _arrayLengthErr != nil {
-				return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
-			}
+		if err := WriteOptionalField[int32](ctx, "arrayLength", m.GetArrayLength(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'arrayLength' field")
 		}
 
-		// Array Field (value)
-		if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		for _curItem, _element := range m.GetValue() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'value' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
+		if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("VariantUInt32"); popErr != nil {
@@ -267,12 +201,10 @@ func (m *_VariantUInt32) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.VariantContract.(*_Variant).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_VariantUInt32) isVariantUInt32() bool {
-	return true
-}
+func (m *_VariantUInt32) IsVariantUInt32() {}
 
 func (m *_VariantUInt32) String() string {
 	if m == nil {

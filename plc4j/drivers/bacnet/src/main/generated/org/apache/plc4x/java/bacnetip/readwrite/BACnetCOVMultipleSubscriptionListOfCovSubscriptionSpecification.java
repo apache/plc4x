@@ -78,7 +78,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
     writeBuffer.pushContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfCovSubscriptionSpecificationEntry)
     writeComplexTypeArrayField(
@@ -87,7 +87,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
         writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification");
   }
@@ -128,14 +128,14 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry>
         listOfCovSubscriptionSpecificationEntry =
             readTerminatedArrayField(
                 "listOfCovSubscriptionSpecificationEntry",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
                             .staticParse(readBuffer),
@@ -148,7 +148,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification");

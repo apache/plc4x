@@ -113,7 +113,7 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
     List<ExtensionObjectDefinition> events =
         readCountArrayField(
             "events",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("922")),
                 readBuffer),
             noOfEvents);

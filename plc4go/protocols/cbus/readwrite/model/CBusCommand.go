@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,53 +35,49 @@ import (
 
 // CBusCommand is the corresponding interface of CBusCommand
 type CBusCommand interface {
+	CBusCommandContract
+	CBusCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCBusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusCommand()
+}
+
+// CBusCommandContract provides a set of functions which can be overwritten by a sub struct
+type CBusCommandContract interface {
 	// GetHeader returns Header (property field)
 	GetHeader() CBusHeader
 	// GetIsDeviceManagement returns IsDeviceManagement (virtual field)
 	GetIsDeviceManagement() bool
 	// GetDestinationAddressType returns DestinationAddressType (virtual field)
 	GetDestinationAddressType() DestinationAddressType
+	// GetCBusOptions() returns a parser argument
+	GetCBusOptions() CBusOptions
+	// IsCBusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusCommand()
 }
 
-// CBusCommandExactly can be used when we want exactly this type and not a type which fulfills CBusCommand.
-// This is useful for switch cases.
-type CBusCommandExactly interface {
-	CBusCommand
-	isCBusCommand() bool
+// CBusCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type CBusCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetDestinationAddressType returns DestinationAddressType (discriminator field)
+	GetDestinationAddressType() DestinationAddressType
+	// GetIsDeviceManagement returns IsDeviceManagement (discriminator field)
+	GetIsDeviceManagement() bool
 }
 
 // _CBusCommand is the data-structure of this message
 type _CBusCommand struct {
-	_CBusCommandChildRequirements
-	Header CBusHeader
+	_SubType CBusCommand
+	Header   CBusHeader
 
 	// Arguments.
 	CBusOptions CBusOptions
 }
 
-type _CBusCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetDestinationAddressType() DestinationAddressType
-	GetIsDeviceManagement() bool
-}
-
-type CBusCommandParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusCommand, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type CBusCommandChild interface {
-	utils.Serializable
-	InitializeParent(parent CBusCommand, header CBusHeader)
-	GetParent() *CBusCommand
-
-	GetTypeName() string
-	CBusCommand
-}
+var _ CBusCommandContract = (*_CBusCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,13 +97,15 @@ func (m *_CBusCommand) GetHeader() CBusHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_CBusCommand) GetIsDeviceManagement() bool {
+func (pm *_CBusCommand) GetIsDeviceManagement() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(m.GetHeader().GetDp())
 }
 
-func (m *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
+func (pm *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastDestinationAddressType(m.GetHeader().GetDestinationAddressType())
@@ -118,6 +118,9 @@ func (m *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
 
 // NewCBusCommand factory function for _CBusCommand
 func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
+	if header == nil {
+		panic("header of type CBusHeader for CBusCommand must not be nil")
+	}
 	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
 }
 
@@ -136,7 +139,7 @@ func (m *_CBusCommand) GetTypeName() string {
 	return "CBusCommand"
 }
 
-func (m *_CBusCommand) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
@@ -150,83 +153,91 @@ func (m *_CBusCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CBusCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func CBusCommandParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusCommand, error) {
-	return CBusCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func CBusCommandParse[T CBusCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
+	return CBusCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommand, error) {
+func CBusCommandParseWithBufferProducer[T CBusCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := CBusCommandParseWithBuffer[T](ctx, readBuffer, cBusOptions)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func CBusCommandParseWithBuffer[T CBusCommand](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
+	v, err := (&_CBusCommand{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_CBusCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (__cBusCommand CBusCommand, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[CBusHeader](ctx, "header", ReadComplex[CBusHeader](CBusHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := CBusHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of CBusCommand")
-	}
-	header := _header.(CBusHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
-	// Virtual field
-	_isDeviceManagement := header.GetDp()
-	isDeviceManagement := bool(_isDeviceManagement)
+	isDeviceManagement, err := ReadVirtualField[bool](ctx, "isDeviceManagement", (*bool)(nil), header.GetDp())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDeviceManagement' field"))
+	}
 	_ = isDeviceManagement
 
-	// Virtual field
-	_destinationAddressType := header.GetDestinationAddressType()
-	destinationAddressType := DestinationAddressType(_destinationAddressType)
+	destinationAddressType, err := ReadVirtualField[DestinationAddressType](ctx, "destinationAddressType", (*DestinationAddressType)(nil), header.GetDestinationAddressType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddressType' field"))
+	}
 	_ = destinationAddressType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type CBusCommandChildSerializeRequirement interface {
-		CBusCommand
-		InitializeParent(CBusCommand, CBusHeader)
-		GetParent() CBusCommand
-	}
-	var _childTemp any
-	var _child CBusCommandChildSerializeRequirement
-	var typeSwitchError error
+	var _child CBusCommand
 	switch {
 	case 0 == 0 && isDeviceManagement == bool(true): // CBusCommandDeviceManagement
-		_childTemp, typeSwitchError = CBusCommandDeviceManagementParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if _child, err = (&_CBusCommandDeviceManagement{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandDeviceManagement for type-switch of CBusCommand")
+		}
 	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
-		_childTemp, typeSwitchError = CBusCommandPointToPointToMultiPointParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if _child, err = (&_CBusCommandPointToPointToMultiPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToPointToMultiPoint for type-switch of CBusCommand")
+		}
 	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
-		_childTemp, typeSwitchError = CBusCommandPointToMultiPointParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if _child, err = (&_CBusCommandPointToMultiPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToMultiPoint for type-switch of CBusCommand")
+		}
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
-		_childTemp, typeSwitchError = CBusCommandPointToPointParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if _child, err = (&_CBusCommandPointToPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToPoint for type-switch of CBusCommand")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [destinationAddressType=%v, isDeviceManagement=%v]", destinationAddressType, isDeviceManagement)
+		return nil, errors.Errorf("Unmapped type for parameters [destinationAddressType=%v, isDeviceManagement=%v]", destinationAddressType, isDeviceManagement)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusCommand")
-	}
-	_child = _childTemp.(CBusCommandChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CBusCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusCommand")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, header)
 	return _child, nil
 }
 
-func (pm *_CBusCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusCommand, serializeChildFunction func() error) error {
+func (pm *_CBusCommand) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -238,16 +249,8 @@ func (pm *_CBusCommand) SerializeParent(ctx context.Context, writeBuffer utils.W
 		return errors.Wrap(pushErr, "Error pushing for CBusCommand")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[CBusHeader](ctx, "header", m.GetHeader(), WriteComplex[CBusHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 	// Virtual field
 	isDeviceManagement := m.GetIsDeviceManagement()
@@ -283,17 +286,4 @@ func (m *_CBusCommand) GetCBusOptions() CBusOptions {
 //
 ////
 
-func (m *_CBusCommand) isCBusCommand() bool {
-	return true
-}
-
-func (m *_CBusCommand) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_CBusCommand) IsCBusCommand() {}

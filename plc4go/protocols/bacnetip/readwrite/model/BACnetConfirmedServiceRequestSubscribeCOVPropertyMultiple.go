@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,24 +49,22 @@ type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
 	GetMaxNotificationDelay() BACnetContextTagUnsignedInteger
 	// GetListOfCovSubscriptionSpecifications returns ListOfCovSubscriptionSpecifications (property field)
 	GetListOfCovSubscriptionSpecifications() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
-}
-
-// BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleExactly interface {
-	BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-	isBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() bool
+	// IsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple()
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is the data-structure of this message
 type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	SubscriberProcessIdentifier         BACnetContextTagUnsignedInteger
 	IssueConfirmedNotifications         BACnetContextTagBoolean
 	Lifetime                            BACnetContextTagUnsignedInteger
 	MaxNotificationDelay                BACnetContextTagUnsignedInteger
 	ListOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
 }
+
+var _ BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +80,8 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetServiceC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -120,15 +116,21 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetListOfCo
 
 // NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple factory function for _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
-	_result := &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
-		SubscriberProcessIdentifier:         subscriberProcessIdentifier,
-		IssueConfirmedNotifications:         issueConfirmedNotifications,
-		Lifetime:                            lifetime,
-		MaxNotificationDelay:                maxNotificationDelay,
-		ListOfCovSubscriptionSpecifications: listOfCovSubscriptionSpecifications,
-		_BACnetConfirmedServiceRequest:      NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if listOfCovSubscriptionSpecifications == nil {
+		panic("listOfCovSubscriptionSpecifications of type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
+		IssueConfirmedNotifications:           issueConfirmedNotifications,
+		Lifetime:                              lifetime,
+		MaxNotificationDelay:                  maxNotificationDelay,
+		ListOfCovSubscriptionSpecifications:   listOfCovSubscriptionSpecifications,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -148,7 +150,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetTypeName
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
 	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
@@ -178,130 +180,64 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthIn
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
-	return BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subscriberProcessIdentifier)
-	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
+	subscriberProcessIdentifier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "subscriberProcessIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriberProcessIdentifier' field"))
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _subscriberProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
+	m.SubscriberProcessIdentifier = subscriberProcessIdentifier
+
+	var issueConfirmedNotifications BACnetContextTagBoolean
+	_issueConfirmedNotifications, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issueConfirmedNotifications' field"))
 	}
-	subscriberProcessIdentifier := _subscriberProcessIdentifier.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("subscriberProcessIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for subscriberProcessIdentifier")
+	if _issueConfirmedNotifications != nil {
+		issueConfirmedNotifications = *_issueConfirmedNotifications
+		m.IssueConfirmedNotifications = issueConfirmedNotifications
 	}
 
-	// Optional Field (issueConfirmedNotifications) (Can be skipped, if a given expression evaluates to false)
-	var issueConfirmedNotifications BACnetContextTagBoolean = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_BOOLEAN)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
-		default:
-			issueConfirmedNotifications = _val.(BACnetContextTagBoolean)
-			if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
-			}
-		}
+	var lifetime BACnetContextTagUnsignedInteger
+	_lifetime, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lifetime' field"))
+	}
+	if _lifetime != nil {
+		lifetime = *_lifetime
+		m.Lifetime = lifetime
 	}
 
-	// Optional Field (lifetime) (Can be skipped, if a given expression evaluates to false)
-	var lifetime BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("lifetime"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for lifetime")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
-		default:
-			lifetime = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("lifetime"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for lifetime")
-			}
-		}
+	var maxNotificationDelay BACnetContextTagUnsignedInteger
+	_maxNotificationDelay, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxNotificationDelay' field"))
+	}
+	if _maxNotificationDelay != nil {
+		maxNotificationDelay = *_maxNotificationDelay
+		m.MaxNotificationDelay = maxNotificationDelay
 	}
 
-	// Optional Field (maxNotificationDelay) (Can be skipped, if a given expression evaluates to false)
-	var maxNotificationDelay BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("maxNotificationDelay"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for maxNotificationDelay")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'maxNotificationDelay' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
-		default:
-			maxNotificationDelay = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("maxNotificationDelay"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for maxNotificationDelay")
-			}
-		}
+	listOfCovSubscriptionSpecifications, err := ReadSimpleField[BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList](ctx, "listOfCovSubscriptionSpecifications", ReadComplex[BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList](BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListParseWithBufferProducer((uint8)(uint8(4))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfCovSubscriptionSpecifications' field"))
 	}
-
-	// Simple Field (listOfCovSubscriptionSpecifications)
-	if pullErr := readBuffer.PullContext("listOfCovSubscriptionSpecifications"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovSubscriptionSpecifications")
-	}
-	_listOfCovSubscriptionSpecifications, _listOfCovSubscriptionSpecificationsErr := BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
-	if _listOfCovSubscriptionSpecificationsErr != nil {
-		return nil, errors.Wrap(_listOfCovSubscriptionSpecificationsErr, "Error parsing 'listOfCovSubscriptionSpecifications' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
-	}
-	listOfCovSubscriptionSpecifications := _listOfCovSubscriptionSpecifications.(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList)
-	if closeErr := readBuffer.CloseContext("listOfCovSubscriptionSpecifications"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfCovSubscriptionSpecifications")
-	}
+	m.ListOfCovSubscriptionSpecifications = listOfCovSubscriptionSpecifications
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		SubscriberProcessIdentifier:         subscriberProcessIdentifier,
-		IssueConfirmedNotifications:         issueConfirmedNotifications,
-		Lifetime:                            lifetime,
-		MaxNotificationDelay:                maxNotificationDelay,
-		ListOfCovSubscriptionSpecifications: listOfCovSubscriptionSpecifications,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize() ([]byte, error) {
@@ -322,76 +258,24 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 		}
 
-		// Simple Field (subscriberProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
-		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
-		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
-		}
-		if _subscriberProcessIdentifierErr != nil {
-			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "subscriberProcessIdentifier", m.GetSubscriberProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		// Optional Field (issueConfirmedNotifications) (Can be skipped, if the value is null)
-		var issueConfirmedNotifications BACnetContextTagBoolean = nil
-		if m.GetIssueConfirmedNotifications() != nil {
-			if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
-			}
-			issueConfirmedNotifications = m.GetIssueConfirmedNotifications()
-			_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, issueConfirmedNotifications)
-			if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
-			}
-			if _issueConfirmedNotificationsErr != nil {
-				return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 		}
 
-		// Optional Field (lifetime) (Can be skipped, if the value is null)
-		var lifetime BACnetContextTagUnsignedInteger = nil
-		if m.GetLifetime() != nil {
-			if pushErr := writeBuffer.PushContext("lifetime"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for lifetime")
-			}
-			lifetime = m.GetLifetime()
-			_lifetimeErr := writeBuffer.WriteSerializable(ctx, lifetime)
-			if popErr := writeBuffer.PopContext("lifetime"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for lifetime")
-			}
-			if _lifetimeErr != nil {
-				return errors.Wrap(_lifetimeErr, "Error serializing 'lifetime' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", GetRef(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'lifetime' field")
 		}
 
-		// Optional Field (maxNotificationDelay) (Can be skipped, if the value is null)
-		var maxNotificationDelay BACnetContextTagUnsignedInteger = nil
-		if m.GetMaxNotificationDelay() != nil {
-			if pushErr := writeBuffer.PushContext("maxNotificationDelay"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for maxNotificationDelay")
-			}
-			maxNotificationDelay = m.GetMaxNotificationDelay()
-			_maxNotificationDelayErr := writeBuffer.WriteSerializable(ctx, maxNotificationDelay)
-			if popErr := writeBuffer.PopContext("maxNotificationDelay"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for maxNotificationDelay")
-			}
-			if _maxNotificationDelayErr != nil {
-				return errors.Wrap(_maxNotificationDelayErr, "Error serializing 'maxNotificationDelay' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", GetRef(m.GetMaxNotificationDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxNotificationDelay' field")
 		}
 
-		// Simple Field (listOfCovSubscriptionSpecifications)
-		if pushErr := writeBuffer.PushContext("listOfCovSubscriptionSpecifications"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfCovSubscriptionSpecifications")
-		}
-		_listOfCovSubscriptionSpecificationsErr := writeBuffer.WriteSerializable(ctx, m.GetListOfCovSubscriptionSpecifications())
-		if popErr := writeBuffer.PopContext("listOfCovSubscriptionSpecifications"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfCovSubscriptionSpecifications")
-		}
-		if _listOfCovSubscriptionSpecificationsErr != nil {
-			return errors.Wrap(_listOfCovSubscriptionSpecificationsErr, "Error serializing 'listOfCovSubscriptionSpecifications' field")
+		if err := WriteSimpleField[BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList](ctx, "listOfCovSubscriptionSpecifications", m.GetListOfCovSubscriptionSpecifications(), WriteComplex[BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfCovSubscriptionSpecifications' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); popErr != nil {
@@ -399,11 +283,10 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) isBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) IsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() {
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) String() string {

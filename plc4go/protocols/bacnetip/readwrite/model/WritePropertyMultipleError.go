@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type WritePropertyMultipleError interface {
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedWriteAttempt returns FirstFailedWriteAttempt (property field)
 	GetFirstFailedWriteAttempt() BACnetObjectPropertyReferenceEnclosed
-}
-
-// WritePropertyMultipleErrorExactly can be used when we want exactly this type and not a type which fulfills WritePropertyMultipleError.
-// This is useful for switch cases.
-type WritePropertyMultipleErrorExactly interface {
-	WritePropertyMultipleError
-	isWritePropertyMultipleError() bool
+	// IsWritePropertyMultipleError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsWritePropertyMultipleError()
 }
 
 // _WritePropertyMultipleError is the data-structure of this message
 type _WritePropertyMultipleError struct {
-	*_BACnetError
+	BACnetErrorContract
 	ErrorType               ErrorEnclosed
 	FirstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed
 }
+
+var _ WritePropertyMultipleError = (*_WritePropertyMultipleError)(nil)
+var _ BACnetErrorRequirements = (*_WritePropertyMultipleError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_WritePropertyMultipleError) GetErrorChoice() BACnetConfirmedServiceCho
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_WritePropertyMultipleError) InitializeParent(parent BACnetError) {}
-
-func (m *_WritePropertyMultipleError) GetParent() BACnetError {
-	return m._BACnetError
+func (m *_WritePropertyMultipleError) GetParent() BACnetErrorContract {
+	return m.BACnetErrorContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_WritePropertyMultipleError) GetFirstFailedWriteAttempt() BACnetObjectP
 
 // NewWritePropertyMultipleError factory function for _WritePropertyMultipleError
 func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) *_WritePropertyMultipleError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for WritePropertyMultipleError must not be nil")
+	}
+	if firstFailedWriteAttempt == nil {
+		panic("firstFailedWriteAttempt of type BACnetObjectPropertyReferenceEnclosed for WritePropertyMultipleError must not be nil")
+	}
 	_result := &_WritePropertyMultipleError{
+		BACnetErrorContract:     NewBACnetError(),
 		ErrorType:               errorType,
 		FirstFailedWriteAttempt: firstFailedWriteAttempt,
-		_BACnetError:            NewBACnetError(),
 	}
-	_result._BACnetError._BACnetErrorChildRequirements = _result
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_WritePropertyMultipleError) GetTypeName() string {
 }
 
 func (m *_WritePropertyMultipleError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (errorType)
 	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
@@ -137,59 +141,34 @@ func (m *_WritePropertyMultipleError) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func WritePropertyMultipleErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
-	return WritePropertyMultipleErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
-}
-
-func WritePropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
+func (m *_WritePropertyMultipleError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__writePropertyMultipleError WritePropertyMultipleError, err error) {
+	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("WritePropertyMultipleError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for WritePropertyMultipleError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorType)
-	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
+	errorType, err := ReadSimpleField[ErrorEnclosed](ctx, "errorType", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorType' field"))
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of WritePropertyMultipleError")
-	}
-	errorType := _errorType.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorType")
-	}
+	m.ErrorType = errorType
 
-	// Simple Field (firstFailedWriteAttempt)
-	if pullErr := readBuffer.PullContext("firstFailedWriteAttempt"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedWriteAttempt")
+	firstFailedWriteAttempt, err := ReadSimpleField[BACnetObjectPropertyReferenceEnclosed](ctx, "firstFailedWriteAttempt", ReadComplex[BACnetObjectPropertyReferenceEnclosed](BACnetObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firstFailedWriteAttempt' field"))
 	}
-	_firstFailedWriteAttempt, _firstFailedWriteAttemptErr := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _firstFailedWriteAttemptErr != nil {
-		return nil, errors.Wrap(_firstFailedWriteAttemptErr, "Error parsing 'firstFailedWriteAttempt' field of WritePropertyMultipleError")
-	}
-	firstFailedWriteAttempt := _firstFailedWriteAttempt.(BACnetObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("firstFailedWriteAttempt"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for firstFailedWriteAttempt")
-	}
+	m.FirstFailedWriteAttempt = firstFailedWriteAttempt
 
 	if closeErr := readBuffer.CloseContext("WritePropertyMultipleError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for WritePropertyMultipleError")
 	}
 
-	// Create a partially initialized instance
-	_child := &_WritePropertyMultipleError{
-		_BACnetError:            &_BACnetError{},
-		ErrorType:               errorType,
-		FirstFailedWriteAttempt: firstFailedWriteAttempt,
-	}
-	_child._BACnetError._BACnetErrorChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_WritePropertyMultipleError) Serialize() ([]byte, error) {
@@ -210,28 +189,12 @@ func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for WritePropertyMultipleError")
 		}
 
-		// Simple Field (errorType)
-		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorType")
-		}
-		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorType")
-		}
-		if _errorTypeErr != nil {
-			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		// Simple Field (firstFailedWriteAttempt)
-		if pushErr := writeBuffer.PushContext("firstFailedWriteAttempt"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for firstFailedWriteAttempt")
-		}
-		_firstFailedWriteAttemptErr := writeBuffer.WriteSerializable(ctx, m.GetFirstFailedWriteAttempt())
-		if popErr := writeBuffer.PopContext("firstFailedWriteAttempt"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for firstFailedWriteAttempt")
-		}
-		if _firstFailedWriteAttemptErr != nil {
-			return errors.Wrap(_firstFailedWriteAttemptErr, "Error serializing 'firstFailedWriteAttempt' field")
+		if err := WriteSimpleField[BACnetObjectPropertyReferenceEnclosed](ctx, "firstFailedWriteAttempt", m.GetFirstFailedWriteAttempt(), WriteComplex[BACnetObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'firstFailedWriteAttempt' field")
 		}
 
 		if popErr := writeBuffer.PopContext("WritePropertyMultipleError"); popErr != nil {
@@ -239,12 +202,10 @@ func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetErrorContract.(*_BACnetError).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_WritePropertyMultipleError) isWritePropertyMultipleError() bool {
-	return true
-}
+func (m *_WritePropertyMultipleError) IsWritePropertyMultipleError() {}
 
 func (m *_WritePropertyMultipleError) String() string {
 	if m == nil {

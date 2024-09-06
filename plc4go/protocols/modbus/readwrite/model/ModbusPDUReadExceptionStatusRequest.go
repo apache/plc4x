@@ -37,19 +37,17 @@ type ModbusPDUReadExceptionStatusRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
-}
-
-// ModbusPDUReadExceptionStatusRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadExceptionStatusRequest.
-// This is useful for switch cases.
-type ModbusPDUReadExceptionStatusRequestExactly interface {
-	ModbusPDUReadExceptionStatusRequest
-	isModbusPDUReadExceptionStatusRequest() bool
+	// IsModbusPDUReadExceptionStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadExceptionStatusRequest()
 }
 
 // _ModbusPDUReadExceptionStatusRequest is the data-structure of this message
 type _ModbusPDUReadExceptionStatusRequest struct {
-	*_ModbusPDU
+	ModbusPDUContract
 }
+
+var _ ModbusPDUReadExceptionStatusRequest = (*_ModbusPDUReadExceptionStatusRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReadExceptionStatusRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,18 +71,16 @@ func (m *_ModbusPDUReadExceptionStatusRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUReadExceptionStatusRequest) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUReadExceptionStatusRequest) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUReadExceptionStatusRequest) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 // NewModbusPDUReadExceptionStatusRequest factory function for _ModbusPDUReadExceptionStatusRequest
 func NewModbusPDUReadExceptionStatusRequest() *_ModbusPDUReadExceptionStatusRequest {
 	_result := &_ModbusPDUReadExceptionStatusRequest{
-		_ModbusPDU: NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -104,7 +100,7 @@ func (m *_ModbusPDUReadExceptionStatusRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUReadExceptionStatusRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +109,11 @@ func (m *_ModbusPDUReadExceptionStatusRequest) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReadExceptionStatusRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReadExceptionStatusRequest, error) {
-	return ModbusPDUReadExceptionStatusRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUReadExceptionStatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadExceptionStatusRequest, error) {
+func (m *_ModbusPDUReadExceptionStatusRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReadExceptionStatusRequest ModbusPDUReadExceptionStatusRequest, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReadExceptionStatusRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadExceptionStatusRequest")
 	}
@@ -132,12 +124,7 @@ func ModbusPDUReadExceptionStatusRequestParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadExceptionStatusRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUReadExceptionStatusRequest{
-		_ModbusPDU: &_ModbusPDU{},
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUReadExceptionStatusRequest) Serialize() ([]byte, error) {
@@ -163,12 +150,10 @@ func (m *_ModbusPDUReadExceptionStatusRequest) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUReadExceptionStatusRequest) isModbusPDUReadExceptionStatusRequest() bool {
-	return true
-}
+func (m *_ModbusPDUReadExceptionStatusRequest) IsModbusPDUReadExceptionStatusRequest() {}
 
 func (m *_ModbusPDUReadExceptionStatusRequest) String() string {
 	if m == nil {

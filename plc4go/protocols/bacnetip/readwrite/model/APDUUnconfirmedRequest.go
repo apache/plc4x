@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,22 +41,20 @@ type APDUUnconfirmedRequest interface {
 	APDU
 	// GetServiceRequest returns ServiceRequest (property field)
 	GetServiceRequest() BACnetUnconfirmedServiceRequest
-}
-
-// APDUUnconfirmedRequestExactly can be used when we want exactly this type and not a type which fulfills APDUUnconfirmedRequest.
-// This is useful for switch cases.
-type APDUUnconfirmedRequestExactly interface {
-	APDUUnconfirmedRequest
-	isAPDUUnconfirmedRequest() bool
+	// IsAPDUUnconfirmedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUUnconfirmedRequest()
 }
 
 // _APDUUnconfirmedRequest is the data-structure of this message
 type _APDUUnconfirmedRequest struct {
-	*_APDU
+	APDUContract
 	ServiceRequest BACnetUnconfirmedServiceRequest
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ APDUUnconfirmedRequest = (*_APDUUnconfirmedRequest)(nil)
+var _ APDURequirements = (*_APDUUnconfirmedRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,10 +70,8 @@ func (m *_APDUUnconfirmedRequest) GetApduType() ApduType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_APDUUnconfirmedRequest) InitializeParent(parent APDU) {}
-
-func (m *_APDUUnconfirmedRequest) GetParent() APDU {
-	return m._APDU
+func (m *_APDUUnconfirmedRequest) GetParent() APDUContract {
+	return m.APDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +90,14 @@ func (m *_APDUUnconfirmedRequest) GetServiceRequest() BACnetUnconfirmedServiceRe
 
 // NewAPDUUnconfirmedRequest factory function for _APDUUnconfirmedRequest
 func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, apduLength uint16) *_APDUUnconfirmedRequest {
-	_result := &_APDUUnconfirmedRequest{
-		ServiceRequest: serviceRequest,
-		_APDU:          NewAPDU(apduLength),
+	if serviceRequest == nil {
+		panic("serviceRequest of type BACnetUnconfirmedServiceRequest for APDUUnconfirmedRequest must not be nil")
 	}
-	_result._APDU._APDUChildRequirements = _result
+	_result := &_APDUUnconfirmedRequest{
+		APDUContract:   NewAPDU(apduLength),
+		ServiceRequest: serviceRequest,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 
@@ -116,7 +117,7 @@ func (m *_APDUUnconfirmedRequest) GetTypeName() string {
 }
 
 func (m *_APDUUnconfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -131,65 +132,34 @@ func (m *_APDUUnconfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUUnconfirmedRequestParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUUnconfirmedRequest, error) {
-	return APDUUnconfirmedRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func APDUUnconfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnconfirmedRequest, error) {
+func (m *_APDUUnconfirmedRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUUnconfirmedRequest APDUUnconfirmedRequest, err error) {
+	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDUUnconfirmedRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 4)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUUnconfirmedRequest")
-		}
-		if reserved != uint8(0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(4)), uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (serviceRequest)
-	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
+	serviceRequest, err := ReadSimpleField[BACnetUnconfirmedServiceRequest](ctx, "serviceRequest", ReadComplex[BACnetUnconfirmedServiceRequest](BACnetUnconfirmedServiceRequestParseWithBufferProducer[BACnetUnconfirmedServiceRequest]((uint16)(uint16(apduLength)-uint16(uint16(1)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceRequest' field"))
 	}
-	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParseWithBuffer(ctx, readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
-	if _serviceRequestErr != nil {
-		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field of APDUUnconfirmedRequest")
-	}
-	serviceRequest := _serviceRequest.(BACnetUnconfirmedServiceRequest)
-	if closeErr := readBuffer.CloseContext("serviceRequest"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceRequest")
-	}
+	m.ServiceRequest = serviceRequest
 
 	if closeErr := readBuffer.CloseContext("APDUUnconfirmedRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDUUnconfirmedRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_APDUUnconfirmedRequest{
-		_APDU: &_APDU{
-			ApduLength: apduLength,
-		},
-		ServiceRequest: serviceRequest,
-		reservedField0: reservedField0,
-	}
-	_child._APDU._APDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_APDUUnconfirmedRequest) Serialize() ([]byte, error) {
@@ -210,32 +180,12 @@ func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for APDUUnconfirmedRequest")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (serviceRequest)
-		if pushErr := writeBuffer.PushContext("serviceRequest"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serviceRequest")
-		}
-		_serviceRequestErr := writeBuffer.WriteSerializable(ctx, m.GetServiceRequest())
-		if popErr := writeBuffer.PopContext("serviceRequest"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serviceRequest")
-		}
-		if _serviceRequestErr != nil {
-			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
+		if err := WriteSimpleField[BACnetUnconfirmedServiceRequest](ctx, "serviceRequest", m.GetServiceRequest(), WriteComplex[BACnetUnconfirmedServiceRequest](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceRequest' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUUnconfirmedRequest"); popErr != nil {
@@ -243,12 +193,10 @@ func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.APDUContract.(*_APDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_APDUUnconfirmedRequest) isAPDUUnconfirmedRequest() bool {
-	return true
-}
+func (m *_APDUUnconfirmedRequest) IsAPDUUnconfirmedRequest() {}
 
 func (m *_APDUUnconfirmedRequest) String() string {
 	if m == nil {

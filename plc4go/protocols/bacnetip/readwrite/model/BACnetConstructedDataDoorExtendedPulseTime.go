@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDoorExtendedPulseTime interface {
 	GetDoorExtendedPulseTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataDoorExtendedPulseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorExtendedPulseTime.
-// This is useful for switch cases.
-type BACnetConstructedDataDoorExtendedPulseTimeExactly interface {
-	BACnetConstructedDataDoorExtendedPulseTime
-	isBACnetConstructedDataDoorExtendedPulseTime() bool
+	// IsBACnetConstructedDataDoorExtendedPulseTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDoorExtendedPulseTime()
 }
 
 // _BACnetConstructedDataDoorExtendedPulseTime is the data-structure of this message
 type _BACnetConstructedDataDoorExtendedPulseTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DoorExtendedPulseTime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataDoorExtendedPulseTime = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetActualValue() BACnetApp
 
 // NewBACnetConstructedDataDoorExtendedPulseTime factory function for _BACnetConstructedDataDoorExtendedPulseTime
 func NewBACnetConstructedDataDoorExtendedPulseTime(doorExtendedPulseTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
-	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
-		DoorExtendedPulseTime:  doorExtendedPulseTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if doorExtendedPulseTime == nil {
+		panic("doorExtendedPulseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorExtendedPulseTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorExtendedPulseTime:         doorExtendedPulseTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (doorExtendedPulseTime)
 	lengthInBits += m.DoorExtendedPulseTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDoorExtendedPulseTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorExtendedPulseTime, error) {
-	return BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorExtendedPulseTime, error) {
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDoorExtendedPulseTime BACnetConstructedDataDoorExtendedPulseTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorExtendedPulseTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDoorExtendedPulseTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorExtendedPulseTime)
-	if pullErr := readBuffer.PullContext("doorExtendedPulseTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorExtendedPulseTime")
+	doorExtendedPulseTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorExtendedPulseTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorExtendedPulseTime' field"))
 	}
-	_doorExtendedPulseTime, _doorExtendedPulseTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doorExtendedPulseTimeErr != nil {
-		return nil, errors.Wrap(_doorExtendedPulseTimeErr, "Error parsing 'doorExtendedPulseTime' field of BACnetConstructedDataDoorExtendedPulseTime")
-	}
-	doorExtendedPulseTime := _doorExtendedPulseTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("doorExtendedPulseTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorExtendedPulseTime")
-	}
+	m.DoorExtendedPulseTime = doorExtendedPulseTime
 
-	// Virtual field
-	_actualValue := doorExtendedPulseTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), doorExtendedPulseTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorExtendedPulseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorExtendedPulseTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDoorExtendedPulseTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DoorExtendedPulseTime: doorExtendedPulseTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorExtendedPulseTime")
 		}
 
-		// Simple Field (doorExtendedPulseTime)
-		if pushErr := writeBuffer.PushContext("doorExtendedPulseTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorExtendedPulseTime")
-		}
-		_doorExtendedPulseTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDoorExtendedPulseTime())
-		if popErr := writeBuffer.PopContext("doorExtendedPulseTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorExtendedPulseTime")
-		}
-		if _doorExtendedPulseTimeErr != nil {
-			return errors.Wrap(_doorExtendedPulseTimeErr, "Error serializing 'doorExtendedPulseTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorExtendedPulseTime", m.GetDoorExtendedPulseTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorExtendedPulseTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) isBACnetConstructedDataDoorExtendedPulseTime() bool {
-	return true
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) IsBACnetConstructedDataDoorExtendedPulseTime() {
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) String() string {

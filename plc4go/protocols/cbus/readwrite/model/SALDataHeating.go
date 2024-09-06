@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SALDataHeating interface {
 	SALData
 	// GetHeatingData returns HeatingData (property field)
 	GetHeatingData() LightingData
-}
-
-// SALDataHeatingExactly can be used when we want exactly this type and not a type which fulfills SALDataHeating.
-// This is useful for switch cases.
-type SALDataHeatingExactly interface {
-	SALDataHeating
-	isSALDataHeating() bool
+	// IsSALDataHeating is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataHeating()
 }
 
 // _SALDataHeating is the data-structure of this message
 type _SALDataHeating struct {
-	*_SALData
+	SALDataContract
 	HeatingData LightingData
 }
+
+var _ SALDataHeating = (*_SALDataHeating)(nil)
+var _ SALDataRequirements = (*_SALDataHeating)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_SALDataHeating) GetApplicationId() ApplicationId {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataHeating) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataHeating) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataHeating) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_SALDataHeating) GetHeatingData() LightingData {
 
 // NewSALDataHeating factory function for _SALDataHeating
 func NewSALDataHeating(heatingData LightingData, salData SALData) *_SALDataHeating {
-	_result := &_SALDataHeating{
-		HeatingData: heatingData,
-		_SALData:    NewSALData(salData),
+	if heatingData == nil {
+		panic("heatingData of type LightingData for SALDataHeating must not be nil")
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result := &_SALDataHeating{
+		SALDataContract: NewSALData(salData),
+		HeatingData:     heatingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_SALDataHeating) GetTypeName() string {
 }
 
 func (m *_SALDataHeating) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (heatingData)
 	lengthInBits += m.HeatingData.GetLengthInBits(ctx)
@@ -128,45 +127,28 @@ func (m *_SALDataHeating) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataHeatingParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataHeating, error) {
-	return SALDataHeatingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataHeatingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHeating, error) {
+func (m *_SALDataHeating) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataHeating SALDataHeating, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataHeating"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataHeating")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (heatingData)
-	if pullErr := readBuffer.PullContext("heatingData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for heatingData")
+	heatingData, err := ReadSimpleField[LightingData](ctx, "heatingData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'heatingData' field"))
 	}
-	_heatingData, _heatingDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _heatingDataErr != nil {
-		return nil, errors.Wrap(_heatingDataErr, "Error parsing 'heatingData' field of SALDataHeating")
-	}
-	heatingData := _heatingData.(LightingData)
-	if closeErr := readBuffer.CloseContext("heatingData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for heatingData")
-	}
+	m.HeatingData = heatingData
 
 	if closeErr := readBuffer.CloseContext("SALDataHeating"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataHeating")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataHeating{
-		_SALData:    &_SALData{},
-		HeatingData: heatingData,
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataHeating) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_SALDataHeating) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for SALDataHeating")
 		}
 
-		// Simple Field (heatingData)
-		if pushErr := writeBuffer.PushContext("heatingData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for heatingData")
-		}
-		_heatingDataErr := writeBuffer.WriteSerializable(ctx, m.GetHeatingData())
-		if popErr := writeBuffer.PopContext("heatingData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for heatingData")
-		}
-		if _heatingDataErr != nil {
-			return errors.Wrap(_heatingDataErr, "Error serializing 'heatingData' field")
+		if err := WriteSimpleField[LightingData](ctx, "heatingData", m.GetHeatingData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'heatingData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataHeating"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_SALDataHeating) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataHeating) isSALDataHeating() bool {
-	return true
-}
+func (m *_SALDataHeating) IsSALDataHeating() {}
 
 func (m *_SALDataHeating) String() string {
 	if m == nil {

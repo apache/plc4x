@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,18 +49,13 @@ type DeleteReferencesItem interface {
 	GetTargetNodeId() ExpandedNodeId
 	// GetDeleteBidirectional returns DeleteBidirectional (property field)
 	GetDeleteBidirectional() bool
-}
-
-// DeleteReferencesItemExactly can be used when we want exactly this type and not a type which fulfills DeleteReferencesItem.
-// This is useful for switch cases.
-type DeleteReferencesItemExactly interface {
-	DeleteReferencesItem
-	isDeleteReferencesItem() bool
+	// IsDeleteReferencesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteReferencesItem()
 }
 
 // _DeleteReferencesItem is the data-structure of this message
 type _DeleteReferencesItem struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	SourceNodeId        NodeId
 	ReferenceTypeId     NodeId
 	IsForward           bool
@@ -68,6 +65,9 @@ type _DeleteReferencesItem struct {
 	reservedField0 *uint8
 	reservedField1 *uint8
 }
+
+var _ DeleteReferencesItem = (*_DeleteReferencesItem)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DeleteReferencesItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,10 +83,8 @@ func (m *_DeleteReferencesItem) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DeleteReferencesItem) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_DeleteReferencesItem) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_DeleteReferencesItem) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -121,15 +119,24 @@ func (m *_DeleteReferencesItem) GetDeleteBidirectional() bool {
 
 // NewDeleteReferencesItem factory function for _DeleteReferencesItem
 func NewDeleteReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetNodeId ExpandedNodeId, deleteBidirectional bool) *_DeleteReferencesItem {
-	_result := &_DeleteReferencesItem{
-		SourceNodeId:               sourceNodeId,
-		ReferenceTypeId:            referenceTypeId,
-		IsForward:                  isForward,
-		TargetNodeId:               targetNodeId,
-		DeleteBidirectional:        deleteBidirectional,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if sourceNodeId == nil {
+		panic("sourceNodeId of type NodeId for DeleteReferencesItem must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for DeleteReferencesItem must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type ExpandedNodeId for DeleteReferencesItem must not be nil")
+	}
+	_result := &_DeleteReferencesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SourceNodeId:                      sourceNodeId,
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		TargetNodeId:                      targetNodeId,
+		DeleteBidirectional:               deleteBidirectional,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -149,7 +156,7 @@ func (m *_DeleteReferencesItem) GetTypeName() string {
 }
 
 func (m *_DeleteReferencesItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (sourceNodeId)
 	lengthInBits += m.SourceNodeId.GetLengthInBits(ctx)
@@ -179,125 +186,64 @@ func (m *_DeleteReferencesItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeleteReferencesItemParse(ctx context.Context, theBytes []byte, identifier string) (DeleteReferencesItem, error) {
-	return DeleteReferencesItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func DeleteReferencesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteReferencesItem, error) {
+func (m *_DeleteReferencesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteReferencesItem DeleteReferencesItem, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeleteReferencesItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeleteReferencesItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sourceNodeId)
-	if pullErr := readBuffer.PullContext("sourceNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceNodeId")
+	sourceNodeId, err := ReadSimpleField[NodeId](ctx, "sourceNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceNodeId' field"))
 	}
-	_sourceNodeId, _sourceNodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sourceNodeIdErr != nil {
-		return nil, errors.Wrap(_sourceNodeIdErr, "Error parsing 'sourceNodeId' field of DeleteReferencesItem")
-	}
-	sourceNodeId := _sourceNodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("sourceNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceNodeId")
-	}
+	m.SourceNodeId = sourceNodeId
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of DeleteReferencesItem")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
-	}
+	m.ReferenceTypeId = referenceTypeId
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DeleteReferencesItem")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of DeleteReferencesItem")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
-	isForward := _isForward
+	m.IsForward = isForward
 
-	// Simple Field (targetNodeId)
-	if pullErr := readBuffer.PullContext("targetNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNodeId")
+	targetNodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "targetNodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNodeId' field"))
 	}
-	_targetNodeId, _targetNodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeIdErr != nil {
-		return nil, errors.Wrap(_targetNodeIdErr, "Error parsing 'targetNodeId' field of DeleteReferencesItem")
-	}
-	targetNodeId := _targetNodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNodeId")
-	}
+	m.TargetNodeId = targetNodeId
 
-	var reservedField1 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DeleteReferencesItem")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField1 = reservedField1
 
-	// Simple Field (deleteBidirectional)
-	_deleteBidirectional, _deleteBidirectionalErr := readBuffer.ReadBit("deleteBidirectional")
-	if _deleteBidirectionalErr != nil {
-		return nil, errors.Wrap(_deleteBidirectionalErr, "Error parsing 'deleteBidirectional' field of DeleteReferencesItem")
+	deleteBidirectional, err := ReadSimpleField(ctx, "deleteBidirectional", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteBidirectional' field"))
 	}
-	deleteBidirectional := _deleteBidirectional
+	m.DeleteBidirectional = deleteBidirectional
 
 	if closeErr := readBuffer.CloseContext("DeleteReferencesItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeleteReferencesItem")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DeleteReferencesItem{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		SourceNodeId:               sourceNodeId,
-		ReferenceTypeId:            referenceTypeId,
-		IsForward:                  isForward,
-		TargetNodeId:               targetNodeId,
-		DeleteBidirectional:        deleteBidirectional,
-		reservedField0:             reservedField0,
-		reservedField1:             reservedField1,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DeleteReferencesItem) Serialize() ([]byte, error) {
@@ -318,86 +264,32 @@ func (m *_DeleteReferencesItem) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for DeleteReferencesItem")
 		}
 
-		// Simple Field (sourceNodeId)
-		if pushErr := writeBuffer.PushContext("sourceNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceNodeId")
-		}
-		_sourceNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetSourceNodeId())
-		if popErr := writeBuffer.PopContext("sourceNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceNodeId")
-		}
-		if _sourceNodeIdErr != nil {
-			return errors.Wrap(_sourceNodeIdErr, "Error serializing 'sourceNodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "sourceNodeId", m.GetSourceNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceNodeId' field")
 		}
 
-		// Simple Field (referenceTypeId)
-		if pushErr := writeBuffer.PushContext("referenceTypeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceTypeId")
-		}
-		_referenceTypeIdErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTypeId())
-		if popErr := writeBuffer.PopContext("referenceTypeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceTypeId")
-		}
-		if _referenceTypeIdErr != nil {
-			return errors.Wrap(_referenceTypeIdErr, "Error serializing 'referenceTypeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceTypeId' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (isForward)
-		isForward := bool(m.GetIsForward())
-		_isForwardErr := writeBuffer.WriteBit("isForward", (isForward))
-		if _isForwardErr != nil {
-			return errors.Wrap(_isForwardErr, "Error serializing 'isForward' field")
+		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isForward' field")
 		}
 
-		// Simple Field (targetNodeId)
-		if pushErr := writeBuffer.PushContext("targetNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetNodeId")
-		}
-		_targetNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetNodeId())
-		if popErr := writeBuffer.PopContext("targetNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetNodeId")
-		}
-		if _targetNodeIdErr != nil {
-			return errors.Wrap(_targetNodeIdErr, "Error serializing 'targetNodeId' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "targetNodeId", m.GetTargetNodeId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetNodeId' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (deleteBidirectional)
-		deleteBidirectional := bool(m.GetDeleteBidirectional())
-		_deleteBidirectionalErr := writeBuffer.WriteBit("deleteBidirectional", (deleteBidirectional))
-		if _deleteBidirectionalErr != nil {
-			return errors.Wrap(_deleteBidirectionalErr, "Error serializing 'deleteBidirectional' field")
+		if err := WriteSimpleField[bool](ctx, "deleteBidirectional", m.GetDeleteBidirectional(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteBidirectional' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeleteReferencesItem"); popErr != nil {
@@ -405,12 +297,10 @@ func (m *_DeleteReferencesItem) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DeleteReferencesItem) isDeleteReferencesItem() bool {
-	return true
-}
+func (m *_DeleteReferencesItem) IsDeleteReferencesItem() {}
 
 func (m *_DeleteReferencesItem) String() string {
 	if m == nil {

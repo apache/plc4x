@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesDoorAlarmState interface {
 	BACnetPropertyStates
 	// GetDoorAlarmState returns DoorAlarmState (property field)
 	GetDoorAlarmState() BACnetDoorAlarmStateTagged
-}
-
-// BACnetPropertyStatesDoorAlarmStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesDoorAlarmState.
-// This is useful for switch cases.
-type BACnetPropertyStatesDoorAlarmStateExactly interface {
-	BACnetPropertyStatesDoorAlarmState
-	isBACnetPropertyStatesDoorAlarmState() bool
+	// IsBACnetPropertyStatesDoorAlarmState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesDoorAlarmState()
 }
 
 // _BACnetPropertyStatesDoorAlarmState is the data-structure of this message
 type _BACnetPropertyStatesDoorAlarmState struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	DoorAlarmState BACnetDoorAlarmStateTagged
 }
+
+var _ BACnetPropertyStatesDoorAlarmState = (*_BACnetPropertyStatesDoorAlarmState)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorAlarmState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesDoorAlarmState struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesDoorAlarmState) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesDoorAlarmState) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesDoorAlarmState) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesDoorAlarmState) GetDoorAlarmState() BACnetDoorAlar
 
 // NewBACnetPropertyStatesDoorAlarmState factory function for _BACnetPropertyStatesDoorAlarmState
 func NewBACnetPropertyStatesDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesDoorAlarmState {
-	_result := &_BACnetPropertyStatesDoorAlarmState{
-		DoorAlarmState:        doorAlarmState,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if doorAlarmState == nil {
+		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetPropertyStatesDoorAlarmState must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesDoorAlarmState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		DoorAlarmState:               doorAlarmState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesDoorAlarmState) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesDoorAlarmState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (doorAlarmState)
 	lengthInBits += m.DoorAlarmState.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesDoorAlarmState) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesDoorAlarmStateParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
-	return BACnetPropertyStatesDoorAlarmStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesDoorAlarmStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
+func (m *_BACnetPropertyStatesDoorAlarmState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesDoorAlarmState BACnetPropertyStatesDoorAlarmState, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorAlarmState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesDoorAlarmState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorAlarmState)
-	if pullErr := readBuffer.PullContext("doorAlarmState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorAlarmState")
+	doorAlarmState, err := ReadSimpleField[BACnetDoorAlarmStateTagged](ctx, "doorAlarmState", ReadComplex[BACnetDoorAlarmStateTagged](BACnetDoorAlarmStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorAlarmState' field"))
 	}
-	_doorAlarmState, _doorAlarmStateErr := BACnetDoorAlarmStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _doorAlarmStateErr != nil {
-		return nil, errors.Wrap(_doorAlarmStateErr, "Error parsing 'doorAlarmState' field of BACnetPropertyStatesDoorAlarmState")
-	}
-	doorAlarmState := _doorAlarmState.(BACnetDoorAlarmStateTagged)
-	if closeErr := readBuffer.CloseContext("doorAlarmState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorAlarmState")
-	}
+	m.DoorAlarmState = doorAlarmState
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesDoorAlarmState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesDoorAlarmState")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesDoorAlarmState{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		DoorAlarmState:        doorAlarmState,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesDoorAlarmState) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesDoorAlarmState) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesDoorAlarmState")
 		}
 
-		// Simple Field (doorAlarmState)
-		if pushErr := writeBuffer.PushContext("doorAlarmState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorAlarmState")
-		}
-		_doorAlarmStateErr := writeBuffer.WriteSerializable(ctx, m.GetDoorAlarmState())
-		if popErr := writeBuffer.PopContext("doorAlarmState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorAlarmState")
-		}
-		if _doorAlarmStateErr != nil {
-			return errors.Wrap(_doorAlarmStateErr, "Error serializing 'doorAlarmState' field")
+		if err := WriteSimpleField[BACnetDoorAlarmStateTagged](ctx, "doorAlarmState", m.GetDoorAlarmState(), WriteComplex[BACnetDoorAlarmStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorAlarmState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesDoorAlarmState"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesDoorAlarmState) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesDoorAlarmState) isBACnetPropertyStatesDoorAlarmState() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesDoorAlarmState) IsBACnetPropertyStatesDoorAlarmState() {}
 
 func (m *_BACnetPropertyStatesDoorAlarmState) String() string {
 	if m == nil {

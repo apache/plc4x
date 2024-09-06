@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type CallRequest interface {
 	GetNoOfMethodsToCall() int32
 	// GetMethodsToCall returns MethodsToCall (property field)
 	GetMethodsToCall() []ExtensionObjectDefinition
-}
-
-// CallRequestExactly can be used when we want exactly this type and not a type which fulfills CallRequest.
-// This is useful for switch cases.
-type CallRequestExactly interface {
-	CallRequest
-	isCallRequest() bool
+	// IsCallRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCallRequest()
 }
 
 // _CallRequest is the data-structure of this message
 type _CallRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader     ExtensionObjectDefinition
 	NoOfMethodsToCall int32
 	MethodsToCall     []ExtensionObjectDefinition
 }
+
+var _ CallRequest = (*_CallRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CallRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_CallRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CallRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CallRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CallRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_CallRequest) GetMethodsToCall() []ExtensionObjectDefinition {
 
 // NewCallRequest factory function for _CallRequest
 func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) *_CallRequest {
-	_result := &_CallRequest{
-		RequestHeader:              requestHeader,
-		NoOfMethodsToCall:          noOfMethodsToCall,
-		MethodsToCall:              methodsToCall,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CallRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_CallRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfMethodsToCall:                 noOfMethodsToCall,
+		MethodsToCall:                     methodsToCall,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_CallRequest) GetTypeName() string {
 }
 
 func (m *_CallRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -155,81 +156,40 @@ func (m *_CallRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CallRequestParse(ctx context.Context, theBytes []byte, identifier string) (CallRequest, error) {
-	return CallRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CallRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CallRequest, error) {
+func (m *_CallRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__callRequest CallRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CallRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CallRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of CallRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (noOfMethodsToCall)
-	_noOfMethodsToCall, _noOfMethodsToCallErr := readBuffer.ReadInt32("noOfMethodsToCall", 32)
-	if _noOfMethodsToCallErr != nil {
-		return nil, errors.Wrap(_noOfMethodsToCallErr, "Error parsing 'noOfMethodsToCall' field of CallRequest")
+	noOfMethodsToCall, err := ReadSimpleField(ctx, "noOfMethodsToCall", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMethodsToCall' field"))
 	}
-	noOfMethodsToCall := _noOfMethodsToCall
+	m.NoOfMethodsToCall = noOfMethodsToCall
 
-	// Array field (methodsToCall)
-	if pullErr := readBuffer.PullContext("methodsToCall", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for methodsToCall")
+	methodsToCall, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "methodsToCall", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("706")), readBuffer), uint64(noOfMethodsToCall))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'methodsToCall' field"))
 	}
-	// Count array
-	methodsToCall := make([]ExtensionObjectDefinition, max(noOfMethodsToCall, 0))
-	// This happens when the size is set conditional to 0
-	if len(methodsToCall) == 0 {
-		methodsToCall = nil
-	}
-	{
-		_numItems := uint16(max(noOfMethodsToCall, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "706")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'methodsToCall' field of CallRequest")
-			}
-			methodsToCall[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("methodsToCall", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for methodsToCall")
-	}
+	m.MethodsToCall = methodsToCall
 
 	if closeErr := readBuffer.CloseContext("CallRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CallRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CallRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		NoOfMethodsToCall:          noOfMethodsToCall,
-		MethodsToCall:              methodsToCall,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CallRequest) Serialize() ([]byte, error) {
@@ -250,40 +210,16 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for CallRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfMethodsToCall)
-		noOfMethodsToCall := int32(m.GetNoOfMethodsToCall())
-		_noOfMethodsToCallErr := writeBuffer.WriteInt32("noOfMethodsToCall", 32, int32((noOfMethodsToCall)))
-		if _noOfMethodsToCallErr != nil {
-			return errors.Wrap(_noOfMethodsToCallErr, "Error serializing 'noOfMethodsToCall' field")
+		if err := WriteSimpleField[int32](ctx, "noOfMethodsToCall", m.GetNoOfMethodsToCall(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfMethodsToCall' field")
 		}
 
-		// Array Field (methodsToCall)
-		if pushErr := writeBuffer.PushContext("methodsToCall", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for methodsToCall")
-		}
-		for _curItem, _element := range m.GetMethodsToCall() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMethodsToCall()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'methodsToCall' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("methodsToCall", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for methodsToCall")
+		if err := WriteComplexTypeArrayField(ctx, "methodsToCall", m.GetMethodsToCall(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'methodsToCall' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CallRequest"); popErr != nil {
@@ -291,12 +227,10 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CallRequest) isCallRequest() bool {
-	return true
-}
+func (m *_CallRequest) IsCallRequest() {}
 
 func (m *_CallRequest) String() string {
 	if m == nil {

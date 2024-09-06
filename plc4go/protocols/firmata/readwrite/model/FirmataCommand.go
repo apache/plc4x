@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,47 +35,40 @@ import (
 
 // FirmataCommand is the corresponding interface of FirmataCommand
 type FirmataCommand interface {
+	FirmataCommandContract
+	FirmataCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommand()
+}
+
+// FirmataCommandContract provides a set of functions which can be overwritten by a sub struct
+type FirmataCommandContract interface {
+	// GetResponse() returns a parser argument
+	GetResponse() bool
+	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommand()
+}
+
+// FirmataCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type FirmataCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
 
-// FirmataCommandExactly can be used when we want exactly this type and not a type which fulfills FirmataCommand.
-// This is useful for switch cases.
-type FirmataCommandExactly interface {
-	FirmataCommand
-	isFirmataCommand() bool
-}
-
 // _FirmataCommand is the data-structure of this message
 type _FirmataCommand struct {
-	_FirmataCommandChildRequirements
+	_SubType FirmataCommand
 
 	// Arguments.
 	Response bool
 }
 
-type _FirmataCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandCode() uint8
-}
-
-type FirmataCommandParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child FirmataCommand, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type FirmataCommandChild interface {
-	utils.Serializable
-	InitializeParent(parent FirmataCommand)
-	GetParent() *FirmataCommand
-
-	GetTypeName() string
-	FirmataCommand
-}
+var _ FirmataCommandContract = (*_FirmataCommand)(nil)
 
 // NewFirmataCommand factory function for _FirmataCommand
 func NewFirmataCommand(response bool) *_FirmataCommand {
@@ -95,7 +90,7 @@ func (m *_FirmataCommand) GetTypeName() string {
 	return "FirmataCommand"
 }
 
-func (m *_FirmataCommand) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_FirmataCommand) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandCode)
 	lengthInBits += 4
@@ -104,68 +99,82 @@ func (m *_FirmataCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_FirmataCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func FirmataCommandParse(ctx context.Context, theBytes []byte, response bool) (FirmataCommand, error) {
-	return FirmataCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
+func FirmataCommandParse[T FirmataCommand](ctx context.Context, theBytes []byte, response bool) (T, error) {
+	return FirmataCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func FirmataCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommand, error) {
+func FirmataCommandParseWithBufferProducer[T FirmataCommand](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := FirmataCommandParseWithBuffer[T](ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func FirmataCommandParseWithBuffer[T FirmataCommand](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
+	v, err := (&_FirmataCommand{Response: response}).parse(ctx, readBuffer, response)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_FirmataCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__firmataCommand FirmataCommand, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 4)
-	if _commandCodeErr != nil {
-		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field of FirmataCommand")
+	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandCode' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type FirmataCommandChildSerializeRequirement interface {
-		FirmataCommand
-		InitializeParent(FirmataCommand)
-		GetParent() FirmataCommand
-	}
-	var _childTemp any
-	var _child FirmataCommandChildSerializeRequirement
-	var typeSwitchError error
+	var _child FirmataCommand
 	switch {
 	case commandCode == 0x0: // FirmataCommandSysex
-		_childTemp, typeSwitchError = FirmataCommandSysexParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_FirmataCommandSysex{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSysex for type-switch of FirmataCommand")
+		}
 	case commandCode == 0x4: // FirmataCommandSetPinMode
-		_childTemp, typeSwitchError = FirmataCommandSetPinModeParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_FirmataCommandSetPinMode{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSetPinMode for type-switch of FirmataCommand")
+		}
 	case commandCode == 0x5: // FirmataCommandSetDigitalPinValue
-		_childTemp, typeSwitchError = FirmataCommandSetDigitalPinValueParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_FirmataCommandSetDigitalPinValue{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSetDigitalPinValue for type-switch of FirmataCommand")
+		}
 	case commandCode == 0x9: // FirmataCommandProtocolVersion
-		_childTemp, typeSwitchError = FirmataCommandProtocolVersionParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_FirmataCommandProtocolVersion{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandProtocolVersion for type-switch of FirmataCommand")
+		}
 	case commandCode == 0xF: // FirmataCommandSystemReset
-		_childTemp, typeSwitchError = FirmataCommandSystemResetParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_FirmataCommandSystemReset{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSystemReset for type-switch of FirmataCommand")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
+		return nil, errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of FirmataCommand")
-	}
-	_child = _childTemp.(FirmataCommandChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("FirmataCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommand")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_FirmataCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child FirmataCommand, serializeChildFunction func() error) error {
+func (pm *_FirmataCommand) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child FirmataCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -177,12 +186,8 @@ func (pm *_FirmataCommand) SerializeParent(ctx context.Context, writeBuffer util
 		return errors.Wrap(pushErr, "Error pushing for FirmataCommand")
 	}
 
-	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode := uint8(child.GetCommandCode())
-	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 4, uint8((commandCode)))
-
-	if _commandCodeErr != nil {
-		return errors.Wrap(_commandCodeErr, "Error serializing 'commandCode' field")
+	if err := WriteDiscriminatorField(ctx, "commandCode", m.GetCommandCode(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandCode' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -206,17 +211,4 @@ func (m *_FirmataCommand) GetResponse() bool {
 //
 ////
 
-func (m *_FirmataCommand) isFirmataCommand() bool {
-	return true
-}
-
-func (m *_FirmataCommand) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_FirmataCommand) IsFirmataCommand() {}

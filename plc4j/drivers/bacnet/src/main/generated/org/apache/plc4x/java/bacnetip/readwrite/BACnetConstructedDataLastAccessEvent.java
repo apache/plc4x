@@ -82,8 +82,7 @@ public class BACnetConstructedDataLastAccessEvent extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataLastAccessEvent");
 
     // Simple Field (lastAccessEvent)
-    writeSimpleField(
-        "lastAccessEvent", lastAccessEvent, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastAccessEvent", lastAccessEvent, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccessEventTagged actualValue = getActualValue();
@@ -125,7 +124,7 @@ public class BACnetConstructedDataLastAccessEvent extends BACnetConstructedData 
     BACnetAccessEventTagged lastAccessEvent =
         readSimpleField(
             "lastAccessEvent",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessEventTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

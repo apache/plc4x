@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type UserNameIdentityToken interface {
 	GetPassword() PascalByteString
 	// GetEncryptionAlgorithm returns EncryptionAlgorithm (property field)
 	GetEncryptionAlgorithm() PascalString
-}
-
-// UserNameIdentityTokenExactly can be used when we want exactly this type and not a type which fulfills UserNameIdentityToken.
-// This is useful for switch cases.
-type UserNameIdentityTokenExactly interface {
-	UserNameIdentityToken
-	isUserNameIdentityToken() bool
+	// IsUserNameIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUserNameIdentityToken()
 }
 
 // _UserNameIdentityToken is the data-structure of this message
 type _UserNameIdentityToken struct {
-	*_UserIdentityTokenDefinition
+	UserIdentityTokenDefinitionContract
 	UserName            PascalString
 	Password            PascalByteString
 	EncryptionAlgorithm PascalString
 }
+
+var _ UserNameIdentityToken = (*_UserNameIdentityToken)(nil)
+var _ UserIdentityTokenDefinitionRequirements = (*_UserNameIdentityToken)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_UserNameIdentityToken) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_UserNameIdentityToken) InitializeParent(parent UserIdentityTokenDefinition) {}
-
-func (m *_UserNameIdentityToken) GetParent() UserIdentityTokenDefinition {
-	return m._UserIdentityTokenDefinition
+func (m *_UserNameIdentityToken) GetParent() UserIdentityTokenDefinitionContract {
+	return m.UserIdentityTokenDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,22 @@ func (m *_UserNameIdentityToken) GetEncryptionAlgorithm() PascalString {
 
 // NewUserNameIdentityToken factory function for _UserNameIdentityToken
 func NewUserNameIdentityToken(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) *_UserNameIdentityToken {
-	_result := &_UserNameIdentityToken{
-		UserName:                     userName,
-		Password:                     password,
-		EncryptionAlgorithm:          encryptionAlgorithm,
-		_UserIdentityTokenDefinition: NewUserIdentityTokenDefinition(),
+	if userName == nil {
+		panic("userName of type PascalString for UserNameIdentityToken must not be nil")
 	}
-	_result._UserIdentityTokenDefinition._UserIdentityTokenDefinitionChildRequirements = _result
+	if password == nil {
+		panic("password of type PascalByteString for UserNameIdentityToken must not be nil")
+	}
+	if encryptionAlgorithm == nil {
+		panic("encryptionAlgorithm of type PascalString for UserNameIdentityToken must not be nil")
+	}
+	_result := &_UserNameIdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+		UserName:                            userName,
+		Password:                            password,
+		EncryptionAlgorithm:                 encryptionAlgorithm,
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +137,7 @@ func (m *_UserNameIdentityToken) GetTypeName() string {
 }
 
 func (m *_UserNameIdentityToken) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).getLengthInBits(ctx))
 
 	// Simple field (userName)
 	lengthInBits += m.UserName.GetLengthInBits(ctx)
@@ -148,73 +155,40 @@ func (m *_UserNameIdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func UserNameIdentityTokenParse(ctx context.Context, theBytes []byte, identifier string) (UserNameIdentityToken, error) {
-	return UserNameIdentityTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func UserNameIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserNameIdentityToken, error) {
+func (m *_UserNameIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_UserIdentityTokenDefinition, identifier string) (__userNameIdentityToken UserNameIdentityToken, err error) {
+	m.UserIdentityTokenDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UserNameIdentityToken"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UserNameIdentityToken")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (userName)
-	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userName")
+	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
-	_userName, _userNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _userNameErr != nil {
-		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of UserNameIdentityToken")
-	}
-	userName := _userName.(PascalString)
-	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userName")
-	}
+	m.UserName = userName
 
-	// Simple Field (password)
-	if pullErr := readBuffer.PullContext("password"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for password")
+	password, err := ReadSimpleField[PascalByteString](ctx, "password", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'password' field"))
 	}
-	_password, _passwordErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _passwordErr != nil {
-		return nil, errors.Wrap(_passwordErr, "Error parsing 'password' field of UserNameIdentityToken")
-	}
-	password := _password.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("password"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for password")
-	}
+	m.Password = password
 
-	// Simple Field (encryptionAlgorithm)
-	if pullErr := readBuffer.PullContext("encryptionAlgorithm"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for encryptionAlgorithm")
+	encryptionAlgorithm, err := ReadSimpleField[PascalString](ctx, "encryptionAlgorithm", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encryptionAlgorithm' field"))
 	}
-	_encryptionAlgorithm, _encryptionAlgorithmErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _encryptionAlgorithmErr != nil {
-		return nil, errors.Wrap(_encryptionAlgorithmErr, "Error parsing 'encryptionAlgorithm' field of UserNameIdentityToken")
-	}
-	encryptionAlgorithm := _encryptionAlgorithm.(PascalString)
-	if closeErr := readBuffer.CloseContext("encryptionAlgorithm"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for encryptionAlgorithm")
-	}
+	m.EncryptionAlgorithm = encryptionAlgorithm
 
 	if closeErr := readBuffer.CloseContext("UserNameIdentityToken"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for UserNameIdentityToken")
 	}
 
-	// Create a partially initialized instance
-	_child := &_UserNameIdentityToken{
-		_UserIdentityTokenDefinition: &_UserIdentityTokenDefinition{},
-		UserName:                     userName,
-		Password:                     password,
-		EncryptionAlgorithm:          encryptionAlgorithm,
-	}
-	_child._UserIdentityTokenDefinition._UserIdentityTokenDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_UserNameIdentityToken) Serialize() ([]byte, error) {
@@ -235,40 +209,16 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for UserNameIdentityToken")
 		}
 
-		// Simple Field (userName)
-		if pushErr := writeBuffer.PushContext("userName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userName")
-		}
-		_userNameErr := writeBuffer.WriteSerializable(ctx, m.GetUserName())
-		if popErr := writeBuffer.PopContext("userName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userName")
-		}
-		if _userNameErr != nil {
-			return errors.Wrap(_userNameErr, "Error serializing 'userName' field")
+		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
 
-		// Simple Field (password)
-		if pushErr := writeBuffer.PushContext("password"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for password")
-		}
-		_passwordErr := writeBuffer.WriteSerializable(ctx, m.GetPassword())
-		if popErr := writeBuffer.PopContext("password"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for password")
-		}
-		if _passwordErr != nil {
-			return errors.Wrap(_passwordErr, "Error serializing 'password' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "password", m.GetPassword(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'password' field")
 		}
 
-		// Simple Field (encryptionAlgorithm)
-		if pushErr := writeBuffer.PushContext("encryptionAlgorithm"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for encryptionAlgorithm")
-		}
-		_encryptionAlgorithmErr := writeBuffer.WriteSerializable(ctx, m.GetEncryptionAlgorithm())
-		if popErr := writeBuffer.PopContext("encryptionAlgorithm"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for encryptionAlgorithm")
-		}
-		if _encryptionAlgorithmErr != nil {
-			return errors.Wrap(_encryptionAlgorithmErr, "Error serializing 'encryptionAlgorithm' field")
+		if err := WriteSimpleField[PascalString](ctx, "encryptionAlgorithm", m.GetEncryptionAlgorithm(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'encryptionAlgorithm' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UserNameIdentityToken"); popErr != nil {
@@ -276,12 +226,10 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_UserNameIdentityToken) isUserNameIdentityToken() bool {
-	return true
-}
+func (m *_UserNameIdentityToken) IsUserNameIdentityToken() {}
 
 func (m *_UserNameIdentityToken) String() string {
 	if m == nil {

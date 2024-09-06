@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,18 +42,15 @@ type ResponseTermination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// ResponseTerminationExactly can be used when we want exactly this type and not a type which fulfills ResponseTermination.
-// This is useful for switch cases.
-type ResponseTerminationExactly interface {
-	ResponseTermination
-	isResponseTermination() bool
+	// IsResponseTermination is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsResponseTermination()
 }
 
 // _ResponseTermination is the data-structure of this message
 type _ResponseTermination struct {
 }
+
+var _ ResponseTermination = (*_ResponseTermination)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -111,41 +110,46 @@ func ResponseTerminationParse(ctx context.Context, theBytes []byte) (ResponseTer
 	return ResponseTerminationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ResponseTerminationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseTermination, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseTermination, error) {
+		return ResponseTerminationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseTermination, error) {
+	v, err := (&_ResponseTermination{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ResponseTermination) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__responseTermination ResponseTermination, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ResponseTermination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ResponseTermination")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (cr)
-	cr, _crErr := readBuffer.ReadByte("cr")
-	if _crErr != nil {
-		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field of ResponseTermination")
+	cr, err := ReadConstField[byte](ctx, "cr", ReadByte(readBuffer, 8), ResponseTermination_CR)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cr' field"))
 	}
-	if cr != ResponseTermination_CR {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ResponseTermination_CR) + " but got " + fmt.Sprintf("%d", cr))
-	}
+	_ = cr
 
-	// Const Field (lf)
-	lf, _lfErr := readBuffer.ReadByte("lf")
-	if _lfErr != nil {
-		return nil, errors.Wrap(_lfErr, "Error parsing 'lf' field of ResponseTermination")
+	lf, err := ReadConstField[byte](ctx, "lf", ReadByte(readBuffer, 8), ResponseTermination_LF)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lf' field"))
 	}
-	if lf != ResponseTermination_LF {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ResponseTermination_LF) + " but got " + fmt.Sprintf("%d", lf))
-	}
+	_ = lf
 
 	if closeErr := readBuffer.CloseContext("ResponseTermination"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ResponseTermination")
 	}
 
-	// Create the instance
-	return &_ResponseTermination{}, nil
+	return m, nil
 }
 
 func (m *_ResponseTermination) Serialize() ([]byte, error) {
@@ -165,16 +169,12 @@ func (m *_ResponseTermination) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for ResponseTermination")
 	}
 
-	// Const Field (cr)
-	_crErr := writeBuffer.WriteByte("cr", 0x0D)
-	if _crErr != nil {
-		return errors.Wrap(_crErr, "Error serializing 'cr' field")
+	if err := WriteConstField(ctx, "cr", ResponseTermination_CR, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'cr' field")
 	}
 
-	// Const Field (lf)
-	_lfErr := writeBuffer.WriteByte("lf", 0x0A)
-	if _lfErr != nil {
-		return errors.Wrap(_lfErr, "Error serializing 'lf' field")
+	if err := WriteConstField(ctx, "lf", ResponseTermination_LF, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lf' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ResponseTermination"); popErr != nil {
@@ -183,9 +183,7 @@ func (m *_ResponseTermination) SerializeWithWriteBuffer(ctx context.Context, wri
 	return nil
 }
 
-func (m *_ResponseTermination) isResponseTermination() bool {
-	return true
-}
+func (m *_ResponseTermination) IsResponseTermination() {}
 
 func (m *_ResponseTermination) String() string {
 	if m == nil {

@@ -83,8 +83,7 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataNetworkInterfaceName");
 
     // Simple Field (networkInterfaceName)
-    writeSimpleField(
-        "networkInterfaceName", networkInterfaceName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkInterfaceName", networkInterfaceName, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
     BACnetApplicationTagCharacterString networkInterfaceName =
         readSimpleField(
             "networkInterfaceName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataSubscribedRecipients interface {
 	BACnetConstructedData
 	// GetSubscribedRecipients returns SubscribedRecipients (property field)
 	GetSubscribedRecipients() []BACnetEventNotificationSubscription
-}
-
-// BACnetConstructedDataSubscribedRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSubscribedRecipients.
-// This is useful for switch cases.
-type BACnetConstructedDataSubscribedRecipientsExactly interface {
-	BACnetConstructedDataSubscribedRecipients
-	isBACnetConstructedDataSubscribedRecipients() bool
+	// IsBACnetConstructedDataSubscribedRecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSubscribedRecipients()
 }
 
 // _BACnetConstructedDataSubscribedRecipients is the data-structure of this message
 type _BACnetConstructedDataSubscribedRecipients struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	SubscribedRecipients []BACnetEventNotificationSubscription
 }
+
+var _ BACnetConstructedDataSubscribedRecipients = (*_BACnetConstructedDataSubscribedRecipients)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubscribedRecipients)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataSubscribedRecipients) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataSubscribedRecipients) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataSubscribedRecipients) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataSubscribedRecipients) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataSubscribedRecipients) GetSubscribedRecipients() [
 // NewBACnetConstructedDataSubscribedRecipients factory function for _BACnetConstructedDataSubscribedRecipients
 func NewBACnetConstructedDataSubscribedRecipients(subscribedRecipients []BACnetEventNotificationSubscription, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubscribedRecipients {
 	_result := &_BACnetConstructedDataSubscribedRecipients{
-		SubscribedRecipients:   subscribedRecipients,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SubscribedRecipients:          subscribedRecipients,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataSubscribedRecipients) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataSubscribedRecipients) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.SubscribedRecipients) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataSubscribedRecipients) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataSubscribedRecipientsParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubscribedRecipients, error) {
-	return BACnetConstructedDataSubscribedRecipientsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataSubscribedRecipientsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubscribedRecipients, error) {
+func (m *_BACnetConstructedDataSubscribedRecipients) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataSubscribedRecipients BACnetConstructedDataSubscribedRecipients, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubscribedRecipients"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSubscribedRecipients")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (subscribedRecipients)
-	if pullErr := readBuffer.PullContext("subscribedRecipients", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for subscribedRecipients")
+	subscribedRecipients, err := ReadTerminatedArrayField[BACnetEventNotificationSubscription](ctx, "subscribedRecipients", ReadComplex[BACnetEventNotificationSubscription](BACnetEventNotificationSubscriptionParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscribedRecipients' field"))
 	}
-	// Terminated array
-	var subscribedRecipients []BACnetEventNotificationSubscription
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetEventNotificationSubscriptionParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'subscribedRecipients' field of BACnetConstructedDataSubscribedRecipients")
-			}
-			subscribedRecipients = append(subscribedRecipients, _item.(BACnetEventNotificationSubscription))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("subscribedRecipients", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for subscribedRecipients")
-	}
+	m.SubscribedRecipients = subscribedRecipients
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSubscribedRecipients"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSubscribedRecipients")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataSubscribedRecipients{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		SubscribedRecipients: subscribedRecipients,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataSubscribedRecipients) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataSubscribedRecipients) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSubscribedRecipients")
 		}
 
-		// Array Field (subscribedRecipients)
-		if pushErr := writeBuffer.PushContext("subscribedRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscribedRecipients")
-		}
-		for _curItem, _element := range m.GetSubscribedRecipients() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSubscribedRecipients()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'subscribedRecipients' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("subscribedRecipients", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscribedRecipients")
+		if err := WriteComplexTypeArrayField(ctx, "subscribedRecipients", m.GetSubscribedRecipients(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscribedRecipients' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubscribedRecipients"); popErr != nil {
@@ -228,12 +183,10 @@ func (m *_BACnetConstructedDataSubscribedRecipients) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataSubscribedRecipients) isBACnetConstructedDataSubscribedRecipients() bool {
-	return true
-}
+func (m *_BACnetConstructedDataSubscribedRecipients) IsBACnetConstructedDataSubscribedRecipients() {}
 
 func (m *_BACnetConstructedDataSubscribedRecipients) String() string {
 	if m == nil {

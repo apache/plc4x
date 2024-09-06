@@ -70,7 +70,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	}
 	cleanDiff := make([]xdiff.Delta, 0)
 	for _, delta := range diff {
-		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil {
+		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil || delta.Operation == xdiff.InsertSubtree && delta.Subject.Value == nil {
 			localLog.Info().Interface("delta", delta).Msg("We ignore empty elements which should be deleted")
 			continue
 		}
@@ -201,25 +201,68 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 		},
 		func(w *zerolog.ConsoleWriter) {
 			w.FormatFieldValue = func(i interface{}) string {
-				if aString, ok := i.(string); ok && strings.Contains(aString, "\\n") {
-					if noColor {
-						return "see below"
-					} else {
-						return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+				switch i := i.(type) {
+				case string:
+					if strings.Contains(i, "\\n") {
+						if noColor {
+							return "see below"
+						} else {
+							return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+						}
+					}
+				case []uint8:
+					if len(i) > 4 && i[0] == '[' && i[len(i)-1] == ']' && strings.Contains(string(i), "\\n") {
+						if noColor {
+							return "see below"
+						} else {
+							return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+						}
 					}
 				}
 				return fmt.Sprintf("%s", i)
 			}
 			w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
 				for key, i := range m {
-					if aString, ok := i.(string); ok && strings.Contains(aString, "\n") {
-						buffer.WriteString("\n")
-						if noColor {
-							buffer.WriteString("field " + key)
-						} else {
-							buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+					switch i := i.(type) {
+					case string:
+						if strings.Contains(i, "\n") {
+							buffer.WriteString("\n")
+							if noColor {
+								buffer.WriteString("field " + key)
+							} else {
+								buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+							}
+							buffer.WriteString(":\n" + i)
 						}
-						buffer.WriteString(":\n" + aString)
+					case []any:
+						allStrings := false
+						containsNewLine := false
+						stringsElems := make([]string, len(i))
+						for i, elem := range i {
+							if aString, ok := elem.(string); ok {
+								containsNewLine = containsNewLine || strings.Contains(aString, "\n")
+								allStrings = true
+								stringsElems[i] = strings.Trim(aString, "\n")
+							} else {
+								allStrings = false
+								break
+							}
+						}
+						if allStrings && containsNewLine {
+							buffer.WriteString("\n")
+							if noColor {
+								buffer.WriteString("field " + key)
+							} else {
+								buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+							}
+							var sb strings.Builder
+							for j, elem := range stringsElems {
+								sb.WriteString(strconv.Itoa(j) + ":\n")
+								sb.WriteString(elem)
+								sb.WriteString("\n")
+							}
+							buffer.WriteString(":\n" + sb.String())
+						}
 					}
 				}
 				return nil

@@ -82,7 +82,7 @@ public abstract class S7PayloadUserDataItem implements Message {
         "returnCode",
         "DataTransportErrorCode",
         returnCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportErrorCode::getValue,
             DataTransportErrorCode::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -92,7 +92,7 @@ public abstract class S7PayloadUserDataItem implements Message {
         "transportSize",
         "DataTransportSize",
         transportSize,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportSize::getValue,
             DataTransportSize::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -142,15 +142,13 @@ public abstract class S7PayloadUserDataItem implements Message {
         readEnumField(
             "returnCode",
             "DataTransportErrorCode",
-            new DataReaderEnumDefault<>(
-                DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     DataTransportSize transportSize =
         readEnumField(
             "transportSize",
             "DataTransportSize",
-            new DataReaderEnumDefault<>(
-                DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     int dataLength = readSimpleField("dataLength", readUnsignedInt(readBuffer, 16));
 

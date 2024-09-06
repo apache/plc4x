@@ -81,10 +81,10 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("CallMethodRequest");
 
     // Simple Field (objectId)
-    writeSimpleField("objectId", objectId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectId", objectId, writeComplex(writeBuffer));
 
     // Simple Field (methodId)
-    writeSimpleField("methodId", methodId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("methodId", methodId, writeComplex(writeBuffer));
 
     // Simple Field (noOfInputArguments)
     writeSimpleField("noOfInputArguments", noOfInputArguments, writeSignedInt(writeBuffer, 32));
@@ -134,21 +134,17 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId objectId =
-        readSimpleField(
-            "objectId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("objectId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId methodId =
-        readSimpleField(
-            "methodId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("methodId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     int noOfInputArguments = readSimpleField("noOfInputArguments", readSignedInt(readBuffer, 32));
 
     List<Variant> inputArguments =
         readCountArrayField(
             "inputArguments",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Variant.staticParse(readBuffer), readBuffer),
             noOfInputArguments);
 
     readBuffer.closeContext("CallMethodRequest");

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type UnsignedRationalNumber interface {
 	GetNumerator() uint32
 	// GetDenominator returns Denominator (property field)
 	GetDenominator() uint32
-}
-
-// UnsignedRationalNumberExactly can be used when we want exactly this type and not a type which fulfills UnsignedRationalNumber.
-// This is useful for switch cases.
-type UnsignedRationalNumberExactly interface {
-	UnsignedRationalNumber
-	isUnsignedRationalNumber() bool
+	// IsUnsignedRationalNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnsignedRationalNumber()
 }
 
 // _UnsignedRationalNumber is the data-structure of this message
 type _UnsignedRationalNumber struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	Numerator   uint32
 	Denominator uint32
 }
+
+var _ UnsignedRationalNumber = (*_UnsignedRationalNumber)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UnsignedRationalNumber)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_UnsignedRationalNumber) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_UnsignedRationalNumber) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_UnsignedRationalNumber) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_UnsignedRationalNumber) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_UnsignedRationalNumber) GetDenominator() uint32 {
 // NewUnsignedRationalNumber factory function for _UnsignedRationalNumber
 func NewUnsignedRationalNumber(numerator uint32, denominator uint32) *_UnsignedRationalNumber {
 	_result := &_UnsignedRationalNumber{
-		Numerator:                  numerator,
-		Denominator:                denominator,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Numerator:                         numerator,
+		Denominator:                       denominator,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_UnsignedRationalNumber) GetTypeName() string {
 }
 
 func (m *_UnsignedRationalNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (numerator)
 	lengthInBits += 32
@@ -137,47 +135,34 @@ func (m *_UnsignedRationalNumber) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func UnsignedRationalNumberParse(ctx context.Context, theBytes []byte, identifier string) (UnsignedRationalNumber, error) {
-	return UnsignedRationalNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func UnsignedRationalNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UnsignedRationalNumber, error) {
+func (m *_UnsignedRationalNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__unsignedRationalNumber UnsignedRationalNumber, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UnsignedRationalNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UnsignedRationalNumber")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numerator)
-	_numerator, _numeratorErr := readBuffer.ReadUint32("numerator", 32)
-	if _numeratorErr != nil {
-		return nil, errors.Wrap(_numeratorErr, "Error parsing 'numerator' field of UnsignedRationalNumber")
+	numerator, err := ReadSimpleField(ctx, "numerator", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numerator' field"))
 	}
-	numerator := _numerator
+	m.Numerator = numerator
 
-	// Simple Field (denominator)
-	_denominator, _denominatorErr := readBuffer.ReadUint32("denominator", 32)
-	if _denominatorErr != nil {
-		return nil, errors.Wrap(_denominatorErr, "Error parsing 'denominator' field of UnsignedRationalNumber")
+	denominator, err := ReadSimpleField(ctx, "denominator", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'denominator' field"))
 	}
-	denominator := _denominator
+	m.Denominator = denominator
 
 	if closeErr := readBuffer.CloseContext("UnsignedRationalNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for UnsignedRationalNumber")
 	}
 
-	// Create a partially initialized instance
-	_child := &_UnsignedRationalNumber{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		Numerator:                  numerator,
-		Denominator:                denominator,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_UnsignedRationalNumber) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UnsignedRationalNumber")
 		}
 
-		// Simple Field (numerator)
-		numerator := uint32(m.GetNumerator())
-		_numeratorErr := writeBuffer.WriteUint32("numerator", 32, uint32((numerator)))
-		if _numeratorErr != nil {
-			return errors.Wrap(_numeratorErr, "Error serializing 'numerator' field")
+		if err := WriteSimpleField[uint32](ctx, "numerator", m.GetNumerator(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numerator' field")
 		}
 
-		// Simple Field (denominator)
-		denominator := uint32(m.GetDenominator())
-		_denominatorErr := writeBuffer.WriteUint32("denominator", 32, uint32((denominator)))
-		if _denominatorErr != nil {
-			return errors.Wrap(_denominatorErr, "Error serializing 'denominator' field")
+		if err := WriteSimpleField[uint32](ctx, "denominator", m.GetDenominator(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'denominator' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UnsignedRationalNumber"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_UnsignedRationalNumber) isUnsignedRationalNumber() bool {
-	return true
-}
+func (m *_UnsignedRationalNumber) IsUnsignedRationalNumber() {}
 
 func (m *_UnsignedRationalNumber) String() string {
 	if m == nil {

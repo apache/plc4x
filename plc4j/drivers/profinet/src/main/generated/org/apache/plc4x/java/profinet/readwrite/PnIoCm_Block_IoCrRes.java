@@ -117,7 +117,7 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
         "ioCrType",
         "PnIoCm_IoCrType",
         ioCrType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_IoCrType::getValue, PnIoCm_IoCrType::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -198,8 +198,7 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
         readEnumField(
             "ioCrType",
             "PnIoCm_IoCrType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_IoCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_IoCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int ioCrReference =

@@ -75,11 +75,11 @@ public class OpcuaMessageError extends MessagePDU implements Message {
         "error",
         "OpcuaStatusCode",
         error,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             OpcuaStatusCode::getValue, OpcuaStatusCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (reason)
-    writeSimpleField("reason", reason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reason", reason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaMessageError");
   }
@@ -114,13 +114,11 @@ public class OpcuaMessageError extends MessagePDU implements Message {
         readEnumField(
             "error",
             "OpcuaStatusCode",
-            new DataReaderEnumDefault<>(
-                OpcuaStatusCode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(OpcuaStatusCode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString reason =
         readSimpleField(
-            "reason",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "reason", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpcuaMessageError");
     // Create the instance

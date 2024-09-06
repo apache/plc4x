@@ -1866,10 +1866,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             responseCode = decodeResponseCode(payloadItem.getReturnCode());
             plcValue = null;
 
-            ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
                 try {
-                    plcValue = parsePlcValue(tag, data);
+                    plcValue = parsePlcValue(tag, payloadItem.getData());
                 } catch (Exception e) {
                     throw new PlcProtocolException("Error decoding PlcValue", e);
                 }
@@ -1993,8 +1992,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return null;
     }
 
-    private PlcValue parsePlcValue(S7Tag tag, ByteBuf data) {
-        ReadBuffer readBuffer = new ReadBufferByteBased(data.array());
+    private PlcValue parsePlcValue(S7Tag tag, byte[] data) {
+        ReadBuffer readBuffer = new ReadBufferByteBased(data);
         try {
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
@@ -2002,17 +2001,23 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
                     s7DriverContext.getControllerType(), stringLength);
             } else {
-                // Fetch all
-                final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
-                    try {
-                        return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                            s7DriverContext.getControllerType(), stringLength);
-                    } catch (ParseException e) {
-                        logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
-                    }
-                    return null;
-                }).toArray(PlcValue[]::new);
-                return PlcValueHandler.of(resultItems);
+                // In case of reading an array of bytes, make use of our simpler PlcRawByteArray as the user is
+                // probably expecting to process the read raw data.
+                if(tag.getDataType() == TransportSize.BYTE) {
+                    return new PlcRawByteArray(data);
+                } else {
+                    // Fetch all
+                    final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
+                        try {
+                            return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
+                                s7DriverContext.getControllerType(), stringLength);
+                        } catch (ParseException e) {
+                            logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
+                        }
+                        return null;
+                    }).toArray(PlcValue[]::new);
+                    return PlcValueHandler.of(resultItems);
+                }
             }
         } catch (ParseException e) {
             logger.warn("Error parsing tag item of type: '{}'", tag.getDataType().name(), e);

@@ -37,19 +37,17 @@ type WriterGroupMessageDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// WriterGroupMessageDataTypeExactly can be used when we want exactly this type and not a type which fulfills WriterGroupMessageDataType.
-// This is useful for switch cases.
-type WriterGroupMessageDataTypeExactly interface {
-	WriterGroupMessageDataType
-	isWriterGroupMessageDataType() bool
+	// IsWriterGroupMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsWriterGroupMessageDataType()
 }
 
 // _WriterGroupMessageDataType is the data-structure of this message
 type _WriterGroupMessageDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ WriterGroupMessageDataType = (*_WriterGroupMessageDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_WriterGroupMessageDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_WriterGroupMessageDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_WriterGroupMessageDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_WriterGroupMessageDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_WriterGroupMessageDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewWriterGroupMessageDataType factory function for _WriterGroupMessageDataType
 func NewWriterGroupMessageDataType() *_WriterGroupMessageDataType {
 	_result := &_WriterGroupMessageDataType{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_WriterGroupMessageDataType) GetTypeName() string {
 }
 
 func (m *_WriterGroupMessageDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_WriterGroupMessageDataType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func WriterGroupMessageDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (WriterGroupMessageDataType, error) {
-	return WriterGroupMessageDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func WriterGroupMessageDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (WriterGroupMessageDataType, error) {
+func (m *_WriterGroupMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__writerGroupMessageDataType WriterGroupMessageDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("WriterGroupMessageDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for WriterGroupMessageDataType")
 	}
@@ -124,12 +116,7 @@ func WriterGroupMessageDataTypeParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for WriterGroupMessageDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_WriterGroupMessageDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_WriterGroupMessageDataType) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_WriterGroupMessageDataType) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_WriterGroupMessageDataType) isWriterGroupMessageDataType() bool {
-	return true
-}
+func (m *_WriterGroupMessageDataType) IsWriterGroupMessageDataType() {}
 
 func (m *_WriterGroupMessageDataType) String() string {
 	if m == nil {

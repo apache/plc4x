@@ -37,19 +37,17 @@ type BACnetConstructedDataScheduleAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
-}
-
-// BACnetConstructedDataScheduleAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScheduleAll.
-// This is useful for switch cases.
-type BACnetConstructedDataScheduleAllExactly interface {
-	BACnetConstructedDataScheduleAll
-	isBACnetConstructedDataScheduleAll() bool
+	// IsBACnetConstructedDataScheduleAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataScheduleAll()
 }
 
 // _BACnetConstructedDataScheduleAll is the data-structure of this message
 type _BACnetConstructedDataScheduleAll struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 }
+
+var _ BACnetConstructedDataScheduleAll = (*_BACnetConstructedDataScheduleAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScheduleAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,22 +67,16 @@ func (m *_BACnetConstructedDataScheduleAll) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataScheduleAll) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataScheduleAll) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataScheduleAll) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 // NewBACnetConstructedDataScheduleAll factory function for _BACnetConstructedDataScheduleAll
 func NewBACnetConstructedDataScheduleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleAll {
 	_result := &_BACnetConstructedDataScheduleAll{
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -104,7 +96,7 @@ func (m *_BACnetConstructedDataScheduleAll) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataScheduleAll) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +105,11 @@ func (m *_BACnetConstructedDataScheduleAll) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataScheduleAllParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScheduleAll, error) {
-	return BACnetConstructedDataScheduleAllParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataScheduleAllParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScheduleAll, error) {
+func (m *_BACnetConstructedDataScheduleAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataScheduleAll BACnetConstructedDataScheduleAll, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScheduleAll"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataScheduleAll")
 	}
@@ -130,22 +118,14 @@ func BACnetConstructedDataScheduleAllParseWithBuffer(ctx context.Context, readBu
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "All should never occur in context of constructed data. If it does please report"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScheduleAll"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScheduleAll")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataScheduleAll{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataScheduleAll) Serialize() ([]byte, error) {
@@ -171,12 +151,10 @@ func (m *_BACnetConstructedDataScheduleAll) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataScheduleAll) isBACnetConstructedDataScheduleAll() bool {
-	return true
-}
+func (m *_BACnetConstructedDataScheduleAll) IsBACnetConstructedDataScheduleAll() {}
 
 func (m *_BACnetConstructedDataScheduleAll) String() string {
 	if m == nil {

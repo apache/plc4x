@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDistributionKeyRevision interface {
 	GetDistributionKeyRevision() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataDistributionKeyRevisionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDistributionKeyRevision.
-// This is useful for switch cases.
-type BACnetConstructedDataDistributionKeyRevisionExactly interface {
-	BACnetConstructedDataDistributionKeyRevision
-	isBACnetConstructedDataDistributionKeyRevision() bool
+	// IsBACnetConstructedDataDistributionKeyRevision is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDistributionKeyRevision()
 }
 
 // _BACnetConstructedDataDistributionKeyRevision is the data-structure of this message
 type _BACnetConstructedDataDistributionKeyRevision struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DistributionKeyRevision BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataDistributionKeyRevision = (*_BACnetConstructedDataDistributionKeyRevision)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDistributionKeyRevision)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDistributionKeyRevision) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetActualValue() BACnetA
 
 // NewBACnetConstructedDataDistributionKeyRevision factory function for _BACnetConstructedDataDistributionKeyRevision
 func NewBACnetConstructedDataDistributionKeyRevision(distributionKeyRevision BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDistributionKeyRevision {
-	_result := &_BACnetConstructedDataDistributionKeyRevision{
-		DistributionKeyRevision: distributionKeyRevision,
-		_BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if distributionKeyRevision == nil {
+		panic("distributionKeyRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDistributionKeyRevision must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDistributionKeyRevision{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DistributionKeyRevision:       distributionKeyRevision,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (distributionKeyRevision)
 	lengthInBits += m.DistributionKeyRevision.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDistributionKeyRevisionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
-	return BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
+func (m *_BACnetConstructedDataDistributionKeyRevision) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDistributionKeyRevision BACnetConstructedDataDistributionKeyRevision, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDistributionKeyRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDistributionKeyRevision")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (distributionKeyRevision)
-	if pullErr := readBuffer.PullContext("distributionKeyRevision"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for distributionKeyRevision")
+	distributionKeyRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "distributionKeyRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'distributionKeyRevision' field"))
 	}
-	_distributionKeyRevision, _distributionKeyRevisionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _distributionKeyRevisionErr != nil {
-		return nil, errors.Wrap(_distributionKeyRevisionErr, "Error parsing 'distributionKeyRevision' field of BACnetConstructedDataDistributionKeyRevision")
-	}
-	distributionKeyRevision := _distributionKeyRevision.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("distributionKeyRevision"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for distributionKeyRevision")
-	}
+	m.DistributionKeyRevision = distributionKeyRevision
 
-	// Virtual field
-	_actualValue := distributionKeyRevision
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), distributionKeyRevision)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDistributionKeyRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDistributionKeyRevision")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDistributionKeyRevision{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DistributionKeyRevision: distributionKeyRevision,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDistributionKeyRevision")
 		}
 
-		// Simple Field (distributionKeyRevision)
-		if pushErr := writeBuffer.PushContext("distributionKeyRevision"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for distributionKeyRevision")
-		}
-		_distributionKeyRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetDistributionKeyRevision())
-		if popErr := writeBuffer.PopContext("distributionKeyRevision"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for distributionKeyRevision")
-		}
-		if _distributionKeyRevisionErr != nil {
-			return errors.Wrap(_distributionKeyRevisionErr, "Error serializing 'distributionKeyRevision' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "distributionKeyRevision", m.GetDistributionKeyRevision(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'distributionKeyRevision' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) isBACnetConstructedDataDistributionKeyRevision() bool {
-	return true
+func (m *_BACnetConstructedDataDistributionKeyRevision) IsBACnetConstructedDataDistributionKeyRevision() {
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) String() string {

@@ -75,14 +75,13 @@ public class BACnetLightingCommandEnclosed implements Message {
     writeBuffer.pushContext("BACnetLightingCommandEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (lightingCommand)
-    writeSimpleField(
-        "lightingCommand", lightingCommand, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightingCommand", lightingCommand, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLightingCommandEnclosed");
   }
@@ -119,19 +118,18 @@ public class BACnetLightingCommandEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetLightingCommand lightingCommand =
         readSimpleField(
             "lightingCommand",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLightingCommand.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetLightingCommand.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetLightingCommandEnclosed");

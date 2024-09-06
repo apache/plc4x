@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type NodeId interface {
 	GetNodeId() NodeIdTypeDefinition
 	// GetId returns Id (virtual field)
 	GetId() string
-}
-
-// NodeIdExactly can be used when we want exactly this type and not a type which fulfills NodeId.
-// This is useful for switch cases.
-type NodeIdExactly interface {
-	NodeId
-	isNodeId() bool
+	// IsNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeId()
 }
 
 // _NodeId is the data-structure of this message
@@ -55,6 +52,8 @@ type _NodeId struct {
 	// Reserved Fields
 	reservedField0 *int8
 }
+
+var _ NodeId = (*_NodeId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,6 +86,9 @@ func (m *_NodeId) GetId() string {
 
 // NewNodeId factory function for _NodeId
 func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for NodeId must not be nil")
+	}
 	return &_NodeId{NodeId: nodeId}
 }
 
@@ -127,61 +129,52 @@ func NodeIdParse(ctx context.Context, theBytes []byte) (NodeId, error) {
 	return NodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeId, error) {
+		return NodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeId, error) {
+	v, err := (&_NodeId{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_NodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nodeId NodeId, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NodeId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NodeId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *int8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadInt8("reserved", 2)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NodeId")
-		}
-		if reserved != int8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": int8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, uint8(2)), int8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
+	nodeId, err := ReadSimpleField[NodeIdTypeDefinition](ctx, "nodeId", ReadComplex[NodeIdTypeDefinition](NodeIdTypeDefinitionParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
-	_nodeId, _nodeIdErr := NodeIdTypeDefinitionParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of NodeId")
-	}
-	nodeId := _nodeId.(NodeIdTypeDefinition)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
-	}
+	m.NodeId = nodeId
 
-	// Virtual field
-	_id := nodeId.GetIdentifier()
-	id := fmt.Sprintf("%v", _id)
+	id, err := ReadVirtualField[string](ctx, "id", (*string)(nil), nodeId.GetIdentifier())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
+	}
 	_ = id
 
 	if closeErr := readBuffer.CloseContext("NodeId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeId")
 	}
 
-	// Create the instance
-	return &_NodeId{
-		NodeId:         nodeId,
-		reservedField0: reservedField0,
-	}, nil
+	return m, nil
 }
 
 func (m *_NodeId) Serialize() ([]byte, error) {
@@ -201,32 +194,12 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 		return errors.Wrap(pushErr, "Error pushing for NodeId")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved int8 = int8(0x00)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": int8(0x00),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteInt8("reserved", 2, int8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[int8](ctx, "reserved", int8(0x00), WriteSignedByte(writeBuffer, 2)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (nodeId)
-	if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for nodeId")
-	}
-	_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-	if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for nodeId")
-	}
-	if _nodeIdErr != nil {
-		return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+	if err := WriteSimpleField[NodeIdTypeDefinition](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeIdTypeDefinition](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'nodeId' field")
 	}
 	// Virtual field
 	id := m.GetId()
@@ -241,9 +214,7 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 	return nil
 }
 
-func (m *_NodeId) isNodeId() bool {
-	return true
-}
+func (m *_NodeId) IsNodeId() {}
 
 func (m *_NodeId) String() string {
 	if m == nil {

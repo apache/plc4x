@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,47 +35,40 @@ import (
 
 // BACnetLandingCallStatusCommand is the corresponding interface of BACnetLandingCallStatusCommand
 type BACnetLandingCallStatusCommand interface {
+	BACnetLandingCallStatusCommandContract
+	BACnetLandingCallStatusCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetLandingCallStatusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingCallStatusCommand()
+}
+
+// BACnetLandingCallStatusCommandContract provides a set of functions which can be overwritten by a sub struct
+type BACnetLandingCallStatusCommandContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// IsBACnetLandingCallStatusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingCallStatusCommand()
 }
 
-// BACnetLandingCallStatusCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommand.
-// This is useful for switch cases.
-type BACnetLandingCallStatusCommandExactly interface {
-	BACnetLandingCallStatusCommand
-	isBACnetLandingCallStatusCommand() bool
+// BACnetLandingCallStatusCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetLandingCallStatusCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetLandingCallStatusCommand is the data-structure of this message
 type _BACnetLandingCallStatusCommand struct {
-	_BACnetLandingCallStatusCommandChildRequirements
+	_SubType        BACnetLandingCallStatusCommand
 	PeekedTagHeader BACnetTagHeader
 }
 
-type _BACnetLandingCallStatusCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetLandingCallStatusCommandParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetLandingCallStatusCommand, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetLandingCallStatusCommandChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetLandingCallStatusCommand, peekedTagHeader BACnetTagHeader)
-	GetParent() *BACnetLandingCallStatusCommand
-
-	GetTypeName() string
-	BACnetLandingCallStatusCommand
-}
+var _ BACnetLandingCallStatusCommandContract = (*_BACnetLandingCallStatusCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,7 +88,8 @@ func (m *_BACnetLandingCallStatusCommand) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetLandingCallStatusCommand) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetLandingCallStatusCommand) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -106,6 +102,9 @@ func (m *_BACnetLandingCallStatusCommand) GetPeekedTagNumber() uint8 {
 
 // NewBACnetLandingCallStatusCommand factory function for _BACnetLandingCallStatusCommand
 func NewBACnetLandingCallStatusCommand(peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommand {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetLandingCallStatusCommand must not be nil")
+	}
 	return &_BACnetLandingCallStatusCommand{PeekedTagHeader: peekedTagHeader}
 }
 
@@ -124,7 +123,7 @@ func (m *_BACnetLandingCallStatusCommand) GetTypeName() string {
 	return "BACnetLandingCallStatusCommand"
 }
 
-func (m *_BACnetLandingCallStatusCommand) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetLandingCallStatusCommand) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -133,69 +132,77 @@ func (m *_BACnetLandingCallStatusCommand) GetParentLengthInBits(ctx context.Cont
 }
 
 func (m *_BACnetLandingCallStatusCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLandingCallStatusCommandParse(ctx context.Context, theBytes []byte) (BACnetLandingCallStatusCommand, error) {
-	return BACnetLandingCallStatusCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func BACnetLandingCallStatusCommandParse[T BACnetLandingCallStatusCommand](ctx context.Context, theBytes []byte) (T, error) {
+	return BACnetLandingCallStatusCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLandingCallStatusCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommand, error) {
+func BACnetLandingCallStatusCommandParseWithBufferProducer[T BACnetLandingCallStatusCommand]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetLandingCallStatusCommandParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetLandingCallStatusCommandParseWithBuffer[T BACnetLandingCallStatusCommand](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_BACnetLandingCallStatusCommand{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetLandingCallStatusCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetLandingCallStatusCommand BACnetLandingCallStatusCommand, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingCallStatusCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetLandingCallStatusCommandChildSerializeRequirement interface {
-		BACnetLandingCallStatusCommand
-		InitializeParent(BACnetLandingCallStatusCommand, BACnetTagHeader)
-		GetParent() BACnetLandingCallStatusCommand
-	}
-	var _childTemp any
-	var _child BACnetLandingCallStatusCommandChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetLandingCallStatusCommand
 	switch {
 	case peekedTagNumber == uint8(1): // BACnetLandingCallStatusCommandDirection
-		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDirectionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetLandingCallStatusCommandDirection{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLandingCallStatusCommandDirection for type-switch of BACnetLandingCallStatusCommand")
+		}
 	case peekedTagNumber == uint8(2): // BACnetLandingCallStatusCommandDestination
-		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetLandingCallStatusCommandDestination{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLandingCallStatusCommandDestination for type-switch of BACnetLandingCallStatusCommand")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetLandingCallStatusCommand")
-	}
-	_child = _childTemp.(BACnetLandingCallStatusCommandChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatusCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingCallStatusCommand")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
 }
 
-func (pm *_BACnetLandingCallStatusCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetLandingCallStatusCommand, serializeChildFunction func() error) error {
+func (pm *_BACnetLandingCallStatusCommand) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetLandingCallStatusCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -224,17 +231,4 @@ func (pm *_BACnetLandingCallStatusCommand) SerializeParent(ctx context.Context, 
 	return nil
 }
 
-func (m *_BACnetLandingCallStatusCommand) isBACnetLandingCallStatusCommand() bool {
-	return true
-}
-
-func (m *_BACnetLandingCallStatusCommand) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetLandingCallStatusCommand) IsBACnetLandingCallStatusCommand() {}

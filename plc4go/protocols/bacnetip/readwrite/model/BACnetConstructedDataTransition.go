@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataTransition interface {
 	GetTransition() BACnetLightingTransitionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLightingTransitionTagged
-}
-
-// BACnetConstructedDataTransitionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTransition.
-// This is useful for switch cases.
-type BACnetConstructedDataTransitionExactly interface {
-	BACnetConstructedDataTransition
-	isBACnetConstructedDataTransition() bool
+	// IsBACnetConstructedDataTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTransition()
 }
 
 // _BACnetConstructedDataTransition is the data-structure of this message
 type _BACnetConstructedDataTransition struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Transition BACnetLightingTransitionTagged
 }
+
+var _ BACnetConstructedDataTransition = (*_BACnetConstructedDataTransition)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTransition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataTransition) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTransition) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTransition) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTransition) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataTransition) GetActualValue() BACnetLightingTransi
 
 // NewBACnetConstructedDataTransition factory function for _BACnetConstructedDataTransition
 func NewBACnetConstructedDataTransition(transition BACnetLightingTransitionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransition {
-	_result := &_BACnetConstructedDataTransition{
-		Transition:             transition,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if transition == nil {
+		panic("transition of type BACnetLightingTransitionTagged for BACnetConstructedDataTransition must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataTransition{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Transition:                    transition,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataTransition) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTransition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (transition)
 	lengthInBits += m.Transition.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataTransition) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTransitionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTransition, error) {
-	return BACnetConstructedDataTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTransition, error) {
+func (m *_BACnetConstructedDataTransition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTransition BACnetConstructedDataTransition, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTransition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTransition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (transition)
-	if pullErr := readBuffer.PullContext("transition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transition")
+	transition, err := ReadSimpleField[BACnetLightingTransitionTagged](ctx, "transition", ReadComplex[BACnetLightingTransitionTagged](BACnetLightingTransitionTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transition' field"))
 	}
-	_transition, _transitionErr := BACnetLightingTransitionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _transitionErr != nil {
-		return nil, errors.Wrap(_transitionErr, "Error parsing 'transition' field of BACnetConstructedDataTransition")
-	}
-	transition := _transition.(BACnetLightingTransitionTagged)
-	if closeErr := readBuffer.CloseContext("transition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transition")
-	}
+	m.Transition = transition
 
-	// Virtual field
-	_actualValue := transition
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetLightingTransitionTagged](ctx, "actualValue", (*BACnetLightingTransitionTagged)(nil), transition)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTransition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTransition")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTransition{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Transition: transition,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTransition) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTransition")
 		}
 
-		// Simple Field (transition)
-		if pushErr := writeBuffer.PushContext("transition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transition")
-		}
-		_transitionErr := writeBuffer.WriteSerializable(ctx, m.GetTransition())
-		if popErr := writeBuffer.PopContext("transition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transition")
-		}
-		if _transitionErr != nil {
-			return errors.Wrap(_transitionErr, "Error serializing 'transition' field")
+		if err := WriteSimpleField[BACnetLightingTransitionTagged](ctx, "transition", m.GetTransition(), WriteComplex[BACnetLightingTransitionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transition' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTransition) isBACnetConstructedDataTransition() bool {
-	return true
-}
+func (m *_BACnetConstructedDataTransition) IsBACnetConstructedDataTransition() {}
 
 func (m *_BACnetConstructedDataTransition) String() string {
 	if m == nil {

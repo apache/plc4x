@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetCredentialAuthenticationFactor interface {
 	GetDisable() BACnetAccessAuthenticationFactorDisableTagged
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
 	GetAuthenticationFactor() BACnetAuthenticationFactorEnclosed
-}
-
-// BACnetCredentialAuthenticationFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetCredentialAuthenticationFactor.
-// This is useful for switch cases.
-type BACnetCredentialAuthenticationFactorExactly interface {
-	BACnetCredentialAuthenticationFactor
-	isBACnetCredentialAuthenticationFactor() bool
+	// IsBACnetCredentialAuthenticationFactor is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCredentialAuthenticationFactor()
 }
 
 // _BACnetCredentialAuthenticationFactor is the data-structure of this message
@@ -54,6 +51,8 @@ type _BACnetCredentialAuthenticationFactor struct {
 	Disable              BACnetAccessAuthenticationFactorDisableTagged
 	AuthenticationFactor BACnetAuthenticationFactorEnclosed
 }
+
+var _ BACnetCredentialAuthenticationFactor = (*_BACnetCredentialAuthenticationFactor)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,12 @@ func (m *_BACnetCredentialAuthenticationFactor) GetAuthenticationFactor() BACnet
 
 // NewBACnetCredentialAuthenticationFactor factory function for _BACnetCredentialAuthenticationFactor
 func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) *_BACnetCredentialAuthenticationFactor {
+	if disable == nil {
+		panic("disable of type BACnetAccessAuthenticationFactorDisableTagged for BACnetCredentialAuthenticationFactor must not be nil")
+	}
+	if authenticationFactor == nil {
+		panic("authenticationFactor of type BACnetAuthenticationFactorEnclosed for BACnetCredentialAuthenticationFactor must not be nil")
+	}
 	return &_BACnetCredentialAuthenticationFactor{Disable: disable, AuthenticationFactor: authenticationFactor}
 }
 
@@ -113,52 +118,46 @@ func BACnetCredentialAuthenticationFactorParse(ctx context.Context, theBytes []b
 	return BACnetCredentialAuthenticationFactorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCredentialAuthenticationFactorParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
+		return BACnetCredentialAuthenticationFactorParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCredentialAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
+	v, err := (&_BACnetCredentialAuthenticationFactor{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetCredentialAuthenticationFactor) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCredentialAuthenticationFactor BACnetCredentialAuthenticationFactor, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCredentialAuthenticationFactor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCredentialAuthenticationFactor")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (disable)
-	if pullErr := readBuffer.PullContext("disable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for disable")
+	disable, err := ReadSimpleField[BACnetAccessAuthenticationFactorDisableTagged](ctx, "disable", ReadComplex[BACnetAccessAuthenticationFactorDisableTagged](BACnetAccessAuthenticationFactorDisableTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'disable' field"))
 	}
-	_disable, _disableErr := BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _disableErr != nil {
-		return nil, errors.Wrap(_disableErr, "Error parsing 'disable' field of BACnetCredentialAuthenticationFactor")
-	}
-	disable := _disable.(BACnetAccessAuthenticationFactorDisableTagged)
-	if closeErr := readBuffer.CloseContext("disable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for disable")
-	}
+	m.Disable = disable
 
-	// Simple Field (authenticationFactor)
-	if pullErr := readBuffer.PullContext("authenticationFactor"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactor")
+	authenticationFactor, err := ReadSimpleField[BACnetAuthenticationFactorEnclosed](ctx, "authenticationFactor", ReadComplex[BACnetAuthenticationFactorEnclosed](BACnetAuthenticationFactorEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationFactor' field"))
 	}
-	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _authenticationFactorErr != nil {
-		return nil, errors.Wrap(_authenticationFactorErr, "Error parsing 'authenticationFactor' field of BACnetCredentialAuthenticationFactor")
-	}
-	authenticationFactor := _authenticationFactor.(BACnetAuthenticationFactorEnclosed)
-	if closeErr := readBuffer.CloseContext("authenticationFactor"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authenticationFactor")
-	}
+	m.AuthenticationFactor = authenticationFactor
 
 	if closeErr := readBuffer.CloseContext("BACnetCredentialAuthenticationFactor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetCredentialAuthenticationFactor")
 	}
 
-	// Create the instance
-	return &_BACnetCredentialAuthenticationFactor{
-		Disable:              disable,
-		AuthenticationFactor: authenticationFactor,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetCredentialAuthenticationFactor) Serialize() ([]byte, error) {
@@ -178,28 +177,12 @@ func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(ctx con
 		return errors.Wrap(pushErr, "Error pushing for BACnetCredentialAuthenticationFactor")
 	}
 
-	// Simple Field (disable)
-	if pushErr := writeBuffer.PushContext("disable"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for disable")
-	}
-	_disableErr := writeBuffer.WriteSerializable(ctx, m.GetDisable())
-	if popErr := writeBuffer.PopContext("disable"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for disable")
-	}
-	if _disableErr != nil {
-		return errors.Wrap(_disableErr, "Error serializing 'disable' field")
+	if err := WriteSimpleField[BACnetAccessAuthenticationFactorDisableTagged](ctx, "disable", m.GetDisable(), WriteComplex[BACnetAccessAuthenticationFactorDisableTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'disable' field")
 	}
 
-	// Simple Field (authenticationFactor)
-	if pushErr := writeBuffer.PushContext("authenticationFactor"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for authenticationFactor")
-	}
-	_authenticationFactorErr := writeBuffer.WriteSerializable(ctx, m.GetAuthenticationFactor())
-	if popErr := writeBuffer.PopContext("authenticationFactor"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for authenticationFactor")
-	}
-	if _authenticationFactorErr != nil {
-		return errors.Wrap(_authenticationFactorErr, "Error serializing 'authenticationFactor' field")
+	if err := WriteSimpleField[BACnetAuthenticationFactorEnclosed](ctx, "authenticationFactor", m.GetAuthenticationFactor(), WriteComplex[BACnetAuthenticationFactorEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'authenticationFactor' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCredentialAuthenticationFactor"); popErr != nil {
@@ -208,9 +191,7 @@ func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(ctx con
 	return nil
 }
 
-func (m *_BACnetCredentialAuthenticationFactor) isBACnetCredentialAuthenticationFactor() bool {
-	return true
-}
+func (m *_BACnetCredentialAuthenticationFactor) IsBACnetCredentialAuthenticationFactor() {}
 
 func (m *_BACnetCredentialAuthenticationFactor) String() string {
 	if m == nil {

@@ -86,7 +86,7 @@ public abstract class CALData implements Message {
         "commandTypeContainer",
         "CALCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CALCommandTypeContainer::getValue,
             CALCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -103,8 +103,7 @@ public abstract class CALData implements Message {
     serializeCALDataChild(writeBuffer);
 
     // Optional Field (additionalData) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "additionalData", additionalData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("additionalData", additionalData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALData");
   }
@@ -152,8 +151,7 @@ public abstract class CALData implements Message {
         readEnumField(
             "commandTypeContainer",
             "CALCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                CALCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(CALCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     CALCommandType commandType =
         readVirtualField(
             "commandType", CALCommandType.class, commandTypeContainer.getCommandType());
@@ -209,7 +207,7 @@ public abstract class CALData implements Message {
     CALData additionalData =
         readOptionalField(
             "additionalData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CALData.staticParse(readBuffer, (RequestContext) (null)), readBuffer));
 
     readBuffer.closeContext("CALData");

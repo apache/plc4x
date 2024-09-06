@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetContextTagCharacterString interface {
 	GetPayload() BACnetTagPayloadCharacterString
 	// GetValue returns Value (virtual field)
 	GetValue() string
-}
-
-// BACnetContextTagCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagCharacterString.
-// This is useful for switch cases.
-type BACnetContextTagCharacterStringExactly interface {
-	BACnetContextTagCharacterString
-	isBACnetContextTagCharacterString() bool
+	// IsBACnetContextTagCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagCharacterString()
 }
 
 // _BACnetContextTagCharacterString is the data-structure of this message
 type _BACnetContextTagCharacterString struct {
-	*_BACnetContextTag
+	BACnetContextTagContract
 	Payload BACnetTagPayloadCharacterString
 }
+
+var _ BACnetContextTagCharacterString = (*_BACnetContextTagCharacterString)(nil)
+var _ BACnetContextTagRequirements = (*_BACnetContextTagCharacterString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,12 +70,8 @@ func (m *_BACnetContextTagCharacterString) GetDataType() BACnetDataType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetContextTagCharacterString) InitializeParent(parent BACnetContextTag, header BACnetTagHeader) {
-	m.Header = header
-}
-
-func (m *_BACnetContextTagCharacterString) GetParent() BACnetContextTag {
-	return m._BACnetContextTag
+func (m *_BACnetContextTagCharacterString) GetParent() BACnetContextTagContract {
+	return m.BACnetContextTagContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,11 +105,14 @@ func (m *_BACnetContextTagCharacterString) GetValue() string {
 
 // NewBACnetContextTagCharacterString factory function for _BACnetContextTagCharacterString
 func NewBACnetContextTagCharacterString(payload BACnetTagPayloadCharacterString, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagCharacterString {
-	_result := &_BACnetContextTagCharacterString{
-		Payload:           payload,
-		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadCharacterString for BACnetContextTagCharacterString must not be nil")
 	}
-	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result
+	_result := &_BACnetContextTagCharacterString{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
 
@@ -133,7 +132,7 @@ func (m *_BACnetContextTagCharacterString) GetTypeName() string {
 }
 
 func (m *_BACnetContextTagCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -147,52 +146,34 @@ func (m *_BACnetContextTagCharacterString) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetContextTagCharacterStringParse(ctx context.Context, theBytes []byte, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagCharacterString, error) {
-	return BACnetContextTagCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
-}
-
-func BACnetContextTagCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagCharacterString, error) {
+func (m *_BACnetContextTagCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetContextTag, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (__bACnetContextTagCharacterString BACnetContextTagCharacterString, err error) {
+	m.BACnetContextTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagCharacterString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagCharacterString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadCharacterString](ctx, "payload", ReadComplex[BACnetTagPayloadCharacterString](BACnetTagPayloadCharacterStringParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
-	_payload, _payloadErr := BACnetTagPayloadCharacterStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagCharacterString")
-	}
-	payload := _payload.(BACnetTagPayloadCharacterString)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
-	}
+	m.Payload = payload
 
-	// Virtual field
-	_value := payload.GetValue()
-	value := fmt.Sprintf("%v", _value)
+	value, err := ReadVirtualField[string](ctx, "value", (*string)(nil), payload.GetValue())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
+	}
 	_ = value
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagCharacterString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTagCharacterString")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetContextTagCharacterString{
-		_BACnetContextTag: &_BACnetContextTag{
-			TagNumberArgument: tagNumberArgument,
-		},
-		Payload: payload,
-	}
-	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetContextTagCharacterString) Serialize() ([]byte, error) {
@@ -213,16 +194,8 @@ func (m *_BACnetContextTagCharacterString) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetContextTagCharacterString")
 		}
 
-		// Simple Field (payload)
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		if err := WriteSimpleField[BACnetTagPayloadCharacterString](ctx, "payload", m.GetPayload(), WriteComplex[BACnetTagPayloadCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 		// Virtual field
 		value := m.GetValue()
@@ -236,12 +209,10 @@ func (m *_BACnetContextTagCharacterString) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetContextTagContract.(*_BACnetContextTag).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetContextTagCharacterString) isBACnetContextTagCharacterString() bool {
-	return true
-}
+func (m *_BACnetContextTagCharacterString) IsBACnetContextTagCharacterString() {}
 
 func (m *_BACnetContextTagCharacterString) String() string {
 	if m == nil {

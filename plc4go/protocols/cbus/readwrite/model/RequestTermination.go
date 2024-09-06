@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,18 +41,15 @@ type RequestTermination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// RequestTerminationExactly can be used when we want exactly this type and not a type which fulfills RequestTermination.
-// This is useful for switch cases.
-type RequestTerminationExactly interface {
-	RequestTermination
-	isRequestTermination() bool
+	// IsRequestTermination is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestTermination()
 }
 
 // _RequestTermination is the data-structure of this message
 type _RequestTermination struct {
 }
+
+var _ RequestTermination = (*_RequestTermination)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func RequestTerminationParse(ctx context.Context, theBytes []byte) (RequestTermi
 	return RequestTerminationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func RequestTerminationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {
+		return RequestTerminationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func RequestTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {
+	v, err := (&_RequestTermination{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_RequestTermination) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__requestTermination RequestTermination, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestTermination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestTermination")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (cr)
-	cr, _crErr := readBuffer.ReadByte("cr")
-	if _crErr != nil {
-		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field of RequestTermination")
+	cr, err := ReadConstField[byte](ctx, "cr", ReadByte(readBuffer, 8), RequestTermination_CR)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cr' field"))
 	}
-	if cr != RequestTermination_CR {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestTermination_CR) + " but got " + fmt.Sprintf("%d", cr))
-	}
+	_ = cr
 
 	if closeErr := readBuffer.CloseContext("RequestTermination"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestTermination")
 	}
 
-	// Create the instance
-	return &_RequestTermination{}, nil
+	return m, nil
 }
 
 func (m *_RequestTermination) Serialize() ([]byte, error) {
@@ -148,10 +155,8 @@ func (m *_RequestTermination) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(pushErr, "Error pushing for RequestTermination")
 	}
 
-	// Const Field (cr)
-	_crErr := writeBuffer.WriteByte("cr", 0x0D)
-	if _crErr != nil {
-		return errors.Wrap(_crErr, "Error serializing 'cr' field")
+	if err := WriteConstField(ctx, "cr", RequestTermination_CR, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'cr' field")
 	}
 
 	if popErr := writeBuffer.PopContext("RequestTermination"); popErr != nil {
@@ -160,9 +165,7 @@ func (m *_RequestTermination) SerializeWithWriteBuffer(ctx context.Context, writ
 	return nil
 }
 
-func (m *_RequestTermination) isRequestTermination() bool {
-	return true
-}
+func (m *_RequestTermination) IsRequestTermination() {}
 
 func (m *_RequestTermination) String() string {
 	if m == nil {

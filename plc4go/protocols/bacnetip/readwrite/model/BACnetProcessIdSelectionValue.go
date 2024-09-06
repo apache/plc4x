@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetProcessIdSelectionValue interface {
 	BACnetProcessIdSelection
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetProcessIdSelectionValueExactly can be used when we want exactly this type and not a type which fulfills BACnetProcessIdSelectionValue.
-// This is useful for switch cases.
-type BACnetProcessIdSelectionValueExactly interface {
-	BACnetProcessIdSelectionValue
-	isBACnetProcessIdSelectionValue() bool
+	// IsBACnetProcessIdSelectionValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetProcessIdSelectionValue()
 }
 
 // _BACnetProcessIdSelectionValue is the data-structure of this message
 type _BACnetProcessIdSelectionValue struct {
-	*_BACnetProcessIdSelection
+	BACnetProcessIdSelectionContract
 	ProcessIdentifier BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetProcessIdSelectionValue = (*_BACnetProcessIdSelectionValue)(nil)
+var _ BACnetProcessIdSelectionRequirements = (*_BACnetProcessIdSelectionValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetProcessIdSelectionValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetProcessIdSelectionValue) InitializeParent(parent BACnetProcessIdSelection, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetProcessIdSelectionValue) GetParent() BACnetProcessIdSelection {
-	return m._BACnetProcessIdSelection
+func (m *_BACnetProcessIdSelectionValue) GetParent() BACnetProcessIdSelectionContract {
+	return m.BACnetProcessIdSelectionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetProcessIdSelectionValue) GetProcessIdentifier() BACnetApplicatio
 
 // NewBACnetProcessIdSelectionValue factory function for _BACnetProcessIdSelectionValue
 func NewBACnetProcessIdSelectionValue(processIdentifier BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelectionValue {
-	_result := &_BACnetProcessIdSelectionValue{
-		ProcessIdentifier:         processIdentifier,
-		_BACnetProcessIdSelection: NewBACnetProcessIdSelection(peekedTagHeader),
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetProcessIdSelectionValue must not be nil")
 	}
-	_result._BACnetProcessIdSelection._BACnetProcessIdSelectionChildRequirements = _result
+	_result := &_BACnetProcessIdSelectionValue{
+		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
+		ProcessIdentifier:                processIdentifier,
+	}
+	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetProcessIdSelectionValue) GetTypeName() string {
 }
 
 func (m *_BACnetProcessIdSelectionValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).getLengthInBits(ctx))
 
 	// Simple field (processIdentifier)
 	lengthInBits += m.ProcessIdentifier.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetProcessIdSelectionValue) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetProcessIdSelectionValueParse(ctx context.Context, theBytes []byte) (BACnetProcessIdSelectionValue, error) {
-	return BACnetProcessIdSelectionValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetProcessIdSelectionValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetProcessIdSelectionValue, error) {
+func (m *_BACnetProcessIdSelectionValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetProcessIdSelection) (__bACnetProcessIdSelectionValue BACnetProcessIdSelectionValue, err error) {
+	m.BACnetProcessIdSelectionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetProcessIdSelectionValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetProcessIdSelectionValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (processIdentifier)
-	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
+	processIdentifier, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "processIdentifier", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'processIdentifier' field"))
 	}
-	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _processIdentifierErr != nil {
-		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetProcessIdSelectionValue")
-	}
-	processIdentifier := _processIdentifier.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
-	}
+	m.ProcessIdentifier = processIdentifier
 
 	if closeErr := readBuffer.CloseContext("BACnetProcessIdSelectionValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetProcessIdSelectionValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetProcessIdSelectionValue{
-		_BACnetProcessIdSelection: &_BACnetProcessIdSelection{},
-		ProcessIdentifier:         processIdentifier,
-	}
-	_child._BACnetProcessIdSelection._BACnetProcessIdSelectionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetProcessIdSelectionValue) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetProcessIdSelectionValue) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetProcessIdSelectionValue")
 		}
 
-		// Simple Field (processIdentifier)
-		if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
-		}
-		_processIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetProcessIdentifier())
-		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for processIdentifier")
-		}
-		if _processIdentifierErr != nil {
-			return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "processIdentifier", m.GetProcessIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetProcessIdSelectionValue"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetProcessIdSelectionValue) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetProcessIdSelectionValue) isBACnetProcessIdSelectionValue() bool {
-	return true
-}
+func (m *_BACnetProcessIdSelectionValue) IsBACnetProcessIdSelectionValue() {}
 
 func (m *_BACnetProcessIdSelectionValue) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataAuthorizationExemptions interface {
 	BACnetConstructedData
 	// GetAuthorizationExemption returns AuthorizationExemption (property field)
 	GetAuthorizationExemption() []BACnetAuthorizationExemptionTagged
-}
-
-// BACnetConstructedDataAuthorizationExemptionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAuthorizationExemptions.
-// This is useful for switch cases.
-type BACnetConstructedDataAuthorizationExemptionsExactly interface {
-	BACnetConstructedDataAuthorizationExemptions
-	isBACnetConstructedDataAuthorizationExemptions() bool
+	// IsBACnetConstructedDataAuthorizationExemptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAuthorizationExemptions()
 }
 
 // _BACnetConstructedDataAuthorizationExemptions is the data-structure of this message
 type _BACnetConstructedDataAuthorizationExemptions struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AuthorizationExemption []BACnetAuthorizationExemptionTagged
 }
+
+var _ BACnetConstructedDataAuthorizationExemptions = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAuthorizationExemptions) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAuthorizationExemptions) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAuthorizationExemptions) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetAuthorizationExemptio
 // NewBACnetConstructedDataAuthorizationExemptions factory function for _BACnetConstructedDataAuthorizationExemptions
 func NewBACnetConstructedDataAuthorizationExemptions(authorizationExemption []BACnetAuthorizationExemptionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationExemptions {
 	_result := &_BACnetConstructedDataAuthorizationExemptions{
-		AuthorizationExemption: authorizationExemption,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AuthorizationExemption:        authorizationExemption,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.AuthorizationExemption) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAuthorizationExemptionsParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationExemptions, error) {
-	return BACnetConstructedDataAuthorizationExemptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAuthorizationExemptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationExemptions, error) {
+func (m *_BACnetConstructedDataAuthorizationExemptions) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAuthorizationExemptions BACnetConstructedDataAuthorizationExemptions, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationExemptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAuthorizationExemptions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (authorizationExemption)
-	if pullErr := readBuffer.PullContext("authorizationExemption", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authorizationExemption")
+	authorizationExemption, err := ReadTerminatedArrayField[BACnetAuthorizationExemptionTagged](ctx, "authorizationExemption", ReadComplex[BACnetAuthorizationExemptionTagged](BACnetAuthorizationExemptionTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authorizationExemption' field"))
 	}
-	// Terminated array
-	var authorizationExemption []BACnetAuthorizationExemptionTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAuthorizationExemptionTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'authorizationExemption' field of BACnetConstructedDataAuthorizationExemptions")
-			}
-			authorizationExemption = append(authorizationExemption, _item.(BACnetAuthorizationExemptionTagged))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("authorizationExemption", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authorizationExemption")
-	}
+	m.AuthorizationExemption = authorizationExemption
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthorizationExemptions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAuthorizationExemptions")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAuthorizationExemptions{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AuthorizationExemption: authorizationExemption,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAuthorizationExemptions")
 		}
 
-		// Array Field (authorizationExemption)
-		if pushErr := writeBuffer.PushContext("authorizationExemption", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authorizationExemption")
-		}
-		for _curItem, _element := range m.GetAuthorizationExemption() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAuthorizationExemption()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'authorizationExemption' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("authorizationExemption", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authorizationExemption")
+		if err := WriteComplexTypeArrayField(ctx, "authorizationExemption", m.GetAuthorizationExemption(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'authorizationExemption' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthorizationExemptions"); popErr != nil {
@@ -228,11 +183,10 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptions) isBACnetConstructedDataAuthorizationExemptions() bool {
-	return true
+func (m *_BACnetConstructedDataAuthorizationExemptions) IsBACnetConstructedDataAuthorizationExemptions() {
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) String() string {

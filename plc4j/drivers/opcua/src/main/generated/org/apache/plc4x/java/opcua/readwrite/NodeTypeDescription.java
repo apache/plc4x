@@ -84,8 +84,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("NodeTypeDescription");
 
     // Simple Field (typeDefinitionNode)
-    writeSimpleField(
-        "typeDefinitionNode", typeDefinitionNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("typeDefinitionNode", typeDefinitionNode, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -146,8 +145,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     ExpandedNodeId typeDefinitionNode =
         readSimpleField(
             "typeDefinitionNode",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -159,7 +157,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> dataToReturn =
         readCountArrayField(
             "dataToReturn",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("572")),
                 readBuffer),
             noOfDataToReturn);

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SecurityDataEvent interface {
 	SecurityData
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// SecurityDataEventExactly can be used when we want exactly this type and not a type which fulfills SecurityDataEvent.
-// This is useful for switch cases.
-type SecurityDataEventExactly interface {
-	SecurityDataEvent
-	isSecurityDataEvent() bool
+	// IsSecurityDataEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataEvent()
 }
 
 // _SecurityDataEvent is the data-structure of this message
 type _SecurityDataEvent struct {
-	*_SecurityData
+	SecurityDataContract
 	Data []byte
 }
+
+var _ SecurityDataEvent = (*_SecurityDataEvent)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataEvent)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _SecurityDataEvent struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataEvent) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataEvent) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataEvent) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_SecurityDataEvent) GetData() []byte {
 // NewSecurityDataEvent factory function for _SecurityDataEvent
 func NewSecurityDataEvent(data []byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataEvent {
 	_result := &_SecurityDataEvent{
-		Data:          data,
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Data:                 data,
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_SecurityDataEvent) GetTypeName() string {
 }
 
 func (m *_SecurityDataEvent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -127,38 +122,28 @@ func (m *_SecurityDataEvent) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataEventParse(ctx context.Context, theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
-	return SecurityDataEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func SecurityDataEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
+func (m *_SecurityDataEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData, commandTypeContainer SecurityCommandTypeContainer) (__securityDataEvent SecurityDataEvent, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataEvent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataEvent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(1)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of SecurityDataEvent")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(commandTypeContainer.NumBytes())-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("SecurityDataEvent"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataEvent")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataEvent{
-		_SecurityData: &_SecurityData{},
-		Data:          data,
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataEvent) Serialize() ([]byte, error) {
@@ -179,9 +164,7 @@ func (m *_SecurityDataEvent) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataEvent")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -190,12 +173,10 @@ func (m *_SecurityDataEvent) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataEvent) isSecurityDataEvent() bool {
-	return true
-}
+func (m *_SecurityDataEvent) IsSecurityDataEvent() {}
 
 func (m *_SecurityDataEvent) String() string {
 	if m == nil {

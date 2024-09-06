@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataRecordsSinceNotification interface {
 	GetRecordsSinceNotifications() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataRecordsSinceNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRecordsSinceNotification.
-// This is useful for switch cases.
-type BACnetConstructedDataRecordsSinceNotificationExactly interface {
-	BACnetConstructedDataRecordsSinceNotification
-	isBACnetConstructedDataRecordsSinceNotification() bool
+	// IsBACnetConstructedDataRecordsSinceNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRecordsSinceNotification()
 }
 
 // _BACnetConstructedDataRecordsSinceNotification is the data-structure of this message
 type _BACnetConstructedDataRecordsSinceNotification struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	RecordsSinceNotifications BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataRecordsSinceNotification = (*_BACnetConstructedDataRecordsSinceNotification)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRecordsSinceNotification)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) GetPropertyIdentifierAr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataRecordsSinceNotification) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataRecordsSinceNotification) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataRecordsSinceNotification) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) GetActualValue() BACnet
 
 // NewBACnetConstructedDataRecordsSinceNotification factory function for _BACnetConstructedDataRecordsSinceNotification
 func NewBACnetConstructedDataRecordsSinceNotification(recordsSinceNotifications BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecordsSinceNotification {
-	_result := &_BACnetConstructedDataRecordsSinceNotification{
-		RecordsSinceNotifications: recordsSinceNotifications,
-		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if recordsSinceNotifications == nil {
+		panic("recordsSinceNotifications of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRecordsSinceNotification must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataRecordsSinceNotification{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RecordsSinceNotifications:     recordsSinceNotifications,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataRecordsSinceNotification) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (recordsSinceNotifications)
 	lengthInBits += m.RecordsSinceNotifications.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) GetLengthInBytes(ctx co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataRecordsSinceNotificationParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRecordsSinceNotification, error) {
-	return BACnetConstructedDataRecordsSinceNotificationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataRecordsSinceNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRecordsSinceNotification, error) {
+func (m *_BACnetConstructedDataRecordsSinceNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataRecordsSinceNotification BACnetConstructedDataRecordsSinceNotification, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRecordsSinceNotification"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRecordsSinceNotification")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recordsSinceNotifications)
-	if pullErr := readBuffer.PullContext("recordsSinceNotifications"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for recordsSinceNotifications")
+	recordsSinceNotifications, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "recordsSinceNotifications", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordsSinceNotifications' field"))
 	}
-	_recordsSinceNotifications, _recordsSinceNotificationsErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _recordsSinceNotificationsErr != nil {
-		return nil, errors.Wrap(_recordsSinceNotificationsErr, "Error parsing 'recordsSinceNotifications' field of BACnetConstructedDataRecordsSinceNotification")
-	}
-	recordsSinceNotifications := _recordsSinceNotifications.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("recordsSinceNotifications"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for recordsSinceNotifications")
-	}
+	m.RecordsSinceNotifications = recordsSinceNotifications
 
-	// Virtual field
-	_actualValue := recordsSinceNotifications
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), recordsSinceNotifications)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRecordsSinceNotification"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRecordsSinceNotification")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataRecordsSinceNotification{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		RecordsSinceNotifications: recordsSinceNotifications,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataRecordsSinceNotification) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRecordsSinceNotification")
 		}
 
-		// Simple Field (recordsSinceNotifications)
-		if pushErr := writeBuffer.PushContext("recordsSinceNotifications"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for recordsSinceNotifications")
-		}
-		_recordsSinceNotificationsErr := writeBuffer.WriteSerializable(ctx, m.GetRecordsSinceNotifications())
-		if popErr := writeBuffer.PopContext("recordsSinceNotifications"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for recordsSinceNotifications")
-		}
-		if _recordsSinceNotificationsErr != nil {
-			return errors.Wrap(_recordsSinceNotificationsErr, "Error serializing 'recordsSinceNotifications' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "recordsSinceNotifications", m.GetRecordsSinceNotifications(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'recordsSinceNotifications' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotification) isBACnetConstructedDataRecordsSinceNotification() bool {
-	return true
+func (m *_BACnetConstructedDataRecordsSinceNotification) IsBACnetConstructedDataRecordsSinceNotification() {
 }
 
 func (m *_BACnetConstructedDataRecordsSinceNotification) String() string {

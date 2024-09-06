@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ParameterChangeReply interface {
 	Reply
 	// GetParameterChange returns ParameterChange (property field)
 	GetParameterChange() ParameterChange
-}
-
-// ParameterChangeReplyExactly can be used when we want exactly this type and not a type which fulfills ParameterChangeReply.
-// This is useful for switch cases.
-type ParameterChangeReplyExactly interface {
-	ParameterChangeReply
-	isParameterChangeReply() bool
+	// IsParameterChangeReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterChangeReply()
 }
 
 // _ParameterChangeReply is the data-structure of this message
 type _ParameterChangeReply struct {
-	*_Reply
+	ReplyContract
 	ParameterChange ParameterChange
 }
+
+var _ ParameterChangeReply = (*_ParameterChangeReply)(nil)
+var _ ReplyRequirements = (*_ParameterChangeReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _ParameterChangeReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ParameterChangeReply) InitializeParent(parent Reply, peekedByte byte) {
-	m.PeekedByte = peekedByte
-}
-
-func (m *_ParameterChangeReply) GetParent() Reply {
-	return m._Reply
+func (m *_ParameterChangeReply) GetParent() ReplyContract {
+	return m.ReplyContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_ParameterChangeReply) GetParameterChange() ParameterChange {
 
 // NewParameterChangeReply factory function for _ParameterChangeReply
 func NewParameterChangeReply(parameterChange ParameterChange, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
-	_result := &_ParameterChangeReply{
-		ParameterChange: parameterChange,
-		_Reply:          NewReply(peekedByte, cBusOptions, requestContext),
+	if parameterChange == nil {
+		panic("parameterChange of type ParameterChange for ParameterChangeReply must not be nil")
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result := &_ParameterChangeReply{
+		ReplyContract:   NewReply(peekedByte, cBusOptions, requestContext),
+		ParameterChange: parameterChange,
+	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_ParameterChangeReply) GetTypeName() string {
 }
 
 func (m *_ParameterChangeReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
 
 	// Simple field (parameterChange)
 	lengthInBits += m.ParameterChange.GetLengthInBits(ctx)
@@ -124,48 +123,28 @@ func (m *_ParameterChangeReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterChangeReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
-	return ParameterChangeReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
-}
-
-func ParameterChangeReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
+func (m *_ParameterChangeReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Reply, cBusOptions CBusOptions, requestContext RequestContext) (__parameterChangeReply ParameterChangeReply, err error) {
+	m.ReplyContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterChangeReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterChangeReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (parameterChange)
-	if pullErr := readBuffer.PullContext("parameterChange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameterChange")
+	parameterChange, err := ReadSimpleField[ParameterChange](ctx, "parameterChange", ReadComplex[ParameterChange](ParameterChangeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterChange' field"))
 	}
-	_parameterChange, _parameterChangeErr := ParameterChangeParseWithBuffer(ctx, readBuffer)
-	if _parameterChangeErr != nil {
-		return nil, errors.Wrap(_parameterChangeErr, "Error parsing 'parameterChange' field of ParameterChangeReply")
-	}
-	parameterChange := _parameterChange.(ParameterChange)
-	if closeErr := readBuffer.CloseContext("parameterChange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameterChange")
-	}
+	m.ParameterChange = parameterChange
 
 	if closeErr := readBuffer.CloseContext("ParameterChangeReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterChangeReply")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ParameterChangeReply{
-		_Reply: &_Reply{
-			CBusOptions:    cBusOptions,
-			RequestContext: requestContext,
-		},
-		ParameterChange: parameterChange,
-	}
-	_child._Reply._ReplyChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ParameterChangeReply) Serialize() ([]byte, error) {
@@ -186,16 +165,8 @@ func (m *_ParameterChangeReply) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ParameterChangeReply")
 		}
 
-		// Simple Field (parameterChange)
-		if pushErr := writeBuffer.PushContext("parameterChange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameterChange")
-		}
-		_parameterChangeErr := writeBuffer.WriteSerializable(ctx, m.GetParameterChange())
-		if popErr := writeBuffer.PopContext("parameterChange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameterChange")
-		}
-		if _parameterChangeErr != nil {
-			return errors.Wrap(_parameterChangeErr, "Error serializing 'parameterChange' field")
+		if err := WriteSimpleField[ParameterChange](ctx, "parameterChange", m.GetParameterChange(), WriteComplex[ParameterChange](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameterChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterChangeReply"); popErr != nil {
@@ -203,12 +174,10 @@ func (m *_ParameterChangeReply) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ReplyContract.(*_Reply).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ParameterChangeReply) isParameterChangeReply() bool {
-	return true
-}
+func (m *_ParameterChangeReply) IsParameterChangeReply() {}
 
 func (m *_ParameterChangeReply) String() string {
 	if m == nil {

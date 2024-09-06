@@ -82,7 +82,7 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataDeviceType");
 
     // Simple Field (deviceType)
-    writeSimpleField("deviceType", deviceType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceType", deviceType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
     BACnetApplicationTagCharacterString deviceType =
         readSimpleField(
             "deviceType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

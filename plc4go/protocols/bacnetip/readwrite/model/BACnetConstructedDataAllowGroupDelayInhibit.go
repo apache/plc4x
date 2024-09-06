@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAllowGroupDelayInhibit interface {
 	GetAllowGroupDelayInhibit() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataAllowGroupDelayInhibitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAllowGroupDelayInhibit.
-// This is useful for switch cases.
-type BACnetConstructedDataAllowGroupDelayInhibitExactly interface {
-	BACnetConstructedDataAllowGroupDelayInhibit
-	isBACnetConstructedDataAllowGroupDelayInhibit() bool
+	// IsBACnetConstructedDataAllowGroupDelayInhibit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAllowGroupDelayInhibit()
 }
 
 // _BACnetConstructedDataAllowGroupDelayInhibit is the data-structure of this message
 type _BACnetConstructedDataAllowGroupDelayInhibit struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AllowGroupDelayInhibit BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataAllowGroupDelayInhibit = (*_BACnetConstructedDataAllowGroupDelayInhibit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAllowGroupDelayInhibit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibit) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetActualValue() BACnetAp
 
 // NewBACnetConstructedDataAllowGroupDelayInhibit factory function for _BACnetConstructedDataAllowGroupDelayInhibit
 func NewBACnetConstructedDataAllowGroupDelayInhibit(allowGroupDelayInhibit BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllowGroupDelayInhibit {
-	_result := &_BACnetConstructedDataAllowGroupDelayInhibit{
-		AllowGroupDelayInhibit: allowGroupDelayInhibit,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if allowGroupDelayInhibit == nil {
+		panic("allowGroupDelayInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataAllowGroupDelayInhibit must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAllowGroupDelayInhibit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AllowGroupDelayInhibit:        allowGroupDelayInhibit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (allowGroupDelayInhibit)
 	lengthInBits += m.AllowGroupDelayInhibit.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAllowGroupDelayInhibitParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllowGroupDelayInhibit, error) {
-	return BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllowGroupDelayInhibit, error) {
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAllowGroupDelayInhibit BACnetConstructedDataAllowGroupDelayInhibit, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAllowGroupDelayInhibit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAllowGroupDelayInhibit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (allowGroupDelayInhibit)
-	if pullErr := readBuffer.PullContext("allowGroupDelayInhibit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for allowGroupDelayInhibit")
+	allowGroupDelayInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allowGroupDelayInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'allowGroupDelayInhibit' field"))
 	}
-	_allowGroupDelayInhibit, _allowGroupDelayInhibitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _allowGroupDelayInhibitErr != nil {
-		return nil, errors.Wrap(_allowGroupDelayInhibitErr, "Error parsing 'allowGroupDelayInhibit' field of BACnetConstructedDataAllowGroupDelayInhibit")
-	}
-	allowGroupDelayInhibit := _allowGroupDelayInhibit.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("allowGroupDelayInhibit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for allowGroupDelayInhibit")
-	}
+	m.AllowGroupDelayInhibit = allowGroupDelayInhibit
 
-	// Virtual field
-	_actualValue := allowGroupDelayInhibit
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), allowGroupDelayInhibit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAllowGroupDelayInhibit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAllowGroupDelayInhibit")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAllowGroupDelayInhibit{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AllowGroupDelayInhibit: allowGroupDelayInhibit,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAllowGroupDelayInhibit) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAllowGroupDelayInhibit")
 		}
 
-		// Simple Field (allowGroupDelayInhibit)
-		if pushErr := writeBuffer.PushContext("allowGroupDelayInhibit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for allowGroupDelayInhibit")
-		}
-		_allowGroupDelayInhibitErr := writeBuffer.WriteSerializable(ctx, m.GetAllowGroupDelayInhibit())
-		if popErr := writeBuffer.PopContext("allowGroupDelayInhibit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for allowGroupDelayInhibit")
-		}
-		if _allowGroupDelayInhibitErr != nil {
-			return errors.Wrap(_allowGroupDelayInhibitErr, "Error serializing 'allowGroupDelayInhibit' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "allowGroupDelayInhibit", m.GetAllowGroupDelayInhibit(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'allowGroupDelayInhibit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibit) isBACnetConstructedDataAllowGroupDelayInhibit() bool {
-	return true
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) IsBACnetConstructedDataAllowGroupDelayInhibit() {
 }
 
 func (m *_BACnetConstructedDataAllowGroupDelayInhibit) String() string {

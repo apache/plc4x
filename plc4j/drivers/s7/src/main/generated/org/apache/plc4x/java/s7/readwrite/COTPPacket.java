@@ -86,7 +86,7 @@ public abstract class COTPPacket implements Message {
     writeComplexTypeArrayField("parameters", parameters, writeBuffer);
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    writeOptionalField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("COTPPacket");
   }
@@ -164,7 +164,7 @@ public abstract class COTPPacket implements Message {
     List<COTPParameter> parameters =
         readLengthArrayField(
             "parameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     COTPParameter.staticParse(
                         readBuffer,
@@ -175,7 +175,7 @@ public abstract class COTPPacket implements Message {
     S7Message payload =
         readOptionalField(
             "payload",
-            new DataReaderComplexDefault<>(() -> S7Message.staticParse(readBuffer), readBuffer),
+            readComplex(() -> S7Message.staticParse(readBuffer), readBuffer),
             ((positionAware.getPos() - startPos)) < (cotpLen));
 
     readBuffer.closeContext("COTPPacket");

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataBinaryOutputFeedbackValue interface {
 	GetFeedbackValue() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
-}
-
-// BACnetConstructedDataBinaryOutputFeedbackValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryOutputFeedbackValue.
-// This is useful for switch cases.
-type BACnetConstructedDataBinaryOutputFeedbackValueExactly interface {
-	BACnetConstructedDataBinaryOutputFeedbackValue
-	isBACnetConstructedDataBinaryOutputFeedbackValue() bool
+	// IsBACnetConstructedDataBinaryOutputFeedbackValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBinaryOutputFeedbackValue()
 }
 
 // _BACnetConstructedDataBinaryOutputFeedbackValue is the data-structure of this message
 type _BACnetConstructedDataBinaryOutputFeedbackValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FeedbackValue BACnetBinaryPVTagged
 }
+
+var _ BACnetConstructedDataBinaryOutputFeedbackValue = (*_BACnetConstructedDataBinaryOutputFeedbackValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputFeedbackValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetPropertyIdentifierA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetActualValue() BACne
 
 // NewBACnetConstructedDataBinaryOutputFeedbackValue factory function for _BACnetConstructedDataBinaryOutputFeedbackValue
 func NewBACnetConstructedDataBinaryOutputFeedbackValue(feedbackValue BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputFeedbackValue {
-	_result := &_BACnetConstructedDataBinaryOutputFeedbackValue{
-		FeedbackValue:          feedbackValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if feedbackValue == nil {
+		panic("feedbackValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputFeedbackValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataBinaryOutputFeedbackValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FeedbackValue:                 feedbackValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (feedbackValue)
 	lengthInBits += m.FeedbackValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataBinaryOutputFeedbackValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputFeedbackValue, error) {
-	return BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputFeedbackValue, error) {
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBinaryOutputFeedbackValue BACnetConstructedDataBinaryOutputFeedbackValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryOutputFeedbackValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBinaryOutputFeedbackValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (feedbackValue)
-	if pullErr := readBuffer.PullContext("feedbackValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for feedbackValue")
+	feedbackValue, err := ReadSimpleField[BACnetBinaryPVTagged](ctx, "feedbackValue", ReadComplex[BACnetBinaryPVTagged](BACnetBinaryPVTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'feedbackValue' field"))
 	}
-	_feedbackValue, _feedbackValueErr := BACnetBinaryPVTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _feedbackValueErr != nil {
-		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetConstructedDataBinaryOutputFeedbackValue")
-	}
-	feedbackValue := _feedbackValue.(BACnetBinaryPVTagged)
-	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for feedbackValue")
-	}
+	m.FeedbackValue = feedbackValue
 
-	// Virtual field
-	_actualValue := feedbackValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetBinaryPVTagged](ctx, "actualValue", (*BACnetBinaryPVTagged)(nil), feedbackValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryOutputFeedbackValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryOutputFeedbackValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataBinaryOutputFeedbackValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FeedbackValue: feedbackValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBinaryOutputFeedbackValue")
 		}
 
-		// Simple Field (feedbackValue)
-		if pushErr := writeBuffer.PushContext("feedbackValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for feedbackValue")
-		}
-		_feedbackValueErr := writeBuffer.WriteSerializable(ctx, m.GetFeedbackValue())
-		if popErr := writeBuffer.PopContext("feedbackValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for feedbackValue")
-		}
-		if _feedbackValueErr != nil {
-			return errors.Wrap(_feedbackValueErr, "Error serializing 'feedbackValue' field")
+		if err := WriteSimpleField[BACnetBinaryPVTagged](ctx, "feedbackValue", m.GetFeedbackValue(), WriteComplex[BACnetBinaryPVTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'feedbackValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) isBACnetConstructedDataBinaryOutputFeedbackValue() bool {
-	return true
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) IsBACnetConstructedDataBinaryOutputFeedbackValue() {
 }
 
 func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) String() string {

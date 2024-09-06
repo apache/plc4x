@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetAuthenticationPolicyList interface {
 	GetEntries() []BACnetAuthenticationPolicyListEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetAuthenticationPolicyListExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicyList.
-// This is useful for switch cases.
-type BACnetAuthenticationPolicyListExactly interface {
-	BACnetAuthenticationPolicyList
-	isBACnetAuthenticationPolicyList() bool
+	// IsBACnetAuthenticationPolicyList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationPolicyList()
 }
 
 // _BACnetAuthenticationPolicyList is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetAuthenticationPolicyList struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetAuthenticationPolicyList = (*_BACnetAuthenticationPolicyList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,12 @@ func (m *_BACnetAuthenticationPolicyList) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetAuthenticationPolicyList factory function for _BACnetAuthenticationPolicyList
 func NewBACnetAuthenticationPolicyList(openingTag BACnetOpeningTag, entries []BACnetAuthenticationPolicyListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationPolicyList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationPolicyList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationPolicyList must not be nil")
+	}
 	return &_BACnetAuthenticationPolicyList{OpeningTag: openingTag, Entries: entries, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -130,73 +135,52 @@ func BACnetAuthenticationPolicyListParse(ctx context.Context, theBytes []byte, t
 	return BACnetAuthenticationPolicyListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetAuthenticationPolicyListParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyList, error) {
+		return BACnetAuthenticationPolicyListParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetAuthenticationPolicyListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAuthenticationPolicyList, error) {
+	v, err := (&_BACnetAuthenticationPolicyList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetAuthenticationPolicyList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetAuthenticationPolicyList BACnetAuthenticationPolicyList, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationPolicyList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationPolicyList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetAuthenticationPolicyList")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (entries)
-	if pullErr := readBuffer.PullContext("entries", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for entries")
+	entries, err := ReadTerminatedArrayField[BACnetAuthenticationPolicyListEntry](ctx, "entries", ReadComplex[BACnetAuthenticationPolicyListEntry](BACnetAuthenticationPolicyListEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'entries' field"))
 	}
-	// Terminated array
-	var entries []BACnetAuthenticationPolicyListEntry
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'entries' field of BACnetAuthenticationPolicyList")
-			}
-			entries = append(entries, _item.(BACnetAuthenticationPolicyListEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("entries", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for entries")
-	}
+	m.Entries = entries
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetAuthenticationPolicyList")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationPolicyList"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthenticationPolicyList")
 	}
 
-	// Create the instance
-	return &_BACnetAuthenticationPolicyList{
-		TagNumber:  tagNumber,
-		OpeningTag: openingTag,
-		Entries:    entries,
-		ClosingTag: closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetAuthenticationPolicyList) Serialize() ([]byte, error) {
@@ -216,45 +200,16 @@ func (m *_BACnetAuthenticationPolicyList) SerializeWithWriteBuffer(ctx context.C
 		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationPolicyList")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (entries)
-	if pushErr := writeBuffer.PushContext("entries", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for entries")
-	}
-	for _curItem, _element := range m.GetEntries() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEntries()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'entries' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("entries", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for entries")
+	if err := WriteComplexTypeArrayField(ctx, "entries", m.GetEntries(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'entries' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationPolicyList"); popErr != nil {
@@ -273,9 +228,7 @@ func (m *_BACnetAuthenticationPolicyList) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetAuthenticationPolicyList) isBACnetAuthenticationPolicyList() bool {
-	return true
-}
+func (m *_BACnetAuthenticationPolicyList) IsBACnetAuthenticationPolicyList() {}
 
 func (m *_BACnetAuthenticationPolicyList) String() string {
 	if m == nil {

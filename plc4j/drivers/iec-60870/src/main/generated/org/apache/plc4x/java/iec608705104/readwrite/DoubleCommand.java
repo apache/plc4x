@@ -62,10 +62,7 @@ public class DoubleCommand implements Message {
 
     // Simple Field (qoc)
     writeSimpleField(
-        "qoc",
-        qoc,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qoc", qoc, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (dcs)
     writeSimpleField(
@@ -105,8 +102,7 @@ public class DoubleCommand implements Message {
     QualifierOfCommand qoc =
         readSimpleField(
             "qoc",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     byte dcs =

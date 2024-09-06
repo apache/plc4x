@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble interface {
 	BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
-}
-
-// BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleExactly interface {
-	BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
-	isBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble() bool
+	// IsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble()
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble struct {
-	*_BACnetFaultParameterFaultOutOfRangeMinNormalValue
+	BACnetFaultParameterFaultOutOfRangeMinNormalValueContract
 	DoubleValue BACnetApplicationTagDouble
 }
+
+var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble)(nil)
+var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) InitializeParent(parent BACnetFaultParameterFaultOutOfRangeMinNormalValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetParent() BACnetFaultParameterFaultOutOfRangeMinNormalValue {
-	return m._BACnetFaultParameterFaultOutOfRangeMinNormalValue
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetParent() BACnetFaultParameterFaultOutOfRangeMinNormalValueContract {
+	return m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetDoubleValu
 
 // NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble factory function for _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
 func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(doubleValue BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
-	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{
-		DoubleValue: doubleValue,
-		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble must not be nil")
 	}
-	_result._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{
+		BACnetFaultParameterFaultOutOfRangeMinNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		DoubleValue: doubleValue,
+	}
+	_result.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetTypeName()
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue).getLengthInBits(ctx))
 
 	// Simple field (doubleValue)
 	lengthInBits += m.DoubleValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetLengthInBy
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble, error) {
-	return BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble, error) {
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultOutOfRangeMinNormalValue, tagNumber uint8) (__bACnetFaultParameterFaultOutOfRangeMinNormalValueDouble BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble, err error) {
+	m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doubleValue)
-	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
+	doubleValue, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doubleValue' field"))
 	}
-	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doubleValueErr != nil {
-		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble")
-	}
-	doubleValue := _doubleValue.(BACnetApplicationTagDouble)
-	if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doubleValue")
-	}
+	m.DoubleValue = doubleValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{
-		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{
-			TagNumber: tagNumber,
-		},
-		DoubleValue: doubleValue,
-	}
-	_child._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) SerializeWith
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble")
 		}
 
-		// Simple Field (doubleValue)
-		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doubleValue")
-		}
-		_doubleValueErr := writeBuffer.WriteSerializable(ctx, m.GetDoubleValue())
-		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doubleValue")
-		}
-		if _doubleValueErr != nil {
-			return errors.Wrap(_doubleValueErr, "Error serializing 'doubleValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", m.GetDoubleValue(), WriteComplex[BACnetApplicationTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doubleValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble"); popErr != nil {
@@ -204,11 +174,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) SerializeWith
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) isBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble() bool {
-	return true
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) IsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble() {
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) String() string {

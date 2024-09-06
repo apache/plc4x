@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataMusterPoint interface {
 	GetMusterPoint() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataMusterPointExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMusterPoint.
-// This is useful for switch cases.
-type BACnetConstructedDataMusterPointExactly interface {
-	BACnetConstructedDataMusterPoint
-	isBACnetConstructedDataMusterPoint() bool
+	// IsBACnetConstructedDataMusterPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMusterPoint()
 }
 
 // _BACnetConstructedDataMusterPoint is the data-structure of this message
 type _BACnetConstructedDataMusterPoint struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MusterPoint BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataMusterPoint = (*_BACnetConstructedDataMusterPoint)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMusterPoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataMusterPoint) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMusterPoint) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMusterPoint) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMusterPoint) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataMusterPoint) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataMusterPoint factory function for _BACnetConstructedDataMusterPoint
 func NewBACnetConstructedDataMusterPoint(musterPoint BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMusterPoint {
-	_result := &_BACnetConstructedDataMusterPoint{
-		MusterPoint:            musterPoint,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if musterPoint == nil {
+		panic("musterPoint of type BACnetApplicationTagBoolean for BACnetConstructedDataMusterPoint must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataMusterPoint{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MusterPoint:                   musterPoint,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataMusterPoint) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMusterPoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (musterPoint)
 	lengthInBits += m.MusterPoint.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataMusterPoint) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMusterPointParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
-	return BACnetConstructedDataMusterPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMusterPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
+func (m *_BACnetConstructedDataMusterPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMusterPoint BACnetConstructedDataMusterPoint, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMusterPoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMusterPoint")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (musterPoint)
-	if pullErr := readBuffer.PullContext("musterPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for musterPoint")
+	musterPoint, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "musterPoint", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'musterPoint' field"))
 	}
-	_musterPoint, _musterPointErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _musterPointErr != nil {
-		return nil, errors.Wrap(_musterPointErr, "Error parsing 'musterPoint' field of BACnetConstructedDataMusterPoint")
-	}
-	musterPoint := _musterPoint.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("musterPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for musterPoint")
-	}
+	m.MusterPoint = musterPoint
 
-	// Virtual field
-	_actualValue := musterPoint
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), musterPoint)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMusterPoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMusterPoint")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMusterPoint{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MusterPoint: musterPoint,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMusterPoint) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMusterPoint")
 		}
 
-		// Simple Field (musterPoint)
-		if pushErr := writeBuffer.PushContext("musterPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for musterPoint")
-		}
-		_musterPointErr := writeBuffer.WriteSerializable(ctx, m.GetMusterPoint())
-		if popErr := writeBuffer.PopContext("musterPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for musterPoint")
-		}
-		if _musterPointErr != nil {
-			return errors.Wrap(_musterPointErr, "Error serializing 'musterPoint' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "musterPoint", m.GetMusterPoint(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'musterPoint' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMusterPoint) isBACnetConstructedDataMusterPoint() bool {
-	return true
-}
+func (m *_BACnetConstructedDataMusterPoint) IsBACnetConstructedDataMusterPoint() {}
 
 func (m *_BACnetConstructedDataMusterPoint) String() string {
 	if m == nil {

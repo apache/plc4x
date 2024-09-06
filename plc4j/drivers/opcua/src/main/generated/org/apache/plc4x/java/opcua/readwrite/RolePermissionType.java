@@ -68,14 +68,14 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("RolePermissionType");
 
     // Simple Field (roleId)
-    writeSimpleField("roleId", roleId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("roleId", roleId, writeComplex(writeBuffer));
 
     // Simple Field (permissions)
     writeSimpleEnumField(
         "permissions",
         "PermissionType",
         permissions,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PermissionType::getValue, PermissionType::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("RolePermissionType");
@@ -108,16 +108,13 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId roleId =
-        readSimpleField(
-            "roleId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("roleId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     PermissionType permissions =
         readEnumField(
             "permissions",
             "PermissionType",
-            new DataReaderEnumDefault<>(
-                PermissionType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(PermissionType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("RolePermissionType");
     // Create the instance

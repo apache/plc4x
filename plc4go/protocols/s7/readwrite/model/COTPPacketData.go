@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type COTPPacketData interface {
 	GetEot() bool
 	// GetTpduRef returns TpduRef (property field)
 	GetTpduRef() uint8
-}
-
-// COTPPacketDataExactly can be used when we want exactly this type and not a type which fulfills COTPPacketData.
-// This is useful for switch cases.
-type COTPPacketDataExactly interface {
-	COTPPacketData
-	isCOTPPacketData() bool
+	// IsCOTPPacketData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacketData()
 }
 
 // _COTPPacketData is the data-structure of this message
 type _COTPPacketData struct {
-	*_COTPPacket
+	COTPPacketContract
 	Eot     bool
 	TpduRef uint8
 }
+
+var _ COTPPacketData = (*_COTPPacketData)(nil)
+var _ COTPPacketRequirements = (*_COTPPacketData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,13 +71,8 @@ func (m *_COTPPacketData) GetTpduCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_COTPPacketData) InitializeParent(parent COTPPacket, parameters []COTPParameter, payload S7Message) {
-	m.Parameters = parameters
-	m.Payload = payload
-}
-
-func (m *_COTPPacketData) GetParent() COTPPacket {
-	return m._COTPPacket
+func (m *_COTPPacketData) GetParent() COTPPacketContract {
+	return m.COTPPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,11 +96,11 @@ func (m *_COTPPacketData) GetTpduRef() uint8 {
 // NewCOTPPacketData factory function for _COTPPacketData
 func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketData {
 	_result := &_COTPPacketData{
-		Eot:         eot,
-		TpduRef:     tpduRef,
-		_COTPPacket: NewCOTPPacket(parameters, payload, cotpLen),
+		COTPPacketContract: NewCOTPPacket(parameters, payload, cotpLen),
+		Eot:                eot,
+		TpduRef:            tpduRef,
 	}
-	_result._COTPPacket._COTPPacketChildRequirements = _result
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
 
@@ -125,7 +120,7 @@ func (m *_COTPPacketData) GetTypeName() string {
 }
 
 func (m *_COTPPacketData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
 
 	// Simple field (eot)
 	lengthInBits += 1
@@ -140,49 +135,34 @@ func (m *_COTPPacketData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPPacketDataParse(ctx context.Context, theBytes []byte, cotpLen uint16) (COTPPacketData, error) {
-	return COTPPacketDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
-}
-
-func COTPPacketDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketData, error) {
+func (m *_COTPPacketData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketData COTPPacketData, err error) {
+	m.COTPPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPPacketData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPPacketData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eot)
-	_eot, _eotErr := readBuffer.ReadBit("eot")
-	if _eotErr != nil {
-		return nil, errors.Wrap(_eotErr, "Error parsing 'eot' field of COTPPacketData")
+	eot, err := ReadSimpleField(ctx, "eot", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eot' field"))
 	}
-	eot := _eot
+	m.Eot = eot
 
-	// Simple Field (tpduRef)
-	_tpduRef, _tpduRefErr := readBuffer.ReadUint8("tpduRef", 7)
-	if _tpduRefErr != nil {
-		return nil, errors.Wrap(_tpduRefErr, "Error parsing 'tpduRef' field of COTPPacketData")
+	tpduRef, err := ReadSimpleField(ctx, "tpduRef", ReadUnsignedByte(readBuffer, uint8(7)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tpduRef' field"))
 	}
-	tpduRef := _tpduRef
+	m.TpduRef = tpduRef
 
 	if closeErr := readBuffer.CloseContext("COTPPacketData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPPacketData")
 	}
 
-	// Create a partially initialized instance
-	_child := &_COTPPacketData{
-		_COTPPacket: &_COTPPacket{
-			CotpLen: cotpLen,
-		},
-		Eot:     eot,
-		TpduRef: tpduRef,
-	}
-	_child._COTPPacket._COTPPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_COTPPacketData) Serialize() ([]byte, error) {
@@ -203,18 +183,12 @@ func (m *_COTPPacketData) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for COTPPacketData")
 		}
 
-		// Simple Field (eot)
-		eot := bool(m.GetEot())
-		_eotErr := writeBuffer.WriteBit("eot", (eot))
-		if _eotErr != nil {
-			return errors.Wrap(_eotErr, "Error serializing 'eot' field")
+		if err := WriteSimpleField[bool](ctx, "eot", m.GetEot(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eot' field")
 		}
 
-		// Simple Field (tpduRef)
-		tpduRef := uint8(m.GetTpduRef())
-		_tpduRefErr := writeBuffer.WriteUint8("tpduRef", 7, uint8((tpduRef)))
-		if _tpduRefErr != nil {
-			return errors.Wrap(_tpduRefErr, "Error serializing 'tpduRef' field")
+		if err := WriteSimpleField[uint8](ctx, "tpduRef", m.GetTpduRef(), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tpduRef' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketData"); popErr != nil {
@@ -222,12 +196,10 @@ func (m *_COTPPacketData) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.COTPPacketContract.(*_COTPPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_COTPPacketData) isCOTPPacketData() bool {
-	return true
-}
+func (m *_COTPPacketData) IsCOTPPacketData() {}
 
 func (m *_COTPPacketData) String() string {
 	if m == nil {

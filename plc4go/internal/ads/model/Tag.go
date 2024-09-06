@@ -122,7 +122,7 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	if err := writeBuffer.WriteUint32("indexOffset", 32, m.IndexOffset); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteString("adsDatatypeName", uint32(len([]rune(m.ValueType.String()))*8), "UTF-8", m.ValueType.String()); err != nil {
+	if err := writeBuffer.WriteString("adsDatatypeName", uint32(len([]rune(m.ValueType.String()))*8), m.ValueType.String()); err != nil {
 		return err
 	}
 	if (m.ValueType == apiValues.STRING || m.ValueType == apiValues.WSTRING) && (m.StringLength != NONE) {
@@ -218,7 +218,7 @@ func (m SymbolicPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		return err
 	}
 
-	if err := writeBuffer.WriteString("symbolicAddress", uint32(len([]rune(m.SymbolicAddress))*8), "UTF-8", m.SymbolicAddress); err != nil {
+	if err := writeBuffer.WriteString("symbolicAddress", uint32(len([]rune(m.SymbolicAddress))*8), m.SymbolicAddress); err != nil {
 		return err
 	}
 	if len(m.ArrayInfo) > 0 {

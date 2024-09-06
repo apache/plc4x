@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,23 +41,21 @@ type StatusRequestBinaryStateDeprecated interface {
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
-}
-
-// StatusRequestBinaryStateDeprecatedExactly can be used when we want exactly this type and not a type which fulfills StatusRequestBinaryStateDeprecated.
-// This is useful for switch cases.
-type StatusRequestBinaryStateDeprecatedExactly interface {
-	StatusRequestBinaryStateDeprecated
-	isStatusRequestBinaryStateDeprecated() bool
+	// IsStatusRequestBinaryStateDeprecated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusRequestBinaryStateDeprecated()
 }
 
 // _StatusRequestBinaryStateDeprecated is the data-structure of this message
 type _StatusRequestBinaryStateDeprecated struct {
-	*_StatusRequest
+	StatusRequestContract
 	Application ApplicationIdContainer
 	// Reserved Fields
 	reservedField0 *byte
 	reservedField1 *byte
 }
+
+var _ StatusRequestBinaryStateDeprecated = (*_StatusRequestBinaryStateDeprecated)(nil)
+var _ StatusRequestRequirements = (*_StatusRequestBinaryStateDeprecated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,12 +67,8 @@ type _StatusRequestBinaryStateDeprecated struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_StatusRequestBinaryStateDeprecated) InitializeParent(parent StatusRequest, statusType byte) {
-	m.StatusType = statusType
-}
-
-func (m *_StatusRequestBinaryStateDeprecated) GetParent() StatusRequest {
-	return m._StatusRequest
+func (m *_StatusRequestBinaryStateDeprecated) GetParent() StatusRequestContract {
+	return m.StatusRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,10 +88,10 @@ func (m *_StatusRequestBinaryStateDeprecated) GetApplication() ApplicationIdCont
 // NewStatusRequestBinaryStateDeprecated factory function for _StatusRequestBinaryStateDeprecated
 func NewStatusRequestBinaryStateDeprecated(application ApplicationIdContainer, statusType byte) *_StatusRequestBinaryStateDeprecated {
 	_result := &_StatusRequestBinaryStateDeprecated{
-		Application:    application,
-		_StatusRequest: NewStatusRequest(statusType),
+		StatusRequestContract: NewStatusRequest(statusType),
+		Application:           application,
 	}
-	_result._StatusRequest._StatusRequestChildRequirements = _result
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
 	return _result
 }
 
@@ -115,7 +111,7 @@ func (m *_StatusRequestBinaryStateDeprecated) GetTypeName() string {
 }
 
 func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.StatusRequestContract.(*_StatusRequest).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -133,81 +129,40 @@ func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func StatusRequestBinaryStateDeprecatedParse(ctx context.Context, theBytes []byte) (StatusRequestBinaryStateDeprecated, error) {
-	return StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryStateDeprecated, error) {
+func (m *_StatusRequestBinaryStateDeprecated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_StatusRequest) (__statusRequestBinaryStateDeprecated StatusRequestBinaryStateDeprecated, err error) {
+	m.StatusRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StatusRequestBinaryStateDeprecated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StatusRequestBinaryStateDeprecated")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestBinaryStateDeprecated")
-		}
-		if reserved != byte(0xFA) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0xFA),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0xFA))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryStateDeprecated")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
-	}
+	m.Application = application
 
-	var reservedField1 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestBinaryStateDeprecated")
-		}
-		if reserved != byte(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField1 = reservedField1
 
 	if closeErr := readBuffer.CloseContext("StatusRequestBinaryStateDeprecated"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StatusRequestBinaryStateDeprecated")
 	}
 
-	// Create a partially initialized instance
-	_child := &_StatusRequestBinaryStateDeprecated{
-		_StatusRequest: &_StatusRequest{},
-		Application:    application,
-		reservedField0: reservedField0,
-		reservedField1: reservedField1,
-	}
-	_child._StatusRequest._StatusRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_StatusRequestBinaryStateDeprecated) Serialize() ([]byte, error) {
@@ -228,48 +183,16 @@ func (m *_StatusRequestBinaryStateDeprecated) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for StatusRequestBinaryStateDeprecated")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0xFA)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0xFA),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0xFA), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (application)
-		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for application")
-		}
-		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
-		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for application")
-		}
-		if _applicationErr != nil {
-			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0x00)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x00), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
 		if popErr := writeBuffer.PopContext("StatusRequestBinaryStateDeprecated"); popErr != nil {
@@ -277,12 +200,10 @@ func (m *_StatusRequestBinaryStateDeprecated) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.StatusRequestContract.(*_StatusRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_StatusRequestBinaryStateDeprecated) isStatusRequestBinaryStateDeprecated() bool {
-	return true
-}
+func (m *_StatusRequestBinaryStateDeprecated) IsStatusRequestBinaryStateDeprecated() {}
 
 func (m *_StatusRequestBinaryStateDeprecated) String() string {
 	if m == nil {

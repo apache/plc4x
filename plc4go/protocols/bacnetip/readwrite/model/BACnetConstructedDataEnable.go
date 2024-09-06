@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataEnable interface {
 	GetEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEnable.
-// This is useful for switch cases.
-type BACnetConstructedDataEnableExactly interface {
-	BACnetConstructedDataEnable
-	isBACnetConstructedDataEnable() bool
+	// IsBACnetConstructedDataEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEnable()
 }
 
 // _BACnetConstructedDataEnable is the data-structure of this message
 type _BACnetConstructedDataEnable struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Enable BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataEnable = (*_BACnetConstructedDataEnable)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataEnable) GetPropertyIdentifierArgument() BACnetPro
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataEnable) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataEnable) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataEnable) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataEnable) GetActualValue() BACnetApplicationTagBool
 
 // NewBACnetConstructedDataEnable factory function for _BACnetConstructedDataEnable
 func NewBACnetConstructedDataEnable(enable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnable {
-	_result := &_BACnetConstructedDataEnable{
-		Enable:                 enable,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if enable == nil {
+		panic("enable of type BACnetApplicationTagBoolean for BACnetConstructedDataEnable must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Enable:                        enable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataEnable) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (enable)
 	lengthInBits += m.Enable.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataEnable) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataEnableParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnable, error) {
-	return BACnetConstructedDataEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnable, error) {
+func (m *_BACnetConstructedDataEnable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEnable BACnetConstructedDataEnable, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (enable)
-	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enable")
+	enable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "enable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
 	}
-	_enable, _enableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _enableErr != nil {
-		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetConstructedDataEnable")
-	}
-	enable := _enable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enable")
-	}
+	m.Enable = enable
 
-	// Virtual field
-	_actualValue := enable
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), enable)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEnable")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataEnable{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Enable: enable,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataEnable) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataEnable) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEnable")
 		}
 
-		// Simple Field (enable)
-		if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enable")
-		}
-		_enableErr := writeBuffer.WriteSerializable(ctx, m.GetEnable())
-		if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enable")
-		}
-		if _enableErr != nil {
-			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "enable", m.GetEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataEnable) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataEnable) isBACnetConstructedDataEnable() bool {
-	return true
-}
+func (m *_BACnetConstructedDataEnable) IsBACnetConstructedDataEnable() {}
 
 func (m *_BACnetConstructedDataEnable) String() string {
 	if m == nil {

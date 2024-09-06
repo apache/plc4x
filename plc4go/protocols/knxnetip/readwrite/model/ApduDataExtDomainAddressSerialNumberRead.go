@@ -37,19 +37,17 @@ type ApduDataExtDomainAddressSerialNumberRead interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
-}
-
-// ApduDataExtDomainAddressSerialNumberReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtDomainAddressSerialNumberRead.
-// This is useful for switch cases.
-type ApduDataExtDomainAddressSerialNumberReadExactly interface {
-	ApduDataExtDomainAddressSerialNumberRead
-	isApduDataExtDomainAddressSerialNumberRead() bool
+	// IsApduDataExtDomainAddressSerialNumberRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtDomainAddressSerialNumberRead()
 }
 
 // _ApduDataExtDomainAddressSerialNumberRead is the data-structure of this message
 type _ApduDataExtDomainAddressSerialNumberRead struct {
-	*_ApduDataExt
+	ApduDataExtContract
 }
+
+var _ ApduDataExtDomainAddressSerialNumberRead = (*_ApduDataExtDomainAddressSerialNumberRead)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressSerialNumberRead)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtDomainAddressSerialNumberRead) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtDomainAddressSerialNumberRead) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtDomainAddressSerialNumberRead) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 // NewApduDataExtDomainAddressSerialNumberRead factory function for _ApduDataExtDomainAddressSerialNumberRead
 func NewApduDataExtDomainAddressSerialNumberRead(length uint8) *_ApduDataExtDomainAddressSerialNumberRead {
 	_result := &_ApduDataExtDomainAddressSerialNumberRead{
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) GetTypeName() string {
 }
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtDomainAddressSerialNumberReadParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtDomainAddressSerialNumberRead, error) {
-	return ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSerialNumberRead, error) {
+func (m *_ApduDataExtDomainAddressSerialNumberRead) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtDomainAddressSerialNumberRead ApduDataExtDomainAddressSerialNumberRead, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressSerialNumberRead"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtDomainAddressSerialNumberRead")
 	}
@@ -124,14 +116,7 @@ func ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx context.Context
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtDomainAddressSerialNumberRead")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtDomainAddressSerialNumberRead{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtDomainAddressSerialNumberRead) isApduDataExtDomainAddressSerialNumberRead() bool {
-	return true
-}
+func (m *_ApduDataExtDomainAddressSerialNumberRead) IsApduDataExtDomainAddressSerialNumberRead() {}
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) String() string {
 	if m == nil {

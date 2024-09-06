@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type FindServersOnNetworkRequest interface {
 	GetNoOfServerCapabilityFilter() int32
 	// GetServerCapabilityFilter returns ServerCapabilityFilter (property field)
 	GetServerCapabilityFilter() []PascalString
-}
-
-// FindServersOnNetworkRequestExactly can be used when we want exactly this type and not a type which fulfills FindServersOnNetworkRequest.
-// This is useful for switch cases.
-type FindServersOnNetworkRequestExactly interface {
-	FindServersOnNetworkRequest
-	isFindServersOnNetworkRequest() bool
+	// IsFindServersOnNetworkRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFindServersOnNetworkRequest()
 }
 
 // _FindServersOnNetworkRequest is the data-structure of this message
 type _FindServersOnNetworkRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader              ExtensionObjectDefinition
 	StartingRecordId           uint32
 	MaxRecordsToReturn         uint32
 	NoOfServerCapabilityFilter int32
 	ServerCapabilityFilter     []PascalString
 }
+
+var _ FindServersOnNetworkRequest = (*_FindServersOnNetworkRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_FindServersOnNetworkRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_FindServersOnNetworkRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FindServersOnNetworkRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_FindServersOnNetworkRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_FindServersOnNetworkRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,18 @@ func (m *_FindServersOnNetworkRequest) GetServerCapabilityFilter() []PascalStrin
 
 // NewFindServersOnNetworkRequest factory function for _FindServersOnNetworkRequest
 func NewFindServersOnNetworkRequest(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) *_FindServersOnNetworkRequest {
-	_result := &_FindServersOnNetworkRequest{
-		RequestHeader:              requestHeader,
-		StartingRecordId:           startingRecordId,
-		MaxRecordsToReturn:         maxRecordsToReturn,
-		NoOfServerCapabilityFilter: noOfServerCapabilityFilter,
-		ServerCapabilityFilter:     serverCapabilityFilter,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for FindServersOnNetworkRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_FindServersOnNetworkRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		StartingRecordId:                  startingRecordId,
+		MaxRecordsToReturn:                maxRecordsToReturn,
+		NoOfServerCapabilityFilter:        noOfServerCapabilityFilter,
+		ServerCapabilityFilter:            serverCapabilityFilter,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +147,7 @@ func (m *_FindServersOnNetworkRequest) GetTypeName() string {
 }
 
 func (m *_FindServersOnNetworkRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -177,97 +178,52 @@ func (m *_FindServersOnNetworkRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FindServersOnNetworkRequestParse(ctx context.Context, theBytes []byte, identifier string) (FindServersOnNetworkRequest, error) {
-	return FindServersOnNetworkRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func FindServersOnNetworkRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FindServersOnNetworkRequest, error) {
+func (m *_FindServersOnNetworkRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__findServersOnNetworkRequest FindServersOnNetworkRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FindServersOnNetworkRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FindServersOnNetworkRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of FindServersOnNetworkRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (startingRecordId)
-	_startingRecordId, _startingRecordIdErr := readBuffer.ReadUint32("startingRecordId", 32)
-	if _startingRecordIdErr != nil {
-		return nil, errors.Wrap(_startingRecordIdErr, "Error parsing 'startingRecordId' field of FindServersOnNetworkRequest")
+	startingRecordId, err := ReadSimpleField(ctx, "startingRecordId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingRecordId' field"))
 	}
-	startingRecordId := _startingRecordId
+	m.StartingRecordId = startingRecordId
 
-	// Simple Field (maxRecordsToReturn)
-	_maxRecordsToReturn, _maxRecordsToReturnErr := readBuffer.ReadUint32("maxRecordsToReturn", 32)
-	if _maxRecordsToReturnErr != nil {
-		return nil, errors.Wrap(_maxRecordsToReturnErr, "Error parsing 'maxRecordsToReturn' field of FindServersOnNetworkRequest")
+	maxRecordsToReturn, err := ReadSimpleField(ctx, "maxRecordsToReturn", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxRecordsToReturn' field"))
 	}
-	maxRecordsToReturn := _maxRecordsToReturn
+	m.MaxRecordsToReturn = maxRecordsToReturn
 
-	// Simple Field (noOfServerCapabilityFilter)
-	_noOfServerCapabilityFilter, _noOfServerCapabilityFilterErr := readBuffer.ReadInt32("noOfServerCapabilityFilter", 32)
-	if _noOfServerCapabilityFilterErr != nil {
-		return nil, errors.Wrap(_noOfServerCapabilityFilterErr, "Error parsing 'noOfServerCapabilityFilter' field of FindServersOnNetworkRequest")
+	noOfServerCapabilityFilter, err := ReadSimpleField(ctx, "noOfServerCapabilityFilter", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerCapabilityFilter' field"))
 	}
-	noOfServerCapabilityFilter := _noOfServerCapabilityFilter
+	m.NoOfServerCapabilityFilter = noOfServerCapabilityFilter
 
-	// Array field (serverCapabilityFilter)
-	if pullErr := readBuffer.PullContext("serverCapabilityFilter", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverCapabilityFilter")
+	serverCapabilityFilter, err := ReadCountArrayField[PascalString](ctx, "serverCapabilityFilter", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilityFilter))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCapabilityFilter' field"))
 	}
-	// Count array
-	serverCapabilityFilter := make([]PascalString, max(noOfServerCapabilityFilter, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverCapabilityFilter) == 0 {
-		serverCapabilityFilter = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerCapabilityFilter, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverCapabilityFilter' field of FindServersOnNetworkRequest")
-			}
-			serverCapabilityFilter[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("serverCapabilityFilter", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverCapabilityFilter")
-	}
+	m.ServerCapabilityFilter = serverCapabilityFilter
 
 	if closeErr := readBuffer.CloseContext("FindServersOnNetworkRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FindServersOnNetworkRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FindServersOnNetworkRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		StartingRecordId:           startingRecordId,
-		MaxRecordsToReturn:         maxRecordsToReturn,
-		NoOfServerCapabilityFilter: noOfServerCapabilityFilter,
-		ServerCapabilityFilter:     serverCapabilityFilter,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FindServersOnNetworkRequest) Serialize() ([]byte, error) {
@@ -288,54 +244,24 @@ func (m *_FindServersOnNetworkRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for FindServersOnNetworkRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (startingRecordId)
-		startingRecordId := uint32(m.GetStartingRecordId())
-		_startingRecordIdErr := writeBuffer.WriteUint32("startingRecordId", 32, uint32((startingRecordId)))
-		if _startingRecordIdErr != nil {
-			return errors.Wrap(_startingRecordIdErr, "Error serializing 'startingRecordId' field")
+		if err := WriteSimpleField[uint32](ctx, "startingRecordId", m.GetStartingRecordId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startingRecordId' field")
 		}
 
-		// Simple Field (maxRecordsToReturn)
-		maxRecordsToReturn := uint32(m.GetMaxRecordsToReturn())
-		_maxRecordsToReturnErr := writeBuffer.WriteUint32("maxRecordsToReturn", 32, uint32((maxRecordsToReturn)))
-		if _maxRecordsToReturnErr != nil {
-			return errors.Wrap(_maxRecordsToReturnErr, "Error serializing 'maxRecordsToReturn' field")
+		if err := WriteSimpleField[uint32](ctx, "maxRecordsToReturn", m.GetMaxRecordsToReturn(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxRecordsToReturn' field")
 		}
 
-		// Simple Field (noOfServerCapabilityFilter)
-		noOfServerCapabilityFilter := int32(m.GetNoOfServerCapabilityFilter())
-		_noOfServerCapabilityFilterErr := writeBuffer.WriteInt32("noOfServerCapabilityFilter", 32, int32((noOfServerCapabilityFilter)))
-		if _noOfServerCapabilityFilterErr != nil {
-			return errors.Wrap(_noOfServerCapabilityFilterErr, "Error serializing 'noOfServerCapabilityFilter' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerCapabilityFilter", m.GetNoOfServerCapabilityFilter(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerCapabilityFilter' field")
 		}
 
-		// Array Field (serverCapabilityFilter)
-		if pushErr := writeBuffer.PushContext("serverCapabilityFilter", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverCapabilityFilter")
-		}
-		for _curItem, _element := range m.GetServerCapabilityFilter() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerCapabilityFilter()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverCapabilityFilter' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverCapabilityFilter", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverCapabilityFilter")
+		if err := WriteComplexTypeArrayField(ctx, "serverCapabilityFilter", m.GetServerCapabilityFilter(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverCapabilityFilter' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FindServersOnNetworkRequest"); popErr != nil {
@@ -343,12 +269,10 @@ func (m *_FindServersOnNetworkRequest) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FindServersOnNetworkRequest) isFindServersOnNetworkRequest() bool {
-	return true
-}
+func (m *_FindServersOnNetworkRequest) IsFindServersOnNetworkRequest() {}
 
 func (m *_FindServersOnNetworkRequest) String() string {
 	if m == nil {

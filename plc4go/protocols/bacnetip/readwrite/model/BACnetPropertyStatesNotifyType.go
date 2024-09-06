@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesNotifyType interface {
 	BACnetPropertyStates
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() BACnetNotifyTypeTagged
-}
-
-// BACnetPropertyStatesNotifyTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesNotifyType.
-// This is useful for switch cases.
-type BACnetPropertyStatesNotifyTypeExactly interface {
-	BACnetPropertyStatesNotifyType
-	isBACnetPropertyStatesNotifyType() bool
+	// IsBACnetPropertyStatesNotifyType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesNotifyType()
 }
 
 // _BACnetPropertyStatesNotifyType is the data-structure of this message
 type _BACnetPropertyStatesNotifyType struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	NotifyType BACnetNotifyTypeTagged
 }
+
+var _ BACnetPropertyStatesNotifyType = (*_BACnetPropertyStatesNotifyType)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNotifyType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesNotifyType struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesNotifyType) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesNotifyType) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesNotifyType) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesNotifyType) GetNotifyType() BACnetNotifyTypeTagged
 
 // NewBACnetPropertyStatesNotifyType factory function for _BACnetPropertyStatesNotifyType
 func NewBACnetPropertyStatesNotifyType(notifyType BACnetNotifyTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNotifyType {
-	_result := &_BACnetPropertyStatesNotifyType{
-		NotifyType:            notifyType,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for BACnetPropertyStatesNotifyType must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesNotifyType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NotifyType:                   notifyType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesNotifyType) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesNotifyType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (notifyType)
 	lengthInBits += m.NotifyType.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesNotifyType) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesNotifyTypeParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNotifyType, error) {
-	return BACnetPropertyStatesNotifyTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesNotifyTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNotifyType, error) {
+func (m *_BACnetPropertyStatesNotifyType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesNotifyType BACnetPropertyStatesNotifyType, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNotifyType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesNotifyType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (notifyType)
-	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notifyType")
+	notifyType, err := ReadSimpleField[BACnetNotifyTypeTagged](ctx, "notifyType", ReadComplex[BACnetNotifyTypeTagged](BACnetNotifyTypeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notifyType' field"))
 	}
-	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _notifyTypeErr != nil {
-		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of BACnetPropertyStatesNotifyType")
-	}
-	notifyType := _notifyType.(BACnetNotifyTypeTagged)
-	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notifyType")
-	}
+	m.NotifyType = notifyType
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesNotifyType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesNotifyType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesNotifyType{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		NotifyType:            notifyType,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesNotifyType) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesNotifyType) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNotifyType")
 		}
 
-		// Simple Field (notifyType)
-		if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notifyType")
-		}
-		_notifyTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNotifyType())
-		if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notifyType")
-		}
-		if _notifyTypeErr != nil {
-			return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
+		if err := WriteSimpleField[BACnetNotifyTypeTagged](ctx, "notifyType", m.GetNotifyType(), WriteComplex[BACnetNotifyTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notifyType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNotifyType"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesNotifyType) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesNotifyType) isBACnetPropertyStatesNotifyType() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesNotifyType) IsBACnetPropertyStatesNotifyType() {}
 
 func (m *_BACnetPropertyStatesNotifyType) String() string {
 	if m == nil {

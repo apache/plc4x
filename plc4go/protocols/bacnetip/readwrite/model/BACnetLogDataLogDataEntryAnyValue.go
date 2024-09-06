@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,20 +41,18 @@ type BACnetLogDataLogDataEntryAnyValue interface {
 	BACnetLogDataLogDataEntry
 	// GetAnyValue returns AnyValue (property field)
 	GetAnyValue() BACnetConstructedData
-}
-
-// BACnetLogDataLogDataEntryAnyValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryAnyValue.
-// This is useful for switch cases.
-type BACnetLogDataLogDataEntryAnyValueExactly interface {
-	BACnetLogDataLogDataEntryAnyValue
-	isBACnetLogDataLogDataEntryAnyValue() bool
+	// IsBACnetLogDataLogDataEntryAnyValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryAnyValue()
 }
 
 // _BACnetLogDataLogDataEntryAnyValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryAnyValue struct {
-	*_BACnetLogDataLogDataEntry
+	BACnetLogDataLogDataEntryContract
 	AnyValue BACnetConstructedData
 }
+
+var _ BACnetLogDataLogDataEntryAnyValue = (*_BACnetLogDataLogDataEntryAnyValue)(nil)
+var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryAnyValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,12 +64,8 @@ type _BACnetLogDataLogDataEntryAnyValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogDataLogDataEntryAnyValue) InitializeParent(parent BACnetLogDataLogDataEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetLogDataLogDataEntryAnyValue) GetParent() BACnetLogDataLogDataEntry {
-	return m._BACnetLogDataLogDataEntry
+func (m *_BACnetLogDataLogDataEntryAnyValue) GetParent() BACnetLogDataLogDataEntryContract {
+	return m.BACnetLogDataLogDataEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) GetAnyValue() BACnetConstructedData
 // NewBACnetLogDataLogDataEntryAnyValue factory function for _BACnetLogDataLogDataEntryAnyValue
 func NewBACnetLogDataLogDataEntryAnyValue(anyValue BACnetConstructedData, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryAnyValue {
 	_result := &_BACnetLogDataLogDataEntryAnyValue{
-		AnyValue:                   anyValue,
-		_BACnetLogDataLogDataEntry: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		AnyValue:                          anyValue,
 	}
-	_result._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _result
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
 
 	// Optional Field (anyValue)
 	if m.AnyValue != nil {
@@ -127,54 +122,32 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogDataLogDataEntryAnyValueParse(ctx context.Context, theBytes []byte) (BACnetLogDataLogDataEntryAnyValue, error) {
-	return BACnetLogDataLogDataEntryAnyValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetLogDataLogDataEntryAnyValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryAnyValue, error) {
+func (m *_BACnetLogDataLogDataEntryAnyValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogDataLogDataEntry) (__bACnetLogDataLogDataEntryAnyValue BACnetLogDataLogDataEntryAnyValue, err error) {
+	m.BACnetLogDataLogDataEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryAnyValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryAnyValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (anyValue) (Can be skipped, if a given expression evaluates to false)
-	var anyValue BACnetConstructedData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("anyValue"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for anyValue")
-		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(8), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'anyValue' field of BACnetLogDataLogDataEntryAnyValue")
-		default:
-			anyValue = _val.(BACnetConstructedData)
-			if closeErr := readBuffer.CloseContext("anyValue"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for anyValue")
-			}
-		}
+	var anyValue BACnetConstructedData
+	_anyValue, err := ReadOptionalField[BACnetConstructedData](ctx, "anyValue", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(8)), (BACnetObjectType)(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), (BACnetPropertyIdentifier)(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), (BACnetTagPayloadUnsignedInteger)(nil)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'anyValue' field"))
+	}
+	if _anyValue != nil {
+		anyValue = *_anyValue
+		m.AnyValue = anyValue
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryAnyValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryAnyValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogDataLogDataEntryAnyValue{
-		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
-		AnyValue:                   anyValue,
-	}
-	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) Serialize() ([]byte, error) {
@@ -195,20 +168,8 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryAnyValue")
 		}
 
-		// Optional Field (anyValue) (Can be skipped, if the value is null)
-		var anyValue BACnetConstructedData = nil
-		if m.GetAnyValue() != nil {
-			if pushErr := writeBuffer.PushContext("anyValue"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for anyValue")
-			}
-			anyValue = m.GetAnyValue()
-			_anyValueErr := writeBuffer.WriteSerializable(ctx, anyValue)
-			if popErr := writeBuffer.PopContext("anyValue"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for anyValue")
-			}
-			if _anyValueErr != nil {
-				return errors.Wrap(_anyValueErr, "Error serializing 'anyValue' field")
-			}
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", GetRef(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'anyValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryAnyValue"); popErr != nil {
@@ -216,12 +177,10 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogDataLogDataEntryAnyValue) isBACnetLogDataLogDataEntryAnyValue() bool {
-	return true
-}
+func (m *_BACnetLogDataLogDataEntryAnyValue) IsBACnetLogDataLogDataEntryAnyValue() {}
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) String() string {
 	if m == nil {

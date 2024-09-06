@@ -84,19 +84,17 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
 
     // Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if the value is null)
     writeOptionalField(
-        "deviceInstanceRangeLowLimit",
-        deviceInstanceRangeLowLimit,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "deviceInstanceRangeLowLimit", deviceInstanceRangeLowLimit, writeComplex(writeBuffer));
 
     // Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if the value is null)
     writeOptionalField(
         "deviceInstanceRangeHighLimit",
         deviceInstanceRangeHighLimit,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (getDeviceInstanceRangeLowLimit()) != (null));
 
     // Simple Field (object)
-    writeSimpleField("object", object, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("object", object, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestWhoHas");
   }
@@ -138,7 +136,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit =
         readOptionalField(
             "deviceInstanceRangeLowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -150,7 +148,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit =
         readOptionalField(
             "deviceInstanceRangeHighLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -163,7 +161,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     BACnetUnconfirmedServiceRequestWhoHasObject object =
         readSimpleField(
             "object",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetUnconfirmedServiceRequestWhoHasObject.staticParse(readBuffer),
                 readBuffer));
 

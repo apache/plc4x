@@ -37,19 +37,17 @@ type FilterOperand interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// FilterOperandExactly can be used when we want exactly this type and not a type which fulfills FilterOperand.
-// This is useful for switch cases.
-type FilterOperandExactly interface {
-	FilterOperand
-	isFilterOperand() bool
+	// IsFilterOperand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFilterOperand()
 }
 
 // _FilterOperand is the data-structure of this message
 type _FilterOperand struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ FilterOperand = (*_FilterOperand)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_FilterOperand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_FilterOperand) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FilterOperand) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_FilterOperand) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_FilterOperand) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewFilterOperand factory function for _FilterOperand
 func NewFilterOperand() *_FilterOperand {
 	_result := &_FilterOperand{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_FilterOperand) GetTypeName() string {
 }
 
 func (m *_FilterOperand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_FilterOperand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FilterOperandParse(ctx context.Context, theBytes []byte, identifier string) (FilterOperand, error) {
-	return FilterOperandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func FilterOperandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FilterOperand, error) {
+func (m *_FilterOperand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__filterOperand FilterOperand, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FilterOperand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FilterOperand")
 	}
@@ -124,12 +116,7 @@ func FilterOperandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(closeErr, "Error closing for FilterOperand")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FilterOperand{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FilterOperand) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_FilterOperand) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FilterOperand) isFilterOperand() bool {
-	return true
-}
+func (m *_FilterOperand) IsFilterOperand() {}
 
 func (m *_FilterOperand) String() string {
 	if m == nil {

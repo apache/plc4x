@@ -70,7 +70,7 @@ public class CANOpenMPDO implements Message {
     writeSimpleField("node", node, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
@@ -112,8 +112,7 @@ public class CANOpenMPDO implements Message {
 
     IndexAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> IndexAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> IndexAddress.staticParse(readBuffer), readBuffer));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact(4));
 

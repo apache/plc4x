@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type AdsWriteControlRequest interface {
 	GetDeviceState() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// AdsWriteControlRequestExactly can be used when we want exactly this type and not a type which fulfills AdsWriteControlRequest.
-// This is useful for switch cases.
-type AdsWriteControlRequestExactly interface {
-	AdsWriteControlRequest
-	isAdsWriteControlRequest() bool
+	// IsAdsWriteControlRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsWriteControlRequest()
 }
 
 // _AdsWriteControlRequest is the data-structure of this message
 type _AdsWriteControlRequest struct {
-	*_AmsPacket
+	AmsPacketContract
 	AdsState    uint16
 	DeviceState uint16
 	Data        []byte
 }
+
+var _ AdsWriteControlRequest = (*_AdsWriteControlRequest)(nil)
+var _ AmsPacketRequirements = (*_AdsWriteControlRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +78,8 @@ func (m *_AdsWriteControlRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsWriteControlRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
-	m.TargetAmsNetId = targetAmsNetId
-	m.TargetAmsPort = targetAmsPort
-	m.SourceAmsNetId = sourceAmsNetId
-	m.SourceAmsPort = sourceAmsPort
-	m.ErrorCode = errorCode
-	m.InvokeId = invokeId
-}
-
-func (m *_AdsWriteControlRequest) GetParent() AmsPacket {
-	return m._AmsPacket
+func (m *_AdsWriteControlRequest) GetParent() AmsPacketContract {
+	return m.AmsPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,12 +107,12 @@ func (m *_AdsWriteControlRequest) GetData() []byte {
 // NewAdsWriteControlRequest factory function for _AdsWriteControlRequest
 func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteControlRequest {
 	_result := &_AdsWriteControlRequest{
-		AdsState:    adsState,
-		DeviceState: deviceState,
-		Data:        data,
-		_AmsPacket:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		AdsState:          adsState,
+		DeviceState:       deviceState,
+		Data:              data,
 	}
-	_result._AmsPacket._AmsPacketChildRequirements = _result
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 
@@ -141,7 +132,7 @@ func (m *_AdsWriteControlRequest) GetTypeName() string {
 }
 
 func (m *_AdsWriteControlRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (adsState)
 	lengthInBits += 16
@@ -164,61 +155,46 @@ func (m *_AdsWriteControlRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsWriteControlRequestParse(ctx context.Context, theBytes []byte) (AdsWriteControlRequest, error) {
-	return AdsWriteControlRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsWriteControlRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlRequest, error) {
+func (m *_AdsWriteControlRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsWriteControlRequest AdsWriteControlRequest, err error) {
+	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsWriteControlRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsWriteControlRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (adsState)
-	_adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)
-	if _adsStateErr != nil {
-		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field of AdsWriteControlRequest")
+	adsState, err := ReadSimpleField(ctx, "adsState", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adsState' field"))
 	}
-	adsState := _adsState
+	m.AdsState = adsState
 
-	// Simple Field (deviceState)
-	_deviceState, _deviceStateErr := readBuffer.ReadUint16("deviceState", 16)
-	if _deviceStateErr != nil {
-		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field of AdsWriteControlRequest")
+	deviceState, err := ReadSimpleField(ctx, "deviceState", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceState' field"))
 	}
-	deviceState := _deviceState
+	m.DeviceState = deviceState
 
-	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
+	}
 	_ = length
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsWriteControlRequest")
+
+	data, err := readBuffer.ReadByteArray("data", int(length))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(length)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsWriteControlRequest")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("AdsWriteControlRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsWriteControlRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsWriteControlRequest{
-		_AmsPacket:  &_AmsPacket{},
-		AdsState:    adsState,
-		DeviceState: deviceState,
-		Data:        data,
-	}
-	_child._AmsPacket._AmsPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsWriteControlRequest) Serialize() ([]byte, error) {
@@ -239,30 +215,19 @@ func (m *_AdsWriteControlRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for AdsWriteControlRequest")
 		}
 
-		// Simple Field (adsState)
-		adsState := uint16(m.GetAdsState())
-		_adsStateErr := writeBuffer.WriteUint16("adsState", 16, uint16((adsState)))
-		if _adsStateErr != nil {
-			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
+		if err := WriteSimpleField[uint16](ctx, "adsState", m.GetAdsState(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'adsState' field")
 		}
 
-		// Simple Field (deviceState)
-		deviceState := uint16(m.GetDeviceState())
-		_deviceStateErr := writeBuffer.WriteUint16("deviceState", 16, uint16((deviceState)))
-		if _deviceStateErr != nil {
-			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
+		if err := WriteSimpleField[uint16](ctx, "deviceState", m.GetDeviceState(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceState' field")
 		}
-
-		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.GetData())))
-		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
-		if _lengthErr != nil {
-			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+		if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -271,12 +236,10 @@ func (m *_AdsWriteControlRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AmsPacketContract.(*_AmsPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsWriteControlRequest) isAdsWriteControlRequest() bool {
-	return true
-}
+func (m *_AdsWriteControlRequest) IsAdsWriteControlRequest() {}
 
 func (m *_AdsWriteControlRequest) String() string {
 	if m == nil {

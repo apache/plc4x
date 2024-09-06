@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetSegmentationTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetSegmentation
-}
-
-// BACnetSegmentationTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSegmentationTagged.
-// This is useful for switch cases.
-type BACnetSegmentationTaggedExactly interface {
-	BACnetSegmentationTagged
-	isBACnetSegmentationTagged() bool
+	// IsBACnetSegmentationTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSegmentationTagged()
 }
 
 // _BACnetSegmentationTagged is the data-structure of this message
@@ -58,6 +55,8 @@ type _BACnetSegmentationTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetSegmentationTagged = (*_BACnetSegmentationTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,6 +78,9 @@ func (m *_BACnetSegmentationTagged) GetValue() BACnetSegmentation {
 
 // NewBACnetSegmentationTagged factory function for _BACnetSegmentationTagged
 func NewBACnetSegmentationTagged(header BACnetTagHeader, value BACnetSegmentation, tagNumber uint8, tagClass TagClass) *_BACnetSegmentationTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSegmentationTagged must not be nil")
+	}
 	return &_BACnetSegmentationTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -117,61 +119,56 @@ func BACnetSegmentationTaggedParse(ctx context.Context, theBytes []byte, tagNumb
 	return BACnetSegmentationTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetSegmentationTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSegmentationTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSegmentationTagged, error) {
+		return BACnetSegmentationTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetSegmentationTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSegmentationTagged, error) {
+	v, err := (&_BACnetSegmentationTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetSegmentationTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetSegmentationTagged BACnetSegmentationTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetSegmentationTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSegmentationTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetSegmentationTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetSegmentation_SEGMENTED_BOTH)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetSegmentationTagged")
+	value, err := ReadManualField[BACnetSegmentation](ctx, "value", readBuffer, EnsureType[BACnetSegmentation](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetSegmentation_SEGMENTED_BOTH)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetSegmentation
-	if _value != nil {
-		value = _value.(BACnetSegmentation)
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetSegmentationTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetSegmentationTagged")
 	}
 
-	// Create the instance
-	return &_BACnetSegmentationTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Value:     value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetSegmentationTagged) Serialize() ([]byte, error) {
@@ -191,22 +188,12 @@ func (m *_BACnetSegmentationTagged) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(pushErr, "Error pushing for BACnetSegmentationTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetSegmentation](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetSegmentationTagged"); popErr != nil {
@@ -228,9 +215,7 @@ func (m *_BACnetSegmentationTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetSegmentationTagged) isBACnetSegmentationTagged() bool {
-	return true
-}
+func (m *_BACnetSegmentationTagged) IsBACnetSegmentationTagged() {}
 
 func (m *_BACnetSegmentationTagged) String() string {
 	if m == nil {

@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,13 +42,8 @@ type OpcuaAPU interface {
 	utils.Serializable
 	// GetMessage returns Message (property field)
 	GetMessage() MessagePDU
-}
-
-// OpcuaAPUExactly can be used when we want exactly this type and not a type which fulfills OpcuaAPU.
-// This is useful for switch cases.
-type OpcuaAPUExactly interface {
-	OpcuaAPU
-	isOpcuaAPU() bool
+	// IsOpcuaAPU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaAPU()
 }
 
 // _OpcuaAPU is the data-structure of this message
@@ -55,6 +53,8 @@ type _OpcuaAPU struct {
 	// Arguments.
 	Response bool
 }
+
+var _ OpcuaAPU = (*_OpcuaAPU)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,6 +72,9 @@ func (m *_OpcuaAPU) GetMessage() MessagePDU {
 
 // NewOpcuaAPU factory function for _OpcuaAPU
 func NewOpcuaAPU(message MessagePDU, response bool) *_OpcuaAPU {
+	if message == nil {
+		panic("message of type MessagePDU for OpcuaAPU must not be nil")
+	}
 	return &_OpcuaAPU{Message: message, Response: response}
 }
 
@@ -107,39 +110,40 @@ func OpcuaAPUParse(ctx context.Context, theBytes []byte, response bool) (OpcuaAP
 	return OpcuaAPUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), response)
 }
 
+func OpcuaAPUParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaAPU, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaAPU, error) {
+		return OpcuaAPUParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func OpcuaAPUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaAPU, error) {
+	v, err := (&_OpcuaAPU{Response: response}).parse(ctx, readBuffer, response)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_OpcuaAPU) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__opcuaAPU OpcuaAPU, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaAPU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaAPU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
+	message, err := ReadSimpleField[MessagePDU](ctx, "message", ReadComplex[MessagePDU](MessagePDUParseWithBufferProducer[MessagePDU]((bool)(response)), readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
-	_message, _messageErr := MessagePDUParseWithBuffer(ctx, readBuffer, bool(response))
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of OpcuaAPU")
-	}
-	message := _message.(MessagePDU)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
-	}
+	m.Message = message
 
 	if closeErr := readBuffer.CloseContext("OpcuaAPU"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaAPU")
 	}
 
-	// Create the instance
-	return &_OpcuaAPU{
-		Response: response,
-		Message:  message,
-	}, nil
+	return m, nil
 }
 
 func (m *_OpcuaAPU) Serialize() ([]byte, error) {
@@ -159,16 +163,8 @@ func (m *_OpcuaAPU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for OpcuaAPU")
 	}
 
-	// Simple Field (message)
-	if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for message")
-	}
-	_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-	if popErr := writeBuffer.PopContext("message"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for message")
-	}
-	if _messageErr != nil {
-		return errors.Wrap(_messageErr, "Error serializing 'message' field")
+	if err := WriteSimpleField[MessagePDU](ctx, "message", m.GetMessage(), WriteComplex[MessagePDU](writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'message' field")
 	}
 
 	if popErr := writeBuffer.PopContext("OpcuaAPU"); popErr != nil {
@@ -187,9 +183,7 @@ func (m *_OpcuaAPU) GetResponse() bool {
 //
 ////
 
-func (m *_OpcuaAPU) isOpcuaAPU() bool {
-	return true
-}
+func (m *_OpcuaAPU) IsOpcuaAPU() {}
 
 func (m *_OpcuaAPU) String() string {
 	if m == nil {

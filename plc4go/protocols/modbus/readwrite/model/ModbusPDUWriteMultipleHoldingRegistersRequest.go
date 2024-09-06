@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type ModbusPDUWriteMultipleHoldingRegistersRequest interface {
 	GetQuantity() uint16
 	// GetValue returns Value (property field)
 	GetValue() []byte
-}
-
-// ModbusPDUWriteMultipleHoldingRegistersRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteMultipleHoldingRegistersRequest.
-// This is useful for switch cases.
-type ModbusPDUWriteMultipleHoldingRegistersRequestExactly interface {
-	ModbusPDUWriteMultipleHoldingRegistersRequest
-	isModbusPDUWriteMultipleHoldingRegistersRequest() bool
+	// IsModbusPDUWriteMultipleHoldingRegistersRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteMultipleHoldingRegistersRequest()
 }
 
 // _ModbusPDUWriteMultipleHoldingRegistersRequest is the data-structure of this message
 type _ModbusPDUWriteMultipleHoldingRegistersRequest struct {
-	*_ModbusPDU
+	ModbusPDUContract
 	StartingAddress uint16
 	Quantity        uint16
 	Value           []byte
 }
+
+var _ ModbusPDUWriteMultipleHoldingRegistersRequest = (*_ModbusPDUWriteMultipleHoldingRegistersRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUWriteMultipleHoldingRegistersRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,10 +82,8 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,12 +111,12 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetValue() []byte {
 // NewModbusPDUWriteMultipleHoldingRegistersRequest factory function for _ModbusPDUWriteMultipleHoldingRegistersRequest
 func NewModbusPDUWriteMultipleHoldingRegistersRequest(startingAddress uint16, quantity uint16, value []byte) *_ModbusPDUWriteMultipleHoldingRegistersRequest {
 	_result := &_ModbusPDUWriteMultipleHoldingRegistersRequest{
-		StartingAddress: startingAddress,
-		Quantity:        quantity,
-		Value:           value,
-		_ModbusPDU:      NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+		Value:             value,
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -138,7 +136,7 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -161,61 +159,46 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetLengthInBytes(ctx co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUWriteMultipleHoldingRegistersRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
-	return ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUWriteMultipleHoldingRegistersRequest ModbusPDUWriteMultipleHoldingRegistersRequest, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleHoldingRegistersRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUWriteMultipleHoldingRegistersRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (startingAddress)
-	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
-	if _startingAddressErr != nil {
-		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
+	startingAddress, err := ReadSimpleField(ctx, "startingAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingAddress' field"))
 	}
-	startingAddress := _startingAddress
+	m.StartingAddress = startingAddress
 
-	// Simple Field (quantity)
-	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
-	if _quantityErr != nil {
-		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
+	quantity, err := ReadSimpleField(ctx, "quantity", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'quantity' field"))
 	}
-	quantity := _quantity
+	m.Quantity = quantity
 
-	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
+	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
+	}
 	_ = byteCount
-	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
+
+	value, err := readBuffer.ReadByteArray("value", int(byteCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	// Byte Array field (value)
-	numberOfBytesvalue := int(byteCount)
-	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteMultipleHoldingRegistersRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUWriteMultipleHoldingRegistersRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUWriteMultipleHoldingRegistersRequest{
-		_ModbusPDU:      &_ModbusPDU{},
-		StartingAddress: startingAddress,
-		Quantity:        quantity,
-		Value:           value,
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) Serialize() ([]byte, error) {
@@ -236,30 +219,19 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUWriteMultipleHoldingRegistersRequest")
 		}
 
-		// Simple Field (startingAddress)
-		startingAddress := uint16(m.GetStartingAddress())
-		_startingAddressErr := writeBuffer.WriteUint16("startingAddress", 16, uint16((startingAddress)))
-		if _startingAddressErr != nil {
-			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "startingAddress", m.GetStartingAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startingAddress' field")
 		}
 
-		// Simple Field (quantity)
-		quantity := uint16(m.GetQuantity())
-		_quantityErr := writeBuffer.WriteUint16("quantity", 16, uint16((quantity)))
-		if _quantityErr != nil {
-			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
+		if err := WriteSimpleField[uint16](ctx, "quantity", m.GetQuantity(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'quantity' field")
 		}
-
-		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.GetValue())))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
-		if _byteCountErr != nil {
-			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
+		if err := WriteImplicitField(ctx, "byteCount", byteCount, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'byteCount' field")
 		}
 
-		// Array Field (value)
-		// Byte Array field (value)
-		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+		if err := WriteByteArrayField(ctx, "value", m.GetValue(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
@@ -268,11 +240,10 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) isModbusPDUWriteMultipleHoldingRegistersRequest() bool {
-	return true
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) IsModbusPDUWriteMultipleHoldingRegistersRequest() {
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) String() string {

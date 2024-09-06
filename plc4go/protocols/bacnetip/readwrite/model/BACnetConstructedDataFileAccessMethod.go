@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataFileAccessMethod interface {
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetFileAccessMethodTagged
-}
-
-// BACnetConstructedDataFileAccessMethodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileAccessMethod.
-// This is useful for switch cases.
-type BACnetConstructedDataFileAccessMethodExactly interface {
-	BACnetConstructedDataFileAccessMethod
-	isBACnetConstructedDataFileAccessMethod() bool
+	// IsBACnetConstructedDataFileAccessMethod is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFileAccessMethod()
 }
 
 // _BACnetConstructedDataFileAccessMethod is the data-structure of this message
 type _BACnetConstructedDataFileAccessMethod struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FileAccessMethod BACnetFileAccessMethodTagged
 }
+
+var _ BACnetConstructedDataFileAccessMethod = (*_BACnetConstructedDataFileAccessMethod)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileAccessMethod)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataFileAccessMethod) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataFileAccessMethod) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataFileAccessMethod) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetActualValue() BACnetFileAcce
 
 // NewBACnetConstructedDataFileAccessMethod factory function for _BACnetConstructedDataFileAccessMethod
 func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAccessMethod {
-	_result := &_BACnetConstructedDataFileAccessMethod{
-		FileAccessMethod:       fileAccessMethod,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if fileAccessMethod == nil {
+		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetConstructedDataFileAccessMethod must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataFileAccessMethod{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FileAccessMethod:              fileAccessMethod,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFileAccessMethod) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (fileAccessMethod)
 	lengthInBits += m.FileAccessMethod.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataFileAccessMethodParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileAccessMethod, error) {
-	return BACnetConstructedDataFileAccessMethodParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataFileAccessMethodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileAccessMethod, error) {
+func (m *_BACnetConstructedDataFileAccessMethod) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFileAccessMethod BACnetConstructedDataFileAccessMethod, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileAccessMethod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFileAccessMethod")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileAccessMethod)
-	if pullErr := readBuffer.PullContext("fileAccessMethod"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileAccessMethod")
+	fileAccessMethod, err := ReadSimpleField[BACnetFileAccessMethodTagged](ctx, "fileAccessMethod", ReadComplex[BACnetFileAccessMethodTagged](BACnetFileAccessMethodTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileAccessMethod' field"))
 	}
-	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _fileAccessMethodErr != nil {
-		return nil, errors.Wrap(_fileAccessMethodErr, "Error parsing 'fileAccessMethod' field of BACnetConstructedDataFileAccessMethod")
-	}
-	fileAccessMethod := _fileAccessMethod.(BACnetFileAccessMethodTagged)
-	if closeErr := readBuffer.CloseContext("fileAccessMethod"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileAccessMethod")
-	}
+	m.FileAccessMethod = fileAccessMethod
 
-	// Virtual field
-	_actualValue := fileAccessMethod
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetFileAccessMethodTagged](ctx, "actualValue", (*BACnetFileAccessMethodTagged)(nil), fileAccessMethod)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileAccessMethod"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileAccessMethod")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataFileAccessMethod{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FileAccessMethod: fileAccessMethod,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataFileAccessMethod) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataFileAccessMethod) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFileAccessMethod")
 		}
 
-		// Simple Field (fileAccessMethod)
-		if pushErr := writeBuffer.PushContext("fileAccessMethod"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileAccessMethod")
-		}
-		_fileAccessMethodErr := writeBuffer.WriteSerializable(ctx, m.GetFileAccessMethod())
-		if popErr := writeBuffer.PopContext("fileAccessMethod"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileAccessMethod")
-		}
-		if _fileAccessMethodErr != nil {
-			return errors.Wrap(_fileAccessMethodErr, "Error serializing 'fileAccessMethod' field")
+		if err := WriteSimpleField[BACnetFileAccessMethodTagged](ctx, "fileAccessMethod", m.GetFileAccessMethod(), WriteComplex[BACnetFileAccessMethodTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileAccessMethod' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataFileAccessMethod) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataFileAccessMethod) isBACnetConstructedDataFileAccessMethod() bool {
-	return true
-}
+func (m *_BACnetConstructedDataFileAccessMethod) IsBACnetConstructedDataFileAccessMethod() {}
 
 func (m *_BACnetConstructedDataFileAccessMethod) String() string {
 	if m == nil {

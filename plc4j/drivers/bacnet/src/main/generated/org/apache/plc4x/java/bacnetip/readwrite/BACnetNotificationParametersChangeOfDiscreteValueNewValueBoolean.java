@@ -69,7 +69,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean");
 
     // Simple Field (booleanValue)
-    writeSimpleField("booleanValue", booleanValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("booleanValue", booleanValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean");
   }
@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

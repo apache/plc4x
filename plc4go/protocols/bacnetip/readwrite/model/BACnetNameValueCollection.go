@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetNameValueCollection interface {
 	GetMembers() []BACnetNameValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetNameValueCollectionExactly can be used when we want exactly this type and not a type which fulfills BACnetNameValueCollection.
-// This is useful for switch cases.
-type BACnetNameValueCollectionExactly interface {
-	BACnetNameValueCollection
-	isBACnetNameValueCollection() bool
+	// IsBACnetNameValueCollection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNameValueCollection()
 }
 
 // _BACnetNameValueCollection is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetNameValueCollection struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetNameValueCollection = (*_BACnetNameValueCollection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,12 @@ func (m *_BACnetNameValueCollection) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetNameValueCollection factory function for _BACnetNameValueCollection
 func NewBACnetNameValueCollection(openingTag BACnetOpeningTag, members []BACnetNameValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNameValueCollection {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetNameValueCollection must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetNameValueCollection must not be nil")
+	}
 	return &_BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -130,73 +135,52 @@ func BACnetNameValueCollectionParse(ctx context.Context, theBytes []byte, tagNum
 	return BACnetNameValueCollectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetNameValueCollectionParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNameValueCollection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNameValueCollection, error) {
+		return BACnetNameValueCollectionParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetNameValueCollectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNameValueCollection, error) {
+	v, err := (&_BACnetNameValueCollection{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetNameValueCollection) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetNameValueCollection BACnetNameValueCollection, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNameValueCollection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNameValueCollection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetNameValueCollection")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (members)
-	if pullErr := readBuffer.PullContext("members", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for members")
+	members, err := ReadTerminatedArrayField[BACnetNameValue](ctx, "members", ReadComplex[BACnetNameValue](BACnetNameValueParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'members' field"))
 	}
-	// Terminated array
-	var members []BACnetNameValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetNameValueParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'members' field of BACnetNameValueCollection")
-			}
-			members = append(members, _item.(BACnetNameValue))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("members", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for members")
-	}
+	m.Members = members
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetNameValueCollection")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetNameValueCollection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNameValueCollection")
 	}
 
-	// Create the instance
-	return &_BACnetNameValueCollection{
-		TagNumber:  tagNumber,
-		OpeningTag: openingTag,
-		Members:    members,
-		ClosingTag: closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetNameValueCollection) Serialize() ([]byte, error) {
@@ -216,45 +200,16 @@ func (m *_BACnetNameValueCollection) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(pushErr, "Error pushing for BACnetNameValueCollection")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (members)
-	if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for members")
-	}
-	for _curItem, _element := range m.GetMembers() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMembers()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'members' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for members")
+	if err := WriteComplexTypeArrayField(ctx, "members", m.GetMembers(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'members' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNameValueCollection"); popErr != nil {
@@ -273,9 +228,7 @@ func (m *_BACnetNameValueCollection) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetNameValueCollection) isBACnetNameValueCollection() bool {
-	return true
-}
+func (m *_BACnetNameValueCollection) IsBACnetNameValueCollection() {}
 
 func (m *_BACnetNameValueCollection) String() string {
 	if m == nil {

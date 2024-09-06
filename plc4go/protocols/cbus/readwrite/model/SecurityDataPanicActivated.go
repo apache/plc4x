@@ -37,19 +37,17 @@ type SecurityDataPanicActivated interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataPanicActivatedExactly can be used when we want exactly this type and not a type which fulfills SecurityDataPanicActivated.
-// This is useful for switch cases.
-type SecurityDataPanicActivatedExactly interface {
-	SecurityDataPanicActivated
-	isSecurityDataPanicActivated() bool
+	// IsSecurityDataPanicActivated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataPanicActivated()
 }
 
 // _SecurityDataPanicActivated is the data-structure of this message
 type _SecurityDataPanicActivated struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataPanicActivated = (*_SecurityDataPanicActivated)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataPanicActivated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataPanicActivated struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataPanicActivated) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataPanicActivated) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataPanicActivated) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataPanicActivated factory function for _SecurityDataPanicActivated
 func NewSecurityDataPanicActivated(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataPanicActivated {
 	_result := &_SecurityDataPanicActivated{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataPanicActivated) GetTypeName() string {
 }
 
 func (m *_SecurityDataPanicActivated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataPanicActivated) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataPanicActivatedParse(ctx context.Context, theBytes []byte) (SecurityDataPanicActivated, error) {
-	return SecurityDataPanicActivatedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataPanicActivatedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPanicActivated, error) {
+func (m *_SecurityDataPanicActivated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataPanicActivated SecurityDataPanicActivated, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataPanicActivated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataPanicActivated")
 	}
@@ -123,12 +112,7 @@ func SecurityDataPanicActivatedParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataPanicActivated")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataPanicActivated{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataPanicActivated) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataPanicActivated) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataPanicActivated) isSecurityDataPanicActivated() bool {
-	return true
-}
+func (m *_SecurityDataPanicActivated) IsSecurityDataPanicActivated() {}
 
 func (m *_SecurityDataPanicActivated) String() string {
 	if m == nil {

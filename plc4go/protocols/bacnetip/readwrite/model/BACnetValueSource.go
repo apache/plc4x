@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,47 +35,40 @@ import (
 
 // BACnetValueSource is the corresponding interface of BACnetValueSource
 type BACnetValueSource interface {
+	BACnetValueSourceContract
+	BACnetValueSourceRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetValueSource()
+}
+
+// BACnetValueSourceContract provides a set of functions which can be overwritten by a sub struct
+type BACnetValueSourceContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// IsBACnetValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetValueSource()
 }
 
-// BACnetValueSourceExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSource.
-// This is useful for switch cases.
-type BACnetValueSourceExactly interface {
-	BACnetValueSource
-	isBACnetValueSource() bool
+// BACnetValueSourceRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetValueSourceRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetValueSource is the data-structure of this message
 type _BACnetValueSource struct {
-	_BACnetValueSourceChildRequirements
+	_SubType        BACnetValueSource
 	PeekedTagHeader BACnetTagHeader
 }
 
-type _BACnetValueSourceChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetValueSourceParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetValueSource, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetValueSourceChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetValueSource, peekedTagHeader BACnetTagHeader)
-	GetParent() *BACnetValueSource
-
-	GetTypeName() string
-	BACnetValueSource
-}
+var _ BACnetValueSourceContract = (*_BACnetValueSource)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,7 +88,8 @@ func (m *_BACnetValueSource) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetValueSource) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetValueSource) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -106,6 +102,9 @@ func (m *_BACnetValueSource) GetPeekedTagNumber() uint8 {
 
 // NewBACnetValueSource factory function for _BACnetValueSource
 func NewBACnetValueSource(peekedTagHeader BACnetTagHeader) *_BACnetValueSource {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetValueSource must not be nil")
+	}
 	return &_BACnetValueSource{PeekedTagHeader: peekedTagHeader}
 }
 
@@ -124,7 +123,7 @@ func (m *_BACnetValueSource) GetTypeName() string {
 	return "BACnetValueSource"
 }
 
-func (m *_BACnetValueSource) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetValueSource) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -133,71 +132,81 @@ func (m *_BACnetValueSource) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetValueSource) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetValueSourceParse(ctx context.Context, theBytes []byte) (BACnetValueSource, error) {
-	return BACnetValueSourceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func BACnetValueSourceParse[T BACnetValueSource](ctx context.Context, theBytes []byte) (T, error) {
+	return BACnetValueSourceParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetValueSourceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSource, error) {
+func BACnetValueSourceParseWithBufferProducer[T BACnetValueSource]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetValueSourceParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetValueSourceParseWithBuffer[T BACnetValueSource](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_BACnetValueSource{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetValueSource) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetValueSource BACnetValueSource, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetValueSource"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetValueSource")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetValueSourceChildSerializeRequirement interface {
-		BACnetValueSource
-		InitializeParent(BACnetValueSource, BACnetTagHeader)
-		GetParent() BACnetValueSource
-	}
-	var _childTemp any
-	var _child BACnetValueSourceChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetValueSource
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetValueSourceNone
-		_childTemp, typeSwitchError = BACnetValueSourceNoneParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetValueSourceNone{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceNone for type-switch of BACnetValueSource")
+		}
 	case peekedTagNumber == uint8(1): // BACnetValueSourceObject
-		_childTemp, typeSwitchError = BACnetValueSourceObjectParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetValueSourceObject{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceObject for type-switch of BACnetValueSource")
+		}
 	case peekedTagNumber == uint8(2): // BACnetValueSourceAddress
-		_childTemp, typeSwitchError = BACnetValueSourceAddressParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetValueSourceAddress{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceAddress for type-switch of BACnetValueSource")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetValueSource")
-	}
-	_child = _childTemp.(BACnetValueSourceChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetValueSource"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetValueSource")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
 }
 
-func (pm *_BACnetValueSource) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetValueSource, serializeChildFunction func() error) error {
+func (pm *_BACnetValueSource) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetValueSource, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -226,17 +235,4 @@ func (pm *_BACnetValueSource) SerializeParent(ctx context.Context, writeBuffer u
 	return nil
 }
 
-func (m *_BACnetValueSource) isBACnetValueSource() bool {
-	return true
-}
-
-func (m *_BACnetValueSource) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetValueSource) IsBACnetValueSource() {}

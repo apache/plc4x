@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataUserExternalIdentifier interface {
 	GetUserExternalIdentifier() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataUserExternalIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserExternalIdentifier.
-// This is useful for switch cases.
-type BACnetConstructedDataUserExternalIdentifierExactly interface {
-	BACnetConstructedDataUserExternalIdentifier
-	isBACnetConstructedDataUserExternalIdentifier() bool
+	// IsBACnetConstructedDataUserExternalIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataUserExternalIdentifier()
 }
 
 // _BACnetConstructedDataUserExternalIdentifier is the data-structure of this message
 type _BACnetConstructedDataUserExternalIdentifier struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	UserExternalIdentifier BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataUserExternalIdentifier = (*_BACnetConstructedDataUserExternalIdentifier)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserExternalIdentifier)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataUserExternalIdentifier) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataUserExternalIdentifier) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataUserExternalIdentifier) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetActualValue() BACnetAp
 
 // NewBACnetConstructedDataUserExternalIdentifier factory function for _BACnetConstructedDataUserExternalIdentifier
 func NewBACnetConstructedDataUserExternalIdentifier(userExternalIdentifier BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserExternalIdentifier {
-	_result := &_BACnetConstructedDataUserExternalIdentifier{
-		UserExternalIdentifier: userExternalIdentifier,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if userExternalIdentifier == nil {
+		panic("userExternalIdentifier of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserExternalIdentifier must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataUserExternalIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UserExternalIdentifier:        userExternalIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataUserExternalIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (userExternalIdentifier)
 	lengthInBits += m.UserExternalIdentifier.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataUserExternalIdentifierParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserExternalIdentifier, error) {
-	return BACnetConstructedDataUserExternalIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataUserExternalIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserExternalIdentifier, error) {
+func (m *_BACnetConstructedDataUserExternalIdentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataUserExternalIdentifier BACnetConstructedDataUserExternalIdentifier, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserExternalIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUserExternalIdentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (userExternalIdentifier)
-	if pullErr := readBuffer.PullContext("userExternalIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userExternalIdentifier")
+	userExternalIdentifier, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userExternalIdentifier", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userExternalIdentifier' field"))
 	}
-	_userExternalIdentifier, _userExternalIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _userExternalIdentifierErr != nil {
-		return nil, errors.Wrap(_userExternalIdentifierErr, "Error parsing 'userExternalIdentifier' field of BACnetConstructedDataUserExternalIdentifier")
-	}
-	userExternalIdentifier := _userExternalIdentifier.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("userExternalIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userExternalIdentifier")
-	}
+	m.UserExternalIdentifier = userExternalIdentifier
 
-	// Virtual field
-	_actualValue := userExternalIdentifier
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), userExternalIdentifier)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserExternalIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserExternalIdentifier")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataUserExternalIdentifier{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		UserExternalIdentifier: userExternalIdentifier,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataUserExternalIdentifier) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUserExternalIdentifier")
 		}
 
-		// Simple Field (userExternalIdentifier)
-		if pushErr := writeBuffer.PushContext("userExternalIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userExternalIdentifier")
-		}
-		_userExternalIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetUserExternalIdentifier())
-		if popErr := writeBuffer.PopContext("userExternalIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userExternalIdentifier")
-		}
-		if _userExternalIdentifierErr != nil {
-			return errors.Wrap(_userExternalIdentifierErr, "Error serializing 'userExternalIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "userExternalIdentifier", m.GetUserExternalIdentifier(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userExternalIdentifier' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataUserExternalIdentifier) isBACnetConstructedDataUserExternalIdentifier() bool {
-	return true
+func (m *_BACnetConstructedDataUserExternalIdentifier) IsBACnetConstructedDataUserExternalIdentifier() {
 }
 
 func (m *_BACnetConstructedDataUserExternalIdentifier) String() string {

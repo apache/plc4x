@@ -37,19 +37,17 @@ type RequestEmpty interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
-}
-
-// RequestEmptyExactly can be used when we want exactly this type and not a type which fulfills RequestEmpty.
-// This is useful for switch cases.
-type RequestEmptyExactly interface {
-	RequestEmpty
-	isRequestEmpty() bool
+	// IsRequestEmpty is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestEmpty()
 }
 
 // _RequestEmpty is the data-structure of this message
 type _RequestEmpty struct {
-	*_Request
+	RequestContract
 }
+
+var _ RequestEmpty = (*_RequestEmpty)(nil)
+var _ RequestRequirements = (*_RequestEmpty)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,24 +59,16 @@ type _RequestEmpty struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestEmpty) InitializeParent(parent Request, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) {
-	m.PeekedByte = peekedByte
-	m.StartingCR = startingCR
-	m.ResetMode = resetMode
-	m.SecondPeek = secondPeek
-	m.Termination = termination
-}
-
-func (m *_RequestEmpty) GetParent() Request {
-	return m._Request
+func (m *_RequestEmpty) GetParent() RequestContract {
+	return m.RequestContract
 }
 
 // NewRequestEmpty factory function for _RequestEmpty
 func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
 	_result := &_RequestEmpty{
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
-	_result._Request._RequestChildRequirements = _result
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 
@@ -98,7 +88,7 @@ func (m *_RequestEmpty) GetTypeName() string {
 }
 
 func (m *_RequestEmpty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -107,15 +97,11 @@ func (m *_RequestEmpty) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestEmptyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestEmpty, error) {
-	return RequestEmptyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func RequestEmptyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestEmpty, error) {
+func (m *_RequestEmpty) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestEmpty RequestEmpty, err error) {
+	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestEmpty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestEmpty")
 	}
@@ -126,14 +112,7 @@ func RequestEmptyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for RequestEmpty")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RequestEmpty{
-		_Request: &_Request{
-			CBusOptions: cBusOptions,
-		},
-	}
-	_child._Request._RequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RequestEmpty) Serialize() ([]byte, error) {
@@ -159,12 +138,10 @@ func (m *_RequestEmpty) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.RequestContract.(*_Request).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RequestEmpty) isRequestEmpty() bool {
-	return true
-}
+func (m *_RequestEmpty) IsRequestEmpty() {}
 
 func (m *_RequestEmpty) String() string {
 	if m == nil {

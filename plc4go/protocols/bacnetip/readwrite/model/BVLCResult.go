@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,20 +43,18 @@ type BVLCResult interface {
 	BVLC
 	// GetCode returns Code (property field)
 	GetCode() BVLCResultCode
-}
-
-// BVLCResultExactly can be used when we want exactly this type and not a type which fulfills BVLCResult.
-// This is useful for switch cases.
-type BVLCResultExactly interface {
-	BVLCResult
-	isBVLCResult() bool
+	// IsBVLCResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCResult()
 }
 
 // _BVLCResult is the data-structure of this message
 type _BVLCResult struct {
-	*_BVLC
+	BVLCContract
 	Code BVLCResultCode
 }
+
+var _ BVLCResult = (*_BVLCResult)(nil)
+var _ BVLCRequirements = (*_BVLCResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,10 +70,8 @@ func (m *_BVLCResult) GetBvlcFunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BVLCResult) InitializeParent(parent BVLC) {}
-
-func (m *_BVLCResult) GetParent() BVLC {
-	return m._BVLC
+func (m *_BVLCResult) GetParent() BVLCContract {
+	return m.BVLCContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,10 +91,10 @@ func (m *_BVLCResult) GetCode() BVLCResultCode {
 // NewBVLCResult factory function for _BVLCResult
 func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
 	_result := &_BVLCResult{
-		Code:  code,
-		_BVLC: NewBVLC(),
+		BVLCContract: NewBVLC(),
+		Code:         code,
 	}
-	_result._BVLC._BVLCChildRequirements = _result
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 
@@ -115,7 +114,7 @@ func (m *_BVLCResult) GetTypeName() string {
 }
 
 func (m *_BVLCResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Simple field (code)
 	lengthInBits += 16
@@ -127,45 +126,28 @@ func (m *_BVLCResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCResultParse(ctx context.Context, theBytes []byte) (BVLCResult, error) {
-	return BVLCResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func BVLCResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCResult, error) {
+func (m *_BVLCResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCResult BVLCResult, err error) {
+	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (code)
-	if pullErr := readBuffer.PullContext("code"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for code")
+	code, err := ReadEnumField[BVLCResultCode](ctx, "code", "BVLCResultCode", ReadEnum(BVLCResultCodeByValue, ReadUnsignedShort(readBuffer, uint8(16))), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
-	_code, _codeErr := BVLCResultCodeParseWithBuffer(ctx, readBuffer)
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of BVLCResult")
-	}
-	code := _code
-	if closeErr := readBuffer.CloseContext("code"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for code")
-	}
+	m.Code = code
 
 	if closeErr := readBuffer.CloseContext("BVLCResult"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCResult")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BVLCResult{
-		_BVLC: &_BVLC{},
-		Code:  code,
-	}
-	_child._BVLC._BVLCChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BVLCResult) Serialize() ([]byte, error) {
@@ -186,16 +168,8 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(pushErr, "Error pushing for BVLCResult")
 		}
 
-		// Simple Field (code)
-		if pushErr := writeBuffer.PushContext("code"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for code")
-		}
-		_codeErr := writeBuffer.WriteSerializable(ctx, m.GetCode())
-		if popErr := writeBuffer.PopContext("code"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for code")
-		}
-		if _codeErr != nil {
-			return errors.Wrap(_codeErr, "Error serializing 'code' field")
+		if err := WriteSimpleEnumField[BVLCResultCode](ctx, "code", "BVLCResultCode", m.GetCode(), WriteEnum[BVLCResultCode, uint16](BVLCResultCode.GetValue, BVLCResultCode.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16)), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'code' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCResult"); popErr != nil {
@@ -203,12 +177,10 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BVLCResult) isBVLCResult() bool {
-	return true
-}
+func (m *_BVLCResult) IsBVLCResult() {}
 
 func (m *_BVLCResult) String() string {
 	if m == nil {

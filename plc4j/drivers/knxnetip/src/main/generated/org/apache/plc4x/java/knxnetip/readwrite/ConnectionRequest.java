@@ -80,21 +80,21 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "hpaiDiscoveryEndpoint",
         hpaiDiscoveryEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (hpaiDataEndpoint)
     writeSimpleField(
         "hpaiDataEndpoint",
         hpaiDataEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (connectionRequestInformation)
     writeSimpleField(
         "connectionRequestInformation",
         connectionRequestInformation,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionRequest");
@@ -132,22 +132,19 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
     HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint =
         readSimpleField(
             "hpaiDiscoveryEndpoint",
-            new DataReaderComplexDefault<>(
-                () -> HPAIDiscoveryEndpoint.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HPAIDiscoveryEndpoint.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     HPAIDataEndpoint hpaiDataEndpoint =
         readSimpleField(
             "hpaiDataEndpoint",
-            new DataReaderComplexDefault<>(
-                () -> HPAIDataEndpoint.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HPAIDataEndpoint.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     ConnectionRequestInformation connectionRequestInformation =
         readSimpleField(
             "connectionRequestInformation",
-            new DataReaderComplexDefault<>(
-                () -> ConnectionRequestInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ConnectionRequestInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("ConnectionRequest");

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,18 +42,15 @@ type ParameterChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// ParameterChangeExactly can be used when we want exactly this type and not a type which fulfills ParameterChange.
-// This is useful for switch cases.
-type ParameterChangeExactly interface {
-	ParameterChange
-	isParameterChange() bool
+	// IsParameterChange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterChange()
 }
 
 // _ParameterChange is the data-structure of this message
 type _ParameterChange struct {
 }
+
+var _ ParameterChange = (*_ParameterChange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -111,41 +110,46 @@ func ParameterChangeParse(ctx context.Context, theBytes []byte) (ParameterChange
 	return ParameterChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ParameterChangeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {
+		return ParameterChangeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ParameterChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {
+	v, err := (&_ParameterChange{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ParameterChange) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__parameterChange ParameterChange, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (specialChar1)
-	specialChar1, _specialChar1Err := readBuffer.ReadByte("specialChar1")
-	if _specialChar1Err != nil {
-		return nil, errors.Wrap(_specialChar1Err, "Error parsing 'specialChar1' field of ParameterChange")
+	specialChar1, err := ReadConstField[byte](ctx, "specialChar1", ReadByte(readBuffer, 8), ParameterChange_SPECIALCHAR1)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'specialChar1' field"))
 	}
-	if specialChar1 != ParameterChange_SPECIALCHAR1 {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ParameterChange_SPECIALCHAR1) + " but got " + fmt.Sprintf("%d", specialChar1))
-	}
+	_ = specialChar1
 
-	// Const Field (specialChar2)
-	specialChar2, _specialChar2Err := readBuffer.ReadByte("specialChar2")
-	if _specialChar2Err != nil {
-		return nil, errors.Wrap(_specialChar2Err, "Error parsing 'specialChar2' field of ParameterChange")
+	specialChar2, err := ReadConstField[byte](ctx, "specialChar2", ReadByte(readBuffer, 8), ParameterChange_SPECIALCHAR2)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'specialChar2' field"))
 	}
-	if specialChar2 != ParameterChange_SPECIALCHAR2 {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ParameterChange_SPECIALCHAR2) + " but got " + fmt.Sprintf("%d", specialChar2))
-	}
+	_ = specialChar2
 
 	if closeErr := readBuffer.CloseContext("ParameterChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterChange")
 	}
 
-	// Create the instance
-	return &_ParameterChange{}, nil
+	return m, nil
 }
 
 func (m *_ParameterChange) Serialize() ([]byte, error) {
@@ -165,16 +169,12 @@ func (m *_ParameterChange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for ParameterChange")
 	}
 
-	// Const Field (specialChar1)
-	_specialChar1Err := writeBuffer.WriteByte("specialChar1", 0x3D)
-	if _specialChar1Err != nil {
-		return errors.Wrap(_specialChar1Err, "Error serializing 'specialChar1' field")
+	if err := WriteConstField(ctx, "specialChar1", ParameterChange_SPECIALCHAR1, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'specialChar1' field")
 	}
 
-	// Const Field (specialChar2)
-	_specialChar2Err := writeBuffer.WriteByte("specialChar2", 0x3D)
-	if _specialChar2Err != nil {
-		return errors.Wrap(_specialChar2Err, "Error serializing 'specialChar2' field")
+	if err := WriteConstField(ctx, "specialChar2", ParameterChange_SPECIALCHAR2, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'specialChar2' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ParameterChange"); popErr != nil {
@@ -183,9 +183,7 @@ func (m *_ParameterChange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return nil
 }
 
-func (m *_ParameterChange) isParameterChange() bool {
-	return true
-}
+func (m *_ParameterChange) IsParameterChange() {}
 
 func (m *_ParameterChange) String() string {
 	if m == nil {

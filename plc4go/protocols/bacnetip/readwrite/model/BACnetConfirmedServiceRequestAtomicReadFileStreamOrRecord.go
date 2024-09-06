@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,9 +35,17 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is the corresponding interface of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord interface {
+	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract
+	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord()
+}
+
+// BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract provides a set of functions which can be overwritten by a sub struct
+type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)
@@ -44,42 +54,27 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord()
 }
 
-// BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordExactly interface {
-	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-	isBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord() bool
+// BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is the data-structure of this message
 type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
-	_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements
+	_SubType        BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	PeekedTagHeader BACnetTagHeader
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag
 }
 
-type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag)
-	GetParent() *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-
-	GetTypeName() string
-	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-}
+var _ BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract = (*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,7 +102,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetClosingT
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -120,6 +116,15 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTa
 
 // NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord factory function for _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 func NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
+	}
 	return &_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
 }
 
@@ -138,7 +143,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetTypeName
 	return "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord"
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
@@ -153,95 +158,89 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetParentLe
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(ctx context.Context, theBytes []byte) (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {
-	return BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse[T BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx context.Context, theBytes []byte) (T, error) {
+	return BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBufferProducer[T BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer[T BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(peekedTagHeader.GetActualTagNumber())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildSerializeRequirement interface {
-		BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-		InitializeParent(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, BACnetTagHeader, BACnetOpeningTag, BACnetClosingTag)
-		GetParent() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-	}
-	var _childTemp any
-	var _child BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	switch {
 	case peekedTagNumber == 0x0: // BACnetConfirmedServiceRequestAtomicReadFileStream
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetConfirmedServiceRequestAtomicReadFileStream{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestAtomicReadFileStream for type-switch of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
+		}
 	case peekedTagNumber == 0x1: // BACnetConfirmedServiceRequestAtomicReadFileRecord
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetConfirmedServiceRequestAtomicReadFileRecord{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestAtomicReadFileRecord for type-switch of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
-	}
-	_child = _childTemp.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildSerializeRequirement)
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(peekedTagHeader.GetActualTagNumber())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader, openingTag, closingTag)
 	return _child, nil
 }
 
-func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serializeChildFunction func() error) error {
+func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -253,16 +252,8 @@ func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) SerializeP
 		return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
 	peekedTagNumber := m.GetPeekedTagNumber()
@@ -276,16 +267,8 @@ func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) SerializeP
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord"); popErr != nil {
@@ -294,17 +277,5 @@ func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) SerializeP
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) isBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord() bool {
-	return true
-}
-
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord() {
 }

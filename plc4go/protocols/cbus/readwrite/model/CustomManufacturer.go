@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,13 +40,8 @@ type CustomManufacturer interface {
 	utils.Serializable
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
-}
-
-// CustomManufacturerExactly can be used when we want exactly this type and not a type which fulfills CustomManufacturer.
-// This is useful for switch cases.
-type CustomManufacturerExactly interface {
-	CustomManufacturer
-	isCustomManufacturer() bool
+	// IsCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCustomManufacturer()
 }
 
 // _CustomManufacturer is the data-structure of this message
@@ -54,6 +51,8 @@ type _CustomManufacturer struct {
 	// Arguments.
 	NumBytes uint8
 }
+
+var _ CustomManufacturer = (*_CustomManufacturer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,7 +92,7 @@ func (m *_CustomManufacturer) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (customString)
-	lengthInBits += uint16(int32(int32(8)) * int32(m.NumBytes))
+	lengthInBits += uint16(int32(int32(8)) * int32(m.GetNumBytes()))
 
 	return lengthInBits
 }
@@ -106,33 +105,40 @@ func CustomManufacturerParse(ctx context.Context, theBytes []byte, numBytes uint
 	return CustomManufacturerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), numBytes)
 }
 
+func CustomManufacturerParseWithBufferProducer(numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (CustomManufacturer, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CustomManufacturer, error) {
+		return CustomManufacturerParseWithBuffer(ctx, readBuffer, numBytes)
+	}
+}
+
 func CustomManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
+	v, err := (&_CustomManufacturer{NumBytes: numBytes}).parse(ctx, readBuffer, numBytes)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_CustomManufacturer) parse(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (__customManufacturer CustomManufacturer, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CustomManufacturer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CustomManufacturer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (customString)
-	_customString, _customStringErr := readBuffer.ReadString("customString", uint32((8)*(numBytes)), "UTF-8")
-	if _customStringErr != nil {
-		return nil, errors.Wrap(_customStringErr, "Error parsing 'customString' field of CustomManufacturer")
+	customString, err := ReadSimpleField(ctx, "customString", ReadString(readBuffer, uint32(int32(int32(8))*int32(numBytes))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'customString' field"))
 	}
-	customString := _customString
+	m.CustomString = customString
 
 	if closeErr := readBuffer.CloseContext("CustomManufacturer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CustomManufacturer")
 	}
 
-	// Create the instance
-	return &_CustomManufacturer{
-		NumBytes:     numBytes,
-		CustomString: customString,
-	}, nil
+	return m, nil
 }
 
 func (m *_CustomManufacturer) Serialize() ([]byte, error) {
@@ -152,11 +158,8 @@ func (m *_CustomManufacturer) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(pushErr, "Error pushing for CustomManufacturer")
 	}
 
-	// Simple Field (customString)
-	customString := string(m.GetCustomString())
-	_customStringErr := writeBuffer.WriteString("customString", uint32((8)*(m.GetNumBytes())), "UTF-8", (customString))
-	if _customStringErr != nil {
-		return errors.Wrap(_customStringErr, "Error serializing 'customString' field")
+	if err := WriteSimpleField[string](ctx, "customString", m.GetCustomString(), WriteString(writeBuffer, int32(int32(int32(8))*int32(m.GetNumBytes())))); err != nil {
+		return errors.Wrap(err, "Error serializing 'customString' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CustomManufacturer"); popErr != nil {
@@ -175,9 +178,7 @@ func (m *_CustomManufacturer) GetNumBytes() uint8 {
 //
 ////
 
-func (m *_CustomManufacturer) isCustomManufacturer() bool {
-	return true
-}
+func (m *_CustomManufacturer) IsCustomManufacturer() {}
 
 func (m *_CustomManufacturer) String() string {
 	if m == nil {

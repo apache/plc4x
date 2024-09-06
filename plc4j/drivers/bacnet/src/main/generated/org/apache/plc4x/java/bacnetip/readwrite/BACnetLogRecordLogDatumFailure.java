@@ -68,7 +68,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     writeBuffer.pushContext("BACnetLogRecordLogDatumFailure");
 
     // Simple Field (failure)
-    writeSimpleField("failure", failure, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("failure", failure, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecordLogDatumFailure");
   }
@@ -99,8 +99,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     ErrorEnclosed failure =
         readSimpleField(
             "failure",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (8)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (8)), readBuffer));
 
     readBuffer.closeContext("BACnetLogRecordLogDatumFailure");
     // Create the instance

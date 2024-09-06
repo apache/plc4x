@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,13 +46,8 @@ type OpcuaProtocolLimits interface {
 	GetMaxMessageSize() uint32
 	// GetMaxChunkCount returns MaxChunkCount (property field)
 	GetMaxChunkCount() uint32
-}
-
-// OpcuaProtocolLimitsExactly can be used when we want exactly this type and not a type which fulfills OpcuaProtocolLimits.
-// This is useful for switch cases.
-type OpcuaProtocolLimitsExactly interface {
-	OpcuaProtocolLimits
-	isOpcuaProtocolLimits() bool
+	// IsOpcuaProtocolLimits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaProtocolLimits()
 }
 
 // _OpcuaProtocolLimits is the data-structure of this message
@@ -60,6 +57,8 @@ type _OpcuaProtocolLimits struct {
 	MaxMessageSize    uint32
 	MaxChunkCount     uint32
 }
+
+var _ OpcuaProtocolLimits = (*_OpcuaProtocolLimits)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -133,56 +132,58 @@ func OpcuaProtocolLimitsParse(ctx context.Context, theBytes []byte) (OpcuaProtoc
 	return OpcuaProtocolLimitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func OpcuaProtocolLimitsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaProtocolLimits, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaProtocolLimits, error) {
+		return OpcuaProtocolLimitsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func OpcuaProtocolLimitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaProtocolLimits, error) {
+	v, err := (&_OpcuaProtocolLimits{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_OpcuaProtocolLimits) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__opcuaProtocolLimits OpcuaProtocolLimits, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaProtocolLimits"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaProtocolLimits")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (receiveBufferSize)
-	_receiveBufferSize, _receiveBufferSizeErr := readBuffer.ReadUint32("receiveBufferSize", 32)
-	if _receiveBufferSizeErr != nil {
-		return nil, errors.Wrap(_receiveBufferSizeErr, "Error parsing 'receiveBufferSize' field of OpcuaProtocolLimits")
+	receiveBufferSize, err := ReadSimpleField(ctx, "receiveBufferSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiveBufferSize' field"))
 	}
-	receiveBufferSize := _receiveBufferSize
+	m.ReceiveBufferSize = receiveBufferSize
 
-	// Simple Field (sendBufferSize)
-	_sendBufferSize, _sendBufferSizeErr := readBuffer.ReadUint32("sendBufferSize", 32)
-	if _sendBufferSizeErr != nil {
-		return nil, errors.Wrap(_sendBufferSizeErr, "Error parsing 'sendBufferSize' field of OpcuaProtocolLimits")
+	sendBufferSize, err := ReadSimpleField(ctx, "sendBufferSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendBufferSize' field"))
 	}
-	sendBufferSize := _sendBufferSize
+	m.SendBufferSize = sendBufferSize
 
-	// Simple Field (maxMessageSize)
-	_maxMessageSize, _maxMessageSizeErr := readBuffer.ReadUint32("maxMessageSize", 32)
-	if _maxMessageSizeErr != nil {
-		return nil, errors.Wrap(_maxMessageSizeErr, "Error parsing 'maxMessageSize' field of OpcuaProtocolLimits")
+	maxMessageSize, err := ReadSimpleField(ctx, "maxMessageSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxMessageSize' field"))
 	}
-	maxMessageSize := _maxMessageSize
+	m.MaxMessageSize = maxMessageSize
 
-	// Simple Field (maxChunkCount)
-	_maxChunkCount, _maxChunkCountErr := readBuffer.ReadUint32("maxChunkCount", 32)
-	if _maxChunkCountErr != nil {
-		return nil, errors.Wrap(_maxChunkCountErr, "Error parsing 'maxChunkCount' field of OpcuaProtocolLimits")
+	maxChunkCount, err := ReadSimpleField(ctx, "maxChunkCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxChunkCount' field"))
 	}
-	maxChunkCount := _maxChunkCount
+	m.MaxChunkCount = maxChunkCount
 
 	if closeErr := readBuffer.CloseContext("OpcuaProtocolLimits"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaProtocolLimits")
 	}
 
-	// Create the instance
-	return &_OpcuaProtocolLimits{
-		ReceiveBufferSize: receiveBufferSize,
-		SendBufferSize:    sendBufferSize,
-		MaxMessageSize:    maxMessageSize,
-		MaxChunkCount:     maxChunkCount,
-	}, nil
+	return m, nil
 }
 
 func (m *_OpcuaProtocolLimits) Serialize() ([]byte, error) {
@@ -202,32 +203,20 @@ func (m *_OpcuaProtocolLimits) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for OpcuaProtocolLimits")
 	}
 
-	// Simple Field (receiveBufferSize)
-	receiveBufferSize := uint32(m.GetReceiveBufferSize())
-	_receiveBufferSizeErr := writeBuffer.WriteUint32("receiveBufferSize", 32, uint32((receiveBufferSize)))
-	if _receiveBufferSizeErr != nil {
-		return errors.Wrap(_receiveBufferSizeErr, "Error serializing 'receiveBufferSize' field")
+	if err := WriteSimpleField[uint32](ctx, "receiveBufferSize", m.GetReceiveBufferSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'receiveBufferSize' field")
 	}
 
-	// Simple Field (sendBufferSize)
-	sendBufferSize := uint32(m.GetSendBufferSize())
-	_sendBufferSizeErr := writeBuffer.WriteUint32("sendBufferSize", 32, uint32((sendBufferSize)))
-	if _sendBufferSizeErr != nil {
-		return errors.Wrap(_sendBufferSizeErr, "Error serializing 'sendBufferSize' field")
+	if err := WriteSimpleField[uint32](ctx, "sendBufferSize", m.GetSendBufferSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sendBufferSize' field")
 	}
 
-	// Simple Field (maxMessageSize)
-	maxMessageSize := uint32(m.GetMaxMessageSize())
-	_maxMessageSizeErr := writeBuffer.WriteUint32("maxMessageSize", 32, uint32((maxMessageSize)))
-	if _maxMessageSizeErr != nil {
-		return errors.Wrap(_maxMessageSizeErr, "Error serializing 'maxMessageSize' field")
+	if err := WriteSimpleField[uint32](ctx, "maxMessageSize", m.GetMaxMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'maxMessageSize' field")
 	}
 
-	// Simple Field (maxChunkCount)
-	maxChunkCount := uint32(m.GetMaxChunkCount())
-	_maxChunkCountErr := writeBuffer.WriteUint32("maxChunkCount", 32, uint32((maxChunkCount)))
-	if _maxChunkCountErr != nil {
-		return errors.Wrap(_maxChunkCountErr, "Error serializing 'maxChunkCount' field")
+	if err := WriteSimpleField[uint32](ctx, "maxChunkCount", m.GetMaxChunkCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'maxChunkCount' field")
 	}
 
 	if popErr := writeBuffer.PopContext("OpcuaProtocolLimits"); popErr != nil {
@@ -236,9 +225,7 @@ func (m *_OpcuaProtocolLimits) SerializeWithWriteBuffer(ctx context.Context, wri
 	return nil
 }
 
-func (m *_OpcuaProtocolLimits) isOpcuaProtocolLimits() bool {
-	return true
-}
+func (m *_OpcuaProtocolLimits) IsOpcuaProtocolLimits() {}
 
 func (m *_OpcuaProtocolLimits) String() string {
 	if m == nil {

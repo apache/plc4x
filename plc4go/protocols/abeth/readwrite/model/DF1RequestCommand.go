@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,44 +35,35 @@ import (
 
 // DF1RequestCommand is the corresponding interface of DF1RequestCommand
 type DF1RequestCommand interface {
+	DF1RequestCommandContract
+	DF1RequestCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsDF1RequestCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1RequestCommand()
+}
+
+// DF1RequestCommandContract provides a set of functions which can be overwritten by a sub struct
+type DF1RequestCommandContract interface {
+	// IsDF1RequestCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1RequestCommand()
+}
+
+// DF1RequestCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type DF1RequestCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetFunctionCode returns FunctionCode (discriminator field)
 	GetFunctionCode() uint8
 }
 
-// DF1RequestCommandExactly can be used when we want exactly this type and not a type which fulfills DF1RequestCommand.
-// This is useful for switch cases.
-type DF1RequestCommandExactly interface {
-	DF1RequestCommand
-	isDF1RequestCommand() bool
-}
-
 // _DF1RequestCommand is the data-structure of this message
 type _DF1RequestCommand struct {
-	_DF1RequestCommandChildRequirements
+	_SubType DF1RequestCommand
 }
 
-type _DF1RequestCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetFunctionCode() uint8
-}
-
-type DF1RequestCommandParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1RequestCommand, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type DF1RequestCommandChild interface {
-	utils.Serializable
-	InitializeParent(parent DF1RequestCommand)
-	GetParent() *DF1RequestCommand
-
-	GetTypeName() string
-	DF1RequestCommand
-}
+var _ DF1RequestCommandContract = (*_DF1RequestCommand)(nil)
 
 // NewDF1RequestCommand factory function for _DF1RequestCommand
 func NewDF1RequestCommand() *_DF1RequestCommand {
@@ -92,7 +85,7 @@ func (m *_DF1RequestCommand) GetTypeName() string {
 	return "DF1RequestCommand"
 }
 
-func (m *_DF1RequestCommand) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1RequestCommand) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (functionCode)
 	lengthInBits += 8
@@ -101,60 +94,66 @@ func (m *_DF1RequestCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_DF1RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func DF1RequestCommandParse(ctx context.Context, theBytes []byte) (DF1RequestCommand, error) {
-	return DF1RequestCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func DF1RequestCommandParse[T DF1RequestCommand](ctx context.Context, theBytes []byte) (T, error) {
+	return DF1RequestCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DF1RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestCommand, error) {
+func DF1RequestCommandParseWithBufferProducer[T DF1RequestCommand]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := DF1RequestCommandParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func DF1RequestCommandParseWithBuffer[T DF1RequestCommand](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_DF1RequestCommand{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_DF1RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dF1RequestCommand DF1RequestCommand, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1RequestCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1RequestCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (functionCode) (Used as input to a switch field)
-	functionCode, _functionCodeErr := readBuffer.ReadUint8("functionCode", 8)
-	if _functionCodeErr != nil {
-		return nil, errors.Wrap(_functionCodeErr, "Error parsing 'functionCode' field of DF1RequestCommand")
+	functionCode, err := ReadDiscriminatorField[uint8](ctx, "functionCode", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionCode' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type DF1RequestCommandChildSerializeRequirement interface {
-		DF1RequestCommand
-		InitializeParent(DF1RequestCommand)
-		GetParent() DF1RequestCommand
-	}
-	var _childTemp any
-	var _child DF1RequestCommandChildSerializeRequirement
-	var typeSwitchError error
+	var _child DF1RequestCommand
 	switch {
 	case functionCode == 0xA2: // DF1RequestProtectedTypedLogicalRead
-		_childTemp, typeSwitchError = DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_DF1RequestProtectedTypedLogicalRead{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DF1RequestProtectedTypedLogicalRead for type-switch of DF1RequestCommand")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [functionCode=%v]", functionCode)
+		return nil, errors.Errorf("Unmapped type for parameters [functionCode=%v]", functionCode)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1RequestCommand")
-	}
-	_child = _childTemp.(DF1RequestCommandChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("DF1RequestCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DF1RequestCommand")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_DF1RequestCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1RequestCommand, serializeChildFunction func() error) error {
+func (pm *_DF1RequestCommand) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1RequestCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -166,12 +165,8 @@ func (pm *_DF1RequestCommand) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for DF1RequestCommand")
 	}
 
-	// Discriminator Field (functionCode) (Used as input to a switch field)
-	functionCode := uint8(child.GetFunctionCode())
-	_functionCodeErr := writeBuffer.WriteUint8("functionCode", 8, uint8((functionCode)))
-
-	if _functionCodeErr != nil {
-		return errors.Wrap(_functionCodeErr, "Error serializing 'functionCode' field")
+	if err := WriteDiscriminatorField(ctx, "functionCode", m.GetFunctionCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionCode' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -185,17 +180,4 @@ func (pm *_DF1RequestCommand) SerializeParent(ctx context.Context, writeBuffer u
 	return nil
 }
 
-func (m *_DF1RequestCommand) isDF1RequestCommand() bool {
-	return true
-}
-
-func (m *_DF1RequestCommand) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_DF1RequestCommand) IsDF1RequestCommand() {}

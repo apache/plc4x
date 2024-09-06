@@ -38,19 +38,17 @@ type CIPEncapsulationConnectionResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	CIPEncapsulationPacket
-}
-
-// CIPEncapsulationConnectionResponseExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationConnectionResponse.
-// This is useful for switch cases.
-type CIPEncapsulationConnectionResponseExactly interface {
-	CIPEncapsulationConnectionResponse
-	isCIPEncapsulationConnectionResponse() bool
+	// IsCIPEncapsulationConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPEncapsulationConnectionResponse()
 }
 
 // _CIPEncapsulationConnectionResponse is the data-structure of this message
 type _CIPEncapsulationConnectionResponse struct {
-	*_CIPEncapsulationPacket
+	CIPEncapsulationPacketContract
 }
+
+var _ CIPEncapsulationConnectionResponse = (*_CIPEncapsulationConnectionResponse)(nil)
+var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationConnectionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,23 +64,16 @@ func (m *_CIPEncapsulationConnectionResponse) GetCommandType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CIPEncapsulationConnectionResponse) InitializeParent(parent CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_CIPEncapsulationConnectionResponse) GetParent() CIPEncapsulationPacket {
-	return m._CIPEncapsulationPacket
+func (m *_CIPEncapsulationConnectionResponse) GetParent() CIPEncapsulationPacketContract {
+	return m.CIPEncapsulationPacketContract
 }
 
 // NewCIPEncapsulationConnectionResponse factory function for _CIPEncapsulationConnectionResponse
 func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationConnectionResponse {
 	_result := &_CIPEncapsulationConnectionResponse{
-		_CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 	}
-	_result._CIPEncapsulationPacket._CIPEncapsulationPacketChildRequirements = _result
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
 	return _result
 }
 
@@ -102,7 +93,7 @@ func (m *_CIPEncapsulationConnectionResponse) GetTypeName() string {
 }
 
 func (m *_CIPEncapsulationConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -111,15 +102,11 @@ func (m *_CIPEncapsulationConnectionResponse) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CIPEncapsulationConnectionResponseParse(ctx context.Context, theBytes []byte) (CIPEncapsulationConnectionResponse, error) {
-	return CIPEncapsulationConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func CIPEncapsulationConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionResponse, error) {
+func (m *_CIPEncapsulationConnectionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CIPEncapsulationPacket) (__cIPEncapsulationConnectionResponse CIPEncapsulationConnectionResponse, err error) {
+	m.CIPEncapsulationPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CIPEncapsulationConnectionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationConnectionResponse")
 	}
@@ -130,12 +117,7 @@ func CIPEncapsulationConnectionResponseParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(closeErr, "Error closing for CIPEncapsulationConnectionResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CIPEncapsulationConnectionResponse{
-		_CIPEncapsulationPacket: &_CIPEncapsulationPacket{},
-	}
-	_child._CIPEncapsulationPacket._CIPEncapsulationPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CIPEncapsulationConnectionResponse) Serialize() ([]byte, error) {
@@ -161,12 +143,10 @@ func (m *_CIPEncapsulationConnectionResponse) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CIPEncapsulationConnectionResponse) isCIPEncapsulationConnectionResponse() bool {
-	return true
-}
+func (m *_CIPEncapsulationConnectionResponse) IsCIPEncapsulationConnectionResponse() {}
 
 func (m *_CIPEncapsulationConnectionResponse) String() string {
 	if m == nil {

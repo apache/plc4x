@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type ApduDataExtPropertyDescriptionRead interface {
 	GetPropertyId() uint8
 	// GetIndex returns Index (property field)
 	GetIndex() uint8
-}
-
-// ApduDataExtPropertyDescriptionReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyDescriptionRead.
-// This is useful for switch cases.
-type ApduDataExtPropertyDescriptionReadExactly interface {
-	ApduDataExtPropertyDescriptionRead
-	isApduDataExtPropertyDescriptionRead() bool
+	// IsApduDataExtPropertyDescriptionRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtPropertyDescriptionRead()
 }
 
 // _ApduDataExtPropertyDescriptionRead is the data-structure of this message
 type _ApduDataExtPropertyDescriptionRead struct {
-	*_ApduDataExt
+	ApduDataExtContract
 	ObjectIndex uint8
 	PropertyId  uint8
 	Index       uint8
 }
+
+var _ ApduDataExtPropertyDescriptionRead = (*_ApduDataExtPropertyDescriptionRead)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtPropertyDescriptionRead)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_ApduDataExtPropertyDescriptionRead) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtPropertyDescriptionRead) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtPropertyDescriptionRead) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtPropertyDescriptionRead) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,12 +103,12 @@ func (m *_ApduDataExtPropertyDescriptionRead) GetIndex() uint8 {
 // NewApduDataExtPropertyDescriptionRead factory function for _ApduDataExtPropertyDescriptionRead
 func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8, length uint8) *_ApduDataExtPropertyDescriptionRead {
 	_result := &_ApduDataExtPropertyDescriptionRead{
-		ObjectIndex:  objectIndex,
-		PropertyId:   propertyId,
-		Index:        index,
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Index:               index,
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -130,7 +128,7 @@ func (m *_ApduDataExtPropertyDescriptionRead) GetTypeName() string {
 }
 
 func (m *_ApduDataExtPropertyDescriptionRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -148,57 +146,40 @@ func (m *_ApduDataExtPropertyDescriptionRead) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtPropertyDescriptionReadParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtPropertyDescriptionRead, error) {
-	return ApduDataExtPropertyDescriptionReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtPropertyDescriptionReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyDescriptionRead, error) {
+func (m *_ApduDataExtPropertyDescriptionRead) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtPropertyDescriptionRead ApduDataExtPropertyDescriptionRead, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionRead"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtPropertyDescriptionRead")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIndex)
-	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
-	if _objectIndexErr != nil {
-		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field of ApduDataExtPropertyDescriptionRead")
+	objectIndex, err := ReadSimpleField(ctx, "objectIndex", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIndex' field"))
 	}
-	objectIndex := _objectIndex
+	m.ObjectIndex = objectIndex
 
-	// Simple Field (propertyId)
-	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
-	if _propertyIdErr != nil {
-		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of ApduDataExtPropertyDescriptionRead")
+	propertyId, err := ReadSimpleField(ctx, "propertyId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyId' field"))
 	}
-	propertyId := _propertyId
+	m.PropertyId = propertyId
 
-	// Simple Field (index)
-	_index, _indexErr := readBuffer.ReadUint8("index", 8)
-	if _indexErr != nil {
-		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of ApduDataExtPropertyDescriptionRead")
+	index, err := ReadSimpleField(ctx, "index", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'index' field"))
 	}
-	index := _index
+	m.Index = index
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyDescriptionRead"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtPropertyDescriptionRead")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtPropertyDescriptionRead{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-		ObjectIndex: objectIndex,
-		PropertyId:  propertyId,
-		Index:       index,
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtPropertyDescriptionRead) Serialize() ([]byte, error) {
@@ -219,25 +200,16 @@ func (m *_ApduDataExtPropertyDescriptionRead) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for ApduDataExtPropertyDescriptionRead")
 		}
 
-		// Simple Field (objectIndex)
-		objectIndex := uint8(m.GetObjectIndex())
-		_objectIndexErr := writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
-		if _objectIndexErr != nil {
-			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
+		if err := WriteSimpleField[uint8](ctx, "objectIndex", m.GetObjectIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIndex' field")
 		}
 
-		// Simple Field (propertyId)
-		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
-		if _propertyIdErr != nil {
-			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
+		if err := WriteSimpleField[uint8](ctx, "propertyId", m.GetPropertyId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyId' field")
 		}
 
-		// Simple Field (index)
-		index := uint8(m.GetIndex())
-		_indexErr := writeBuffer.WriteUint8("index", 8, uint8((index)))
-		if _indexErr != nil {
-			return errors.Wrap(_indexErr, "Error serializing 'index' field")
+		if err := WriteSimpleField[uint8](ctx, "index", m.GetIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'index' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtPropertyDescriptionRead"); popErr != nil {
@@ -245,12 +217,10 @@ func (m *_ApduDataExtPropertyDescriptionRead) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtPropertyDescriptionRead) isApduDataExtPropertyDescriptionRead() bool {
-	return true
-}
+func (m *_ApduDataExtPropertyDescriptionRead) IsApduDataExtPropertyDescriptionRead() {}
 
 func (m *_ApduDataExtPropertyDescriptionRead) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,53 +35,49 @@ import (
 
 // BACnetTimerStateChangeValue is the corresponding interface of BACnetTimerStateChangeValue
 type BACnetTimerStateChangeValue interface {
+	BACnetTimerStateChangeValueContract
+	BACnetTimerStateChangeValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetTimerStateChangeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValue()
+}
+
+// BACnetTimerStateChangeValueContract provides a set of functions which can be overwritten by a sub struct
+type BACnetTimerStateChangeValueContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
+	// GetObjectTypeArgument() returns a parser argument
+	GetObjectTypeArgument() BACnetObjectType
+	// IsBACnetTimerStateChangeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValue()
 }
 
-// BACnetTimerStateChangeValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValue.
-// This is useful for switch cases.
-type BACnetTimerStateChangeValueExactly interface {
-	BACnetTimerStateChangeValue
-	isBACnetTimerStateChangeValue() bool
+// BACnetTimerStateChangeValueRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetTimerStateChangeValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
+	GetPeekedIsContextTag() bool
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetTimerStateChangeValue is the data-structure of this message
 type _BACnetTimerStateChangeValue struct {
-	_BACnetTimerStateChangeValueChildRequirements
+	_SubType        BACnetTimerStateChangeValue
 	PeekedTagHeader BACnetTagHeader
 
 	// Arguments.
 	ObjectTypeArgument BACnetObjectType
 }
 
-type _BACnetTimerStateChangeValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedIsContextTag() bool
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetTimerStateChangeValueParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetTimerStateChangeValue, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetTimerStateChangeValueChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetTimerStateChangeValue, peekedTagHeader BACnetTagHeader)
-	GetParent() *BACnetTimerStateChangeValue
-
-	GetTypeName() string
-	BACnetTimerStateChangeValue
-}
+var _ BACnetTimerStateChangeValueContract = (*_BACnetTimerStateChangeValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,13 +97,15 @@ func (m *_BACnetTimerStateChangeValue) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetTimerStateChangeValue) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetTimerStateChangeValue) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetTimerStateChangeValue) GetPeekedIsContextTag() bool {
+func (pm *_BACnetTimerStateChangeValue) GetPeekedIsContextTag() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
@@ -118,6 +118,9 @@ func (m *_BACnetTimerStateChangeValue) GetPeekedIsContextTag() bool {
 
 // NewBACnetTimerStateChangeValue factory function for _BACnetTimerStateChangeValue
 func NewBACnetTimerStateChangeValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimerStateChangeValue must not be nil")
+	}
 	return &_BACnetTimerStateChangeValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
 }
 
@@ -136,7 +139,7 @@ func (m *_BACnetTimerStateChangeValue) GetTypeName() string {
 	return "BACnetTimerStateChangeValue"
 }
 
-func (m *_BACnetTimerStateChangeValue) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetTimerStateChangeValue) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -147,109 +150,148 @@ func (m *_BACnetTimerStateChangeValue) GetParentLengthInBits(ctx context.Context
 }
 
 func (m *_BACnetTimerStateChangeValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerStateChangeValueParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValue, error) {
-	return BACnetTimerStateChangeValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+func BACnetTimerStateChangeValueParse[T BACnetTimerStateChangeValue](ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (T, error) {
+	return BACnetTimerStateChangeValueParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetTimerStateChangeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValue, error) {
+func BACnetTimerStateChangeValueParseWithBufferProducer[T BACnetTimerStateChangeValue](objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetTimerStateChangeValueParseWithBuffer[T](ctx, readBuffer, objectTypeArgument)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetTimerStateChangeValueParseWithBuffer[T BACnetTimerStateChangeValue](ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (T, error) {
+	v, err := (&_BACnetTimerStateChangeValue{ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, objectTypeArgument)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetTimerStateChangeValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__bACnetTimerStateChangeValue BACnetTimerStateChangeValue, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
-	// Virtual field
-	_peekedIsContextTag := bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))
-	peekedIsContextTag := bool(_peekedIsContextTag)
+	peekedIsContextTag, err := ReadVirtualField[bool](ctx, "peekedIsContextTag", (*bool)(nil), bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedIsContextTag' field"))
+	}
 	_ = peekedIsContextTag
 
 	// Validation
 	if !(bool((!(peekedIsContextTag))) || bool((bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"unexpected opening or closing tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "unexpected opening or closing tag"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetTimerStateChangeValueChildSerializeRequirement interface {
-		BACnetTimerStateChangeValue
-		InitializeParent(BACnetTimerStateChangeValue, BACnetTagHeader)
-		GetParent() BACnetTimerStateChangeValue
-	}
-	var _childTemp any
-	var _child BACnetTimerStateChangeValueChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetTimerStateChangeValue
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueNull
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueNullParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueNull{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueNull for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueBoolean
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueBooleanParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueBoolean{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueBoolean for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueUnsigned
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueUnsignedParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueUnsigned{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueUnsigned for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueInteger
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueIntegerParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueInteger{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueInteger for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueReal
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueRealParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueReal{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueReal for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueDouble
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDoubleParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueDouble{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueDouble for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueOctetString
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueOctetStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueOctetString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueOctetString for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueCharacterString
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueCharacterStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueCharacterString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueCharacterString for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueBitString
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueBitStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueBitString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueBitString for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueEnumerated
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueEnumeratedParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueEnumerated{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueEnumerated for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueDate
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDateParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueDate{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueDate for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueTime
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueTimeParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueTime{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueTime for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueObjectidentifier
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueObjectidentifierParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueObjectidentifier{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueObjectidentifier for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueNoValue
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueNoValue{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueNoValue for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == uint8(1) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueConstructedValue
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueConstructedValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueConstructedValue{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueConstructedValue for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == uint8(2) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueDateTime
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDateTimeParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueDateTime{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueDateTime for type-switch of BACnetTimerStateChangeValue")
+		}
 	case peekedTagNumber == uint8(3) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueLightingCommand
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetTimerStateChangeValueLightingCommand{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueLightingCommand for type-switch of BACnetTimerStateChangeValue")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetTimerStateChangeValue")
-	}
-	_child = _childTemp.(BACnetTimerStateChangeValueChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValue")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
 }
 
-func (pm *_BACnetTimerStateChangeValue) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetTimerStateChangeValue, serializeChildFunction func() error) error {
+func (pm *_BACnetTimerStateChangeValue) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetTimerStateChangeValue, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -294,17 +336,4 @@ func (m *_BACnetTimerStateChangeValue) GetObjectTypeArgument() BACnetObjectType 
 //
 ////
 
-func (m *_BACnetTimerStateChangeValue) isBACnetTimerStateChangeValue() bool {
-	return true
-}
-
-func (m *_BACnetTimerStateChangeValue) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetTimerStateChangeValue) IsBACnetTimerStateChangeValue() {}

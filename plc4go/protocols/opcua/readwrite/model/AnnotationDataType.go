@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type AnnotationDataType interface {
 	GetDiscipline() PascalString
 	// GetUri returns Uri (property field)
 	GetUri() PascalString
-}
-
-// AnnotationDataTypeExactly can be used when we want exactly this type and not a type which fulfills AnnotationDataType.
-// This is useful for switch cases.
-type AnnotationDataTypeExactly interface {
-	AnnotationDataType
-	isAnnotationDataType() bool
+	// IsAnnotationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAnnotationDataType()
 }
 
 // _AnnotationDataType is the data-structure of this message
 type _AnnotationDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	Annotation PascalString
 	Discipline PascalString
 	Uri        PascalString
 }
+
+var _ AnnotationDataType = (*_AnnotationDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AnnotationDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_AnnotationDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AnnotationDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_AnnotationDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_AnnotationDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,22 @@ func (m *_AnnotationDataType) GetUri() PascalString {
 
 // NewAnnotationDataType factory function for _AnnotationDataType
 func NewAnnotationDataType(annotation PascalString, discipline PascalString, uri PascalString) *_AnnotationDataType {
-	_result := &_AnnotationDataType{
-		Annotation:                 annotation,
-		Discipline:                 discipline,
-		Uri:                        uri,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if annotation == nil {
+		panic("annotation of type PascalString for AnnotationDataType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if discipline == nil {
+		panic("discipline of type PascalString for AnnotationDataType must not be nil")
+	}
+	if uri == nil {
+		panic("uri of type PascalString for AnnotationDataType must not be nil")
+	}
+	_result := &_AnnotationDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Annotation:                        annotation,
+		Discipline:                        discipline,
+		Uri:                               uri,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +137,7 @@ func (m *_AnnotationDataType) GetTypeName() string {
 }
 
 func (m *_AnnotationDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (annotation)
 	lengthInBits += m.Annotation.GetLengthInBits(ctx)
@@ -148,73 +155,40 @@ func (m *_AnnotationDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AnnotationDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (AnnotationDataType, error) {
-	return AnnotationDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func AnnotationDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AnnotationDataType, error) {
+func (m *_AnnotationDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__annotationDataType AnnotationDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AnnotationDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AnnotationDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (annotation)
-	if pullErr := readBuffer.PullContext("annotation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for annotation")
+	annotation, err := ReadSimpleField[PascalString](ctx, "annotation", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'annotation' field"))
 	}
-	_annotation, _annotationErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _annotationErr != nil {
-		return nil, errors.Wrap(_annotationErr, "Error parsing 'annotation' field of AnnotationDataType")
-	}
-	annotation := _annotation.(PascalString)
-	if closeErr := readBuffer.CloseContext("annotation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for annotation")
-	}
+	m.Annotation = annotation
 
-	// Simple Field (discipline)
-	if pullErr := readBuffer.PullContext("discipline"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for discipline")
+	discipline, err := ReadSimpleField[PascalString](ctx, "discipline", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discipline' field"))
 	}
-	_discipline, _disciplineErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _disciplineErr != nil {
-		return nil, errors.Wrap(_disciplineErr, "Error parsing 'discipline' field of AnnotationDataType")
-	}
-	discipline := _discipline.(PascalString)
-	if closeErr := readBuffer.CloseContext("discipline"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for discipline")
-	}
+	m.Discipline = discipline
 
-	// Simple Field (uri)
-	if pullErr := readBuffer.PullContext("uri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for uri")
+	uri, err := ReadSimpleField[PascalString](ctx, "uri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'uri' field"))
 	}
-	_uri, _uriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _uriErr != nil {
-		return nil, errors.Wrap(_uriErr, "Error parsing 'uri' field of AnnotationDataType")
-	}
-	uri := _uri.(PascalString)
-	if closeErr := readBuffer.CloseContext("uri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for uri")
-	}
+	m.Uri = uri
 
 	if closeErr := readBuffer.CloseContext("AnnotationDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AnnotationDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AnnotationDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		Annotation:                 annotation,
-		Discipline:                 discipline,
-		Uri:                        uri,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AnnotationDataType) Serialize() ([]byte, error) {
@@ -235,40 +209,16 @@ func (m *_AnnotationDataType) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for AnnotationDataType")
 		}
 
-		// Simple Field (annotation)
-		if pushErr := writeBuffer.PushContext("annotation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for annotation")
-		}
-		_annotationErr := writeBuffer.WriteSerializable(ctx, m.GetAnnotation())
-		if popErr := writeBuffer.PopContext("annotation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for annotation")
-		}
-		if _annotationErr != nil {
-			return errors.Wrap(_annotationErr, "Error serializing 'annotation' field")
+		if err := WriteSimpleField[PascalString](ctx, "annotation", m.GetAnnotation(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'annotation' field")
 		}
 
-		// Simple Field (discipline)
-		if pushErr := writeBuffer.PushContext("discipline"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for discipline")
-		}
-		_disciplineErr := writeBuffer.WriteSerializable(ctx, m.GetDiscipline())
-		if popErr := writeBuffer.PopContext("discipline"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for discipline")
-		}
-		if _disciplineErr != nil {
-			return errors.Wrap(_disciplineErr, "Error serializing 'discipline' field")
+		if err := WriteSimpleField[PascalString](ctx, "discipline", m.GetDiscipline(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'discipline' field")
 		}
 
-		// Simple Field (uri)
-		if pushErr := writeBuffer.PushContext("uri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for uri")
-		}
-		_uriErr := writeBuffer.WriteSerializable(ctx, m.GetUri())
-		if popErr := writeBuffer.PopContext("uri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for uri")
-		}
-		if _uriErr != nil {
-			return errors.Wrap(_uriErr, "Error serializing 'uri' field")
+		if err := WriteSimpleField[PascalString](ctx, "uri", m.GetUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'uri' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AnnotationDataType"); popErr != nil {
@@ -276,12 +226,10 @@ func (m *_AnnotationDataType) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AnnotationDataType) isAnnotationDataType() bool {
-	return true
-}
+func (m *_AnnotationDataType) IsAnnotationDataType() {}
 
 func (m *_AnnotationDataType) String() string {
 	if m == nil {

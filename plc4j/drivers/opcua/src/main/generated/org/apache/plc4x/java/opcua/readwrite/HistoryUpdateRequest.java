@@ -77,7 +77,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("HistoryUpdateRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfHistoryUpdateDetails)
     writeSimpleField(
@@ -127,7 +127,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -137,7 +137,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     List<ExtensionObject> historyUpdateDetails =
         readCountArrayField(
             "historyUpdateDetails",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer),
             noOfHistoryUpdateDetails);
 

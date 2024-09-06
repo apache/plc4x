@@ -82,7 +82,7 @@ public class BACnetConstructedDataDaysRemaining extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataDaysRemaining");
 
     // Simple Field (daysRemaining)
-    writeSimpleField("daysRemaining", daysRemaining, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("daysRemaining", daysRemaining, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataDaysRemaining extends BACnetConstructedData im
     BACnetApplicationTagSignedInteger daysRemaining =
         readSimpleField(
             "daysRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

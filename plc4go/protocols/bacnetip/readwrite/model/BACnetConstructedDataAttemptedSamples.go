@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAttemptedSamples interface {
 	GetAttemptedSamples() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataAttemptedSamplesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAttemptedSamples.
-// This is useful for switch cases.
-type BACnetConstructedDataAttemptedSamplesExactly interface {
-	BACnetConstructedDataAttemptedSamples
-	isBACnetConstructedDataAttemptedSamples() bool
+	// IsBACnetConstructedDataAttemptedSamples is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAttemptedSamples()
 }
 
 // _BACnetConstructedDataAttemptedSamples is the data-structure of this message
 type _BACnetConstructedDataAttemptedSamples struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AttemptedSamples BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataAttemptedSamples = (*_BACnetConstructedDataAttemptedSamples)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAttemptedSamples)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAttemptedSamples) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAttemptedSamples) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAttemptedSamples) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAttemptedSamples) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAttemptedSamples) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataAttemptedSamples factory function for _BACnetConstructedDataAttemptedSamples
 func NewBACnetConstructedDataAttemptedSamples(attemptedSamples BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAttemptedSamples {
-	_result := &_BACnetConstructedDataAttemptedSamples{
-		AttemptedSamples:       attemptedSamples,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if attemptedSamples == nil {
+		panic("attemptedSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAttemptedSamples must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAttemptedSamples{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AttemptedSamples:              attemptedSamples,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAttemptedSamples) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAttemptedSamples) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (attemptedSamples)
 	lengthInBits += m.AttemptedSamples.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAttemptedSamples) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAttemptedSamplesParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAttemptedSamples, error) {
-	return BACnetConstructedDataAttemptedSamplesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAttemptedSamplesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAttemptedSamples, error) {
+func (m *_BACnetConstructedDataAttemptedSamples) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAttemptedSamples BACnetConstructedDataAttemptedSamples, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAttemptedSamples"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAttemptedSamples")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (attemptedSamples)
-	if pullErr := readBuffer.PullContext("attemptedSamples"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for attemptedSamples")
+	attemptedSamples, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "attemptedSamples", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attemptedSamples' field"))
 	}
-	_attemptedSamples, _attemptedSamplesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _attemptedSamplesErr != nil {
-		return nil, errors.Wrap(_attemptedSamplesErr, "Error parsing 'attemptedSamples' field of BACnetConstructedDataAttemptedSamples")
-	}
-	attemptedSamples := _attemptedSamples.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("attemptedSamples"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for attemptedSamples")
-	}
+	m.AttemptedSamples = attemptedSamples
 
-	// Virtual field
-	_actualValue := attemptedSamples
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), attemptedSamples)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAttemptedSamples"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAttemptedSamples")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAttemptedSamples{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AttemptedSamples: attemptedSamples,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAttemptedSamples) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAttemptedSamples) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAttemptedSamples")
 		}
 
-		// Simple Field (attemptedSamples)
-		if pushErr := writeBuffer.PushContext("attemptedSamples"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for attemptedSamples")
-		}
-		_attemptedSamplesErr := writeBuffer.WriteSerializable(ctx, m.GetAttemptedSamples())
-		if popErr := writeBuffer.PopContext("attemptedSamples"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for attemptedSamples")
-		}
-		if _attemptedSamplesErr != nil {
-			return errors.Wrap(_attemptedSamplesErr, "Error serializing 'attemptedSamples' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "attemptedSamples", m.GetAttemptedSamples(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attemptedSamples' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAttemptedSamples) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAttemptedSamples) isBACnetConstructedDataAttemptedSamples() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAttemptedSamples) IsBACnetConstructedDataAttemptedSamples() {}
 
 func (m *_BACnetConstructedDataAttemptedSamples) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type ErrorEnclosed interface {
 	GetError() Error
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// ErrorEnclosedExactly can be used when we want exactly this type and not a type which fulfills ErrorEnclosed.
-// This is useful for switch cases.
-type ErrorEnclosedExactly interface {
-	ErrorEnclosed
-	isErrorEnclosed() bool
+	// IsErrorEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorEnclosed()
 }
 
 // _ErrorEnclosed is the data-structure of this message
@@ -60,6 +57,8 @@ type _ErrorEnclosed struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ ErrorEnclosed = (*_ErrorEnclosed)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,15 @@ func (m *_ErrorEnclosed) GetClosingTag() BACnetClosingTag {
 
 // NewErrorEnclosed factory function for _ErrorEnclosed
 func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag, tagNumber uint8) *_ErrorEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ErrorEnclosed must not be nil")
+	}
+	if error == nil {
+		panic("error of type Error for ErrorEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ErrorEnclosed must not be nil")
+	}
 	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -126,67 +134,52 @@ func ErrorEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (
 	return ErrorEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func ErrorEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorEnclosed, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorEnclosed, error) {
+		return ErrorEnclosedParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func ErrorEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {
+	v, err := (&_ErrorEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ErrorEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__errorEnclosed ErrorEnclosed, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ErrorEnclosed"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ErrorEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of ErrorEnclosed")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (error)
-	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for error")
+	error, err := ReadSimpleField[Error](ctx, "error", ReadComplex[Error](ErrorParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
-	_error, _errorErr := ErrorParseWithBuffer(ctx, readBuffer)
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of ErrorEnclosed")
-	}
-	error := _error.(Error)
-	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for error")
-	}
+	m.Error = error
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of ErrorEnclosed")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("ErrorEnclosed"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ErrorEnclosed")
 	}
 
-	// Create the instance
-	return &_ErrorEnclosed{
-		TagNumber:  tagNumber,
-		OpeningTag: openingTag,
-		Error:      error,
-		ClosingTag: closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_ErrorEnclosed) Serialize() ([]byte, error) {
@@ -206,40 +199,16 @@ func (m *_ErrorEnclosed) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for ErrorEnclosed")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (error)
-	if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for error")
-	}
-	_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
-	if popErr := writeBuffer.PopContext("error"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for error")
-	}
-	if _errorErr != nil {
-		return errors.Wrap(_errorErr, "Error serializing 'error' field")
+	if err := WriteSimpleField[Error](ctx, "error", m.GetError(), WriteComplex[Error](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'error' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ErrorEnclosed"); popErr != nil {
@@ -258,9 +227,7 @@ func (m *_ErrorEnclosed) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_ErrorEnclosed) isErrorEnclosed() bool {
-	return true
-}
+func (m *_ErrorEnclosed) IsErrorEnclosed() {}
 
 func (m *_ErrorEnclosed) String() string {
 	if m == nil {

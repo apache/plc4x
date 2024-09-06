@@ -38,19 +38,17 @@ type RoutingIndication interface {
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
-}
-
-// RoutingIndicationExactly can be used when we want exactly this type and not a type which fulfills RoutingIndication.
-// This is useful for switch cases.
-type RoutingIndicationExactly interface {
-	RoutingIndication
-	isRoutingIndication() bool
+	// IsRoutingIndication is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRoutingIndication()
 }
 
 // _RoutingIndication is the data-structure of this message
 type _RoutingIndication struct {
-	*_KnxNetIpMessage
+	KnxNetIpMessageContract
 }
+
+var _ RoutingIndication = (*_RoutingIndication)(nil)
+var _ KnxNetIpMessageRequirements = (*_RoutingIndication)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,18 +64,16 @@ func (m *_RoutingIndication) GetMsgType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RoutingIndication) InitializeParent(parent KnxNetIpMessage) {}
-
-func (m *_RoutingIndication) GetParent() KnxNetIpMessage {
-	return m._KnxNetIpMessage
+func (m *_RoutingIndication) GetParent() KnxNetIpMessageContract {
+	return m.KnxNetIpMessageContract
 }
 
 // NewRoutingIndication factory function for _RoutingIndication
 func NewRoutingIndication() *_RoutingIndication {
 	_result := &_RoutingIndication{
-		_KnxNetIpMessage: NewKnxNetIpMessage(),
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 	}
-	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 
@@ -97,7 +93,7 @@ func (m *_RoutingIndication) GetTypeName() string {
 }
 
 func (m *_RoutingIndication) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -106,15 +102,11 @@ func (m *_RoutingIndication) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RoutingIndicationParse(ctx context.Context, theBytes []byte) (RoutingIndication, error) {
-	return RoutingIndicationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func RoutingIndicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RoutingIndication, error) {
+func (m *_RoutingIndication) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__routingIndication RoutingIndication, err error) {
+	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RoutingIndication")
 	}
@@ -125,12 +117,7 @@ func RoutingIndicationParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(closeErr, "Error closing for RoutingIndication")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RoutingIndication{
-		_KnxNetIpMessage: &_KnxNetIpMessage{},
-	}
-	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RoutingIndication) Serialize() ([]byte, error) {
@@ -156,12 +143,10 @@ func (m *_RoutingIndication) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RoutingIndication) isRoutingIndication() bool {
-	return true
-}
+func (m *_RoutingIndication) IsRoutingIndication() {}
 
 func (m *_RoutingIndication) String() string {
 	if m == nil {

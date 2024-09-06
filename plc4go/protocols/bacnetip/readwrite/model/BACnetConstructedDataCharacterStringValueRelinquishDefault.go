@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataCharacterStringValueRelinquishDefault interface {
 	GetRelinquishDefault() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataCharacterStringValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCharacterStringValueRelinquishDefault.
-// This is useful for switch cases.
-type BACnetConstructedDataCharacterStringValueRelinquishDefaultExactly interface {
-	BACnetConstructedDataCharacterStringValueRelinquishDefault
-	isBACnetConstructedDataCharacterStringValueRelinquishDefault() bool
+	// IsBACnetConstructedDataCharacterStringValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCharacterStringValueRelinquishDefault()
 }
 
 // _BACnetConstructedDataCharacterStringValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataCharacterStringValueRelinquishDefault struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	RelinquishDefault BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataCharacterStringValueRelinquishDefault = (*_BACnetConstructedDataCharacterStringValueRelinquishDefault)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCharacterStringValueRelinquishDefault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetPropert
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetActualV
 
 // NewBACnetConstructedDataCharacterStringValueRelinquishDefault factory function for _BACnetConstructedDataCharacterStringValueRelinquishDefault
 func NewBACnetConstructedDataCharacterStringValueRelinquishDefault(relinquishDefault BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueRelinquishDefault {
-	_result := &_BACnetConstructedDataCharacterStringValueRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagCharacterString for BACnetConstructedDataCharacterStringValueRelinquishDefault must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataCharacterStringValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetTypeNam
 }
 
 func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) GetLengthI
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCharacterStringValueRelinquishDefaultParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCharacterStringValueRelinquishDefault, error) {
-	return BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCharacterStringValueRelinquishDefault, error) {
+func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCharacterStringValueRelinquishDefault BACnetConstructedDataCharacterStringValueRelinquishDefault, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCharacterStringValueRelinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCharacterStringValueRelinquishDefault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (relinquishDefault)
-	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
+	relinquishDefault, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "relinquishDefault", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relinquishDefault' field"))
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataCharacterStringValueRelinquishDefault")
-	}
-	relinquishDefault := _relinquishDefault.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
-	}
+	m.RelinquishDefault = relinquishDefault
 
-	// Virtual field
-	_actualValue := relinquishDefault
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), relinquishDefault)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCharacterStringValueRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCharacterStringValueRelinquishDefault")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCharacterStringValueRelinquishDefault{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		RelinquishDefault: relinquishDefault,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) SerializeW
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCharacterStringValueRelinquishDefault")
 		}
 
-		// Simple Field (relinquishDefault)
-		if pushErr := writeBuffer.PushContext("relinquishDefault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relinquishDefault")
-		}
-		_relinquishDefaultErr := writeBuffer.WriteSerializable(ctx, m.GetRelinquishDefault())
-		if popErr := writeBuffer.PopContext("relinquishDefault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relinquishDefault")
-		}
-		if _relinquishDefaultErr != nil {
-			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "relinquishDefault", m.GetRelinquishDefault(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relinquishDefault' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) SerializeW
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) isBACnetConstructedDataCharacterStringValueRelinquishDefault() bool {
-	return true
+func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) IsBACnetConstructedDataCharacterStringValueRelinquishDefault() {
 }
 
 func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) String() string {

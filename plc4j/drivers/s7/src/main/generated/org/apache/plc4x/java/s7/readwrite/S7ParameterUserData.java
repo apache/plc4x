@@ -112,8 +112,7 @@ public class S7ParameterUserData extends S7Parameter implements Message {
     List<S7ParameterUserDataItem> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
-                () -> S7ParameterUserDataItem.staticParse(readBuffer), readBuffer),
+            readComplex(() -> S7ParameterUserDataItem.staticParse(readBuffer), readBuffer),
             numItems);
 
     readBuffer.closeContext("S7ParameterUserData");

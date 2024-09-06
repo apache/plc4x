@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type NLMVendorProprietaryMessage interface {
 	GetVendorId() BACnetVendorId
 	// GetProprietaryMessage returns ProprietaryMessage (property field)
 	GetProprietaryMessage() []byte
-}
-
-// NLMVendorProprietaryMessageExactly can be used when we want exactly this type and not a type which fulfills NLMVendorProprietaryMessage.
-// This is useful for switch cases.
-type NLMVendorProprietaryMessageExactly interface {
-	NLMVendorProprietaryMessage
-	isNLMVendorProprietaryMessage() bool
+	// IsNLMVendorProprietaryMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMVendorProprietaryMessage()
 }
 
 // _NLMVendorProprietaryMessage is the data-structure of this message
 type _NLMVendorProprietaryMessage struct {
-	*_NLM
+	NLMContract
 	VendorId           BACnetVendorId
 	ProprietaryMessage []byte
 }
+
+var _ NLMVendorProprietaryMessage = (*_NLMVendorProprietaryMessage)(nil)
+var _ NLMRequirements = (*_NLMVendorProprietaryMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_NLMVendorProprietaryMessage) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMVendorProprietaryMessage) InitializeParent(parent NLM) {}
-
-func (m *_NLMVendorProprietaryMessage) GetParent() NLM {
-	return m._NLM
+func (m *_NLMVendorProprietaryMessage) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_NLMVendorProprietaryMessage) GetProprietaryMessage() []byte {
 // NewNLMVendorProprietaryMessage factory function for _NLMVendorProprietaryMessage
 func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte, apduLength uint16) *_NLMVendorProprietaryMessage {
 	_result := &_NLMVendorProprietaryMessage{
+		NLMContract:        NewNLM(apduLength),
 		VendorId:           vendorId,
 		ProprietaryMessage: proprietaryMessage,
-		_NLM:               NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_NLMVendorProprietaryMessage) GetTypeName() string {
 }
 
 func (m *_NLMVendorProprietaryMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (vendorId)
 	lengthInBits += 16
@@ -139,54 +137,34 @@ func (m *_NLMVendorProprietaryMessage) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMVendorProprietaryMessageParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMVendorProprietaryMessage, error) {
-	return NLMVendorProprietaryMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMVendorProprietaryMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMVendorProprietaryMessage, error) {
+func (m *_NLMVendorProprietaryMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMVendorProprietaryMessage NLMVendorProprietaryMessage, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMVendorProprietaryMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMVendorProprietaryMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (vendorId)
-	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
+	vendorId, err := ReadEnumField[BACnetVendorId](ctx, "vendorId", "BACnetVendorId", ReadEnum(BACnetVendorIdByValue, ReadUnsignedShort(readBuffer, uint8(16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
 	}
-	_vendorId, _vendorIdErr := BACnetVendorIdParseWithBuffer(ctx, readBuffer)
-	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of NLMVendorProprietaryMessage")
+	m.VendorId = vendorId
+
+	proprietaryMessage, err := readBuffer.ReadByteArray("proprietaryMessage", int(utils.InlineIf((bool((apduLength) > (0))), func() any { return int32((int32(apduLength) - int32(int32(3)))) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryMessage' field"))
 	}
-	vendorId := _vendorId
-	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
-	}
-	// Byte Array field (proprietaryMessage)
-	numberOfBytesproprietaryMessage := int(utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16((uint16(apduLength) - uint16(uint16(3)))) }, func() any { return uint16(uint16(0)) }).(uint16))
-	proprietaryMessage, _readArrayErr := readBuffer.ReadByteArray("proprietaryMessage", numberOfBytesproprietaryMessage)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'proprietaryMessage' field of NLMVendorProprietaryMessage")
-	}
+	m.ProprietaryMessage = proprietaryMessage
 
 	if closeErr := readBuffer.CloseContext("NLMVendorProprietaryMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMVendorProprietaryMessage")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMVendorProprietaryMessage{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		VendorId:           vendorId,
-		ProprietaryMessage: proprietaryMessage,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMVendorProprietaryMessage) Serialize() ([]byte, error) {
@@ -207,21 +185,11 @@ func (m *_NLMVendorProprietaryMessage) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for NLMVendorProprietaryMessage")
 		}
 
-		// Simple Field (vendorId)
-		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorId")
-		}
-		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
-		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorId")
-		}
-		if _vendorIdErr != nil {
-			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
+		if err := WriteSimpleEnumField[BACnetVendorId](ctx, "vendorId", "BACnetVendorId", m.GetVendorId(), WriteEnum[BACnetVendorId, uint16](BACnetVendorId.GetValue, BACnetVendorId.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorId' field")
 		}
 
-		// Array Field (proprietaryMessage)
-		// Byte Array field (proprietaryMessage)
-		if err := writeBuffer.WriteByteArray("proprietaryMessage", m.GetProprietaryMessage()); err != nil {
+		if err := WriteByteArrayField(ctx, "proprietaryMessage", m.GetProprietaryMessage(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'proprietaryMessage' field")
 		}
 
@@ -230,12 +198,10 @@ func (m *_NLMVendorProprietaryMessage) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMVendorProprietaryMessage) isNLMVendorProprietaryMessage() bool {
-	return true
-}
+func (m *_NLMVendorProprietaryMessage) IsNLMVendorProprietaryMessage() {}
 
 func (m *_NLMVendorProprietaryMessage) String() string {
 	if m == nil {

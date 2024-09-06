@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -59,18 +61,13 @@ type CipConnectionManagerCloseRequest interface {
 	GetConnectionPathSize() uint8
 	// GetConnectionPaths returns ConnectionPaths (property field)
 	GetConnectionPaths() []PathSegment
-}
-
-// CipConnectionManagerCloseRequestExactly can be used when we want exactly this type and not a type which fulfills CipConnectionManagerCloseRequest.
-// This is useful for switch cases.
-type CipConnectionManagerCloseRequestExactly interface {
-	CipConnectionManagerCloseRequest
-	isCipConnectionManagerCloseRequest() bool
+	// IsCipConnectionManagerCloseRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipConnectionManagerCloseRequest()
 }
 
 // _CipConnectionManagerCloseRequest is the data-structure of this message
 type _CipConnectionManagerCloseRequest struct {
-	*_CipService
+	CipServiceContract
 	RequestPathSize        uint8
 	ClassSegment           PathSegment
 	InstanceSegment        PathSegment
@@ -85,6 +82,9 @@ type _CipConnectionManagerCloseRequest struct {
 	// Reserved Fields
 	reservedField0 *byte
 }
+
+var _ CipConnectionManagerCloseRequest = (*_CipConnectionManagerCloseRequest)(nil)
+var _ CipServiceRequirements = (*_CipConnectionManagerCloseRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,10 +108,8 @@ func (m *_CipConnectionManagerCloseRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipConnectionManagerCloseRequest) InitializeParent(parent CipService) {}
-
-func (m *_CipConnectionManagerCloseRequest) GetParent() CipService {
-	return m._CipService
+func (m *_CipConnectionManagerCloseRequest) GetParent() CipServiceContract {
+	return m.CipServiceContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -170,7 +168,14 @@ func (m *_CipConnectionManagerCloseRequest) GetConnectionPaths() []PathSegment {
 
 // NewCipConnectionManagerCloseRequest factory function for _CipConnectionManagerCloseRequest
 func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerCloseRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for CipConnectionManagerCloseRequest must not be nil")
+	}
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for CipConnectionManagerCloseRequest must not be nil")
+	}
 	_result := &_CipConnectionManagerCloseRequest{
+		CipServiceContract:     NewCipService(serviceLen),
 		RequestPathSize:        requestPathSize,
 		ClassSegment:           classSegment,
 		InstanceSegment:        instanceSegment,
@@ -182,9 +187,8 @@ func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment Pat
 		OriginatorSerialNumber: originatorSerialNumber,
 		ConnectionPathSize:     connectionPathSize,
 		ConnectionPaths:        connectionPaths,
-		_CipService:            NewCipService(serviceLen),
 	}
-	_result._CipService._CipServiceChildRequirements = _result
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 
@@ -204,7 +208,7 @@ func (m *_CipConnectionManagerCloseRequest) GetTypeName() string {
 }
 
 func (m *_CipConnectionManagerCloseRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Simple field (requestPathSize)
 	lengthInBits += 8
@@ -253,163 +257,94 @@ func (m *_CipConnectionManagerCloseRequest) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipConnectionManagerCloseRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerCloseRequest, error) {
-	return CipConnectionManagerCloseRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
-}
-
-func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerCloseRequest, error) {
+func (m *_CipConnectionManagerCloseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectionManagerCloseRequest CipConnectionManagerCloseRequest, err error) {
+	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipConnectionManagerCloseRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipConnectionManagerCloseRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestPathSize)
-	_requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
-	if _requestPathSizeErr != nil {
-		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipConnectionManagerCloseRequest")
+	requestPathSize, err := ReadSimpleField(ctx, "requestPathSize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
 	}
-	requestPathSize := _requestPathSize
+	m.RequestPathSize = requestPathSize
 
-	// Simple Field (classSegment)
-	if pullErr := readBuffer.PullContext("classSegment"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for classSegment")
+	classSegment, err := ReadSimpleField[PathSegment](ctx, "classSegment", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'classSegment' field"))
 	}
-	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
-	if _classSegmentErr != nil {
-		return nil, errors.Wrap(_classSegmentErr, "Error parsing 'classSegment' field of CipConnectionManagerCloseRequest")
-	}
-	classSegment := _classSegment.(PathSegment)
-	if closeErr := readBuffer.CloseContext("classSegment"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for classSegment")
-	}
+	m.ClassSegment = classSegment
 
-	// Simple Field (instanceSegment)
-	if pullErr := readBuffer.PullContext("instanceSegment"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for instanceSegment")
+	instanceSegment, err := ReadSimpleField[PathSegment](ctx, "instanceSegment", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instanceSegment' field"))
 	}
-	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
-	if _instanceSegmentErr != nil {
-		return nil, errors.Wrap(_instanceSegmentErr, "Error parsing 'instanceSegment' field of CipConnectionManagerCloseRequest")
-	}
-	instanceSegment := _instanceSegment.(PathSegment)
-	if closeErr := readBuffer.CloseContext("instanceSegment"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for instanceSegment")
-	}
+	m.InstanceSegment = instanceSegment
 
-	// Simple Field (priority)
-	_priority, _priorityErr := readBuffer.ReadUint8("priority", 4)
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of CipConnectionManagerCloseRequest")
+	priority, err := ReadSimpleField(ctx, "priority", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}
-	priority := _priority
+	m.Priority = priority
 
-	// Simple Field (tickTime)
-	_tickTime, _tickTimeErr := readBuffer.ReadUint8("tickTime", 4)
-	if _tickTimeErr != nil {
-		return nil, errors.Wrap(_tickTimeErr, "Error parsing 'tickTime' field of CipConnectionManagerCloseRequest")
+	tickTime, err := ReadSimpleField(ctx, "tickTime", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tickTime' field"))
 	}
-	tickTime := _tickTime
+	m.TickTime = tickTime
 
-	// Simple Field (timeoutTicks)
-	_timeoutTicks, _timeoutTicksErr := readBuffer.ReadUint8("timeoutTicks", 8)
-	if _timeoutTicksErr != nil {
-		return nil, errors.Wrap(_timeoutTicksErr, "Error parsing 'timeoutTicks' field of CipConnectionManagerCloseRequest")
+	timeoutTicks, err := ReadSimpleField(ctx, "timeoutTicks", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeoutTicks' field"))
 	}
-	timeoutTicks := _timeoutTicks
+	m.TimeoutTicks = timeoutTicks
 
-	// Simple Field (connectionSerialNumber)
-	_connectionSerialNumber, _connectionSerialNumberErr := readBuffer.ReadUint16("connectionSerialNumber", 16)
-	if _connectionSerialNumberErr != nil {
-		return nil, errors.Wrap(_connectionSerialNumberErr, "Error parsing 'connectionSerialNumber' field of CipConnectionManagerCloseRequest")
+	connectionSerialNumber, err := ReadSimpleField(ctx, "connectionSerialNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionSerialNumber' field"))
 	}
-	connectionSerialNumber := _connectionSerialNumber
+	m.ConnectionSerialNumber = connectionSerialNumber
 
-	// Simple Field (originatorVendorId)
-	_originatorVendorId, _originatorVendorIdErr := readBuffer.ReadUint16("originatorVendorId", 16)
-	if _originatorVendorIdErr != nil {
-		return nil, errors.Wrap(_originatorVendorIdErr, "Error parsing 'originatorVendorId' field of CipConnectionManagerCloseRequest")
+	originatorVendorId, err := ReadSimpleField(ctx, "originatorVendorId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originatorVendorId' field"))
 	}
-	originatorVendorId := _originatorVendorId
+	m.OriginatorVendorId = originatorVendorId
 
-	// Simple Field (originatorSerialNumber)
-	_originatorSerialNumber, _originatorSerialNumberErr := readBuffer.ReadUint32("originatorSerialNumber", 32)
-	if _originatorSerialNumberErr != nil {
-		return nil, errors.Wrap(_originatorSerialNumberErr, "Error parsing 'originatorSerialNumber' field of CipConnectionManagerCloseRequest")
+	originatorSerialNumber, err := ReadSimpleField(ctx, "originatorSerialNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originatorSerialNumber' field"))
 	}
-	originatorSerialNumber := _originatorSerialNumber
+	m.OriginatorSerialNumber = originatorSerialNumber
 
-	// Simple Field (connectionPathSize)
-	_connectionPathSize, _connectionPathSizeErr := readBuffer.ReadUint8("connectionPathSize", 8)
-	if _connectionPathSizeErr != nil {
-		return nil, errors.Wrap(_connectionPathSizeErr, "Error parsing 'connectionPathSize' field of CipConnectionManagerCloseRequest")
+	connectionPathSize, err := ReadSimpleField(ctx, "connectionPathSize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionPathSize' field"))
 	}
-	connectionPathSize := _connectionPathSize
+	m.ConnectionPathSize = connectionPathSize
 
-	var reservedField0 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerCloseRequest")
-		}
-		if reserved != byte(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Array field (connectionPaths)
-	if pullErr := readBuffer.PullContext("connectionPaths", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for connectionPaths")
+	connectionPaths, err := ReadTerminatedArrayField[PathSegment](ctx, "connectionPaths", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer), NoMorePathSegments(ctx, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionPaths' field"))
 	}
-	// Terminated array
-	var connectionPaths []PathSegment
-	{
-		for !bool(NoMorePathSegments(ctx, readBuffer)) {
-			_item, _err := PathSegmentParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'connectionPaths' field of CipConnectionManagerCloseRequest")
-			}
-			connectionPaths = append(connectionPaths, _item.(PathSegment))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("connectionPaths", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for connectionPaths")
-	}
+	m.ConnectionPaths = connectionPaths
 
 	if closeErr := readBuffer.CloseContext("CipConnectionManagerCloseRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipConnectionManagerCloseRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CipConnectionManagerCloseRequest{
-		_CipService: &_CipService{
-			ServiceLen: serviceLen,
-		},
-		RequestPathSize:        requestPathSize,
-		ClassSegment:           classSegment,
-		InstanceSegment:        instanceSegment,
-		Priority:               priority,
-		TickTime:               tickTime,
-		TimeoutTicks:           timeoutTicks,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		ConnectionPathSize:     connectionPathSize,
-		ConnectionPaths:        connectionPaths,
-		reservedField0:         reservedField0,
-	}
-	_child._CipService._CipServiceChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CipConnectionManagerCloseRequest) Serialize() ([]byte, error) {
@@ -430,117 +365,52 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for CipConnectionManagerCloseRequest")
 		}
 
-		// Simple Field (requestPathSize)
-		requestPathSize := uint8(m.GetRequestPathSize())
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
-		if _requestPathSizeErr != nil {
-			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
+		if err := WriteSimpleField[uint8](ctx, "requestPathSize", m.GetRequestPathSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestPathSize' field")
 		}
 
-		// Simple Field (classSegment)
-		if pushErr := writeBuffer.PushContext("classSegment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for classSegment")
-		}
-		_classSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetClassSegment())
-		if popErr := writeBuffer.PopContext("classSegment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for classSegment")
-		}
-		if _classSegmentErr != nil {
-			return errors.Wrap(_classSegmentErr, "Error serializing 'classSegment' field")
+		if err := WriteSimpleField[PathSegment](ctx, "classSegment", m.GetClassSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'classSegment' field")
 		}
 
-		// Simple Field (instanceSegment)
-		if pushErr := writeBuffer.PushContext("instanceSegment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for instanceSegment")
-		}
-		_instanceSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetInstanceSegment())
-		if popErr := writeBuffer.PopContext("instanceSegment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for instanceSegment")
-		}
-		if _instanceSegmentErr != nil {
-			return errors.Wrap(_instanceSegmentErr, "Error serializing 'instanceSegment' field")
+		if err := WriteSimpleField[PathSegment](ctx, "instanceSegment", m.GetInstanceSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instanceSegment' field")
 		}
 
-		// Simple Field (priority)
-		priority := uint8(m.GetPriority())
-		_priorityErr := writeBuffer.WriteUint8("priority", 4, uint8((priority)))
-		if _priorityErr != nil {
-			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+		if err := WriteSimpleField[uint8](ctx, "priority", m.GetPriority(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priority' field")
 		}
 
-		// Simple Field (tickTime)
-		tickTime := uint8(m.GetTickTime())
-		_tickTimeErr := writeBuffer.WriteUint8("tickTime", 4, uint8((tickTime)))
-		if _tickTimeErr != nil {
-			return errors.Wrap(_tickTimeErr, "Error serializing 'tickTime' field")
+		if err := WriteSimpleField[uint8](ctx, "tickTime", m.GetTickTime(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tickTime' field")
 		}
 
-		// Simple Field (timeoutTicks)
-		timeoutTicks := uint8(m.GetTimeoutTicks())
-		_timeoutTicksErr := writeBuffer.WriteUint8("timeoutTicks", 8, uint8((timeoutTicks)))
-		if _timeoutTicksErr != nil {
-			return errors.Wrap(_timeoutTicksErr, "Error serializing 'timeoutTicks' field")
+		if err := WriteSimpleField[uint8](ctx, "timeoutTicks", m.GetTimeoutTicks(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeoutTicks' field")
 		}
 
-		// Simple Field (connectionSerialNumber)
-		connectionSerialNumber := uint16(m.GetConnectionSerialNumber())
-		_connectionSerialNumberErr := writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
-		if _connectionSerialNumberErr != nil {
-			return errors.Wrap(_connectionSerialNumberErr, "Error serializing 'connectionSerialNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "connectionSerialNumber", m.GetConnectionSerialNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionSerialNumber' field")
 		}
 
-		// Simple Field (originatorVendorId)
-		originatorVendorId := uint16(m.GetOriginatorVendorId())
-		_originatorVendorIdErr := writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
-		if _originatorVendorIdErr != nil {
-			return errors.Wrap(_originatorVendorIdErr, "Error serializing 'originatorVendorId' field")
+		if err := WriteSimpleField[uint16](ctx, "originatorVendorId", m.GetOriginatorVendorId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originatorVendorId' field")
 		}
 
-		// Simple Field (originatorSerialNumber)
-		originatorSerialNumber := uint32(m.GetOriginatorSerialNumber())
-		_originatorSerialNumberErr := writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
-		if _originatorSerialNumberErr != nil {
-			return errors.Wrap(_originatorSerialNumberErr, "Error serializing 'originatorSerialNumber' field")
+		if err := WriteSimpleField[uint32](ctx, "originatorSerialNumber", m.GetOriginatorSerialNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originatorSerialNumber' field")
 		}
 
-		// Simple Field (connectionPathSize)
-		connectionPathSize := uint8(m.GetConnectionPathSize())
-		_connectionPathSizeErr := writeBuffer.WriteUint8("connectionPathSize", 8, uint8((connectionPathSize)))
-		if _connectionPathSizeErr != nil {
-			return errors.Wrap(_connectionPathSizeErr, "Error serializing 'connectionPathSize' field")
+		if err := WriteSimpleField[uint8](ctx, "connectionPathSize", m.GetConnectionPathSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionPathSize' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x00), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Array Field (connectionPaths)
-		if pushErr := writeBuffer.PushContext("connectionPaths", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for connectionPaths")
-		}
-		for _curItem, _element := range m.GetConnectionPaths() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConnectionPaths()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'connectionPaths' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("connectionPaths", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for connectionPaths")
+		if err := WriteComplexTypeArrayField(ctx, "connectionPaths", m.GetConnectionPaths(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionPaths' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipConnectionManagerCloseRequest"); popErr != nil {
@@ -548,12 +418,10 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CipConnectionManagerCloseRequest) isCipConnectionManagerCloseRequest() bool {
-	return true
-}
+func (m *_CipConnectionManagerCloseRequest) IsCipConnectionManagerCloseRequest() {}
 
 func (m *_CipConnectionManagerCloseRequest) String() string {
 	if m == nil {

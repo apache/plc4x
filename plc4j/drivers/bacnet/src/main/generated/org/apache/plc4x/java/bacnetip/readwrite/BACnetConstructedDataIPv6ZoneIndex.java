@@ -82,7 +82,7 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataIPv6ZoneIndex");
 
     // Simple Field (ipv6ZoneIndex)
-    writeSimpleField("ipv6ZoneIndex", ipv6ZoneIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipv6ZoneIndex", ipv6ZoneIndex, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
     BACnetApplicationTagCharacterString ipv6ZoneIndex =
         readSimpleField(
             "ipv6ZoneIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,13 +46,8 @@ type BVLCForeignDeviceTableEntry interface {
 	GetTtl() uint16
 	// GetSecondRemainingBeforePurge returns SecondRemainingBeforePurge (property field)
 	GetSecondRemainingBeforePurge() uint16
-}
-
-// BVLCForeignDeviceTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCForeignDeviceTableEntry.
-// This is useful for switch cases.
-type BVLCForeignDeviceTableEntryExactly interface {
-	BVLCForeignDeviceTableEntry
-	isBVLCForeignDeviceTableEntry() bool
+	// IsBVLCForeignDeviceTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCForeignDeviceTableEntry()
 }
 
 // _BVLCForeignDeviceTableEntry is the data-structure of this message
@@ -60,6 +57,8 @@ type _BVLCForeignDeviceTableEntry struct {
 	Ttl                        uint16
 	SecondRemainingBeforePurge uint16
 }
+
+var _ BVLCForeignDeviceTableEntry = (*_BVLCForeignDeviceTableEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -135,76 +134,58 @@ func BVLCForeignDeviceTableEntryParse(ctx context.Context, theBytes []byte) (BVL
 	return BVLCForeignDeviceTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BVLCForeignDeviceTableEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
+		return BVLCForeignDeviceTableEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
+	v, err := (&_BVLCForeignDeviceTableEntry{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BVLCForeignDeviceTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLCForeignDeviceTableEntry BVLCForeignDeviceTableEntry, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCForeignDeviceTableEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCForeignDeviceTableEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (ip)
-	if pullErr := readBuffer.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ip")
+	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ip' field"))
 	}
-	// Count array
-	ip := make([]uint8, max(uint16(4), 0))
-	// This happens when the size is set conditional to 0
-	if len(ip) == 0 {
-		ip = nil
-	}
-	{
-		_numItems := uint16(max(uint16(4), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCForeignDeviceTableEntry")
-			}
-			ip[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ip")
-	}
+	m.Ip = ip
 
-	// Simple Field (port)
-	_port, _portErr := readBuffer.ReadUint16("port", 16)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCForeignDeviceTableEntry")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
+	m.Port = port
 
-	// Simple Field (ttl)
-	_ttl, _ttlErr := readBuffer.ReadUint16("ttl", 16)
-	if _ttlErr != nil {
-		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field of BVLCForeignDeviceTableEntry")
+	ttl, err := ReadSimpleField(ctx, "ttl", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ttl' field"))
 	}
-	ttl := _ttl
+	m.Ttl = ttl
 
-	// Simple Field (secondRemainingBeforePurge)
-	_secondRemainingBeforePurge, _secondRemainingBeforePurgeErr := readBuffer.ReadUint16("secondRemainingBeforePurge", 16)
-	if _secondRemainingBeforePurgeErr != nil {
-		return nil, errors.Wrap(_secondRemainingBeforePurgeErr, "Error parsing 'secondRemainingBeforePurge' field of BVLCForeignDeviceTableEntry")
+	secondRemainingBeforePurge, err := ReadSimpleField(ctx, "secondRemainingBeforePurge", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondRemainingBeforePurge' field"))
 	}
-	secondRemainingBeforePurge := _secondRemainingBeforePurge
+	m.SecondRemainingBeforePurge = secondRemainingBeforePurge
 
 	if closeErr := readBuffer.CloseContext("BVLCForeignDeviceTableEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCForeignDeviceTableEntry")
 	}
 
-	// Create the instance
-	return &_BVLCForeignDeviceTableEntry{
-		Ip:                         ip,
-		Port:                       port,
-		Ttl:                        ttl,
-		SecondRemainingBeforePurge: secondRemainingBeforePurge,
-	}, nil
+	return m, nil
 }
 
 func (m *_BVLCForeignDeviceTableEntry) Serialize() ([]byte, error) {
@@ -224,40 +205,20 @@ func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for BVLCForeignDeviceTableEntry")
 	}
 
-	// Array Field (ip)
-	if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ip")
-	}
-	for _curItem, _element := range m.GetIp() {
-		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ip")
+	if err := WriteSimpleTypeArrayField(ctx, "ip", m.GetIp(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ip' field")
 	}
 
-	// Simple Field (port)
-	port := uint16(m.GetPort())
-	_portErr := writeBuffer.WriteUint16("port", 16, uint16((port)))
-	if _portErr != nil {
-		return errors.Wrap(_portErr, "Error serializing 'port' field")
+	if err := WriteSimpleField[uint16](ctx, "port", m.GetPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'port' field")
 	}
 
-	// Simple Field (ttl)
-	ttl := uint16(m.GetTtl())
-	_ttlErr := writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
-	if _ttlErr != nil {
-		return errors.Wrap(_ttlErr, "Error serializing 'ttl' field")
+	if err := WriteSimpleField[uint16](ctx, "ttl", m.GetTtl(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ttl' field")
 	}
 
-	// Simple Field (secondRemainingBeforePurge)
-	secondRemainingBeforePurge := uint16(m.GetSecondRemainingBeforePurge())
-	_secondRemainingBeforePurgeErr := writeBuffer.WriteUint16("secondRemainingBeforePurge", 16, uint16((secondRemainingBeforePurge)))
-	if _secondRemainingBeforePurgeErr != nil {
-		return errors.Wrap(_secondRemainingBeforePurgeErr, "Error serializing 'secondRemainingBeforePurge' field")
+	if err := WriteSimpleField[uint16](ctx, "secondRemainingBeforePurge", m.GetSecondRemainingBeforePurge(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'secondRemainingBeforePurge' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BVLCForeignDeviceTableEntry"); popErr != nil {
@@ -266,9 +227,7 @@ func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Cont
 	return nil
 }
 
-func (m *_BVLCForeignDeviceTableEntry) isBVLCForeignDeviceTableEntry() bool {
-	return true
-}
+func (m *_BVLCForeignDeviceTableEntry) IsBVLCForeignDeviceTableEntry() {}
 
 func (m *_BVLCForeignDeviceTableEntry) String() string {
 	if m == nil {

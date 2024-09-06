@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,23 +47,21 @@ type ConfirmedPrivateTransferError interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetErrorParameters returns ErrorParameters (property field)
 	GetErrorParameters() BACnetConstructedData
-}
-
-// ConfirmedPrivateTransferErrorExactly can be used when we want exactly this type and not a type which fulfills ConfirmedPrivateTransferError.
-// This is useful for switch cases.
-type ConfirmedPrivateTransferErrorExactly interface {
-	ConfirmedPrivateTransferError
-	isConfirmedPrivateTransferError() bool
+	// IsConfirmedPrivateTransferError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConfirmedPrivateTransferError()
 }
 
 // _ConfirmedPrivateTransferError is the data-structure of this message
 type _ConfirmedPrivateTransferError struct {
-	*_BACnetError
+	BACnetErrorContract
 	ErrorType       ErrorEnclosed
 	VendorId        BACnetVendorIdTagged
 	ServiceNumber   BACnetContextTagUnsignedInteger
 	ErrorParameters BACnetConstructedData
 }
+
+var _ ConfirmedPrivateTransferError = (*_ConfirmedPrivateTransferError)(nil)
+var _ BACnetErrorRequirements = (*_ConfirmedPrivateTransferError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,10 +77,8 @@ func (m *_ConfirmedPrivateTransferError) GetErrorChoice() BACnetConfirmedService
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConfirmedPrivateTransferError) InitializeParent(parent BACnetError) {}
-
-func (m *_ConfirmedPrivateTransferError) GetParent() BACnetError {
-	return m._BACnetError
+func (m *_ConfirmedPrivateTransferError) GetParent() BACnetErrorContract {
+	return m.BACnetErrorContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,14 +109,23 @@ func (m *_ConfirmedPrivateTransferError) GetErrorParameters() BACnetConstructedD
 
 // NewConfirmedPrivateTransferError factory function for _ConfirmedPrivateTransferError
 func NewConfirmedPrivateTransferError(errorType ErrorEnclosed, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, errorParameters BACnetConstructedData) *_ConfirmedPrivateTransferError {
-	_result := &_ConfirmedPrivateTransferError{
-		ErrorType:       errorType,
-		VendorId:        vendorId,
-		ServiceNumber:   serviceNumber,
-		ErrorParameters: errorParameters,
-		_BACnetError:    NewBACnetError(),
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for ConfirmedPrivateTransferError must not be nil")
 	}
-	_result._BACnetError._BACnetErrorChildRequirements = _result
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for ConfirmedPrivateTransferError must not be nil")
+	}
+	if serviceNumber == nil {
+		panic("serviceNumber of type BACnetContextTagUnsignedInteger for ConfirmedPrivateTransferError must not be nil")
+	}
+	_result := &_ConfirmedPrivateTransferError{
+		BACnetErrorContract: NewBACnetError(),
+		ErrorType:           errorType,
+		VendorId:            vendorId,
+		ServiceNumber:       serviceNumber,
+		ErrorParameters:     errorParameters,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 
@@ -139,7 +145,7 @@ func (m *_ConfirmedPrivateTransferError) GetTypeName() string {
 }
 
 func (m *_ConfirmedPrivateTransferError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (errorType)
 	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
@@ -162,96 +168,50 @@ func (m *_ConfirmedPrivateTransferError) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConfirmedPrivateTransferErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (ConfirmedPrivateTransferError, error) {
-	return ConfirmedPrivateTransferErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
-}
-
-func ConfirmedPrivateTransferErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (ConfirmedPrivateTransferError, error) {
+func (m *_ConfirmedPrivateTransferError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__confirmedPrivateTransferError ConfirmedPrivateTransferError, err error) {
+	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConfirmedPrivateTransferError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConfirmedPrivateTransferError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorType)
-	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
+	errorType, err := ReadSimpleField[ErrorEnclosed](ctx, "errorType", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorType' field"))
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of ConfirmedPrivateTransferError")
-	}
-	errorType := _errorType.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorType")
-	}
+	m.ErrorType = errorType
 
-	// Simple Field (vendorId)
-	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
+	vendorId, err := ReadSimpleField[BACnetVendorIdTagged](ctx, "vendorId", ReadComplex[BACnetVendorIdTagged](BACnetVendorIdTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
 	}
-	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of ConfirmedPrivateTransferError")
-	}
-	vendorId := _vendorId.(BACnetVendorIdTagged)
-	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
-	}
+	m.VendorId = vendorId
 
-	// Simple Field (serviceNumber)
-	if pullErr := readBuffer.PullContext("serviceNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceNumber")
+	serviceNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "serviceNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceNumber' field"))
 	}
-	_serviceNumber, _serviceNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _serviceNumberErr != nil {
-		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field of ConfirmedPrivateTransferError")
-	}
-	serviceNumber := _serviceNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("serviceNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceNumber")
-	}
+	m.ServiceNumber = serviceNumber
 
-	// Optional Field (errorParameters) (Can be skipped, if a given expression evaluates to false)
-	var errorParameters BACnetConstructedData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("errorParameters"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for errorParameters")
-		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'errorParameters' field of ConfirmedPrivateTransferError")
-		default:
-			errorParameters = _val.(BACnetConstructedData)
-			if closeErr := readBuffer.CloseContext("errorParameters"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for errorParameters")
-			}
-		}
+	var errorParameters BACnetConstructedData
+	_errorParameters, err := ReadOptionalField[BACnetConstructedData](ctx, "errorParameters", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(3)), (BACnetObjectType)(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), (BACnetPropertyIdentifier)(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), (BACnetTagPayloadUnsignedInteger)(nil)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorParameters' field"))
+	}
+	if _errorParameters != nil {
+		errorParameters = *_errorParameters
+		m.ErrorParameters = errorParameters
 	}
 
 	if closeErr := readBuffer.CloseContext("ConfirmedPrivateTransferError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConfirmedPrivateTransferError")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ConfirmedPrivateTransferError{
-		_BACnetError:    &_BACnetError{},
-		ErrorType:       errorType,
-		VendorId:        vendorId,
-		ServiceNumber:   serviceNumber,
-		ErrorParameters: errorParameters,
-	}
-	_child._BACnetError._BACnetErrorChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ConfirmedPrivateTransferError) Serialize() ([]byte, error) {
@@ -272,56 +232,20 @@ func (m *_ConfirmedPrivateTransferError) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for ConfirmedPrivateTransferError")
 		}
 
-		// Simple Field (errorType)
-		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorType")
-		}
-		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorType")
-		}
-		if _errorTypeErr != nil {
-			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		// Simple Field (vendorId)
-		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorId")
-		}
-		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
-		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorId")
-		}
-		if _vendorIdErr != nil {
-			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
+		if err := WriteSimpleField[BACnetVendorIdTagged](ctx, "vendorId", m.GetVendorId(), WriteComplex[BACnetVendorIdTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorId' field")
 		}
 
-		// Simple Field (serviceNumber)
-		if pushErr := writeBuffer.PushContext("serviceNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serviceNumber")
-		}
-		_serviceNumberErr := writeBuffer.WriteSerializable(ctx, m.GetServiceNumber())
-		if popErr := writeBuffer.PopContext("serviceNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serviceNumber")
-		}
-		if _serviceNumberErr != nil {
-			return errors.Wrap(_serviceNumberErr, "Error serializing 'serviceNumber' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "serviceNumber", m.GetServiceNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceNumber' field")
 		}
 
-		// Optional Field (errorParameters) (Can be skipped, if the value is null)
-		var errorParameters BACnetConstructedData = nil
-		if m.GetErrorParameters() != nil {
-			if pushErr := writeBuffer.PushContext("errorParameters"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for errorParameters")
-			}
-			errorParameters = m.GetErrorParameters()
-			_errorParametersErr := writeBuffer.WriteSerializable(ctx, errorParameters)
-			if popErr := writeBuffer.PopContext("errorParameters"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for errorParameters")
-			}
-			if _errorParametersErr != nil {
-				return errors.Wrap(_errorParametersErr, "Error serializing 'errorParameters' field")
-			}
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "errorParameters", GetRef(m.GetErrorParameters()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorParameters' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConfirmedPrivateTransferError"); popErr != nil {
@@ -329,12 +253,10 @@ func (m *_ConfirmedPrivateTransferError) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetErrorContract.(*_BACnetError).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ConfirmedPrivateTransferError) isConfirmedPrivateTransferError() bool {
-	return true
-}
+func (m *_ConfirmedPrivateTransferError) IsConfirmedPrivateTransferError() {}
 
 func (m *_ConfirmedPrivateTransferError) String() string {
 	if m == nil {

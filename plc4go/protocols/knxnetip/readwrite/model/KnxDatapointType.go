@@ -2175,13 +2175,13 @@ func (e KnxDatapointType) Number() uint16 {
 	}
 }
 
-func KnxDatapointTypeFirstEnumForFieldNumber(value uint16) (KnxDatapointType, error) {
+func KnxDatapointTypeFirstEnumForFieldNumber(value uint16) (enum KnxDatapointType, ok bool) {
 	for _, sizeValue := range KnxDatapointTypeValues {
 		if sizeValue.Number() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Number not found", value)
+	return 0, false
 }
 
 func (e KnxDatapointType) Name() string {
@@ -3601,13 +3601,13 @@ func (e KnxDatapointType) Name() string {
 	}
 }
 
-func KnxDatapointTypeFirstEnumForFieldName(value string) (KnxDatapointType, error) {
+func KnxDatapointTypeFirstEnumForFieldName(value string) (enum KnxDatapointType, ok bool) {
 	for _, sizeValue := range KnxDatapointTypeValues {
 		if sizeValue.Name() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Name not found", value)
+	return 0, false
 }
 
 func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
@@ -5027,13 +5027,13 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 	}
 }
 
-func KnxDatapointTypeFirstEnumForFieldDatapointMainType(value KnxDatapointMainType) (KnxDatapointType, error) {
+func KnxDatapointTypeFirstEnumForFieldDatapointMainType(value KnxDatapointMainType) (enum KnxDatapointType, ok bool) {
 	for _, sizeValue := range KnxDatapointTypeValues {
 		if sizeValue.DatapointMainType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing DatapointMainType not found", value)
+	return 0, false
 }
 func KnxDatapointTypeByValue(value uint32) (enum KnxDatapointType, ok bool) {
 	switch value {
@@ -6489,7 +6489,7 @@ func KnxDatapointTypeParse(ctx context.Context, theBytes []byte) (KnxDatapointTy
 func KnxDatapointTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxDatapointType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint32("KnxDatapointType", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("KnxDatapointType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxDatapointType")
 	}
@@ -6512,7 +6512,21 @@ func (e KnxDatapointType) Serialize() ([]byte, error) {
 func (e KnxDatapointType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+func (e KnxDatapointType) GetValue() uint32 {
+	return uint32(e)
+}
+
+func (e KnxDatapointType) GetNumber() uint16 {
+	return e.Number()
+}
+func (e KnxDatapointType) GetName() string {
+	return e.Name()
+}
+func (e KnxDatapointType) GetDatapointMainType() KnxDatapointMainType {
+	return e.DatapointMainType()
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

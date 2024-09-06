@@ -83,8 +83,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
     writeBuffer.pushContext("BACnetConstructedDataTimeSynchronizationInterval");
 
     // Simple Field (timeSynchronization)
-    writeSimpleField(
-        "timeSynchronization", timeSynchronization, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeSynchronization", timeSynchronization, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
     BACnetApplicationTagUnsignedInteger timeSynchronization =
         readSimpleField(
             "timeSynchronization",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

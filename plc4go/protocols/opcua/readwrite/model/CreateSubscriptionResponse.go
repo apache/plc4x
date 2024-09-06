@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type CreateSubscriptionResponse interface {
 	GetRevisedLifetimeCount() uint32
 	// GetRevisedMaxKeepAliveCount returns RevisedMaxKeepAliveCount (property field)
 	GetRevisedMaxKeepAliveCount() uint32
-}
-
-// CreateSubscriptionResponseExactly can be used when we want exactly this type and not a type which fulfills CreateSubscriptionResponse.
-// This is useful for switch cases.
-type CreateSubscriptionResponseExactly interface {
-	CreateSubscriptionResponse
-	isCreateSubscriptionResponse() bool
+	// IsCreateSubscriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateSubscriptionResponse()
 }
 
 // _CreateSubscriptionResponse is the data-structure of this message
 type _CreateSubscriptionResponse struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader            ExtensionObjectDefinition
 	SubscriptionId            uint32
 	RevisedPublishingInterval float64
 	RevisedLifetimeCount      uint32
 	RevisedMaxKeepAliveCount  uint32
 }
+
+var _ CreateSubscriptionResponse = (*_CreateSubscriptionResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CreateSubscriptionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_CreateSubscriptionResponse) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CreateSubscriptionResponse) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CreateSubscriptionResponse) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CreateSubscriptionResponse) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,18 @@ func (m *_CreateSubscriptionResponse) GetRevisedMaxKeepAliveCount() uint32 {
 
 // NewCreateSubscriptionResponse factory function for _CreateSubscriptionResponse
 func NewCreateSubscriptionResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_CreateSubscriptionResponse {
-	_result := &_CreateSubscriptionResponse{
-		ResponseHeader:             responseHeader,
-		SubscriptionId:             subscriptionId,
-		RevisedPublishingInterval:  revisedPublishingInterval,
-		RevisedLifetimeCount:       revisedLifetimeCount,
-		RevisedMaxKeepAliveCount:   revisedMaxKeepAliveCount,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CreateSubscriptionResponse must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_CreateSubscriptionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		SubscriptionId:                    subscriptionId,
+		RevisedPublishingInterval:         revisedPublishingInterval,
+		RevisedLifetimeCount:              revisedLifetimeCount,
+		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +147,7 @@ func (m *_CreateSubscriptionResponse) GetTypeName() string {
 }
 
 func (m *_CreateSubscriptionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -170,77 +171,52 @@ func (m *_CreateSubscriptionResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CreateSubscriptionResponseParse(ctx context.Context, theBytes []byte, identifier string) (CreateSubscriptionResponse, error) {
-	return CreateSubscriptionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CreateSubscriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CreateSubscriptionResponse, error) {
+func (m *_CreateSubscriptionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__createSubscriptionResponse CreateSubscriptionResponse, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CreateSubscriptionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CreateSubscriptionResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of CreateSubscriptionResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of CreateSubscriptionResponse")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
+	m.SubscriptionId = subscriptionId
 
-	// Simple Field (revisedPublishingInterval)
-	_revisedPublishingInterval, _revisedPublishingIntervalErr := readBuffer.ReadFloat64("revisedPublishingInterval", 64)
-	if _revisedPublishingIntervalErr != nil {
-		return nil, errors.Wrap(_revisedPublishingIntervalErr, "Error parsing 'revisedPublishingInterval' field of CreateSubscriptionResponse")
+	revisedPublishingInterval, err := ReadSimpleField(ctx, "revisedPublishingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedPublishingInterval' field"))
 	}
-	revisedPublishingInterval := _revisedPublishingInterval
+	m.RevisedPublishingInterval = revisedPublishingInterval
 
-	// Simple Field (revisedLifetimeCount)
-	_revisedLifetimeCount, _revisedLifetimeCountErr := readBuffer.ReadUint32("revisedLifetimeCount", 32)
-	if _revisedLifetimeCountErr != nil {
-		return nil, errors.Wrap(_revisedLifetimeCountErr, "Error parsing 'revisedLifetimeCount' field of CreateSubscriptionResponse")
+	revisedLifetimeCount, err := ReadSimpleField(ctx, "revisedLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedLifetimeCount' field"))
 	}
-	revisedLifetimeCount := _revisedLifetimeCount
+	m.RevisedLifetimeCount = revisedLifetimeCount
 
-	// Simple Field (revisedMaxKeepAliveCount)
-	_revisedMaxKeepAliveCount, _revisedMaxKeepAliveCountErr := readBuffer.ReadUint32("revisedMaxKeepAliveCount", 32)
-	if _revisedMaxKeepAliveCountErr != nil {
-		return nil, errors.Wrap(_revisedMaxKeepAliveCountErr, "Error parsing 'revisedMaxKeepAliveCount' field of CreateSubscriptionResponse")
+	revisedMaxKeepAliveCount, err := ReadSimpleField(ctx, "revisedMaxKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedMaxKeepAliveCount' field"))
 	}
-	revisedMaxKeepAliveCount := _revisedMaxKeepAliveCount
+	m.RevisedMaxKeepAliveCount = revisedMaxKeepAliveCount
 
 	if closeErr := readBuffer.CloseContext("CreateSubscriptionResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CreateSubscriptionResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CreateSubscriptionResponse{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-		SubscriptionId:             subscriptionId,
-		RevisedPublishingInterval:  revisedPublishingInterval,
-		RevisedLifetimeCount:       revisedLifetimeCount,
-		RevisedMaxKeepAliveCount:   revisedMaxKeepAliveCount,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CreateSubscriptionResponse) Serialize() ([]byte, error) {
@@ -261,44 +237,24 @@ func (m *_CreateSubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for CreateSubscriptionResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (subscriptionId)
-		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
-		if _subscriptionIdErr != nil {
-			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		// Simple Field (revisedPublishingInterval)
-		revisedPublishingInterval := float64(m.GetRevisedPublishingInterval())
-		_revisedPublishingIntervalErr := writeBuffer.WriteFloat64("revisedPublishingInterval", 64, (revisedPublishingInterval))
-		if _revisedPublishingIntervalErr != nil {
-			return errors.Wrap(_revisedPublishingIntervalErr, "Error serializing 'revisedPublishingInterval' field")
+		if err := WriteSimpleField[float64](ctx, "revisedPublishingInterval", m.GetRevisedPublishingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedPublishingInterval' field")
 		}
 
-		// Simple Field (revisedLifetimeCount)
-		revisedLifetimeCount := uint32(m.GetRevisedLifetimeCount())
-		_revisedLifetimeCountErr := writeBuffer.WriteUint32("revisedLifetimeCount", 32, uint32((revisedLifetimeCount)))
-		if _revisedLifetimeCountErr != nil {
-			return errors.Wrap(_revisedLifetimeCountErr, "Error serializing 'revisedLifetimeCount' field")
+		if err := WriteSimpleField[uint32](ctx, "revisedLifetimeCount", m.GetRevisedLifetimeCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedLifetimeCount' field")
 		}
 
-		// Simple Field (revisedMaxKeepAliveCount)
-		revisedMaxKeepAliveCount := uint32(m.GetRevisedMaxKeepAliveCount())
-		_revisedMaxKeepAliveCountErr := writeBuffer.WriteUint32("revisedMaxKeepAliveCount", 32, uint32((revisedMaxKeepAliveCount)))
-		if _revisedMaxKeepAliveCountErr != nil {
-			return errors.Wrap(_revisedMaxKeepAliveCountErr, "Error serializing 'revisedMaxKeepAliveCount' field")
+		if err := WriteSimpleField[uint32](ctx, "revisedMaxKeepAliveCount", m.GetRevisedMaxKeepAliveCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedMaxKeepAliveCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CreateSubscriptionResponse"); popErr != nil {
@@ -306,12 +262,10 @@ func (m *_CreateSubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CreateSubscriptionResponse) isCreateSubscriptionResponse() bool {
-	return true
-}
+func (m *_CreateSubscriptionResponse) IsCreateSubscriptionResponse() {}
 
 func (m *_CreateSubscriptionResponse) String() string {
 	if m == nil {

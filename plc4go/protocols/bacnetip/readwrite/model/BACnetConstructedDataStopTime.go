@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataStopTime interface {
 	GetStopTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-}
-
-// BACnetConstructedDataStopTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStopTime.
-// This is useful for switch cases.
-type BACnetConstructedDataStopTimeExactly interface {
-	BACnetConstructedDataStopTime
-	isBACnetConstructedDataStopTime() bool
+	// IsBACnetConstructedDataStopTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataStopTime()
 }
 
 // _BACnetConstructedDataStopTime is the data-structure of this message
 type _BACnetConstructedDataStopTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	StopTime BACnetDateTime
 }
+
+var _ BACnetConstructedDataStopTime = (*_BACnetConstructedDataStopTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStopTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataStopTime) GetPropertyIdentifierArgument() BACnetP
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataStopTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataStopTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataStopTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataStopTime) GetActualValue() BACnetDateTime {
 
 // NewBACnetConstructedDataStopTime factory function for _BACnetConstructedDataStopTime
 func NewBACnetConstructedDataStopTime(stopTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopTime {
-	_result := &_BACnetConstructedDataStopTime{
-		StopTime:               stopTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if stopTime == nil {
+		panic("stopTime of type BACnetDateTime for BACnetConstructedDataStopTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataStopTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		StopTime:                      stopTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataStopTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataStopTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (stopTime)
 	lengthInBits += m.StopTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataStopTime) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataStopTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopTime, error) {
-	return BACnetConstructedDataStopTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataStopTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopTime, error) {
+func (m *_BACnetConstructedDataStopTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataStopTime BACnetConstructedDataStopTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStopTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataStopTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (stopTime)
-	if pullErr := readBuffer.PullContext("stopTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for stopTime")
+	stopTime, err := ReadSimpleField[BACnetDateTime](ctx, "stopTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stopTime' field"))
 	}
-	_stopTime, _stopTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _stopTimeErr != nil {
-		return nil, errors.Wrap(_stopTimeErr, "Error parsing 'stopTime' field of BACnetConstructedDataStopTime")
-	}
-	stopTime := _stopTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("stopTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for stopTime")
-	}
+	m.StopTime = stopTime
 
-	// Virtual field
-	_actualValue := stopTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), stopTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStopTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStopTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataStopTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		StopTime: stopTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataStopTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStopTime")
 		}
 
-		// Simple Field (stopTime)
-		if pushErr := writeBuffer.PushContext("stopTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for stopTime")
-		}
-		_stopTimeErr := writeBuffer.WriteSerializable(ctx, m.GetStopTime())
-		if popErr := writeBuffer.PopContext("stopTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for stopTime")
-		}
-		if _stopTimeErr != nil {
-			return errors.Wrap(_stopTimeErr, "Error serializing 'stopTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "stopTime", m.GetStopTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'stopTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataStopTime) isBACnetConstructedDataStopTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataStopTime) IsBACnetConstructedDataStopTime() {}
 
 func (m *_BACnetConstructedDataStopTime) String() string {
 	if m == nil {

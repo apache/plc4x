@@ -37,19 +37,17 @@ type ApduDataUserMessage interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
-}
-
-// ApduDataUserMessageExactly can be used when we want exactly this type and not a type which fulfills ApduDataUserMessage.
-// This is useful for switch cases.
-type ApduDataUserMessageExactly interface {
-	ApduDataUserMessage
-	isApduDataUserMessage() bool
+	// IsApduDataUserMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataUserMessage()
 }
 
 // _ApduDataUserMessage is the data-structure of this message
 type _ApduDataUserMessage struct {
-	*_ApduData
+	ApduDataContract
 }
+
+var _ ApduDataUserMessage = (*_ApduDataUserMessage)(nil)
+var _ ApduDataRequirements = (*_ApduDataUserMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataUserMessage) GetApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataUserMessage) InitializeParent(parent ApduData) {}
-
-func (m *_ApduDataUserMessage) GetParent() ApduData {
-	return m._ApduData
+func (m *_ApduDataUserMessage) GetParent() ApduDataContract {
+	return m.ApduDataContract
 }
 
 // NewApduDataUserMessage factory function for _ApduDataUserMessage
 func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
 	_result := &_ApduDataUserMessage{
-		_ApduData: NewApduData(dataLength),
+		ApduDataContract: NewApduData(dataLength),
 	}
-	_result._ApduData._ApduDataChildRequirements = _result
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataUserMessage) GetTypeName() string {
 }
 
 func (m *_ApduDataUserMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataUserMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataUserMessageParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataUserMessage, error) {
-	return ApduDataUserMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
-}
-
-func ApduDataUserMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataUserMessage, error) {
+func (m *_ApduDataUserMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataUserMessage ApduDataUserMessage, err error) {
+	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataUserMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataUserMessage")
 	}
@@ -124,14 +116,7 @@ func ApduDataUserMessageParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataUserMessage")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataUserMessage{
-		_ApduData: &_ApduData{
-			DataLength: dataLength,
-		},
-	}
-	_child._ApduData._ApduDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataUserMessage) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataUserMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataContract.(*_ApduData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataUserMessage) isApduDataUserMessage() bool {
-	return true
-}
+func (m *_ApduDataUserMessage) IsApduDataUserMessage() {}
 
 func (m *_ApduDataUserMessage) String() string {
 	if m == nil {

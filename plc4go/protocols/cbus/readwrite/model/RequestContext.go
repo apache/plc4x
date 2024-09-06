@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,19 +40,16 @@ type RequestContext interface {
 	utils.Serializable
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
 	GetSendIdentifyRequestBefore() bool
-}
-
-// RequestContextExactly can be used when we want exactly this type and not a type which fulfills RequestContext.
-// This is useful for switch cases.
-type RequestContextExactly interface {
-	RequestContext
-	isRequestContext() bool
+	// IsRequestContext is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestContext()
 }
 
 // _RequestContext is the data-structure of this message
 type _RequestContext struct {
 	SendIdentifyRequestBefore bool
 }
+
+var _ RequestContext = (*_RequestContext)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func RequestContextParse(ctx context.Context, theBytes []byte) (RequestContext, 
 	return RequestContextParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func RequestContextParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
+		return RequestContextParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
+	v, err := (&_RequestContext{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_RequestContext) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__requestContext RequestContext, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestContext"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestContext")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sendIdentifyRequestBefore)
-	_sendIdentifyRequestBefore, _sendIdentifyRequestBeforeErr := readBuffer.ReadBit("sendIdentifyRequestBefore")
-	if _sendIdentifyRequestBeforeErr != nil {
-		return nil, errors.Wrap(_sendIdentifyRequestBeforeErr, "Error parsing 'sendIdentifyRequestBefore' field of RequestContext")
+	sendIdentifyRequestBefore, err := ReadSimpleField(ctx, "sendIdentifyRequestBefore", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendIdentifyRequestBefore' field"))
 	}
-	sendIdentifyRequestBefore := _sendIdentifyRequestBefore
+	m.SendIdentifyRequestBefore = sendIdentifyRequestBefore
 
 	if closeErr := readBuffer.CloseContext("RequestContext"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestContext")
 	}
 
-	// Create the instance
-	return &_RequestContext{
-		SendIdentifyRequestBefore: sendIdentifyRequestBefore,
-	}, nil
+	return m, nil
 }
 
 func (m *_RequestContext) Serialize() ([]byte, error) {
@@ -148,11 +155,8 @@ func (m *_RequestContext) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for RequestContext")
 	}
 
-	// Simple Field (sendIdentifyRequestBefore)
-	sendIdentifyRequestBefore := bool(m.GetSendIdentifyRequestBefore())
-	_sendIdentifyRequestBeforeErr := writeBuffer.WriteBit("sendIdentifyRequestBefore", (sendIdentifyRequestBefore))
-	if _sendIdentifyRequestBeforeErr != nil {
-		return errors.Wrap(_sendIdentifyRequestBeforeErr, "Error serializing 'sendIdentifyRequestBefore' field")
+	if err := WriteSimpleField[bool](ctx, "sendIdentifyRequestBefore", m.GetSendIdentifyRequestBefore(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sendIdentifyRequestBefore' field")
 	}
 
 	if popErr := writeBuffer.PopContext("RequestContext"); popErr != nil {
@@ -161,9 +165,7 @@ func (m *_RequestContext) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return nil
 }
 
-func (m *_RequestContext) isRequestContext() bool {
-	return true
-}
+func (m *_RequestContext) IsRequestContext() {}
 
 func (m *_RequestContext) String() string {
 	if m == nil {

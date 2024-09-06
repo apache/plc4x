@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataFDBBMDAddress interface {
 	GetFDBBMDAddress() BACnetHostNPort
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetHostNPort
-}
-
-// BACnetConstructedDataFDBBMDAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFDBBMDAddress.
-// This is useful for switch cases.
-type BACnetConstructedDataFDBBMDAddressExactly interface {
-	BACnetConstructedDataFDBBMDAddress
-	isBACnetConstructedDataFDBBMDAddress() bool
+	// IsBACnetConstructedDataFDBBMDAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFDBBMDAddress()
 }
 
 // _BACnetConstructedDataFDBBMDAddress is the data-structure of this message
 type _BACnetConstructedDataFDBBMDAddress struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FDBBMDAddress BACnetHostNPort
 }
+
+var _ BACnetConstructedDataFDBBMDAddress = (*_BACnetConstructedDataFDBBMDAddress)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFDBBMDAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataFDBBMDAddress) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataFDBBMDAddress) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataFDBBMDAddress) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetActualValue() BACnetHostNPort {
 
 // NewBACnetConstructedDataFDBBMDAddress factory function for _BACnetConstructedDataFDBBMDAddress
 func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress BACnetHostNPort, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDBBMDAddress {
-	_result := &_BACnetConstructedDataFDBBMDAddress{
-		FDBBMDAddress:          fDBBMDAddress,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if fDBBMDAddress == nil {
+		panic("fDBBMDAddress of type BACnetHostNPort for BACnetConstructedDataFDBBMDAddress must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataFDBBMDAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FDBBMDAddress:                 fDBBMDAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (fDBBMDAddress)
 	lengthInBits += m.FDBBMDAddress.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataFDBBMDAddressParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
-	return BACnetConstructedDataFDBBMDAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataFDBBMDAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
+func (m *_BACnetConstructedDataFDBBMDAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFDBBMDAddress BACnetConstructedDataFDBBMDAddress, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDBBMDAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFDBBMDAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fDBBMDAddress)
-	if pullErr := readBuffer.PullContext("fDBBMDAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fDBBMDAddress")
+	fDBBMDAddress, err := ReadSimpleField[BACnetHostNPort](ctx, "fDBBMDAddress", ReadComplex[BACnetHostNPort](BACnetHostNPortParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fDBBMDAddress' field"))
 	}
-	_fDBBMDAddress, _fDBBMDAddressErr := BACnetHostNPortParseWithBuffer(ctx, readBuffer)
-	if _fDBBMDAddressErr != nil {
-		return nil, errors.Wrap(_fDBBMDAddressErr, "Error parsing 'fDBBMDAddress' field of BACnetConstructedDataFDBBMDAddress")
-	}
-	fDBBMDAddress := _fDBBMDAddress.(BACnetHostNPort)
-	if closeErr := readBuffer.CloseContext("fDBBMDAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fDBBMDAddress")
-	}
+	m.FDBBMDAddress = fDBBMDAddress
 
-	// Virtual field
-	_actualValue := fDBBMDAddress
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetHostNPort](ctx, "actualValue", (*BACnetHostNPort)(nil), fDBBMDAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDBBMDAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFDBBMDAddress")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataFDBBMDAddress{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FDBBMDAddress: fDBBMDAddress,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataFDBBMDAddress) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFDBBMDAddress")
 		}
 
-		// Simple Field (fDBBMDAddress)
-		if pushErr := writeBuffer.PushContext("fDBBMDAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fDBBMDAddress")
-		}
-		_fDBBMDAddressErr := writeBuffer.WriteSerializable(ctx, m.GetFDBBMDAddress())
-		if popErr := writeBuffer.PopContext("fDBBMDAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fDBBMDAddress")
-		}
-		if _fDBBMDAddressErr != nil {
-			return errors.Wrap(_fDBBMDAddressErr, "Error serializing 'fDBBMDAddress' field")
+		if err := WriteSimpleField[BACnetHostNPort](ctx, "fDBBMDAddress", m.GetFDBBMDAddress(), WriteComplex[BACnetHostNPort](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fDBBMDAddress' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddress) isBACnetConstructedDataFDBBMDAddress() bool {
-	return true
-}
+func (m *_BACnetConstructedDataFDBBMDAddress) IsBACnetConstructedDataFDBBMDAddress() {}
 
 func (m *_BACnetConstructedDataFDBBMDAddress) String() string {
 	if m == nil {

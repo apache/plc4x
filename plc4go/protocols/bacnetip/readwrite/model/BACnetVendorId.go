@@ -8972,13 +8972,13 @@ func (e BACnetVendorId) VendorId() uint16 {
 	}
 }
 
-func BACnetVendorIdFirstEnumForFieldVendorId(value uint16) (BACnetVendorId, error) {
+func BACnetVendorIdFirstEnumForFieldVendorId(value uint16) (enum BACnetVendorId, ok bool) {
 	for _, sizeValue := range BACnetVendorIdValues {
 		if sizeValue.VendorId() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing VendorId not found", value)
+	return 0, false
 }
 
 func (e BACnetVendorId) VendorName() string {
@@ -14930,13 +14930,13 @@ func (e BACnetVendorId) VendorName() string {
 	}
 }
 
-func BACnetVendorIdFirstEnumForFieldVendorName(value string) (BACnetVendorId, error) {
+func BACnetVendorIdFirstEnumForFieldVendorName(value string) (enum BACnetVendorId, ok bool) {
 	for _, sizeValue := range BACnetVendorIdValues {
 		if sizeValue.VendorName() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing VendorName not found", value)
+	return 0, false
 }
 func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	switch value {
@@ -20924,7 +20924,7 @@ func BACnetVendorIdParse(ctx context.Context, theBytes []byte) (BACnetVendorId, 
 func BACnetVendorIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint16("BACnetVendorId", 16)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("BACnetVendorId", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetVendorId")
 	}
@@ -20947,7 +20947,18 @@ func (e BACnetVendorId) Serialize() ([]byte, error) {
 func (e BACnetVendorId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetVendorId", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint16("BACnetVendorId", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+func (e BACnetVendorId) GetValue() uint16 {
+	return uint16(e)
+}
+
+func (e BACnetVendorId) GetVendorId() uint16 {
+	return e.VendorId()
+}
+func (e BACnetVendorId) GetVendorName() string {
+	return e.VendorName()
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

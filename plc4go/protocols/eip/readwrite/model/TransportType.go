@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type TransportType interface {
 	GetTrigger() uint8
 	// GetClassTransport returns ClassTransport (property field)
 	GetClassTransport() uint8
-}
-
-// TransportTypeExactly can be used when we want exactly this type and not a type which fulfills TransportType.
-// This is useful for switch cases.
-type TransportTypeExactly interface {
-	TransportType
-	isTransportType() bool
+	// IsTransportType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTransportType()
 }
 
 // _TransportType is the data-structure of this message
@@ -57,6 +54,8 @@ type _TransportType struct {
 	Trigger        uint8
 	ClassTransport uint8
 }
+
+var _ TransportType = (*_TransportType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -123,48 +122,52 @@ func TransportTypeParse(ctx context.Context, theBytes []byte) (TransportType, er
 	return TransportTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TransportTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
+		return TransportTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
+	v, err := (&_TransportType{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_TransportType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__transportType TransportType, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TransportType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TransportType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (direction)
-	_direction, _directionErr := readBuffer.ReadBit("direction")
-	if _directionErr != nil {
-		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of TransportType")
+	direction, err := ReadSimpleField(ctx, "direction", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'direction' field"))
 	}
-	direction := _direction
+	m.Direction = direction
 
-	// Simple Field (trigger)
-	_trigger, _triggerErr := readBuffer.ReadUint8("trigger", 3)
-	if _triggerErr != nil {
-		return nil, errors.Wrap(_triggerErr, "Error parsing 'trigger' field of TransportType")
+	trigger, err := ReadSimpleField(ctx, "trigger", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trigger' field"))
 	}
-	trigger := _trigger
+	m.Trigger = trigger
 
-	// Simple Field (classTransport)
-	_classTransport, _classTransportErr := readBuffer.ReadUint8("classTransport", 4)
-	if _classTransportErr != nil {
-		return nil, errors.Wrap(_classTransportErr, "Error parsing 'classTransport' field of TransportType")
+	classTransport, err := ReadSimpleField(ctx, "classTransport", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'classTransport' field"))
 	}
-	classTransport := _classTransport
+	m.ClassTransport = classTransport
 
 	if closeErr := readBuffer.CloseContext("TransportType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TransportType")
 	}
 
-	// Create the instance
-	return &_TransportType{
-		Direction:      direction,
-		Trigger:        trigger,
-		ClassTransport: classTransport,
-	}, nil
+	return m, nil
 }
 
 func (m *_TransportType) Serialize() ([]byte, error) {
@@ -184,25 +187,16 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for TransportType")
 	}
 
-	// Simple Field (direction)
-	direction := bool(m.GetDirection())
-	_directionErr := writeBuffer.WriteBit("direction", (direction))
-	if _directionErr != nil {
-		return errors.Wrap(_directionErr, "Error serializing 'direction' field")
+	if err := WriteSimpleField[bool](ctx, "direction", m.GetDirection(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'direction' field")
 	}
 
-	// Simple Field (trigger)
-	trigger := uint8(m.GetTrigger())
-	_triggerErr := writeBuffer.WriteUint8("trigger", 3, uint8((trigger)))
-	if _triggerErr != nil {
-		return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
+	if err := WriteSimpleField[uint8](ctx, "trigger", m.GetTrigger(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'trigger' field")
 	}
 
-	// Simple Field (classTransport)
-	classTransport := uint8(m.GetClassTransport())
-	_classTransportErr := writeBuffer.WriteUint8("classTransport", 4, uint8((classTransport)))
-	if _classTransportErr != nil {
-		return errors.Wrap(_classTransportErr, "Error serializing 'classTransport' field")
+	if err := WriteSimpleField[uint8](ctx, "classTransport", m.GetClassTransport(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'classTransport' field")
 	}
 
 	if popErr := writeBuffer.PopContext("TransportType"); popErr != nil {
@@ -211,9 +205,7 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_TransportType) isTransportType() bool {
-	return true
-}
+func (m *_TransportType) IsTransportType() {}
 
 func (m *_TransportType) String() string {
 	if m == nil {

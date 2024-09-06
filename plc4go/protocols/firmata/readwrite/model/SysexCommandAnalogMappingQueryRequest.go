@@ -37,19 +37,17 @@ type SysexCommandAnalogMappingQueryRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
-}
-
-// SysexCommandAnalogMappingQueryRequestExactly can be used when we want exactly this type and not a type which fulfills SysexCommandAnalogMappingQueryRequest.
-// This is useful for switch cases.
-type SysexCommandAnalogMappingQueryRequestExactly interface {
-	SysexCommandAnalogMappingQueryRequest
-	isSysexCommandAnalogMappingQueryRequest() bool
+	// IsSysexCommandAnalogMappingQueryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandAnalogMappingQueryRequest()
 }
 
 // _SysexCommandAnalogMappingQueryRequest is the data-structure of this message
 type _SysexCommandAnalogMappingQueryRequest struct {
-	*_SysexCommand
+	SysexCommandContract
 }
+
+var _ SysexCommandAnalogMappingQueryRequest = (*_SysexCommandAnalogMappingQueryRequest)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandAnalogMappingQueryRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,18 +67,16 @@ func (m *_SysexCommandAnalogMappingQueryRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SysexCommandAnalogMappingQueryRequest) InitializeParent(parent SysexCommand) {}
-
-func (m *_SysexCommandAnalogMappingQueryRequest) GetParent() SysexCommand {
-	return m._SysexCommand
+func (m *_SysexCommandAnalogMappingQueryRequest) GetParent() SysexCommandContract {
+	return m.SysexCommandContract
 }
 
 // NewSysexCommandAnalogMappingQueryRequest factory function for _SysexCommandAnalogMappingQueryRequest
 func NewSysexCommandAnalogMappingQueryRequest() *_SysexCommandAnalogMappingQueryRequest {
 	_result := &_SysexCommandAnalogMappingQueryRequest{
-		_SysexCommand: NewSysexCommand(),
+		SysexCommandContract: NewSysexCommand(),
 	}
-	_result._SysexCommand._SysexCommandChildRequirements = _result
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 
@@ -100,7 +96,7 @@ func (m *_SysexCommandAnalogMappingQueryRequest) GetTypeName() string {
 }
 
 func (m *_SysexCommandAnalogMappingQueryRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -109,15 +105,11 @@ func (m *_SysexCommandAnalogMappingQueryRequest) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandAnalogMappingQueryRequestParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandAnalogMappingQueryRequest, error) {
-	return SysexCommandAnalogMappingQueryRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func SysexCommandAnalogMappingQueryRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingQueryRequest, error) {
+func (m *_SysexCommandAnalogMappingQueryRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandAnalogMappingQueryRequest SysexCommandAnalogMappingQueryRequest, err error) {
+	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingQueryRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandAnalogMappingQueryRequest")
 	}
@@ -128,12 +120,7 @@ func SysexCommandAnalogMappingQueryRequestParseWithBuffer(ctx context.Context, r
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandAnalogMappingQueryRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SysexCommandAnalogMappingQueryRequest{
-		_SysexCommand: &_SysexCommand{},
-	}
-	_child._SysexCommand._SysexCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SysexCommandAnalogMappingQueryRequest) Serialize() ([]byte, error) {
@@ -159,12 +146,10 @@ func (m *_SysexCommandAnalogMappingQueryRequest) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SysexCommandContract.(*_SysexCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SysexCommandAnalogMappingQueryRequest) isSysexCommandAnalogMappingQueryRequest() bool {
-	return true
-}
+func (m *_SysexCommandAnalogMappingQueryRequest) IsSysexCommandAnalogMappingQueryRequest() {}
 
 func (m *_SysexCommandAnalogMappingQueryRequest) String() string {
 	if m == nil {

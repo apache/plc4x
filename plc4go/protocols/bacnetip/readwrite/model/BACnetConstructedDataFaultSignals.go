@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataFaultSignals interface {
 	BACnetConstructedData
 	// GetFaultSignals returns FaultSignals (property field)
 	GetFaultSignals() []BACnetLiftFaultTagged
-}
-
-// BACnetConstructedDataFaultSignalsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFaultSignals.
-// This is useful for switch cases.
-type BACnetConstructedDataFaultSignalsExactly interface {
-	BACnetConstructedDataFaultSignals
-	isBACnetConstructedDataFaultSignals() bool
+	// IsBACnetConstructedDataFaultSignals is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFaultSignals()
 }
 
 // _BACnetConstructedDataFaultSignals is the data-structure of this message
 type _BACnetConstructedDataFaultSignals struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FaultSignals []BACnetLiftFaultTagged
 }
+
+var _ BACnetConstructedDataFaultSignals = (*_BACnetConstructedDataFaultSignals)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultSignals)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataFaultSignals) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataFaultSignals) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataFaultSignals) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataFaultSignals) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataFaultSignals) GetFaultSignals() []BACnetLiftFault
 // NewBACnetConstructedDataFaultSignals factory function for _BACnetConstructedDataFaultSignals
 func NewBACnetConstructedDataFaultSignals(faultSignals []BACnetLiftFaultTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultSignals {
 	_result := &_BACnetConstructedDataFaultSignals{
-		FaultSignals:           faultSignals,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultSignals:                  faultSignals,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataFaultSignals) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFaultSignals) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FaultSignals) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataFaultSignals) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataFaultSignalsParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultSignals, error) {
-	return BACnetConstructedDataFaultSignalsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataFaultSignalsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultSignals, error) {
+func (m *_BACnetConstructedDataFaultSignals) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFaultSignals BACnetConstructedDataFaultSignals, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultSignals"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFaultSignals")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (faultSignals)
-	if pullErr := readBuffer.PullContext("faultSignals", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultSignals")
+	faultSignals, err := ReadTerminatedArrayField[BACnetLiftFaultTagged](ctx, "faultSignals", ReadComplex[BACnetLiftFaultTagged](BACnetLiftFaultTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultSignals' field"))
 	}
-	// Terminated array
-	var faultSignals []BACnetLiftFaultTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLiftFaultTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'faultSignals' field of BACnetConstructedDataFaultSignals")
-			}
-			faultSignals = append(faultSignals, _item.(BACnetLiftFaultTagged))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("faultSignals", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultSignals")
-	}
+	m.FaultSignals = faultSignals
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultSignals"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFaultSignals")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataFaultSignals{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FaultSignals: faultSignals,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataFaultSignals) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataFaultSignals) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFaultSignals")
 		}
 
-		// Array Field (faultSignals)
-		if pushErr := writeBuffer.PushContext("faultSignals", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultSignals")
-		}
-		for _curItem, _element := range m.GetFaultSignals() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFaultSignals()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'faultSignals' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("faultSignals", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultSignals")
+		if err := WriteComplexTypeArrayField(ctx, "faultSignals", m.GetFaultSignals(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultSignals' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFaultSignals"); popErr != nil {
@@ -228,12 +183,10 @@ func (m *_BACnetConstructedDataFaultSignals) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataFaultSignals) isBACnetConstructedDataFaultSignals() bool {
-	return true
-}
+func (m *_BACnetConstructedDataFaultSignals) IsBACnetConstructedDataFaultSignals() {}
 
 func (m *_BACnetConstructedDataFaultSignals) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDoorStatus interface {
 	GetDoorStatus() BACnetDoorStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorStatusTagged
-}
-
-// BACnetConstructedDataDoorStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorStatus.
-// This is useful for switch cases.
-type BACnetConstructedDataDoorStatusExactly interface {
-	BACnetConstructedDataDoorStatus
-	isBACnetConstructedDataDoorStatus() bool
+	// IsBACnetConstructedDataDoorStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDoorStatus()
 }
 
 // _BACnetConstructedDataDoorStatus is the data-structure of this message
 type _BACnetConstructedDataDoorStatus struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DoorStatus BACnetDoorStatusTagged
 }
+
+var _ BACnetConstructedDataDoorStatus = (*_BACnetConstructedDataDoorStatus)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDoorStatus) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDoorStatus) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDoorStatus) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDoorStatus) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDoorStatus) GetActualValue() BACnetDoorStatusTagg
 
 // NewBACnetConstructedDataDoorStatus factory function for _BACnetConstructedDataDoorStatus
 func NewBACnetConstructedDataDoorStatus(doorStatus BACnetDoorStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorStatus {
-	_result := &_BACnetConstructedDataDoorStatus{
-		DoorStatus:             doorStatus,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if doorStatus == nil {
+		panic("doorStatus of type BACnetDoorStatusTagged for BACnetConstructedDataDoorStatus must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDoorStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorStatus:                    doorStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDoorStatus) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDoorStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (doorStatus)
 	lengthInBits += m.DoorStatus.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDoorStatus) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDoorStatusParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorStatus, error) {
-	return BACnetConstructedDataDoorStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDoorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorStatus, error) {
+func (m *_BACnetConstructedDataDoorStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDoorStatus BACnetConstructedDataDoorStatus, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDoorStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorStatus)
-	if pullErr := readBuffer.PullContext("doorStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorStatus")
+	doorStatus, err := ReadSimpleField[BACnetDoorStatusTagged](ctx, "doorStatus", ReadComplex[BACnetDoorStatusTagged](BACnetDoorStatusTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorStatus' field"))
 	}
-	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _doorStatusErr != nil {
-		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field of BACnetConstructedDataDoorStatus")
-	}
-	doorStatus := _doorStatus.(BACnetDoorStatusTagged)
-	if closeErr := readBuffer.CloseContext("doorStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorStatus")
-	}
+	m.DoorStatus = doorStatus
 
-	// Virtual field
-	_actualValue := doorStatus
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDoorStatusTagged](ctx, "actualValue", (*BACnetDoorStatusTagged)(nil), doorStatus)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDoorStatus{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DoorStatus: doorStatus,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDoorStatus) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorStatus")
 		}
 
-		// Simple Field (doorStatus)
-		if pushErr := writeBuffer.PushContext("doorStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorStatus")
-		}
-		_doorStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDoorStatus())
-		if popErr := writeBuffer.PopContext("doorStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorStatus")
-		}
-		if _doorStatusErr != nil {
-			return errors.Wrap(_doorStatusErr, "Error serializing 'doorStatus' field")
+		if err := WriteSimpleField[BACnetDoorStatusTagged](ctx, "doorStatus", m.GetDoorStatus(), WriteComplex[BACnetDoorStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorStatus' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDoorStatus) isBACnetConstructedDataDoorStatus() bool {
-	return true
-}
+func (m *_BACnetConstructedDataDoorStatus) IsBACnetConstructedDataDoorStatus() {}
 
 func (m *_BACnetConstructedDataDoorStatus) String() string {
 	if m == nil {

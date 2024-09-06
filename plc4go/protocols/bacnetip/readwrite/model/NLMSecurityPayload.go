@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type NLMSecurityPayload interface {
 	GetPayloadLength() uint16
 	// GetPayload returns Payload (property field)
 	GetPayload() []byte
-}
-
-// NLMSecurityPayloadExactly can be used when we want exactly this type and not a type which fulfills NLMSecurityPayload.
-// This is useful for switch cases.
-type NLMSecurityPayloadExactly interface {
-	NLMSecurityPayload
-	isNLMSecurityPayload() bool
+	// IsNLMSecurityPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMSecurityPayload()
 }
 
 // _NLMSecurityPayload is the data-structure of this message
 type _NLMSecurityPayload struct {
-	*_NLM
+	NLMContract
 	PayloadLength uint16
 	Payload       []byte
 }
+
+var _ NLMSecurityPayload = (*_NLMSecurityPayload)(nil)
+var _ NLMRequirements = (*_NLMSecurityPayload)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_NLMSecurityPayload) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMSecurityPayload) InitializeParent(parent NLM) {}
-
-func (m *_NLMSecurityPayload) GetParent() NLM {
-	return m._NLM
+func (m *_NLMSecurityPayload) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_NLMSecurityPayload) GetPayload() []byte {
 // NewNLMSecurityPayload factory function for _NLMSecurityPayload
 func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint16) *_NLMSecurityPayload {
 	_result := &_NLMSecurityPayload{
+		NLMContract:   NewNLM(apduLength),
 		PayloadLength: payloadLength,
 		Payload:       payload,
-		_NLM:          NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_NLMSecurityPayload) GetTypeName() string {
 }
 
 func (m *_NLMSecurityPayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (payloadLength)
 	lengthInBits += 16
@@ -139,48 +137,34 @@ func (m *_NLMSecurityPayload) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMSecurityPayloadParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMSecurityPayload, error) {
-	return NLMSecurityPayloadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMSecurityPayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityPayload, error) {
+func (m *_NLMSecurityPayload) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMSecurityPayload NLMSecurityPayload, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMSecurityPayload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMSecurityPayload")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payloadLength)
-	_payloadLength, _payloadLengthErr := readBuffer.ReadUint16("payloadLength", 16)
-	if _payloadLengthErr != nil {
-		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field of NLMSecurityPayload")
+	payloadLength, err := ReadSimpleField(ctx, "payloadLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payloadLength' field"))
 	}
-	payloadLength := _payloadLength
-	// Byte Array field (payload)
-	numberOfBytespayload := int(payloadLength)
-	payload, _readArrayErr := readBuffer.ReadByteArray("payload", numberOfBytespayload)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'payload' field of NLMSecurityPayload")
+	m.PayloadLength = payloadLength
+
+	payload, err := readBuffer.ReadByteArray("payload", int(payloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
+	m.Payload = payload
 
 	if closeErr := readBuffer.CloseContext("NLMSecurityPayload"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMSecurityPayload")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMSecurityPayload{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		PayloadLength: payloadLength,
-		Payload:       payload,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMSecurityPayload) Serialize() ([]byte, error) {
@@ -201,16 +185,11 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for NLMSecurityPayload")
 		}
 
-		// Simple Field (payloadLength)
-		payloadLength := uint16(m.GetPayloadLength())
-		_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, uint16((payloadLength)))
-		if _payloadLengthErr != nil {
-			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
+		if err := WriteSimpleField[uint16](ctx, "payloadLength", m.GetPayloadLength(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'payloadLength' field")
 		}
 
-		// Array Field (payload)
-		// Byte Array field (payload)
-		if err := writeBuffer.WriteByteArray("payload", m.GetPayload()); err != nil {
+		if err := WriteByteArrayField(ctx, "payload", m.GetPayload(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 
@@ -219,12 +198,10 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMSecurityPayload) isNLMSecurityPayload() bool {
-	return true
-}
+func (m *_NLMSecurityPayload) IsNLMSecurityPayload() {}
 
 func (m *_NLMSecurityPayload) String() string {
 	if m == nil {

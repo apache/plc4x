@@ -81,16 +81,16 @@ public class ReadValueId extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("ReadValueId");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (attributeId)
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (indexRange)
-    writeSimpleField("indexRange", indexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("indexRange", indexRange, writeComplex(writeBuffer));
 
     // Simple Field (dataEncoding)
-    writeSimpleField("dataEncoding", dataEncoding, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataEncoding", dataEncoding, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReadValueId");
   }
@@ -128,22 +128,17 @@ public class ReadValueId extends ExtensionObjectDefinition implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("nodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
     PascalString indexRange =
         readSimpleField(
-            "indexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "indexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     QualifiedName dataEncoding =
         readSimpleField(
-            "dataEncoding",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "dataEncoding", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReadValueId");
     // Create the instance

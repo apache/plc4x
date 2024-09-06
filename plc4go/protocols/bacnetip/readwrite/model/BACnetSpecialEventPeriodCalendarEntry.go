@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetSpecialEventPeriodCalendarEntry interface {
 	BACnetSpecialEventPeriod
 	// GetCalendarEntry returns CalendarEntry (property field)
 	GetCalendarEntry() BACnetCalendarEntryEnclosed
-}
-
-// BACnetSpecialEventPeriodCalendarEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventPeriodCalendarEntry.
-// This is useful for switch cases.
-type BACnetSpecialEventPeriodCalendarEntryExactly interface {
-	BACnetSpecialEventPeriodCalendarEntry
-	isBACnetSpecialEventPeriodCalendarEntry() bool
+	// IsBACnetSpecialEventPeriodCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSpecialEventPeriodCalendarEntry()
 }
 
 // _BACnetSpecialEventPeriodCalendarEntry is the data-structure of this message
 type _BACnetSpecialEventPeriodCalendarEntry struct {
-	*_BACnetSpecialEventPeriod
+	BACnetSpecialEventPeriodContract
 	CalendarEntry BACnetCalendarEntryEnclosed
 }
+
+var _ BACnetSpecialEventPeriodCalendarEntry = (*_BACnetSpecialEventPeriodCalendarEntry)(nil)
+var _ BACnetSpecialEventPeriodRequirements = (*_BACnetSpecialEventPeriodCalendarEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetSpecialEventPeriodCalendarEntry struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetSpecialEventPeriodCalendarEntry) InitializeParent(parent BACnetSpecialEventPeriod, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetSpecialEventPeriodCalendarEntry) GetParent() BACnetSpecialEventPeriod {
-	return m._BACnetSpecialEventPeriod
+func (m *_BACnetSpecialEventPeriodCalendarEntry) GetParent() BACnetSpecialEventPeriodContract {
+	return m.BACnetSpecialEventPeriodContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) GetCalendarEntry() BACnetCalend
 
 // NewBACnetSpecialEventPeriodCalendarEntry factory function for _BACnetSpecialEventPeriodCalendarEntry
 func NewBACnetSpecialEventPeriodCalendarEntry(calendarEntry BACnetCalendarEntryEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetSpecialEventPeriodCalendarEntry {
-	_result := &_BACnetSpecialEventPeriodCalendarEntry{
-		CalendarEntry:             calendarEntry,
-		_BACnetSpecialEventPeriod: NewBACnetSpecialEventPeriod(peekedTagHeader),
+	if calendarEntry == nil {
+		panic("calendarEntry of type BACnetCalendarEntryEnclosed for BACnetSpecialEventPeriodCalendarEntry must not be nil")
 	}
-	_result._BACnetSpecialEventPeriod._BACnetSpecialEventPeriodChildRequirements = _result
+	_result := &_BACnetSpecialEventPeriodCalendarEntry{
+		BACnetSpecialEventPeriodContract: NewBACnetSpecialEventPeriod(peekedTagHeader),
+		CalendarEntry:                    calendarEntry,
+	}
+	_result.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) GetTypeName() string {
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).getLengthInBits(ctx))
 
 	// Simple field (calendarEntry)
 	lengthInBits += m.CalendarEntry.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSpecialEventPeriodCalendarEntryParse(ctx context.Context, theBytes []byte) (BACnetSpecialEventPeriodCalendarEntry, error) {
-	return BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarEntry, error) {
+func (m *_BACnetSpecialEventPeriodCalendarEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetSpecialEventPeriod) (__bACnetSpecialEventPeriodCalendarEntry BACnetSpecialEventPeriodCalendarEntry, err error) {
+	m.BACnetSpecialEventPeriodContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSpecialEventPeriodCalendarEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (calendarEntry)
-	if pullErr := readBuffer.PullContext("calendarEntry"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for calendarEntry")
+	calendarEntry, err := ReadSimpleField[BACnetCalendarEntryEnclosed](ctx, "calendarEntry", ReadComplex[BACnetCalendarEntryEnclosed](BACnetCalendarEntryEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calendarEntry' field"))
 	}
-	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _calendarEntryErr != nil {
-		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field of BACnetSpecialEventPeriodCalendarEntry")
-	}
-	calendarEntry := _calendarEntry.(BACnetCalendarEntryEnclosed)
-	if closeErr := readBuffer.CloseContext("calendarEntry"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for calendarEntry")
-	}
+	m.CalendarEntry = calendarEntry
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEventPeriodCalendarEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetSpecialEventPeriodCalendarEntry")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetSpecialEventPeriodCalendarEntry{
-		_BACnetSpecialEventPeriod: &_BACnetSpecialEventPeriod{},
-		CalendarEntry:             calendarEntry,
-	}
-	_child._BACnetSpecialEventPeriod._BACnetSpecialEventPeriodChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEventPeriodCalendarEntry")
 		}
 
-		// Simple Field (calendarEntry)
-		if pushErr := writeBuffer.PushContext("calendarEntry"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for calendarEntry")
-		}
-		_calendarEntryErr := writeBuffer.WriteSerializable(ctx, m.GetCalendarEntry())
-		if popErr := writeBuffer.PopContext("calendarEntry"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for calendarEntry")
-		}
-		if _calendarEntryErr != nil {
-			return errors.Wrap(_calendarEntryErr, "Error serializing 'calendarEntry' field")
+		if err := WriteSimpleField[BACnetCalendarEntryEnclosed](ctx, "calendarEntry", m.GetCalendarEntry(), WriteComplex[BACnetCalendarEntryEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'calendarEntry' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetSpecialEventPeriodCalendarEntry"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntry) isBACnetSpecialEventPeriodCalendarEntry() bool {
-	return true
-}
+func (m *_BACnetSpecialEventPeriodCalendarEntry) IsBACnetSpecialEventPeriodCalendarEntry() {}
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) String() string {
 	if m == nil {

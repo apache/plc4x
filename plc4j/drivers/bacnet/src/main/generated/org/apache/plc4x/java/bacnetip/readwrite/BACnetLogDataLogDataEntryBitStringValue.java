@@ -61,7 +61,7 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
     writeBuffer.pushContext("BACnetLogDataLogDataEntryBitStringValue");
 
     // Simple Field (bitStringValue)
-    writeSimpleField("bitStringValue", bitStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bitStringValue", bitStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryBitStringValue");
   }
@@ -92,7 +92,7 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
     BACnetContextTagBitString bitStringValue =
         readSimpleField(
             "bitStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBitString)
                         BACnetContextTag.staticParse(

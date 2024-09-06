@@ -69,7 +69,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime");
 
     // Simple Field (dateTimeValue)
-    writeSimpleField("dateTimeValue", dateTimeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateTimeValue", dateTimeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime");
   }
@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
             "dateTimeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime");

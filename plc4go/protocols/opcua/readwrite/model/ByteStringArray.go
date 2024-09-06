@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type ByteStringArray interface {
 	GetArrayLength() int32
 	// GetValue returns Value (property field)
 	GetValue() []uint8
-}
-
-// ByteStringArrayExactly can be used when we want exactly this type and not a type which fulfills ByteStringArray.
-// This is useful for switch cases.
-type ByteStringArrayExactly interface {
-	ByteStringArray
-	isByteStringArray() bool
+	// IsByteStringArray is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsByteStringArray()
 }
 
 // _ByteStringArray is the data-structure of this message
@@ -54,6 +51,8 @@ type _ByteStringArray struct {
 	ArrayLength int32
 	Value       []uint8
 }
+
+var _ ByteStringArray = (*_ByteStringArray)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,60 +114,46 @@ func ByteStringArrayParse(ctx context.Context, theBytes []byte) (ByteStringArray
 	return ByteStringArrayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ByteStringArrayParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringArray, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringArray, error) {
+		return ByteStringArrayParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringArray, error) {
+	v, err := (&_ByteStringArray{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ByteStringArray) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__byteStringArray ByteStringArray, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ByteStringArray"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ByteStringArray")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (arrayLength)
-	_arrayLength, _arrayLengthErr := readBuffer.ReadInt32("arrayLength", 32)
-	if _arrayLengthErr != nil {
-		return nil, errors.Wrap(_arrayLengthErr, "Error parsing 'arrayLength' field of ByteStringArray")
+	arrayLength, err := ReadSimpleField(ctx, "arrayLength", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLength' field"))
 	}
-	arrayLength := _arrayLength
+	m.ArrayLength = arrayLength
 
-	// Array field (value)
-	if pullErr := readBuffer.PullContext("value", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
+	value, err := ReadCountArrayField[uint8](ctx, "value", ReadUnsignedByte(readBuffer, uint8(8)), uint64(arrayLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	// Count array
-	value := make([]uint8, max(arrayLength, 0))
-	// This happens when the size is set conditional to 0
-	if len(value) == 0 {
-		value = nil
-	}
-	{
-		_numItems := uint16(max(arrayLength, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'value' field of ByteStringArray")
-			}
-			value[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("value", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("ByteStringArray"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ByteStringArray")
 	}
 
-	// Create the instance
-	return &_ByteStringArray{
-		ArrayLength: arrayLength,
-		Value:       value,
-	}, nil
+	return m, nil
 }
 
 func (m *_ByteStringArray) Serialize() ([]byte, error) {
@@ -188,26 +173,12 @@ func (m *_ByteStringArray) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for ByteStringArray")
 	}
 
-	// Simple Field (arrayLength)
-	arrayLength := int32(m.GetArrayLength())
-	_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, int32((arrayLength)))
-	if _arrayLengthErr != nil {
-		return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
+	if err := WriteSimpleField[int32](ctx, "arrayLength", m.GetArrayLength(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayLength' field")
 	}
 
-	// Array Field (value)
-	if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for value")
-	}
-	for _curItem, _element := range m.GetValue() {
-		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'value' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for value")
+	if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ByteStringArray"); popErr != nil {
@@ -216,9 +187,7 @@ func (m *_ByteStringArray) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return nil
 }
 
-func (m *_ByteStringArray) isByteStringArray() bool {
-	return true
-}
+func (m *_ByteStringArray) IsByteStringArray() {}
 
 func (m *_ByteStringArray) String() string {
 	if m == nil {

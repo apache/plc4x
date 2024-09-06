@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataTimeValueRelinquishDefault interface {
 	GetRelinquishDefault() BACnetApplicationTagTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagTime
-}
-
-// BACnetConstructedDataTimeValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeValueRelinquishDefault.
-// This is useful for switch cases.
-type BACnetConstructedDataTimeValueRelinquishDefaultExactly interface {
-	BACnetConstructedDataTimeValueRelinquishDefault
-	isBACnetConstructedDataTimeValueRelinquishDefault() bool
+	// IsBACnetConstructedDataTimeValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeValueRelinquishDefault()
 }
 
 // _BACnetConstructedDataTimeValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataTimeValueRelinquishDefault struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	RelinquishDefault BACnetApplicationTagTime
 }
+
+var _ BACnetConstructedDataTimeValueRelinquishDefault = (*_BACnetConstructedDataTimeValueRelinquishDefault)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeValueRelinquishDefault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetPropertyIdentifier
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTimeValueRelinquishDefault) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetActualValue() BACn
 
 // NewBACnetConstructedDataTimeValueRelinquishDefault factory function for _BACnetConstructedDataTimeValueRelinquishDefault
 func NewBACnetConstructedDataTimeValueRelinquishDefault(relinquishDefault BACnetApplicationTagTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeValueRelinquishDefault {
-	_result := &_BACnetConstructedDataTimeValueRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagTime for BACnetConstructedDataTimeValueRelinquishDefault must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataTimeValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetTypeName() string 
 }
 
 func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTimeValueRelinquishDefaultParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeValueRelinquishDefault, error) {
-	return BACnetConstructedDataTimeValueRelinquishDefaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTimeValueRelinquishDefaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeValueRelinquishDefault, error) {
+func (m *_BACnetConstructedDataTimeValueRelinquishDefault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimeValueRelinquishDefault BACnetConstructedDataTimeValueRelinquishDefault, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeValueRelinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeValueRelinquishDefault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (relinquishDefault)
-	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
+	relinquishDefault, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "relinquishDefault", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relinquishDefault' field"))
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataTimeValueRelinquishDefault")
-	}
-	relinquishDefault := _relinquishDefault.(BACnetApplicationTagTime)
-	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
-	}
+	m.RelinquishDefault = relinquishDefault
 
-	// Virtual field
-	_actualValue := relinquishDefault
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagTime](ctx, "actualValue", (*BACnetApplicationTagTime)(nil), relinquishDefault)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeValueRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeValueRelinquishDefault")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTimeValueRelinquishDefault{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		RelinquishDefault: relinquishDefault,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTimeValueRelinquishDefault) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataTimeValueRelinquishDefault) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeValueRelinquishDefault")
 		}
 
-		// Simple Field (relinquishDefault)
-		if pushErr := writeBuffer.PushContext("relinquishDefault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relinquishDefault")
-		}
-		_relinquishDefaultErr := writeBuffer.WriteSerializable(ctx, m.GetRelinquishDefault())
-		if popErr := writeBuffer.PopContext("relinquishDefault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relinquishDefault")
-		}
-		if _relinquishDefaultErr != nil {
-			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
+		if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "relinquishDefault", m.GetRelinquishDefault(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relinquishDefault' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataTimeValueRelinquishDefault) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTimeValueRelinquishDefault) isBACnetConstructedDataTimeValueRelinquishDefault() bool {
-	return true
+func (m *_BACnetConstructedDataTimeValueRelinquishDefault) IsBACnetConstructedDataTimeValueRelinquishDefault() {
 }
 
 func (m *_BACnetConstructedDataTimeValueRelinquishDefault) String() string {

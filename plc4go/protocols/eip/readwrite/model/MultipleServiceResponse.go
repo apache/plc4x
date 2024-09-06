@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,18 +49,13 @@ type MultipleServiceResponse interface {
 	GetOffsets() []uint16
 	// GetServicesData returns ServicesData (property field)
 	GetServicesData() []byte
-}
-
-// MultipleServiceResponseExactly can be used when we want exactly this type and not a type which fulfills MultipleServiceResponse.
-// This is useful for switch cases.
-type MultipleServiceResponseExactly interface {
-	MultipleServiceResponse
-	isMultipleServiceResponse() bool
+	// IsMultipleServiceResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMultipleServiceResponse()
 }
 
 // _MultipleServiceResponse is the data-structure of this message
 type _MultipleServiceResponse struct {
-	*_CipService
+	CipServiceContract
 	Status       uint8
 	ExtStatus    uint8
 	ServiceNb    uint16
@@ -67,6 +64,9 @@ type _MultipleServiceResponse struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ MultipleServiceResponse = (*_MultipleServiceResponse)(nil)
+var _ CipServiceRequirements = (*_MultipleServiceResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,10 +90,8 @@ func (m *_MultipleServiceResponse) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MultipleServiceResponse) InitializeParent(parent CipService) {}
-
-func (m *_MultipleServiceResponse) GetParent() CipService {
-	return m._CipService
+func (m *_MultipleServiceResponse) GetParent() CipServiceContract {
+	return m.CipServiceContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -129,14 +127,14 @@ func (m *_MultipleServiceResponse) GetServicesData() []byte {
 // NewMultipleServiceResponse factory function for _MultipleServiceResponse
 func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *_MultipleServiceResponse {
 	_result := &_MultipleServiceResponse{
-		Status:       status,
-		ExtStatus:    extStatus,
-		ServiceNb:    serviceNb,
-		Offsets:      offsets,
-		ServicesData: servicesData,
-		_CipService:  NewCipService(serviceLen),
+		CipServiceContract: NewCipService(serviceLen),
+		Status:             status,
+		ExtStatus:          extStatus,
+		ServiceNb:          serviceNb,
+		Offsets:            offsets,
+		ServicesData:       servicesData,
 	}
-	_result._CipService._CipServiceChildRequirements = _result
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 
@@ -156,7 +154,7 @@ func (m *_MultipleServiceResponse) GetTypeName() string {
 }
 
 func (m *_MultipleServiceResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -187,110 +185,58 @@ func (m *_MultipleServiceResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MultipleServiceResponseParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (MultipleServiceResponse, error) {
-	return MultipleServiceResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
-}
-
-func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (MultipleServiceResponse, error) {
+func (m *_MultipleServiceResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__multipleServiceResponse MultipleServiceResponse, err error) {
+	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MultipleServiceResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MultipleServiceResponse")
-		}
-		if reserved != uint8(0x0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of MultipleServiceResponse")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
+	m.Status = status
 
-	// Simple Field (extStatus)
-	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
-	if _extStatusErr != nil {
-		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field of MultipleServiceResponse")
+	extStatus, err := ReadSimpleField(ctx, "extStatus", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extStatus' field"))
 	}
-	extStatus := _extStatus
+	m.ExtStatus = extStatus
 
-	// Simple Field (serviceNb)
-	_serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
-	if _serviceNbErr != nil {
-		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field of MultipleServiceResponse")
+	serviceNb, err := ReadSimpleField(ctx, "serviceNb", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceNb' field"))
 	}
-	serviceNb := _serviceNb
+	m.ServiceNb = serviceNb
 
-	// Array field (offsets)
-	if pullErr := readBuffer.PullContext("offsets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for offsets")
+	offsets, err := ReadCountArrayField[uint16](ctx, "offsets", ReadUnsignedShort(readBuffer, uint8(16)), uint64(serviceNb))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offsets' field"))
 	}
-	// Count array
-	offsets := make([]uint16, max(serviceNb, 0))
-	// This happens when the size is set conditional to 0
-	if len(offsets) == 0 {
-		offsets = nil
+	m.Offsets = offsets
+
+	servicesData, err := readBuffer.ReadByteArray("servicesData", int(int32(int32(serviceLen)-int32(int32(6)))-int32((int32(int32(2))*int32(serviceNb)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'servicesData' field"))
 	}
-	{
-		_numItems := uint16(max(serviceNb, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint16("", 16)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'offsets' field of MultipleServiceResponse")
-			}
-			offsets[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for offsets")
-	}
-	// Byte Array field (servicesData)
-	numberOfBytesservicesData := int(uint16(uint16(serviceLen)-uint16(uint16(6))) - uint16((uint16(uint16(2)) * uint16(serviceNb))))
-	servicesData, _readArrayErr := readBuffer.ReadByteArray("servicesData", numberOfBytesservicesData)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'servicesData' field of MultipleServiceResponse")
-	}
+	m.ServicesData = servicesData
 
 	if closeErr := readBuffer.CloseContext("MultipleServiceResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MultipleServiceResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MultipleServiceResponse{
-		_CipService: &_CipService{
-			ServiceLen: serviceLen,
-		},
-		Status:         status,
-		ExtStatus:      extStatus,
-		ServiceNb:      serviceNb,
-		Offsets:        offsets,
-		ServicesData:   servicesData,
-		reservedField0: reservedField0,
-	}
-	_child._CipService._CipServiceChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MultipleServiceResponse) Serialize() ([]byte, error) {
@@ -311,61 +257,27 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for MultipleServiceResponse")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x0)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (status)
-		status := uint8(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
-		if _statusErr != nil {
-			return errors.Wrap(_statusErr, "Error serializing 'status' field")
+		if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
-		// Simple Field (extStatus)
-		extStatus := uint8(m.GetExtStatus())
-		_extStatusErr := writeBuffer.WriteUint8("extStatus", 8, uint8((extStatus)))
-		if _extStatusErr != nil {
-			return errors.Wrap(_extStatusErr, "Error serializing 'extStatus' field")
+		if err := WriteSimpleField[uint8](ctx, "extStatus", m.GetExtStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extStatus' field")
 		}
 
-		// Simple Field (serviceNb)
-		serviceNb := uint16(m.GetServiceNb())
-		_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
-		if _serviceNbErr != nil {
-			return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
+		if err := WriteSimpleField[uint16](ctx, "serviceNb", m.GetServiceNb(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceNb' field")
 		}
 
-		// Array Field (offsets)
-		if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for offsets")
-		}
-		for _curItem, _element := range m.GetOffsets() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("offsets", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for offsets")
+		if err := WriteSimpleTypeArrayField(ctx, "offsets", m.GetOffsets(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'offsets' field")
 		}
 
-		// Array Field (servicesData)
-		// Byte Array field (servicesData)
-		if err := writeBuffer.WriteByteArray("servicesData", m.GetServicesData()); err != nil {
+		if err := WriteByteArrayField(ctx, "servicesData", m.GetServicesData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'servicesData' field")
 		}
 
@@ -374,12 +286,10 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MultipleServiceResponse) isMultipleServiceResponse() bool {
-	return true
-}
+func (m *_MultipleServiceResponse) IsMultipleServiceResponse() {}
 
 func (m *_MultipleServiceResponse) String() string {
 	if m == nil {

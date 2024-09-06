@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,50 +35,43 @@ import (
 
 // Payload is the corresponding interface of Payload
 type Payload interface {
+	PayloadContract
+	PayloadRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetExtensible returns Extensible (discriminator field)
-	GetExtensible() bool
-	// GetSequenceHeader returns SequenceHeader (property field)
-	GetSequenceHeader() SequenceHeader
+	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPayload()
 }
 
-// PayloadExactly can be used when we want exactly this type and not a type which fulfills Payload.
-// This is useful for switch cases.
-type PayloadExactly interface {
-	Payload
-	isPayload() bool
+// PayloadContract provides a set of functions which can be overwritten by a sub struct
+type PayloadContract interface {
+	// GetSequenceHeader returns SequenceHeader (property field)
+	GetSequenceHeader() SequenceHeader
+	// GetByteCount() returns a parser argument
+	GetByteCount() uint32
+	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPayload()
+}
+
+// PayloadRequirements provides a set of functions which need to be implemented by a sub struct
+type PayloadRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetExtensible returns Extensible (discriminator field)
+	GetExtensible() bool
 }
 
 // _Payload is the data-structure of this message
 type _Payload struct {
-	_PayloadChildRequirements
+	_SubType       Payload
 	SequenceHeader SequenceHeader
 
 	// Arguments.
 	ByteCount uint32
 }
 
-type _PayloadChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetExtensible() bool
-}
-
-type PayloadParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child Payload, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type PayloadChild interface {
-	utils.Serializable
-	InitializeParent(parent Payload, sequenceHeader SequenceHeader)
-	GetParent() *Payload
-
-	GetTypeName() string
-	Payload
-}
+var _ PayloadContract = (*_Payload)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,6 +89,9 @@ func (m *_Payload) GetSequenceHeader() SequenceHeader {
 
 // NewPayload factory function for _Payload
 func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
+	if sequenceHeader == nil {
+		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
+	}
 	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
 }
 
@@ -112,7 +110,7 @@ func (m *_Payload) GetTypeName() string {
 	return "Payload"
 }
 
-func (m *_Payload) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_Payload) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (sequenceHeader)
@@ -122,69 +120,71 @@ func (m *_Payload) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_Payload) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func PayloadParse(ctx context.Context, theBytes []byte, extensible bool, byteCount uint32) (Payload, error) {
-	return PayloadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), extensible, byteCount)
+func PayloadParse[T Payload](ctx context.Context, theBytes []byte, extensible bool, byteCount uint32) (T, error) {
+	return PayloadParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), extensible, byteCount)
 }
 
-func PayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (Payload, error) {
+func PayloadParseWithBufferProducer[T Payload](extensible bool, byteCount uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := PayloadParseWithBuffer[T](ctx, readBuffer, extensible, byteCount)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func PayloadParseWithBuffer[T Payload](ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (T, error) {
+	v, err := (&_Payload{ByteCount: byteCount}).parse(ctx, readBuffer, extensible, byteCount)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (__payload Payload, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Payload")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sequenceHeader)
-	if pullErr := readBuffer.PullContext("sequenceHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sequenceHeader")
+	sequenceHeader, err := ReadSimpleField[SequenceHeader](ctx, "sequenceHeader", ReadComplex[SequenceHeader](SequenceHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceHeader' field"))
 	}
-	_sequenceHeader, _sequenceHeaderErr := SequenceHeaderParseWithBuffer(ctx, readBuffer)
-	if _sequenceHeaderErr != nil {
-		return nil, errors.Wrap(_sequenceHeaderErr, "Error parsing 'sequenceHeader' field of Payload")
-	}
-	sequenceHeader := _sequenceHeader.(SequenceHeader)
-	if closeErr := readBuffer.CloseContext("sequenceHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sequenceHeader")
-	}
+	m.SequenceHeader = sequenceHeader
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type PayloadChildSerializeRequirement interface {
-		Payload
-		InitializeParent(Payload, SequenceHeader)
-		GetParent() Payload
-	}
-	var _childTemp any
-	var _child PayloadChildSerializeRequirement
-	var typeSwitchError error
+	var _child Payload
 	switch {
 	case extensible == bool(true): // ExtensiblePayload
-		_childTemp, typeSwitchError = ExtensiblePayloadParseWithBuffer(ctx, readBuffer, extensible, byteCount)
+		if _child, err = (&_ExtensiblePayload{}).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ExtensiblePayload for type-switch of Payload")
+		}
 	case extensible == bool(false): // BinaryPayload
-		_childTemp, typeSwitchError = BinaryPayloadParseWithBuffer(ctx, readBuffer, extensible, byteCount)
+		if _child, err = (&_BinaryPayload{}).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BinaryPayload for type-switch of Payload")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [extensible=%v]", extensible)
+		return nil, errors.Errorf("Unmapped type for parameters [extensible=%v]", extensible)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Payload")
-	}
-	_child = _childTemp.(PayloadChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("Payload"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Payload")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, sequenceHeader)
 	return _child, nil
 }
 
-func (pm *_Payload) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child Payload, serializeChildFunction func() error) error {
+func (pm *_Payload) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child Payload, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -196,16 +196,8 @@ func (pm *_Payload) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(pushErr, "Error pushing for Payload")
 	}
 
-	// Simple Field (sequenceHeader)
-	if pushErr := writeBuffer.PushContext("sequenceHeader"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for sequenceHeader")
-	}
-	_sequenceHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetSequenceHeader())
-	if popErr := writeBuffer.PopContext("sequenceHeader"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for sequenceHeader")
-	}
-	if _sequenceHeaderErr != nil {
-		return errors.Wrap(_sequenceHeaderErr, "Error serializing 'sequenceHeader' field")
+	if err := WriteSimpleField[SequenceHeader](ctx, "sequenceHeader", m.GetSequenceHeader(), WriteComplex[SequenceHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sequenceHeader' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -229,17 +221,4 @@ func (m *_Payload) GetByteCount() uint32 {
 //
 ////
 
-func (m *_Payload) isPayload() bool {
-	return true
-}
-
-func (m *_Payload) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_Payload) IsPayload() {}

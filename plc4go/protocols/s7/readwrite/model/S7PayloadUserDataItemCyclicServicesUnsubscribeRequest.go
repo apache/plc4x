@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest interface {
 	GetFunction() uint8
 	// GetJobId returns JobId (property field)
 	GetJobId() uint8
-}
-
-// S7PayloadUserDataItemCyclicServicesUnsubscribeRequestExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCyclicServicesUnsubscribeRequest.
-// This is useful for switch cases.
-type S7PayloadUserDataItemCyclicServicesUnsubscribeRequestExactly interface {
-	S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
-	isS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() bool
+	// IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest()
 }
 
 // _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest is the data-structure of this message
 type _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 	Function uint8
 	JobId    uint8
 }
+
+var _ S7PayloadUserDataItemCyclicServicesUnsubscribeRequest = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,14 +79,8 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetCpuSubfuncti
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,11 +104,11 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetJobId() uint
 // NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest factory function for _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
 func NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(function uint8, jobId uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
 	_result := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
-		Function:               function,
-		JobId:                  jobId,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Function:                      function,
+		JobId:                         jobId,
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -134,7 +128,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetTypeName() s
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Simple field (function)
 	lengthInBits += 8
@@ -149,47 +143,34 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetLengthInByte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error) {
-	return S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error) {
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCyclicServicesUnsubscribeRequest S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCyclicServicesUnsubscribeRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (function)
-	_function, _functionErr := readBuffer.ReadUint8("function", 8)
-	if _functionErr != nil {
-		return nil, errors.Wrap(_functionErr, "Error parsing 'function' field of S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
+	function, err := ReadSimpleField(ctx, "function", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'function' field"))
 	}
-	function := _function
+	m.Function = function
 
-	// Simple Field (jobId)
-	_jobId, _jobIdErr := readBuffer.ReadUint8("jobId", 8)
-	if _jobIdErr != nil {
-		return nil, errors.Wrap(_jobIdErr, "Error parsing 'jobId' field of S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
+	jobId, err := ReadSimpleField(ctx, "jobId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'jobId' field"))
 	}
-	jobId := _jobId
+	m.JobId = jobId
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCyclicServicesUnsubscribeRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		Function:               function,
-		JobId:                  jobId,
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) Serialize() ([]byte, error) {
@@ -210,18 +191,12 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
 		}
 
-		// Simple Field (function)
-		function := uint8(m.GetFunction())
-		_functionErr := writeBuffer.WriteUint8("function", 8, uint8((function)))
-		if _functionErr != nil {
-			return errors.Wrap(_functionErr, "Error serializing 'function' field")
+		if err := WriteSimpleField[uint8](ctx, "function", m.GetFunction(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'function' field")
 		}
 
-		// Simple Field (jobId)
-		jobId := uint8(m.GetJobId())
-		_jobIdErr := writeBuffer.WriteUint8("jobId", 8, uint8((jobId)))
-		if _jobIdErr != nil {
-			return errors.Wrap(_jobIdErr, "Error serializing 'jobId' field")
+		if err := WriteSimpleField[uint8](ctx, "jobId", m.GetJobId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'jobId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCyclicServicesUnsubscribeRequest"); popErr != nil {
@@ -229,11 +204,10 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) SerializeWithWr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) isS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() bool {
-	return true
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() {
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) String() string {

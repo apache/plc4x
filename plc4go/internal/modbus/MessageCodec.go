@@ -32,14 +32,14 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 	expectationCounter int32
 
 	passLogToModel bool
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
@@ -100,7 +100,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			return nil, nil
 		}
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		tcpAdu, err := model.ModbusTcpADUParse(ctxForModel, data, model.DriverType_MODBUS_TCP, true)
+		tcpAdu, err := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, data, model.DriverType_MODBUS_TCP, true)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

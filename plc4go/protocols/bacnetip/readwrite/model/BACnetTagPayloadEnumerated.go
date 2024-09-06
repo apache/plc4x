@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetTagPayloadEnumerated interface {
 	GetData() []byte
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
-}
-
-// BACnetTagPayloadEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadEnumerated.
-// This is useful for switch cases.
-type BACnetTagPayloadEnumeratedExactly interface {
-	BACnetTagPayloadEnumerated
-	isBACnetTagPayloadEnumerated() bool
+	// IsBACnetTagPayloadEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadEnumerated()
 }
 
 // _BACnetTagPayloadEnumerated is the data-structure of this message
@@ -56,6 +53,8 @@ type _BACnetTagPayloadEnumerated struct {
 	// Arguments.
 	ActualLength uint32
 }
+
+var _ BACnetTagPayloadEnumerated = (*_BACnetTagPayloadEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,37 +126,46 @@ func BACnetTagPayloadEnumeratedParse(ctx context.Context, theBytes []byte, actua
 	return BACnetTagPayloadEnumeratedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetTagPayloadEnumeratedParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadEnumerated, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadEnumerated, error) {
+		return BACnetTagPayloadEnumeratedParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetTagPayloadEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadEnumerated, error) {
+	v, err := (&_BACnetTagPayloadEnumerated{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetTagPayloadEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadEnumerated BACnetTagPayloadEnumerated, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadEnumerated")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (data)
-	numberOfBytesdata := int(actualLength)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of BACnetTagPayloadEnumerated")
-	}
 
-	// Virtual field
-	_actualValue := ParseVarUint(ctx, data)
-	actualValue := uint32(_actualValue)
+	data, err := readBuffer.ReadByteArray("data", int(actualLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
+	}
+	m.Data = data
+
+	actualValue, err := ReadVirtualField[uint32](ctx, "actualValue", (*uint32)(nil), ParseVarUint(ctx, data))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadEnumerated"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadEnumerated")
 	}
 
-	// Create the instance
-	return &_BACnetTagPayloadEnumerated{
-		ActualLength: actualLength,
-		Data:         data,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetTagPayloadEnumerated) Serialize() ([]byte, error) {
@@ -177,9 +185,7 @@ func (m *_BACnetTagPayloadEnumerated) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadEnumerated")
 	}
 
-	// Array Field (data)
-	// Byte Array field (data)
-	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 	// Virtual field
@@ -205,9 +211,7 @@ func (m *_BACnetTagPayloadEnumerated) GetActualLength() uint32 {
 //
 ////
 
-func (m *_BACnetTagPayloadEnumerated) isBACnetTagPayloadEnumerated() bool {
-	return true
-}
+func (m *_BACnetTagPayloadEnumerated) IsBACnetTagPayloadEnumerated() {}
 
 func (m *_BACnetTagPayloadEnumerated) String() string {
 	if m == nil {

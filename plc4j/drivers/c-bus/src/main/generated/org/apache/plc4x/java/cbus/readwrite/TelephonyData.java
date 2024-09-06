@@ -74,7 +74,7 @@ public abstract class TelephonyData implements Message {
         "commandTypeContainer",
         "TelephonyCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TelephonyCommandTypeContainer::getValue,
             TelephonyCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -130,7 +130,7 @@ public abstract class TelephonyData implements Message {
         readEnumField(
             "commandTypeContainer",
             "TelephonyCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 TelephonyCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     TelephonyCommandType commandType =
         readVirtualField(

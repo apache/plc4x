@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type SetMonitoringModeRequest interface {
 	GetNoOfMonitoredItemIds() int32
 	// GetMonitoredItemIds returns MonitoredItemIds (property field)
 	GetMonitoredItemIds() []uint32
-}
-
-// SetMonitoringModeRequestExactly can be used when we want exactly this type and not a type which fulfills SetMonitoringModeRequest.
-// This is useful for switch cases.
-type SetMonitoringModeRequestExactly interface {
-	SetMonitoringModeRequest
-	isSetMonitoringModeRequest() bool
+	// IsSetMonitoringModeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetMonitoringModeRequest()
 }
 
 // _SetMonitoringModeRequest is the data-structure of this message
 type _SetMonitoringModeRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader        ExtensionObjectDefinition
 	SubscriptionId       uint32
 	MonitoringMode       MonitoringMode
 	NoOfMonitoredItemIds int32
 	MonitoredItemIds     []uint32
 }
+
+var _ SetMonitoringModeRequest = (*_SetMonitoringModeRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_SetMonitoringModeRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SetMonitoringModeRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_SetMonitoringModeRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_SetMonitoringModeRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,18 @@ func (m *_SetMonitoringModeRequest) GetMonitoredItemIds() []uint32 {
 
 // NewSetMonitoringModeRequest factory function for _SetMonitoringModeRequest
 func NewSetMonitoringModeRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, monitoringMode MonitoringMode, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_SetMonitoringModeRequest {
-	_result := &_SetMonitoringModeRequest{
-		RequestHeader:              requestHeader,
-		SubscriptionId:             subscriptionId,
-		MonitoringMode:             monitoringMode,
-		NoOfMonitoredItemIds:       noOfMonitoredItemIds,
-		MonitoredItemIds:           monitoredItemIds,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetMonitoringModeRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_SetMonitoringModeRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		MonitoringMode:                    monitoringMode,
+		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
+		MonitoredItemIds:                  monitoredItemIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +147,7 @@ func (m *_SetMonitoringModeRequest) GetTypeName() string {
 }
 
 func (m *_SetMonitoringModeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -172,103 +173,52 @@ func (m *_SetMonitoringModeRequest) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SetMonitoringModeRequestParse(ctx context.Context, theBytes []byte, identifier string) (SetMonitoringModeRequest, error) {
-	return SetMonitoringModeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func SetMonitoringModeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetMonitoringModeRequest, error) {
+func (m *_SetMonitoringModeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setMonitoringModeRequest SetMonitoringModeRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetMonitoringModeRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetMonitoringModeRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of SetMonitoringModeRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SetMonitoringModeRequest")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
+	m.SubscriptionId = subscriptionId
 
-	// Simple Field (monitoringMode)
-	if pullErr := readBuffer.PullContext("monitoringMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoringMode")
+	monitoringMode, err := ReadEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", ReadEnum(MonitoringModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoringMode' field"))
 	}
-	_monitoringMode, _monitoringModeErr := MonitoringModeParseWithBuffer(ctx, readBuffer)
-	if _monitoringModeErr != nil {
-		return nil, errors.Wrap(_monitoringModeErr, "Error parsing 'monitoringMode' field of SetMonitoringModeRequest")
-	}
-	monitoringMode := _monitoringMode
-	if closeErr := readBuffer.CloseContext("monitoringMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoringMode")
-	}
+	m.MonitoringMode = monitoringMode
 
-	// Simple Field (noOfMonitoredItemIds)
-	_noOfMonitoredItemIds, _noOfMonitoredItemIdsErr := readBuffer.ReadInt32("noOfMonitoredItemIds", 32)
-	if _noOfMonitoredItemIdsErr != nil {
-		return nil, errors.Wrap(_noOfMonitoredItemIdsErr, "Error parsing 'noOfMonitoredItemIds' field of SetMonitoringModeRequest")
+	noOfMonitoredItemIds, err := ReadSimpleField(ctx, "noOfMonitoredItemIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMonitoredItemIds' field"))
 	}
-	noOfMonitoredItemIds := _noOfMonitoredItemIds
+	m.NoOfMonitoredItemIds = noOfMonitoredItemIds
 
-	// Array field (monitoredItemIds)
-	if pullErr := readBuffer.PullContext("monitoredItemIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoredItemIds")
+	monitoredItemIds, err := ReadCountArrayField[uint32](ctx, "monitoredItemIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfMonitoredItemIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemIds' field"))
 	}
-	// Count array
-	monitoredItemIds := make([]uint32, max(noOfMonitoredItemIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(monitoredItemIds) == 0 {
-		monitoredItemIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfMonitoredItemIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'monitoredItemIds' field of SetMonitoringModeRequest")
-			}
-			monitoredItemIds[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("monitoredItemIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoredItemIds")
-	}
+	m.MonitoredItemIds = monitoredItemIds
 
 	if closeErr := readBuffer.CloseContext("SetMonitoringModeRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SetMonitoringModeRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SetMonitoringModeRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		SubscriptionId:             subscriptionId,
-		MonitoringMode:             monitoringMode,
-		NoOfMonitoredItemIds:       noOfMonitoredItemIds,
-		MonitoredItemIds:           monitoredItemIds,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SetMonitoringModeRequest) Serialize() ([]byte, error) {
@@ -289,57 +239,24 @@ func (m *_SetMonitoringModeRequest) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for SetMonitoringModeRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (subscriptionId)
-		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
-		if _subscriptionIdErr != nil {
-			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		// Simple Field (monitoringMode)
-		if pushErr := writeBuffer.PushContext("monitoringMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoringMode")
-		}
-		_monitoringModeErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoringMode())
-		if popErr := writeBuffer.PopContext("monitoringMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoringMode")
-		}
-		if _monitoringModeErr != nil {
-			return errors.Wrap(_monitoringModeErr, "Error serializing 'monitoringMode' field")
+		if err := WriteSimpleEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", m.GetMonitoringMode(), WriteEnum[MonitoringMode, uint32](MonitoringMode.GetValue, MonitoringMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoringMode' field")
 		}
 
-		// Simple Field (noOfMonitoredItemIds)
-		noOfMonitoredItemIds := int32(m.GetNoOfMonitoredItemIds())
-		_noOfMonitoredItemIdsErr := writeBuffer.WriteInt32("noOfMonitoredItemIds", 32, int32((noOfMonitoredItemIds)))
-		if _noOfMonitoredItemIdsErr != nil {
-			return errors.Wrap(_noOfMonitoredItemIdsErr, "Error serializing 'noOfMonitoredItemIds' field")
+		if err := WriteSimpleField[int32](ctx, "noOfMonitoredItemIds", m.GetNoOfMonitoredItemIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfMonitoredItemIds' field")
 		}
 
-		// Array Field (monitoredItemIds)
-		if pushErr := writeBuffer.PushContext("monitoredItemIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoredItemIds")
-		}
-		for _curItem, _element := range m.GetMonitoredItemIds() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'monitoredItemIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("monitoredItemIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoredItemIds")
+		if err := WriteSimpleTypeArrayField(ctx, "monitoredItemIds", m.GetMonitoredItemIds(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredItemIds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SetMonitoringModeRequest"); popErr != nil {
@@ -347,12 +264,10 @@ func (m *_SetMonitoringModeRequest) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SetMonitoringModeRequest) isSetMonitoringModeRequest() bool {
-	return true
-}
+func (m *_SetMonitoringModeRequest) IsSetMonitoringModeRequest() {}
 
 func (m *_SetMonitoringModeRequest) String() string {
 	if m == nil {

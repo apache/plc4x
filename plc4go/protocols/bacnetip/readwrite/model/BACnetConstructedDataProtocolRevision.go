@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataProtocolRevision interface {
 	GetProtocolRevision() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataProtocolRevisionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolRevision.
-// This is useful for switch cases.
-type BACnetConstructedDataProtocolRevisionExactly interface {
-	BACnetConstructedDataProtocolRevision
-	isBACnetConstructedDataProtocolRevision() bool
+	// IsBACnetConstructedDataProtocolRevision is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProtocolRevision()
 }
 
 // _BACnetConstructedDataProtocolRevision is the data-structure of this message
 type _BACnetConstructedDataProtocolRevision struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ProtocolRevision BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataProtocolRevision = (*_BACnetConstructedDataProtocolRevision)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolRevision)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataProtocolRevision) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataProtocolRevision) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataProtocolRevision) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataProtocolRevision) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataProtocolRevision) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataProtocolRevision factory function for _BACnetConstructedDataProtocolRevision
 func NewBACnetConstructedDataProtocolRevision(protocolRevision BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolRevision {
-	_result := &_BACnetConstructedDataProtocolRevision{
-		ProtocolRevision:       protocolRevision,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if protocolRevision == nil {
+		panic("protocolRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolRevision must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataProtocolRevision{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolRevision:              protocolRevision,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataProtocolRevision) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataProtocolRevision) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (protocolRevision)
 	lengthInBits += m.ProtocolRevision.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataProtocolRevision) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataProtocolRevisionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolRevision, error) {
-	return BACnetConstructedDataProtocolRevisionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataProtocolRevisionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolRevision, error) {
+func (m *_BACnetConstructedDataProtocolRevision) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProtocolRevision BACnetConstructedDataProtocolRevision, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProtocolRevision")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolRevision)
-	if pullErr := readBuffer.PullContext("protocolRevision"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolRevision")
+	protocolRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "protocolRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolRevision' field"))
 	}
-	_protocolRevision, _protocolRevisionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _protocolRevisionErr != nil {
-		return nil, errors.Wrap(_protocolRevisionErr, "Error parsing 'protocolRevision' field of BACnetConstructedDataProtocolRevision")
-	}
-	protocolRevision := _protocolRevision.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("protocolRevision"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolRevision")
-	}
+	m.ProtocolRevision = protocolRevision
 
-	// Virtual field
-	_actualValue := protocolRevision
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), protocolRevision)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolRevision")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataProtocolRevision{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ProtocolRevision: protocolRevision,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataProtocolRevision) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataProtocolRevision) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolRevision")
 		}
 
-		// Simple Field (protocolRevision)
-		if pushErr := writeBuffer.PushContext("protocolRevision"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolRevision")
-		}
-		_protocolRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolRevision())
-		if popErr := writeBuffer.PopContext("protocolRevision"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolRevision")
-		}
-		if _protocolRevisionErr != nil {
-			return errors.Wrap(_protocolRevisionErr, "Error serializing 'protocolRevision' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "protocolRevision", m.GetProtocolRevision(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolRevision' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataProtocolRevision) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataProtocolRevision) isBACnetConstructedDataProtocolRevision() bool {
-	return true
-}
+func (m *_BACnetConstructedDataProtocolRevision) IsBACnetConstructedDataProtocolRevision() {}
 
 func (m *_BACnetConstructedDataProtocolRevision) String() string {
 	if m == nil {

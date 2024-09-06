@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,21 +45,19 @@ type BACnetConstructedDataAlarmValues interface {
 	GetAlarmValues() []BACnetLifeSafetyStateTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-}
-
-// BACnetConstructedDataAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAlarmValues.
-// This is useful for switch cases.
-type BACnetConstructedDataAlarmValuesExactly interface {
-	BACnetConstructedDataAlarmValues
-	isBACnetConstructedDataAlarmValues() bool
+	// IsBACnetConstructedDataAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAlarmValues()
 }
 
 // _BACnetConstructedDataAlarmValues is the data-structure of this message
 type _BACnetConstructedDataAlarmValues struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	AlarmValues          []BACnetLifeSafetyStateTagged
 }
+
+var _ BACnetConstructedDataAlarmValues = (*_BACnetConstructedDataAlarmValues)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlarmValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +77,8 @@ func (m *_BACnetConstructedDataAlarmValues) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAlarmValues) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAlarmValues) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAlarmValues) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,7 +106,7 @@ func (m *_BACnetConstructedDataAlarmValues) GetAlarmValues() []BACnetLifeSafetyS
 func (m *_BACnetConstructedDataAlarmValues) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -126,11 +119,11 @@ func (m *_BACnetConstructedDataAlarmValues) GetZero() uint64 {
 // NewBACnetConstructedDataAlarmValues factory function for _BACnetConstructedDataAlarmValues
 func NewBACnetConstructedDataAlarmValues(numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetLifeSafetyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValues {
 	_result := &_BACnetConstructedDataAlarmValues{
-		NumberOfDataElements:   numberOfDataElements,
-		AlarmValues:            alarmValues,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		AlarmValues:                   alarmValues,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -150,7 +143,7 @@ func (m *_BACnetConstructedDataAlarmValues) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -173,82 +166,44 @@ func (m *_BACnetConstructedDataAlarmValues) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAlarmValuesParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlarmValues, error) {
-	return BACnetConstructedDataAlarmValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlarmValues, error) {
+func (m *_BACnetConstructedDataAlarmValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAlarmValues BACnetConstructedDataAlarmValues, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAlarmValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 	_ = zero
 
-	// Optional Field (numberOfDataElements) (Can be skipped, if a given expression evaluates to false)
-	var numberOfDataElements BACnetApplicationTagUnsignedInteger = nil
-	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
-		}
-		_val, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataAlarmValues")
-		default:
-			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
-			}
-		}
+	var numberOfDataElements BACnetApplicationTagUnsignedInteger
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
+	}
+	if _numberOfDataElements != nil {
+		numberOfDataElements = *_numberOfDataElements
+		m.NumberOfDataElements = numberOfDataElements
 	}
 
-	// Array field (alarmValues)
-	if pullErr := readBuffer.PullContext("alarmValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
+	alarmValues, err := ReadTerminatedArrayField[BACnetLifeSafetyStateTagged](ctx, "alarmValues", ReadComplex[BACnetLifeSafetyStateTagged](BACnetLifeSafetyStateTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmValues' field"))
 	}
-	// Terminated array
-	var alarmValues []BACnetLifeSafetyStateTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLifeSafetyStateTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetConstructedDataAlarmValues")
-			}
-			alarmValues = append(alarmValues, _item.(BACnetLifeSafetyStateTagged))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("alarmValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alarmValues")
-	}
+	m.AlarmValues = alarmValues
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAlarmValues"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAlarmValues")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAlarmValues{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NumberOfDataElements: numberOfDataElements,
-		AlarmValues:          alarmValues,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAlarmValues) Serialize() ([]byte, error) {
@@ -275,37 +230,12 @@ func (m *_BACnetConstructedDataAlarmValues) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		// Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-		var numberOfDataElements BACnetApplicationTagUnsignedInteger = nil
-		if m.GetNumberOfDataElements() != nil {
-			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
-			}
-			numberOfDataElements = m.GetNumberOfDataElements()
-			_numberOfDataElementsErr := writeBuffer.WriteSerializable(ctx, numberOfDataElements)
-			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
-			}
-			if _numberOfDataElementsErr != nil {
-				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
-			}
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 
-		// Array Field (alarmValues)
-		if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmValues")
-		}
-		for _curItem, _element := range m.GetAlarmValues() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAlarmValues()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmValues")
+		if err := WriteComplexTypeArrayField(ctx, "alarmValues", m.GetAlarmValues(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAlarmValues"); popErr != nil {
@@ -313,12 +243,10 @@ func (m *_BACnetConstructedDataAlarmValues) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAlarmValues) isBACnetConstructedDataAlarmValues() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAlarmValues) IsBACnetConstructedDataAlarmValues() {}
 
 func (m *_BACnetConstructedDataAlarmValues) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetDateTime interface {
 	GetDateValue() BACnetApplicationTagDate
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
-}
-
-// BACnetDateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetDateTime.
-// This is useful for switch cases.
-type BACnetDateTimeExactly interface {
-	BACnetDateTime
-	isBACnetDateTime() bool
+	// IsBACnetDateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDateTime()
 }
 
 // _BACnetDateTime is the data-structure of this message
@@ -54,6 +51,8 @@ type _BACnetDateTime struct {
 	DateValue BACnetApplicationTagDate
 	TimeValue BACnetApplicationTagTime
 }
+
+var _ BACnetDateTime = (*_BACnetDateTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,12 @@ func (m *_BACnetDateTime) GetTimeValue() BACnetApplicationTagTime {
 
 // NewBACnetDateTime factory function for _BACnetDateTime
 func NewBACnetDateTime(dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime) *_BACnetDateTime {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetDateTime must not be nil")
+	}
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetDateTime must not be nil")
+	}
 	return &_BACnetDateTime{DateValue: dateValue, TimeValue: timeValue}
 }
 
@@ -113,52 +118,46 @@ func BACnetDateTimeParse(ctx context.Context, theBytes []byte) (BACnetDateTime, 
 	return BACnetDateTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetDateTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
+		return BACnetDateTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetDateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
+	v, err := (&_BACnetDateTime{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetDateTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetDateTime BACnetDateTime, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetDateTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDateTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dateValue)
-	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
+	dateValue, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "dateValue", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateValue' field"))
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetDateTime")
-	}
-	dateValue := _dateValue.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateValue")
-	}
+	m.DateValue = dateValue
 
-	// Simple Field (timeValue)
-	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
+	timeValue, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "timeValue", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeValue' field"))
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timeValueErr != nil {
-		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetDateTime")
-	}
-	timeValue := _timeValue.(BACnetApplicationTagTime)
-	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeValue")
-	}
+	m.TimeValue = timeValue
 
 	if closeErr := readBuffer.CloseContext("BACnetDateTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDateTime")
 	}
 
-	// Create the instance
-	return &_BACnetDateTime{
-		DateValue: dateValue,
-		TimeValue: timeValue,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetDateTime) Serialize() ([]byte, error) {
@@ -178,28 +177,12 @@ func (m *_BACnetDateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for BACnetDateTime")
 	}
 
-	// Simple Field (dateValue)
-	if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for dateValue")
-	}
-	_dateValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateValue())
-	if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for dateValue")
-	}
-	if _dateValueErr != nil {
-		return errors.Wrap(_dateValueErr, "Error serializing 'dateValue' field")
+	if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "dateValue", m.GetDateValue(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dateValue' field")
 	}
 
-	// Simple Field (timeValue)
-	if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeValue")
-	}
-	_timeValueErr := writeBuffer.WriteSerializable(ctx, m.GetTimeValue())
-	if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeValue")
-	}
-	if _timeValueErr != nil {
-		return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
+	if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "timeValue", m.GetTimeValue(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDateTime"); popErr != nil {
@@ -208,9 +191,7 @@ func (m *_BACnetDateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return nil
 }
 
-func (m *_BACnetDateTime) isBACnetDateTime() bool {
-	return true
-}
+func (m *_BACnetDateTime) IsBACnetDateTime() {}
 
 func (m *_BACnetDateTime) String() string {
 	if m == nil {

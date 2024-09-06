@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,19 +40,16 @@ type TwoByteNodeId interface {
 	utils.Serializable
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() uint8
-}
-
-// TwoByteNodeIdExactly can be used when we want exactly this type and not a type which fulfills TwoByteNodeId.
-// This is useful for switch cases.
-type TwoByteNodeIdExactly interface {
-	TwoByteNodeId
-	isTwoByteNodeId() bool
+	// IsTwoByteNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTwoByteNodeId()
 }
 
 // _TwoByteNodeId is the data-structure of this message
 type _TwoByteNodeId struct {
 	Identifier uint8
 }
+
+var _ TwoByteNodeId = (*_TwoByteNodeId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func TwoByteNodeIdParse(ctx context.Context, theBytes []byte) (TwoByteNodeId, er
 	return TwoByteNodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TwoByteNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TwoByteNodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TwoByteNodeId, error) {
+		return TwoByteNodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TwoByteNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TwoByteNodeId, error) {
+	v, err := (&_TwoByteNodeId{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_TwoByteNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__twoByteNodeId TwoByteNodeId, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TwoByteNodeId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TwoByteNodeId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (identifier)
-	_identifier, _identifierErr := readBuffer.ReadUint8("identifier", 8)
-	if _identifierErr != nil {
-		return nil, errors.Wrap(_identifierErr, "Error parsing 'identifier' field of TwoByteNodeId")
+	identifier, err := ReadSimpleField(ctx, "identifier", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
-	identifier := _identifier
+	m.Identifier = identifier
 
 	if closeErr := readBuffer.CloseContext("TwoByteNodeId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TwoByteNodeId")
 	}
 
-	// Create the instance
-	return &_TwoByteNodeId{
-		Identifier: identifier,
-	}, nil
+	return m, nil
 }
 
 func (m *_TwoByteNodeId) Serialize() ([]byte, error) {
@@ -148,11 +155,8 @@ func (m *_TwoByteNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for TwoByteNodeId")
 	}
 
-	// Simple Field (identifier)
-	identifier := uint8(m.GetIdentifier())
-	_identifierErr := writeBuffer.WriteUint8("identifier", 8, uint8((identifier)))
-	if _identifierErr != nil {
-		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
+	if err := WriteSimpleField[uint8](ctx, "identifier", m.GetIdentifier(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'identifier' field")
 	}
 
 	if popErr := writeBuffer.PopContext("TwoByteNodeId"); popErr != nil {
@@ -161,9 +165,7 @@ func (m *_TwoByteNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_TwoByteNodeId) isTwoByteNodeId() bool {
-	return true
-}
+func (m *_TwoByteNodeId) IsTwoByteNodeId() {}
 
 func (m *_TwoByteNodeId) String() string {
 	if m == nil {

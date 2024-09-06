@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetNetworkNumberQualityTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetNetworkNumberQuality
-}
-
-// BACnetNetworkNumberQualityTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkNumberQualityTagged.
-// This is useful for switch cases.
-type BACnetNetworkNumberQualityTaggedExactly interface {
-	BACnetNetworkNumberQualityTagged
-	isBACnetNetworkNumberQualityTagged() bool
+	// IsBACnetNetworkNumberQualityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNetworkNumberQualityTagged()
 }
 
 // _BACnetNetworkNumberQualityTagged is the data-structure of this message
@@ -58,6 +55,8 @@ type _BACnetNetworkNumberQualityTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetNetworkNumberQualityTagged = (*_BACnetNetworkNumberQualityTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,6 +78,9 @@ func (m *_BACnetNetworkNumberQualityTagged) GetValue() BACnetNetworkNumberQualit
 
 // NewBACnetNetworkNumberQualityTagged factory function for _BACnetNetworkNumberQualityTagged
 func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality, tagNumber uint8, tagClass TagClass) *_BACnetNetworkNumberQualityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNetworkNumberQualityTagged must not be nil")
+	}
 	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -117,61 +119,56 @@ func BACnetNetworkNumberQualityTaggedParse(ctx context.Context, theBytes []byte,
 	return BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetNetworkNumberQualityTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkNumberQualityTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkNumberQualityTagged, error) {
+		return BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {
+	v, err := (&_BACnetNetworkNumberQualityTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetNetworkNumberQualityTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetNetworkNumberQualityTagged BACnetNetworkNumberQualityTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNetworkNumberQualityTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNetworkNumberQualityTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetNetworkNumberQualityTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNetworkNumberQuality_UNKNOWN)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNetworkNumberQualityTagged")
+	value, err := ReadManualField[BACnetNetworkNumberQuality](ctx, "value", readBuffer, EnsureType[BACnetNetworkNumberQuality](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNetworkNumberQuality_UNKNOWN)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetNetworkNumberQuality
-	if _value != nil {
-		value = _value.(BACnetNetworkNumberQuality)
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetNetworkNumberQualityTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNetworkNumberQualityTagged")
 	}
 
-	// Create the instance
-	return &_BACnetNetworkNumberQualityTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Value:     value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetNetworkNumberQualityTagged) Serialize() ([]byte, error) {
@@ -191,22 +188,12 @@ func (m *_BACnetNetworkNumberQualityTagged) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(pushErr, "Error pushing for BACnetNetworkNumberQualityTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetNetworkNumberQuality](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNetworkNumberQualityTagged"); popErr != nil {
@@ -228,9 +215,7 @@ func (m *_BACnetNetworkNumberQualityTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetNetworkNumberQualityTagged) isBACnetNetworkNumberQualityTagged() bool {
-	return true
-}
+func (m *_BACnetNetworkNumberQualityTagged) IsBACnetNetworkNumberQualityTagged() {}
 
 func (m *_BACnetNetworkNumberQualityTagged) String() string {
 	if m == nil {

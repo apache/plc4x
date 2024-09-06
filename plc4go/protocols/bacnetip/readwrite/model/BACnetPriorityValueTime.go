@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPriorityValueTime interface {
 	BACnetPriorityValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
-}
-
-// BACnetPriorityValueTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueTime.
-// This is useful for switch cases.
-type BACnetPriorityValueTimeExactly interface {
-	BACnetPriorityValueTime
-	isBACnetPriorityValueTime() bool
+	// IsBACnetPriorityValueTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueTime()
 }
 
 // _BACnetPriorityValueTime is the data-structure of this message
 type _BACnetPriorityValueTime struct {
-	*_BACnetPriorityValue
+	BACnetPriorityValueContract
 	TimeValue BACnetApplicationTagTime
 }
+
+var _ BACnetPriorityValueTime = (*_BACnetPriorityValueTime)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPriorityValueTime struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPriorityValueTime) InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPriorityValueTime) GetParent() BACnetPriorityValue {
-	return m._BACnetPriorityValue
+func (m *_BACnetPriorityValueTime) GetParent() BACnetPriorityValueContract {
+	return m.BACnetPriorityValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPriorityValueTime) GetTimeValue() BACnetApplicationTagTime {
 
 // NewBACnetPriorityValueTime factory function for _BACnetPriorityValueTime
 func NewBACnetPriorityValueTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueTime {
-	_result := &_BACnetPriorityValueTime{
-		TimeValue:            timeValue,
-		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetPriorityValueTime must not be nil")
 	}
-	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result
+	_result := &_BACnetPriorityValueTime{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		TimeValue:                   timeValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPriorityValueTime) GetTypeName() string {
 }
 
 func (m *_BACnetPriorityValueTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (timeValue)
 	lengthInBits += m.TimeValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetPriorityValueTime) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueTimeParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueTime, error) {
-	return BACnetPriorityValueTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetPriorityValueTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueTime, error) {
+func (m *_BACnetPriorityValueTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueTime BACnetPriorityValueTime, err error) {
+	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeValue)
-	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
+	timeValue, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "timeValue", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeValue' field"))
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timeValueErr != nil {
-		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetPriorityValueTime")
-	}
-	timeValue := _timeValue.(BACnetApplicationTagTime)
-	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeValue")
-	}
+	m.TimeValue = timeValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPriorityValueTime{
-		_BACnetPriorityValue: &_BACnetPriorityValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		TimeValue: timeValue,
-	}
-	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPriorityValueTime) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetPriorityValueTime) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueTime")
 		}
 
-		// Simple Field (timeValue)
-		if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeValue")
-		}
-		_timeValueErr := writeBuffer.WriteSerializable(ctx, m.GetTimeValue())
-		if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeValue")
-		}
-		if _timeValueErr != nil {
-			return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "timeValue", m.GetTimeValue(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueTime"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetPriorityValueTime) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPriorityValueContract.(*_BACnetPriorityValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPriorityValueTime) isBACnetPriorityValueTime() bool {
-	return true
-}
+func (m *_BACnetPriorityValueTime) IsBACnetPriorityValueTime() {}
 
 func (m *_BACnetPriorityValueTime) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,13 +50,8 @@ type Alarm8MessageQueryType interface {
 	GetByteCount() uint16
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectQueryType
-}
-
-// Alarm8MessageQueryTypeExactly can be used when we want exactly this type and not a type which fulfills Alarm8MessageQueryType.
-// This is useful for switch cases.
-type Alarm8MessageQueryTypeExactly interface {
-	Alarm8MessageQueryType
-	isAlarm8MessageQueryType() bool
+	// IsAlarm8MessageQueryType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarm8MessageQueryType()
 }
 
 // _Alarm8MessageQueryType is the data-structure of this message
@@ -66,6 +63,8 @@ type _Alarm8MessageQueryType struct {
 	ByteCount       uint16
 	MessageObjects  []AlarmMessageObjectQueryType
 }
+
+var _ Alarm8MessageQueryType = (*_Alarm8MessageQueryType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -160,104 +159,70 @@ func Alarm8MessageQueryTypeParse(ctx context.Context, theBytes []byte) (Alarm8Me
 	return Alarm8MessageQueryTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func Alarm8MessageQueryTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Alarm8MessageQueryType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Alarm8MessageQueryType, error) {
+		return Alarm8MessageQueryTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func Alarm8MessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alarm8MessageQueryType, error) {
+	v, err := (&_Alarm8MessageQueryType{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_Alarm8MessageQueryType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alarm8MessageQueryType Alarm8MessageQueryType, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Alarm8MessageQueryType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Alarm8MessageQueryType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (functionId)
-	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
-	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of Alarm8MessageQueryType")
+	functionId, err := ReadSimpleField(ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
-	functionId := _functionId
+	m.FunctionId = functionId
 
-	// Simple Field (numberOfObjects)
-	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
-	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of Alarm8MessageQueryType")
+	numberOfObjects, err := ReadSimpleField(ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}
-	numberOfObjects := _numberOfObjects
+	m.NumberOfObjects = numberOfObjects
 
-	// Simple Field (returnCode)
-	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
+	returnCode, err := ReadEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", ReadEnum(DataTransportErrorCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnCode' field"))
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
-	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of Alarm8MessageQueryType")
-	}
-	returnCode := _returnCode
-	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
-	}
+	m.ReturnCode = returnCode
 
-	// Simple Field (transportSize)
-	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
+	transportSize, err := ReadEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", ReadEnum(DataTransportSizeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
-	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of Alarm8MessageQueryType")
-	}
-	transportSize := _transportSize
-	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
-	}
+	m.TransportSize = transportSize
 
-	// Simple Field (byteCount)
-	_byteCount, _byteCountErr := readBuffer.ReadUint16("byteCount", 16)
-	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of Alarm8MessageQueryType")
+	byteCount, err := ReadSimpleField(ctx, "byteCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}
-	byteCount := _byteCount
+	m.ByteCount = byteCount
 
-	// Array field (messageObjects)
-	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
+	messageObjects, err := ReadCountArrayField[AlarmMessageObjectQueryType](ctx, "messageObjects", ReadComplex[AlarmMessageObjectQueryType](AlarmMessageObjectQueryTypeParseWithBuffer, readBuffer), uint64(int32(byteCount)/int32(int32(12))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageObjects' field"))
 	}
-	// Count array
-	messageObjects := make([]AlarmMessageObjectQueryType, max(uint16(byteCount)/uint16(uint16(12)), 0))
-	// This happens when the size is set conditional to 0
-	if len(messageObjects) == 0 {
-		messageObjects = nil
-	}
-	{
-		_numItems := uint16(max(uint16(byteCount)/uint16(uint16(12)), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AlarmMessageObjectQueryTypeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of Alarm8MessageQueryType")
-			}
-			messageObjects[_curItem] = _item.(AlarmMessageObjectQueryType)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
-	}
+	m.MessageObjects = messageObjects
 
 	if closeErr := readBuffer.CloseContext("Alarm8MessageQueryType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Alarm8MessageQueryType")
 	}
 
-	// Create the instance
-	return &_Alarm8MessageQueryType{
-		FunctionId:      functionId,
-		NumberOfObjects: numberOfObjects,
-		ReturnCode:      returnCode,
-		TransportSize:   transportSize,
-		ByteCount:       byteCount,
-		MessageObjects:  messageObjects,
-	}, nil
+	return m, nil
 }
 
 func (m *_Alarm8MessageQueryType) Serialize() ([]byte, error) {
@@ -277,66 +242,28 @@ func (m *_Alarm8MessageQueryType) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(pushErr, "Error pushing for Alarm8MessageQueryType")
 	}
 
-	// Simple Field (functionId)
-	functionId := uint8(m.GetFunctionId())
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
-	if _functionIdErr != nil {
-		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+	if err := WriteSimpleField[uint8](ctx, "functionId", m.GetFunctionId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
-	// Simple Field (numberOfObjects)
-	numberOfObjects := uint8(m.GetNumberOfObjects())
-	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
-	if _numberOfObjectsErr != nil {
-		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
+	if err := WriteSimpleField[uint8](ctx, "numberOfObjects", m.GetNumberOfObjects(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberOfObjects' field")
 	}
 
-	// Simple Field (returnCode)
-	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for returnCode")
-	}
-	_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
-	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for returnCode")
-	}
-	if _returnCodeErr != nil {
-		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
+	if err := WriteSimpleEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", m.GetReturnCode(), WriteEnum[DataTransportErrorCode, uint8](DataTransportErrorCode.GetValue, DataTransportErrorCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'returnCode' field")
 	}
 
-	// Simple Field (transportSize)
-	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for transportSize")
-	}
-	_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
-	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for transportSize")
-	}
-	if _transportSizeErr != nil {
-		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+	if err := WriteSimpleEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", m.GetTransportSize(), WriteEnum[DataTransportSize, uint8](DataTransportSize.GetValue, DataTransportSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'transportSize' field")
 	}
 
-	// Simple Field (byteCount)
-	byteCount := uint16(m.GetByteCount())
-	_byteCountErr := writeBuffer.WriteUint16("byteCount", 16, uint16((byteCount)))
-	if _byteCountErr != nil {
-		return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
+	if err := WriteSimpleField[uint16](ctx, "byteCount", m.GetByteCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'byteCount' field")
 	}
 
-	// Array Field (messageObjects)
-	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for messageObjects")
-	}
-	for _curItem, _element := range m.GetMessageObjects() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for messageObjects")
+	if err := WriteComplexTypeArrayField(ctx, "messageObjects", m.GetMessageObjects(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageObjects' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Alarm8MessageQueryType"); popErr != nil {
@@ -345,9 +272,7 @@ func (m *_Alarm8MessageQueryType) SerializeWithWriteBuffer(ctx context.Context, 
 	return nil
 }
 
-func (m *_Alarm8MessageQueryType) isAlarm8MessageQueryType() bool {
-	return true
-}
+func (m *_Alarm8MessageQueryType) IsAlarm8MessageQueryType() {}
 
 func (m *_Alarm8MessageQueryType) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type TunnelingRequestDataBlock interface {
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
 	GetSequenceCounter() uint8
-}
-
-// TunnelingRequestDataBlockExactly can be used when we want exactly this type and not a type which fulfills TunnelingRequestDataBlock.
-// This is useful for switch cases.
-type TunnelingRequestDataBlockExactly interface {
-	TunnelingRequestDataBlock
-	isTunnelingRequestDataBlock() bool
+	// IsTunnelingRequestDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTunnelingRequestDataBlock()
 }
 
 // _TunnelingRequestDataBlock is the data-structure of this message
@@ -56,6 +53,8 @@ type _TunnelingRequestDataBlock struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ TunnelingRequestDataBlock = (*_TunnelingRequestDataBlock)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -121,65 +120,58 @@ func TunnelingRequestDataBlockParse(ctx context.Context, theBytes []byte) (Tunne
 	return TunnelingRequestDataBlockParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TunnelingRequestDataBlockParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
+		return TunnelingRequestDataBlockParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TunnelingRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
+	v, err := (&_TunnelingRequestDataBlock{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_TunnelingRequestDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__tunnelingRequestDataBlock TunnelingRequestDataBlock, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TunnelingRequestDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TunnelingRequestDataBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
+	}
 	_ = structureLength
-	if _structureLengthErr != nil {
-		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of TunnelingRequestDataBlock")
-	}
 
-	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
-	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of TunnelingRequestDataBlock")
+	communicationChannelId, err := ReadSimpleField(ctx, "communicationChannelId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'communicationChannelId' field"))
 	}
-	communicationChannelId := _communicationChannelId
+	m.CommunicationChannelId = communicationChannelId
 
-	// Simple Field (sequenceCounter)
-	_sequenceCounter, _sequenceCounterErr := readBuffer.ReadUint8("sequenceCounter", 8)
-	if _sequenceCounterErr != nil {
-		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field of TunnelingRequestDataBlock")
+	sequenceCounter, err := ReadSimpleField(ctx, "sequenceCounter", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceCounter' field"))
 	}
-	sequenceCounter := _sequenceCounter
+	m.SequenceCounter = sequenceCounter
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TunnelingRequestDataBlock")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
 	if closeErr := readBuffer.CloseContext("TunnelingRequestDataBlock"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TunnelingRequestDataBlock")
 	}
 
-	// Create the instance
-	return &_TunnelingRequestDataBlock{
-		CommunicationChannelId: communicationChannelId,
-		SequenceCounter:        sequenceCounter,
-		reservedField0:         reservedField0,
-	}, nil
+	return m, nil
 }
 
 func (m *_TunnelingRequestDataBlock) Serialize() ([]byte, error) {
@@ -198,42 +190,21 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 	if pushErr := writeBuffer.PushContext("TunnelingRequestDataBlock"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for TunnelingRequestDataBlock")
 	}
-
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
-	if _structureLengthErr != nil {
-		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
+	if err := WriteImplicitField(ctx, "structureLength", structureLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (communicationChannelId)
-	communicationChannelId := uint8(m.GetCommunicationChannelId())
-	_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
-	if _communicationChannelIdErr != nil {
-		return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
+	if err := WriteSimpleField[uint8](ctx, "communicationChannelId", m.GetCommunicationChannelId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'communicationChannelId' field")
 	}
 
-	// Simple Field (sequenceCounter)
-	sequenceCounter := uint8(m.GetSequenceCounter())
-	_sequenceCounterErr := writeBuffer.WriteUint8("sequenceCounter", 8, uint8((sequenceCounter)))
-	if _sequenceCounterErr != nil {
-		return errors.Wrap(_sequenceCounterErr, "Error serializing 'sequenceCounter' field")
+	if err := WriteSimpleField[uint8](ctx, "sequenceCounter", m.GetSequenceCounter(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sequenceCounter' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0x00)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
 	if popErr := writeBuffer.PopContext("TunnelingRequestDataBlock"); popErr != nil {
@@ -242,9 +213,7 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 	return nil
 }
 
-func (m *_TunnelingRequestDataBlock) isTunnelingRequestDataBlock() bool {
-	return true
-}
+func (m *_TunnelingRequestDataBlock) IsTunnelingRequestDataBlock() {}
 
 func (m *_TunnelingRequestDataBlock) String() string {
 	if m == nil {

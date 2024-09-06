@@ -68,7 +68,7 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
     writeBuffer.pushContext("BACnetLogRecordLogDatumRealValue");
 
     // Simple Field (realValue)
-    writeSimpleField("realValue", realValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("realValue", realValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecordLogDatumRealValue");
   }
@@ -99,7 +99,7 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
     BACnetContextTagReal realValue =
         readSimpleField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

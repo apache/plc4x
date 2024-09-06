@@ -72,7 +72,7 @@ type withCustomMessageHandler struct {
 	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultCodec
+//go:generate plc4xGenerator -type=defaultCodec
 type defaultCodec struct {
 	DefaultCodecRequirements `ignore:"true"`
 
@@ -87,10 +87,10 @@ type defaultCodec struct {
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
 
-	receiveTimeout                 time.Duration `stringer:"true"`
+	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {

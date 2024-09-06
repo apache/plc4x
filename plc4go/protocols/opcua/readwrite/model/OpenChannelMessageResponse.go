@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type OpenChannelMessageResponse interface {
 	GetSenderCertificate() PascalByteString
 	// GetReceiverCertificateThumbprint returns ReceiverCertificateThumbprint (property field)
 	GetReceiverCertificateThumbprint() PascalByteString
-}
-
-// OpenChannelMessageResponseExactly can be used when we want exactly this type and not a type which fulfills OpenChannelMessageResponse.
-// This is useful for switch cases.
-type OpenChannelMessageResponseExactly interface {
-	OpenChannelMessageResponse
-	isOpenChannelMessageResponse() bool
+	// IsOpenChannelMessageResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpenChannelMessageResponse()
 }
 
 // _OpenChannelMessageResponse is the data-structure of this message
 type _OpenChannelMessageResponse struct {
-	*_OpenChannelMessage
+	OpenChannelMessageContract
 	SecureChannelId               int32
 	SecurityPolicyUri             PascalString
 	SenderCertificate             PascalByteString
 	ReceiverCertificateThumbprint PascalByteString
 }
+
+var _ OpenChannelMessageResponse = (*_OpenChannelMessageResponse)(nil)
+var _ OpenChannelMessageRequirements = (*_OpenChannelMessageResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -77,10 +77,8 @@ func (m *_OpenChannelMessageResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpenChannelMessageResponse) InitializeParent(parent OpenChannelMessage) {}
-
-func (m *_OpenChannelMessageResponse) GetParent() OpenChannelMessage {
-	return m._OpenChannelMessage
+func (m *_OpenChannelMessageResponse) GetParent() OpenChannelMessageContract {
+	return m.OpenChannelMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,14 +109,23 @@ func (m *_OpenChannelMessageResponse) GetReceiverCertificateThumbprint() PascalB
 
 // NewOpenChannelMessageResponse factory function for _OpenChannelMessageResponse
 func NewOpenChannelMessageResponse(secureChannelId int32, securityPolicyUri PascalString, senderCertificate PascalByteString, receiverCertificateThumbprint PascalByteString) *_OpenChannelMessageResponse {
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for OpenChannelMessageResponse must not be nil")
+	}
+	if senderCertificate == nil {
+		panic("senderCertificate of type PascalByteString for OpenChannelMessageResponse must not be nil")
+	}
+	if receiverCertificateThumbprint == nil {
+		panic("receiverCertificateThumbprint of type PascalByteString for OpenChannelMessageResponse must not be nil")
+	}
 	_result := &_OpenChannelMessageResponse{
+		OpenChannelMessageContract:    NewOpenChannelMessage(),
 		SecureChannelId:               secureChannelId,
 		SecurityPolicyUri:             securityPolicyUri,
 		SenderCertificate:             senderCertificate,
 		ReceiverCertificateThumbprint: receiverCertificateThumbprint,
-		_OpenChannelMessage:           NewOpenChannelMessage(),
 	}
-	_result._OpenChannelMessage._OpenChannelMessageChildRequirements = _result
+	_result.OpenChannelMessageContract.(*_OpenChannelMessage)._SubType = _result
 	return _result
 }
 
@@ -138,7 +145,7 @@ func (m *_OpenChannelMessageResponse) GetTypeName() string {
 }
 
 func (m *_OpenChannelMessageResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.OpenChannelMessageContract.(*_OpenChannelMessage).getLengthInBits(ctx))
 
 	// Simple field (secureChannelId)
 	lengthInBits += 32
@@ -159,81 +166,46 @@ func (m *_OpenChannelMessageResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpenChannelMessageResponseParse(ctx context.Context, theBytes []byte, response bool) (OpenChannelMessageResponse, error) {
-	return OpenChannelMessageResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func OpenChannelMessageResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpenChannelMessageResponse, error) {
+func (m *_OpenChannelMessageResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_OpenChannelMessage, response bool) (__openChannelMessageResponse OpenChannelMessageResponse, err error) {
+	m.OpenChannelMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpenChannelMessageResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpenChannelMessageResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (secureChannelId)
-	_secureChannelId, _secureChannelIdErr := readBuffer.ReadInt32("secureChannelId", 32)
-	if _secureChannelIdErr != nil {
-		return nil, errors.Wrap(_secureChannelIdErr, "Error parsing 'secureChannelId' field of OpenChannelMessageResponse")
+	secureChannelId, err := ReadSimpleField(ctx, "secureChannelId", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secureChannelId' field"))
 	}
-	secureChannelId := _secureChannelId
+	m.SecureChannelId = secureChannelId
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of OpenChannelMessageResponse")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
-	}
+	m.SecurityPolicyUri = securityPolicyUri
 
-	// Simple Field (senderCertificate)
-	if pullErr := readBuffer.PullContext("senderCertificate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for senderCertificate")
+	senderCertificate, err := ReadSimpleField[PascalByteString](ctx, "senderCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'senderCertificate' field"))
 	}
-	_senderCertificate, _senderCertificateErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _senderCertificateErr != nil {
-		return nil, errors.Wrap(_senderCertificateErr, "Error parsing 'senderCertificate' field of OpenChannelMessageResponse")
-	}
-	senderCertificate := _senderCertificate.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("senderCertificate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for senderCertificate")
-	}
+	m.SenderCertificate = senderCertificate
 
-	// Simple Field (receiverCertificateThumbprint)
-	if pullErr := readBuffer.PullContext("receiverCertificateThumbprint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for receiverCertificateThumbprint")
+	receiverCertificateThumbprint, err := ReadSimpleField[PascalByteString](ctx, "receiverCertificateThumbprint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiverCertificateThumbprint' field"))
 	}
-	_receiverCertificateThumbprint, _receiverCertificateThumbprintErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _receiverCertificateThumbprintErr != nil {
-		return nil, errors.Wrap(_receiverCertificateThumbprintErr, "Error parsing 'receiverCertificateThumbprint' field of OpenChannelMessageResponse")
-	}
-	receiverCertificateThumbprint := _receiverCertificateThumbprint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("receiverCertificateThumbprint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for receiverCertificateThumbprint")
-	}
+	m.ReceiverCertificateThumbprint = receiverCertificateThumbprint
 
 	if closeErr := readBuffer.CloseContext("OpenChannelMessageResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpenChannelMessageResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_OpenChannelMessageResponse{
-		_OpenChannelMessage:           &_OpenChannelMessage{},
-		SecureChannelId:               secureChannelId,
-		SecurityPolicyUri:             securityPolicyUri,
-		SenderCertificate:             senderCertificate,
-		ReceiverCertificateThumbprint: receiverCertificateThumbprint,
-	}
-	_child._OpenChannelMessage._OpenChannelMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_OpenChannelMessageResponse) Serialize() ([]byte, error) {
@@ -254,47 +226,20 @@ func (m *_OpenChannelMessageResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for OpenChannelMessageResponse")
 		}
 
-		// Simple Field (secureChannelId)
-		secureChannelId := int32(m.GetSecureChannelId())
-		_secureChannelIdErr := writeBuffer.WriteInt32("secureChannelId", 32, int32((secureChannelId)))
-		if _secureChannelIdErr != nil {
-			return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
+		if err := WriteSimpleField[int32](ctx, "secureChannelId", m.GetSecureChannelId(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'secureChannelId' field")
 		}
 
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
-		// Simple Field (senderCertificate)
-		if pushErr := writeBuffer.PushContext("senderCertificate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for senderCertificate")
-		}
-		_senderCertificateErr := writeBuffer.WriteSerializable(ctx, m.GetSenderCertificate())
-		if popErr := writeBuffer.PopContext("senderCertificate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for senderCertificate")
-		}
-		if _senderCertificateErr != nil {
-			return errors.Wrap(_senderCertificateErr, "Error serializing 'senderCertificate' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "senderCertificate", m.GetSenderCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'senderCertificate' field")
 		}
 
-		// Simple Field (receiverCertificateThumbprint)
-		if pushErr := writeBuffer.PushContext("receiverCertificateThumbprint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for receiverCertificateThumbprint")
-		}
-		_receiverCertificateThumbprintErr := writeBuffer.WriteSerializable(ctx, m.GetReceiverCertificateThumbprint())
-		if popErr := writeBuffer.PopContext("receiverCertificateThumbprint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for receiverCertificateThumbprint")
-		}
-		if _receiverCertificateThumbprintErr != nil {
-			return errors.Wrap(_receiverCertificateThumbprintErr, "Error serializing 'receiverCertificateThumbprint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "receiverCertificateThumbprint", m.GetReceiverCertificateThumbprint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'receiverCertificateThumbprint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpenChannelMessageResponse"); popErr != nil {
@@ -302,12 +247,10 @@ func (m *_OpenChannelMessageResponse) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.OpenChannelMessageContract.(*_OpenChannelMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_OpenChannelMessageResponse) isOpenChannelMessageResponse() bool {
-	return true
-}
+func (m *_OpenChannelMessageResponse) IsOpenChannelMessageResponse() {}
 
 func (m *_OpenChannelMessageResponse) String() string {
 	if m == nil {

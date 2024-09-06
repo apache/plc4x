@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogDataLogDataEntryIntegerValue interface {
 	BACnetLogDataLogDataEntry
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
-}
-
-// BACnetLogDataLogDataEntryIntegerValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryIntegerValue.
-// This is useful for switch cases.
-type BACnetLogDataLogDataEntryIntegerValueExactly interface {
-	BACnetLogDataLogDataEntryIntegerValue
-	isBACnetLogDataLogDataEntryIntegerValue() bool
+	// IsBACnetLogDataLogDataEntryIntegerValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryIntegerValue()
 }
 
 // _BACnetLogDataLogDataEntryIntegerValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryIntegerValue struct {
-	*_BACnetLogDataLogDataEntry
+	BACnetLogDataLogDataEntryContract
 	IntegerValue BACnetContextTagSignedInteger
 }
+
+var _ BACnetLogDataLogDataEntryIntegerValue = (*_BACnetLogDataLogDataEntryIntegerValue)(nil)
+var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryIntegerValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetLogDataLogDataEntryIntegerValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogDataLogDataEntryIntegerValue) InitializeParent(parent BACnetLogDataLogDataEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetLogDataLogDataEntryIntegerValue) GetParent() BACnetLogDataLogDataEntry {
-	return m._BACnetLogDataLogDataEntry
+func (m *_BACnetLogDataLogDataEntryIntegerValue) GetParent() BACnetLogDataLogDataEntryContract {
+	return m.BACnetLogDataLogDataEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) GetIntegerValue() BACnetContext
 
 // NewBACnetLogDataLogDataEntryIntegerValue factory function for _BACnetLogDataLogDataEntryIntegerValue
 func NewBACnetLogDataLogDataEntryIntegerValue(integerValue BACnetContextTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryIntegerValue {
-	_result := &_BACnetLogDataLogDataEntryIntegerValue{
-		IntegerValue:               integerValue,
-		_BACnetLogDataLogDataEntry: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+	if integerValue == nil {
+		panic("integerValue of type BACnetContextTagSignedInteger for BACnetLogDataLogDataEntryIntegerValue must not be nil")
 	}
-	_result._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _result
+	_result := &_BACnetLogDataLogDataEntryIntegerValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		IntegerValue:                      integerValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogDataLogDataEntryIntegerValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
 
 	// Simple field (integerValue)
 	lengthInBits += m.IntegerValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogDataLogDataEntryIntegerValueParse(ctx context.Context, theBytes []byte) (BACnetLogDataLogDataEntryIntegerValue, error) {
-	return BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryIntegerValue, error) {
+func (m *_BACnetLogDataLogDataEntryIntegerValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogDataLogDataEntry) (__bACnetLogDataLogDataEntryIntegerValue BACnetLogDataLogDataEntryIntegerValue, err error) {
+	m.BACnetLogDataLogDataEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryIntegerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryIntegerValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (integerValue)
-	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
+	integerValue, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "integerValue", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagSignedInteger]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integerValue' field"))
 	}
-	_integerValue, _integerValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
-	if _integerValueErr != nil {
-		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetLogDataLogDataEntryIntegerValue")
-	}
-	integerValue := _integerValue.(BACnetContextTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for integerValue")
-	}
+	m.IntegerValue = integerValue
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryIntegerValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryIntegerValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogDataLogDataEntryIntegerValue{
-		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
-		IntegerValue:               integerValue,
-	}
-	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogDataLogDataEntryIntegerValue) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryIntegerValue")
 		}
 
-		// Simple Field (integerValue)
-		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for integerValue")
-		}
-		_integerValueErr := writeBuffer.WriteSerializable(ctx, m.GetIntegerValue())
-		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for integerValue")
-		}
-		if _integerValueErr != nil {
-			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
+		if err := WriteSimpleField[BACnetContextTagSignedInteger](ctx, "integerValue", m.GetIntegerValue(), WriteComplex[BACnetContextTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'integerValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryIntegerValue"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogDataLogDataEntryIntegerValue) isBACnetLogDataLogDataEntryIntegerValue() bool {
-	return true
-}
+func (m *_BACnetLogDataLogDataEntryIntegerValue) IsBACnetLogDataLogDataEntryIntegerValue() {}
 
 func (m *_BACnetLogDataLogDataEntryIntegerValue) String() string {
 	if m == nil {

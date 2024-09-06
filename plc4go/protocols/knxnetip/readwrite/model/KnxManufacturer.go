@@ -729,8 +729,9 @@ const (
 	KnxManufacturer_M_VITRUM_DESIGN                                      KnxManufacturer = 683
 	KnxManufacturer_M_DETRONS                                            KnxManufacturer = 684
 	KnxManufacturer_M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD   KnxManufacturer = 685
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 686
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 687
+	KnxManufacturer_M_VARNI_DIGITAL_PRIVATE_LIMITED                      KnxManufacturer = 686
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 687
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 688
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1424,6 +1425,7 @@ func init() {
 		KnxManufacturer_M_VITRUM_DESIGN,
 		KnxManufacturer_M_DETRONS,
 		KnxManufacturer_M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD,
+		KnxManufacturer_M_VARNI_DIGITAL_PRIVATE_LIMITED,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4041,10 +4043,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 686:
 		{ /* '686' */
-			return 43954
+			return 744
 		}
 	case 687:
 		{ /* '687' */
+			return 43954
+		}
+	case 688:
+		{ /* '688' */
 			return 43959
 		}
 	case 69:
@@ -4190,13 +4196,13 @@ func (e KnxManufacturer) Number() uint16 {
 	}
 }
 
-func KnxManufacturerFirstEnumForFieldNumber(value uint16) (KnxManufacturer, error) {
+func KnxManufacturerFirstEnumForFieldNumber(value uint16) (enum KnxManufacturer, ok bool) {
 	for _, sizeValue := range KnxManufacturerValues {
 		if sizeValue.Number() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Number not found", value)
+	return 0, false
 }
 
 func (e KnxManufacturer) Name() string {
@@ -6811,10 +6817,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 686:
 		{ /* '686' */
-			return "ABB - reserved"
+			return "Varni Digital Private Limited"
 		}
 	case 687:
 		{ /* '687' */
+			return "ABB - reserved"
+		}
+	case 688:
+		{ /* '688' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 69:
@@ -6960,13 +6970,13 @@ func (e KnxManufacturer) Name() string {
 	}
 }
 
-func KnxManufacturerFirstEnumForFieldName(value string) (KnxManufacturer, error) {
+func KnxManufacturerFirstEnumForFieldName(value string) (enum KnxManufacturer, ok bool) {
 	for _, sizeValue := range KnxManufacturerValues {
 		if sizeValue.Name() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Name not found", value)
+	return 0, false
 }
 func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	switch value {
@@ -8275,8 +8285,10 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 685:
 		return KnxManufacturer_M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD, true
 	case 686:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_VARNI_DIGITAL_PRIVATE_LIMITED, true
 	case 687:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 688:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 69:
 		return KnxManufacturer_M_EELECTRON, true
@@ -9656,6 +9668,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_DETRONS, true
 	case "M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD":
 		return KnxManufacturer_M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD, true
+	case "M_VARNI_DIGITAL_PRIVATE_LIMITED":
+		return KnxManufacturer_M_VARNI_DIGITAL_PRIVATE_LIMITED, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -9766,7 +9780,7 @@ func KnxManufacturerParse(ctx context.Context, theBytes []byte) (KnxManufacturer
 func KnxManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxManufacturer, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint16("KnxManufacturer", 16)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("KnxManufacturer", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxManufacturer")
 	}
@@ -9789,7 +9803,18 @@ func (e KnxManufacturer) Serialize() ([]byte, error) {
 func (e KnxManufacturer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+func (e KnxManufacturer) GetValue() uint16 {
+	return uint16(e)
+}
+
+func (e KnxManufacturer) GetNumber() uint16 {
+	return e.Number()
+}
+func (e KnxManufacturer) GetName() string {
+	return e.Name()
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -11099,6 +11124,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_DETRONS"
 	case KnxManufacturer_M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD:
 		return "M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD"
+	case KnxManufacturer_M_VARNI_DIGITAL_PRIVATE_LIMITED:
+		return "M_VARNI_DIGITAL_PRIVATE_LIMITED"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

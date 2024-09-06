@@ -36,18 +36,15 @@ type Handle interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// HandleExactly can be used when we want exactly this type and not a type which fulfills Handle.
-// This is useful for switch cases.
-type HandleExactly interface {
-	Handle
-	isHandle() bool
+	// IsHandle is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHandle()
 }
 
 // _Handle is the data-structure of this message
 type _Handle struct {
 }
+
+var _ Handle = (*_Handle)(nil)
 
 // NewHandle factory function for _Handle
 func NewHandle() *_Handle {
@@ -83,11 +80,23 @@ func HandleParse(ctx context.Context, theBytes []byte) (Handle, error) {
 	return HandleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HandleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Handle, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Handle, error) {
+		return HandleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HandleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Handle, error) {
+	v, err := (&_Handle{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_Handle) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__handle Handle, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Handle"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Handle")
 	}
@@ -98,8 +107,7 @@ func HandleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ha
 		return nil, errors.Wrap(closeErr, "Error closing for Handle")
 	}
 
-	// Create the instance
-	return &_Handle{}, nil
+	return m, nil
 }
 
 func (m *_Handle) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_Handle) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 	return nil
 }
 
-func (m *_Handle) isHandle() bool {
-	return true
-}
+func (m *_Handle) IsHandle() {}
 
 func (m *_Handle) String() string {
 	if m == nil {

@@ -83,10 +83,7 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataEventAlgorithmInhibit");
 
     // Simple Field (eventAlgorithmInhibit)
-    writeSimpleField(
-        "eventAlgorithmInhibit",
-        eventAlgorithmInhibit,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventAlgorithmInhibit", eventAlgorithmInhibit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
     BACnetApplicationTagBoolean eventAlgorithmInhibit =
         readSimpleField(
             "eventAlgorithmInhibit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

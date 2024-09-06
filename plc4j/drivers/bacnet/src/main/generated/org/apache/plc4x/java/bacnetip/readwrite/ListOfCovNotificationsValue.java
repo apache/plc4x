@@ -82,17 +82,16 @@ public class ListOfCovNotificationsValue implements Message {
     writeBuffer.pushContext("ListOfCovNotificationsValue");
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Simple Field (propertyValue)
-    writeSimpleField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (timeOfChange) (Can be skipped, if the value is null)
-    writeOptionalField("timeOfChange", timeOfChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("timeOfChange", timeOfChange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ListOfCovNotificationsValue");
   }
@@ -136,7 +135,7 @@ public class ListOfCovNotificationsValue implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -145,7 +144,7 @@ public class ListOfCovNotificationsValue implements Message {
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -157,7 +156,7 @@ public class ListOfCovNotificationsValue implements Message {
     BACnetConstructedData propertyValue =
         readSimpleField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -171,7 +170,7 @@ public class ListOfCovNotificationsValue implements Message {
     BACnetContextTagTime timeOfChange =
         readOptionalField(
             "timeOfChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagTime)
                         BACnetContextTag.staticParse(

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetCalendarEntryWeekNDay interface {
 	BACnetCalendarEntry
 	// GetWeekNDay returns WeekNDay (property field)
 	GetWeekNDay() BACnetWeekNDayTagged
-}
-
-// BACnetCalendarEntryWeekNDayExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntryWeekNDay.
-// This is useful for switch cases.
-type BACnetCalendarEntryWeekNDayExactly interface {
-	BACnetCalendarEntryWeekNDay
-	isBACnetCalendarEntryWeekNDay() bool
+	// IsBACnetCalendarEntryWeekNDay is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCalendarEntryWeekNDay()
 }
 
 // _BACnetCalendarEntryWeekNDay is the data-structure of this message
 type _BACnetCalendarEntryWeekNDay struct {
-	*_BACnetCalendarEntry
+	BACnetCalendarEntryContract
 	WeekNDay BACnetWeekNDayTagged
 }
+
+var _ BACnetCalendarEntryWeekNDay = (*_BACnetCalendarEntryWeekNDay)(nil)
+var _ BACnetCalendarEntryRequirements = (*_BACnetCalendarEntryWeekNDay)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetCalendarEntryWeekNDay struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetCalendarEntryWeekNDay) InitializeParent(parent BACnetCalendarEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetCalendarEntryWeekNDay) GetParent() BACnetCalendarEntry {
-	return m._BACnetCalendarEntry
+func (m *_BACnetCalendarEntryWeekNDay) GetParent() BACnetCalendarEntryContract {
+	return m.BACnetCalendarEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetCalendarEntryWeekNDay) GetWeekNDay() BACnetWeekNDayTagged {
 
 // NewBACnetCalendarEntryWeekNDay factory function for _BACnetCalendarEntryWeekNDay
 func NewBACnetCalendarEntryWeekNDay(weekNDay BACnetWeekNDayTagged, peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntryWeekNDay {
-	_result := &_BACnetCalendarEntryWeekNDay{
-		WeekNDay:             weekNDay,
-		_BACnetCalendarEntry: NewBACnetCalendarEntry(peekedTagHeader),
+	if weekNDay == nil {
+		panic("weekNDay of type BACnetWeekNDayTagged for BACnetCalendarEntryWeekNDay must not be nil")
 	}
-	_result._BACnetCalendarEntry._BACnetCalendarEntryChildRequirements = _result
+	_result := &_BACnetCalendarEntryWeekNDay{
+		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
+		WeekNDay:                    weekNDay,
+	}
+	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetCalendarEntryWeekNDay) GetTypeName() string {
 }
 
 func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).getLengthInBits(ctx))
 
 	// Simple field (weekNDay)
 	lengthInBits += m.WeekNDay.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCalendarEntryWeekNDayParse(ctx context.Context, theBytes []byte) (BACnetCalendarEntryWeekNDay, error) {
-	return BACnetCalendarEntryWeekNDayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetCalendarEntryWeekNDayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryWeekNDay, error) {
+func (m *_BACnetCalendarEntryWeekNDay) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetCalendarEntry) (__bACnetCalendarEntryWeekNDay BACnetCalendarEntryWeekNDay, err error) {
+	m.BACnetCalendarEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryWeekNDay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCalendarEntryWeekNDay")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (weekNDay)
-	if pullErr := readBuffer.PullContext("weekNDay"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for weekNDay")
+	weekNDay, err := ReadSimpleField[BACnetWeekNDayTagged](ctx, "weekNDay", ReadComplex[BACnetWeekNDayTagged](BACnetWeekNDayTaggedParseWithBufferProducer((uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'weekNDay' field"))
 	}
-	_weekNDay, _weekNDayErr := BACnetWeekNDayTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _weekNDayErr != nil {
-		return nil, errors.Wrap(_weekNDayErr, "Error parsing 'weekNDay' field of BACnetCalendarEntryWeekNDay")
-	}
-	weekNDay := _weekNDay.(BACnetWeekNDayTagged)
-	if closeErr := readBuffer.CloseContext("weekNDay"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for weekNDay")
-	}
+	m.WeekNDay = weekNDay
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntryWeekNDay"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetCalendarEntryWeekNDay")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetCalendarEntryWeekNDay{
-		_BACnetCalendarEntry: &_BACnetCalendarEntry{},
-		WeekNDay:             weekNDay,
-	}
-	_child._BACnetCalendarEntry._BACnetCalendarEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetCalendarEntryWeekNDay) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetCalendarEntryWeekNDay) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetCalendarEntryWeekNDay")
 		}
 
-		// Simple Field (weekNDay)
-		if pushErr := writeBuffer.PushContext("weekNDay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for weekNDay")
-		}
-		_weekNDayErr := writeBuffer.WriteSerializable(ctx, m.GetWeekNDay())
-		if popErr := writeBuffer.PopContext("weekNDay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for weekNDay")
-		}
-		if _weekNDayErr != nil {
-			return errors.Wrap(_weekNDayErr, "Error serializing 'weekNDay' field")
+		if err := WriteSimpleField[BACnetWeekNDayTagged](ctx, "weekNDay", m.GetWeekNDay(), WriteComplex[BACnetWeekNDayTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'weekNDay' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetCalendarEntryWeekNDay"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetCalendarEntryWeekNDay) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetCalendarEntryWeekNDay) isBACnetCalendarEntryWeekNDay() bool {
-	return true
-}
+func (m *_BACnetCalendarEntryWeekNDay) IsBACnetCalendarEntryWeekNDay() {}
 
 func (m *_BACnetCalendarEntryWeekNDay) String() string {
 	if m == nil {

@@ -80,10 +80,10 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
     writeBuffer.pushContext("CBusPointToPointToMultiPointCommand");
 
     // Simple Field (bridgeAddress)
-    writeSimpleField("bridgeAddress", bridgeAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bridgeAddress", bridgeAddress, writeComplex(writeBuffer));
 
     // Simple Field (networkRoute)
-    writeSimpleField("networkRoute", networkRoute, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkRoute", networkRoute, writeComplex(writeBuffer));
 
     // Switch field (Serialize the sub-type)
     serializeCBusPointToPointToMultiPointCommandChild(writeBuffer);
@@ -121,14 +121,11 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
 
     BridgeAddress bridgeAddress =
         readSimpleField(
-            "bridgeAddress",
-            new DataReaderComplexDefault<>(
-                () -> BridgeAddress.staticParse(readBuffer), readBuffer));
+            "bridgeAddress", readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer));
 
     NetworkRoute networkRoute =
         readSimpleField(
-            "networkRoute",
-            new DataReaderComplexDefault<>(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
+            "networkRoute", readComplex(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
 
     byte peekedApplication = readPeekField("peekedApplication", readByte(readBuffer, 8));
 

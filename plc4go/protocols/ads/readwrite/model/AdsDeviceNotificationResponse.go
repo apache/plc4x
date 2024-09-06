@@ -37,19 +37,17 @@ type AdsDeviceNotificationResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
-}
-
-// AdsDeviceNotificationResponseExactly can be used when we want exactly this type and not a type which fulfills AdsDeviceNotificationResponse.
-// This is useful for switch cases.
-type AdsDeviceNotificationResponseExactly interface {
-	AdsDeviceNotificationResponse
-	isAdsDeviceNotificationResponse() bool
+	// IsAdsDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDeviceNotificationResponse()
 }
 
 // _AdsDeviceNotificationResponse is the data-structure of this message
 type _AdsDeviceNotificationResponse struct {
-	*_AmsPacket
+	AmsPacketContract
 }
+
+var _ AdsDeviceNotificationResponse = (*_AdsDeviceNotificationResponse)(nil)
+var _ AmsPacketRequirements = (*_AdsDeviceNotificationResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,25 +67,16 @@ func (m *_AdsDeviceNotificationResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsDeviceNotificationResponse) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
-	m.TargetAmsNetId = targetAmsNetId
-	m.TargetAmsPort = targetAmsPort
-	m.SourceAmsNetId = sourceAmsNetId
-	m.SourceAmsPort = sourceAmsPort
-	m.ErrorCode = errorCode
-	m.InvokeId = invokeId
-}
-
-func (m *_AdsDeviceNotificationResponse) GetParent() AmsPacket {
-	return m._AmsPacket
+func (m *_AdsDeviceNotificationResponse) GetParent() AmsPacketContract {
+	return m.AmsPacketContract
 }
 
 // NewAdsDeviceNotificationResponse factory function for _AdsDeviceNotificationResponse
 func NewAdsDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeviceNotificationResponse {
 	_result := &_AdsDeviceNotificationResponse{
-		_AmsPacket: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AmsPacket._AmsPacketChildRequirements = _result
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 
@@ -107,7 +96,7 @@ func (m *_AdsDeviceNotificationResponse) GetTypeName() string {
 }
 
 func (m *_AdsDeviceNotificationResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -116,15 +105,11 @@ func (m *_AdsDeviceNotificationResponse) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDeviceNotificationResponseParse(ctx context.Context, theBytes []byte) (AdsDeviceNotificationResponse, error) {
-	return AdsDeviceNotificationResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationResponse, error) {
+func (m *_AdsDeviceNotificationResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsDeviceNotificationResponse AdsDeviceNotificationResponse, err error) {
+	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDeviceNotificationResponse")
 	}
@@ -135,12 +120,7 @@ func AdsDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDeviceNotificationResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsDeviceNotificationResponse{
-		_AmsPacket: &_AmsPacket{},
-	}
-	_child._AmsPacket._AmsPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsDeviceNotificationResponse) Serialize() ([]byte, error) {
@@ -166,12 +146,10 @@ func (m *_AdsDeviceNotificationResponse) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AmsPacketContract.(*_AmsPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsDeviceNotificationResponse) isAdsDeviceNotificationResponse() bool {
-	return true
-}
+func (m *_AdsDeviceNotificationResponse) IsAdsDeviceNotificationResponse() {}
 
 func (m *_AdsDeviceNotificationResponse) String() string {
 	if m == nil {

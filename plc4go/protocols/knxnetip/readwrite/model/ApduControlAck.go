@@ -37,19 +37,17 @@ type ApduControlAck interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduControl
-}
-
-// ApduControlAckExactly can be used when we want exactly this type and not a type which fulfills ApduControlAck.
-// This is useful for switch cases.
-type ApduControlAckExactly interface {
-	ApduControlAck
-	isApduControlAck() bool
+	// IsApduControlAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduControlAck()
 }
 
 // _ApduControlAck is the data-structure of this message
 type _ApduControlAck struct {
-	*_ApduControl
+	ApduControlContract
 }
+
+var _ ApduControlAck = (*_ApduControlAck)(nil)
+var _ ApduControlRequirements = (*_ApduControlAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduControlAck) GetControlType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduControlAck) InitializeParent(parent ApduControl) {}
-
-func (m *_ApduControlAck) GetParent() ApduControl {
-	return m._ApduControl
+func (m *_ApduControlAck) GetParent() ApduControlContract {
+	return m.ApduControlContract
 }
 
 // NewApduControlAck factory function for _ApduControlAck
 func NewApduControlAck() *_ApduControlAck {
 	_result := &_ApduControlAck{
-		_ApduControl: NewApduControl(),
+		ApduControlContract: NewApduControl(),
 	}
-	_result._ApduControl._ApduControlChildRequirements = _result
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduControlAck) GetTypeName() string {
 }
 
 func (m *_ApduControlAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduControlAck) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduControlAckParse(ctx context.Context, theBytes []byte) (ApduControlAck, error) {
-	return ApduControlAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func ApduControlAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlAck, error) {
+func (m *_ApduControlAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduControl) (__apduControlAck ApduControlAck, err error) {
+	m.ApduControlContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduControlAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduControlAck")
 	}
@@ -124,12 +116,7 @@ func ApduControlAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(closeErr, "Error closing for ApduControlAck")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduControlAck{
-		_ApduControl: &_ApduControl{},
-	}
-	_child._ApduControl._ApduControlChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduControlAck) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_ApduControlAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduControlContract.(*_ApduControl).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduControlAck) isApduControlAck() bool {
-	return true
-}
+func (m *_ApduControlAck) IsApduControlAck() {}
 
 func (m *_ApduControlAck) String() string {
 	if m == nil {

@@ -33,44 +33,35 @@ import (
 
 // BACnetError is the corresponding interface of BACnetError
 type BACnetError interface {
+	BACnetErrorContract
+	BACnetErrorRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetError()
+}
+
+// BACnetErrorContract provides a set of functions which can be overwritten by a sub struct
+type BACnetErrorContract interface {
+	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetError()
+}
+
+// BACnetErrorRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetErrorRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetErrorChoice returns ErrorChoice (discriminator field)
 	GetErrorChoice() BACnetConfirmedServiceChoice
 }
 
-// BACnetErrorExactly can be used when we want exactly this type and not a type which fulfills BACnetError.
-// This is useful for switch cases.
-type BACnetErrorExactly interface {
-	BACnetError
-	isBACnetError() bool
-}
-
 // _BACnetError is the data-structure of this message
 type _BACnetError struct {
-	_BACnetErrorChildRequirements
+	_SubType BACnetError
 }
 
-type _BACnetErrorChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetErrorChoice() BACnetConfirmedServiceChoice
-}
-
-type BACnetErrorParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetError, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetErrorChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetError)
-	GetParent() *BACnetError
-
-	GetTypeName() string
-	BACnetError
-}
+var _ BACnetErrorContract = (*_BACnetError)(nil)
 
 // NewBACnetError factory function for _BACnetError
 func NewBACnetError() *_BACnetError {
@@ -92,25 +83,43 @@ func (m *_BACnetError) GetTypeName() string {
 	return "BACnetError"
 }
 
-func (m *_BACnetError) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetError) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
 func (m *_BACnetError) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
-	return BACnetErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
+func BACnetErrorParse[T BACnetError](ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (T, error) {
+	return BACnetErrorParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
-func BACnetErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
+func BACnetErrorParseWithBufferProducer[T BACnetError](errorChoice BACnetConfirmedServiceChoice) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetErrorParseWithBuffer[T](ctx, readBuffer, errorChoice)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetErrorParseWithBuffer[T BACnetError](ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (T, error) {
+	v, err := (&_BACnetError{}).parse(ctx, readBuffer, errorChoice)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetError) parse(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (__bACnetError BACnetError, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetError")
 	}
@@ -118,49 +127,52 @@ func BACnetErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetErrorChildSerializeRequirement interface {
-		BACnetError
-		InitializeParent(BACnetError)
-		GetParent() BACnetError
-	}
-	var _childTemp any
-	var _child BACnetErrorChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetError
 	switch {
 	case errorChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: // SubscribeCOVPropertyMultipleError
-		_childTemp, typeSwitchError = SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+		if _child, err = (&_SubscribeCOVPropertyMultipleError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SubscribeCOVPropertyMultipleError for type-switch of BACnetError")
+		}
 	case errorChoice == BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: // ChangeListAddError
-		_childTemp, typeSwitchError = ChangeListAddErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+		if _child, err = (&_ChangeListAddError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ChangeListAddError for type-switch of BACnetError")
+		}
 	case errorChoice == BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: // ChangeListRemoveError
-		_childTemp, typeSwitchError = ChangeListRemoveErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+		if _child, err = (&_ChangeListRemoveError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ChangeListRemoveError for type-switch of BACnetError")
+		}
 	case errorChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // CreateObjectError
-		_childTemp, typeSwitchError = CreateObjectErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+		if _child, err = (&_CreateObjectError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateObjectError for type-switch of BACnetError")
+		}
 	case errorChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // WritePropertyMultipleError
-		_childTemp, typeSwitchError = WritePropertyMultipleErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+		if _child, err = (&_WritePropertyMultipleError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WritePropertyMultipleError for type-switch of BACnetError")
+		}
 	case errorChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // ConfirmedPrivateTransferError
-		_childTemp, typeSwitchError = ConfirmedPrivateTransferErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+		if _child, err = (&_ConfirmedPrivateTransferError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ConfirmedPrivateTransferError for type-switch of BACnetError")
+		}
 	case errorChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // VTCloseError
-		_childTemp, typeSwitchError = VTCloseErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+		if _child, err = (&_VTCloseError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type VTCloseError for type-switch of BACnetError")
+		}
 	case 0 == 0: // BACnetErrorGeneral
-		_childTemp, typeSwitchError = BACnetErrorGeneralParseWithBuffer(ctx, readBuffer, errorChoice)
+		if _child, err = (&_BACnetErrorGeneral{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetErrorGeneral for type-switch of BACnetError")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorChoice=%v]", errorChoice)
+		return nil, errors.Errorf("Unmapped type for parameters [errorChoice=%v]", errorChoice)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetError")
-	}
-	_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetError")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_BACnetError) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetError, serializeChildFunction func() error) error {
+func (pm *_BACnetError) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetError, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -183,17 +195,4 @@ func (pm *_BACnetError) SerializeParent(ctx context.Context, writeBuffer utils.W
 	return nil
 }
 
-func (m *_BACnetError) isBACnetError() bool {
-	return true
-}
-
-func (m *_BACnetError) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetError) IsBACnetError() {}

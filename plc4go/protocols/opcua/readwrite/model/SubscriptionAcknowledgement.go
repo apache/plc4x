@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type SubscriptionAcknowledgement interface {
 	GetSubscriptionId() uint32
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint32
-}
-
-// SubscriptionAcknowledgementExactly can be used when we want exactly this type and not a type which fulfills SubscriptionAcknowledgement.
-// This is useful for switch cases.
-type SubscriptionAcknowledgementExactly interface {
-	SubscriptionAcknowledgement
-	isSubscriptionAcknowledgement() bool
+	// IsSubscriptionAcknowledgement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSubscriptionAcknowledgement()
 }
 
 // _SubscriptionAcknowledgement is the data-structure of this message
 type _SubscriptionAcknowledgement struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	SubscriptionId uint32
 	SequenceNumber uint32
 }
+
+var _ SubscriptionAcknowledgement = (*_SubscriptionAcknowledgement)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SubscriptionAcknowledgement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_SubscriptionAcknowledgement) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SubscriptionAcknowledgement) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_SubscriptionAcknowledgement) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_SubscriptionAcknowledgement) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_SubscriptionAcknowledgement) GetSequenceNumber() uint32 {
 // NewSubscriptionAcknowledgement factory function for _SubscriptionAcknowledgement
 func NewSubscriptionAcknowledgement(subscriptionId uint32, sequenceNumber uint32) *_SubscriptionAcknowledgement {
 	_result := &_SubscriptionAcknowledgement{
-		SubscriptionId:             subscriptionId,
-		SequenceNumber:             sequenceNumber,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SubscriptionId:                    subscriptionId,
+		SequenceNumber:                    sequenceNumber,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_SubscriptionAcknowledgement) GetTypeName() string {
 }
 
 func (m *_SubscriptionAcknowledgement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (subscriptionId)
 	lengthInBits += 32
@@ -137,47 +135,34 @@ func (m *_SubscriptionAcknowledgement) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SubscriptionAcknowledgementParse(ctx context.Context, theBytes []byte, identifier string) (SubscriptionAcknowledgement, error) {
-	return SubscriptionAcknowledgementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func SubscriptionAcknowledgementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SubscriptionAcknowledgement, error) {
+func (m *_SubscriptionAcknowledgement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__subscriptionAcknowledgement SubscriptionAcknowledgement, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SubscriptionAcknowledgement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SubscriptionAcknowledgement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SubscriptionAcknowledgement")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
+	m.SubscriptionId = subscriptionId
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint32("sequenceNumber", 32)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of SubscriptionAcknowledgement")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
+	m.SequenceNumber = sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("SubscriptionAcknowledgement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SubscriptionAcknowledgement")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SubscriptionAcknowledgement{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		SubscriptionId:             subscriptionId,
-		SequenceNumber:             sequenceNumber,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SubscriptionAcknowledgement) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_SubscriptionAcknowledgement) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for SubscriptionAcknowledgement")
 		}
 
-		// Simple Field (subscriptionId)
-		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
-		if _subscriptionIdErr != nil {
-			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		// Simple Field (sequenceNumber)
-		sequenceNumber := uint32(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint32("sequenceNumber", 32, uint32((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[uint32](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SubscriptionAcknowledgement"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_SubscriptionAcknowledgement) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SubscriptionAcknowledgement) isSubscriptionAcknowledgement() bool {
-	return true
-}
+func (m *_SubscriptionAcknowledgement) IsSubscriptionAcknowledgement() {}
 
 func (m *_SubscriptionAcknowledgement) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type MonitoredItemCreateResult interface {
 	GetRevisedQueueSize() uint32
 	// GetFilterResult returns FilterResult (property field)
 	GetFilterResult() ExtensionObject
-}
-
-// MonitoredItemCreateResultExactly can be used when we want exactly this type and not a type which fulfills MonitoredItemCreateResult.
-// This is useful for switch cases.
-type MonitoredItemCreateResultExactly interface {
-	MonitoredItemCreateResult
-	isMonitoredItemCreateResult() bool
+	// IsMonitoredItemCreateResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredItemCreateResult()
 }
 
 // _MonitoredItemCreateResult is the data-structure of this message
 type _MonitoredItemCreateResult struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	StatusCode              StatusCode
 	MonitoredItemId         uint32
 	RevisedSamplingInterval float64
 	RevisedQueueSize        uint32
 	FilterResult            ExtensionObject
 }
+
+var _ MonitoredItemCreateResult = (*_MonitoredItemCreateResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemCreateResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_MonitoredItemCreateResult) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredItemCreateResult) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_MonitoredItemCreateResult) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_MonitoredItemCreateResult) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,21 @@ func (m *_MonitoredItemCreateResult) GetFilterResult() ExtensionObject {
 
 // NewMonitoredItemCreateResult factory function for _MonitoredItemCreateResult
 func NewMonitoredItemCreateResult(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) *_MonitoredItemCreateResult {
-	_result := &_MonitoredItemCreateResult{
-		StatusCode:                 statusCode,
-		MonitoredItemId:            monitoredItemId,
-		RevisedSamplingInterval:    revisedSamplingInterval,
-		RevisedQueueSize:           revisedQueueSize,
-		FilterResult:               filterResult,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for MonitoredItemCreateResult must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if filterResult == nil {
+		panic("filterResult of type ExtensionObject for MonitoredItemCreateResult must not be nil")
+	}
+	_result := &_MonitoredItemCreateResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		MonitoredItemId:                   monitoredItemId,
+		RevisedSamplingInterval:           revisedSamplingInterval,
+		RevisedQueueSize:                  revisedQueueSize,
+		FilterResult:                      filterResult,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +150,7 @@ func (m *_MonitoredItemCreateResult) GetTypeName() string {
 }
 
 func (m *_MonitoredItemCreateResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -170,83 +174,52 @@ func (m *_MonitoredItemCreateResult) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MonitoredItemCreateResultParse(ctx context.Context, theBytes []byte, identifier string) (MonitoredItemCreateResult, error) {
-	return MonitoredItemCreateResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func MonitoredItemCreateResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoredItemCreateResult, error) {
+func (m *_MonitoredItemCreateResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoredItemCreateResult MonitoredItemCreateResult, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoredItemCreateResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredItemCreateResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of MonitoredItemCreateResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
-	}
+	m.StatusCode = statusCode
 
-	// Simple Field (monitoredItemId)
-	_monitoredItemId, _monitoredItemIdErr := readBuffer.ReadUint32("monitoredItemId", 32)
-	if _monitoredItemIdErr != nil {
-		return nil, errors.Wrap(_monitoredItemIdErr, "Error parsing 'monitoredItemId' field of MonitoredItemCreateResult")
+	monitoredItemId, err := ReadSimpleField(ctx, "monitoredItemId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemId' field"))
 	}
-	monitoredItemId := _monitoredItemId
+	m.MonitoredItemId = monitoredItemId
 
-	// Simple Field (revisedSamplingInterval)
-	_revisedSamplingInterval, _revisedSamplingIntervalErr := readBuffer.ReadFloat64("revisedSamplingInterval", 64)
-	if _revisedSamplingIntervalErr != nil {
-		return nil, errors.Wrap(_revisedSamplingIntervalErr, "Error parsing 'revisedSamplingInterval' field of MonitoredItemCreateResult")
+	revisedSamplingInterval, err := ReadSimpleField(ctx, "revisedSamplingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedSamplingInterval' field"))
 	}
-	revisedSamplingInterval := _revisedSamplingInterval
+	m.RevisedSamplingInterval = revisedSamplingInterval
 
-	// Simple Field (revisedQueueSize)
-	_revisedQueueSize, _revisedQueueSizeErr := readBuffer.ReadUint32("revisedQueueSize", 32)
-	if _revisedQueueSizeErr != nil {
-		return nil, errors.Wrap(_revisedQueueSizeErr, "Error parsing 'revisedQueueSize' field of MonitoredItemCreateResult")
+	revisedQueueSize, err := ReadSimpleField(ctx, "revisedQueueSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedQueueSize' field"))
 	}
-	revisedQueueSize := _revisedQueueSize
+	m.RevisedQueueSize = revisedQueueSize
 
-	// Simple Field (filterResult)
-	if pullErr := readBuffer.PullContext("filterResult"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterResult")
+	filterResult, err := ReadSimpleField[ExtensionObject](ctx, "filterResult", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterResult' field"))
 	}
-	_filterResult, _filterResultErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _filterResultErr != nil {
-		return nil, errors.Wrap(_filterResultErr, "Error parsing 'filterResult' field of MonitoredItemCreateResult")
-	}
-	filterResult := _filterResult.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("filterResult"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterResult")
-	}
+	m.FilterResult = filterResult
 
 	if closeErr := readBuffer.CloseContext("MonitoredItemCreateResult"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoredItemCreateResult")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MonitoredItemCreateResult{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		StatusCode:                 statusCode,
-		MonitoredItemId:            monitoredItemId,
-		RevisedSamplingInterval:    revisedSamplingInterval,
-		RevisedQueueSize:           revisedQueueSize,
-		FilterResult:               filterResult,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MonitoredItemCreateResult) Serialize() ([]byte, error) {
@@ -267,49 +240,24 @@ func (m *_MonitoredItemCreateResult) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for MonitoredItemCreateResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (monitoredItemId)
-		monitoredItemId := uint32(m.GetMonitoredItemId())
-		_monitoredItemIdErr := writeBuffer.WriteUint32("monitoredItemId", 32, uint32((monitoredItemId)))
-		if _monitoredItemIdErr != nil {
-			return errors.Wrap(_monitoredItemIdErr, "Error serializing 'monitoredItemId' field")
+		if err := WriteSimpleField[uint32](ctx, "monitoredItemId", m.GetMonitoredItemId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredItemId' field")
 		}
 
-		// Simple Field (revisedSamplingInterval)
-		revisedSamplingInterval := float64(m.GetRevisedSamplingInterval())
-		_revisedSamplingIntervalErr := writeBuffer.WriteFloat64("revisedSamplingInterval", 64, (revisedSamplingInterval))
-		if _revisedSamplingIntervalErr != nil {
-			return errors.Wrap(_revisedSamplingIntervalErr, "Error serializing 'revisedSamplingInterval' field")
+		if err := WriteSimpleField[float64](ctx, "revisedSamplingInterval", m.GetRevisedSamplingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedSamplingInterval' field")
 		}
 
-		// Simple Field (revisedQueueSize)
-		revisedQueueSize := uint32(m.GetRevisedQueueSize())
-		_revisedQueueSizeErr := writeBuffer.WriteUint32("revisedQueueSize", 32, uint32((revisedQueueSize)))
-		if _revisedQueueSizeErr != nil {
-			return errors.Wrap(_revisedQueueSizeErr, "Error serializing 'revisedQueueSize' field")
+		if err := WriteSimpleField[uint32](ctx, "revisedQueueSize", m.GetRevisedQueueSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedQueueSize' field")
 		}
 
-		// Simple Field (filterResult)
-		if pushErr := writeBuffer.PushContext("filterResult"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filterResult")
-		}
-		_filterResultErr := writeBuffer.WriteSerializable(ctx, m.GetFilterResult())
-		if popErr := writeBuffer.PopContext("filterResult"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filterResult")
-		}
-		if _filterResultErr != nil {
-			return errors.Wrap(_filterResultErr, "Error serializing 'filterResult' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "filterResult", m.GetFilterResult(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'filterResult' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredItemCreateResult"); popErr != nil {
@@ -317,12 +265,10 @@ func (m *_MonitoredItemCreateResult) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MonitoredItemCreateResult) isMonitoredItemCreateResult() bool {
-	return true
-}
+func (m *_MonitoredItemCreateResult) IsMonitoredItemCreateResult() {}
 
 func (m *_MonitoredItemCreateResult) String() string {
 	if m == nil {

@@ -77,7 +77,7 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("CallRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfMethodsToCall)
     writeSimpleField("noOfMethodsToCall", noOfMethodsToCall, writeSignedInt(writeBuffer, 32));
@@ -126,7 +126,7 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     List<ExtensionObjectDefinition> methodsToCall =
         readCountArrayField(
             "methodsToCall",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("706")),
                 readBuffer),
             noOfMethodsToCall);

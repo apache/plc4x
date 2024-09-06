@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SALDataErrorReporting interface {
 	SALData
 	// GetErrorReportingData returns ErrorReportingData (property field)
 	GetErrorReportingData() ErrorReportingData
-}
-
-// SALDataErrorReportingExactly can be used when we want exactly this type and not a type which fulfills SALDataErrorReporting.
-// This is useful for switch cases.
-type SALDataErrorReportingExactly interface {
-	SALDataErrorReporting
-	isSALDataErrorReporting() bool
+	// IsSALDataErrorReporting is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataErrorReporting()
 }
 
 // _SALDataErrorReporting is the data-structure of this message
 type _SALDataErrorReporting struct {
-	*_SALData
+	SALDataContract
 	ErrorReportingData ErrorReportingData
 }
+
+var _ SALDataErrorReporting = (*_SALDataErrorReporting)(nil)
+var _ SALDataRequirements = (*_SALDataErrorReporting)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_SALDataErrorReporting) GetApplicationId() ApplicationId {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataErrorReporting) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataErrorReporting) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataErrorReporting) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_SALDataErrorReporting) GetErrorReportingData() ErrorReportingData {
 
 // NewSALDataErrorReporting factory function for _SALDataErrorReporting
 func NewSALDataErrorReporting(errorReportingData ErrorReportingData, salData SALData) *_SALDataErrorReporting {
-	_result := &_SALDataErrorReporting{
-		ErrorReportingData: errorReportingData,
-		_SALData:           NewSALData(salData),
+	if errorReportingData == nil {
+		panic("errorReportingData of type ErrorReportingData for SALDataErrorReporting must not be nil")
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result := &_SALDataErrorReporting{
+		SALDataContract:    NewSALData(salData),
+		ErrorReportingData: errorReportingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_SALDataErrorReporting) GetTypeName() string {
 }
 
 func (m *_SALDataErrorReporting) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (errorReportingData)
 	lengthInBits += m.ErrorReportingData.GetLengthInBits(ctx)
@@ -128,45 +127,28 @@ func (m *_SALDataErrorReporting) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataErrorReportingParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataErrorReporting, error) {
-	return SALDataErrorReportingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataErrorReportingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataErrorReporting, error) {
+func (m *_SALDataErrorReporting) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataErrorReporting SALDataErrorReporting, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataErrorReporting"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataErrorReporting")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorReportingData)
-	if pullErr := readBuffer.PullContext("errorReportingData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorReportingData")
+	errorReportingData, err := ReadSimpleField[ErrorReportingData](ctx, "errorReportingData", ReadComplex[ErrorReportingData](ErrorReportingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorReportingData' field"))
 	}
-	_errorReportingData, _errorReportingDataErr := ErrorReportingDataParseWithBuffer(ctx, readBuffer)
-	if _errorReportingDataErr != nil {
-		return nil, errors.Wrap(_errorReportingDataErr, "Error parsing 'errorReportingData' field of SALDataErrorReporting")
-	}
-	errorReportingData := _errorReportingData.(ErrorReportingData)
-	if closeErr := readBuffer.CloseContext("errorReportingData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorReportingData")
-	}
+	m.ErrorReportingData = errorReportingData
 
 	if closeErr := readBuffer.CloseContext("SALDataErrorReporting"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataErrorReporting")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataErrorReporting{
-		_SALData:           &_SALData{},
-		ErrorReportingData: errorReportingData,
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataErrorReporting) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_SALDataErrorReporting) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SALDataErrorReporting")
 		}
 
-		// Simple Field (errorReportingData)
-		if pushErr := writeBuffer.PushContext("errorReportingData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorReportingData")
-		}
-		_errorReportingDataErr := writeBuffer.WriteSerializable(ctx, m.GetErrorReportingData())
-		if popErr := writeBuffer.PopContext("errorReportingData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorReportingData")
-		}
-		if _errorReportingDataErr != nil {
-			return errors.Wrap(_errorReportingDataErr, "Error serializing 'errorReportingData' field")
+		if err := WriteSimpleField[ErrorReportingData](ctx, "errorReportingData", m.GetErrorReportingData(), WriteComplex[ErrorReportingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorReportingData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataErrorReporting"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_SALDataErrorReporting) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataErrorReporting) isSALDataErrorReporting() bool {
-	return true
-}
+func (m *_SALDataErrorReporting) IsSALDataErrorReporting() {}
 
 func (m *_SALDataErrorReporting) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type MediaTransportControlDataTrackName interface {
 	MediaTransportControlData
 	// GetTrackName returns TrackName (property field)
 	GetTrackName() string
-}
-
-// MediaTransportControlDataTrackNameExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataTrackName.
-// This is useful for switch cases.
-type MediaTransportControlDataTrackNameExactly interface {
-	MediaTransportControlDataTrackName
-	isMediaTransportControlDataTrackName() bool
+	// IsMediaTransportControlDataTrackName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataTrackName()
 }
 
 // _MediaTransportControlDataTrackName is the data-structure of this message
 type _MediaTransportControlDataTrackName struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	TrackName string
 }
+
+var _ MediaTransportControlDataTrackName = (*_MediaTransportControlDataTrackName)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataTrackName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _MediaTransportControlDataTrackName struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataTrackName) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataTrackName) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataTrackName) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_MediaTransportControlDataTrackName) GetTrackName() string {
 // NewMediaTransportControlDataTrackName factory function for _MediaTransportControlDataTrackName
 func NewMediaTransportControlDataTrackName(trackName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataTrackName {
 	_result := &_MediaTransportControlDataTrackName{
-		TrackName:                  trackName,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TrackName:                         trackName,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_MediaTransportControlDataTrackName) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataTrackName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (trackName)
 	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
@@ -125,39 +120,28 @@ func (m *_MediaTransportControlDataTrackName) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataTrackNameParse(ctx context.Context, theBytes []byte, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataTrackName, error) {
-	return MediaTransportControlDataTrackNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func MediaTransportControlDataTrackNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataTrackName, error) {
+func (m *_MediaTransportControlDataTrackName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer) (__mediaTransportControlDataTrackName MediaTransportControlDataTrackName, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataTrackName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataTrackName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (trackName)
-	_trackName, _trackNameErr := readBuffer.ReadString("trackName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), "UTF-8")
-	if _trackNameErr != nil {
-		return nil, errors.Wrap(_trackNameErr, "Error parsing 'trackName' field of MediaTransportControlDataTrackName")
+	trackName, err := ReadSimpleField(ctx, "trackName", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackName' field"))
 	}
-	trackName := _trackName
+	m.TrackName = trackName
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataTrackName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataTrackName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataTrackName{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		TrackName:                  trackName,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataTrackName) Serialize() ([]byte, error) {
@@ -178,11 +162,8 @@ func (m *_MediaTransportControlDataTrackName) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataTrackName")
 		}
 
-		// Simple Field (trackName)
-		trackName := string(m.GetTrackName())
-		_trackNameErr := writeBuffer.WriteString("trackName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), "UTF-8", (trackName))
-		if _trackNameErr != nil {
-			return errors.Wrap(_trackNameErr, "Error serializing 'trackName' field")
+		if err := WriteSimpleField[string](ctx, "trackName", m.GetTrackName(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataTrackName"); popErr != nil {
@@ -190,12 +171,10 @@ func (m *_MediaTransportControlDataTrackName) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataTrackName) isMediaTransportControlDataTrackName() bool {
-	return true
-}
+func (m *_MediaTransportControlDataTrackName) IsMediaTransportControlDataTrackName() {}
 
 func (m *_MediaTransportControlDataTrackName) String() string {
 	if m == nil {

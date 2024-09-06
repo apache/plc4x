@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type OpenSecureChannelRequest interface {
 	GetClientNonce() PascalByteString
 	// GetRequestedLifetime returns RequestedLifetime (property field)
 	GetRequestedLifetime() uint32
-}
-
-// OpenSecureChannelRequestExactly can be used when we want exactly this type and not a type which fulfills OpenSecureChannelRequest.
-// This is useful for switch cases.
-type OpenSecureChannelRequestExactly interface {
-	OpenSecureChannelRequest
-	isOpenSecureChannelRequest() bool
+	// IsOpenSecureChannelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpenSecureChannelRequest()
 }
 
 // _OpenSecureChannelRequest is the data-structure of this message
 type _OpenSecureChannelRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader         ExtensionObjectDefinition
 	ClientProtocolVersion uint32
 	RequestType           SecurityTokenRequestType
@@ -68,6 +65,9 @@ type _OpenSecureChannelRequest struct {
 	ClientNonce           PascalByteString
 	RequestedLifetime     uint32
 }
+
+var _ OpenSecureChannelRequest = (*_OpenSecureChannelRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_OpenSecureChannelRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,10 +83,8 @@ func (m *_OpenSecureChannelRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpenSecureChannelRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_OpenSecureChannelRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_OpenSecureChannelRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,16 +123,22 @@ func (m *_OpenSecureChannelRequest) GetRequestedLifetime() uint32 {
 
 // NewOpenSecureChannelRequest factory function for _OpenSecureChannelRequest
 func NewOpenSecureChannelRequest(requestHeader ExtensionObjectDefinition, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) *_OpenSecureChannelRequest {
-	_result := &_OpenSecureChannelRequest{
-		RequestHeader:              requestHeader,
-		ClientProtocolVersion:      clientProtocolVersion,
-		RequestType:                requestType,
-		SecurityMode:               securityMode,
-		ClientNonce:                clientNonce,
-		RequestedLifetime:          requestedLifetime,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for OpenSecureChannelRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if clientNonce == nil {
+		panic("clientNonce of type PascalByteString for OpenSecureChannelRequest must not be nil")
+	}
+	_result := &_OpenSecureChannelRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ClientProtocolVersion:             clientProtocolVersion,
+		RequestType:                       requestType,
+		SecurityMode:                      securityMode,
+		ClientNonce:                       clientNonce,
+		RequestedLifetime:                 requestedLifetime,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -154,7 +158,7 @@ func (m *_OpenSecureChannelRequest) GetTypeName() string {
 }
 
 func (m *_OpenSecureChannelRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -181,103 +185,58 @@ func (m *_OpenSecureChannelRequest) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpenSecureChannelRequestParse(ctx context.Context, theBytes []byte, identifier string) (OpenSecureChannelRequest, error) {
-	return OpenSecureChannelRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func OpenSecureChannelRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (OpenSecureChannelRequest, error) {
+func (m *_OpenSecureChannelRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__openSecureChannelRequest OpenSecureChannelRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpenSecureChannelRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpenSecureChannelRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of OpenSecureChannelRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (clientProtocolVersion)
-	_clientProtocolVersion, _clientProtocolVersionErr := readBuffer.ReadUint32("clientProtocolVersion", 32)
-	if _clientProtocolVersionErr != nil {
-		return nil, errors.Wrap(_clientProtocolVersionErr, "Error parsing 'clientProtocolVersion' field of OpenSecureChannelRequest")
+	clientProtocolVersion, err := ReadSimpleField(ctx, "clientProtocolVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientProtocolVersion' field"))
 	}
-	clientProtocolVersion := _clientProtocolVersion
+	m.ClientProtocolVersion = clientProtocolVersion
 
-	// Simple Field (requestType)
-	if pullErr := readBuffer.PullContext("requestType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestType")
+	requestType, err := ReadEnumField[SecurityTokenRequestType](ctx, "requestType", "SecurityTokenRequestType", ReadEnum(SecurityTokenRequestTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestType' field"))
 	}
-	_requestType, _requestTypeErr := SecurityTokenRequestTypeParseWithBuffer(ctx, readBuffer)
-	if _requestTypeErr != nil {
-		return nil, errors.Wrap(_requestTypeErr, "Error parsing 'requestType' field of OpenSecureChannelRequest")
-	}
-	requestType := _requestType
-	if closeErr := readBuffer.CloseContext("requestType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestType")
-	}
+	m.RequestType = requestType
 
-	// Simple Field (securityMode)
-	if pullErr := readBuffer.PullContext("securityMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityMode")
+	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityMode' field"))
 	}
-	_securityMode, _securityModeErr := MessageSecurityModeParseWithBuffer(ctx, readBuffer)
-	if _securityModeErr != nil {
-		return nil, errors.Wrap(_securityModeErr, "Error parsing 'securityMode' field of OpenSecureChannelRequest")
-	}
-	securityMode := _securityMode
-	if closeErr := readBuffer.CloseContext("securityMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityMode")
-	}
+	m.SecurityMode = securityMode
 
-	// Simple Field (clientNonce)
-	if pullErr := readBuffer.PullContext("clientNonce"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for clientNonce")
+	clientNonce, err := ReadSimpleField[PascalByteString](ctx, "clientNonce", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientNonce' field"))
 	}
-	_clientNonce, _clientNonceErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _clientNonceErr != nil {
-		return nil, errors.Wrap(_clientNonceErr, "Error parsing 'clientNonce' field of OpenSecureChannelRequest")
-	}
-	clientNonce := _clientNonce.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("clientNonce"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for clientNonce")
-	}
+	m.ClientNonce = clientNonce
 
-	// Simple Field (requestedLifetime)
-	_requestedLifetime, _requestedLifetimeErr := readBuffer.ReadUint32("requestedLifetime", 32)
-	if _requestedLifetimeErr != nil {
-		return nil, errors.Wrap(_requestedLifetimeErr, "Error parsing 'requestedLifetime' field of OpenSecureChannelRequest")
+	requestedLifetime, err := ReadSimpleField(ctx, "requestedLifetime", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedLifetime' field"))
 	}
-	requestedLifetime := _requestedLifetime
+	m.RequestedLifetime = requestedLifetime
 
 	if closeErr := readBuffer.CloseContext("OpenSecureChannelRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpenSecureChannelRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_OpenSecureChannelRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		ClientProtocolVersion:      clientProtocolVersion,
-		RequestType:                requestType,
-		SecurityMode:               securityMode,
-		ClientNonce:                clientNonce,
-		RequestedLifetime:          requestedLifetime,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_OpenSecureChannelRequest) Serialize() ([]byte, error) {
@@ -298,66 +257,28 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for OpenSecureChannelRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (clientProtocolVersion)
-		clientProtocolVersion := uint32(m.GetClientProtocolVersion())
-		_clientProtocolVersionErr := writeBuffer.WriteUint32("clientProtocolVersion", 32, uint32((clientProtocolVersion)))
-		if _clientProtocolVersionErr != nil {
-			return errors.Wrap(_clientProtocolVersionErr, "Error serializing 'clientProtocolVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "clientProtocolVersion", m.GetClientProtocolVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientProtocolVersion' field")
 		}
 
-		// Simple Field (requestType)
-		if pushErr := writeBuffer.PushContext("requestType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestType")
-		}
-		_requestTypeErr := writeBuffer.WriteSerializable(ctx, m.GetRequestType())
-		if popErr := writeBuffer.PopContext("requestType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestType")
-		}
-		if _requestTypeErr != nil {
-			return errors.Wrap(_requestTypeErr, "Error serializing 'requestType' field")
+		if err := WriteSimpleEnumField[SecurityTokenRequestType](ctx, "requestType", "SecurityTokenRequestType", m.GetRequestType(), WriteEnum[SecurityTokenRequestType, uint32](SecurityTokenRequestType.GetValue, SecurityTokenRequestType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestType' field")
 		}
 
-		// Simple Field (securityMode)
-		if pushErr := writeBuffer.PushContext("securityMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityMode")
-		}
-		_securityModeErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityMode())
-		if popErr := writeBuffer.PopContext("securityMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityMode")
-		}
-		if _securityModeErr != nil {
-			return errors.Wrap(_securityModeErr, "Error serializing 'securityMode' field")
+		if err := WriteSimpleEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", m.GetSecurityMode(), WriteEnum[MessageSecurityMode, uint32](MessageSecurityMode.GetValue, MessageSecurityMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityMode' field")
 		}
 
-		// Simple Field (clientNonce)
-		if pushErr := writeBuffer.PushContext("clientNonce"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientNonce")
-		}
-		_clientNonceErr := writeBuffer.WriteSerializable(ctx, m.GetClientNonce())
-		if popErr := writeBuffer.PopContext("clientNonce"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientNonce")
-		}
-		if _clientNonceErr != nil {
-			return errors.Wrap(_clientNonceErr, "Error serializing 'clientNonce' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "clientNonce", m.GetClientNonce(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientNonce' field")
 		}
 
-		// Simple Field (requestedLifetime)
-		requestedLifetime := uint32(m.GetRequestedLifetime())
-		_requestedLifetimeErr := writeBuffer.WriteUint32("requestedLifetime", 32, uint32((requestedLifetime)))
-		if _requestedLifetimeErr != nil {
-			return errors.Wrap(_requestedLifetimeErr, "Error serializing 'requestedLifetime' field")
+		if err := WriteSimpleField[uint32](ctx, "requestedLifetime", m.GetRequestedLifetime(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestedLifetime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpenSecureChannelRequest"); popErr != nil {
@@ -365,12 +286,10 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_OpenSecureChannelRequest) isOpenSecureChannelRequest() bool {
-	return true
-}
+func (m *_OpenSecureChannelRequest) IsOpenSecureChannelRequest() {}
 
 func (m *_OpenSecureChannelRequest) String() string {
 	if m == nil {

@@ -97,17 +97,17 @@ type withPlcValueHandler struct {
 	plcValueHandler spi.PlcValueHandler
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultConnection
+//go:generate plc4xGenerator -type=defaultConnection
 type defaultConnection struct {
 	DefaultConnectionRequirements `ignore:"true"`
 	// defaultTtl the time to live after a close
-	defaultTtl time.Duration `stringer:"true"`
+	defaultTtl time.Duration
 	// connected indicates if a connection is connected
 	connected    atomic.Bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {

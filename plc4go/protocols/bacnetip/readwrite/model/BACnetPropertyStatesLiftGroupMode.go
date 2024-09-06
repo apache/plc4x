@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesLiftGroupMode interface {
 	BACnetPropertyStates
 	// GetLiftGroupMode returns LiftGroupMode (property field)
 	GetLiftGroupMode() BACnetLiftGroupModeTagged
-}
-
-// BACnetPropertyStatesLiftGroupModeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftGroupMode.
-// This is useful for switch cases.
-type BACnetPropertyStatesLiftGroupModeExactly interface {
-	BACnetPropertyStatesLiftGroupMode
-	isBACnetPropertyStatesLiftGroupMode() bool
+	// IsBACnetPropertyStatesLiftGroupMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLiftGroupMode()
 }
 
 // _BACnetPropertyStatesLiftGroupMode is the data-structure of this message
 type _BACnetPropertyStatesLiftGroupMode struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	LiftGroupMode BACnetLiftGroupModeTagged
 }
+
+var _ BACnetPropertyStatesLiftGroupMode = (*_BACnetPropertyStatesLiftGroupMode)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftGroupMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesLiftGroupMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesLiftGroupMode) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesLiftGroupMode) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesLiftGroupMode) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesLiftGroupMode) GetLiftGroupMode() BACnetLiftGroupM
 
 // NewBACnetPropertyStatesLiftGroupMode factory function for _BACnetPropertyStatesLiftGroupMode
 func NewBACnetPropertyStatesLiftGroupMode(liftGroupMode BACnetLiftGroupModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftGroupMode {
-	_result := &_BACnetPropertyStatesLiftGroupMode{
-		LiftGroupMode:         liftGroupMode,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if liftGroupMode == nil {
+		panic("liftGroupMode of type BACnetLiftGroupModeTagged for BACnetPropertyStatesLiftGroupMode must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesLiftGroupMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftGroupMode:                liftGroupMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesLiftGroupMode) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesLiftGroupMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (liftGroupMode)
 	lengthInBits += m.LiftGroupMode.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesLiftGroupMode) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLiftGroupModeParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {
-	return BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {
+func (m *_BACnetPropertyStatesLiftGroupMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLiftGroupMode BACnetPropertyStatesLiftGroupMode, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftGroupMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftGroupMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftGroupMode)
-	if pullErr := readBuffer.PullContext("liftGroupMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftGroupMode")
+	liftGroupMode, err := ReadSimpleField[BACnetLiftGroupModeTagged](ctx, "liftGroupMode", ReadComplex[BACnetLiftGroupModeTagged](BACnetLiftGroupModeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftGroupMode' field"))
 	}
-	_liftGroupMode, _liftGroupModeErr := BACnetLiftGroupModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftGroupModeErr != nil {
-		return nil, errors.Wrap(_liftGroupModeErr, "Error parsing 'liftGroupMode' field of BACnetPropertyStatesLiftGroupMode")
-	}
-	liftGroupMode := _liftGroupMode.(BACnetLiftGroupModeTagged)
-	if closeErr := readBuffer.CloseContext("liftGroupMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftGroupMode")
-	}
+	m.LiftGroupMode = liftGroupMode
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftGroupMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftGroupMode")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesLiftGroupMode{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		LiftGroupMode:         liftGroupMode,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesLiftGroupMode) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftGroupMode")
 		}
 
-		// Simple Field (liftGroupMode)
-		if pushErr := writeBuffer.PushContext("liftGroupMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftGroupMode")
-		}
-		_liftGroupModeErr := writeBuffer.WriteSerializable(ctx, m.GetLiftGroupMode())
-		if popErr := writeBuffer.PopContext("liftGroupMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftGroupMode")
-		}
-		if _liftGroupModeErr != nil {
-			return errors.Wrap(_liftGroupModeErr, "Error serializing 'liftGroupMode' field")
+		if err := WriteSimpleField[BACnetLiftGroupModeTagged](ctx, "liftGroupMode", m.GetLiftGroupMode(), WriteComplex[BACnetLiftGroupModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftGroupMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftGroupMode"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesLiftGroupMode) isBACnetPropertyStatesLiftGroupMode() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesLiftGroupMode) IsBACnetPropertyStatesLiftGroupMode() {}
 
 func (m *_BACnetPropertyStatesLiftGroupMode) String() string {
 	if m == nil {

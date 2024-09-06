@@ -107,8 +107,7 @@ public abstract class Request implements Message {
         "startingCR",
         "RequestType",
         startingCR,
-        new DataWriterEnumDefault<>(
-            RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getPeekedByte()) == (RequestType.EMPTY));
 
     // Optional Field (resetMode) (Can be skipped, if the value is null)
@@ -116,8 +115,7 @@ public abstract class Request implements Message {
         "resetMode",
         "RequestType",
         resetMode,
-        new DataWriterEnumDefault<>(
-            RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getPeekedByte()) == (RequestType.RESET));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -128,7 +126,7 @@ public abstract class Request implements Message {
     serializeRequestChild(writeBuffer);
 
     // Simple Field (termination)
-    writeSimpleField("termination", termination, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("termination", termination, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Request");
   }
@@ -172,29 +170,23 @@ public abstract class Request implements Message {
 
     RequestType peekedByte =
         readPeekField(
-            "peekedByte",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "peekedByte", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     RequestType startingCR =
         readOptionalField(
             "startingCR",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (peekedByte) == (RequestType.EMPTY));
 
     RequestType resetMode =
         readOptionalField(
             "resetMode",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (peekedByte) == (RequestType.RESET));
 
     RequestType secondPeek =
         readPeekField(
-            "secondPeek",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "secondPeek", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
     RequestType actualPeek =
         readVirtualField(
             "actualPeek",
@@ -234,8 +226,7 @@ public abstract class Request implements Message {
     RequestTermination termination =
         readSimpleField(
             "termination",
-            new DataReaderComplexDefault<>(
-                () -> RequestTermination.staticParse(readBuffer), readBuffer));
+            readComplex(() -> RequestTermination.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Request");
     // Create the instance

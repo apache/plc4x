@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataMultiStateValueRelinquishDefault interface {
 	GetRelinquishDefault() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataMultiStateValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateValueRelinquishDefault.
-// This is useful for switch cases.
-type BACnetConstructedDataMultiStateValueRelinquishDefaultExactly interface {
-	BACnetConstructedDataMultiStateValueRelinquishDefault
-	isBACnetConstructedDataMultiStateValueRelinquishDefault() bool
+	// IsBACnetConstructedDataMultiStateValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMultiStateValueRelinquishDefault()
 }
 
 // _BACnetConstructedDataMultiStateValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataMultiStateValueRelinquishDefault struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	RelinquishDefault BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataMultiStateValueRelinquishDefault = (*_BACnetConstructedDataMultiStateValueRelinquishDefault)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateValueRelinquishDefault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetPropertyIden
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetActualValue(
 
 // NewBACnetConstructedDataMultiStateValueRelinquishDefault factory function for _BACnetConstructedDataMultiStateValueRelinquishDefault
 func NewBACnetConstructedDataMultiStateValueRelinquishDefault(relinquishDefault BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueRelinquishDefault {
-	_result := &_BACnetConstructedDataMultiStateValueRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateValueRelinquishDefault must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataMultiStateValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetTypeName() s
 }
 
 func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) GetLengthInByte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMultiStateValueRelinquishDefaultParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateValueRelinquishDefault, error) {
-	return BACnetConstructedDataMultiStateValueRelinquishDefaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMultiStateValueRelinquishDefaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateValueRelinquishDefault, error) {
+func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMultiStateValueRelinquishDefault BACnetConstructedDataMultiStateValueRelinquishDefault, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateValueRelinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMultiStateValueRelinquishDefault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (relinquishDefault)
-	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
+	relinquishDefault, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "relinquishDefault", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relinquishDefault' field"))
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataMultiStateValueRelinquishDefault")
-	}
-	relinquishDefault := _relinquishDefault.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
-	}
+	m.RelinquishDefault = relinquishDefault
 
-	// Virtual field
-	_actualValue := relinquishDefault
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), relinquishDefault)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateValueRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMultiStateValueRelinquishDefault")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMultiStateValueRelinquishDefault{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		RelinquishDefault: relinquishDefault,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMultiStateValueRelinquishDefault")
 		}
 
-		// Simple Field (relinquishDefault)
-		if pushErr := writeBuffer.PushContext("relinquishDefault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relinquishDefault")
-		}
-		_relinquishDefaultErr := writeBuffer.WriteSerializable(ctx, m.GetRelinquishDefault())
-		if popErr := writeBuffer.PopContext("relinquishDefault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relinquishDefault")
-		}
-		if _relinquishDefaultErr != nil {
-			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "relinquishDefault", m.GetRelinquishDefault(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relinquishDefault' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) SerializeWithWr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) isBACnetConstructedDataMultiStateValueRelinquishDefault() bool {
-	return true
+func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) IsBACnetConstructedDataMultiStateValueRelinquishDefault() {
 }
 
 func (m *_BACnetConstructedDataMultiStateValueRelinquishDefault) String() string {

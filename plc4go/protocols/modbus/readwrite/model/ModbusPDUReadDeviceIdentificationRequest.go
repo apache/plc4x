@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,21 +46,19 @@ type ModbusPDUReadDeviceIdentificationRequest interface {
 	GetLevel() ModbusDeviceInformationLevel
 	// GetObjectId returns ObjectId (property field)
 	GetObjectId() uint8
-}
-
-// ModbusPDUReadDeviceIdentificationRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDeviceIdentificationRequest.
-// This is useful for switch cases.
-type ModbusPDUReadDeviceIdentificationRequestExactly interface {
-	ModbusPDUReadDeviceIdentificationRequest
-	isModbusPDUReadDeviceIdentificationRequest() bool
+	// IsModbusPDUReadDeviceIdentificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadDeviceIdentificationRequest()
 }
 
 // _ModbusPDUReadDeviceIdentificationRequest is the data-structure of this message
 type _ModbusPDUReadDeviceIdentificationRequest struct {
-	*_ModbusPDU
+	ModbusPDUContract
 	Level    ModbusDeviceInformationLevel
 	ObjectId uint8
 }
+
+var _ ModbusPDUReadDeviceIdentificationRequest = (*_ModbusPDUReadDeviceIdentificationRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReadDeviceIdentificationRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,10 +82,8 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUReadDeviceIdentificationRequest) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,11 +120,11 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetMeiType() uint8 {
 // NewModbusPDUReadDeviceIdentificationRequest factory function for _ModbusPDUReadDeviceIdentificationRequest
 func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLevel, objectId uint8) *_ModbusPDUReadDeviceIdentificationRequest {
 	_result := &_ModbusPDUReadDeviceIdentificationRequest{
-		Level:      level,
-		ObjectId:   objectId,
-		_ModbusPDU: NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
+		Level:             level,
+		ObjectId:          objectId,
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -146,7 +144,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Const Field (meiType)
 	lengthInBits += 8
@@ -164,62 +162,40 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReadDeviceIdentificationRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReadDeviceIdentificationRequest, error) {
-	return ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationRequest, error) {
+func (m *_ModbusPDUReadDeviceIdentificationRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReadDeviceIdentificationRequest ModbusPDUReadDeviceIdentificationRequest, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadDeviceIdentificationRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (meiType)
-	meiType, _meiTypeErr := readBuffer.ReadUint8("meiType", 8)
-	if _meiTypeErr != nil {
-		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field of ModbusPDUReadDeviceIdentificationRequest")
+	meiType, err := ReadConstField[uint8](ctx, "meiType", ReadUnsignedByte(readBuffer, uint8(8)), ModbusPDUReadDeviceIdentificationRequest_MEITYPE)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'meiType' field"))
 	}
-	if meiType != ModbusPDUReadDeviceIdentificationRequest_MEITYPE {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusPDUReadDeviceIdentificationRequest_MEITYPE) + " but got " + fmt.Sprintf("%d", meiType))
-	}
+	_ = meiType
 
-	// Simple Field (level)
-	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for level")
+	level, err := ReadEnumField[ModbusDeviceInformationLevel](ctx, "level", "ModbusDeviceInformationLevel", ReadEnum(ModbusDeviceInformationLevelByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
-	_level, _levelErr := ModbusDeviceInformationLevelParseWithBuffer(ctx, readBuffer)
-	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ModbusPDUReadDeviceIdentificationRequest")
-	}
-	level := _level
-	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for level")
-	}
+	m.Level = level
 
-	// Simple Field (objectId)
-	_objectId, _objectIdErr := readBuffer.ReadUint8("objectId", 8)
-	if _objectIdErr != nil {
-		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field of ModbusPDUReadDeviceIdentificationRequest")
+	objectId, err := ReadSimpleField(ctx, "objectId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectId' field"))
 	}
-	objectId := _objectId
+	m.ObjectId = objectId
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadDeviceIdentificationRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadDeviceIdentificationRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUReadDeviceIdentificationRequest{
-		_ModbusPDU: &_ModbusPDU{},
-		Level:      level,
-		ObjectId:   objectId,
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) Serialize() ([]byte, error) {
@@ -240,29 +216,16 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadDeviceIdentificationRequest")
 		}
 
-		// Const Field (meiType)
-		_meiTypeErr := writeBuffer.WriteUint8("meiType", 8, uint8(0x0E))
-		if _meiTypeErr != nil {
-			return errors.Wrap(_meiTypeErr, "Error serializing 'meiType' field")
+		if err := WriteConstField(ctx, "meiType", ModbusPDUReadDeviceIdentificationRequest_MEITYPE, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'meiType' field")
 		}
 
-		// Simple Field (level)
-		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for level")
-		}
-		_levelErr := writeBuffer.WriteSerializable(ctx, m.GetLevel())
-		if popErr := writeBuffer.PopContext("level"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for level")
-		}
-		if _levelErr != nil {
-			return errors.Wrap(_levelErr, "Error serializing 'level' field")
+		if err := WriteSimpleEnumField[ModbusDeviceInformationLevel](ctx, "level", "ModbusDeviceInformationLevel", m.GetLevel(), WriteEnum[ModbusDeviceInformationLevel, uint8](ModbusDeviceInformationLevel.GetValue, ModbusDeviceInformationLevel.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		// Simple Field (objectId)
-		objectId := uint8(m.GetObjectId())
-		_objectIdErr := writeBuffer.WriteUint8("objectId", 8, uint8((objectId)))
-		if _objectIdErr != nil {
-			return errors.Wrap(_objectIdErr, "Error serializing 'objectId' field")
+		if err := WriteSimpleField[uint8](ctx, "objectId", m.GetObjectId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDeviceIdentificationRequest"); popErr != nil {
@@ -270,12 +233,10 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) isModbusPDUReadDeviceIdentificationRequest() bool {
-	return true
-}
+func (m *_ModbusPDUReadDeviceIdentificationRequest) IsModbusPDUReadDeviceIdentificationRequest() {}
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) String() string {
 	if m == nil {

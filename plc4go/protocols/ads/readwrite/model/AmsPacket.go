@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,13 +45,17 @@ const AmsPacket_BROADCAST bool = bool(false)
 
 // AmsPacket is the corresponding interface of AmsPacket
 type AmsPacket interface {
+	AmsPacketContract
+	AmsPacketRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandId returns CommandId (discriminator field)
-	GetCommandId() CommandId
-	// GetResponse returns Response (discriminator field)
-	GetResponse() bool
+	// IsAmsPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsPacket()
+}
+
+// AmsPacketContract provides a set of functions which can be overwritten by a sub struct
+type AmsPacketContract interface {
 	// GetTargetAmsNetId returns TargetAmsNetId (property field)
 	GetTargetAmsNetId() AmsNetId
 	// GetTargetAmsPort returns TargetAmsPort (property field)
@@ -62,18 +68,25 @@ type AmsPacket interface {
 	GetErrorCode() uint32
 	// GetInvokeId returns InvokeId (property field)
 	GetInvokeId() uint32
+	// IsAmsPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsPacket()
 }
 
-// AmsPacketExactly can be used when we want exactly this type and not a type which fulfills AmsPacket.
-// This is useful for switch cases.
-type AmsPacketExactly interface {
-	AmsPacket
-	isAmsPacket() bool
+// AmsPacketRequirements provides a set of functions which need to be implemented by a sub struct
+type AmsPacketRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandId returns CommandId (discriminator field)
+	GetCommandId() CommandId
+	// GetErrorCode returns ErrorCode (discriminator field)
+	GetErrorCode() uint32
+	// GetResponse returns Response (discriminator field)
+	GetResponse() bool
 }
 
 // _AmsPacket is the data-structure of this message
 type _AmsPacket struct {
-	_AmsPacketChildRequirements
+	_SubType       AmsPacket
 	TargetAmsNetId AmsNetId
 	TargetAmsPort  uint16
 	SourceAmsNetId AmsNetId
@@ -84,27 +97,7 @@ type _AmsPacket struct {
 	reservedField0 *int8
 }
 
-type _AmsPacketChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandId() CommandId
-	GetErrorCode() uint32
-	GetResponse() bool
-}
-
-type AmsPacketParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AmsPacket, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type AmsPacketChild interface {
-	utils.Serializable
-	InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32)
-	GetParent() *AmsPacket
-
-	GetTypeName() string
-	AmsPacket
-}
+var _ AmsPacketContract = (*_AmsPacket)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -183,6 +176,12 @@ func (m *_AmsPacket) GetBroadcast() bool {
 
 // NewAmsPacket factory function for _AmsPacket
 func NewAmsPacket(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AmsPacket {
+	if targetAmsNetId == nil {
+		panic("targetAmsNetId of type AmsNetId for AmsPacket must not be nil")
+	}
+	if sourceAmsNetId == nil {
+		panic("sourceAmsNetId of type AmsNetId for AmsPacket must not be nil")
+	}
 	return &_AmsPacket{TargetAmsNetId: targetAmsNetId, TargetAmsPort: targetAmsPort, SourceAmsNetId: sourceAmsNetId, SourceAmsPort: sourceAmsPort, ErrorCode: errorCode, InvokeId: invokeId}
 }
 
@@ -201,7 +200,7 @@ func (m *_AmsPacket) GetTypeName() string {
 	return "AmsPacket"
 }
 
-func (m *_AmsPacket) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_AmsPacket) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (targetAmsNetId)
@@ -260,264 +259,247 @@ func (m *_AmsPacket) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_AmsPacket) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func AmsPacketParse(ctx context.Context, theBytes []byte) (AmsPacket, error) {
-	return AmsPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func AmsPacketParse[T AmsPacket](ctx context.Context, theBytes []byte) (T, error) {
+	return AmsPacketParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsPacket, error) {
+func AmsPacketParseWithBufferProducer[T AmsPacket]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := AmsPacketParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func AmsPacketParseWithBuffer[T AmsPacket](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_AmsPacket{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_AmsPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__amsPacket AmsPacket, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AmsPacket"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AmsPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (targetAmsNetId)
-	if pullErr := readBuffer.PullContext("targetAmsNetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetAmsNetId")
+	targetAmsNetId, err := ReadSimpleField[AmsNetId](ctx, "targetAmsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetAmsNetId' field"))
 	}
-	_targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
-	if _targetAmsNetIdErr != nil {
-		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field of AmsPacket")
+	m.TargetAmsNetId = targetAmsNetId
+
+	targetAmsPort, err := ReadSimpleField(ctx, "targetAmsPort", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetAmsPort' field"))
 	}
-	targetAmsNetId := _targetAmsNetId.(AmsNetId)
-	if closeErr := readBuffer.CloseContext("targetAmsNetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetAmsNetId")
+	m.TargetAmsPort = targetAmsPort
+
+	sourceAmsNetId, err := ReadSimpleField[AmsNetId](ctx, "sourceAmsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAmsNetId' field"))
+	}
+	m.SourceAmsNetId = sourceAmsNetId
+
+	sourceAmsPort, err := ReadSimpleField(ctx, "sourceAmsPort", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAmsPort' field"))
+	}
+	m.SourceAmsPort = sourceAmsPort
+
+	commandId, err := ReadDiscriminatorEnumField[CommandId](ctx, "commandId", "CommandId", ReadEnum(CommandIdByValue, ReadUnsignedShort(readBuffer, uint8(16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandId' field"))
 	}
 
-	// Simple Field (targetAmsPort)
-	_targetAmsPort, _targetAmsPortErr := readBuffer.ReadUint16("targetAmsPort", 16)
-	if _targetAmsPortErr != nil {
-		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field of AmsPacket")
+	initCommand, err := ReadConstField[bool](ctx, "initCommand", ReadBoolean(readBuffer), AmsPacket_INITCOMMAND)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initCommand' field"))
 	}
-	targetAmsPort := _targetAmsPort
+	_ = initCommand
 
-	// Simple Field (sourceAmsNetId)
-	if pullErr := readBuffer.PullContext("sourceAmsNetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceAmsNetId")
+	updCommand, err := ReadConstField[bool](ctx, "updCommand", ReadBoolean(readBuffer), AmsPacket_UPDCOMMAND)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updCommand' field"))
 	}
-	_sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
-	if _sourceAmsNetIdErr != nil {
-		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field of AmsPacket")
-	}
-	sourceAmsNetId := _sourceAmsNetId.(AmsNetId)
-	if closeErr := readBuffer.CloseContext("sourceAmsNetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceAmsNetId")
-	}
+	_ = updCommand
 
-	// Simple Field (sourceAmsPort)
-	_sourceAmsPort, _sourceAmsPortErr := readBuffer.ReadUint16("sourceAmsPort", 16)
-	if _sourceAmsPortErr != nil {
-		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field of AmsPacket")
+	timestampAdded, err := ReadConstField[bool](ctx, "timestampAdded", ReadBoolean(readBuffer), AmsPacket_TIMESTAMPADDED)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestampAdded' field"))
 	}
-	sourceAmsPort := _sourceAmsPort
+	_ = timestampAdded
 
-	// Discriminator Field (commandId) (Used as input to a switch field)
-	if pullErr := readBuffer.PullContext("commandId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandId")
+	highPriorityCommand, err := ReadConstField[bool](ctx, "highPriorityCommand", ReadBoolean(readBuffer), AmsPacket_HIGHPRIORITYCOMMAND)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highPriorityCommand' field"))
 	}
-	commandId_temp, _commandIdErr := CommandIdParseWithBuffer(ctx, readBuffer)
-	var commandId CommandId = commandId_temp
-	if closeErr := readBuffer.CloseContext("commandId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandId")
-	}
-	if _commandIdErr != nil {
-		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field of AmsPacket")
-	}
+	_ = highPriorityCommand
 
-	// Const Field (initCommand)
-	initCommand, _initCommandErr := readBuffer.ReadBit("initCommand")
-	if _initCommandErr != nil {
-		return nil, errors.Wrap(_initCommandErr, "Error parsing 'initCommand' field of AmsPacket")
+	systemCommand, err := ReadConstField[bool](ctx, "systemCommand", ReadBoolean(readBuffer), AmsPacket_SYSTEMCOMMAND)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'systemCommand' field"))
 	}
-	if initCommand != AmsPacket_INITCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_INITCOMMAND) + " but got " + fmt.Sprintf("%t", initCommand))
+	_ = systemCommand
+
+	adsCommand, err := ReadConstField[bool](ctx, "adsCommand", ReadBoolean(readBuffer), AmsPacket_ADSCOMMAND)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adsCommand' field"))
+	}
+	_ = adsCommand
+
+	noReturn, err := ReadConstField[bool](ctx, "noReturn", ReadBoolean(readBuffer), AmsPacket_NORETURN)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noReturn' field"))
+	}
+	_ = noReturn
+
+	response, err := ReadDiscriminatorField[bool](ctx, "response", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'response' field"))
 	}
 
-	// Const Field (updCommand)
-	updCommand, _updCommandErr := readBuffer.ReadBit("updCommand")
-	if _updCommandErr != nil {
-		return nil, errors.Wrap(_updCommandErr, "Error parsing 'updCommand' field of AmsPacket")
+	broadcast, err := ReadConstField[bool](ctx, "broadcast", ReadBoolean(readBuffer), AmsPacket_BROADCAST)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'broadcast' field"))
 	}
-	if updCommand != AmsPacket_UPDCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_UPDCOMMAND) + " but got " + fmt.Sprintf("%t", updCommand))
-	}
+	_ = broadcast
 
-	// Const Field (timestampAdded)
-	timestampAdded, _timestampAddedErr := readBuffer.ReadBit("timestampAdded")
-	if _timestampAddedErr != nil {
-		return nil, errors.Wrap(_timestampAddedErr, "Error parsing 'timestampAdded' field of AmsPacket")
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, uint8(7)), int8(0x0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
-	if timestampAdded != AmsPacket_TIMESTAMPADDED {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_TIMESTAMPADDED) + " but got " + fmt.Sprintf("%t", timestampAdded))
-	}
+	m.reservedField0 = reservedField0
 
-	// Const Field (highPriorityCommand)
-	highPriorityCommand, _highPriorityCommandErr := readBuffer.ReadBit("highPriorityCommand")
-	if _highPriorityCommandErr != nil {
-		return nil, errors.Wrap(_highPriorityCommandErr, "Error parsing 'highPriorityCommand' field of AmsPacket")
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
-	if highPriorityCommand != AmsPacket_HIGHPRIORITYCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_HIGHPRIORITYCOMMAND) + " but got " + fmt.Sprintf("%t", highPriorityCommand))
-	}
-
-	// Const Field (systemCommand)
-	systemCommand, _systemCommandErr := readBuffer.ReadBit("systemCommand")
-	if _systemCommandErr != nil {
-		return nil, errors.Wrap(_systemCommandErr, "Error parsing 'systemCommand' field of AmsPacket")
-	}
-	if systemCommand != AmsPacket_SYSTEMCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_SYSTEMCOMMAND) + " but got " + fmt.Sprintf("%t", systemCommand))
-	}
-
-	// Const Field (adsCommand)
-	adsCommand, _adsCommandErr := readBuffer.ReadBit("adsCommand")
-	if _adsCommandErr != nil {
-		return nil, errors.Wrap(_adsCommandErr, "Error parsing 'adsCommand' field of AmsPacket")
-	}
-	if adsCommand != AmsPacket_ADSCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_ADSCOMMAND) + " but got " + fmt.Sprintf("%t", adsCommand))
-	}
-
-	// Const Field (noReturn)
-	noReturn, _noReturnErr := readBuffer.ReadBit("noReturn")
-	if _noReturnErr != nil {
-		return nil, errors.Wrap(_noReturnErr, "Error parsing 'noReturn' field of AmsPacket")
-	}
-	if noReturn != AmsPacket_NORETURN {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_NORETURN) + " but got " + fmt.Sprintf("%t", noReturn))
-	}
-
-	// Discriminator Field (response) (Used as input to a switch field)
-	response, _responseErr := readBuffer.ReadBit("response")
-	if _responseErr != nil {
-		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of AmsPacket")
-	}
-
-	// Const Field (broadcast)
-	broadcast, _broadcastErr := readBuffer.ReadBit("broadcast")
-	if _broadcastErr != nil {
-		return nil, errors.Wrap(_broadcastErr, "Error parsing 'broadcast' field of AmsPacket")
-	}
-	if broadcast != AmsPacket_BROADCAST {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_BROADCAST) + " but got " + fmt.Sprintf("%t", broadcast))
-	}
-
-	var reservedField0 *int8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadInt8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AmsPacket")
-		}
-		if reserved != int8(0x0) {
-			log.Info().Fields(map[string]any{
-				"expected value": int8(0x0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
-	}
-
-	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	_ = length
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsPacket")
-	}
 
-	// Simple Field (errorCode)
-	_errorCode, _errorCodeErr := readBuffer.ReadUint32("errorCode", 32)
-	if _errorCodeErr != nil {
-		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of AmsPacket")
+	errorCode, err := ReadSimpleField(ctx, "errorCode", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorCode' field"))
 	}
-	errorCode := _errorCode
+	m.ErrorCode = errorCode
 
-	// Simple Field (invokeId)
-	_invokeId, _invokeIdErr := readBuffer.ReadUint32("invokeId", 32)
-	if _invokeIdErr != nil {
-		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field of AmsPacket")
+	invokeId, err := ReadSimpleField(ctx, "invokeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'invokeId' field"))
 	}
-	invokeId := _invokeId
+	m.InvokeId = invokeId
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type AmsPacketChildSerializeRequirement interface {
-		AmsPacket
-		InitializeParent(AmsPacket, AmsNetId, uint16, AmsNetId, uint16, uint32, uint32)
-		GetParent() AmsPacket
-	}
-	var _childTemp any
-	var _child AmsPacketChildSerializeRequirement
-	var typeSwitchError error
+	var _child AmsPacket
 	switch {
 	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
-		_childTemp, typeSwitchError = AdsInvalidRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsInvalidRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsInvalidRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
-		_childTemp, typeSwitchError = AdsInvalidResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsInvalidResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsInvalidResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
-		_childTemp, typeSwitchError = AdsReadDeviceInfoRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsReadDeviceInfoRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadDeviceInfoRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
-		_childTemp, typeSwitchError = AdsReadDeviceInfoResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsReadDeviceInfoResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadDeviceInfoResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
-		_childTemp, typeSwitchError = AdsReadRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
-		_childTemp, typeSwitchError = AdsReadResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsReadResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
-		_childTemp, typeSwitchError = AdsWriteRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsWriteRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
-		_childTemp, typeSwitchError = AdsWriteResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsWriteResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
-		_childTemp, typeSwitchError = AdsReadStateRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsReadStateRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadStateRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
-		_childTemp, typeSwitchError = AdsReadStateResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsReadStateResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadStateResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
-		_childTemp, typeSwitchError = AdsWriteControlRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsWriteControlRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteControlRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
-		_childTemp, typeSwitchError = AdsWriteControlResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsWriteControlResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteControlResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
-		_childTemp, typeSwitchError = AdsAddDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsAddDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsAddDeviceNotificationRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
-		_childTemp, typeSwitchError = AdsAddDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsAddDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsAddDeviceNotificationResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
-		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDeleteDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeleteDeviceNotificationRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
-		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDeleteDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeleteDeviceNotificationResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
-		_childTemp, typeSwitchError = AdsDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeviceNotificationRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
-		_childTemp, typeSwitchError = AdsDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeviceNotificationResponse for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
-		_childTemp, typeSwitchError = AdsReadWriteRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsReadWriteRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteRequest for type-switch of AmsPacket")
+		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
-		_childTemp, typeSwitchError = AdsReadWriteResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsReadWriteResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteResponse for type-switch of AmsPacket")
+		}
 	case true: // ErrorResponse
-		_childTemp, typeSwitchError = ErrorResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_ErrorResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ErrorResponse for type-switch of AmsPacket")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorCode=%v, commandId=%v, response=%v]", errorCode, commandId, response)
+		return nil, errors.Errorf("Unmapped type for parameters [errorCode=%v, commandId=%v, response=%v]", errorCode, commandId, response)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AmsPacket")
-	}
-	_child = _childTemp.(AmsPacketChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("AmsPacket"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AmsPacket")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId)
-	_child.GetParent().(*_AmsPacket).reservedField0 = reservedField0
 	return _child, nil
 }
 
-func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AmsPacket, serializeChildFunction func() error) error {
+func (pm *_AmsPacket) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AmsPacket, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -529,149 +511,76 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for AmsPacket")
 	}
 
-	// Simple Field (targetAmsNetId)
-	if pushErr := writeBuffer.PushContext("targetAmsNetId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for targetAmsNetId")
-	}
-	_targetAmsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetAmsNetId())
-	if popErr := writeBuffer.PopContext("targetAmsNetId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for targetAmsNetId")
-	}
-	if _targetAmsNetIdErr != nil {
-		return errors.Wrap(_targetAmsNetIdErr, "Error serializing 'targetAmsNetId' field")
+	if err := WriteSimpleField[AmsNetId](ctx, "targetAmsNetId", m.GetTargetAmsNetId(), WriteComplex[AmsNetId](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'targetAmsNetId' field")
 	}
 
-	// Simple Field (targetAmsPort)
-	targetAmsPort := uint16(m.GetTargetAmsPort())
-	_targetAmsPortErr := writeBuffer.WriteUint16("targetAmsPort", 16, uint16((targetAmsPort)))
-	if _targetAmsPortErr != nil {
-		return errors.Wrap(_targetAmsPortErr, "Error serializing 'targetAmsPort' field")
+	if err := WriteSimpleField[uint16](ctx, "targetAmsPort", m.GetTargetAmsPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'targetAmsPort' field")
 	}
 
-	// Simple Field (sourceAmsNetId)
-	if pushErr := writeBuffer.PushContext("sourceAmsNetId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for sourceAmsNetId")
-	}
-	_sourceAmsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetSourceAmsNetId())
-	if popErr := writeBuffer.PopContext("sourceAmsNetId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for sourceAmsNetId")
-	}
-	if _sourceAmsNetIdErr != nil {
-		return errors.Wrap(_sourceAmsNetIdErr, "Error serializing 'sourceAmsNetId' field")
+	if err := WriteSimpleField[AmsNetId](ctx, "sourceAmsNetId", m.GetSourceAmsNetId(), WriteComplex[AmsNetId](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceAmsNetId' field")
 	}
 
-	// Simple Field (sourceAmsPort)
-	sourceAmsPort := uint16(m.GetSourceAmsPort())
-	_sourceAmsPortErr := writeBuffer.WriteUint16("sourceAmsPort", 16, uint16((sourceAmsPort)))
-	if _sourceAmsPortErr != nil {
-		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
+	if err := WriteSimpleField[uint16](ctx, "sourceAmsPort", m.GetSourceAmsPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceAmsPort' field")
 	}
 
-	// Discriminator Field (commandId) (Used as input to a switch field)
-	commandId := CommandId(child.GetCommandId())
-	if pushErr := writeBuffer.PushContext("commandId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandId")
-	}
-	_commandIdErr := writeBuffer.WriteSerializable(ctx, commandId)
-	if popErr := writeBuffer.PopContext("commandId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandId")
+	if err := WriteDiscriminatorEnumField(ctx, "commandId", "CommandId", m.GetCommandId(), WriteEnum[CommandId, uint16](CommandId.GetValue, CommandId.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandId' field")
 	}
 
-	if _commandIdErr != nil {
-		return errors.Wrap(_commandIdErr, "Error serializing 'commandId' field")
+	if err := WriteConstField(ctx, "initCommand", AmsPacket_INITCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'initCommand' field")
 	}
 
-	// Const Field (initCommand)
-	_initCommandErr := writeBuffer.WriteBit("initCommand", false)
-	if _initCommandErr != nil {
-		return errors.Wrap(_initCommandErr, "Error serializing 'initCommand' field")
+	if err := WriteConstField(ctx, "updCommand", AmsPacket_UPDCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'updCommand' field")
 	}
 
-	// Const Field (updCommand)
-	_updCommandErr := writeBuffer.WriteBit("updCommand", false)
-	if _updCommandErr != nil {
-		return errors.Wrap(_updCommandErr, "Error serializing 'updCommand' field")
+	if err := WriteConstField(ctx, "timestampAdded", AmsPacket_TIMESTAMPADDED, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestampAdded' field")
 	}
 
-	// Const Field (timestampAdded)
-	_timestampAddedErr := writeBuffer.WriteBit("timestampAdded", false)
-	if _timestampAddedErr != nil {
-		return errors.Wrap(_timestampAddedErr, "Error serializing 'timestampAdded' field")
+	if err := WriteConstField(ctx, "highPriorityCommand", AmsPacket_HIGHPRIORITYCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'highPriorityCommand' field")
 	}
 
-	// Const Field (highPriorityCommand)
-	_highPriorityCommandErr := writeBuffer.WriteBit("highPriorityCommand", false)
-	if _highPriorityCommandErr != nil {
-		return errors.Wrap(_highPriorityCommandErr, "Error serializing 'highPriorityCommand' field")
+	if err := WriteConstField(ctx, "systemCommand", AmsPacket_SYSTEMCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'systemCommand' field")
 	}
 
-	// Const Field (systemCommand)
-	_systemCommandErr := writeBuffer.WriteBit("systemCommand", false)
-	if _systemCommandErr != nil {
-		return errors.Wrap(_systemCommandErr, "Error serializing 'systemCommand' field")
+	if err := WriteConstField(ctx, "adsCommand", AmsPacket_ADSCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'adsCommand' field")
 	}
 
-	// Const Field (adsCommand)
-	_adsCommandErr := writeBuffer.WriteBit("adsCommand", true)
-	if _adsCommandErr != nil {
-		return errors.Wrap(_adsCommandErr, "Error serializing 'adsCommand' field")
+	if err := WriteConstField(ctx, "noReturn", AmsPacket_NORETURN, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'noReturn' field")
 	}
 
-	// Const Field (noReturn)
-	_noReturnErr := writeBuffer.WriteBit("noReturn", false)
-	if _noReturnErr != nil {
-		return errors.Wrap(_noReturnErr, "Error serializing 'noReturn' field")
+	if err := WriteDiscriminatorField(ctx, "response", m.GetResponse(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'response' field")
 	}
 
-	// Discriminator Field (response) (Used as input to a switch field)
-	response := bool(child.GetResponse())
-	_responseErr := writeBuffer.WriteBit("response", (response))
-
-	if _responseErr != nil {
-		return errors.Wrap(_responseErr, "Error serializing 'response' field")
+	if err := WriteConstField(ctx, "broadcast", AmsPacket_BROADCAST, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'broadcast' field")
 	}
 
-	// Const Field (broadcast)
-	_broadcastErr := writeBuffer.WriteBit("broadcast", false)
-	if _broadcastErr != nil {
-		return errors.Wrap(_broadcastErr, "Error serializing 'broadcast' field")
+	if err := WriteReservedField[int8](ctx, "reserved", int8(0x0), WriteSignedByte(writeBuffer, 7)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
-
-	// Reserved Field (reserved)
-	{
-		var reserved int8 = int8(0x0)
-		if pm.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": int8(0x0),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *pm.reservedField0
-		}
-		_err := writeBuffer.WriteInt8("reserved", 7, int8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
-	}
-
-	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint32(uint32(uint32(m.GetLengthInBytes(ctx))) - uint32(uint32(32)))
-	_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
-	if _lengthErr != nil {
-		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+	if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'length' field")
 	}
 
-	// Simple Field (errorCode)
-	errorCode := uint32(m.GetErrorCode())
-	_errorCodeErr := writeBuffer.WriteUint32("errorCode", 32, uint32((errorCode)))
-	if _errorCodeErr != nil {
-		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
+	if err := WriteSimpleField[uint32](ctx, "errorCode", m.GetErrorCode(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'errorCode' field")
 	}
 
-	// Simple Field (invokeId)
-	invokeId := uint32(m.GetInvokeId())
-	_invokeIdErr := writeBuffer.WriteUint32("invokeId", 32, uint32((invokeId)))
-	if _invokeIdErr != nil {
-		return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
+	if err := WriteSimpleField[uint32](ctx, "invokeId", m.GetInvokeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'invokeId' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -685,17 +594,4 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	return nil
 }
 
-func (m *_AmsPacket) isAmsPacket() bool {
-	return true
-}
-
-func (m *_AmsPacket) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_AmsPacket) IsAmsPacket() {}

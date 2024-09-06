@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetTimerStateChangeValueDate interface {
 	BACnetTimerStateChangeValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
-}
-
-// BACnetTimerStateChangeValueDateExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueDate.
-// This is useful for switch cases.
-type BACnetTimerStateChangeValueDateExactly interface {
-	BACnetTimerStateChangeValueDate
-	isBACnetTimerStateChangeValueDate() bool
+	// IsBACnetTimerStateChangeValueDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueDate()
 }
 
 // _BACnetTimerStateChangeValueDate is the data-structure of this message
 type _BACnetTimerStateChangeValueDate struct {
-	*_BACnetTimerStateChangeValue
+	BACnetTimerStateChangeValueContract
 	DateValue BACnetApplicationTagDate
 }
+
+var _ BACnetTimerStateChangeValueDate = (*_BACnetTimerStateChangeValueDate)(nil)
+var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueDate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetTimerStateChangeValueDate struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetTimerStateChangeValueDate) InitializeParent(parent BACnetTimerStateChangeValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetTimerStateChangeValueDate) GetParent() BACnetTimerStateChangeValue {
-	return m._BACnetTimerStateChangeValue
+func (m *_BACnetTimerStateChangeValueDate) GetParent() BACnetTimerStateChangeValueContract {
+	return m.BACnetTimerStateChangeValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetTimerStateChangeValueDate) GetDateValue() BACnetApplicationTagDa
 
 // NewBACnetTimerStateChangeValueDate factory function for _BACnetTimerStateChangeValueDate
 func NewBACnetTimerStateChangeValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueDate {
-	_result := &_BACnetTimerStateChangeValueDate{
-		DateValue:                    dateValue,
-		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetTimerStateChangeValueDate must not be nil")
 	}
-	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result
+	_result := &_BACnetTimerStateChangeValueDate{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		DateValue:                           dateValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetTimerStateChangeValueDate) GetTypeName() string {
 }
 
 func (m *_BACnetTimerStateChangeValueDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
 
 	// Simple field (dateValue)
 	lengthInBits += m.DateValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetTimerStateChangeValueDate) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerStateChangeValueDateParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueDate, error) {
-	return BACnetTimerStateChangeValueDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetTimerStateChangeValueDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueDate, error) {
+func (m *_BACnetTimerStateChangeValueDate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetTimerStateChangeValue, objectTypeArgument BACnetObjectType) (__bACnetTimerStateChangeValueDate BACnetTimerStateChangeValueDate, err error) {
+	m.BACnetTimerStateChangeValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dateValue)
-	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
+	dateValue, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "dateValue", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateValue' field"))
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetTimerStateChangeValueDate")
-	}
-	dateValue := _dateValue.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateValue")
-	}
+	m.DateValue = dateValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueDate")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetTimerStateChangeValueDate{
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		DateValue: dateValue,
-	}
-	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetTimerStateChangeValueDate) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetTimerStateChangeValueDate) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueDate")
 		}
 
-		// Simple Field (dateValue)
-		if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dateValue")
-		}
-		_dateValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateValue())
-		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dateValue")
-		}
-		if _dateValueErr != nil {
-			return errors.Wrap(_dateValueErr, "Error serializing 'dateValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "dateValue", m.GetDateValue(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dateValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueDate"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetTimerStateChangeValueDate) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetTimerStateChangeValueDate) isBACnetTimerStateChangeValueDate() bool {
-	return true
-}
+func (m *_BACnetTimerStateChangeValueDate) IsBACnetTimerStateChangeValueDate() {}
 
 func (m *_BACnetTimerStateChangeValueDate) String() string {
 	if m == nil {

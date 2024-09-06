@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,50 +35,40 @@ import (
 
 // MessagePDU is the corresponding interface of MessagePDU
 type MessagePDU interface {
+	MessagePDUContract
+	MessagePDURequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMessagePDU()
+}
+
+// MessagePDUContract provides a set of functions which can be overwritten by a sub struct
+type MessagePDUContract interface {
+	// GetChunk returns Chunk (property field)
+	GetChunk() ChunkType
+	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMessagePDU()
+}
+
+// MessagePDURequirements provides a set of functions which need to be implemented by a sub struct
+type MessagePDURequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() string
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
-	// GetChunk returns Chunk (property field)
-	GetChunk() ChunkType
-}
-
-// MessagePDUExactly can be used when we want exactly this type and not a type which fulfills MessagePDU.
-// This is useful for switch cases.
-type MessagePDUExactly interface {
-	MessagePDU
-	isMessagePDU() bool
 }
 
 // _MessagePDU is the data-structure of this message
 type _MessagePDU struct {
-	_MessagePDUChildRequirements
-	Chunk ChunkType
+	_SubType MessagePDU
+	Chunk    ChunkType
 }
 
-type _MessagePDUChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetMessageType() string
-	GetResponse() bool
-}
-
-type MessagePDUParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MessagePDU, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type MessagePDUChild interface {
-	utils.Serializable
-	InitializeParent(parent MessagePDU, chunk ChunkType)
-	GetParent() *MessagePDU
-
-	GetTypeName() string
-	MessagePDU
-}
+var _ MessagePDUContract = (*_MessagePDU)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -112,7 +104,7 @@ func (m *_MessagePDU) GetTypeName() string {
 	return "MessagePDU"
 }
 
-func (m *_MessagePDU) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 24
@@ -127,94 +119,106 @@ func (m *_MessagePDU) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_MessagePDU) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func MessagePDUParse(ctx context.Context, theBytes []byte, response bool) (MessagePDU, error) {
-	return MessagePDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
+func MessagePDUParse[T MessagePDU](ctx context.Context, theBytes []byte, response bool) (T, error) {
+	return MessagePDUParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (MessagePDU, error) {
+func MessagePDUParseWithBufferProducer[T MessagePDU](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := MessagePDUParseWithBuffer[T](ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func MessagePDUParseWithBuffer[T MessagePDU](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
+	v, err := (&_MessagePDU{}).parse(ctx, readBuffer, response)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__messagePDU MessagePDU, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MessagePDU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MessagePDU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := readBuffer.ReadString("messageType", uint32(24), "UTF-8")
-	if _messageTypeErr != nil {
-		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of MessagePDU")
+	messageType, err := ReadDiscriminatorField[string](ctx, "messageType", ReadString(readBuffer, uint32(24)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 
-	// Simple Field (chunk)
-	if pullErr := readBuffer.PullContext("chunk"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for chunk")
+	chunk, err := ReadEnumField[ChunkType](ctx, "chunk", "ChunkType", ReadEnum(ChunkTypeByValue, ReadString(readBuffer, uint32(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chunk' field"))
 	}
-	_chunk, _chunkErr := ChunkTypeParseWithBuffer(ctx, readBuffer)
-	if _chunkErr != nil {
-		return nil, errors.Wrap(_chunkErr, "Error parsing 'chunk' field of MessagePDU")
-	}
-	chunk := _chunk
-	if closeErr := readBuffer.CloseContext("chunk"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for chunk")
-	}
+	m.Chunk = chunk
 
-	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	totalLength, _totalLengthErr := readBuffer.ReadUint32("totalLength", 32)
+	totalLength, err := ReadImplicitField[uint32](ctx, "totalLength", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
+	}
 	_ = totalLength
-	if _totalLengthErr != nil {
-		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field of MessagePDU")
-	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type MessagePDUChildSerializeRequirement interface {
-		MessagePDU
-		InitializeParent(MessagePDU, ChunkType)
-		GetParent() MessagePDU
-	}
-	var _childTemp any
-	var _child MessagePDUChildSerializeRequirement
-	var typeSwitchError error
+	var _child MessagePDU
 	switch {
 	case messageType == "HEL" && response == bool(false): // OpcuaHelloRequest
-		_childTemp, typeSwitchError = OpcuaHelloRequestParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_OpcuaHelloRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaHelloRequest for type-switch of MessagePDU")
+		}
 	case messageType == "ACK" && response == bool(true): // OpcuaAcknowledgeResponse
-		_childTemp, typeSwitchError = OpcuaAcknowledgeResponseParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_OpcuaAcknowledgeResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaAcknowledgeResponse for type-switch of MessagePDU")
+		}
 	case messageType == "OPN" && response == bool(false): // OpcuaOpenRequest
-		_childTemp, typeSwitchError = OpcuaOpenRequestParseWithBuffer(ctx, readBuffer, totalLength, response)
+		if _child, err = (&_OpcuaOpenRequest{}).parse(ctx, readBuffer, m, totalLength, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaOpenRequest for type-switch of MessagePDU")
+		}
 	case messageType == "OPN" && response == bool(true): // OpcuaOpenResponse
-		_childTemp, typeSwitchError = OpcuaOpenResponseParseWithBuffer(ctx, readBuffer, totalLength, response)
+		if _child, err = (&_OpcuaOpenResponse{}).parse(ctx, readBuffer, m, totalLength, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaOpenResponse for type-switch of MessagePDU")
+		}
 	case messageType == "CLO" && response == bool(false): // OpcuaCloseRequest
-		_childTemp, typeSwitchError = OpcuaCloseRequestParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_OpcuaCloseRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaCloseRequest for type-switch of MessagePDU")
+		}
 	case messageType == "MSG" && response == bool(false): // OpcuaMessageRequest
-		_childTemp, typeSwitchError = OpcuaMessageRequestParseWithBuffer(ctx, readBuffer, totalLength, response)
+		if _child, err = (&_OpcuaMessageRequest{}).parse(ctx, readBuffer, m, totalLength, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageRequest for type-switch of MessagePDU")
+		}
 	case messageType == "MSG" && response == bool(true): // OpcuaMessageResponse
-		_childTemp, typeSwitchError = OpcuaMessageResponseParseWithBuffer(ctx, readBuffer, totalLength, response)
+		if _child, err = (&_OpcuaMessageResponse{}).parse(ctx, readBuffer, m, totalLength, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageResponse for type-switch of MessagePDU")
+		}
 	case messageType == "ERR" && response == bool(true): // OpcuaMessageError
-		_childTemp, typeSwitchError = OpcuaMessageErrorParseWithBuffer(ctx, readBuffer, response)
+		if _child, err = (&_OpcuaMessageError{}).parse(ctx, readBuffer, m, response); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageError for type-switch of MessagePDU")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v, response=%v]", messageType, response)
+		return nil, errors.Errorf("Unmapped type for parameters [messageType=%v, response=%v]", messageType, response)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of MessagePDU")
-	}
-	_child = _childTemp.(MessagePDUChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("MessagePDU"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MessagePDU")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, chunk)
 	return _child, nil
 }
 
-func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MessagePDU, serializeChildFunction func() error) error {
+func (pm *_MessagePDU) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MessagePDU, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -226,31 +230,16 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(pushErr, "Error pushing for MessagePDU")
 	}
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := string(child.GetMessageType())
-	_messageTypeErr := writeBuffer.WriteString("messageType", uint32(24), "UTF-8", (messageType))
-
-	if _messageTypeErr != nil {
-		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
+	if err := WriteDiscriminatorField(ctx, "messageType", m.GetMessageType(), WriteString(writeBuffer, 24)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageType' field")
 	}
 
-	// Simple Field (chunk)
-	if pushErr := writeBuffer.PushContext("chunk"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for chunk")
+	if err := WriteSimpleEnumField[ChunkType](ctx, "chunk", "ChunkType", m.GetChunk(), WriteEnum[ChunkType, string](ChunkType.GetValue, ChunkType.PLC4XEnumName, WriteString(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'chunk' field")
 	}
-	_chunkErr := writeBuffer.WriteSerializable(ctx, m.GetChunk())
-	if popErr := writeBuffer.PopContext("chunk"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for chunk")
-	}
-	if _chunkErr != nil {
-		return errors.Wrap(_chunkErr, "Error serializing 'chunk' field")
-	}
-
-	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint32(uint32(m.GetLengthInBytes(ctx)))
-	_totalLengthErr := writeBuffer.WriteUint32("totalLength", 32, uint32((totalLength)))
-	if _totalLengthErr != nil {
-		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
+	if err := WriteImplicitField(ctx, "totalLength", totalLength, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'totalLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -264,17 +253,4 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 	return nil
 }
 
-func (m *_MessagePDU) isMessagePDU() bool {
-	return true
-}
-
-func (m *_MessagePDU) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_MessagePDU) IsMessagePDU() {}

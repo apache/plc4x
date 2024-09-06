@@ -64,7 +64,7 @@ public class SDOAbort implements Message {
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 5));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     // Simple Field (code)
     writeSimpleField("code", code, writeUnsignedLong(writeBuffer, 32));
@@ -105,8 +105,7 @@ public class SDOAbort implements Message {
 
     IndexAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> IndexAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> IndexAddress.staticParse(readBuffer), readBuffer));
 
     long code = readSimpleField("code", readUnsignedLong(readBuffer, 32));
 

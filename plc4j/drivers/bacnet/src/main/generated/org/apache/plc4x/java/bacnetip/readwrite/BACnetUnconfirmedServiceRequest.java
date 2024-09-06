@@ -61,7 +61,7 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
         "serviceChoice",
         "BACnetUnconfirmedServiceChoice",
         getServiceChoice(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetUnconfirmedServiceChoice::getValue,
             BACnetUnconfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -101,7 +101,7 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
         readDiscriminatorEnumField(
             "serviceChoice",
             "BACnetUnconfirmedServiceChoice",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 BACnetUnconfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

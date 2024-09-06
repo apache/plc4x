@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,21 +43,19 @@ type VTCloseError interface {
 	GetErrorType() ErrorEnclosed
 	// GetListOfVtSessionIdentifiers returns ListOfVtSessionIdentifiers (property field)
 	GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSessionIdentifiers
-}
-
-// VTCloseErrorExactly can be used when we want exactly this type and not a type which fulfills VTCloseError.
-// This is useful for switch cases.
-type VTCloseErrorExactly interface {
-	VTCloseError
-	isVTCloseError() bool
+	// IsVTCloseError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVTCloseError()
 }
 
 // _VTCloseError is the data-structure of this message
 type _VTCloseError struct {
-	*_BACnetError
+	BACnetErrorContract
 	ErrorType                  ErrorEnclosed
 	ListOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers
 }
+
+var _ VTCloseError = (*_VTCloseError)(nil)
+var _ BACnetErrorRequirements = (*_VTCloseError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +71,8 @@ func (m *_VTCloseError) GetErrorChoice() BACnetConfirmedServiceChoice {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_VTCloseError) InitializeParent(parent BACnetError) {}
-
-func (m *_VTCloseError) GetParent() BACnetError {
-	return m._BACnetError
+func (m *_VTCloseError) GetParent() BACnetErrorContract {
+	return m.BACnetErrorContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,12 +95,15 @@ func (m *_VTCloseError) GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSess
 
 // NewVTCloseError factory function for _VTCloseError
 func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) *_VTCloseError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for VTCloseError must not be nil")
+	}
 	_result := &_VTCloseError{
+		BACnetErrorContract:        NewBACnetError(),
 		ErrorType:                  errorType,
 		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
-		_BACnetError:               NewBACnetError(),
 	}
-	_result._BACnetError._BACnetErrorChildRequirements = _result
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 
@@ -123,7 +123,7 @@ func (m *_VTCloseError) GetTypeName() string {
 }
 
 func (m *_VTCloseError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (errorType)
 	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
@@ -140,68 +140,38 @@ func (m *_VTCloseError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func VTCloseErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
-	return VTCloseErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
-}
-
-func VTCloseErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
+func (m *_VTCloseError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__vTCloseError VTCloseError, err error) {
+	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VTCloseError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VTCloseError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorType)
-	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
+	errorType, err := ReadSimpleField[ErrorEnclosed](ctx, "errorType", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorType' field"))
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of VTCloseError")
-	}
-	errorType := _errorType.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorType")
-	}
+	m.ErrorType = errorType
 
-	// Optional Field (listOfVtSessionIdentifiers) (Can be skipped, if a given expression evaluates to false)
-	var listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("listOfVtSessionIdentifiers"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for listOfVtSessionIdentifiers")
-		}
-		_val, _err := VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx, readBuffer, uint8(1))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field of VTCloseError")
-		default:
-			listOfVtSessionIdentifiers = _val.(VTCloseErrorListOfVTSessionIdentifiers)
-			if closeErr := readBuffer.CloseContext("listOfVtSessionIdentifiers"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for listOfVtSessionIdentifiers")
-			}
-		}
+	var listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers
+	_listOfVtSessionIdentifiers, err := ReadOptionalField[VTCloseErrorListOfVTSessionIdentifiers](ctx, "listOfVtSessionIdentifiers", ReadComplex[VTCloseErrorListOfVTSessionIdentifiers](VTCloseErrorListOfVTSessionIdentifiersParseWithBufferProducer((uint8)(uint8(1))), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfVtSessionIdentifiers' field"))
+	}
+	if _listOfVtSessionIdentifiers != nil {
+		listOfVtSessionIdentifiers = *_listOfVtSessionIdentifiers
+		m.ListOfVtSessionIdentifiers = listOfVtSessionIdentifiers
 	}
 
 	if closeErr := readBuffer.CloseContext("VTCloseError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for VTCloseError")
 	}
 
-	// Create a partially initialized instance
-	_child := &_VTCloseError{
-		_BACnetError:               &_BACnetError{},
-		ErrorType:                  errorType,
-		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
-	}
-	_child._BACnetError._BACnetErrorChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_VTCloseError) Serialize() ([]byte, error) {
@@ -222,32 +192,12 @@ func (m *_VTCloseError) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for VTCloseError")
 		}
 
-		// Simple Field (errorType)
-		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorType")
-		}
-		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorType")
-		}
-		if _errorTypeErr != nil {
-			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		// Optional Field (listOfVtSessionIdentifiers) (Can be skipped, if the value is null)
-		var listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers = nil
-		if m.GetListOfVtSessionIdentifiers() != nil {
-			if pushErr := writeBuffer.PushContext("listOfVtSessionIdentifiers"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for listOfVtSessionIdentifiers")
-			}
-			listOfVtSessionIdentifiers = m.GetListOfVtSessionIdentifiers()
-			_listOfVtSessionIdentifiersErr := writeBuffer.WriteSerializable(ctx, listOfVtSessionIdentifiers)
-			if popErr := writeBuffer.PopContext("listOfVtSessionIdentifiers"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for listOfVtSessionIdentifiers")
-			}
-			if _listOfVtSessionIdentifiersErr != nil {
-				return errors.Wrap(_listOfVtSessionIdentifiersErr, "Error serializing 'listOfVtSessionIdentifiers' field")
-			}
+		if err := WriteOptionalField[VTCloseErrorListOfVTSessionIdentifiers](ctx, "listOfVtSessionIdentifiers", GetRef(m.GetListOfVtSessionIdentifiers()), WriteComplex[VTCloseErrorListOfVTSessionIdentifiers](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfVtSessionIdentifiers' field")
 		}
 
 		if popErr := writeBuffer.PopContext("VTCloseError"); popErr != nil {
@@ -255,12 +205,10 @@ func (m *_VTCloseError) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetErrorContract.(*_BACnetError).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_VTCloseError) isVTCloseError() bool {
-	return true
-}
+func (m *_VTCloseError) IsVTCloseError() {}
 
 func (m *_VTCloseError) String() string {
 	if m == nil {

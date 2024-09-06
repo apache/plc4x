@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
-}
-
-// BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedExactly interface {
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
-	isBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged() bool
+	// IsBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged()
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged is the data-structure of this message
@@ -58,6 +55,8 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagg
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,6 +78,9 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
 func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged must not be nil")
+	}
 	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -117,61 +119,56 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, error) {
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, error) {
+	v, err := (&_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged")
+	value, err := ReadManualField[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter](ctx, "value", readBuffer, EnsureType[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
-	if _value != nil {
-		value = _value.(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter)
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged")
 	}
 
-	// Create the instance
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Value:     value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) Serialize() ([]byte, error) {
@@ -191,22 +188,12 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 		return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged"); popErr != nil {
@@ -228,8 +215,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 //
 ////
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) isBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) IsBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged() {
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) String() string {

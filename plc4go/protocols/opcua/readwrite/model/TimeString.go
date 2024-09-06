@@ -36,18 +36,15 @@ type TimeString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// TimeStringExactly can be used when we want exactly this type and not a type which fulfills TimeString.
-// This is useful for switch cases.
-type TimeStringExactly interface {
-	TimeString
-	isTimeString() bool
+	// IsTimeString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTimeString()
 }
 
 // _TimeString is the data-structure of this message
 type _TimeString struct {
 }
+
+var _ TimeString = (*_TimeString)(nil)
 
 // NewTimeString factory function for _TimeString
 func NewTimeString() *_TimeString {
@@ -83,11 +80,23 @@ func TimeStringParse(ctx context.Context, theBytes []byte) (TimeString, error) {
 	return TimeStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TimeStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
+		return TimeStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TimeStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
+	v, err := (&_TimeString{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_TimeString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__timeString TimeString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TimeString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TimeString")
 	}
@@ -98,8 +107,7 @@ func TimeStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return nil, errors.Wrap(closeErr, "Error closing for TimeString")
 	}
 
-	// Create the instance
-	return &_TimeString{}, nil
+	return m, nil
 }
 
 func (m *_TimeString) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_TimeString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	return nil
 }
 
-func (m *_TimeString) isTimeString() bool {
-	return true
-}
+func (m *_TimeString) IsTimeString() {}
 
 func (m *_TimeString) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLightingCommandDefaultPriority interface {
 	GetLightingCommandDefaultPriority() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataLightingCommandDefaultPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingCommandDefaultPriority.
-// This is useful for switch cases.
-type BACnetConstructedDataLightingCommandDefaultPriorityExactly interface {
-	BACnetConstructedDataLightingCommandDefaultPriority
-	isBACnetConstructedDataLightingCommandDefaultPriority() bool
+	// IsBACnetConstructedDataLightingCommandDefaultPriority is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLightingCommandDefaultPriority()
 }
 
 // _BACnetConstructedDataLightingCommandDefaultPriority is the data-structure of this message
 type _BACnetConstructedDataLightingCommandDefaultPriority struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataLightingCommandDefaultPriority = (*_BACnetConstructedDataLightingCommandDefaultPriority)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingCommandDefaultPriority)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetPropertyIdenti
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetActualValue() 
 
 // NewBACnetConstructedDataLightingCommandDefaultPriority factory function for _BACnetConstructedDataLightingCommandDefaultPriority
 func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommandDefaultPriority {
-	_result := &_BACnetConstructedDataLightingCommandDefaultPriority{
-		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
-		_BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if lightingCommandDefaultPriority == nil {
+		panic("lightingCommandDefaultPriority of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLightingCommandDefaultPriority must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLightingCommandDefaultPriority{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetTypeName() str
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lightingCommandDefaultPriority)
 	lengthInBits += m.LightingCommandDefaultPriority.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes(
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLightingCommandDefaultPriorityParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
-	return BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLightingCommandDefaultPriority BACnetConstructedDataLightingCommandDefaultPriority, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommandDefaultPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLightingCommandDefaultPriority")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightingCommandDefaultPriority)
-	if pullErr := readBuffer.PullContext("lightingCommandDefaultPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommandDefaultPriority")
+	lightingCommandDefaultPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lightingCommandDefaultPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingCommandDefaultPriority' field"))
 	}
-	_lightingCommandDefaultPriority, _lightingCommandDefaultPriorityErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _lightingCommandDefaultPriorityErr != nil {
-		return nil, errors.Wrap(_lightingCommandDefaultPriorityErr, "Error parsing 'lightingCommandDefaultPriority' field of BACnetConstructedDataLightingCommandDefaultPriority")
-	}
-	lightingCommandDefaultPriority := _lightingCommandDefaultPriority.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("lightingCommandDefaultPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightingCommandDefaultPriority")
-	}
+	m.LightingCommandDefaultPriority = lightingCommandDefaultPriority
 
-	// Virtual field
-	_actualValue := lightingCommandDefaultPriority
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), lightingCommandDefaultPriority)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommandDefaultPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingCommandDefaultPriority")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLightingCommandDefaultPriority{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWrit
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingCommandDefaultPriority")
 		}
 
-		// Simple Field (lightingCommandDefaultPriority)
-		if pushErr := writeBuffer.PushContext("lightingCommandDefaultPriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightingCommandDefaultPriority")
-		}
-		_lightingCommandDefaultPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetLightingCommandDefaultPriority())
-		if popErr := writeBuffer.PopContext("lightingCommandDefaultPriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightingCommandDefaultPriority")
-		}
-		if _lightingCommandDefaultPriorityErr != nil {
-			return errors.Wrap(_lightingCommandDefaultPriorityErr, "Error serializing 'lightingCommandDefaultPriority' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lightingCommandDefaultPriority", m.GetLightingCommandDefaultPriority(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightingCommandDefaultPriority' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWrit
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) isBACnetConstructedDataLightingCommandDefaultPriority() bool {
-	return true
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) IsBACnetConstructedDataLightingCommandDefaultPriority() {
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) String() string {

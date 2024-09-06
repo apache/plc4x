@@ -36,18 +36,15 @@ type DurationString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// DurationStringExactly can be used when we want exactly this type and not a type which fulfills DurationString.
-// This is useful for switch cases.
-type DurationStringExactly interface {
-	DurationString
-	isDurationString() bool
+	// IsDurationString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDurationString()
 }
 
 // _DurationString is the data-structure of this message
 type _DurationString struct {
 }
+
+var _ DurationString = (*_DurationString)(nil)
 
 // NewDurationString factory function for _DurationString
 func NewDurationString() *_DurationString {
@@ -83,11 +80,23 @@ func DurationStringParse(ctx context.Context, theBytes []byte) (DurationString, 
 	return DurationStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DurationStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DurationString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DurationString, error) {
+		return DurationStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DurationStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DurationString, error) {
+	v, err := (&_DurationString{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_DurationString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__durationString DurationString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DurationString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DurationString")
 	}
@@ -98,8 +107,7 @@ func DurationStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(closeErr, "Error closing for DurationString")
 	}
 
-	// Create the instance
-	return &_DurationString{}, nil
+	return m, nil
 }
 
 func (m *_DurationString) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_DurationString) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return nil
 }
 
-func (m *_DurationString) isDurationString() bool {
-	return true
-}
+func (m *_DurationString) IsDurationString() {}
 
 func (m *_DurationString) String() string {
 	if m == nil {

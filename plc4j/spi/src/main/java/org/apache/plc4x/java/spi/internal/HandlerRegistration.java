@@ -164,8 +164,6 @@ public class HandlerRegistration implements Future<Void> {
         return this.handled.isDone();
     }
 
-
-
     @Override
     public String toString() {
         return "HandlerRegistration#" + id;

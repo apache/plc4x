@@ -37,19 +37,17 @@ type TDataConnectedInd interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
-}
-
-// TDataConnectedIndExactly can be used when we want exactly this type and not a type which fulfills TDataConnectedInd.
-// This is useful for switch cases.
-type TDataConnectedIndExactly interface {
-	TDataConnectedInd
-	isTDataConnectedInd() bool
+	// IsTDataConnectedInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTDataConnectedInd()
 }
 
 // _TDataConnectedInd is the data-structure of this message
 type _TDataConnectedInd struct {
-	*_CEMI
+	CEMIContract
 }
+
+var _ TDataConnectedInd = (*_TDataConnectedInd)(nil)
+var _ CEMIRequirements = (*_TDataConnectedInd)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_TDataConnectedInd) GetMessageCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TDataConnectedInd) InitializeParent(parent CEMI) {}
-
-func (m *_TDataConnectedInd) GetParent() CEMI {
-	return m._CEMI
+func (m *_TDataConnectedInd) GetParent() CEMIContract {
+	return m.CEMIContract
 }
 
 // NewTDataConnectedInd factory function for _TDataConnectedInd
 func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
 	_result := &_TDataConnectedInd{
-		_CEMI: NewCEMI(size),
+		CEMIContract: NewCEMI(size),
 	}
-	_result._CEMI._CEMIChildRequirements = _result
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_TDataConnectedInd) GetTypeName() string {
 }
 
 func (m *_TDataConnectedInd) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_TDataConnectedInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TDataConnectedIndParse(ctx context.Context, theBytes []byte, size uint16) (TDataConnectedInd, error) {
-	return TDataConnectedIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
-}
-
-func TDataConnectedIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataConnectedInd, error) {
+func (m *_TDataConnectedInd) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__tDataConnectedInd TDataConnectedInd, err error) {
+	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TDataConnectedInd"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TDataConnectedInd")
 	}
@@ -124,14 +116,7 @@ func TDataConnectedIndParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(closeErr, "Error closing for TDataConnectedInd")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TDataConnectedInd{
-		_CEMI: &_CEMI{
-			Size: size,
-		},
-	}
-	_child._CEMI._CEMIChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TDataConnectedInd) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_TDataConnectedInd) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIContract.(*_CEMI).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TDataConnectedInd) isTDataConnectedInd() bool {
-	return true
-}
+func (m *_TDataConnectedInd) IsTDataConnectedInd() {}
 
 func (m *_TDataConnectedInd) String() string {
 	if m == nil {

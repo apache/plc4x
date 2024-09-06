@@ -82,7 +82,7 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataMinimumOffTime");
 
     // Simple Field (minimumOffTime)
-    writeSimpleField("minimumOffTime", minimumOffTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minimumOffTime", minimumOffTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger minimumOffTime =
         readSimpleField(
             "minimumOffTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

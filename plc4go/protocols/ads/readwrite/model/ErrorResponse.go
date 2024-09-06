@@ -37,19 +37,17 @@ type ErrorResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
-}
-
-// ErrorResponseExactly can be used when we want exactly this type and not a type which fulfills ErrorResponse.
-// This is useful for switch cases.
-type ErrorResponseExactly interface {
-	ErrorResponse
-	isErrorResponse() bool
+	// IsErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorResponse()
 }
 
 // _ErrorResponse is the data-structure of this message
 type _ErrorResponse struct {
-	*_AmsPacket
+	AmsPacketContract
 }
+
+var _ ErrorResponse = (*_ErrorResponse)(nil)
+var _ AmsPacketRequirements = (*_ErrorResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,25 +67,16 @@ func (m *_ErrorResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ErrorResponse) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
-	m.TargetAmsNetId = targetAmsNetId
-	m.TargetAmsPort = targetAmsPort
-	m.SourceAmsNetId = sourceAmsNetId
-	m.SourceAmsPort = sourceAmsPort
-	m.ErrorCode = errorCode
-	m.InvokeId = invokeId
-}
-
-func (m *_ErrorResponse) GetParent() AmsPacket {
-	return m._AmsPacket
+func (m *_ErrorResponse) GetParent() AmsPacketContract {
+	return m.AmsPacketContract
 }
 
 // NewErrorResponse factory function for _ErrorResponse
 func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_ErrorResponse {
 	_result := &_ErrorResponse{
-		_AmsPacket: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AmsPacket._AmsPacketChildRequirements = _result
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 
@@ -107,7 +96,7 @@ func (m *_ErrorResponse) GetTypeName() string {
 }
 
 func (m *_ErrorResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -116,15 +105,11 @@ func (m *_ErrorResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorResponseParse(ctx context.Context, theBytes []byte) (ErrorResponse, error) {
-	return ErrorResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func ErrorResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorResponse, error) {
+func (m *_ErrorResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__errorResponse ErrorResponse, err error) {
+	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ErrorResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ErrorResponse")
 	}
@@ -135,12 +120,7 @@ func ErrorResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(closeErr, "Error closing for ErrorResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ErrorResponse{
-		_AmsPacket: &_AmsPacket{},
-	}
-	_child._AmsPacket._AmsPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ErrorResponse) Serialize() ([]byte, error) {
@@ -166,12 +146,10 @@ func (m *_ErrorResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AmsPacketContract.(*_AmsPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ErrorResponse) isErrorResponse() bool {
-	return true
-}
+func (m *_ErrorResponse) IsErrorResponse() {}
 
 func (m *_ErrorResponse) String() string {
 	if m == nil {

@@ -75,13 +75,13 @@ public class BACnetNameValueCollection implements Message {
     writeBuffer.pushContext("BACnetNameValueCollection");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (members)
     writeComplexTypeArrayField("members", members, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNameValueCollection");
   }
@@ -122,14 +122,13 @@ public class BACnetNameValueCollection implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetNameValue> members =
         readTerminatedArrayField(
             "members",
-            new DataReaderComplexDefault<>(
-                () -> BACnetNameValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetNameValue.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -138,7 +137,7 @@ public class BACnetNameValueCollection implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetNameValueCollection");

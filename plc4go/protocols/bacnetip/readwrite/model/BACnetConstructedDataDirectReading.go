@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDirectReading interface {
 	GetDirectReading() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataDirectReadingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDirectReading.
-// This is useful for switch cases.
-type BACnetConstructedDataDirectReadingExactly interface {
-	BACnetConstructedDataDirectReading
-	isBACnetConstructedDataDirectReading() bool
+	// IsBACnetConstructedDataDirectReading is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDirectReading()
 }
 
 // _BACnetConstructedDataDirectReading is the data-structure of this message
 type _BACnetConstructedDataDirectReading struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DirectReading BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataDirectReading = (*_BACnetConstructedDataDirectReading)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDirectReading)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDirectReading) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDirectReading) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDirectReading) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDirectReading) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDirectReading) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataDirectReading factory function for _BACnetConstructedDataDirectReading
 func NewBACnetConstructedDataDirectReading(directReading BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDirectReading {
-	_result := &_BACnetConstructedDataDirectReading{
-		DirectReading:          directReading,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if directReading == nil {
+		panic("directReading of type BACnetApplicationTagReal for BACnetConstructedDataDirectReading must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDirectReading{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DirectReading:                 directReading,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDirectReading) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDirectReading) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (directReading)
 	lengthInBits += m.DirectReading.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDirectReading) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDirectReadingParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDirectReading, error) {
-	return BACnetConstructedDataDirectReadingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDirectReadingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDirectReading, error) {
+func (m *_BACnetConstructedDataDirectReading) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDirectReading BACnetConstructedDataDirectReading, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDirectReading"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDirectReading")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (directReading)
-	if pullErr := readBuffer.PullContext("directReading"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for directReading")
+	directReading, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "directReading", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'directReading' field"))
 	}
-	_directReading, _directReadingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _directReadingErr != nil {
-		return nil, errors.Wrap(_directReadingErr, "Error parsing 'directReading' field of BACnetConstructedDataDirectReading")
-	}
-	directReading := _directReading.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("directReading"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for directReading")
-	}
+	m.DirectReading = directReading
 
-	// Virtual field
-	_actualValue := directReading
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), directReading)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDirectReading"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDirectReading")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDirectReading{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DirectReading: directReading,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDirectReading) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDirectReading) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDirectReading")
 		}
 
-		// Simple Field (directReading)
-		if pushErr := writeBuffer.PushContext("directReading"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for directReading")
-		}
-		_directReadingErr := writeBuffer.WriteSerializable(ctx, m.GetDirectReading())
-		if popErr := writeBuffer.PopContext("directReading"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for directReading")
-		}
-		if _directReadingErr != nil {
-			return errors.Wrap(_directReadingErr, "Error serializing 'directReading' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "directReading", m.GetDirectReading(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'directReading' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataDirectReading) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDirectReading) isBACnetConstructedDataDirectReading() bool {
-	return true
-}
+func (m *_BACnetConstructedDataDirectReading) IsBACnetConstructedDataDirectReading() {}
 
 func (m *_BACnetConstructedDataDirectReading) String() string {
 	if m == nil {

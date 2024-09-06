@@ -145,11 +145,11 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
 			return
 		}
-		if writeResponse, ok := reply.(readWriteModel.WriteResponseExactly); ok {
+		if writeResponse, ok := reply.(readWriteModel.WriteResponse); ok {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(m.writeResponse(writeRequest, writeResponse.GetResults())), nil)
 			return
 		} else {
-			if serviceFault, ok := reply.(readWriteModel.ServiceFaultExactly); ok {
+			if serviceFault, ok := reply.(readWriteModel.ServiceFault); ok {
 				header := serviceFault.GetResponseHeader()
 				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
 			} else {

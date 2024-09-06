@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,13 +46,8 @@ type NLMInitializeRoutingTablePortMapping interface {
 	GetPortInfoLength() uint8
 	// GetPortInfo returns PortInfo (property field)
 	GetPortInfo() []byte
-}
-
-// NLMInitializeRoutingTablePortMappingExactly can be used when we want exactly this type and not a type which fulfills NLMInitializeRoutingTablePortMapping.
-// This is useful for switch cases.
-type NLMInitializeRoutingTablePortMappingExactly interface {
-	NLMInitializeRoutingTablePortMapping
-	isNLMInitializeRoutingTablePortMapping() bool
+	// IsNLMInitializeRoutingTablePortMapping is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMInitializeRoutingTablePortMapping()
 }
 
 // _NLMInitializeRoutingTablePortMapping is the data-structure of this message
@@ -60,6 +57,8 @@ type _NLMInitializeRoutingTablePortMapping struct {
 	PortInfoLength            uint8
 	PortInfo                  []byte
 }
+
+var _ NLMInitializeRoutingTablePortMapping = (*_NLMInitializeRoutingTablePortMapping)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -135,55 +134,58 @@ func NLMInitializeRoutingTablePortMappingParse(ctx context.Context, theBytes []b
 	return NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NLMInitializeRoutingTablePortMappingParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTablePortMapping, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTablePortMapping, error) {
+		return NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTablePortMapping, error) {
+	v, err := (&_NLMInitializeRoutingTablePortMapping{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_NLMInitializeRoutingTablePortMapping) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nLMInitializeRoutingTablePortMapping NLMInitializeRoutingTablePortMapping, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMInitializeRoutingTablePortMapping"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMInitializeRoutingTablePortMapping")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMInitializeRoutingTablePortMapping")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
+	m.DestinationNetworkAddress = destinationNetworkAddress
 
-	// Simple Field (portId)
-	_portId, _portIdErr := readBuffer.ReadUint8("portId", 8)
-	if _portIdErr != nil {
-		return nil, errors.Wrap(_portIdErr, "Error parsing 'portId' field of NLMInitializeRoutingTablePortMapping")
+	portId, err := ReadSimpleField(ctx, "portId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portId' field"))
 	}
-	portId := _portId
+	m.PortId = portId
 
-	// Simple Field (portInfoLength)
-	_portInfoLength, _portInfoLengthErr := readBuffer.ReadUint8("portInfoLength", 8)
-	if _portInfoLengthErr != nil {
-		return nil, errors.Wrap(_portInfoLengthErr, "Error parsing 'portInfoLength' field of NLMInitializeRoutingTablePortMapping")
+	portInfoLength, err := ReadSimpleField(ctx, "portInfoLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portInfoLength' field"))
 	}
-	portInfoLength := _portInfoLength
-	// Byte Array field (portInfo)
-	numberOfBytesportInfo := int(portInfoLength)
-	portInfo, _readArrayErr := readBuffer.ReadByteArray("portInfo", numberOfBytesportInfo)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'portInfo' field of NLMInitializeRoutingTablePortMapping")
+	m.PortInfoLength = portInfoLength
+
+	portInfo, err := readBuffer.ReadByteArray("portInfo", int(portInfoLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portInfo' field"))
 	}
+	m.PortInfo = portInfo
 
 	if closeErr := readBuffer.CloseContext("NLMInitializeRoutingTablePortMapping"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMInitializeRoutingTablePortMapping")
 	}
 
-	// Create the instance
-	return &_NLMInitializeRoutingTablePortMapping{
-		DestinationNetworkAddress: destinationNetworkAddress,
-		PortId:                    portId,
-		PortInfoLength:            portInfoLength,
-		PortInfo:                  portInfo,
-	}, nil
+	return m, nil
 }
 
 func (m *_NLMInitializeRoutingTablePortMapping) Serialize() ([]byte, error) {
@@ -203,30 +205,19 @@ func (m *_NLMInitializeRoutingTablePortMapping) SerializeWithWriteBuffer(ctx con
 		return errors.Wrap(pushErr, "Error pushing for NLMInitializeRoutingTablePortMapping")
 	}
 
-	// Simple Field (destinationNetworkAddress)
-	destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-	_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-	if _destinationNetworkAddressErr != nil {
-		return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+	if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 	}
 
-	// Simple Field (portId)
-	portId := uint8(m.GetPortId())
-	_portIdErr := writeBuffer.WriteUint8("portId", 8, uint8((portId)))
-	if _portIdErr != nil {
-		return errors.Wrap(_portIdErr, "Error serializing 'portId' field")
+	if err := WriteSimpleField[uint8](ctx, "portId", m.GetPortId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'portId' field")
 	}
 
-	// Simple Field (portInfoLength)
-	portInfoLength := uint8(m.GetPortInfoLength())
-	_portInfoLengthErr := writeBuffer.WriteUint8("portInfoLength", 8, uint8((portInfoLength)))
-	if _portInfoLengthErr != nil {
-		return errors.Wrap(_portInfoLengthErr, "Error serializing 'portInfoLength' field")
+	if err := WriteSimpleField[uint8](ctx, "portInfoLength", m.GetPortInfoLength(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'portInfoLength' field")
 	}
 
-	// Array Field (portInfo)
-	// Byte Array field (portInfo)
-	if err := writeBuffer.WriteByteArray("portInfo", m.GetPortInfo()); err != nil {
+	if err := WriteByteArrayField(ctx, "portInfo", m.GetPortInfo(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'portInfo' field")
 	}
 
@@ -236,9 +227,7 @@ func (m *_NLMInitializeRoutingTablePortMapping) SerializeWithWriteBuffer(ctx con
 	return nil
 }
 
-func (m *_NLMInitializeRoutingTablePortMapping) isNLMInitializeRoutingTablePortMapping() bool {
-	return true
-}
+func (m *_NLMInitializeRoutingTablePortMapping) IsNLMInitializeRoutingTablePortMapping() {}
 
 func (m *_NLMInitializeRoutingTablePortMapping) String() string {
 	if m == nil {

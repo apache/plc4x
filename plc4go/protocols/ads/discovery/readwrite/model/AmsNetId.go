@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,13 +50,8 @@ type AmsNetId interface {
 	GetOctet5() uint8
 	// GetOctet6 returns Octet6 (property field)
 	GetOctet6() uint8
-}
-
-// AmsNetIdExactly can be used when we want exactly this type and not a type which fulfills AmsNetId.
-// This is useful for switch cases.
-type AmsNetIdExactly interface {
-	AmsNetId
-	isAmsNetId() bool
+	// IsAmsNetId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsNetId()
 }
 
 // _AmsNetId is the data-structure of this message
@@ -66,6 +63,8 @@ type _AmsNetId struct {
 	Octet5 uint8
 	Octet6 uint8
 }
+
+var _ AmsNetId = (*_AmsNetId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -153,72 +152,70 @@ func AmsNetIdParse(ctx context.Context, theBytes []byte) (AmsNetId, error) {
 	return AmsNetIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AmsNetIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {
+		return AmsNetIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {
+	v, err := (&_AmsNetId{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_AmsNetId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__amsNetId AmsNetId, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AmsNetId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AmsNetId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (octet1)
-	_octet1, _octet1Err := readBuffer.ReadUint8("octet1", 8)
-	if _octet1Err != nil {
-		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field of AmsNetId")
+	octet1, err := ReadSimpleField(ctx, "octet1", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet1' field"))
 	}
-	octet1 := _octet1
+	m.Octet1 = octet1
 
-	// Simple Field (octet2)
-	_octet2, _octet2Err := readBuffer.ReadUint8("octet2", 8)
-	if _octet2Err != nil {
-		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field of AmsNetId")
+	octet2, err := ReadSimpleField(ctx, "octet2", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet2' field"))
 	}
-	octet2 := _octet2
+	m.Octet2 = octet2
 
-	// Simple Field (octet3)
-	_octet3, _octet3Err := readBuffer.ReadUint8("octet3", 8)
-	if _octet3Err != nil {
-		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field of AmsNetId")
+	octet3, err := ReadSimpleField(ctx, "octet3", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet3' field"))
 	}
-	octet3 := _octet3
+	m.Octet3 = octet3
 
-	// Simple Field (octet4)
-	_octet4, _octet4Err := readBuffer.ReadUint8("octet4", 8)
-	if _octet4Err != nil {
-		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field of AmsNetId")
+	octet4, err := ReadSimpleField(ctx, "octet4", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet4' field"))
 	}
-	octet4 := _octet4
+	m.Octet4 = octet4
 
-	// Simple Field (octet5)
-	_octet5, _octet5Err := readBuffer.ReadUint8("octet5", 8)
-	if _octet5Err != nil {
-		return nil, errors.Wrap(_octet5Err, "Error parsing 'octet5' field of AmsNetId")
+	octet5, err := ReadSimpleField(ctx, "octet5", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet5' field"))
 	}
-	octet5 := _octet5
+	m.Octet5 = octet5
 
-	// Simple Field (octet6)
-	_octet6, _octet6Err := readBuffer.ReadUint8("octet6", 8)
-	if _octet6Err != nil {
-		return nil, errors.Wrap(_octet6Err, "Error parsing 'octet6' field of AmsNetId")
+	octet6, err := ReadSimpleField(ctx, "octet6", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet6' field"))
 	}
-	octet6 := _octet6
+	m.Octet6 = octet6
 
 	if closeErr := readBuffer.CloseContext("AmsNetId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AmsNetId")
 	}
 
-	// Create the instance
-	return &_AmsNetId{
-		Octet1: octet1,
-		Octet2: octet2,
-		Octet3: octet3,
-		Octet4: octet4,
-		Octet5: octet5,
-		Octet6: octet6,
-	}, nil
+	return m, nil
 }
 
 func (m *_AmsNetId) Serialize() ([]byte, error) {
@@ -238,46 +235,28 @@ func (m *_AmsNetId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for AmsNetId")
 	}
 
-	// Simple Field (octet1)
-	octet1 := uint8(m.GetOctet1())
-	_octet1Err := writeBuffer.WriteUint8("octet1", 8, uint8((octet1)))
-	if _octet1Err != nil {
-		return errors.Wrap(_octet1Err, "Error serializing 'octet1' field")
+	if err := WriteSimpleField[uint8](ctx, "octet1", m.GetOctet1(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet1' field")
 	}
 
-	// Simple Field (octet2)
-	octet2 := uint8(m.GetOctet2())
-	_octet2Err := writeBuffer.WriteUint8("octet2", 8, uint8((octet2)))
-	if _octet2Err != nil {
-		return errors.Wrap(_octet2Err, "Error serializing 'octet2' field")
+	if err := WriteSimpleField[uint8](ctx, "octet2", m.GetOctet2(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet2' field")
 	}
 
-	// Simple Field (octet3)
-	octet3 := uint8(m.GetOctet3())
-	_octet3Err := writeBuffer.WriteUint8("octet3", 8, uint8((octet3)))
-	if _octet3Err != nil {
-		return errors.Wrap(_octet3Err, "Error serializing 'octet3' field")
+	if err := WriteSimpleField[uint8](ctx, "octet3", m.GetOctet3(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet3' field")
 	}
 
-	// Simple Field (octet4)
-	octet4 := uint8(m.GetOctet4())
-	_octet4Err := writeBuffer.WriteUint8("octet4", 8, uint8((octet4)))
-	if _octet4Err != nil {
-		return errors.Wrap(_octet4Err, "Error serializing 'octet4' field")
+	if err := WriteSimpleField[uint8](ctx, "octet4", m.GetOctet4(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet4' field")
 	}
 
-	// Simple Field (octet5)
-	octet5 := uint8(m.GetOctet5())
-	_octet5Err := writeBuffer.WriteUint8("octet5", 8, uint8((octet5)))
-	if _octet5Err != nil {
-		return errors.Wrap(_octet5Err, "Error serializing 'octet5' field")
+	if err := WriteSimpleField[uint8](ctx, "octet5", m.GetOctet5(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet5' field")
 	}
 
-	// Simple Field (octet6)
-	octet6 := uint8(m.GetOctet6())
-	_octet6Err := writeBuffer.WriteUint8("octet6", 8, uint8((octet6)))
-	if _octet6Err != nil {
-		return errors.Wrap(_octet6Err, "Error serializing 'octet6' field")
+	if err := WriteSimpleField[uint8](ctx, "octet6", m.GetOctet6(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet6' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AmsNetId"); popErr != nil {
@@ -286,9 +265,7 @@ func (m *_AmsNetId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-func (m *_AmsNetId) isAmsNetId() bool {
-	return true
-}
+func (m *_AmsNetId) IsAmsNetId() {}
 
 func (m *_AmsNetId) String() string {
 	if m == nil {

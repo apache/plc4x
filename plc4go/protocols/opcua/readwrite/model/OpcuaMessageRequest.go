@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,24 +43,22 @@ type OpcuaMessageRequest interface {
 	GetSecurityHeader() SecurityHeader
 	// GetMessage returns Message (property field)
 	GetMessage() Payload
-}
-
-// OpcuaMessageRequestExactly can be used when we want exactly this type and not a type which fulfills OpcuaMessageRequest.
-// This is useful for switch cases.
-type OpcuaMessageRequestExactly interface {
-	OpcuaMessageRequest
-	isOpcuaMessageRequest() bool
+	// IsOpcuaMessageRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaMessageRequest()
 }
 
 // _OpcuaMessageRequest is the data-structure of this message
 type _OpcuaMessageRequest struct {
-	*_MessagePDU
+	MessagePDUContract
 	SecurityHeader SecurityHeader
 	Message        Payload
 
 	// Arguments.
 	TotalLength uint32
 }
+
+var _ OpcuaMessageRequest = (*_OpcuaMessageRequest)(nil)
+var _ MessagePDURequirements = (*_OpcuaMessageRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,12 +78,8 @@ func (m *_OpcuaMessageRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaMessageRequest) InitializeParent(parent MessagePDU, chunk ChunkType) {
-	m.Chunk = chunk
-}
-
-func (m *_OpcuaMessageRequest) GetParent() MessagePDU {
-	return m._MessagePDU
+func (m *_OpcuaMessageRequest) GetParent() MessagePDUContract {
+	return m.MessagePDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,12 +102,18 @@ func (m *_OpcuaMessageRequest) GetMessage() Payload {
 
 // NewOpcuaMessageRequest factory function for _OpcuaMessageRequest
 func NewOpcuaMessageRequest(securityHeader SecurityHeader, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaMessageRequest {
-	_result := &_OpcuaMessageRequest{
-		SecurityHeader: securityHeader,
-		Message:        message,
-		_MessagePDU:    NewMessagePDU(chunk),
+	if securityHeader == nil {
+		panic("securityHeader of type SecurityHeader for OpcuaMessageRequest must not be nil")
 	}
-	_result._MessagePDU._MessagePDUChildRequirements = _result
+	if message == nil {
+		panic("message of type Payload for OpcuaMessageRequest must not be nil")
+	}
+	_result := &_OpcuaMessageRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		SecurityHeader:     securityHeader,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 
@@ -131,7 +133,7 @@ func (m *_OpcuaMessageRequest) GetTypeName() string {
 }
 
 func (m *_OpcuaMessageRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (securityHeader)
 	lengthInBits += m.SecurityHeader.GetLengthInBits(ctx)
@@ -146,59 +148,34 @@ func (m *_OpcuaMessageRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpcuaMessageRequestParse(ctx context.Context, theBytes []byte, totalLength uint32, response bool) (OpcuaMessageRequest, error) {
-	return OpcuaMessageRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), totalLength, response)
-}
-
-func OpcuaMessageRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint32, response bool) (OpcuaMessageRequest, error) {
+func (m *_OpcuaMessageRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, totalLength uint32, response bool) (__opcuaMessageRequest OpcuaMessageRequest, err error) {
+	m.MessagePDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaMessageRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaMessageRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securityHeader)
-	if pullErr := readBuffer.PullContext("securityHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityHeader")
+	securityHeader, err := ReadSimpleField[SecurityHeader](ctx, "securityHeader", ReadComplex[SecurityHeader](SecurityHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityHeader' field"))
 	}
-	_securityHeader, _securityHeaderErr := SecurityHeaderParseWithBuffer(ctx, readBuffer)
-	if _securityHeaderErr != nil {
-		return nil, errors.Wrap(_securityHeaderErr, "Error parsing 'securityHeader' field of OpcuaMessageRequest")
-	}
-	securityHeader := _securityHeader.(SecurityHeader)
-	if closeErr := readBuffer.CloseContext("securityHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityHeader")
-	}
+	m.SecurityHeader = securityHeader
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
+	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(bool(false)), (uint32)(uint32(uint32(totalLength)-uint32(securityHeader.GetLengthInBytes(ctx)))-uint32(uint32(16)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
-	_message, _messageErr := PayloadParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint32(uint32(uint32(totalLength)-uint32(securityHeader.GetLengthInBytes(ctx)))-uint32(uint32(16))))
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of OpcuaMessageRequest")
-	}
-	message := _message.(Payload)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
-	}
+	m.Message = message
 
 	if closeErr := readBuffer.CloseContext("OpcuaMessageRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaMessageRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_OpcuaMessageRequest{
-		_MessagePDU:    &_MessagePDU{},
-		SecurityHeader: securityHeader,
-		Message:        message,
-	}
-	_child._MessagePDU._MessagePDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_OpcuaMessageRequest) Serialize() ([]byte, error) {
@@ -219,28 +196,12 @@ func (m *_OpcuaMessageRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for OpcuaMessageRequest")
 		}
 
-		// Simple Field (securityHeader)
-		if pushErr := writeBuffer.PushContext("securityHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityHeader")
-		}
-		_securityHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityHeader())
-		if popErr := writeBuffer.PopContext("securityHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityHeader")
-		}
-		if _securityHeaderErr != nil {
-			return errors.Wrap(_securityHeaderErr, "Error serializing 'securityHeader' field")
+		if err := WriteSimpleField[SecurityHeader](ctx, "securityHeader", m.GetSecurityHeader(), WriteComplex[SecurityHeader](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityHeader' field")
 		}
 
-		// Simple Field (message)
-		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for message")
-		}
-		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-		if popErr := writeBuffer.PopContext("message"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for message")
-		}
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[Payload](ctx, "message", m.GetMessage(), WriteComplex[Payload](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaMessageRequest"); popErr != nil {
@@ -248,7 +209,7 @@ func (m *_OpcuaMessageRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MessagePDUContract.(*_MessagePDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -261,9 +222,7 @@ func (m *_OpcuaMessageRequest) GetTotalLength() uint32 {
 //
 ////
 
-func (m *_OpcuaMessageRequest) isOpcuaMessageRequest() bool {
-	return true
-}
+func (m *_OpcuaMessageRequest) IsOpcuaMessageRequest() {}
 
 func (m *_OpcuaMessageRequest) String() string {
 	if m == nil {

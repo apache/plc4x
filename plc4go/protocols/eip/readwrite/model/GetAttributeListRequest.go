@@ -37,19 +37,17 @@ type GetAttributeListRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
-}
-
-// GetAttributeListRequestExactly can be used when we want exactly this type and not a type which fulfills GetAttributeListRequest.
-// This is useful for switch cases.
-type GetAttributeListRequestExactly interface {
-	GetAttributeListRequest
-	isGetAttributeListRequest() bool
+	// IsGetAttributeListRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGetAttributeListRequest()
 }
 
 // _GetAttributeListRequest is the data-structure of this message
 type _GetAttributeListRequest struct {
-	*_CipService
+	CipServiceContract
 }
+
+var _ GetAttributeListRequest = (*_GetAttributeListRequest)(nil)
+var _ CipServiceRequirements = (*_GetAttributeListRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,18 +71,16 @@ func (m *_GetAttributeListRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_GetAttributeListRequest) InitializeParent(parent CipService) {}
-
-func (m *_GetAttributeListRequest) GetParent() CipService {
-	return m._CipService
+func (m *_GetAttributeListRequest) GetParent() CipServiceContract {
+	return m.CipServiceContract
 }
 
 // NewGetAttributeListRequest factory function for _GetAttributeListRequest
 func NewGetAttributeListRequest(serviceLen uint16) *_GetAttributeListRequest {
 	_result := &_GetAttributeListRequest{
-		_CipService: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(serviceLen),
 	}
-	_result._CipService._CipServiceChildRequirements = _result
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 
@@ -104,7 +100,7 @@ func (m *_GetAttributeListRequest) GetTypeName() string {
 }
 
 func (m *_GetAttributeListRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +109,11 @@ func (m *_GetAttributeListRequest) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func GetAttributeListRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (GetAttributeListRequest, error) {
-	return GetAttributeListRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
-}
-
-func GetAttributeListRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeListRequest, error) {
+func (m *_GetAttributeListRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__getAttributeListRequest GetAttributeListRequest, err error) {
+	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GetAttributeListRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GetAttributeListRequest")
 	}
@@ -132,14 +124,7 @@ func GetAttributeListRequestParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(closeErr, "Error closing for GetAttributeListRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_GetAttributeListRequest{
-		_CipService: &_CipService{
-			ServiceLen: serviceLen,
-		},
-	}
-	_child._CipService._CipServiceChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_GetAttributeListRequest) Serialize() ([]byte, error) {
@@ -165,12 +150,10 @@ func (m *_GetAttributeListRequest) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_GetAttributeListRequest) isGetAttributeListRequest() bool {
-	return true
-}
+func (m *_GetAttributeListRequest) IsGetAttributeListRequest() {}
 
 func (m *_GetAttributeListRequest) String() string {
 	if m == nil {

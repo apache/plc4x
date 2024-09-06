@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetProtocolLevelTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetProtocolLevel
-}
-
-// BACnetProtocolLevelTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetProtocolLevelTagged.
-// This is useful for switch cases.
-type BACnetProtocolLevelTaggedExactly interface {
-	BACnetProtocolLevelTagged
-	isBACnetProtocolLevelTagged() bool
+	// IsBACnetProtocolLevelTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetProtocolLevelTagged()
 }
 
 // _BACnetProtocolLevelTagged is the data-structure of this message
@@ -58,6 +55,8 @@ type _BACnetProtocolLevelTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetProtocolLevelTagged = (*_BACnetProtocolLevelTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,6 +78,9 @@ func (m *_BACnetProtocolLevelTagged) GetValue() BACnetProtocolLevel {
 
 // NewBACnetProtocolLevelTagged factory function for _BACnetProtocolLevelTagged
 func NewBACnetProtocolLevelTagged(header BACnetTagHeader, value BACnetProtocolLevel, tagNumber uint8, tagClass TagClass) *_BACnetProtocolLevelTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProtocolLevelTagged must not be nil")
+	}
 	return &_BACnetProtocolLevelTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -117,61 +119,56 @@ func BACnetProtocolLevelTaggedParse(ctx context.Context, theBytes []byte, tagNum
 	return BACnetProtocolLevelTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetProtocolLevelTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetProtocolLevelTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetProtocolLevelTagged, error) {
+		return BACnetProtocolLevelTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetProtocolLevelTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetProtocolLevelTagged, error) {
+	v, err := (&_BACnetProtocolLevelTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetProtocolLevelTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetProtocolLevelTagged BACnetProtocolLevelTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetProtocolLevelTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetProtocolLevelTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetProtocolLevelTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetProtocolLevel_PHYSICAL)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetProtocolLevelTagged")
+	value, err := ReadManualField[BACnetProtocolLevel](ctx, "value", readBuffer, EnsureType[BACnetProtocolLevel](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetProtocolLevel_PHYSICAL)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetProtocolLevel
-	if _value != nil {
-		value = _value.(BACnetProtocolLevel)
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetProtocolLevelTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetProtocolLevelTagged")
 	}
 
-	// Create the instance
-	return &_BACnetProtocolLevelTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Value:     value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetProtocolLevelTagged) Serialize() ([]byte, error) {
@@ -191,22 +188,12 @@ func (m *_BACnetProtocolLevelTagged) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(pushErr, "Error pushing for BACnetProtocolLevelTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetProtocolLevel](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetProtocolLevelTagged"); popErr != nil {
@@ -228,9 +215,7 @@ func (m *_BACnetProtocolLevelTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetProtocolLevelTagged) isBACnetProtocolLevelTagged() bool {
-	return true
-}
+func (m *_BACnetProtocolLevelTagged) IsBACnetProtocolLevelTagged() {}
 
 func (m *_BACnetProtocolLevelTagged) String() string {
 	if m == nil {

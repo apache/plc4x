@@ -84,11 +84,10 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("BrowseResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (continuationPoint)
-    writeSimpleField(
-        "continuationPoint", continuationPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
     // Simple Field (noOfReferences)
     writeSimpleField("noOfReferences", noOfReferences, writeSignedInt(writeBuffer, 32));
@@ -139,21 +138,19 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     PascalByteString continuationPoint =
         readSimpleField(
             "continuationPoint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     int noOfReferences = readSimpleField("noOfReferences", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> references =
         readCountArrayField(
             "references",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("520")),
                 readBuffer),
             noOfReferences);

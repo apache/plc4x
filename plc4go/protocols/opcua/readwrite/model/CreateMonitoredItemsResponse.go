@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type CreateMonitoredItemsResponse interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
-}
-
-// CreateMonitoredItemsResponseExactly can be used when we want exactly this type and not a type which fulfills CreateMonitoredItemsResponse.
-// This is useful for switch cases.
-type CreateMonitoredItemsResponseExactly interface {
-	CreateMonitoredItemsResponse
-	isCreateMonitoredItemsResponse() bool
+	// IsCreateMonitoredItemsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateMonitoredItemsResponse()
 }
 
 // _CreateMonitoredItemsResponse is the data-structure of this message
 type _CreateMonitoredItemsResponse struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader      ExtensionObjectDefinition
 	NoOfResults         int32
 	Results             []ExtensionObjectDefinition
 	NoOfDiagnosticInfos int32
 	DiagnosticInfos     []DiagnosticInfo
 }
+
+var _ CreateMonitoredItemsResponse = (*_CreateMonitoredItemsResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CreateMonitoredItemsResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_CreateMonitoredItemsResponse) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CreateMonitoredItemsResponse) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CreateMonitoredItemsResponse) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CreateMonitoredItemsResponse) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,18 @@ func (m *_CreateMonitoredItemsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewCreateMonitoredItemsResponse factory function for _CreateMonitoredItemsResponse
 func NewCreateMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_CreateMonitoredItemsResponse {
-	_result := &_CreateMonitoredItemsResponse{
-		ResponseHeader:             responseHeader,
-		NoOfResults:                noOfResults,
-		Results:                    results,
-		NoOfDiagnosticInfos:        noOfDiagnosticInfos,
-		DiagnosticInfos:            diagnosticInfos,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CreateMonitoredItemsResponse must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_CreateMonitoredItemsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +147,7 @@ func (m *_CreateMonitoredItemsResponse) GetTypeName() string {
 }
 
 func (m *_CreateMonitoredItemsResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -184,117 +185,52 @@ func (m *_CreateMonitoredItemsResponse) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CreateMonitoredItemsResponseParse(ctx context.Context, theBytes []byte, identifier string) (CreateMonitoredItemsResponse, error) {
-	return CreateMonitoredItemsResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CreateMonitoredItemsResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CreateMonitoredItemsResponse, error) {
+func (m *_CreateMonitoredItemsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__createMonitoredItemsResponse CreateMonitoredItemsResponse, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CreateMonitoredItemsResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CreateMonitoredItemsResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of CreateMonitoredItemsResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
-	// Simple Field (noOfResults)
-	_noOfResults, _noOfResultsErr := readBuffer.ReadInt32("noOfResults", 32)
-	if _noOfResultsErr != nil {
-		return nil, errors.Wrap(_noOfResultsErr, "Error parsing 'noOfResults' field of CreateMonitoredItemsResponse")
+	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	noOfResults := _noOfResults
+	m.NoOfResults = noOfResults
 
-	// Array field (results)
-	if pullErr := readBuffer.PullContext("results", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for results")
+	results, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "results", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("748")), readBuffer), uint64(noOfResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'results' field"))
 	}
-	// Count array
-	results := make([]ExtensionObjectDefinition, max(noOfResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(results) == 0 {
-		results = nil
-	}
-	{
-		_numItems := uint16(max(noOfResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "748")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'results' field of CreateMonitoredItemsResponse")
-			}
-			results[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("results", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for results")
-	}
+	m.Results = results
 
-	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
-	if _noOfDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of CreateMonitoredItemsResponse")
+	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	noOfDiagnosticInfos := _noOfDiagnosticInfos
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
 
-	// Array field (diagnosticInfos)
-	if pullErr := readBuffer.PullContext("diagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfos")
+	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfos' field"))
 	}
-	// Count array
-	diagnosticInfos := make([]DiagnosticInfo, max(noOfDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(diagnosticInfos) == 0 {
-		diagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'diagnosticInfos' field of CreateMonitoredItemsResponse")
-			}
-			diagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("diagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for diagnosticInfos")
-	}
+	m.DiagnosticInfos = diagnosticInfos
 
 	if closeErr := readBuffer.CloseContext("CreateMonitoredItemsResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CreateMonitoredItemsResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CreateMonitoredItemsResponse{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-		NoOfResults:                noOfResults,
-		Results:                    results,
-		NoOfDiagnosticInfos:        noOfDiagnosticInfos,
-		DiagnosticInfos:            diagnosticInfos,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CreateMonitoredItemsResponse) Serialize() ([]byte, error) {
@@ -315,64 +251,24 @@ func (m *_CreateMonitoredItemsResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for CreateMonitoredItemsResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfResults)
-		noOfResults := int32(m.GetNoOfResults())
-		_noOfResultsErr := writeBuffer.WriteInt32("noOfResults", 32, int32((noOfResults)))
-		if _noOfResultsErr != nil {
-			return errors.Wrap(_noOfResultsErr, "Error serializing 'noOfResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
-		// Array Field (results)
-		if pushErr := writeBuffer.PushContext("results", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for results")
-		}
-		for _curItem, _element := range m.GetResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'results' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("results", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for results")
+		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'results' field")
 		}
 
-		// Simple Field (noOfDiagnosticInfos)
-		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
-		if _noOfDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
-		// Array Field (diagnosticInfos)
-		if pushErr := writeBuffer.PushContext("diagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for diagnosticInfos")
-		}
-		for _curItem, _element := range m.GetDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'diagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("diagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for diagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "diagnosticInfos", m.GetDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'diagnosticInfos' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CreateMonitoredItemsResponse"); popErr != nil {
@@ -380,12 +276,10 @@ func (m *_CreateMonitoredItemsResponse) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CreateMonitoredItemsResponse) isCreateMonitoredItemsResponse() bool {
-	return true
-}
+func (m *_CreateMonitoredItemsResponse) IsCreateMonitoredItemsResponse() {}
 
 func (m *_CreateMonitoredItemsResponse) String() string {
 	if m == nil {

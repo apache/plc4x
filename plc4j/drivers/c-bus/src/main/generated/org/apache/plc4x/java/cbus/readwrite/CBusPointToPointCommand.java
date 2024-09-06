@@ -82,7 +82,7 @@ public abstract class CBusPointToPointCommand implements Message {
     serializeCBusPointToPointCommandChild(writeBuffer);
 
     // Simple Field (calData)
-    writeSimpleField("calData", calData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("calData", calData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToPointCommand");
   }
@@ -143,7 +143,7 @@ public abstract class CBusPointToPointCommand implements Message {
     CALData calData =
         readSimpleField(
             "calData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CALData.staticParse(readBuffer, (RequestContext) (null)), readBuffer));
 
     readBuffer.closeContext("CBusPointToPointCommand");

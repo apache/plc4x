@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesEscalatorFault interface {
 	BACnetPropertyStates
 	// GetEscalatorFault returns EscalatorFault (property field)
 	GetEscalatorFault() BACnetEscalatorFaultTagged
-}
-
-// BACnetPropertyStatesEscalatorFaultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEscalatorFault.
-// This is useful for switch cases.
-type BACnetPropertyStatesEscalatorFaultExactly interface {
-	BACnetPropertyStatesEscalatorFault
-	isBACnetPropertyStatesEscalatorFault() bool
+	// IsBACnetPropertyStatesEscalatorFault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesEscalatorFault()
 }
 
 // _BACnetPropertyStatesEscalatorFault is the data-structure of this message
 type _BACnetPropertyStatesEscalatorFault struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	EscalatorFault BACnetEscalatorFaultTagged
 }
+
+var _ BACnetPropertyStatesEscalatorFault = (*_BACnetPropertyStatesEscalatorFault)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEscalatorFault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesEscalatorFault struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesEscalatorFault) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesEscalatorFault) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesEscalatorFault) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesEscalatorFault) GetEscalatorFault() BACnetEscalato
 
 // NewBACnetPropertyStatesEscalatorFault factory function for _BACnetPropertyStatesEscalatorFault
 func NewBACnetPropertyStatesEscalatorFault(escalatorFault BACnetEscalatorFaultTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEscalatorFault {
-	_result := &_BACnetPropertyStatesEscalatorFault{
-		EscalatorFault:        escalatorFault,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if escalatorFault == nil {
+		panic("escalatorFault of type BACnetEscalatorFaultTagged for BACnetPropertyStatesEscalatorFault must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesEscalatorFault{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EscalatorFault:               escalatorFault,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesEscalatorFault) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (escalatorFault)
 	lengthInBits += m.EscalatorFault.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesEscalatorFaultParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
-	return BACnetPropertyStatesEscalatorFaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesEscalatorFaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
+func (m *_BACnetPropertyStatesEscalatorFault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesEscalatorFault BACnetPropertyStatesEscalatorFault, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesEscalatorFault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (escalatorFault)
-	if pullErr := readBuffer.PullContext("escalatorFault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for escalatorFault")
+	escalatorFault, err := ReadSimpleField[BACnetEscalatorFaultTagged](ctx, "escalatorFault", ReadComplex[BACnetEscalatorFaultTagged](BACnetEscalatorFaultTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'escalatorFault' field"))
 	}
-	_escalatorFault, _escalatorFaultErr := BACnetEscalatorFaultTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _escalatorFaultErr != nil {
-		return nil, errors.Wrap(_escalatorFaultErr, "Error parsing 'escalatorFault' field of BACnetPropertyStatesEscalatorFault")
-	}
-	escalatorFault := _escalatorFault.(BACnetEscalatorFaultTagged)
-	if closeErr := readBuffer.CloseContext("escalatorFault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for escalatorFault")
-	}
+	m.EscalatorFault = escalatorFault
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEscalatorFault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesEscalatorFault")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesEscalatorFault{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		EscalatorFault:        escalatorFault,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesEscalatorFault) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEscalatorFault")
 		}
 
-		// Simple Field (escalatorFault)
-		if pushErr := writeBuffer.PushContext("escalatorFault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for escalatorFault")
-		}
-		_escalatorFaultErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorFault())
-		if popErr := writeBuffer.PopContext("escalatorFault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for escalatorFault")
-		}
-		if _escalatorFaultErr != nil {
-			return errors.Wrap(_escalatorFaultErr, "Error serializing 'escalatorFault' field")
+		if err := WriteSimpleField[BACnetEscalatorFaultTagged](ctx, "escalatorFault", m.GetEscalatorFault(), WriteComplex[BACnetEscalatorFaultTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'escalatorFault' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEscalatorFault"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesEscalatorFault) isBACnetPropertyStatesEscalatorFault() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesEscalatorFault) IsBACnetPropertyStatesEscalatorFault() {}
 
 func (m *_BACnetPropertyStatesEscalatorFault) String() string {
 	if m == nil {

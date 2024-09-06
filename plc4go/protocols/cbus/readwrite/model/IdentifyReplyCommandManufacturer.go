@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type IdentifyReplyCommandManufacturer interface {
 	IdentifyReplyCommand
 	// GetManufacturerName returns ManufacturerName (property field)
 	GetManufacturerName() string
-}
-
-// IdentifyReplyCommandManufacturerExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandManufacturer.
-// This is useful for switch cases.
-type IdentifyReplyCommandManufacturerExactly interface {
-	IdentifyReplyCommandManufacturer
-	isIdentifyReplyCommandManufacturer() bool
+	// IsIdentifyReplyCommandManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandManufacturer()
 }
 
 // _IdentifyReplyCommandManufacturer is the data-structure of this message
 type _IdentifyReplyCommandManufacturer struct {
-	*_IdentifyReplyCommand
+	IdentifyReplyCommandContract
 	ManufacturerName string
 }
+
+var _ IdentifyReplyCommandManufacturer = (*_IdentifyReplyCommandManufacturer)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandManufacturer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_IdentifyReplyCommandManufacturer) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_IdentifyReplyCommandManufacturer) InitializeParent(parent IdentifyReplyCommand) {}
-
-func (m *_IdentifyReplyCommandManufacturer) GetParent() IdentifyReplyCommand {
-	return m._IdentifyReplyCommand
+func (m *_IdentifyReplyCommandManufacturer) GetParent() IdentifyReplyCommandContract {
+	return m.IdentifyReplyCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_IdentifyReplyCommandManufacturer) GetManufacturerName() string {
 // NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
 func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
 	_result := &_IdentifyReplyCommandManufacturer{
-		ManufacturerName:      manufacturerName,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		ManufacturerName:             manufacturerName,
 	}
-	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_IdentifyReplyCommandManufacturer) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandManufacturer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (manufacturerName)
 	lengthInBits += 64
@@ -126,41 +124,28 @@ func (m *_IdentifyReplyCommandManufacturer) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandManufacturerParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandManufacturer, error) {
-	return IdentifyReplyCommandManufacturerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
-}
-
-func IdentifyReplyCommandManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandManufacturer, error) {
+func (m *_IdentifyReplyCommandManufacturer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandManufacturer IdentifyReplyCommandManufacturer, err error) {
+	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandManufacturer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandManufacturer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (manufacturerName)
-	_manufacturerName, _manufacturerNameErr := readBuffer.ReadString("manufacturerName", uint32(64), "UTF-8")
-	if _manufacturerNameErr != nil {
-		return nil, errors.Wrap(_manufacturerNameErr, "Error parsing 'manufacturerName' field of IdentifyReplyCommandManufacturer")
+	manufacturerName, err := ReadSimpleField(ctx, "manufacturerName", ReadString(readBuffer, uint32(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manufacturerName' field"))
 	}
-	manufacturerName := _manufacturerName
+	m.ManufacturerName = manufacturerName
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandManufacturer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandManufacturer")
 	}
 
-	// Create a partially initialized instance
-	_child := &_IdentifyReplyCommandManufacturer{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
-		ManufacturerName: manufacturerName,
-	}
-	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_IdentifyReplyCommandManufacturer) Serialize() ([]byte, error) {
@@ -181,11 +166,8 @@ func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandManufacturer")
 		}
 
-		// Simple Field (manufacturerName)
-		manufacturerName := string(m.GetManufacturerName())
-		_manufacturerNameErr := writeBuffer.WriteString("manufacturerName", uint32(64), "UTF-8", (manufacturerName))
-		if _manufacturerNameErr != nil {
-			return errors.Wrap(_manufacturerNameErr, "Error serializing 'manufacturerName' field")
+		if err := WriteSimpleField[string](ctx, "manufacturerName", m.GetManufacturerName(), WriteString(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'manufacturerName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandManufacturer"); popErr != nil {
@@ -193,12 +175,10 @@ func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_IdentifyReplyCommandManufacturer) isIdentifyReplyCommandManufacturer() bool {
-	return true
-}
+func (m *_IdentifyReplyCommandManufacturer) IsIdentifyReplyCommandManufacturer() {}
 
 func (m *_IdentifyReplyCommandManufacturer) String() string {
 	if m == nil {

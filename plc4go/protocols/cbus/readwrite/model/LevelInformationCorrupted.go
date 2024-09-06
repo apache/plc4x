@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type LevelInformationCorrupted interface {
 	GetCorruptedNibble3() uint8
 	// GetCorruptedNibble4 returns CorruptedNibble4 (property field)
 	GetCorruptedNibble4() uint8
-}
-
-// LevelInformationCorruptedExactly can be used when we want exactly this type and not a type which fulfills LevelInformationCorrupted.
-// This is useful for switch cases.
-type LevelInformationCorruptedExactly interface {
-	LevelInformationCorrupted
-	isLevelInformationCorrupted() bool
+	// IsLevelInformationCorrupted is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLevelInformationCorrupted()
 }
 
 // _LevelInformationCorrupted is the data-structure of this message
 type _LevelInformationCorrupted struct {
-	*_LevelInformation
+	LevelInformationContract
 	CorruptedNibble1 uint8
 	CorruptedNibble2 uint8
 	CorruptedNibble3 uint8
 	CorruptedNibble4 uint8
 }
+
+var _ LevelInformationCorrupted = (*_LevelInformationCorrupted)(nil)
+var _ LevelInformationRequirements = (*_LevelInformationCorrupted)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,12 +73,8 @@ type _LevelInformationCorrupted struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_LevelInformationCorrupted) InitializeParent(parent LevelInformation, raw uint16) {
-	m.Raw = raw
-}
-
-func (m *_LevelInformationCorrupted) GetParent() LevelInformation {
-	return m._LevelInformation
+func (m *_LevelInformationCorrupted) GetParent() LevelInformationContract {
+	return m.LevelInformationContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,13 +106,13 @@ func (m *_LevelInformationCorrupted) GetCorruptedNibble4() uint8 {
 // NewLevelInformationCorrupted factory function for _LevelInformationCorrupted
 func NewLevelInformationCorrupted(corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8, raw uint16) *_LevelInformationCorrupted {
 	_result := &_LevelInformationCorrupted{
-		CorruptedNibble1:  corruptedNibble1,
-		CorruptedNibble2:  corruptedNibble2,
-		CorruptedNibble3:  corruptedNibble3,
-		CorruptedNibble4:  corruptedNibble4,
-		_LevelInformation: NewLevelInformation(raw),
+		LevelInformationContract: NewLevelInformation(raw),
+		CorruptedNibble1:         corruptedNibble1,
+		CorruptedNibble2:         corruptedNibble2,
+		CorruptedNibble3:         corruptedNibble3,
+		CorruptedNibble4:         corruptedNibble4,
 	}
-	_result._LevelInformation._LevelInformationChildRequirements = _result
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
 	return _result
 }
 
@@ -136,7 +132,7 @@ func (m *_LevelInformationCorrupted) GetTypeName() string {
 }
 
 func (m *_LevelInformationCorrupted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
 
 	// Simple field (corruptedNibble1)
 	lengthInBits += 4
@@ -157,63 +153,46 @@ func (m *_LevelInformationCorrupted) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LevelInformationCorruptedParse(ctx context.Context, theBytes []byte) (LevelInformationCorrupted, error) {
-	return LevelInformationCorruptedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func LevelInformationCorruptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationCorrupted, error) {
+func (m *_LevelInformationCorrupted) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LevelInformation) (__levelInformationCorrupted LevelInformationCorrupted, err error) {
+	m.LevelInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LevelInformationCorrupted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LevelInformationCorrupted")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (corruptedNibble1)
-	_corruptedNibble1, _corruptedNibble1Err := readBuffer.ReadUint8("corruptedNibble1", 4)
-	if _corruptedNibble1Err != nil {
-		return nil, errors.Wrap(_corruptedNibble1Err, "Error parsing 'corruptedNibble1' field of LevelInformationCorrupted")
+	corruptedNibble1, err := ReadSimpleField(ctx, "corruptedNibble1", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble1' field"))
 	}
-	corruptedNibble1 := _corruptedNibble1
+	m.CorruptedNibble1 = corruptedNibble1
 
-	// Simple Field (corruptedNibble2)
-	_corruptedNibble2, _corruptedNibble2Err := readBuffer.ReadUint8("corruptedNibble2", 4)
-	if _corruptedNibble2Err != nil {
-		return nil, errors.Wrap(_corruptedNibble2Err, "Error parsing 'corruptedNibble2' field of LevelInformationCorrupted")
+	corruptedNibble2, err := ReadSimpleField(ctx, "corruptedNibble2", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble2' field"))
 	}
-	corruptedNibble2 := _corruptedNibble2
+	m.CorruptedNibble2 = corruptedNibble2
 
-	// Simple Field (corruptedNibble3)
-	_corruptedNibble3, _corruptedNibble3Err := readBuffer.ReadUint8("corruptedNibble3", 4)
-	if _corruptedNibble3Err != nil {
-		return nil, errors.Wrap(_corruptedNibble3Err, "Error parsing 'corruptedNibble3' field of LevelInformationCorrupted")
+	corruptedNibble3, err := ReadSimpleField(ctx, "corruptedNibble3", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble3' field"))
 	}
-	corruptedNibble3 := _corruptedNibble3
+	m.CorruptedNibble3 = corruptedNibble3
 
-	// Simple Field (corruptedNibble4)
-	_corruptedNibble4, _corruptedNibble4Err := readBuffer.ReadUint8("corruptedNibble4", 4)
-	if _corruptedNibble4Err != nil {
-		return nil, errors.Wrap(_corruptedNibble4Err, "Error parsing 'corruptedNibble4' field of LevelInformationCorrupted")
+	corruptedNibble4, err := ReadSimpleField(ctx, "corruptedNibble4", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble4' field"))
 	}
-	corruptedNibble4 := _corruptedNibble4
+	m.CorruptedNibble4 = corruptedNibble4
 
 	if closeErr := readBuffer.CloseContext("LevelInformationCorrupted"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LevelInformationCorrupted")
 	}
 
-	// Create a partially initialized instance
-	_child := &_LevelInformationCorrupted{
-		_LevelInformation: &_LevelInformation{},
-		CorruptedNibble1:  corruptedNibble1,
-		CorruptedNibble2:  corruptedNibble2,
-		CorruptedNibble3:  corruptedNibble3,
-		CorruptedNibble4:  corruptedNibble4,
-	}
-	_child._LevelInformation._LevelInformationChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_LevelInformationCorrupted) Serialize() ([]byte, error) {
@@ -234,32 +213,20 @@ func (m *_LevelInformationCorrupted) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for LevelInformationCorrupted")
 		}
 
-		// Simple Field (corruptedNibble1)
-		corruptedNibble1 := uint8(m.GetCorruptedNibble1())
-		_corruptedNibble1Err := writeBuffer.WriteUint8("corruptedNibble1", 4, uint8((corruptedNibble1)))
-		if _corruptedNibble1Err != nil {
-			return errors.Wrap(_corruptedNibble1Err, "Error serializing 'corruptedNibble1' field")
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble1", m.GetCorruptedNibble1(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'corruptedNibble1' field")
 		}
 
-		// Simple Field (corruptedNibble2)
-		corruptedNibble2 := uint8(m.GetCorruptedNibble2())
-		_corruptedNibble2Err := writeBuffer.WriteUint8("corruptedNibble2", 4, uint8((corruptedNibble2)))
-		if _corruptedNibble2Err != nil {
-			return errors.Wrap(_corruptedNibble2Err, "Error serializing 'corruptedNibble2' field")
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble2", m.GetCorruptedNibble2(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'corruptedNibble2' field")
 		}
 
-		// Simple Field (corruptedNibble3)
-		corruptedNibble3 := uint8(m.GetCorruptedNibble3())
-		_corruptedNibble3Err := writeBuffer.WriteUint8("corruptedNibble3", 4, uint8((corruptedNibble3)))
-		if _corruptedNibble3Err != nil {
-			return errors.Wrap(_corruptedNibble3Err, "Error serializing 'corruptedNibble3' field")
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble3", m.GetCorruptedNibble3(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'corruptedNibble3' field")
 		}
 
-		// Simple Field (corruptedNibble4)
-		corruptedNibble4 := uint8(m.GetCorruptedNibble4())
-		_corruptedNibble4Err := writeBuffer.WriteUint8("corruptedNibble4", 4, uint8((corruptedNibble4)))
-		if _corruptedNibble4Err != nil {
-			return errors.Wrap(_corruptedNibble4Err, "Error serializing 'corruptedNibble4' field")
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble4", m.GetCorruptedNibble4(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'corruptedNibble4' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LevelInformationCorrupted"); popErr != nil {
@@ -267,12 +234,10 @@ func (m *_LevelInformationCorrupted) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.LevelInformationContract.(*_LevelInformation).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_LevelInformationCorrupted) isLevelInformationCorrupted() bool {
-	return true
-}
+func (m *_LevelInformationCorrupted) IsLevelInformationCorrupted() {}
 
 func (m *_LevelInformationCorrupted) String() string {
 	if m == nil {

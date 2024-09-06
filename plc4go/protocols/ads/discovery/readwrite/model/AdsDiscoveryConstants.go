@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,18 +41,15 @@ type AdsDiscoveryConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// AdsDiscoveryConstantsExactly can be used when we want exactly this type and not a type which fulfills AdsDiscoveryConstants.
-// This is useful for switch cases.
-type AdsDiscoveryConstantsExactly interface {
-	AdsDiscoveryConstants
-	isAdsDiscoveryConstants() bool
+	// IsAdsDiscoveryConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryConstants()
 }
 
 // _AdsDiscoveryConstants is the data-structure of this message
 type _AdsDiscoveryConstants struct {
 }
+
+var _ AdsDiscoveryConstants = (*_AdsDiscoveryConstants)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func AdsDiscoveryConstantsParse(ctx context.Context, theBytes []byte) (AdsDiscov
 	return AdsDiscoveryConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
+		return AdsDiscoveryConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
+	v, err := (&_AdsDiscoveryConstants{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_AdsDiscoveryConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDiscoveryConstants AdsDiscoveryConstants, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryConstants"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryConstants")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (adsDiscoveryUdpDefaultPort)
-	adsDiscoveryUdpDefaultPort, _adsDiscoveryUdpDefaultPortErr := readBuffer.ReadUint16("adsDiscoveryUdpDefaultPort", 16)
-	if _adsDiscoveryUdpDefaultPortErr != nil {
-		return nil, errors.Wrap(_adsDiscoveryUdpDefaultPortErr, "Error parsing 'adsDiscoveryUdpDefaultPort' field of AdsDiscoveryConstants")
+	adsDiscoveryUdpDefaultPort, err := ReadConstField[uint16](ctx, "adsDiscoveryUdpDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adsDiscoveryUdpDefaultPort' field"))
 	}
-	if adsDiscoveryUdpDefaultPort != AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", adsDiscoveryUdpDefaultPort))
-	}
+	_ = adsDiscoveryUdpDefaultPort
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryConstants"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDiscoveryConstants")
 	}
 
-	// Create the instance
-	return &_AdsDiscoveryConstants{}, nil
+	return m, nil
 }
 
 func (m *_AdsDiscoveryConstants) Serialize() ([]byte, error) {
@@ -148,10 +155,8 @@ func (m *_AdsDiscoveryConstants) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryConstants")
 	}
 
-	// Const Field (adsDiscoveryUdpDefaultPort)
-	_adsDiscoveryUdpDefaultPortErr := writeBuffer.WriteUint16("adsDiscoveryUdpDefaultPort", 16, uint16(48899))
-	if _adsDiscoveryUdpDefaultPortErr != nil {
-		return errors.Wrap(_adsDiscoveryUdpDefaultPortErr, "Error serializing 'adsDiscoveryUdpDefaultPort' field")
+	if err := WriteConstField(ctx, "adsDiscoveryUdpDefaultPort", AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'adsDiscoveryUdpDefaultPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsDiscoveryConstants"); popErr != nil {
@@ -160,9 +165,7 @@ func (m *_AdsDiscoveryConstants) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-func (m *_AdsDiscoveryConstants) isAdsDiscoveryConstants() bool {
-	return true
-}
+func (m *_AdsDiscoveryConstants) IsAdsDiscoveryConstants() {}
 
 func (m *_AdsDiscoveryConstants) String() string {
 	if m == nil {

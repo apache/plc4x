@@ -61,7 +61,7 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
     writeBuffer.pushContext("BACnetLogDataLogDataEntryIntegerValue");
 
     // Simple Field (integerValue)
-    writeSimpleField("integerValue", integerValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("integerValue", integerValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryIntegerValue");
   }
@@ -92,7 +92,7 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
     BACnetContextTagSignedInteger integerValue =
         readSimpleField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(

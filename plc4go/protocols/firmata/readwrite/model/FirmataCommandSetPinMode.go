@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type FirmataCommandSetPinMode interface {
 	GetPin() uint8
 	// GetMode returns Mode (property field)
 	GetMode() PinMode
-}
-
-// FirmataCommandSetPinModeExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSetPinMode.
-// This is useful for switch cases.
-type FirmataCommandSetPinModeExactly interface {
-	FirmataCommandSetPinMode
-	isFirmataCommandSetPinMode() bool
+	// IsFirmataCommandSetPinMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommandSetPinMode()
 }
 
 // _FirmataCommandSetPinMode is the data-structure of this message
 type _FirmataCommandSetPinMode struct {
-	*_FirmataCommand
+	FirmataCommandContract
 	Pin  uint8
 	Mode PinMode
 }
+
+var _ FirmataCommandSetPinMode = (*_FirmataCommandSetPinMode)(nil)
+var _ FirmataCommandRequirements = (*_FirmataCommandSetPinMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_FirmataCommandSetPinMode) GetCommandCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FirmataCommandSetPinMode) InitializeParent(parent FirmataCommand) {}
-
-func (m *_FirmataCommandSetPinMode) GetParent() FirmataCommand {
-	return m._FirmataCommand
+func (m *_FirmataCommandSetPinMode) GetParent() FirmataCommandContract {
+	return m.FirmataCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_FirmataCommandSetPinMode) GetMode() PinMode {
 // NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
 func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
 	_result := &_FirmataCommandSetPinMode{
-		Pin:             pin,
-		Mode:            mode,
-		_FirmataCommand: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(response),
+		Pin:                    pin,
+		Mode:                   mode,
 	}
-	_result._FirmataCommand._FirmataCommandChildRequirements = _result
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_FirmataCommandSetPinMode) GetTypeName() string {
 }
 
 func (m *_FirmataCommandSetPinMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -137,55 +135,34 @@ func (m *_FirmataCommandSetPinMode) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataCommandSetPinModeParse(ctx context.Context, theBytes []byte, response bool) (FirmataCommandSetPinMode, error) {
-	return FirmataCommandSetPinModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func FirmataCommandSetPinModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {
+func (m *_FirmataCommandSetPinMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataCommand, response bool) (__firmataCommandSetPinMode FirmataCommandSetPinMode, err error) {
+	m.FirmataCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommandSetPinMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataCommandSetPinMode")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
+	m.Pin = pin
 
-	// Simple Field (mode)
-	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for mode")
+	mode, err := ReadEnumField[PinMode](ctx, "mode", "PinMode", ReadEnum(PinModeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mode' field"))
 	}
-	_mode, _modeErr := PinModeParseWithBuffer(ctx, readBuffer)
-	if _modeErr != nil {
-		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of FirmataCommandSetPinMode")
-	}
-	mode := _mode
-	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for mode")
-	}
+	m.Mode = mode
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSetPinMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandSetPinMode")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FirmataCommandSetPinMode{
-		_FirmataCommand: &_FirmataCommand{
-			Response: response,
-		},
-		Pin:  pin,
-		Mode: mode,
-	}
-	_child._FirmataCommand._FirmataCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FirmataCommandSetPinMode) Serialize() ([]byte, error) {
@@ -206,23 +183,12 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for FirmataCommandSetPinMode")
 		}
 
-		// Simple Field (pin)
-		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
-		if _pinErr != nil {
-			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
+		if err := WriteSimpleField[uint8](ctx, "pin", m.GetPin(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pin' field")
 		}
 
-		// Simple Field (mode)
-		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for mode")
-		}
-		_modeErr := writeBuffer.WriteSerializable(ctx, m.GetMode())
-		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for mode")
-		}
-		if _modeErr != nil {
-			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
+		if err := WriteSimpleEnumField[PinMode](ctx, "mode", "PinMode", m.GetMode(), WriteEnum[PinMode, uint8](PinMode.GetValue, PinMode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'mode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSetPinMode"); popErr != nil {
@@ -230,12 +196,10 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.FirmataCommandContract.(*_FirmataCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FirmataCommandSetPinMode) isFirmataCommandSetPinMode() bool {
-	return true
-}
+func (m *_FirmataCommandSetPinMode) IsFirmataCommandSetPinMode() {}
 
 func (m *_FirmataCommandSetPinMode) String() string {
 	if m == nil {

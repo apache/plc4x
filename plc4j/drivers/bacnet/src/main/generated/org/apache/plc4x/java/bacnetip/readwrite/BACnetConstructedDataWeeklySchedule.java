@@ -99,7 +99,7 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (weeklySchedule)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,8 +161,7 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
     List<BACnetDailySchedule> weeklySchedule =
         readTerminatedArrayField(
             "weeklySchedule",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDailySchedule.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetDailySchedule.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

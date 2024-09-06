@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataValueSet interface {
 	GetValueSet() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataValueSetExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataValueSet.
-// This is useful for switch cases.
-type BACnetConstructedDataValueSetExactly interface {
-	BACnetConstructedDataValueSet
-	isBACnetConstructedDataValueSet() bool
+	// IsBACnetConstructedDataValueSet is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataValueSet()
 }
 
 // _BACnetConstructedDataValueSet is the data-structure of this message
 type _BACnetConstructedDataValueSet struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ValueSet BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataValueSet = (*_BACnetConstructedDataValueSet)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSet)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataValueSet) GetPropertyIdentifierArgument() BACnetP
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataValueSet) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataValueSet) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataValueSet) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataValueSet) GetActualValue() BACnetApplicationTagUn
 
 // NewBACnetConstructedDataValueSet factory function for _BACnetConstructedDataValueSet
 func NewBACnetConstructedDataValueSet(valueSet BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSet {
-	_result := &_BACnetConstructedDataValueSet{
-		ValueSet:               valueSet,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if valueSet == nil {
+		panic("valueSet of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueSet must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataValueSet{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValueSet:                      valueSet,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataValueSet) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataValueSet) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (valueSet)
 	lengthInBits += m.ValueSet.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataValueSet) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataValueSetParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSet, error) {
-	return BACnetConstructedDataValueSetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataValueSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSet, error) {
+func (m *_BACnetConstructedDataValueSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataValueSet BACnetConstructedDataValueSet, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSet"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValueSet")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (valueSet)
-	if pullErr := readBuffer.PullContext("valueSet"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valueSet")
+	valueSet, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valueSet", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueSet' field"))
 	}
-	_valueSet, _valueSetErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _valueSetErr != nil {
-		return nil, errors.Wrap(_valueSetErr, "Error parsing 'valueSet' field of BACnetConstructedDataValueSet")
-	}
-	valueSet := _valueSet.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("valueSet"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valueSet")
-	}
+	m.ValueSet = valueSet
 
-	// Virtual field
-	_actualValue := valueSet
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), valueSet)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSet"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSet")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataValueSet{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ValueSet: valueSet,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataValueSet) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataValueSet) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueSet")
 		}
 
-		// Simple Field (valueSet)
-		if pushErr := writeBuffer.PushContext("valueSet"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for valueSet")
-		}
-		_valueSetErr := writeBuffer.WriteSerializable(ctx, m.GetValueSet())
-		if popErr := writeBuffer.PopContext("valueSet"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for valueSet")
-		}
-		if _valueSetErr != nil {
-			return errors.Wrap(_valueSetErr, "Error serializing 'valueSet' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valueSet", m.GetValueSet(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'valueSet' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataValueSet) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataValueSet) isBACnetConstructedDataValueSet() bool {
-	return true
-}
+func (m *_BACnetConstructedDataValueSet) IsBACnetConstructedDataValueSet() {}
 
 func (m *_BACnetConstructedDataValueSet) String() string {
 	if m == nil {

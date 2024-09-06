@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetScaleFloatScale interface {
 	BACnetScale
 	// GetFloatScale returns FloatScale (property field)
 	GetFloatScale() BACnetContextTagReal
-}
-
-// BACnetScaleFloatScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScaleFloatScale.
-// This is useful for switch cases.
-type BACnetScaleFloatScaleExactly interface {
-	BACnetScaleFloatScale
-	isBACnetScaleFloatScale() bool
+	// IsBACnetScaleFloatScale is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetScaleFloatScale()
 }
 
 // _BACnetScaleFloatScale is the data-structure of this message
 type _BACnetScaleFloatScale struct {
-	*_BACnetScale
+	BACnetScaleContract
 	FloatScale BACnetContextTagReal
 }
+
+var _ BACnetScaleFloatScale = (*_BACnetScaleFloatScale)(nil)
+var _ BACnetScaleRequirements = (*_BACnetScaleFloatScale)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetScaleFloatScale struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetScaleFloatScale) InitializeParent(parent BACnetScale, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetScaleFloatScale) GetParent() BACnetScale {
-	return m._BACnetScale
+func (m *_BACnetScaleFloatScale) GetParent() BACnetScaleContract {
+	return m.BACnetScaleContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetScaleFloatScale) GetFloatScale() BACnetContextTagReal {
 
 // NewBACnetScaleFloatScale factory function for _BACnetScaleFloatScale
 func NewBACnetScaleFloatScale(floatScale BACnetContextTagReal, peekedTagHeader BACnetTagHeader) *_BACnetScaleFloatScale {
-	_result := &_BACnetScaleFloatScale{
-		FloatScale:   floatScale,
-		_BACnetScale: NewBACnetScale(peekedTagHeader),
+	if floatScale == nil {
+		panic("floatScale of type BACnetContextTagReal for BACnetScaleFloatScale must not be nil")
 	}
-	_result._BACnetScale._BACnetScaleChildRequirements = _result
+	_result := &_BACnetScaleFloatScale{
+		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
+		FloatScale:          floatScale,
+	}
+	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetScaleFloatScale) GetTypeName() string {
 }
 
 func (m *_BACnetScaleFloatScale) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetScaleContract.(*_BACnetScale).getLengthInBits(ctx))
 
 	// Simple field (floatScale)
 	lengthInBits += m.FloatScale.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetScaleFloatScale) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetScaleFloatScaleParse(ctx context.Context, theBytes []byte) (BACnetScaleFloatScale, error) {
-	return BACnetScaleFloatScaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetScaleFloatScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
+func (m *_BACnetScaleFloatScale) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetScale) (__bACnetScaleFloatScale BACnetScaleFloatScale, err error) {
+	m.BACnetScaleContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetScaleFloatScale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetScaleFloatScale")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (floatScale)
-	if pullErr := readBuffer.PullContext("floatScale"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for floatScale")
+	floatScale, err := ReadSimpleField[BACnetContextTagReal](ctx, "floatScale", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floatScale' field"))
 	}
-	_floatScale, _floatScaleErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
-	if _floatScaleErr != nil {
-		return nil, errors.Wrap(_floatScaleErr, "Error parsing 'floatScale' field of BACnetScaleFloatScale")
-	}
-	floatScale := _floatScale.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("floatScale"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for floatScale")
-	}
+	m.FloatScale = floatScale
 
 	if closeErr := readBuffer.CloseContext("BACnetScaleFloatScale"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetScaleFloatScale")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetScaleFloatScale{
-		_BACnetScale: &_BACnetScale{},
-		FloatScale:   floatScale,
-	}
-	_child._BACnetScale._BACnetScaleChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetScaleFloatScale) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for BACnetScaleFloatScale")
 		}
 
-		// Simple Field (floatScale)
-		if pushErr := writeBuffer.PushContext("floatScale"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for floatScale")
-		}
-		_floatScaleErr := writeBuffer.WriteSerializable(ctx, m.GetFloatScale())
-		if popErr := writeBuffer.PopContext("floatScale"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for floatScale")
-		}
-		if _floatScaleErr != nil {
-			return errors.Wrap(_floatScaleErr, "Error serializing 'floatScale' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "floatScale", m.GetFloatScale(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'floatScale' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetScaleFloatScale"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetScaleContract.(*_BACnetScale).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetScaleFloatScale) isBACnetScaleFloatScale() bool {
-	return true
-}
+func (m *_BACnetScaleFloatScale) IsBACnetScaleFloatScale() {}
 
 func (m *_BACnetScaleFloatScale) String() string {
 	if m == nil {

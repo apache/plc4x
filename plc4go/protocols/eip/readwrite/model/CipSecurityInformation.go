@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type CipSecurityInformation interface {
 	CommandSpecificDataItem
 	// GetTodoImplement returns TodoImplement (property field)
 	GetTodoImplement() []uint8
-}
-
-// CipSecurityInformationExactly can be used when we want exactly this type and not a type which fulfills CipSecurityInformation.
-// This is useful for switch cases.
-type CipSecurityInformationExactly interface {
-	CipSecurityInformation
-	isCipSecurityInformation() bool
+	// IsCipSecurityInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipSecurityInformation()
 }
 
 // _CipSecurityInformation is the data-structure of this message
 type _CipSecurityInformation struct {
-	*_CommandSpecificDataItem
+	CommandSpecificDataItemContract
 	TodoImplement []uint8
 }
+
+var _ CipSecurityInformation = (*_CipSecurityInformation)(nil)
+var _ CommandSpecificDataItemRequirements = (*_CipSecurityInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_CipSecurityInformation) GetItemType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipSecurityInformation) InitializeParent(parent CommandSpecificDataItem) {}
-
-func (m *_CipSecurityInformation) GetParent() CommandSpecificDataItem {
-	return m._CommandSpecificDataItem
+func (m *_CipSecurityInformation) GetParent() CommandSpecificDataItemContract {
+	return m.CommandSpecificDataItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_CipSecurityInformation) GetTodoImplement() []uint8 {
 // NewCipSecurityInformation factory function for _CipSecurityInformation
 func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
 	_result := &_CipSecurityInformation{
-		TodoImplement:            todoImplement,
-		_CommandSpecificDataItem: NewCommandSpecificDataItem(),
+		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
+		TodoImplement:                   todoImplement,
 	}
-	_result._CommandSpecificDataItem._CommandSpecificDataItemChildRequirements = _result
+	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_CipSecurityInformation) GetTypeName() string {
 }
 
 func (m *_CipSecurityInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).getLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 16
@@ -131,66 +129,34 @@ func (m *_CipSecurityInformation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipSecurityInformationParse(ctx context.Context, theBytes []byte) (CipSecurityInformation, error) {
-	return CipSecurityInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CipSecurityInformation, error) {
+func (m *_CipSecurityInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CommandSpecificDataItem) (__cipSecurityInformation CipSecurityInformation, err error) {
+	m.CommandSpecificDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipSecurityInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipSecurityInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemLength, _itemLengthErr := readBuffer.ReadUint16("itemLength", 16)
+	itemLength, err := ReadImplicitField[uint16](ctx, "itemLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
+	}
 	_ = itemLength
-	if _itemLengthErr != nil {
-		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of CipSecurityInformation")
-	}
 
-	// Array field (todoImplement)
-	if pullErr := readBuffer.PullContext("todoImplement", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for todoImplement")
+	todoImplement, err := ReadCountArrayField[uint8](ctx, "todoImplement", ReadUnsignedByte(readBuffer, uint8(8)), uint64(itemLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'todoImplement' field"))
 	}
-	// Count array
-	todoImplement := make([]uint8, max(itemLength, 0))
-	// This happens when the size is set conditional to 0
-	if len(todoImplement) == 0 {
-		todoImplement = nil
-	}
-	{
-		_numItems := uint16(max(itemLength, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'todoImplement' field of CipSecurityInformation")
-			}
-			todoImplement[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("todoImplement", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for todoImplement")
-	}
+	m.TodoImplement = todoImplement
 
 	if closeErr := readBuffer.CloseContext("CipSecurityInformation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipSecurityInformation")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CipSecurityInformation{
-		_CommandSpecificDataItem: &_CommandSpecificDataItem{},
-		TodoImplement:            todoImplement,
-	}
-	_child._CommandSpecificDataItem._CommandSpecificDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CipSecurityInformation) Serialize() ([]byte, error) {
@@ -210,27 +176,13 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 		if pushErr := writeBuffer.PushContext("CipSecurityInformation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for CipSecurityInformation")
 		}
-
-		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint16(uint16(len(m.GetTodoImplement())))
-		_itemLengthErr := writeBuffer.WriteUint16("itemLength", 16, uint16((itemLength)))
-		if _itemLengthErr != nil {
-			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
+		if err := WriteImplicitField(ctx, "itemLength", itemLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemLength' field")
 		}
 
-		// Array Field (todoImplement)
-		if pushErr := writeBuffer.PushContext("todoImplement", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for todoImplement")
-		}
-		for _curItem, _element := range m.GetTodoImplement() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'todoImplement' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("todoImplement", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for todoImplement")
+		if err := WriteSimpleTypeArrayField(ctx, "todoImplement", m.GetTodoImplement(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'todoImplement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipSecurityInformation"); popErr != nil {
@@ -238,12 +190,10 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CipSecurityInformation) isCipSecurityInformation() bool {
-	return true
-}
+func (m *_CipSecurityInformation) IsCipSecurityInformation() {}
 
 func (m *_CipSecurityInformation) String() string {
 	if m == nil {

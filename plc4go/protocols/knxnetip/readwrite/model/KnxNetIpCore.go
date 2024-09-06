@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type KnxNetIpCore interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
-}
-
-// KnxNetIpCoreExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpCore.
-// This is useful for switch cases.
-type KnxNetIpCoreExactly interface {
-	KnxNetIpCore
-	isKnxNetIpCore() bool
+	// IsKnxNetIpCore is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetIpCore()
 }
 
 // _KnxNetIpCore is the data-structure of this message
 type _KnxNetIpCore struct {
-	*_ServiceId
+	ServiceIdContract
 	Version uint8
 }
+
+var _ KnxNetIpCore = (*_KnxNetIpCore)(nil)
+var _ ServiceIdRequirements = (*_KnxNetIpCore)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_KnxNetIpCore) GetServiceType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_KnxNetIpCore) InitializeParent(parent ServiceId) {}
-
-func (m *_KnxNetIpCore) GetParent() ServiceId {
-	return m._ServiceId
+func (m *_KnxNetIpCore) GetParent() ServiceIdContract {
+	return m.ServiceIdContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_KnxNetIpCore) GetVersion() uint8 {
 // NewKnxNetIpCore factory function for _KnxNetIpCore
 func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
 	_result := &_KnxNetIpCore{
-		Version:    version,
-		_ServiceId: NewServiceId(),
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
 	}
-	_result._ServiceId._ServiceIdChildRequirements = _result
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_KnxNetIpCore) GetTypeName() string {
 }
 
 func (m *_KnxNetIpCore) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ServiceIdContract.(*_ServiceId).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -126,39 +124,28 @@ func (m *_KnxNetIpCore) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetIpCoreParse(ctx context.Context, theBytes []byte) (KnxNetIpCore, error) {
-	return KnxNetIpCoreParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func KnxNetIpCoreParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpCore, error) {
+func (m *_KnxNetIpCore) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetIpCore KnxNetIpCore, err error) {
+	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxNetIpCore"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetIpCore")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint8("version", 8)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of KnxNetIpCore")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
+	m.Version = version
 
 	if closeErr := readBuffer.CloseContext("KnxNetIpCore"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxNetIpCore")
 	}
 
-	// Create a partially initialized instance
-	_child := &_KnxNetIpCore{
-		_ServiceId: &_ServiceId{},
-		Version:    version,
-	}
-	_child._ServiceId._ServiceIdChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_KnxNetIpCore) Serialize() ([]byte, error) {
@@ -179,11 +166,8 @@ func (m *_KnxNetIpCore) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for KnxNetIpCore")
 		}
 
-		// Simple Field (version)
-		version := uint8(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
-		if _versionErr != nil {
-			return errors.Wrap(_versionErr, "Error serializing 'version' field")
+		if err := WriteSimpleField[uint8](ctx, "version", m.GetVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 
 		if popErr := writeBuffer.PopContext("KnxNetIpCore"); popErr != nil {
@@ -191,12 +175,10 @@ func (m *_KnxNetIpCore) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ServiceIdContract.(*_ServiceId).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_KnxNetIpCore) isKnxNetIpCore() bool {
-	return true
-}
+func (m *_KnxNetIpCore) IsKnxNetIpCore() {}
 
 func (m *_KnxNetIpCore) String() string {
 	if m == nil {

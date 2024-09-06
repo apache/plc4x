@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type CBusPointToPointCommandIndirect interface {
 	GetNetworkRoute() NetworkRoute
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
-}
-
-// CBusPointToPointCommandIndirectExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommandIndirect.
-// This is useful for switch cases.
-type CBusPointToPointCommandIndirectExactly interface {
-	CBusPointToPointCommandIndirect
-	isCBusPointToPointCommandIndirect() bool
+	// IsCBusPointToPointCommandIndirect is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToPointCommandIndirect()
 }
 
 // _CBusPointToPointCommandIndirect is the data-structure of this message
 type _CBusPointToPointCommandIndirect struct {
-	*_CBusPointToPointCommand
+	CBusPointToPointCommandContract
 	BridgeAddress BridgeAddress
 	NetworkRoute  NetworkRoute
 	UnitAddress   UnitAddress
 }
+
+var _ CBusPointToPointCommandIndirect = (*_CBusPointToPointCommandIndirect)(nil)
+var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandIndirect)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,13 +70,8 @@ type _CBusPointToPointCommandIndirect struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointCommandIndirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData) {
-	m.BridgeAddressCountPeek = bridgeAddressCountPeek
-	m.CalData = calData
-}
-
-func (m *_CBusPointToPointCommandIndirect) GetParent() CBusPointToPointCommand {
-	return m._CBusPointToPointCommand
+func (m *_CBusPointToPointCommandIndirect) GetParent() CBusPointToPointCommandContract {
+	return m.CBusPointToPointCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -103,13 +98,22 @@ func (m *_CBusPointToPointCommandIndirect) GetUnitAddress() UnitAddress {
 
 // NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
 func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
-	_result := &_CBusPointToPointCommandIndirect{
-		BridgeAddress:            bridgeAddress,
-		NetworkRoute:             networkRoute,
-		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+	if bridgeAddress == nil {
+		panic("bridgeAddress of type BridgeAddress for CBusPointToPointCommandIndirect must not be nil")
 	}
-	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result
+	if networkRoute == nil {
+		panic("networkRoute of type NetworkRoute for CBusPointToPointCommandIndirect must not be nil")
+	}
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for CBusPointToPointCommandIndirect must not be nil")
+	}
+	_result := &_CBusPointToPointCommandIndirect{
+		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+		BridgeAddress:                   bridgeAddress,
+		NetworkRoute:                    networkRoute,
+		UnitAddress:                     unitAddress,
+	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
 	return _result
 }
 
@@ -129,7 +133,7 @@ func (m *_CBusPointToPointCommandIndirect) GetTypeName() string {
 }
 
 func (m *_CBusPointToPointCommandIndirect) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).getLengthInBits(ctx))
 
 	// Simple field (bridgeAddress)
 	lengthInBits += m.BridgeAddress.GetLengthInBits(ctx)
@@ -147,75 +151,40 @@ func (m *_CBusPointToPointCommandIndirect) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusPointToPointCommandIndirectParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
-	return CBusPointToPointCommandIndirectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func CBusPointToPointCommandIndirectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
+func (m *_CBusPointToPointCommandIndirect) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusPointToPointCommand, cBusOptions CBusOptions) (__cBusPointToPointCommandIndirect CBusPointToPointCommandIndirect, err error) {
+	m.CBusPointToPointCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandIndirect"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToPointCommandIndirect")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bridgeAddress)
-	if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
+	bridgeAddress, err := ReadSimpleField[BridgeAddress](ctx, "bridgeAddress", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeAddress' field"))
 	}
-	_bridgeAddress, _bridgeAddressErr := BridgeAddressParseWithBuffer(ctx, readBuffer)
-	if _bridgeAddressErr != nil {
-		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field of CBusPointToPointCommandIndirect")
-	}
-	bridgeAddress := _bridgeAddress.(BridgeAddress)
-	if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bridgeAddress")
-	}
+	m.BridgeAddress = bridgeAddress
 
-	// Simple Field (networkRoute)
-	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
+	networkRoute, err := ReadSimpleField[NetworkRoute](ctx, "networkRoute", ReadComplex[NetworkRoute](NetworkRouteParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkRoute' field"))
 	}
-	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(ctx, readBuffer)
-	if _networkRouteErr != nil {
-		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of CBusPointToPointCommandIndirect")
-	}
-	networkRoute := _networkRoute.(NetworkRoute)
-	if closeErr := readBuffer.CloseContext("networkRoute"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkRoute")
-	}
+	m.NetworkRoute = networkRoute
 
-	// Simple Field (unitAddress)
-	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
+	unitAddress, err := ReadSimpleField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitAddress' field"))
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(ctx, readBuffer)
-	if _unitAddressErr != nil {
-		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandIndirect")
-	}
-	unitAddress := _unitAddress.(UnitAddress)
-	if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
-	}
+	m.UnitAddress = unitAddress
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointCommandIndirect"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointCommandIndirect")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CBusPointToPointCommandIndirect{
-		_CBusPointToPointCommand: &_CBusPointToPointCommand{
-			CBusOptions: cBusOptions,
-		},
-		BridgeAddress: bridgeAddress,
-		NetworkRoute:  networkRoute,
-		UnitAddress:   unitAddress,
-	}
-	_child._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CBusPointToPointCommandIndirect) Serialize() ([]byte, error) {
@@ -236,40 +205,16 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointCommandIndirect")
 		}
 
-		// Simple Field (bridgeAddress)
-		if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
-		}
-		_bridgeAddressErr := writeBuffer.WriteSerializable(ctx, m.GetBridgeAddress())
-		if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bridgeAddress")
-		}
-		if _bridgeAddressErr != nil {
-			return errors.Wrap(_bridgeAddressErr, "Error serializing 'bridgeAddress' field")
+		if err := WriteSimpleField[BridgeAddress](ctx, "bridgeAddress", m.GetBridgeAddress(), WriteComplex[BridgeAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bridgeAddress' field")
 		}
 
-		// Simple Field (networkRoute)
-		if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkRoute")
-		}
-		_networkRouteErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkRoute())
-		if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkRoute")
-		}
-		if _networkRouteErr != nil {
-			return errors.Wrap(_networkRouteErr, "Error serializing 'networkRoute' field")
+		if err := WriteSimpleField[NetworkRoute](ctx, "networkRoute", m.GetNetworkRoute(), WriteComplex[NetworkRoute](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkRoute' field")
 		}
 
-		// Simple Field (unitAddress)
-		if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unitAddress")
-		}
-		_unitAddressErr := writeBuffer.WriteSerializable(ctx, m.GetUnitAddress())
-		if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unitAddress")
-		}
-		if _unitAddressErr != nil {
-			return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
+		if err := WriteSimpleField[UnitAddress](ctx, "unitAddress", m.GetUnitAddress(), WriteComplex[UnitAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToPointCommandIndirect"); popErr != nil {
@@ -277,12 +222,10 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CBusPointToPointCommandIndirect) isCBusPointToPointCommandIndirect() bool {
-	return true
-}
+func (m *_CBusPointToPointCommandIndirect) IsCBusPointToPointCommandIndirect() {}
 
 func (m *_CBusPointToPointCommandIndirect) String() string {
 	if m == nil {

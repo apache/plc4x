@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataVerificationTime interface {
 	GetVerificationTime() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-}
-
-// BACnetConstructedDataVerificationTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVerificationTime.
-// This is useful for switch cases.
-type BACnetConstructedDataVerificationTimeExactly interface {
-	BACnetConstructedDataVerificationTime
-	isBACnetConstructedDataVerificationTime() bool
+	// IsBACnetConstructedDataVerificationTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataVerificationTime()
 }
 
 // _BACnetConstructedDataVerificationTime is the data-structure of this message
 type _BACnetConstructedDataVerificationTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	VerificationTime BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetConstructedDataVerificationTime = (*_BACnetConstructedDataVerificationTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVerificationTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataVerificationTime) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataVerificationTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataVerificationTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataVerificationTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataVerificationTime) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataVerificationTime factory function for _BACnetConstructedDataVerificationTime
 func NewBACnetConstructedDataVerificationTime(verificationTime BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
-	_result := &_BACnetConstructedDataVerificationTime{
-		VerificationTime:       verificationTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if verificationTime == nil {
+		panic("verificationTime of type BACnetApplicationTagSignedInteger for BACnetConstructedDataVerificationTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataVerificationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VerificationTime:              verificationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataVerificationTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataVerificationTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (verificationTime)
 	lengthInBits += m.VerificationTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataVerificationTime) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataVerificationTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVerificationTime, error) {
-	return BACnetConstructedDataVerificationTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataVerificationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVerificationTime, error) {
+func (m *_BACnetConstructedDataVerificationTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataVerificationTime BACnetConstructedDataVerificationTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVerificationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataVerificationTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (verificationTime)
-	if pullErr := readBuffer.PullContext("verificationTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for verificationTime")
+	verificationTime, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "verificationTime", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'verificationTime' field"))
 	}
-	_verificationTime, _verificationTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _verificationTimeErr != nil {
-		return nil, errors.Wrap(_verificationTimeErr, "Error parsing 'verificationTime' field of BACnetConstructedDataVerificationTime")
-	}
-	verificationTime := _verificationTime.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("verificationTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for verificationTime")
-	}
+	m.VerificationTime = verificationTime
 
-	// Virtual field
-	_actualValue := verificationTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagSignedInteger](ctx, "actualValue", (*BACnetApplicationTagSignedInteger)(nil), verificationTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVerificationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVerificationTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataVerificationTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		VerificationTime: verificationTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataVerificationTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVerificationTime")
 		}
 
-		// Simple Field (verificationTime)
-		if pushErr := writeBuffer.PushContext("verificationTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for verificationTime")
-		}
-		_verificationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetVerificationTime())
-		if popErr := writeBuffer.PopContext("verificationTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for verificationTime")
-		}
-		if _verificationTimeErr != nil {
-			return errors.Wrap(_verificationTimeErr, "Error serializing 'verificationTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "verificationTime", m.GetVerificationTime(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'verificationTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataVerificationTime) isBACnetConstructedDataVerificationTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataVerificationTime) IsBACnetConstructedDataVerificationTime() {}
 
 func (m *_BACnetConstructedDataVerificationTime) String() string {
 	if m == nil {

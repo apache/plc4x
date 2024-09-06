@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataProtocolServicesSupported interface {
 	GetProtocolServicesSupported() BACnetServicesSupportedTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetServicesSupportedTagged
-}
-
-// BACnetConstructedDataProtocolServicesSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolServicesSupported.
-// This is useful for switch cases.
-type BACnetConstructedDataProtocolServicesSupportedExactly interface {
-	BACnetConstructedDataProtocolServicesSupported
-	isBACnetConstructedDataProtocolServicesSupported() bool
+	// IsBACnetConstructedDataProtocolServicesSupported is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProtocolServicesSupported()
 }
 
 // _BACnetConstructedDataProtocolServicesSupported is the data-structure of this message
 type _BACnetConstructedDataProtocolServicesSupported struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ProtocolServicesSupported BACnetServicesSupportedTagged
 }
+
+var _ BACnetConstructedDataProtocolServicesSupported = (*_BACnetConstructedDataProtocolServicesSupported)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolServicesSupported)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetPropertyIdentifierA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataProtocolServicesSupported) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataProtocolServicesSupported) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataProtocolServicesSupported) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetActualValue() BACne
 
 // NewBACnetConstructedDataProtocolServicesSupported factory function for _BACnetConstructedDataProtocolServicesSupported
 func NewBACnetConstructedDataProtocolServicesSupported(protocolServicesSupported BACnetServicesSupportedTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolServicesSupported {
-	_result := &_BACnetConstructedDataProtocolServicesSupported{
-		ProtocolServicesSupported: protocolServicesSupported,
-		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if protocolServicesSupported == nil {
+		panic("protocolServicesSupported of type BACnetServicesSupportedTagged for BACnetConstructedDataProtocolServicesSupported must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataProtocolServicesSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolServicesSupported:     protocolServicesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (protocolServicesSupported)
 	lengthInBits += m.ProtocolServicesSupported.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataProtocolServicesSupportedParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
-	return BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
+func (m *_BACnetConstructedDataProtocolServicesSupported) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProtocolServicesSupported BACnetConstructedDataProtocolServicesSupported, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolServicesSupported"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProtocolServicesSupported")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolServicesSupported)
-	if pullErr := readBuffer.PullContext("protocolServicesSupported"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolServicesSupported")
+	protocolServicesSupported, err := ReadSimpleField[BACnetServicesSupportedTagged](ctx, "protocolServicesSupported", ReadComplex[BACnetServicesSupportedTagged](BACnetServicesSupportedTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolServicesSupported' field"))
 	}
-	_protocolServicesSupported, _protocolServicesSupportedErr := BACnetServicesSupportedTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _protocolServicesSupportedErr != nil {
-		return nil, errors.Wrap(_protocolServicesSupportedErr, "Error parsing 'protocolServicesSupported' field of BACnetConstructedDataProtocolServicesSupported")
-	}
-	protocolServicesSupported := _protocolServicesSupported.(BACnetServicesSupportedTagged)
-	if closeErr := readBuffer.CloseContext("protocolServicesSupported"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolServicesSupported")
-	}
+	m.ProtocolServicesSupported = protocolServicesSupported
 
-	// Virtual field
-	_actualValue := protocolServicesSupported
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetServicesSupportedTagged](ctx, "actualValue", (*BACnetServicesSupportedTagged)(nil), protocolServicesSupported)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolServicesSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolServicesSupported")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataProtocolServicesSupported{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ProtocolServicesSupported: protocolServicesSupported,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolServicesSupported")
 		}
 
-		// Simple Field (protocolServicesSupported)
-		if pushErr := writeBuffer.PushContext("protocolServicesSupported"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolServicesSupported")
-		}
-		_protocolServicesSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolServicesSupported())
-		if popErr := writeBuffer.PopContext("protocolServicesSupported"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolServicesSupported")
-		}
-		if _protocolServicesSupportedErr != nil {
-			return errors.Wrap(_protocolServicesSupportedErr, "Error serializing 'protocolServicesSupported' field")
+		if err := WriteSimpleField[BACnetServicesSupportedTagged](ctx, "protocolServicesSupported", m.GetProtocolServicesSupported(), WriteComplex[BACnetServicesSupportedTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolServicesSupported' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataProtocolServicesSupported) isBACnetConstructedDataProtocolServicesSupported() bool {
-	return true
+func (m *_BACnetConstructedDataProtocolServicesSupported) IsBACnetConstructedDataProtocolServicesSupported() {
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) String() string {

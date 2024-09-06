@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetReadAccessResultListOfResults interface {
 	GetListOfReadAccessProperty() []BACnetReadAccessProperty
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetReadAccessResultListOfResultsExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessResultListOfResults.
-// This is useful for switch cases.
-type BACnetReadAccessResultListOfResultsExactly interface {
-	BACnetReadAccessResultListOfResults
-	isBACnetReadAccessResultListOfResults() bool
+	// IsBACnetReadAccessResultListOfResults is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetReadAccessResultListOfResults()
 }
 
 // _BACnetReadAccessResultListOfResults is the data-structure of this message
@@ -61,6 +58,8 @@ type _BACnetReadAccessResultListOfResults struct {
 	TagNumber          uint8
 	ObjectTypeArgument BACnetObjectType
 }
+
+var _ BACnetReadAccessResultListOfResults = (*_BACnetReadAccessResultListOfResults)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -86,6 +85,12 @@ func (m *_BACnetReadAccessResultListOfResults) GetClosingTag() BACnetClosingTag 
 
 // NewBACnetReadAccessResultListOfResults factory function for _BACnetReadAccessResultListOfResults
 func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetReadAccessResultListOfResults {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessResultListOfResults must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetReadAccessResultListOfResults must not be nil")
+	}
 	return &_BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
 }
 
@@ -131,74 +136,52 @@ func BACnetReadAccessResultListOfResultsParse(ctx context.Context, theBytes []by
 	return BACnetReadAccessResultListOfResultsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument)
 }
 
+func BACnetReadAccessResultListOfResultsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResultListOfResults, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResultListOfResults, error) {
+		return BACnetReadAccessResultListOfResultsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument)
+	}
+}
+
 func BACnetReadAccessResultListOfResultsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetReadAccessResultListOfResults, error) {
+	v, err := (&_BACnetReadAccessResultListOfResults{TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetReadAccessResultListOfResults) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetReadAccessResultListOfResults BACnetReadAccessResultListOfResults, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetReadAccessResultListOfResults"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetReadAccessResultListOfResults")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetReadAccessResultListOfResults")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (listOfReadAccessProperty)
-	if pullErr := readBuffer.PullContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfReadAccessProperty")
+	listOfReadAccessProperty, err := ReadTerminatedArrayField[BACnetReadAccessProperty](ctx, "listOfReadAccessProperty", ReadComplex[BACnetReadAccessProperty](BACnetReadAccessPropertyParseWithBufferProducer((BACnetObjectType)(objectTypeArgument)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfReadAccessProperty' field"))
 	}
-	// Terminated array
-	var listOfReadAccessProperty []BACnetReadAccessProperty
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetReadAccessPropertyParseWithBuffer(ctx, readBuffer, objectTypeArgument)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfReadAccessProperty' field of BACnetReadAccessResultListOfResults")
-			}
-			listOfReadAccessProperty = append(listOfReadAccessProperty, _item.(BACnetReadAccessProperty))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfReadAccessProperty")
-	}
+	m.ListOfReadAccessProperty = listOfReadAccessProperty
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetReadAccessResultListOfResults")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetReadAccessResultListOfResults"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetReadAccessResultListOfResults")
 	}
 
-	// Create the instance
-	return &_BACnetReadAccessResultListOfResults{
-		TagNumber:                tagNumber,
-		ObjectTypeArgument:       objectTypeArgument,
-		OpeningTag:               openingTag,
-		ListOfReadAccessProperty: listOfReadAccessProperty,
-		ClosingTag:               closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetReadAccessResultListOfResults) Serialize() ([]byte, error) {
@@ -218,45 +201,16 @@ func (m *_BACnetReadAccessResultListOfResults) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetReadAccessResultListOfResults")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfReadAccessProperty)
-	if pushErr := writeBuffer.PushContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfReadAccessProperty")
-	}
-	for _curItem, _element := range m.GetListOfReadAccessProperty() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfReadAccessProperty()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfReadAccessProperty' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfReadAccessProperty")
+	if err := WriteComplexTypeArrayField(ctx, "listOfReadAccessProperty", m.GetListOfReadAccessProperty(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfReadAccessProperty' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetReadAccessResultListOfResults"); popErr != nil {
@@ -278,9 +232,7 @@ func (m *_BACnetReadAccessResultListOfResults) GetObjectTypeArgument() BACnetObj
 //
 ////
 
-func (m *_BACnetReadAccessResultListOfResults) isBACnetReadAccessResultListOfResults() bool {
-	return true
-}
+func (m *_BACnetReadAccessResultListOfResults) IsBACnetReadAccessResultListOfResults() {}
 
 func (m *_BACnetReadAccessResultListOfResults) String() string {
 	if m == nil {

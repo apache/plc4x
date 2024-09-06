@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesBacnetIpMode interface {
 	BACnetPropertyStates
 	// GetBacnetIpMode returns BacnetIpMode (property field)
 	GetBacnetIpMode() BACnetIPModeTagged
-}
-
-// BACnetPropertyStatesBacnetIpModeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBacnetIpMode.
-// This is useful for switch cases.
-type BACnetPropertyStatesBacnetIpModeExactly interface {
-	BACnetPropertyStatesBacnetIpMode
-	isBACnetPropertyStatesBacnetIpMode() bool
+	// IsBACnetPropertyStatesBacnetIpMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesBacnetIpMode()
 }
 
 // _BACnetPropertyStatesBacnetIpMode is the data-structure of this message
 type _BACnetPropertyStatesBacnetIpMode struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	BacnetIpMode BACnetIPModeTagged
 }
+
+var _ BACnetPropertyStatesBacnetIpMode = (*_BACnetPropertyStatesBacnetIpMode)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBacnetIpMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesBacnetIpMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesBacnetIpMode) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesBacnetIpMode) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesBacnetIpMode) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetBacnetIpMode() BACnetIPModeTagged
 
 // NewBACnetPropertyStatesBacnetIpMode factory function for _BACnetPropertyStatesBacnetIpMode
 func NewBACnetPropertyStatesBacnetIpMode(bacnetIpMode BACnetIPModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBacnetIpMode {
-	_result := &_BACnetPropertyStatesBacnetIpMode{
-		BacnetIpMode:          bacnetIpMode,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if bacnetIpMode == nil {
+		panic("bacnetIpMode of type BACnetIPModeTagged for BACnetPropertyStatesBacnetIpMode must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesBacnetIpMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BacnetIpMode:                 bacnetIpMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (bacnetIpMode)
 	lengthInBits += m.BacnetIpMode.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesBacnetIpModeParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
-	return BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
+func (m *_BACnetPropertyStatesBacnetIpMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesBacnetIpMode BACnetPropertyStatesBacnetIpMode, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBacnetIpMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesBacnetIpMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bacnetIpMode)
-	if pullErr := readBuffer.PullContext("bacnetIpMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpMode")
+	bacnetIpMode, err := ReadSimpleField[BACnetIPModeTagged](ctx, "bacnetIpMode", ReadComplex[BACnetIPModeTagged](BACnetIPModeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetIpMode' field"))
 	}
-	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _bacnetIpModeErr != nil {
-		return nil, errors.Wrap(_bacnetIpModeErr, "Error parsing 'bacnetIpMode' field of BACnetPropertyStatesBacnetIpMode")
-	}
-	bacnetIpMode := _bacnetIpMode.(BACnetIPModeTagged)
-	if closeErr := readBuffer.CloseContext("bacnetIpMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpMode")
-	}
+	m.BacnetIpMode = bacnetIpMode
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesBacnetIpMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesBacnetIpMode")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesBacnetIpMode{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		BacnetIpMode:          bacnetIpMode,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesBacnetIpMode) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesBacnetIpMode")
 		}
 
-		// Simple Field (bacnetIpMode)
-		if pushErr := writeBuffer.PushContext("bacnetIpMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bacnetIpMode")
-		}
-		_bacnetIpModeErr := writeBuffer.WriteSerializable(ctx, m.GetBacnetIpMode())
-		if popErr := writeBuffer.PopContext("bacnetIpMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bacnetIpMode")
-		}
-		if _bacnetIpModeErr != nil {
-			return errors.Wrap(_bacnetIpModeErr, "Error serializing 'bacnetIpMode' field")
+		if err := WriteSimpleField[BACnetIPModeTagged](ctx, "bacnetIpMode", m.GetBacnetIpMode(), WriteComplex[BACnetIPModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bacnetIpMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesBacnetIpMode"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesBacnetIpMode) isBACnetPropertyStatesBacnetIpMode() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesBacnetIpMode) IsBACnetPropertyStatesBacnetIpMode() {}
 
 func (m *_BACnetPropertyStatesBacnetIpMode) String() string {
 	if m == nil {

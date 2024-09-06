@@ -37,19 +37,17 @@ type SecurityDataDropTamper interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataDropTamperExactly can be used when we want exactly this type and not a type which fulfills SecurityDataDropTamper.
-// This is useful for switch cases.
-type SecurityDataDropTamperExactly interface {
-	SecurityDataDropTamper
-	isSecurityDataDropTamper() bool
+	// IsSecurityDataDropTamper is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataDropTamper()
 }
 
 // _SecurityDataDropTamper is the data-structure of this message
 type _SecurityDataDropTamper struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataDropTamper = (*_SecurityDataDropTamper)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataDropTamper)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataDropTamper struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataDropTamper) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataDropTamper) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataDropTamper) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataDropTamper factory function for _SecurityDataDropTamper
 func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDropTamper {
 	_result := &_SecurityDataDropTamper{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataDropTamper) GetTypeName() string {
 }
 
 func (m *_SecurityDataDropTamper) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataDropTamper) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataDropTamperParse(ctx context.Context, theBytes []byte) (SecurityDataDropTamper, error) {
-	return SecurityDataDropTamperParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataDropTamperParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataDropTamper, error) {
+func (m *_SecurityDataDropTamper) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataDropTamper SecurityDataDropTamper, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataDropTamper"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataDropTamper")
 	}
@@ -123,12 +112,7 @@ func SecurityDataDropTamperParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataDropTamper")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataDropTamper{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataDropTamper) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataDropTamper) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataDropTamper) isSecurityDataDropTamper() bool {
-	return true
-}
+func (m *_SecurityDataDropTamper) IsSecurityDataDropTamper() {}
 
 func (m *_SecurityDataDropTamper) String() string {
 	if m == nil {

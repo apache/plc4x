@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type OpcuaMessageError interface {
 	GetError() OpcuaStatusCode
 	// GetReason returns Reason (property field)
 	GetReason() PascalString
-}
-
-// OpcuaMessageErrorExactly can be used when we want exactly this type and not a type which fulfills OpcuaMessageError.
-// This is useful for switch cases.
-type OpcuaMessageErrorExactly interface {
-	OpcuaMessageError
-	isOpcuaMessageError() bool
+	// IsOpcuaMessageError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaMessageError()
 }
 
 // _OpcuaMessageError is the data-structure of this message
 type _OpcuaMessageError struct {
-	*_MessagePDU
+	MessagePDUContract
 	Error  OpcuaStatusCode
 	Reason PascalString
 }
+
+var _ OpcuaMessageError = (*_OpcuaMessageError)(nil)
+var _ MessagePDURequirements = (*_OpcuaMessageError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,12 +75,8 @@ func (m *_OpcuaMessageError) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaMessageError) InitializeParent(parent MessagePDU, chunk ChunkType) {
-	m.Chunk = chunk
-}
-
-func (m *_OpcuaMessageError) GetParent() MessagePDU {
-	return m._MessagePDU
+func (m *_OpcuaMessageError) GetParent() MessagePDUContract {
+	return m.MessagePDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -103,12 +99,15 @@ func (m *_OpcuaMessageError) GetReason() PascalString {
 
 // NewOpcuaMessageError factory function for _OpcuaMessageError
 func NewOpcuaMessageError(error OpcuaStatusCode, reason PascalString, chunk ChunkType) *_OpcuaMessageError {
-	_result := &_OpcuaMessageError{
-		Error:       error,
-		Reason:      reason,
-		_MessagePDU: NewMessagePDU(chunk),
+	if reason == nil {
+		panic("reason of type PascalString for OpcuaMessageError must not be nil")
 	}
-	_result._MessagePDU._MessagePDUChildRequirements = _result
+	_result := &_OpcuaMessageError{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Error:              error,
+		Reason:             reason,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 
@@ -128,7 +127,7 @@ func (m *_OpcuaMessageError) GetTypeName() string {
 }
 
 func (m *_OpcuaMessageError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (error)
 	lengthInBits += 32
@@ -143,59 +142,34 @@ func (m *_OpcuaMessageError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpcuaMessageErrorParse(ctx context.Context, theBytes []byte, response bool) (OpcuaMessageError, error) {
-	return OpcuaMessageErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func OpcuaMessageErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaMessageError, error) {
+func (m *_OpcuaMessageError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaMessageError OpcuaMessageError, err error) {
+	m.MessagePDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaMessageError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaMessageError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (error)
-	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for error")
+	error, err := ReadEnumField[OpcuaStatusCode](ctx, "error", "OpcuaStatusCode", ReadEnum(OpcuaStatusCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
-	_error, _errorErr := OpcuaStatusCodeParseWithBuffer(ctx, readBuffer)
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of OpcuaMessageError")
-	}
-	error := _error
-	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for error")
-	}
+	m.Error = error
 
-	// Simple Field (reason)
-	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reason")
+	reason, err := ReadSimpleField[PascalString](ctx, "reason", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reason' field"))
 	}
-	_reason, _reasonErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _reasonErr != nil {
-		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of OpcuaMessageError")
-	}
-	reason := _reason.(PascalString)
-	if closeErr := readBuffer.CloseContext("reason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reason")
-	}
+	m.Reason = reason
 
 	if closeErr := readBuffer.CloseContext("OpcuaMessageError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaMessageError")
 	}
 
-	// Create a partially initialized instance
-	_child := &_OpcuaMessageError{
-		_MessagePDU: &_MessagePDU{},
-		Error:       error,
-		Reason:      reason,
-	}
-	_child._MessagePDU._MessagePDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_OpcuaMessageError) Serialize() ([]byte, error) {
@@ -216,28 +190,12 @@ func (m *_OpcuaMessageError) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for OpcuaMessageError")
 		}
 
-		// Simple Field (error)
-		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for error")
-		}
-		_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
-		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for error")
-		}
-		if _errorErr != nil {
-			return errors.Wrap(_errorErr, "Error serializing 'error' field")
+		if err := WriteSimpleEnumField[OpcuaStatusCode](ctx, "error", "OpcuaStatusCode", m.GetError(), WriteEnum[OpcuaStatusCode, uint32](OpcuaStatusCode.GetValue, OpcuaStatusCode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'error' field")
 		}
 
-		// Simple Field (reason)
-		if pushErr := writeBuffer.PushContext("reason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reason")
-		}
-		_reasonErr := writeBuffer.WriteSerializable(ctx, m.GetReason())
-		if popErr := writeBuffer.PopContext("reason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reason")
-		}
-		if _reasonErr != nil {
-			return errors.Wrap(_reasonErr, "Error serializing 'reason' field")
+		if err := WriteSimpleField[PascalString](ctx, "reason", m.GetReason(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaMessageError"); popErr != nil {
@@ -245,12 +203,10 @@ func (m *_OpcuaMessageError) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MessagePDUContract.(*_MessagePDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_OpcuaMessageError) isOpcuaMessageError() bool {
-	return true
-}
+func (m *_OpcuaMessageError) IsOpcuaMessageError() {}
 
 func (m *_OpcuaMessageError) String() string {
 	if m == nil {

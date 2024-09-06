@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type BACnetServiceAckAtomicReadFileStream interface {
 	GetFileStartPosition() BACnetApplicationTagSignedInteger
 	// GetFileData returns FileData (property field)
 	GetFileData() BACnetApplicationTagOctetString
-}
-
-// BACnetServiceAckAtomicReadFileStreamExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFileStream.
-// This is useful for switch cases.
-type BACnetServiceAckAtomicReadFileStreamExactly interface {
-	BACnetServiceAckAtomicReadFileStream
-	isBACnetServiceAckAtomicReadFileStream() bool
+	// IsBACnetServiceAckAtomicReadFileStream is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAtomicReadFileStream()
 }
 
 // _BACnetServiceAckAtomicReadFileStream is the data-structure of this message
 type _BACnetServiceAckAtomicReadFileStream struct {
-	*_BACnetServiceAckAtomicReadFileStreamOrRecord
+	BACnetServiceAckAtomicReadFileStreamOrRecordContract
 	FileStartPosition BACnetApplicationTagSignedInteger
 	FileData          BACnetApplicationTagOctetString
 }
+
+var _ BACnetServiceAckAtomicReadFileStream = (*_BACnetServiceAckAtomicReadFileStream)(nil)
+var _ BACnetServiceAckAtomicReadFileStreamOrRecordRequirements = (*_BACnetServiceAckAtomicReadFileStream)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,14 +67,8 @@ type _BACnetServiceAckAtomicReadFileStream struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetServiceAckAtomicReadFileStream) InitializeParent(parent BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) {
-	m.PeekedTagHeader = peekedTagHeader
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetServiceAckAtomicReadFileStream) GetParent() BACnetServiceAckAtomicReadFileStreamOrRecord {
-	return m._BACnetServiceAckAtomicReadFileStreamOrRecord
+func (m *_BACnetServiceAckAtomicReadFileStream) GetParent() BACnetServiceAckAtomicReadFileStreamOrRecordContract {
+	return m.BACnetServiceAckAtomicReadFileStreamOrRecordContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +91,18 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetFileData() BACnetApplicationT
 
 // NewBACnetServiceAckAtomicReadFileStream factory function for _BACnetServiceAckAtomicReadFileStream
 func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetServiceAckAtomicReadFileStream {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileStream must not be nil")
+	}
+	if fileData == nil {
+		panic("fileData of type BACnetApplicationTagOctetString for BACnetServiceAckAtomicReadFileStream must not be nil")
+	}
 	_result := &_BACnetServiceAckAtomicReadFileStream{
+		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 		FileStartPosition: fileStartPosition,
 		FileData:          fileData,
-		_BACnetServiceAckAtomicReadFileStreamOrRecord: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 	}
-	_result._BACnetServiceAckAtomicReadFileStreamOrRecord._BACnetServiceAckAtomicReadFileStreamOrRecordChildRequirements = _result
+	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
 	return _result
 }
 
@@ -122,7 +122,7 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckAtomicReadFileStream) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).getLengthInBits(ctx))
 
 	// Simple field (fileStartPosition)
 	lengthInBits += m.FileStartPosition.GetLengthInBits(ctx)
@@ -137,59 +137,34 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckAtomicReadFileStreamParse(ctx context.Context, theBytes []byte) (BACnetServiceAckAtomicReadFileStream, error) {
-	return BACnetServiceAckAtomicReadFileStreamParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetServiceAckAtomicReadFileStreamParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStream, error) {
+func (m *_BACnetServiceAckAtomicReadFileStream) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAckAtomicReadFileStreamOrRecord) (__bACnetServiceAckAtomicReadFileStream BACnetServiceAckAtomicReadFileStream, err error) {
+	m.BACnetServiceAckAtomicReadFileStreamOrRecordContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileStream"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckAtomicReadFileStream")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileStartPosition)
-	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
+	fileStartPosition, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartPosition", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileStartPosition' field"))
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileStartPositionErr != nil {
-		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetServiceAckAtomicReadFileStream")
-	}
-	fileStartPosition := _fileStartPosition.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileStartPosition")
-	}
+	m.FileStartPosition = fileStartPosition
 
-	// Simple Field (fileData)
-	if pullErr := readBuffer.PullContext("fileData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileData")
+	fileData, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "fileData", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileData' field"))
 	}
-	_fileData, _fileDataErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileDataErr != nil {
-		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field of BACnetServiceAckAtomicReadFileStream")
-	}
-	fileData := _fileData.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("fileData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileData")
-	}
+	m.FileData = fileData
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAtomicReadFileStream"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckAtomicReadFileStream")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetServiceAckAtomicReadFileStream{
-		_BACnetServiceAckAtomicReadFileStreamOrRecord: &_BACnetServiceAckAtomicReadFileStreamOrRecord{},
-		FileStartPosition: fileStartPosition,
-		FileData:          fileData,
-	}
-	_child._BACnetServiceAckAtomicReadFileStreamOrRecord._BACnetServiceAckAtomicReadFileStreamOrRecordChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetServiceAckAtomicReadFileStream) Serialize() ([]byte, error) {
@@ -210,28 +185,12 @@ func (m *_BACnetServiceAckAtomicReadFileStream) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicReadFileStream")
 		}
 
-		// Simple Field (fileStartPosition)
-		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
-		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
-		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartPosition")
-		}
-		if _fileStartPositionErr != nil {
-			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartPosition", m.GetFileStartPosition(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartPosition' field")
 		}
 
-		// Simple Field (fileData)
-		if pushErr := writeBuffer.PushContext("fileData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileData")
-		}
-		_fileDataErr := writeBuffer.WriteSerializable(ctx, m.GetFileData())
-		if popErr := writeBuffer.PopContext("fileData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileData")
-		}
-		if _fileDataErr != nil {
-			return errors.Wrap(_fileDataErr, "Error serializing 'fileData' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "fileData", m.GetFileData(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicReadFileStream"); popErr != nil {
@@ -239,12 +198,10 @@ func (m *_BACnetServiceAckAtomicReadFileStream) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStream) isBACnetServiceAckAtomicReadFileStream() bool {
-	return true
-}
+func (m *_BACnetServiceAckAtomicReadFileStream) IsBACnetServiceAckAtomicReadFileStream() {}
 
 func (m *_BACnetServiceAckAtomicReadFileStream) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,59 +35,53 @@ import (
 
 // BACnetConfirmedServiceRequest is the corresponding interface of BACnetConfirmedServiceRequest
 type BACnetConfirmedServiceRequest interface {
+	BACnetConfirmedServiceRequestContract
+	BACnetConfirmedServiceRequestRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetServiceChoice returns ServiceChoice (discriminator field)
-	GetServiceChoice() BACnetConfirmedServiceChoice
-	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
-	GetServiceRequestPayloadLength() uint32
+	// IsBACnetConfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequest()
 }
 
-// BACnetConfirmedServiceRequestExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequest.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestExactly interface {
-	BACnetConfirmedServiceRequest
-	isBACnetConfirmedServiceRequest() bool
+// BACnetConfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
+type BACnetConfirmedServiceRequestContract interface {
+	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
+	GetServiceRequestPayloadLength() uint32
+	// GetServiceRequestLength() returns a parser argument
+	GetServiceRequestLength() uint32
+	// IsBACnetConfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequest()
+}
+
+// BACnetConfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetConfirmedServiceRequestRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetServiceChoice returns ServiceChoice (discriminator field)
+	GetServiceChoice() BACnetConfirmedServiceChoice
 }
 
 // _BACnetConfirmedServiceRequest is the data-structure of this message
 type _BACnetConfirmedServiceRequest struct {
-	_BACnetConfirmedServiceRequestChildRequirements
+	_SubType BACnetConfirmedServiceRequest
 
 	// Arguments.
 	ServiceRequestLength uint32
 }
 
-type _BACnetConfirmedServiceRequestChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetServiceChoice() BACnetConfirmedServiceChoice
-}
-
-type BACnetConfirmedServiceRequestParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequest, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetConfirmedServiceRequestChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetConfirmedServiceRequest)
-	GetParent() *BACnetConfirmedServiceRequest
-
-	GetTypeName() string
-	BACnetConfirmedServiceRequest
-}
+var _ BACnetConfirmedServiceRequestContract = (*_BACnetConfirmedServiceRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint32 {
+func (pm *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint32 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
-	return uint32(utils.InlineIf((bool((m.ServiceRequestLength) > (0))), func() any { return uint32((uint32(m.ServiceRequestLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
+	return uint32(utils.InlineIf((bool((m.GetServiceRequestLength()) > (0))), func() any { return uint32((uint32(m.GetServiceRequestLength()) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
 }
 
 ///////////////////////
@@ -113,7 +109,7 @@ func (m *_BACnetConfirmedServiceRequest) GetTypeName() string {
 	return "BACnetConfirmedServiceRequest"
 }
 
-func (m *_BACnetConfirmedServiceRequest) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequest) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
@@ -124,134 +120,196 @@ func (m *_BACnetConfirmedServiceRequest) GetParentLengthInBits(ctx context.Conte
 }
 
 func (m *_BACnetConfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequest, error) {
-	return BACnetConfirmedServiceRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestParse[T BACnetConfirmedServiceRequest](ctx context.Context, theBytes []byte, serviceRequestLength uint32) (T, error) {
+	return BACnetConfirmedServiceRequestParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestParseWithBufferProducer[T BACnetConfirmedServiceRequest](serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetConfirmedServiceRequestParseWithBuffer[T](ctx, readBuffer, serviceRequestLength)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetConfirmedServiceRequestParseWithBuffer[T BACnetConfirmedServiceRequest](ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (T, error) {
+	v, err := (&_BACnetConfirmedServiceRequest{ServiceRequestLength: serviceRequestLength}).parse(ctx, readBuffer, serviceRequestLength)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetConfirmedServiceRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (__bACnetConfirmedServiceRequest BACnetConfirmedServiceRequest, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
-	}
-	serviceChoice_temp, _serviceChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
-	var serviceChoice BACnetConfirmedServiceChoice = serviceChoice_temp
-	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
-	}
-	if _serviceChoiceErr != nil {
-		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field of BACnetConfirmedServiceRequest")
+	serviceChoice, err := ReadDiscriminatorEnumField[BACnetConfirmedServiceChoice](ctx, "serviceChoice", "BACnetConfirmedServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceChoice' field"))
 	}
 
-	// Virtual field
-	_serviceRequestPayloadLength := utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return uint32((uint32(serviceRequestLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32)
-	serviceRequestPayloadLength := uint32(_serviceRequestPayloadLength)
+	serviceRequestPayloadLength, err := ReadVirtualField[uint32](ctx, "serviceRequestPayloadLength", (*uint32)(nil), utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return uint32((uint32(serviceRequestLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceRequestPayloadLength' field"))
+	}
 	_ = serviceRequestPayloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetConfirmedServiceRequestChildSerializeRequirement interface {
-		BACnetConfirmedServiceRequest
-		InitializeParent(BACnetConfirmedServiceRequest)
-		GetParent() BACnetConfirmedServiceRequest
-	}
-	var _childTemp any
-	var _child BACnetConfirmedServiceRequestChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetConfirmedServiceRequest
 	switch {
 	case serviceChoice == BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM: // BACnetConfirmedServiceRequestAcknowledgeAlarm
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestAcknowledgeAlarm{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestAcknowledgeAlarm for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION: // BACnetConfirmedServiceRequestConfirmedCOVNotification
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedCOVNotification{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedCOVNotification for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE: // BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION: // BACnetConfirmedServiceRequestConfirmedEventNotification
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedEventNotificationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedEventNotification{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedEventNotification for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY: // BACnetConfirmedServiceRequestGetEnrollmentSummary
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestGetEnrollmentSummary{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestGetEnrollmentSummary for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION: // BACnetConfirmedServiceRequestGetEventInformation
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestGetEventInformation{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestGetEventInformation for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION: // BACnetConfirmedServiceRequestLifeSafetyOperation
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestLifeSafetyOperation{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestLifeSafetyOperation for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV: // BACnetConfirmedServiceRequestSubscribeCOV
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestSubscribeCOV{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestSubscribeCOV for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY: // BACnetConfirmedServiceRequestSubscribeCOVProperty
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestSubscribeCOVProperty{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestSubscribeCOVProperty for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_READ_FILE: // BACnetConfirmedServiceRequestAtomicReadFile
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestAtomicReadFile{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestAtomicReadFile for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE: // BACnetConfirmedServiceRequestAtomicWriteFile
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestAtomicWriteFile{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestAtomicWriteFile for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: // BACnetConfirmedServiceRequestAddListElement
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAddListElementParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestAddListElement{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestAddListElement for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: // BACnetConfirmedServiceRequestRemoveListElement
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestRemoveListElement{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestRemoveListElement for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // BACnetConfirmedServiceRequestCreateObject
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestCreateObject{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestCreateObject for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_DELETE_OBJECT: // BACnetConfirmedServiceRequestDeleteObject
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestDeleteObjectParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestDeleteObject{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestDeleteObject for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY: // BACnetConfirmedServiceRequestReadProperty
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestReadProperty{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadProperty for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE: // BACnetConfirmedServiceRequestReadPropertyMultiple
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestReadPropertyMultiple{}).parse(ctx, readBuffer, m, serviceRequestPayloadLength, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadPropertyMultiple for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_RANGE: // BACnetConfirmedServiceRequestReadRange
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestReadRange{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRange for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY: // BACnetConfirmedServiceRequestWriteProperty
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestWriteProperty{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestWriteProperty for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // BACnetConfirmedServiceRequestWritePropertyMultiple
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyMultipleParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestWritePropertyMultiple{}).parse(ctx, readBuffer, m, serviceRequestPayloadLength, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestWritePropertyMultiple for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL: // BACnetConfirmedServiceRequestDeviceCommunicationControl
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestDeviceCommunicationControl{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestDeviceCommunicationControl for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // BACnetConfirmedServiceRequestConfirmedPrivateTransfer
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedPrivateTransfer{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedPrivateTransfer for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE: // BACnetConfirmedServiceRequestConfirmedTextMessage
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedTextMessage{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedTextMessage for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE: // BACnetConfirmedServiceRequestReinitializeDevice
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestReinitializeDevice{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReinitializeDevice for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_OPEN: // BACnetConfirmedServiceRequestVTOpen
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTOpenParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestVTOpen{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestVTOpen for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // BACnetConfirmedServiceRequestVTClose
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestVTClose{}).parse(ctx, readBuffer, m, serviceRequestPayloadLength, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestVTClose for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_DATA: // BACnetConfirmedServiceRequestVTData
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestVTDataParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestVTData{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestVTData for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_AUTHENTICATE: // BACnetConfirmedServiceRequestAuthenticate
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestAuthenticate{}).parse(ctx, readBuffer, m, serviceRequestPayloadLength, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestAuthenticate for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_REQUEST_KEY: // BACnetConfirmedServiceRequestRequestKey
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestRequestKey{}).parse(ctx, readBuffer, m, serviceRequestPayloadLength, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestRequestKey for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: // BACnetConfirmedServiceRequestReadPropertyConditional
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestReadPropertyConditional{}).parse(ctx, readBuffer, m, serviceRequestPayloadLength, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadPropertyConditional for type-switch of BACnetConfirmedServiceRequest")
+		}
 	case 0 == 0: // BACnetConfirmedServiceRequestUnknown
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestUnknownParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+		if _child, err = (&_BACnetConfirmedServiceRequestUnknown{}).parse(ctx, readBuffer, m, serviceRequestPayloadLength, serviceRequestLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestUnknown for type-switch of BACnetConfirmedServiceRequest")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceChoice=%v]", serviceChoice)
+		return nil, errors.Errorf("Unmapped type for parameters [serviceChoice=%v]", serviceChoice)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetConfirmedServiceRequest")
-	}
-	_child = _childTemp.(BACnetConfirmedServiceRequestChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequest")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_BACnetConfirmedServiceRequest) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequest, serializeChildFunction func() error) error {
+func (pm *_BACnetConfirmedServiceRequest) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequest, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -263,18 +321,8 @@ func (pm *_BACnetConfirmedServiceRequest) SerializeParent(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequest")
 	}
 
-	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := BACnetConfirmedServiceChoice(child.GetServiceChoice())
-	if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for serviceChoice")
-	}
-	_serviceChoiceErr := writeBuffer.WriteSerializable(ctx, serviceChoice)
-	if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for serviceChoice")
-	}
-
-	if _serviceChoiceErr != nil {
-		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
+	if err := WriteDiscriminatorEnumField(ctx, "serviceChoice", "BACnetConfirmedServiceChoice", m.GetServiceChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'serviceChoice' field")
 	}
 	// Virtual field
 	serviceRequestPayloadLength := m.GetServiceRequestPayloadLength()
@@ -304,17 +352,4 @@ func (m *_BACnetConfirmedServiceRequest) GetServiceRequestLength() uint32 {
 //
 ////
 
-func (m *_BACnetConfirmedServiceRequest) isBACnetConfirmedServiceRequest() bool {
-	return true
-}
-
-func (m *_BACnetConfirmedServiceRequest) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetConfirmedServiceRequest) IsBACnetConfirmedServiceRequest() {}

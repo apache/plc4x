@@ -37,19 +37,17 @@ type SetAttributeSingleResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
-}
-
-// SetAttributeSingleResponseExactly can be used when we want exactly this type and not a type which fulfills SetAttributeSingleResponse.
-// This is useful for switch cases.
-type SetAttributeSingleResponseExactly interface {
-	SetAttributeSingleResponse
-	isSetAttributeSingleResponse() bool
+	// IsSetAttributeSingleResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetAttributeSingleResponse()
 }
 
 // _SetAttributeSingleResponse is the data-structure of this message
 type _SetAttributeSingleResponse struct {
-	*_CipService
+	CipServiceContract
 }
+
+var _ SetAttributeSingleResponse = (*_SetAttributeSingleResponse)(nil)
+var _ CipServiceRequirements = (*_SetAttributeSingleResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,18 +71,16 @@ func (m *_SetAttributeSingleResponse) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SetAttributeSingleResponse) InitializeParent(parent CipService) {}
-
-func (m *_SetAttributeSingleResponse) GetParent() CipService {
-	return m._CipService
+func (m *_SetAttributeSingleResponse) GetParent() CipServiceContract {
+	return m.CipServiceContract
 }
 
 // NewSetAttributeSingleResponse factory function for _SetAttributeSingleResponse
 func NewSetAttributeSingleResponse(serviceLen uint16) *_SetAttributeSingleResponse {
 	_result := &_SetAttributeSingleResponse{
-		_CipService: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(serviceLen),
 	}
-	_result._CipService._CipServiceChildRequirements = _result
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 
@@ -104,7 +100,7 @@ func (m *_SetAttributeSingleResponse) GetTypeName() string {
 }
 
 func (m *_SetAttributeSingleResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +109,11 @@ func (m *_SetAttributeSingleResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SetAttributeSingleResponseParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (SetAttributeSingleResponse, error) {
-	return SetAttributeSingleResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
-}
-
-func SetAttributeSingleResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (SetAttributeSingleResponse, error) {
+func (m *_SetAttributeSingleResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__setAttributeSingleResponse SetAttributeSingleResponse, err error) {
+	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetAttributeSingleResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetAttributeSingleResponse")
 	}
@@ -132,14 +124,7 @@ func SetAttributeSingleResponseParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for SetAttributeSingleResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SetAttributeSingleResponse{
-		_CipService: &_CipService{
-			ServiceLen: serviceLen,
-		},
-	}
-	_child._CipService._CipServiceChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SetAttributeSingleResponse) Serialize() ([]byte, error) {
@@ -165,12 +150,10 @@ func (m *_SetAttributeSingleResponse) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SetAttributeSingleResponse) isSetAttributeSingleResponse() bool {
-	return true
-}
+func (m *_SetAttributeSingleResponse) IsSetAttributeSingleResponse() {}
 
 func (m *_SetAttributeSingleResponse) String() string {
 	if m == nil {

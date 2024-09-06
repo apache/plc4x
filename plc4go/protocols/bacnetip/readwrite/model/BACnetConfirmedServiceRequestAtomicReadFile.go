@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type BACnetConfirmedServiceRequestAtomicReadFile interface {
 	GetFileIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-}
-
-// BACnetConfirmedServiceRequestAtomicReadFileExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFile.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestAtomicReadFileExactly interface {
-	BACnetConfirmedServiceRequestAtomicReadFile
-	isBACnetConfirmedServiceRequestAtomicReadFile() bool
+	// IsBACnetConfirmedServiceRequestAtomicReadFile is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAtomicReadFile()
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFile is the data-structure of this message
 type _BACnetConfirmedServiceRequestAtomicReadFile struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	FileIdentifier BACnetApplicationTagObjectIdentifier
 	AccessMethod   BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 }
+
+var _ BACnetConfirmedServiceRequestAtomicReadFile = (*_BACnetConfirmedServiceRequestAtomicReadFile)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAtomicReadFile)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +71,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetServiceChoice() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,12 +95,18 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetAccessMethod() BACnetC
 
 // NewBACnetConfirmedServiceRequestAtomicReadFile factory function for _BACnetConfirmedServiceRequestAtomicReadFile
 func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier BACnetApplicationTagObjectIdentifier, accessMethod BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicReadFile {
-	_result := &_BACnetConfirmedServiceRequestAtomicReadFile{
-		FileIdentifier:                 fileIdentifier,
-		AccessMethod:                   accessMethod,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if fileIdentifier == nil {
+		panic("fileIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if accessMethod == nil {
+		panic("accessMethod of type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAtomicReadFile{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		FileIdentifier:                        fileIdentifier,
+		AccessMethod:                          accessMethod,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -123,7 +126,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (fileIdentifier)
 	lengthInBits += m.FileIdentifier.GetLengthInBits(ctx)
@@ -138,61 +141,34 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
-	return BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestAtomicReadFile BACnetConfirmedServiceRequestAtomicReadFile, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAtomicReadFile")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileIdentifier)
-	if pullErr := readBuffer.PullContext("fileIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileIdentifier")
+	fileIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "fileIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileIdentifier' field"))
 	}
-	_fileIdentifier, _fileIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileIdentifierErr != nil {
-		return nil, errors.Wrap(_fileIdentifierErr, "Error parsing 'fileIdentifier' field of BACnetConfirmedServiceRequestAtomicReadFile")
-	}
-	fileIdentifier := _fileIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("fileIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileIdentifier")
-	}
+	m.FileIdentifier = fileIdentifier
 
-	// Simple Field (accessMethod)
-	if pullErr := readBuffer.PullContext("accessMethod"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessMethod")
+	accessMethod, err := ReadSimpleField[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx, "accessMethod", ReadComplex[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessMethod' field"))
 	}
-	_accessMethod, _accessMethodErr := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(ctx, readBuffer)
-	if _accessMethodErr != nil {
-		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetConfirmedServiceRequestAtomicReadFile")
-	}
-	accessMethod := _accessMethod.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)
-	if closeErr := readBuffer.CloseContext("accessMethod"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessMethod")
-	}
+	m.AccessMethod = accessMethod
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicReadFile"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestAtomicReadFile")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestAtomicReadFile{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		FileIdentifier: fileIdentifier,
-		AccessMethod:   accessMethod,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) Serialize() ([]byte, error) {
@@ -213,28 +189,12 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicReadFile")
 		}
 
-		// Simple Field (fileIdentifier)
-		if pushErr := writeBuffer.PushContext("fileIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileIdentifier")
-		}
-		_fileIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetFileIdentifier())
-		if popErr := writeBuffer.PopContext("fileIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileIdentifier")
-		}
-		if _fileIdentifierErr != nil {
-			return errors.Wrap(_fileIdentifierErr, "Error serializing 'fileIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "fileIdentifier", m.GetFileIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileIdentifier' field")
 		}
 
-		// Simple Field (accessMethod)
-		if pushErr := writeBuffer.PushContext("accessMethod"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessMethod")
-		}
-		_accessMethodErr := writeBuffer.WriteSerializable(ctx, m.GetAccessMethod())
-		if popErr := writeBuffer.PopContext("accessMethod"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessMethod")
-		}
-		if _accessMethodErr != nil {
-			return errors.Wrap(_accessMethodErr, "Error serializing 'accessMethod' field")
+		if err := WriteSimpleField[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx, "accessMethod", m.GetAccessMethod(), WriteComplex[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessMethod' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicReadFile"); popErr != nil {
@@ -242,11 +202,10 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) isBACnetConfirmedServiceRequestAtomicReadFile() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) IsBACnetConfirmedServiceRequestAtomicReadFile() {
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) String() string {

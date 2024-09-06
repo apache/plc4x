@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,20 +44,18 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckRequest interface {
 	S7PayloadUserDataItem
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectAckType
-}
-
-// S7PayloadUserDataItemCpuFunctionAlarmAckRequestExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmAckRequest.
-// This is useful for switch cases.
-type S7PayloadUserDataItemCpuFunctionAlarmAckRequestExactly interface {
-	S7PayloadUserDataItemCpuFunctionAlarmAckRequest
-	isS7PayloadUserDataItemCpuFunctionAlarmAckRequest() bool
+	// IsS7PayloadUserDataItemCpuFunctionAlarmAckRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionAlarmAckRequest()
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmAckRequest is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionAlarmAckRequest struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 	MessageObjects []AlarmMessageObjectAckType
 }
+
+var _ S7PayloadUserDataItemCpuFunctionAlarmAckRequest = (*_S7PayloadUserDataItemCpuFunctionAlarmAckRequest)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmAckRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,14 +79,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetCpuSubfunction() u
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -119,10 +113,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetFunctionId() uint8
 // NewS7PayloadUserDataItemCpuFunctionAlarmAckRequest factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckRequest
 func NewS7PayloadUserDataItemCpuFunctionAlarmAckRequest(messageObjects []AlarmMessageObjectAckType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest {
 	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckRequest{
-		MessageObjects:         messageObjects,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		MessageObjects:                messageObjects,
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -142,7 +136,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetTypeName() string 
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -167,75 +161,40 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmAckRequestParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckRequest, error) {
-	return S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckRequest, error) {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCpuFunctionAlarmAckRequest S7PayloadUserDataItemCpuFunctionAlarmAckRequest, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAckRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionAlarmAckRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (functionId)
-	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
-	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7PayloadUserDataItemCpuFunctionAlarmAckRequest")
+	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)), S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
-	if functionId != S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID) + " but got " + fmt.Sprintf("%d", functionId))
-	}
+	_ = functionId
 
-	// Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
+	numberOfObjects, err := ReadImplicitField[uint8](ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
+	}
 	_ = numberOfObjects
-	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of S7PayloadUserDataItemCpuFunctionAlarmAckRequest")
-	}
 
-	// Array field (messageObjects)
-	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
+	messageObjects, err := ReadCountArrayField[AlarmMessageObjectAckType](ctx, "messageObjects", ReadComplex[AlarmMessageObjectAckType](AlarmMessageObjectAckTypeParseWithBuffer, readBuffer), uint64(numberOfObjects))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageObjects' field"))
 	}
-	// Count array
-	messageObjects := make([]AlarmMessageObjectAckType, max(numberOfObjects, 0))
-	// This happens when the size is set conditional to 0
-	if len(messageObjects) == 0 {
-		messageObjects = nil
-	}
-	{
-		_numItems := uint16(max(numberOfObjects, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AlarmMessageObjectAckTypeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of S7PayloadUserDataItemCpuFunctionAlarmAckRequest")
-			}
-			messageObjects[_curItem] = _item.(AlarmMessageObjectAckType)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
-	}
+	m.MessageObjects = messageObjects
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionAlarmAckRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionAlarmAckRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadUserDataItemCpuFunctionAlarmAckRequest{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		MessageObjects:         messageObjects,
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) Serialize() ([]byte, error) {
@@ -256,34 +215,16 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionAlarmAckRequest")
 		}
 
-		// Const Field (functionId)
-		_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8(0x09))
-		if _functionIdErr != nil {
-			return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+		if err := WriteConstField(ctx, "functionId", S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'functionId' field")
 		}
-
-		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numberOfObjects := uint8(uint8(len(m.GetMessageObjects())))
-		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
-		if _numberOfObjectsErr != nil {
-			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
+		if err := WriteImplicitField(ctx, "numberOfObjects", numberOfObjects, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfObjects' field")
 		}
 
-		// Array Field (messageObjects)
-		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for messageObjects")
-		}
-		for _curItem, _element := range m.GetMessageObjects() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for messageObjects")
+		if err := WriteComplexTypeArrayField(ctx, "messageObjects", m.GetMessageObjects(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageObjects' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionAlarmAckRequest"); popErr != nil {
@@ -291,11 +232,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) isS7PayloadUserDataItemCpuFunctionAlarmAckRequest() bool {
-	return true
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) IsS7PayloadUserDataItemCpuFunctionAlarmAckRequest() {
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) String() string {

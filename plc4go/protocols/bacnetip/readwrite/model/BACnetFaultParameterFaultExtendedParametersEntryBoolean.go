@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultExtendedParametersEntryBoolean interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
-}
-
-// BACnetFaultParameterFaultExtendedParametersEntryBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryBoolean.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultExtendedParametersEntryBooleanExactly interface {
-	BACnetFaultParameterFaultExtendedParametersEntryBoolean
-	isBACnetFaultParameterFaultExtendedParametersEntryBoolean() bool
+	// IsBACnetFaultParameterFaultExtendedParametersEntryBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryBoolean()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryBoolean is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryBoolean struct {
-	*_BACnetFaultParameterFaultExtendedParametersEntry
+	BACnetFaultParameterFaultExtendedParametersEntryContract
 	BooleanValue BACnetApplicationTagBoolean
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryBoolean = (*_BACnetFaultParameterFaultExtendedParametersEntryBoolean)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryBoolean)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryBoolean struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetParent() BACnetFaultParameterFaultExtendedParametersEntry {
-	return m._BACnetFaultParameterFaultExtendedParametersEntry
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetParent() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetBooleanVal
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryBoolean factory function for _BACnetFaultParameterFaultExtendedParametersEntryBoolean
 func NewBACnetFaultParameterFaultExtendedParametersEntryBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryBoolean {
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
-		BooleanValue: booleanValue,
-		_BACnetFaultParameterFaultExtendedParametersEntry: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetFaultParameterFaultExtendedParametersEntryBoolean must not be nil")
 	}
-	_result._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		BooleanValue: booleanValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetTypeName()
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (booleanValue)
 	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBy
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryBoolean BACnetFaultParameterFaultExtendedParametersEntryBoolean, err error) {
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (booleanValue)
-	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
+	booleanValue, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "booleanValue", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'booleanValue' field"))
 	}
-	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _booleanValueErr != nil {
-		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetFaultParameterFaultExtendedParametersEntryBoolean")
-	}
-	booleanValue := _booleanValue.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for booleanValue")
-	}
+	m.BooleanValue = booleanValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
-		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
-		BooleanValue: booleanValue,
-	}
-	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWith
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 		}
 
-		// Simple Field (booleanValue)
-		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for booleanValue")
-		}
-		_booleanValueErr := writeBuffer.WriteSerializable(ctx, m.GetBooleanValue())
-		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for booleanValue")
-		}
-		if _booleanValueErr != nil {
-			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "booleanValue", m.GetBooleanValue(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'booleanValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWith
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) isBACnetFaultParameterFaultExtendedParametersEntryBoolean() bool {
-	return true
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) IsBACnetFaultParameterFaultExtendedParametersEntryBoolean() {
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) String() string {

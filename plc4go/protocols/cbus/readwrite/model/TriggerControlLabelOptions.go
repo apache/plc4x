@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type TriggerControlLabelOptions interface {
 	GetLabelFlavour() TriggerControlLabelFlavour
 	// GetLabelType returns LabelType (property field)
 	GetLabelType() TriggerControlLabelType
-}
-
-// TriggerControlLabelOptionsExactly can be used when we want exactly this type and not a type which fulfills TriggerControlLabelOptions.
-// This is useful for switch cases.
-type TriggerControlLabelOptionsExactly interface {
-	TriggerControlLabelOptions
-	isTriggerControlLabelOptions() bool
+	// IsTriggerControlLabelOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTriggerControlLabelOptions()
 }
 
 // _TriggerControlLabelOptions is the data-structure of this message
@@ -59,6 +56,8 @@ type _TriggerControlLabelOptions struct {
 	reservedField2 *bool
 	reservedField3 *bool
 }
+
+var _ TriggerControlLabelOptions = (*_TriggerControlLabelOptions)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,124 +129,70 @@ func TriggerControlLabelOptionsParse(ctx context.Context, theBytes []byte) (Trig
 	return TriggerControlLabelOptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TriggerControlLabelOptionsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
+		return TriggerControlLabelOptionsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
+	v, err := (&_TriggerControlLabelOptions{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_TriggerControlLabelOptions) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__triggerControlLabelOptions TriggerControlLabelOptions, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TriggerControlLabelOptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TriggerControlLabelOptions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *bool
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TriggerControlLabelOptions")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (labelFlavour)
-	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
+	labelFlavour, err := ReadEnumField[TriggerControlLabelFlavour](ctx, "labelFlavour", "TriggerControlLabelFlavour", ReadEnum(TriggerControlLabelFlavourByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'labelFlavour' field"))
 	}
-	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParseWithBuffer(ctx, readBuffer)
-	if _labelFlavourErr != nil {
-		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of TriggerControlLabelOptions")
-	}
-	labelFlavour := _labelFlavour
-	if closeErr := readBuffer.CloseContext("labelFlavour"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelFlavour")
-	}
+	m.LabelFlavour = labelFlavour
 
-	var reservedField1 *bool
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TriggerControlLabelOptions")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField1 = reservedField1
 
-	var reservedField2 *bool
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TriggerControlLabelOptions")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField2 = &reserved
-		}
+	reservedField2, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField2 = reservedField2
 
-	// Simple Field (labelType)
-	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelType")
+	labelType, err := ReadEnumField[TriggerControlLabelType](ctx, "labelType", "TriggerControlLabelType", ReadEnum(TriggerControlLabelTypeByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'labelType' field"))
 	}
-	_labelType, _labelTypeErr := TriggerControlLabelTypeParseWithBuffer(ctx, readBuffer)
-	if _labelTypeErr != nil {
-		return nil, errors.Wrap(_labelTypeErr, "Error parsing 'labelType' field of TriggerControlLabelOptions")
-	}
-	labelType := _labelType
-	if closeErr := readBuffer.CloseContext("labelType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelType")
-	}
+	m.LabelType = labelType
 
-	var reservedField3 *bool
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TriggerControlLabelOptions")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField3 = &reserved
-		}
+	reservedField3, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField3 = reservedField3
 
 	if closeErr := readBuffer.CloseContext("TriggerControlLabelOptions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TriggerControlLabelOptions")
 	}
 
-	// Create the instance
-	return &_TriggerControlLabelOptions{
-		LabelFlavour:   labelFlavour,
-		LabelType:      labelType,
-		reservedField0: reservedField0,
-		reservedField1: reservedField1,
-		reservedField2: reservedField2,
-		reservedField3: reservedField3,
-	}, nil
+	return m, nil
 }
 
 func (m *_TriggerControlLabelOptions) Serialize() ([]byte, error) {
@@ -267,92 +212,28 @@ func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for TriggerControlLabelOptions")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (labelFlavour)
-	if pushErr := writeBuffer.PushContext("labelFlavour"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for labelFlavour")
-	}
-	_labelFlavourErr := writeBuffer.WriteSerializable(ctx, m.GetLabelFlavour())
-	if popErr := writeBuffer.PopContext("labelFlavour"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for labelFlavour")
-	}
-	if _labelFlavourErr != nil {
-		return errors.Wrap(_labelFlavourErr, "Error serializing 'labelFlavour' field")
+	if err := WriteSimpleEnumField[TriggerControlLabelFlavour](ctx, "labelFlavour", "TriggerControlLabelFlavour", m.GetLabelFlavour(), WriteEnum[TriggerControlLabelFlavour, uint8](TriggerControlLabelFlavour.GetValue, TriggerControlLabelFlavour.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'labelFlavour' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField1 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField1
-		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField2 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField2
-		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 3")
 	}
 
-	// Simple Field (labelType)
-	if pushErr := writeBuffer.PushContext("labelType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for labelType")
-	}
-	_labelTypeErr := writeBuffer.WriteSerializable(ctx, m.GetLabelType())
-	if popErr := writeBuffer.PopContext("labelType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for labelType")
-	}
-	if _labelTypeErr != nil {
-		return errors.Wrap(_labelTypeErr, "Error serializing 'labelType' field")
+	if err := WriteSimpleEnumField[TriggerControlLabelType](ctx, "labelType", "TriggerControlLabelType", m.GetLabelType(), WriteEnum[TriggerControlLabelType, uint8](TriggerControlLabelType.GetValue, TriggerControlLabelType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'labelType' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField3 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField3
-		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 4")
 	}
 
 	if popErr := writeBuffer.PopContext("TriggerControlLabelOptions"); popErr != nil {
@@ -361,9 +242,7 @@ func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-func (m *_TriggerControlLabelOptions) isTriggerControlLabelOptions() bool {
-	return true
-}
+func (m *_TriggerControlLabelOptions) IsTriggerControlLabelOptions() {}
 
 func (m *_TriggerControlLabelOptions) String() string {
 	if m == nil {

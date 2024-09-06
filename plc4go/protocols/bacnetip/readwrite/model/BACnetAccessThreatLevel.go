@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,19 +40,16 @@ type BACnetAccessThreatLevel interface {
 	utils.Serializable
 	// GetThreatLevel returns ThreatLevel (property field)
 	GetThreatLevel() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetAccessThreatLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessThreatLevel.
-// This is useful for switch cases.
-type BACnetAccessThreatLevelExactly interface {
-	BACnetAccessThreatLevel
-	isBACnetAccessThreatLevel() bool
+	// IsBACnetAccessThreatLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessThreatLevel()
 }
 
 // _BACnetAccessThreatLevel is the data-structure of this message
 type _BACnetAccessThreatLevel struct {
 	ThreatLevel BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetAccessThreatLevel = (*_BACnetAccessThreatLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,6 +67,9 @@ func (m *_BACnetAccessThreatLevel) GetThreatLevel() BACnetApplicationTagUnsigned
 
 // NewBACnetAccessThreatLevel factory function for _BACnetAccessThreatLevel
 func NewBACnetAccessThreatLevel(threatLevel BACnetApplicationTagUnsignedInteger) *_BACnetAccessThreatLevel {
+	if threatLevel == nil {
+		panic("threatLevel of type BACnetApplicationTagUnsignedInteger for BACnetAccessThreatLevel must not be nil")
+	}
 	return &_BACnetAccessThreatLevel{ThreatLevel: threatLevel}
 }
 
@@ -103,38 +105,40 @@ func BACnetAccessThreatLevelParse(ctx context.Context, theBytes []byte) (BACnetA
 	return BACnetAccessThreatLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAccessThreatLevelParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
+		return BACnetAccessThreatLevelParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAccessThreatLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
+	v, err := (&_BACnetAccessThreatLevel{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetAccessThreatLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAccessThreatLevel BACnetAccessThreatLevel, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAccessThreatLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAccessThreatLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (threatLevel)
-	if pullErr := readBuffer.PullContext("threatLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for threatLevel")
+	threatLevel, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "threatLevel", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'threatLevel' field"))
 	}
-	_threatLevel, _threatLevelErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _threatLevelErr != nil {
-		return nil, errors.Wrap(_threatLevelErr, "Error parsing 'threatLevel' field of BACnetAccessThreatLevel")
-	}
-	threatLevel := _threatLevel.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("threatLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for threatLevel")
-	}
+	m.ThreatLevel = threatLevel
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessThreatLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessThreatLevel")
 	}
 
-	// Create the instance
-	return &_BACnetAccessThreatLevel{
-		ThreatLevel: threatLevel,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetAccessThreatLevel) Serialize() ([]byte, error) {
@@ -154,16 +158,8 @@ func (m *_BACnetAccessThreatLevel) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetAccessThreatLevel")
 	}
 
-	// Simple Field (threatLevel)
-	if pushErr := writeBuffer.PushContext("threatLevel"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for threatLevel")
-	}
-	_threatLevelErr := writeBuffer.WriteSerializable(ctx, m.GetThreatLevel())
-	if popErr := writeBuffer.PopContext("threatLevel"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for threatLevel")
-	}
-	if _threatLevelErr != nil {
-		return errors.Wrap(_threatLevelErr, "Error serializing 'threatLevel' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "threatLevel", m.GetThreatLevel(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'threatLevel' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAccessThreatLevel"); popErr != nil {
@@ -172,9 +168,7 @@ func (m *_BACnetAccessThreatLevel) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-func (m *_BACnetAccessThreatLevel) isBACnetAccessThreatLevel() bool {
-	return true
-}
+func (m *_BACnetAccessThreatLevel) IsBACnetAccessThreatLevel() {}
 
 func (m *_BACnetAccessThreatLevel) String() string {
 	if m == nil {

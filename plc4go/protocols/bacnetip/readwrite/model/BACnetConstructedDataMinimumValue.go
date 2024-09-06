@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataMinimumValue interface {
 	GetMinimumValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataMinimumValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumValue.
-// This is useful for switch cases.
-type BACnetConstructedDataMinimumValueExactly interface {
-	BACnetConstructedDataMinimumValue
-	isBACnetConstructedDataMinimumValue() bool
+	// IsBACnetConstructedDataMinimumValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMinimumValue()
 }
 
 // _BACnetConstructedDataMinimumValue is the data-structure of this message
 type _BACnetConstructedDataMinimumValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MinimumValue BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataMinimumValue = (*_BACnetConstructedDataMinimumValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataMinimumValue) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMinimumValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMinimumValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMinimumValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataMinimumValue) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataMinimumValue factory function for _BACnetConstructedDataMinimumValue
 func NewBACnetConstructedDataMinimumValue(minimumValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValue {
-	_result := &_BACnetConstructedDataMinimumValue{
-		MinimumValue:           minimumValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if minimumValue == nil {
+		panic("minimumValue of type BACnetApplicationTagReal for BACnetConstructedDataMinimumValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataMinimumValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumValue:                  minimumValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataMinimumValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMinimumValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minimumValue)
 	lengthInBits += m.MinimumValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataMinimumValue) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMinimumValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValue, error) {
-	return BACnetConstructedDataMinimumValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMinimumValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValue, error) {
+func (m *_BACnetConstructedDataMinimumValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMinimumValue BACnetConstructedDataMinimumValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMinimumValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minimumValue)
-	if pullErr := readBuffer.PullContext("minimumValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minimumValue")
+	minimumValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minimumValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumValue' field"))
 	}
-	_minimumValue, _minimumValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _minimumValueErr != nil {
-		return nil, errors.Wrap(_minimumValueErr, "Error parsing 'minimumValue' field of BACnetConstructedDataMinimumValue")
-	}
-	minimumValue := _minimumValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("minimumValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minimumValue")
-	}
+	m.MinimumValue = minimumValue
 
-	// Virtual field
-	_actualValue := minimumValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), minimumValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMinimumValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MinimumValue: minimumValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMinimumValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataMinimumValue) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumValue")
 		}
 
-		// Simple Field (minimumValue)
-		if pushErr := writeBuffer.PushContext("minimumValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minimumValue")
-		}
-		_minimumValueErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumValue())
-		if popErr := writeBuffer.PopContext("minimumValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minimumValue")
-		}
-		if _minimumValueErr != nil {
-			return errors.Wrap(_minimumValueErr, "Error serializing 'minimumValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "minimumValue", m.GetMinimumValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minimumValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataMinimumValue) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMinimumValue) isBACnetConstructedDataMinimumValue() bool {
-	return true
-}
+func (m *_BACnetConstructedDataMinimumValue) IsBACnetConstructedDataMinimumValue() {}
 
 func (m *_BACnetConstructedDataMinimumValue) String() string {
 	if m == nil {

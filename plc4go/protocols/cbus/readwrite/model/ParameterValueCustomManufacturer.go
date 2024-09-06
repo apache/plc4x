@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ParameterValueCustomManufacturer interface {
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() CustomManufacturer
-}
-
-// ParameterValueCustomManufacturerExactly can be used when we want exactly this type and not a type which fulfills ParameterValueCustomManufacturer.
-// This is useful for switch cases.
-type ParameterValueCustomManufacturerExactly interface {
-	ParameterValueCustomManufacturer
-	isParameterValueCustomManufacturer() bool
+	// IsParameterValueCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueCustomManufacturer()
 }
 
 // _ParameterValueCustomManufacturer is the data-structure of this message
 type _ParameterValueCustomManufacturer struct {
-	*_ParameterValue
+	ParameterValueContract
 	Value CustomManufacturer
 }
+
+var _ ParameterValueCustomManufacturer = (*_ParameterValueCustomManufacturer)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueCustomManufacturer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_ParameterValueCustomManufacturer) GetParameterType() ParameterType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ParameterValueCustomManufacturer) InitializeParent(parent ParameterValue) {}
-
-func (m *_ParameterValueCustomManufacturer) GetParent() ParameterValue {
-	return m._ParameterValue
+func (m *_ParameterValueCustomManufacturer) GetParent() ParameterValueContract {
+	return m.ParameterValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_ParameterValueCustomManufacturer) GetValue() CustomManufacturer {
 
 // NewParameterValueCustomManufacturer factory function for _ParameterValueCustomManufacturer
 func NewParameterValueCustomManufacturer(value CustomManufacturer, numBytes uint8) *_ParameterValueCustomManufacturer {
-	_result := &_ParameterValueCustomManufacturer{
-		Value:           value,
-		_ParameterValue: NewParameterValue(numBytes),
+	if value == nil {
+		panic("value of type CustomManufacturer for ParameterValueCustomManufacturer must not be nil")
 	}
-	_result._ParameterValue._ParameterValueChildRequirements = _result
+	_result := &_ParameterValueCustomManufacturer{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_ParameterValueCustomManufacturer) GetTypeName() string {
 }
 
 func (m *_ParameterValueCustomManufacturer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)
@@ -126,47 +127,28 @@ func (m *_ParameterValueCustomManufacturer) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueCustomManufacturerParse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueCustomManufacturer, error) {
-	return ParameterValueCustomManufacturerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
-}
-
-func ParameterValueCustomManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomManufacturer, error) {
+func (m *_ParameterValueCustomManufacturer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueCustomManufacturer ParameterValueCustomManufacturer, err error) {
+	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterValueCustomManufacturer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterValueCustomManufacturer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
+	value, err := ReadSimpleField[CustomManufacturer](ctx, "value", ReadComplex[CustomManufacturer](CustomManufacturerParseWithBufferProducer((uint8)(numBytes)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	_value, _valueErr := CustomManufacturerParseWithBuffer(ctx, readBuffer, uint8(numBytes))
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueCustomManufacturer")
-	}
-	value := _value.(CustomManufacturer)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("ParameterValueCustomManufacturer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterValueCustomManufacturer")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ParameterValueCustomManufacturer{
-		_ParameterValue: &_ParameterValue{
-			NumBytes: numBytes,
-		},
-		Value: value,
-	}
-	_child._ParameterValue._ParameterValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ParameterValueCustomManufacturer) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueCustomManufacturer")
 		}
 
-		// Simple Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[CustomManufacturer](ctx, "value", m.GetValue(), WriteComplex[CustomManufacturer](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterValueCustomManufacturer"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ParameterValueContract.(*_ParameterValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ParameterValueCustomManufacturer) isParameterValueCustomManufacturer() bool {
-	return true
-}
+func (m *_ParameterValueCustomManufacturer) IsParameterValueCustomManufacturer() {}
 
 func (m *_ParameterValueCustomManufacturer) String() string {
 	if m == nil {

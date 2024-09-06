@@ -37,19 +37,17 @@ type QosDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// QosDataTypeExactly can be used when we want exactly this type and not a type which fulfills QosDataType.
-// This is useful for switch cases.
-type QosDataTypeExactly interface {
-	QosDataType
-	isQosDataType() bool
+	// IsQosDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQosDataType()
 }
 
 // _QosDataType is the data-structure of this message
 type _QosDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ QosDataType = (*_QosDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QosDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_QosDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_QosDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_QosDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_QosDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewQosDataType factory function for _QosDataType
 func NewQosDataType() *_QosDataType {
 	_result := &_QosDataType{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_QosDataType) GetTypeName() string {
 }
 
 func (m *_QosDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_QosDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func QosDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (QosDataType, error) {
-	return QosDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func QosDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QosDataType, error) {
+func (m *_QosDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__qosDataType QosDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QosDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QosDataType")
 	}
@@ -124,12 +116,7 @@ func QosDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for QosDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_QosDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_QosDataType) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_QosDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_QosDataType) isQosDataType() bool {
-	return true
-}
+func (m *_QosDataType) IsQosDataType() {}
 
 func (m *_QosDataType) String() string {
 	if m == nil {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,21 +43,19 @@ type VariantSByte interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []byte
-}
-
-// VariantSByteExactly can be used when we want exactly this type and not a type which fulfills VariantSByte.
-// This is useful for switch cases.
-type VariantSByteExactly interface {
-	VariantSByte
-	isVariantSByte() bool
+	// IsVariantSByte is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantSByte()
 }
 
 // _VariantSByte is the data-structure of this message
 type _VariantSByte struct {
-	*_Variant
+	VariantContract
 	ArrayLength *int32
 	Value       []byte
 }
+
+var _ VariantSByte = (*_VariantSByte)(nil)
+var _ VariantRequirements = (*_VariantSByte)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,15 +71,8 @@ func (m *_VariantSByte) GetVariantType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_VariantSByte) InitializeParent(parent Variant, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) {
-	m.ArrayLengthSpecified = arrayLengthSpecified
-	m.ArrayDimensionsSpecified = arrayDimensionsSpecified
-	m.NoOfArrayDimensions = noOfArrayDimensions
-	m.ArrayDimensions = arrayDimensions
-}
-
-func (m *_VariantSByte) GetParent() Variant {
-	return m._Variant
+func (m *_VariantSByte) GetParent() VariantContract {
+	return m.VariantContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,11 +96,11 @@ func (m *_VariantSByte) GetValue() []byte {
 // NewVariantSByte factory function for _VariantSByte
 func NewVariantSByte(arrayLength *int32, value []byte, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantSByte {
 	_result := &_VariantSByte{
-		ArrayLength: arrayLength,
-		Value:       value,
-		_Variant:    NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
 	}
-	_result._Variant._VariantChildRequirements = _result
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 
@@ -128,7 +120,7 @@ func (m *_VariantSByte) GetTypeName() string {
 }
 
 func (m *_VariantSByte) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -147,55 +139,35 @@ func (m *_VariantSByte) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func VariantSByteParse(ctx context.Context, theBytes []byte, arrayLengthSpecified bool) (VariantSByte, error) {
-	return VariantSByteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), arrayLengthSpecified)
-}
-
-func VariantSByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantSByte, error) {
+func (m *_VariantSByte) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantSByte VariantSByte, err error) {
+	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VariantSByte"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VariantSByte")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (arrayLength) (Can be skipped, if a given expression evaluates to false)
-	var arrayLength *int32 = nil
-	if arrayLengthSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt32("arrayLength", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'arrayLength' field of VariantSByte")
-		default:
-			arrayLength = &_val
-		}
+	var arrayLength *int32
+	arrayLength, err = ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, uint8(32)), arrayLengthSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLength' field"))
 	}
-	// Byte Array field (value)
-	numberOfBytesvalue := int(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16))
-	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field of VariantSByte")
+	m.ArrayLength = arrayLength
+
+	value, err := readBuffer.ReadByteArray("value", int(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return int32(int32(1)) }, func() any { return int32((*arrayLength)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("VariantSByte"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for VariantSByte")
 	}
 
-	// Create a partially initialized instance
-	_child := &_VariantSByte{
-		_Variant:    &_Variant{},
-		ArrayLength: arrayLength,
-		Value:       value,
-	}
-	_child._Variant._VariantChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_VariantSByte) Serialize() ([]byte, error) {
@@ -216,19 +188,11 @@ func (m *_VariantSByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for VariantSByte")
 		}
 
-		// Optional Field (arrayLength) (Can be skipped, if the value is null)
-		var arrayLength *int32 = nil
-		if m.GetArrayLength() != nil {
-			arrayLength = m.GetArrayLength()
-			_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, int32(*(arrayLength)))
-			if _arrayLengthErr != nil {
-				return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
-			}
+		if err := WriteOptionalField[int32](ctx, "arrayLength", m.GetArrayLength(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'arrayLength' field")
 		}
 
-		// Array Field (value)
-		// Byte Array field (value)
-		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+		if err := WriteByteArrayField(ctx, "value", m.GetValue(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
@@ -237,12 +201,10 @@ func (m *_VariantSByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.VariantContract.(*_Variant).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_VariantSByte) isVariantSByte() bool {
-	return true
-}
+func (m *_VariantSByte) IsVariantSByte() {}
 
 func (m *_VariantSByte) String() string {
 	if m == nil {

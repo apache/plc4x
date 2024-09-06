@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ApduDataGroupValueResponse interface {
 	GetDataFirstByte() int8
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// ApduDataGroupValueResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataGroupValueResponse.
-// This is useful for switch cases.
-type ApduDataGroupValueResponseExactly interface {
-	ApduDataGroupValueResponse
-	isApduDataGroupValueResponse() bool
+	// IsApduDataGroupValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataGroupValueResponse()
 }
 
 // _ApduDataGroupValueResponse is the data-structure of this message
 type _ApduDataGroupValueResponse struct {
-	*_ApduData
+	ApduDataContract
 	DataFirstByte int8
 	Data          []byte
 }
+
+var _ ApduDataGroupValueResponse = (*_ApduDataGroupValueResponse)(nil)
+var _ ApduDataRequirements = (*_ApduDataGroupValueResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_ApduDataGroupValueResponse) GetApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataGroupValueResponse) InitializeParent(parent ApduData) {}
-
-func (m *_ApduDataGroupValueResponse) GetParent() ApduData {
-	return m._ApduData
+func (m *_ApduDataGroupValueResponse) GetParent() ApduDataContract {
+	return m.ApduDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_ApduDataGroupValueResponse) GetData() []byte {
 // NewApduDataGroupValueResponse factory function for _ApduDataGroupValueResponse
 func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueResponse {
 	_result := &_ApduDataGroupValueResponse{
-		DataFirstByte: dataFirstByte,
-		Data:          data,
-		_ApduData:     NewApduData(dataLength),
+		ApduDataContract: NewApduData(dataLength),
+		DataFirstByte:    dataFirstByte,
+		Data:             data,
 	}
-	_result._ApduData._ApduDataChildRequirements = _result
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_ApduDataGroupValueResponse) GetTypeName() string {
 }
 
 func (m *_ApduDataGroupValueResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
@@ -139,48 +137,34 @@ func (m *_ApduDataGroupValueResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataGroupValueResponseParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataGroupValueResponse, error) {
-	return ApduDataGroupValueResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
-}
-
-func ApduDataGroupValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueResponse, error) {
+func (m *_ApduDataGroupValueResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataGroupValueResponse ApduDataGroupValueResponse, err error) {
+	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataGroupValueResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataFirstByte)
-	_dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
-	if _dataFirstByteErr != nil {
-		return nil, errors.Wrap(_dataFirstByteErr, "Error parsing 'dataFirstByte' field of ApduDataGroupValueResponse")
+	dataFirstByte, err := ReadSimpleField(ctx, "dataFirstByte", ReadSignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataFirstByte' field"))
 	}
-	dataFirstByte := _dataFirstByte
-	// Byte Array field (data)
-	numberOfBytesdata := int(utils.InlineIf((bool((dataLength) < (1))), func() any { return uint16(uint16(0)) }, func() any { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataGroupValueResponse")
+	m.DataFirstByte = dataFirstByte
+
+	data, err := readBuffer.ReadByteArray("data", int(utils.InlineIf((bool((dataLength) < (1))), func() any { return int32(int32(0)) }, func() any { return int32(int32(dataLength) - int32(int32(1))) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("ApduDataGroupValueResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataGroupValueResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataGroupValueResponse{
-		_ApduData: &_ApduData{
-			DataLength: dataLength,
-		},
-		DataFirstByte: dataFirstByte,
-		Data:          data,
-	}
-	_child._ApduData._ApduDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataGroupValueResponse) Serialize() ([]byte, error) {
@@ -201,16 +185,11 @@ func (m *_ApduDataGroupValueResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for ApduDataGroupValueResponse")
 		}
 
-		// Simple Field (dataFirstByte)
-		dataFirstByte := int8(m.GetDataFirstByte())
-		_dataFirstByteErr := writeBuffer.WriteInt8("dataFirstByte", 6, int8((dataFirstByte)))
-		if _dataFirstByteErr != nil {
-			return errors.Wrap(_dataFirstByteErr, "Error serializing 'dataFirstByte' field")
+		if err := WriteSimpleField[int8](ctx, "dataFirstByte", m.GetDataFirstByte(), WriteSignedByte(writeBuffer, 6)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataFirstByte' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -219,12 +198,10 @@ func (m *_ApduDataGroupValueResponse) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataContract.(*_ApduData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataGroupValueResponse) isApduDataGroupValueResponse() bool {
-	return true
-}
+func (m *_ApduDataGroupValueResponse) IsApduDataGroupValueResponse() {}
 
 func (m *_ApduDataGroupValueResponse) String() string {
 	if m == nil {

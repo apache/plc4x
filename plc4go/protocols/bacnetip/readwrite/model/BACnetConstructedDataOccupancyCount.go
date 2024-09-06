@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataOccupancyCount interface {
 	GetOccupancyCount() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataOccupancyCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyCount.
-// This is useful for switch cases.
-type BACnetConstructedDataOccupancyCountExactly interface {
-	BACnetConstructedDataOccupancyCount
-	isBACnetConstructedDataOccupancyCount() bool
+	// IsBACnetConstructedDataOccupancyCount is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataOccupancyCount()
 }
 
 // _BACnetConstructedDataOccupancyCount is the data-structure of this message
 type _BACnetConstructedDataOccupancyCount struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	OccupancyCount BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataOccupancyCount = (*_BACnetConstructedDataOccupancyCount)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyCount)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataOccupancyCount) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataOccupancyCount) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataOccupancyCount) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataOccupancyCount) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataOccupancyCount) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataOccupancyCount factory function for _BACnetConstructedDataOccupancyCount
 func NewBACnetConstructedDataOccupancyCount(occupancyCount BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCount {
-	_result := &_BACnetConstructedDataOccupancyCount{
-		OccupancyCount:         occupancyCount,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if occupancyCount == nil {
+		panic("occupancyCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyCount must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataOccupancyCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyCount:                occupancyCount,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataOccupancyCount) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataOccupancyCount) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (occupancyCount)
 	lengthInBits += m.OccupancyCount.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataOccupancyCount) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataOccupancyCountParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
-	return BACnetConstructedDataOccupancyCountParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataOccupancyCountParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
+func (m *_BACnetConstructedDataOccupancyCount) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataOccupancyCount BACnetConstructedDataOccupancyCount, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOccupancyCount")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (occupancyCount)
-	if pullErr := readBuffer.PullContext("occupancyCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for occupancyCount")
+	occupancyCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "occupancyCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'occupancyCount' field"))
 	}
-	_occupancyCount, _occupancyCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _occupancyCountErr != nil {
-		return nil, errors.Wrap(_occupancyCountErr, "Error parsing 'occupancyCount' field of BACnetConstructedDataOccupancyCount")
-	}
-	occupancyCount := _occupancyCount.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("occupancyCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for occupancyCount")
-	}
+	m.OccupancyCount = occupancyCount
 
-	// Virtual field
-	_actualValue := occupancyCount
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), occupancyCount)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyCount")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataOccupancyCount{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		OccupancyCount: occupancyCount,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataOccupancyCount) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataOccupancyCount) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyCount")
 		}
 
-		// Simple Field (occupancyCount)
-		if pushErr := writeBuffer.PushContext("occupancyCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for occupancyCount")
-		}
-		_occupancyCountErr := writeBuffer.WriteSerializable(ctx, m.GetOccupancyCount())
-		if popErr := writeBuffer.PopContext("occupancyCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for occupancyCount")
-		}
-		if _occupancyCountErr != nil {
-			return errors.Wrap(_occupancyCountErr, "Error serializing 'occupancyCount' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "occupancyCount", m.GetOccupancyCount(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'occupancyCount' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataOccupancyCount) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataOccupancyCount) isBACnetConstructedDataOccupancyCount() bool {
-	return true
-}
+func (m *_BACnetConstructedDataOccupancyCount) IsBACnetConstructedDataOccupancyCount() {}
 
 func (m *_BACnetConstructedDataOccupancyCount) String() string {
 	if m == nil {

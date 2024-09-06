@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogRecordLogDatumBitStringValue interface {
 	BACnetLogRecordLogDatum
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
-}
-
-// BACnetLogRecordLogDatumBitStringValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumBitStringValue.
-// This is useful for switch cases.
-type BACnetLogRecordLogDatumBitStringValueExactly interface {
-	BACnetLogRecordLogDatumBitStringValue
-	isBACnetLogRecordLogDatumBitStringValue() bool
+	// IsBACnetLogRecordLogDatumBitStringValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumBitStringValue()
 }
 
 // _BACnetLogRecordLogDatumBitStringValue is the data-structure of this message
 type _BACnetLogRecordLogDatumBitStringValue struct {
-	*_BACnetLogRecordLogDatum
+	BACnetLogRecordLogDatumContract
 	BitStringValue BACnetContextTagBitString
 }
+
+var _ BACnetLogRecordLogDatumBitStringValue = (*_BACnetLogRecordLogDatumBitStringValue)(nil)
+var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumBitStringValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetLogRecordLogDatumBitStringValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogRecordLogDatumBitStringValue) InitializeParent(parent BACnetLogRecordLogDatum, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetLogRecordLogDatumBitStringValue) GetParent() BACnetLogRecordLogDatum {
-	return m._BACnetLogRecordLogDatum
+func (m *_BACnetLogRecordLogDatumBitStringValue) GetParent() BACnetLogRecordLogDatumContract {
+	return m.BACnetLogRecordLogDatumContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) GetBitStringValue() BACnetConte
 
 // NewBACnetLogRecordLogDatumBitStringValue factory function for _BACnetLogRecordLogDatumBitStringValue
 func NewBACnetLogRecordLogDatumBitStringValue(bitStringValue BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumBitStringValue {
-	_result := &_BACnetLogRecordLogDatumBitStringValue{
-		BitStringValue:           bitStringValue,
-		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogRecordLogDatumBitStringValue must not be nil")
 	}
-	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result
+	_result := &_BACnetLogRecordLogDatumBitStringValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BitStringValue:                  bitStringValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogRecordLogDatumBitStringValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (bitStringValue)
 	lengthInBits += m.BitStringValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogRecordLogDatumBitStringValueParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
-	return BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
+func (m *_BACnetLogRecordLogDatumBitStringValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogRecordLogDatum, tagNumber uint8) (__bACnetLogRecordLogDatumBitStringValue BACnetLogRecordLogDatumBitStringValue, err error) {
+	m.BACnetLogRecordLogDatumContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumBitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumBitStringValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bitStringValue)
-	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
+	bitStringValue, err := ReadSimpleField[BACnetContextTagBitString](ctx, "bitStringValue", ReadComplex[BACnetContextTagBitString](BACnetContextTagParseWithBufferProducer[BACnetContextTagBitString]((uint8)(uint8(6)), (BACnetDataType)(BACnetDataType_BIT_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitStringValue' field"))
 	}
-	_bitStringValue, _bitStringValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_BIT_STRING))
-	if _bitStringValueErr != nil {
-		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetLogRecordLogDatumBitStringValue")
-	}
-	bitStringValue := _bitStringValue.(BACnetContextTagBitString)
-	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitStringValue")
-	}
+	m.BitStringValue = bitStringValue
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumBitStringValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumBitStringValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogRecordLogDatumBitStringValue{
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
-			TagNumber: tagNumber,
-		},
-		BitStringValue: bitStringValue,
-	}
-	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogRecordLogDatumBitStringValue) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumBitStringValue")
 		}
 
-		// Simple Field (bitStringValue)
-		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
-		}
-		_bitStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetBitStringValue())
-		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bitStringValue")
-		}
-		if _bitStringValueErr != nil {
-			return errors.Wrap(_bitStringValueErr, "Error serializing 'bitStringValue' field")
+		if err := WriteSimpleField[BACnetContextTagBitString](ctx, "bitStringValue", m.GetBitStringValue(), WriteComplex[BACnetContextTagBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumBitStringValue"); popErr != nil {
@@ -204,12 +174,10 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValue) isBACnetLogRecordLogDatumBitStringValue() bool {
-	return true
-}
+func (m *_BACnetLogRecordLogDatumBitStringValue) IsBACnetLogRecordLogDatumBitStringValue() {}
 
 func (m *_BACnetLogRecordLogDatumBitStringValue) String() string {
 	if m == nil {

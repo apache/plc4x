@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type NLMDisconnectConnectionToNetwork interface {
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
-}
-
-// NLMDisconnectConnectionToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMDisconnectConnectionToNetwork.
-// This is useful for switch cases.
-type NLMDisconnectConnectionToNetworkExactly interface {
-	NLMDisconnectConnectionToNetwork
-	isNLMDisconnectConnectionToNetwork() bool
+	// IsNLMDisconnectConnectionToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMDisconnectConnectionToNetwork()
 }
 
 // _NLMDisconnectConnectionToNetwork is the data-structure of this message
 type _NLMDisconnectConnectionToNetwork struct {
-	*_NLM
+	NLMContract
 	DestinationNetworkAddress uint16
 }
+
+var _ NLMDisconnectConnectionToNetwork = (*_NLMDisconnectConnectionToNetwork)(nil)
+var _ NLMRequirements = (*_NLMDisconnectConnectionToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_NLMDisconnectConnectionToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMDisconnectConnectionToNetwork) InitializeParent(parent NLM) {}
-
-func (m *_NLMDisconnectConnectionToNetwork) GetParent() NLM {
-	return m._NLM
+func (m *_NLMDisconnectConnectionToNetwork) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint1
 // NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
 func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
 	_result := &_NLMDisconnectConnectionToNetwork{
+		NLMContract:               NewNLM(apduLength),
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_NLMDisconnectConnectionToNetwork) GetTypeName() string {
 }
 
 func (m *_NLMDisconnectConnectionToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -126,41 +124,28 @@ func (m *_NLMDisconnectConnectionToNetwork) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMDisconnectConnectionToNetworkParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
-	return NLMDisconnectConnectionToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMDisconnectConnectionToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
+func (m *_NLMDisconnectConnectionToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMDisconnectConnectionToNetwork NLMDisconnectConnectionToNetwork, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMDisconnectConnectionToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMDisconnectConnectionToNetwork")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
+	m.DestinationNetworkAddress = destinationNetworkAddress
 
 	if closeErr := readBuffer.CloseContext("NLMDisconnectConnectionToNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMDisconnectConnectionToNetwork")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMDisconnectConnectionToNetwork{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		DestinationNetworkAddress: destinationNetworkAddress,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMDisconnectConnectionToNetwork) Serialize() ([]byte, error) {
@@ -181,11 +166,8 @@ func (m *_NLMDisconnectConnectionToNetwork) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for NLMDisconnectConnectionToNetwork")
 		}
 
-		// Simple Field (destinationNetworkAddress)
-		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-		if _destinationNetworkAddressErr != nil {
-			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMDisconnectConnectionToNetwork"); popErr != nil {
@@ -193,12 +175,10 @@ func (m *_NLMDisconnectConnectionToNetwork) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMDisconnectConnectionToNetwork) isNLMDisconnectConnectionToNetwork() bool {
-	return true
-}
+func (m *_NLMDisconnectConnectionToNetwork) IsNLMDisconnectConnectionToNetwork() {}
 
 func (m *_NLMDisconnectConnectionToNetwork) String() string {
 	if m == nil {

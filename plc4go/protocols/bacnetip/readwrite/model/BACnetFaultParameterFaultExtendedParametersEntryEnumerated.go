@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultExtendedParametersEntryEnumerated interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
-}
-
-// BACnetFaultParameterFaultExtendedParametersEntryEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryEnumerated.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultExtendedParametersEntryEnumeratedExactly interface {
-	BACnetFaultParameterFaultExtendedParametersEntryEnumerated
-	isBACnetFaultParameterFaultExtendedParametersEntryEnumerated() bool
+	// IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryEnumerated is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryEnumerated struct {
-	*_BACnetFaultParameterFaultExtendedParametersEntry
+	BACnetFaultParameterFaultExtendedParametersEntryContract
 	EnumeratedValue BACnetApplicationTagEnumerated
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryEnumerated = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryEnumerated struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetParent() BACnetFaultParameterFaultExtendedParametersEntry {
-	return m._BACnetFaultParameterFaultExtendedParametersEntry
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetParent() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetEnumera
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated factory function for _BACnetFaultParameterFaultExtendedParametersEntryEnumerated
 func NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
-		EnumeratedValue: enumeratedValue,
-		_BACnetFaultParameterFaultExtendedParametersEntry: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetFaultParameterFaultExtendedParametersEntryEnumerated must not be nil")
 	}
-	_result._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		EnumeratedValue: enumeratedValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetTypeNam
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (enumeratedValue)
 	lengthInBits += m.EnumeratedValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetLengthI
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error) {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryEnumerated BACnetFaultParameterFaultExtendedParametersEntryEnumerated, err error) {
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (enumeratedValue)
-	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
+	enumeratedValue, err := ReadSimpleField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", ReadComplex[BACnetApplicationTagEnumerated](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagEnumerated](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumeratedValue' field"))
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _enumeratedValueErr != nil {
-		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
-	}
-	enumeratedValue := _enumeratedValue.(BACnetApplicationTagEnumerated)
-	if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enumeratedValue")
-	}
+	m.EnumeratedValue = enumeratedValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
-		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
-		EnumeratedValue: enumeratedValue,
-	}
-	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) SerializeW
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 		}
 
-		// Simple Field (enumeratedValue)
-		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
-		}
-		_enumeratedValueErr := writeBuffer.WriteSerializable(ctx, m.GetEnumeratedValue())
-		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enumeratedValue")
-		}
-		if _enumeratedValueErr != nil {
-			return errors.Wrap(_enumeratedValueErr, "Error serializing 'enumeratedValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", m.GetEnumeratedValue(), WriteComplex[BACnetApplicationTagEnumerated](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enumeratedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) SerializeW
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) isBACnetFaultParameterFaultExtendedParametersEntryEnumerated() bool {
-	return true
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() {
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) String() string {

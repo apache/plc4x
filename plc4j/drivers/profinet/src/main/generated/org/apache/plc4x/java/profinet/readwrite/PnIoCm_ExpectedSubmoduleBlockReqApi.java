@@ -205,8 +205,7 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
     List<PnIoCm_Submodule> submodules =
         readCountArrayField(
             "submodules",
-            new DataReaderComplexDefault<>(
-                () -> PnIoCm_Submodule.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_Submodule.staticParse(readBuffer), readBuffer),
             numSubmodules,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

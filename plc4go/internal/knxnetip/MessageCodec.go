@@ -32,14 +32,14 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 	sequenceCounter    int32
 	messageInterceptor func(message spi.Message)
 
 	passLogToModel bool
-	log            zerolog.Logger `ignore:"true"`
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message spi.Message), _options ...options.WithOption) *MessageCodec {
@@ -103,7 +103,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			return nil, nil
 		}
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		knxMessage, err := model.KnxNetIpMessageParse(ctxForModel, data)
+		knxMessage, err := model.KnxNetIpMessageParse[model.KnxNetIpMessage](ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing message")
 			// TODO: Possibly clean up ...

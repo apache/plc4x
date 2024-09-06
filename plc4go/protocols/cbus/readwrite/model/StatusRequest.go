@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,45 +35,38 @@ import (
 
 // StatusRequest is the corresponding interface of StatusRequest
 type StatusRequest interface {
+	StatusRequestContract
+	StatusRequestRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetStatusType returns StatusType (property field)
-	GetStatusType() byte
+	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusRequest()
 }
 
-// StatusRequestExactly can be used when we want exactly this type and not a type which fulfills StatusRequest.
-// This is useful for switch cases.
-type StatusRequestExactly interface {
-	StatusRequest
-	isStatusRequest() bool
+// StatusRequestContract provides a set of functions which can be overwritten by a sub struct
+type StatusRequestContract interface {
+	// GetStatusType returns StatusType (property field)
+	GetStatusType() byte
+	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusRequest()
+}
+
+// StatusRequestRequirements provides a set of functions which need to be implemented by a sub struct
+type StatusRequestRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetStatusType returns StatusType (discriminator field)
+	GetStatusType() byte
 }
 
 // _StatusRequest is the data-structure of this message
 type _StatusRequest struct {
-	_StatusRequestChildRequirements
+	_SubType   StatusRequest
 	StatusType byte
 }
 
-type _StatusRequestChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetStatusType() byte
-}
-
-type StatusRequestParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child StatusRequest, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type StatusRequestChild interface {
-	utils.Serializable
-	InitializeParent(parent StatusRequest, statusType byte)
-	GetParent() *StatusRequest
-
-	GetTypeName() string
-	StatusRequest
-}
+var _ StatusRequestContract = (*_StatusRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,74 +102,82 @@ func (m *_StatusRequest) GetTypeName() string {
 	return "StatusRequest"
 }
 
-func (m *_StatusRequest) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_StatusRequest) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
 func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func StatusRequestParse(ctx context.Context, theBytes []byte) (StatusRequest, error) {
-	return StatusRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func StatusRequestParse[T StatusRequest](ctx context.Context, theBytes []byte) (T, error) {
+	return StatusRequestParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequest, error) {
+func StatusRequestParseWithBufferProducer[T StatusRequest]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := StatusRequestParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func StatusRequestParseWithBuffer[T StatusRequest](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_StatusRequest{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_StatusRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__statusRequest StatusRequest, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StatusRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StatusRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (statusType)
-	currentPos = positionAware.GetPos()
-	statusType, _err := readBuffer.ReadByte("statusType")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'statusType' field of StatusRequest")
+	statusType, err := ReadPeekField[byte](ctx, "statusType", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusType' field"))
 	}
-
-	readBuffer.Reset(currentPos)
+	m.StatusType = statusType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type StatusRequestChildSerializeRequirement interface {
-		StatusRequest
-		InitializeParent(StatusRequest, byte)
-		GetParent() StatusRequest
-	}
-	var _childTemp any
-	var _child StatusRequestChildSerializeRequirement
-	var typeSwitchError error
+	var _child StatusRequest
 	switch {
 	case statusType == 0x7A: // StatusRequestBinaryState
-		_childTemp, typeSwitchError = StatusRequestBinaryStateParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_StatusRequestBinaryState{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestBinaryState for type-switch of StatusRequest")
+		}
 	case statusType == 0xFA: // StatusRequestBinaryStateDeprecated
-		_childTemp, typeSwitchError = StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_StatusRequestBinaryStateDeprecated{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestBinaryStateDeprecated for type-switch of StatusRequest")
+		}
 	case statusType == 0x73: // StatusRequestLevel
-		_childTemp, typeSwitchError = StatusRequestLevelParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_StatusRequestLevel{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestLevel for type-switch of StatusRequest")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [statusType=%v]", statusType)
+		return nil, errors.Errorf("Unmapped type for parameters [statusType=%v]", statusType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of StatusRequest")
-	}
-	_child = _childTemp.(StatusRequestChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("StatusRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StatusRequest")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, statusType)
 	return _child, nil
 }
 
-func (pm *_StatusRequest) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child StatusRequest, serializeChildFunction func() error) error {
+func (pm *_StatusRequest) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child StatusRequest, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -197,17 +200,4 @@ func (pm *_StatusRequest) SerializeParent(ctx context.Context, writeBuffer utils
 	return nil
 }
 
-func (m *_StatusRequest) isStatusRequest() bool {
-	return true
-}
-
-func (m *_StatusRequest) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_StatusRequest) IsStatusRequest() {}

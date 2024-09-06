@@ -37,19 +37,17 @@ type NullListServicesResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
-}
-
-// NullListServicesResponseExactly can be used when we want exactly this type and not a type which fulfills NullListServicesResponse.
-// This is useful for switch cases.
-type NullListServicesResponseExactly interface {
-	NullListServicesResponse
-	isNullListServicesResponse() bool
+	// IsNullListServicesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullListServicesResponse()
 }
 
 // _NullListServicesResponse is the data-structure of this message
 type _NullListServicesResponse struct {
-	*_EipPacket
+	EipPacketContract
 }
+
+var _ NullListServicesResponse = (*_NullListServicesResponse)(nil)
+var _ EipPacketRequirements = (*_NullListServicesResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,23 +71,16 @@ func (m *_NullListServicesResponse) GetPacketLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NullListServicesResponse) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_NullListServicesResponse) GetParent() EipPacket {
-	return m._EipPacket
+func (m *_NullListServicesResponse) GetParent() EipPacketContract {
+	return m.EipPacketContract
 }
 
 // NewNullListServicesResponse factory function for _NullListServicesResponse
 func NewNullListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullListServicesResponse {
 	_result := &_NullListServicesResponse{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	_result._EipPacket._EipPacketChildRequirements = _result
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 
@@ -109,7 +100,7 @@ func (m *_NullListServicesResponse) GetTypeName() string {
 }
 
 func (m *_NullListServicesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -118,15 +109,11 @@ func (m *_NullListServicesResponse) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullListServicesResponseParse(ctx context.Context, theBytes []byte, response bool) (NullListServicesResponse, error) {
-	return NullListServicesResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func NullListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullListServicesResponse, error) {
+func (m *_NullListServicesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__nullListServicesResponse NullListServicesResponse, err error) {
+	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NullListServicesResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NullListServicesResponse")
 	}
@@ -137,12 +124,7 @@ func NullListServicesResponseParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(closeErr, "Error closing for NullListServicesResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NullListServicesResponse{
-		_EipPacket: &_EipPacket{},
-	}
-	_child._EipPacket._EipPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NullListServicesResponse) Serialize() ([]byte, error) {
@@ -168,12 +150,10 @@ func (m *_NullListServicesResponse) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.EipPacketContract.(*_EipPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NullListServicesResponse) isNullListServicesResponse() bool {
-	return true
-}
+func (m *_NullListServicesResponse) IsNullListServicesResponse() {}
 
 func (m *_NullListServicesResponse) String() string {
 	if m == nil {

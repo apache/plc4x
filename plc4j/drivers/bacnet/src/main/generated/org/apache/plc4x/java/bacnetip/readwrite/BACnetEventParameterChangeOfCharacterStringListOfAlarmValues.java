@@ -75,13 +75,13 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
     writeBuffer.pushContext("BACnetEventParameterChangeOfCharacterStringListOfAlarmValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfAlarmValues)
     writeComplexTypeArrayField("listOfAlarmValues", listOfAlarmValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfCharacterStringListOfAlarmValues");
   }
@@ -122,13 +122,13 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetApplicationTagCharacterString> listOfAlarmValues =
         readTerminatedArrayField(
             "listOfAlarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -141,7 +141,7 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfCharacterStringListOfAlarmValues");

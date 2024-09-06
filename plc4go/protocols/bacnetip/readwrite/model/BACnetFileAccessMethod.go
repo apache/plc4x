@@ -109,7 +109,7 @@ func BACnetFileAccessMethodParse(ctx context.Context, theBytes []byte) (BACnetFi
 func BACnetFileAccessMethodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFileAccessMethod, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("BACnetFileAccessMethod", 8)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("BACnetFileAccessMethod", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetFileAccessMethod")
 	}
@@ -132,7 +132,11 @@ func (e BACnetFileAccessMethod) Serialize() ([]byte, error) {
 func (e BACnetFileAccessMethod) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetFileAccessMethod", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("BACnetFileAccessMethod", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+func (e BACnetFileAccessMethod) GetValue() uint8 {
+	return uint8(e)
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

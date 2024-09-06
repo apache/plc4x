@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -51,18 +53,13 @@ type FieldTargetDataType interface {
 	GetOverrideValueHandling() OverrideValueHandling
 	// GetOverrideValue returns OverrideValue (property field)
 	GetOverrideValue() Variant
-}
-
-// FieldTargetDataTypeExactly can be used when we want exactly this type and not a type which fulfills FieldTargetDataType.
-// This is useful for switch cases.
-type FieldTargetDataTypeExactly interface {
-	FieldTargetDataType
-	isFieldTargetDataType() bool
+	// IsFieldTargetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFieldTargetDataType()
 }
 
 // _FieldTargetDataType is the data-structure of this message
 type _FieldTargetDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	DataSetFieldId        GuidValue
 	ReceiverIndexRange    PascalString
 	TargetNodeId          NodeId
@@ -71,6 +68,9 @@ type _FieldTargetDataType struct {
 	OverrideValueHandling OverrideValueHandling
 	OverrideValue         Variant
 }
+
+var _ FieldTargetDataType = (*_FieldTargetDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_FieldTargetDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -86,10 +86,8 @@ func (m *_FieldTargetDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FieldTargetDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_FieldTargetDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_FieldTargetDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,17 +130,32 @@ func (m *_FieldTargetDataType) GetOverrideValue() Variant {
 
 // NewFieldTargetDataType factory function for _FieldTargetDataType
 func NewFieldTargetDataType(dataSetFieldId GuidValue, receiverIndexRange PascalString, targetNodeId NodeId, attributeId uint32, writeIndexRange PascalString, overrideValueHandling OverrideValueHandling, overrideValue Variant) *_FieldTargetDataType {
-	_result := &_FieldTargetDataType{
-		DataSetFieldId:             dataSetFieldId,
-		ReceiverIndexRange:         receiverIndexRange,
-		TargetNodeId:               targetNodeId,
-		AttributeId:                attributeId,
-		WriteIndexRange:            writeIndexRange,
-		OverrideValueHandling:      overrideValueHandling,
-		OverrideValue:              overrideValue,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if dataSetFieldId == nil {
+		panic("dataSetFieldId of type GuidValue for FieldTargetDataType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if receiverIndexRange == nil {
+		panic("receiverIndexRange of type PascalString for FieldTargetDataType must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type NodeId for FieldTargetDataType must not be nil")
+	}
+	if writeIndexRange == nil {
+		panic("writeIndexRange of type PascalString for FieldTargetDataType must not be nil")
+	}
+	if overrideValue == nil {
+		panic("overrideValue of type Variant for FieldTargetDataType must not be nil")
+	}
+	_result := &_FieldTargetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		DataSetFieldId:                    dataSetFieldId,
+		ReceiverIndexRange:                receiverIndexRange,
+		TargetNodeId:                      targetNodeId,
+		AttributeId:                       attributeId,
+		WriteIndexRange:                   writeIndexRange,
+		OverrideValueHandling:             overrideValueHandling,
+		OverrideValue:                     overrideValue,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -162,7 +175,7 @@ func (m *_FieldTargetDataType) GetTypeName() string {
 }
 
 func (m *_FieldTargetDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (dataSetFieldId)
 	lengthInBits += m.DataSetFieldId.GetLengthInBits(ctx)
@@ -192,123 +205,64 @@ func (m *_FieldTargetDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FieldTargetDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (FieldTargetDataType, error) {
-	return FieldTargetDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func FieldTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FieldTargetDataType, error) {
+func (m *_FieldTargetDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__fieldTargetDataType FieldTargetDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FieldTargetDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FieldTargetDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataSetFieldId)
-	if pullErr := readBuffer.PullContext("dataSetFieldId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataSetFieldId")
+	dataSetFieldId, err := ReadSimpleField[GuidValue](ctx, "dataSetFieldId", ReadComplex[GuidValue](GuidValueParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetFieldId' field"))
 	}
-	_dataSetFieldId, _dataSetFieldIdErr := GuidValueParseWithBuffer(ctx, readBuffer)
-	if _dataSetFieldIdErr != nil {
-		return nil, errors.Wrap(_dataSetFieldIdErr, "Error parsing 'dataSetFieldId' field of FieldTargetDataType")
-	}
-	dataSetFieldId := _dataSetFieldId.(GuidValue)
-	if closeErr := readBuffer.CloseContext("dataSetFieldId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataSetFieldId")
-	}
+	m.DataSetFieldId = dataSetFieldId
 
-	// Simple Field (receiverIndexRange)
-	if pullErr := readBuffer.PullContext("receiverIndexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for receiverIndexRange")
+	receiverIndexRange, err := ReadSimpleField[PascalString](ctx, "receiverIndexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiverIndexRange' field"))
 	}
-	_receiverIndexRange, _receiverIndexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _receiverIndexRangeErr != nil {
-		return nil, errors.Wrap(_receiverIndexRangeErr, "Error parsing 'receiverIndexRange' field of FieldTargetDataType")
-	}
-	receiverIndexRange := _receiverIndexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("receiverIndexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for receiverIndexRange")
-	}
+	m.ReceiverIndexRange = receiverIndexRange
 
-	// Simple Field (targetNodeId)
-	if pullErr := readBuffer.PullContext("targetNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNodeId")
+	targetNodeId, err := ReadSimpleField[NodeId](ctx, "targetNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNodeId' field"))
 	}
-	_targetNodeId, _targetNodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeIdErr != nil {
-		return nil, errors.Wrap(_targetNodeIdErr, "Error parsing 'targetNodeId' field of FieldTargetDataType")
-	}
-	targetNodeId := _targetNodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("targetNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNodeId")
-	}
+	m.TargetNodeId = targetNodeId
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of FieldTargetDataType")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
-	attributeId := _attributeId
+	m.AttributeId = attributeId
 
-	// Simple Field (writeIndexRange)
-	if pullErr := readBuffer.PullContext("writeIndexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for writeIndexRange")
+	writeIndexRange, err := ReadSimpleField[PascalString](ctx, "writeIndexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeIndexRange' field"))
 	}
-	_writeIndexRange, _writeIndexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _writeIndexRangeErr != nil {
-		return nil, errors.Wrap(_writeIndexRangeErr, "Error parsing 'writeIndexRange' field of FieldTargetDataType")
-	}
-	writeIndexRange := _writeIndexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("writeIndexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for writeIndexRange")
-	}
+	m.WriteIndexRange = writeIndexRange
 
-	// Simple Field (overrideValueHandling)
-	if pullErr := readBuffer.PullContext("overrideValueHandling"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for overrideValueHandling")
+	overrideValueHandling, err := ReadEnumField[OverrideValueHandling](ctx, "overrideValueHandling", "OverrideValueHandling", ReadEnum(OverrideValueHandlingByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'overrideValueHandling' field"))
 	}
-	_overrideValueHandling, _overrideValueHandlingErr := OverrideValueHandlingParseWithBuffer(ctx, readBuffer)
-	if _overrideValueHandlingErr != nil {
-		return nil, errors.Wrap(_overrideValueHandlingErr, "Error parsing 'overrideValueHandling' field of FieldTargetDataType")
-	}
-	overrideValueHandling := _overrideValueHandling
-	if closeErr := readBuffer.CloseContext("overrideValueHandling"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for overrideValueHandling")
-	}
+	m.OverrideValueHandling = overrideValueHandling
 
-	// Simple Field (overrideValue)
-	if pullErr := readBuffer.PullContext("overrideValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for overrideValue")
+	overrideValue, err := ReadSimpleField[Variant](ctx, "overrideValue", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'overrideValue' field"))
 	}
-	_overrideValue, _overrideValueErr := VariantParseWithBuffer(ctx, readBuffer)
-	if _overrideValueErr != nil {
-		return nil, errors.Wrap(_overrideValueErr, "Error parsing 'overrideValue' field of FieldTargetDataType")
-	}
-	overrideValue := _overrideValue.(Variant)
-	if closeErr := readBuffer.CloseContext("overrideValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for overrideValue")
-	}
+	m.OverrideValue = overrideValue
 
 	if closeErr := readBuffer.CloseContext("FieldTargetDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FieldTargetDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FieldTargetDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		DataSetFieldId:             dataSetFieldId,
-		ReceiverIndexRange:         receiverIndexRange,
-		TargetNodeId:               targetNodeId,
-		AttributeId:                attributeId,
-		WriteIndexRange:            writeIndexRange,
-		OverrideValueHandling:      overrideValueHandling,
-		OverrideValue:              overrideValue,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FieldTargetDataType) Serialize() ([]byte, error) {
@@ -329,83 +283,32 @@ func (m *_FieldTargetDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for FieldTargetDataType")
 		}
 
-		// Simple Field (dataSetFieldId)
-		if pushErr := writeBuffer.PushContext("dataSetFieldId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataSetFieldId")
-		}
-		_dataSetFieldIdErr := writeBuffer.WriteSerializable(ctx, m.GetDataSetFieldId())
-		if popErr := writeBuffer.PopContext("dataSetFieldId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataSetFieldId")
-		}
-		if _dataSetFieldIdErr != nil {
-			return errors.Wrap(_dataSetFieldIdErr, "Error serializing 'dataSetFieldId' field")
+		if err := WriteSimpleField[GuidValue](ctx, "dataSetFieldId", m.GetDataSetFieldId(), WriteComplex[GuidValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataSetFieldId' field")
 		}
 
-		// Simple Field (receiverIndexRange)
-		if pushErr := writeBuffer.PushContext("receiverIndexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for receiverIndexRange")
-		}
-		_receiverIndexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetReceiverIndexRange())
-		if popErr := writeBuffer.PopContext("receiverIndexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for receiverIndexRange")
-		}
-		if _receiverIndexRangeErr != nil {
-			return errors.Wrap(_receiverIndexRangeErr, "Error serializing 'receiverIndexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "receiverIndexRange", m.GetReceiverIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'receiverIndexRange' field")
 		}
 
-		// Simple Field (targetNodeId)
-		if pushErr := writeBuffer.PushContext("targetNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetNodeId")
-		}
-		_targetNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetNodeId())
-		if popErr := writeBuffer.PopContext("targetNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetNodeId")
-		}
-		if _targetNodeIdErr != nil {
-			return errors.Wrap(_targetNodeIdErr, "Error serializing 'targetNodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "targetNodeId", m.GetTargetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetNodeId' field")
 		}
 
-		// Simple Field (attributeId)
-		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
-		if _attributeIdErr != nil {
-			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		// Simple Field (writeIndexRange)
-		if pushErr := writeBuffer.PushContext("writeIndexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writeIndexRange")
-		}
-		_writeIndexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetWriteIndexRange())
-		if popErr := writeBuffer.PopContext("writeIndexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writeIndexRange")
-		}
-		if _writeIndexRangeErr != nil {
-			return errors.Wrap(_writeIndexRangeErr, "Error serializing 'writeIndexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "writeIndexRange", m.GetWriteIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeIndexRange' field")
 		}
 
-		// Simple Field (overrideValueHandling)
-		if pushErr := writeBuffer.PushContext("overrideValueHandling"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for overrideValueHandling")
-		}
-		_overrideValueHandlingErr := writeBuffer.WriteSerializable(ctx, m.GetOverrideValueHandling())
-		if popErr := writeBuffer.PopContext("overrideValueHandling"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for overrideValueHandling")
-		}
-		if _overrideValueHandlingErr != nil {
-			return errors.Wrap(_overrideValueHandlingErr, "Error serializing 'overrideValueHandling' field")
+		if err := WriteSimpleEnumField[OverrideValueHandling](ctx, "overrideValueHandling", "OverrideValueHandling", m.GetOverrideValueHandling(), WriteEnum[OverrideValueHandling, uint32](OverrideValueHandling.GetValue, OverrideValueHandling.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'overrideValueHandling' field")
 		}
 
-		// Simple Field (overrideValue)
-		if pushErr := writeBuffer.PushContext("overrideValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for overrideValue")
-		}
-		_overrideValueErr := writeBuffer.WriteSerializable(ctx, m.GetOverrideValue())
-		if popErr := writeBuffer.PopContext("overrideValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for overrideValue")
-		}
-		if _overrideValueErr != nil {
-			return errors.Wrap(_overrideValueErr, "Error serializing 'overrideValue' field")
+		if err := WriteSimpleField[Variant](ctx, "overrideValue", m.GetOverrideValue(), WriteComplex[Variant](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'overrideValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FieldTargetDataType"); popErr != nil {
@@ -413,12 +316,10 @@ func (m *_FieldTargetDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FieldTargetDataType) isFieldTargetDataType() bool {
-	return true
-}
+func (m *_FieldTargetDataType) IsFieldTargetDataType() {}
 
 func (m *_FieldTargetDataType) String() string {
 	if m == nil {

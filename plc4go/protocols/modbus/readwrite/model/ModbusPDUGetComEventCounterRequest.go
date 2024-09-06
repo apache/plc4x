@@ -37,19 +37,17 @@ type ModbusPDUGetComEventCounterRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
-}
-
-// ModbusPDUGetComEventCounterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUGetComEventCounterRequest.
-// This is useful for switch cases.
-type ModbusPDUGetComEventCounterRequestExactly interface {
-	ModbusPDUGetComEventCounterRequest
-	isModbusPDUGetComEventCounterRequest() bool
+	// IsModbusPDUGetComEventCounterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUGetComEventCounterRequest()
 }
 
 // _ModbusPDUGetComEventCounterRequest is the data-structure of this message
 type _ModbusPDUGetComEventCounterRequest struct {
-	*_ModbusPDU
+	ModbusPDUContract
 }
+
+var _ ModbusPDUGetComEventCounterRequest = (*_ModbusPDUGetComEventCounterRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUGetComEventCounterRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,18 +71,16 @@ func (m *_ModbusPDUGetComEventCounterRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUGetComEventCounterRequest) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUGetComEventCounterRequest) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUGetComEventCounterRequest) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 // NewModbusPDUGetComEventCounterRequest factory function for _ModbusPDUGetComEventCounterRequest
 func NewModbusPDUGetComEventCounterRequest() *_ModbusPDUGetComEventCounterRequest {
 	_result := &_ModbusPDUGetComEventCounterRequest{
-		_ModbusPDU: NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -104,7 +100,7 @@ func (m *_ModbusPDUGetComEventCounterRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUGetComEventCounterRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +109,11 @@ func (m *_ModbusPDUGetComEventCounterRequest) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUGetComEventCounterRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUGetComEventCounterRequest, error) {
-	return ModbusPDUGetComEventCounterRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUGetComEventCounterRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventCounterRequest, error) {
+func (m *_ModbusPDUGetComEventCounterRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUGetComEventCounterRequest ModbusPDUGetComEventCounterRequest, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventCounterRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUGetComEventCounterRequest")
 	}
@@ -132,12 +124,7 @@ func ModbusPDUGetComEventCounterRequestParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUGetComEventCounterRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUGetComEventCounterRequest{
-		_ModbusPDU: &_ModbusPDU{},
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUGetComEventCounterRequest) Serialize() ([]byte, error) {
@@ -163,12 +150,10 @@ func (m *_ModbusPDUGetComEventCounterRequest) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUGetComEventCounterRequest) isModbusPDUGetComEventCounterRequest() bool {
-	return true
-}
+func (m *_ModbusPDUGetComEventCounterRequest) IsModbusPDUGetComEventCounterRequest() {}
 
 func (m *_ModbusPDUGetComEventCounterRequest) String() string {
 	if m == nil {

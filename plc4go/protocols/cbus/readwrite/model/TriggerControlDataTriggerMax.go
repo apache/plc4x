@@ -37,19 +37,17 @@ type TriggerControlDataTriggerMax interface {
 	utils.LengthAware
 	utils.Serializable
 	TriggerControlData
-}
-
-// TriggerControlDataTriggerMaxExactly can be used when we want exactly this type and not a type which fulfills TriggerControlDataTriggerMax.
-// This is useful for switch cases.
-type TriggerControlDataTriggerMaxExactly interface {
-	TriggerControlDataTriggerMax
-	isTriggerControlDataTriggerMax() bool
+	// IsTriggerControlDataTriggerMax is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTriggerControlDataTriggerMax()
 }
 
 // _TriggerControlDataTriggerMax is the data-structure of this message
 type _TriggerControlDataTriggerMax struct {
-	*_TriggerControlData
+	TriggerControlDataContract
 }
+
+var _ TriggerControlDataTriggerMax = (*_TriggerControlDataTriggerMax)(nil)
+var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMax)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _TriggerControlDataTriggerMax struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TriggerControlDataTriggerMax) InitializeParent(parent TriggerControlData, commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.TriggerGroup = triggerGroup
-}
-
-func (m *_TriggerControlDataTriggerMax) GetParent() TriggerControlData {
-	return m._TriggerControlData
+func (m *_TriggerControlDataTriggerMax) GetParent() TriggerControlDataContract {
+	return m.TriggerControlDataContract
 }
 
 // NewTriggerControlDataTriggerMax factory function for _TriggerControlDataTriggerMax
 func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMax {
 	_result := &_TriggerControlDataTriggerMax{
-		_TriggerControlData: NewTriggerControlData(commandTypeContainer, triggerGroup),
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
 	}
-	_result._TriggerControlData._TriggerControlDataChildRequirements = _result
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_TriggerControlDataTriggerMax) GetTypeName() string {
 }
 
 func (m *_TriggerControlDataTriggerMax) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_TriggerControlDataTriggerMax) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlDataTriggerMaxParse(ctx context.Context, theBytes []byte) (TriggerControlDataTriggerMax, error) {
-	return TriggerControlDataTriggerMaxParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func TriggerControlDataTriggerMaxParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
+func (m *_TriggerControlDataTriggerMax) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TriggerControlData) (__triggerControlDataTriggerMax TriggerControlDataTriggerMax, err error) {
+	m.TriggerControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerMax"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TriggerControlDataTriggerMax")
 	}
@@ -123,12 +112,7 @@ func TriggerControlDataTriggerMaxParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for TriggerControlDataTriggerMax")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TriggerControlDataTriggerMax{
-		_TriggerControlData: &_TriggerControlData{},
-	}
-	_child._TriggerControlData._TriggerControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TriggerControlDataTriggerMax) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_TriggerControlDataTriggerMax) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TriggerControlDataContract.(*_TriggerControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TriggerControlDataTriggerMax) isTriggerControlDataTriggerMax() bool {
-	return true
-}
+func (m *_TriggerControlDataTriggerMax) IsTriggerControlDataTriggerMax() {}
 
 func (m *_TriggerControlDataTriggerMax) String() string {
 	if m == nil {

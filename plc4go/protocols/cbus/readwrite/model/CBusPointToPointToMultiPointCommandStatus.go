@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,22 +41,20 @@ type CBusPointToPointToMultiPointCommandStatus interface {
 	CBusPointToPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest (property field)
 	GetStatusRequest() StatusRequest
-}
-
-// CBusPointToPointToMultiPointCommandStatusExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointToMultiPointCommandStatus.
-// This is useful for switch cases.
-type CBusPointToPointToMultiPointCommandStatusExactly interface {
-	CBusPointToPointToMultiPointCommandStatus
-	isCBusPointToPointToMultiPointCommandStatus() bool
+	// IsCBusPointToPointToMultiPointCommandStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToPointToMultiPointCommandStatus()
 }
 
 // _CBusPointToPointToMultiPointCommandStatus is the data-structure of this message
 type _CBusPointToPointToMultiPointCommandStatus struct {
-	*_CBusPointToPointToMultiPointCommand
+	CBusPointToPointToMultiPointCommandContract
 	StatusRequest StatusRequest
 	// Reserved Fields
 	reservedField0 *byte
 }
+
+var _ CBusPointToPointToMultiPointCommandStatus = (*_CBusPointToPointToMultiPointCommandStatus)(nil)
+var _ CBusPointToPointToMultiPointCommandRequirements = (*_CBusPointToPointToMultiPointCommandStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,14 +66,8 @@ type _CBusPointToPointToMultiPointCommandStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointToMultiPointCommandStatus) InitializeParent(parent CBusPointToPointToMultiPointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte) {
-	m.BridgeAddress = bridgeAddress
-	m.NetworkRoute = networkRoute
-	m.PeekedApplication = peekedApplication
-}
-
-func (m *_CBusPointToPointToMultiPointCommandStatus) GetParent() CBusPointToPointToMultiPointCommand {
-	return m._CBusPointToPointToMultiPointCommand
+func (m *_CBusPointToPointToMultiPointCommandStatus) GetParent() CBusPointToPointToMultiPointCommandContract {
+	return m.CBusPointToPointToMultiPointCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +86,14 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetStatusRequest() StatusRe
 
 // NewCBusPointToPointToMultiPointCommandStatus factory function for _CBusPointToPointToMultiPointCommandStatus
 func NewCBusPointToPointToMultiPointCommandStatus(statusRequest StatusRequest, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandStatus {
-	_result := &_CBusPointToPointToMultiPointCommandStatus{
-		StatusRequest:                        statusRequest,
-		_CBusPointToPointToMultiPointCommand: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+	if statusRequest == nil {
+		panic("statusRequest of type StatusRequest for CBusPointToPointToMultiPointCommandStatus must not be nil")
 	}
-	_result._CBusPointToPointToMultiPointCommand._CBusPointToPointToMultiPointCommandChildRequirements = _result
+	_result := &_CBusPointToPointToMultiPointCommandStatus{
+		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+		StatusRequest: statusRequest,
+	}
+	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
 	return _result
 }
 
@@ -116,7 +113,7 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetTypeName() string {
 }
 
 func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -131,65 +128,34 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusPointToPointToMultiPointCommandStatusParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
-	return CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
+func (m *_CBusPointToPointToMultiPointCommandStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusPointToPointToMultiPointCommand, cBusOptions CBusOptions) (__cBusPointToPointToMultiPointCommandStatus CBusPointToPointToMultiPointCommandStatus, err error) {
+	m.CBusPointToPointToMultiPointCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultiPointCommandStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToPointToMultiPointCommandStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToPointToMultiPointCommandStatus")
-		}
-		if reserved != byte(0xFF) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0xFF),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0xFF))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (statusRequest)
-	if pullErr := readBuffer.PullContext("statusRequest"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusRequest")
+	statusRequest, err := ReadSimpleField[StatusRequest](ctx, "statusRequest", ReadComplex[StatusRequest](StatusRequestParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusRequest' field"))
 	}
-	_statusRequest, _statusRequestErr := StatusRequestParseWithBuffer(ctx, readBuffer)
-	if _statusRequestErr != nil {
-		return nil, errors.Wrap(_statusRequestErr, "Error parsing 'statusRequest' field of CBusPointToPointToMultiPointCommandStatus")
-	}
-	statusRequest := _statusRequest.(StatusRequest)
-	if closeErr := readBuffer.CloseContext("statusRequest"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusRequest")
-	}
+	m.StatusRequest = statusRequest
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointToMultiPointCommandStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointToMultiPointCommandStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CBusPointToPointToMultiPointCommandStatus{
-		_CBusPointToPointToMultiPointCommand: &_CBusPointToPointToMultiPointCommand{
-			CBusOptions: cBusOptions,
-		},
-		StatusRequest:  statusRequest,
-		reservedField0: reservedField0,
-	}
-	_child._CBusPointToPointToMultiPointCommand._CBusPointToPointToMultiPointCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CBusPointToPointToMultiPointCommandStatus) Serialize() ([]byte, error) {
@@ -210,32 +176,12 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointToMultiPointCommandStatus")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0xFF)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0xFF),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0xFF), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (statusRequest)
-		if pushErr := writeBuffer.PushContext("statusRequest"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusRequest")
-		}
-		_statusRequestErr := writeBuffer.WriteSerializable(ctx, m.GetStatusRequest())
-		if popErr := writeBuffer.PopContext("statusRequest"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusRequest")
-		}
-		if _statusRequestErr != nil {
-			return errors.Wrap(_statusRequestErr, "Error serializing 'statusRequest' field")
+		if err := WriteSimpleField[StatusRequest](ctx, "statusRequest", m.GetStatusRequest(), WriteComplex[StatusRequest](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusRequest' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToPointToMultiPointCommandStatus"); popErr != nil {
@@ -243,12 +189,10 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatus) isCBusPointToPointToMultiPointCommandStatus() bool {
-	return true
-}
+func (m *_CBusPointToPointToMultiPointCommandStatus) IsCBusPointToPointToMultiPointCommandStatus() {}
 
 func (m *_CBusPointToPointToMultiPointCommandStatus) String() string {
 	if m == nil {

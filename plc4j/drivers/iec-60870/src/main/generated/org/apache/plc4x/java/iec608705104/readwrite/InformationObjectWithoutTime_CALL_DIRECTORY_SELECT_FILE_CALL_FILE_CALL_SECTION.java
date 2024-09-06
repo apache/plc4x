@@ -78,24 +78,15 @@ public class InformationObjectWithoutTime_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_C
 
     // Simple Field (nof)
     writeSimpleField(
-        "nof",
-        nof,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nof", nof, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (nos)
     writeSimpleField(
-        "nos",
-        nos,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nos", nos, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (scq)
     writeSimpleField(
-        "scq",
-        scq,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "scq", scq, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObjectWithoutTime_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION");
@@ -135,20 +126,19 @@ public class InformationObjectWithoutTime_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_C
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     NameOfSection nos =
         readSimpleField(
             "nos",
-            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfSection.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SelectAndCallQualifier scq =
         readSimpleField(
             "scq",
-            new DataReaderComplexDefault<>(
-                () -> SelectAndCallQualifier.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SelectAndCallQualifier.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext(

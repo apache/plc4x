@@ -82,7 +82,7 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataGroupID");
 
     // Simple Field (groupId)
-    writeSimpleField("groupId", groupId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("groupId", groupId, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
     BACnetApplicationTagUnsignedInteger groupId =
         readSimpleField(
             "groupId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

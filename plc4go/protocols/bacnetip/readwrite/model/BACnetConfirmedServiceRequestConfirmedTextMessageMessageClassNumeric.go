@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric interf
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetNumericValue returns NumericValue (property field)
 	GetNumericValue() BACnetContextTagUnsignedInteger
-}
-
-// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericExactly interface {
-	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
-	isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() bool
+	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric()
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric struct {
-	*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract
 	NumericValue BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric)(nil)
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric struc
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) InitializeParent(parent BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) GetParent() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
-	return m._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) GetParent() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract {
+	return m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
 func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(numericValue BACnetContextTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {
-	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{
-		NumericValue: numericValue,
-		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if numericValue == nil {
+		panic("numericValue of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements = _result
+	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
+		NumericValue: numericValue,
+	}
+	_result.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).getLengthInBits(ctx))
 
 	// Simple field (numericValue)
 	lengthInBits += m.NumericValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
-	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, tagNumber uint8) (__bACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, err error) {
+	m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numericValue)
-	if pullErr := readBuffer.PullContext("numericValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for numericValue")
+	numericValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "numericValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numericValue' field"))
 	}
-	_numericValue, _numericValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _numericValueErr != nil {
-		return nil, errors.Wrap(_numericValueErr, "Error parsing 'numericValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
-	}
-	numericValue := _numericValue.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("numericValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for numericValue")
-	}
+	m.NumericValue = numericValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{
-		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{
-			TagNumber: tagNumber,
-		},
-		NumericValue: numericValue,
-	}
-	_child._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 		}
 
-		// Simple Field (numericValue)
-		if pushErr := writeBuffer.PushContext("numericValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for numericValue")
-		}
-		_numericValueErr := writeBuffer.WriteSerializable(ctx, m.GetNumericValue())
-		if popErr := writeBuffer.PopContext("numericValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for numericValue")
-		}
-		if _numericValueErr != nil {
-			return errors.Wrap(_numericValueErr, "Error serializing 'numericValue' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "numericValue", m.GetNumericValue(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numericValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); popErr != nil {
@@ -204,11 +174,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() {
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) String() string {

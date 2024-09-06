@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAnalogOutputRelinquishDefault interface {
 	GetRelinquishDefault() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataAnalogOutputRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogOutputRelinquishDefault.
-// This is useful for switch cases.
-type BACnetConstructedDataAnalogOutputRelinquishDefaultExactly interface {
-	BACnetConstructedDataAnalogOutputRelinquishDefault
-	isBACnetConstructedDataAnalogOutputRelinquishDefault() bool
+	// IsBACnetConstructedDataAnalogOutputRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAnalogOutputRelinquishDefault()
 }
 
 // _BACnetConstructedDataAnalogOutputRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataAnalogOutputRelinquishDefault struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	RelinquishDefault BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataAnalogOutputRelinquishDefault = (*_BACnetConstructedDataAnalogOutputRelinquishDefault)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogOutputRelinquishDefault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) GetPropertyIdentif
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) GetActualValue() B
 
 // NewBACnetConstructedDataAnalogOutputRelinquishDefault factory function for _BACnetConstructedDataAnalogOutputRelinquishDefault
 func NewBACnetConstructedDataAnalogOutputRelinquishDefault(relinquishDefault BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogOutputRelinquishDefault {
-	_result := &_BACnetConstructedDataAnalogOutputRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagReal for BACnetConstructedDataAnalogOutputRelinquishDefault must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAnalogOutputRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) GetTypeName() stri
 }
 
 func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) GetLengthInBytes(c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAnalogOutputRelinquishDefaultParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogOutputRelinquishDefault, error) {
-	return BACnetConstructedDataAnalogOutputRelinquishDefaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAnalogOutputRelinquishDefaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogOutputRelinquishDefault, error) {
+func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAnalogOutputRelinquishDefault BACnetConstructedDataAnalogOutputRelinquishDefault, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogOutputRelinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAnalogOutputRelinquishDefault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (relinquishDefault)
-	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
+	relinquishDefault, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "relinquishDefault", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relinquishDefault' field"))
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataAnalogOutputRelinquishDefault")
-	}
-	relinquishDefault := _relinquishDefault.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
-	}
+	m.RelinquishDefault = relinquishDefault
 
-	// Virtual field
-	_actualValue := relinquishDefault
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), relinquishDefault)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAnalogOutputRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAnalogOutputRelinquishDefault")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAnalogOutputRelinquishDefault{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		RelinquishDefault: relinquishDefault,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) SerializeWithWrite
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAnalogOutputRelinquishDefault")
 		}
 
-		// Simple Field (relinquishDefault)
-		if pushErr := writeBuffer.PushContext("relinquishDefault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relinquishDefault")
-		}
-		_relinquishDefaultErr := writeBuffer.WriteSerializable(ctx, m.GetRelinquishDefault())
-		if popErr := writeBuffer.PopContext("relinquishDefault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relinquishDefault")
-		}
-		if _relinquishDefaultErr != nil {
-			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "relinquishDefault", m.GetRelinquishDefault(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relinquishDefault' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) SerializeWithWrite
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) isBACnetConstructedDataAnalogOutputRelinquishDefault() bool {
-	return true
+func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) IsBACnetConstructedDataAnalogOutputRelinquishDefault() {
 }
 
 func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) String() string {

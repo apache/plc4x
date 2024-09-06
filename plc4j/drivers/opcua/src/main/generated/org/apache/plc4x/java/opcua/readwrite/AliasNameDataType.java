@@ -75,7 +75,7 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("AliasNameDataType");
 
     // Simple Field (aliasName)
-    writeSimpleField("aliasName", aliasName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("aliasName", aliasName, writeComplex(writeBuffer));
 
     // Simple Field (noOfReferencedNodes)
     writeSimpleField("noOfReferencedNodes", noOfReferencedNodes, writeSignedInt(writeBuffer, 32));
@@ -123,17 +123,14 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
 
     QualifiedName aliasName =
         readSimpleField(
-            "aliasName",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "aliasName", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     int noOfReferencedNodes = readSimpleField("noOfReferencedNodes", readSignedInt(readBuffer, 32));
 
     List<ExpandedNodeId> referencedNodes =
         readCountArrayField(
             "referencedNodes",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer),
             noOfReferencedNodes);
 
     readBuffer.closeContext("AliasNameDataType");

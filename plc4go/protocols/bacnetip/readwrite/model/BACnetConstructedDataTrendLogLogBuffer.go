@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataTrendLogLogBuffer interface {
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetLogRecord
-}
-
-// BACnetConstructedDataTrendLogLogBufferExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrendLogLogBuffer.
-// This is useful for switch cases.
-type BACnetConstructedDataTrendLogLogBufferExactly interface {
-	BACnetConstructedDataTrendLogLogBuffer
-	isBACnetConstructedDataTrendLogLogBuffer() bool
+	// IsBACnetConstructedDataTrendLogLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTrendLogLogBuffer()
 }
 
 // _BACnetConstructedDataTrendLogLogBuffer is the data-structure of this message
 type _BACnetConstructedDataTrendLogLogBuffer struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FloorText []BACnetLogRecord
 }
+
+var _ BACnetConstructedDataTrendLogLogBuffer = (*_BACnetConstructedDataTrendLogLogBuffer)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogLogBuffer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTrendLogLogBuffer) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTrendLogLogBuffer) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTrendLogLogBuffer) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) GetFloorText() []BACnetLogReco
 // NewBACnetConstructedDataTrendLogLogBuffer factory function for _BACnetConstructedDataTrendLogLogBuffer
 func NewBACnetConstructedDataTrendLogLogBuffer(floorText []BACnetLogRecord, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogLogBuffer {
 	_result := &_BACnetConstructedDataTrendLogLogBuffer{
-		FloorText:              floorText,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FloorText:                     floorText,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTrendLogLogBuffer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FloorText) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTrendLogLogBufferParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogLogBuffer, error) {
-	return BACnetConstructedDataTrendLogLogBufferParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTrendLogLogBufferParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogLogBuffer, error) {
+func (m *_BACnetConstructedDataTrendLogLogBuffer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTrendLogLogBuffer BACnetConstructedDataTrendLogLogBuffer, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogLogBuffer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTrendLogLogBuffer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (floorText)
-	if pullErr := readBuffer.PullContext("floorText", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for floorText")
+	floorText, err := ReadTerminatedArrayField[BACnetLogRecord](ctx, "floorText", ReadComplex[BACnetLogRecord](BACnetLogRecordParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorText' field"))
 	}
-	// Terminated array
-	var floorText []BACnetLogRecord
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLogRecordParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetConstructedDataTrendLogLogBuffer")
-			}
-			floorText = append(floorText, _item.(BACnetLogRecord))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("floorText", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for floorText")
-	}
+	m.FloorText = floorText
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrendLogLogBuffer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTrendLogLogBuffer")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTrendLogLogBuffer{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FloorText: floorText,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTrendLogLogBuffer) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTrendLogLogBuffer")
 		}
 
-		// Array Field (floorText)
-		if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for floorText")
-		}
-		for _curItem, _element := range m.GetFloorText() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFloorText()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for floorText")
+		if err := WriteComplexTypeArrayField(ctx, "floorText", m.GetFloorText(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'floorText' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTrendLogLogBuffer"); popErr != nil {
@@ -228,12 +183,10 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTrendLogLogBuffer) isBACnetConstructedDataTrendLogLogBuffer() bool {
-	return true
-}
+func (m *_BACnetConstructedDataTrendLogLogBuffer) IsBACnetConstructedDataTrendLogLogBuffer() {}
 
 func (m *_BACnetConstructedDataTrendLogLogBuffer) String() string {
 	if m == nil {

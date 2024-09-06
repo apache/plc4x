@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,13 +62,8 @@ type BACnetTagHeader interface {
 	GetIsPrimitiveAndNotBoolean() bool
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-}
-
-// BACnetTagHeaderExactly can be used when we want exactly this type and not a type which fulfills BACnetTagHeader.
-// This is useful for switch cases.
-type BACnetTagHeaderExactly interface {
-	BACnetTagHeader
-	isBACnetTagHeader() bool
+	// IsBACnetTagHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagHeader()
 }
 
 // _BACnetTagHeader is the data-structure of this message
@@ -80,6 +76,8 @@ type _BACnetTagHeader struct {
 	ExtExtLength    *uint16
 	ExtExtExtLength *uint32
 }
+
+var _ BACnetTagHeader = (*_BACnetTagHeader)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -126,13 +124,13 @@ func (m *_BACnetTagHeader) GetExtExtExtLength() *uint32 {
 func (m *_BACnetTagHeader) GetActualTagNumber() uint8 {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return uint8(utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() any { return uint8(m.GetTagNumber()) }, func() any { return uint8((*m.GetExtTagNumber())) }).(uint8))
 }
@@ -140,13 +138,13 @@ func (m *_BACnetTagHeader) GetActualTagNumber() uint8 {
 func (m *_BACnetTagHeader) GetIsBoolean() bool {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return bool(bool(bool((m.GetTagNumber()) == (1))) && bool(bool((m.GetTagClass()) == (TagClass_APPLICATION_TAGS))))
 }
@@ -154,13 +152,13 @@ func (m *_BACnetTagHeader) GetIsBoolean() bool {
 func (m *_BACnetTagHeader) GetIsConstructed() bool {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return bool(bool(bool((m.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((m.GetLengthValueType()) == (6))))
 }
@@ -168,13 +166,13 @@ func (m *_BACnetTagHeader) GetIsConstructed() bool {
 func (m *_BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return bool(bool(!(m.GetIsConstructed())) && bool(!(m.GetIsBoolean())))
 }
@@ -182,13 +180,13 @@ func (m *_BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
 func (m *_BACnetTagHeader) GetActualLength() uint32 {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() any { return uint32((*m.GetExtExtExtLength())) }, func() any {
 		return uint32((utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() any { return uint32((*m.GetExtExtLength())) }, func() any {
@@ -275,151 +273,114 @@ func BACnetTagHeaderParse(ctx context.Context, theBytes []byte) (BACnetTagHeader
 	return BACnetTagHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTagHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
+		return BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
+	v, err := (&_BACnetTagHeader{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetTagHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTagHeader BACnetTagHeader, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tagNumber)
-	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
-	if _tagNumberErr != nil {
-		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field of BACnetTagHeader")
+	tagNumber, err := ReadSimpleField(ctx, "tagNumber", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tagNumber' field"))
 	}
-	tagNumber := _tagNumber
+	m.TagNumber = tagNumber
 
-	// Simple Field (tagClass)
-	if pullErr := readBuffer.PullContext("tagClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tagClass")
+	tagClass, err := ReadEnumField[TagClass](ctx, "tagClass", "TagClass", ReadEnum(TagClassByValue, ReadUnsignedByte(readBuffer, uint8(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tagClass' field"))
 	}
-	_tagClass, _tagClassErr := TagClassParseWithBuffer(ctx, readBuffer)
-	if _tagClassErr != nil {
-		return nil, errors.Wrap(_tagClassErr, "Error parsing 'tagClass' field of BACnetTagHeader")
-	}
-	tagClass := _tagClass
-	if closeErr := readBuffer.CloseContext("tagClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tagClass")
-	}
+	m.TagClass = tagClass
 
-	// Simple Field (lengthValueType)
-	_lengthValueType, _lengthValueTypeErr := readBuffer.ReadUint8("lengthValueType", 3)
-	if _lengthValueTypeErr != nil {
-		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field of BACnetTagHeader")
+	lengthValueType, err := ReadSimpleField(ctx, "lengthValueType", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lengthValueType' field"))
 	}
-	lengthValueType := _lengthValueType
+	m.LengthValueType = lengthValueType
 
-	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
-	var extTagNumber *uint8 = nil
-	if bool((tagNumber) == (15)) {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("extTagNumber", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field of BACnetTagHeader")
-		default:
-			extTagNumber = &_val
-		}
+	var extTagNumber *uint8
+	extTagNumber, err = ReadOptionalField[uint8](ctx, "extTagNumber", ReadUnsignedByte(readBuffer, uint8(8)), bool((tagNumber) == (15)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extTagNumber' field"))
 	}
+	m.ExtTagNumber = extTagNumber
 
-	// Virtual field
-	_actualTagNumber := utils.InlineIf(bool((tagNumber) < (15)), func() any { return uint8(tagNumber) }, func() any { return uint8((*extTagNumber)) }).(uint8)
-	actualTagNumber := uint8(_actualTagNumber)
+	actualTagNumber, err := ReadVirtualField[uint8](ctx, "actualTagNumber", (*uint8)(nil), utils.InlineIf(bool((tagNumber) < (15)), func() any { return uint8(tagNumber) }, func() any { return uint8((*extTagNumber)) }).(uint8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualTagNumber' field"))
+	}
 	_ = actualTagNumber
 
-	// Virtual field
-	_isBoolean := bool(bool((tagNumber) == (1))) && bool(bool((tagClass) == (TagClass_APPLICATION_TAGS)))
-	isBoolean := bool(_isBoolean)
+	isBoolean, err := ReadVirtualField[bool](ctx, "isBoolean", (*bool)(nil), bool(bool((tagNumber) == (1))) && bool(bool((tagClass) == (TagClass_APPLICATION_TAGS))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isBoolean' field"))
+	}
 	_ = isBoolean
 
-	// Virtual field
-	_isConstructed := bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6)))
-	isConstructed := bool(_isConstructed)
+	isConstructed, err := ReadVirtualField[bool](ctx, "isConstructed", (*bool)(nil), bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isConstructed' field"))
+	}
 	_ = isConstructed
 
-	// Virtual field
-	_isPrimitiveAndNotBoolean := bool(!(isConstructed)) && bool(!(isBoolean))
-	isPrimitiveAndNotBoolean := bool(_isPrimitiveAndNotBoolean)
+	isPrimitiveAndNotBoolean, err := ReadVirtualField[bool](ctx, "isPrimitiveAndNotBoolean", (*bool)(nil), bool(!(isConstructed)) && bool(!(isBoolean)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPrimitiveAndNotBoolean' field"))
+	}
 	_ = isPrimitiveAndNotBoolean
 
-	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
-	var extLength *uint8 = nil
-	if bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))) {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("extLength", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'extLength' field of BACnetTagHeader")
-		default:
-			extLength = &_val
-		}
+	var extLength *uint8
+	extLength, err = ReadOptionalField[uint8](ctx, "extLength", ReadUnsignedByte(readBuffer, uint8(8)), bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extLength' field"))
 	}
+	m.ExtLength = extLength
 
-	// Optional Field (extExtLength) (Can be skipped, if a given expression evaluates to false)
-	var extExtLength *uint16 = nil
-	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))) {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("extExtLength", 16)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'extExtLength' field of BACnetTagHeader")
-		default:
-			extExtLength = &_val
-		}
+	var extExtLength *uint16
+	extExtLength, err = ReadOptionalField[uint16](ctx, "extExtLength", ReadUnsignedShort(readBuffer, uint8(16)), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extExtLength' field"))
 	}
+	m.ExtExtLength = extExtLength
 
-	// Optional Field (extExtExtLength) (Can be skipped, if a given expression evaluates to false)
-	var extExtExtLength *uint32 = nil
-	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))) {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("extExtExtLength", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'extExtExtLength' field of BACnetTagHeader")
-		default:
-			extExtExtLength = &_val
-		}
+	var extExtExtLength *uint32
+	extExtExtLength, err = ReadOptionalField[uint32](ctx, "extExtExtLength", ReadUnsignedInt(readBuffer, uint8(32)), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extExtExtLength' field"))
 	}
+	m.ExtExtExtLength = extExtExtLength
 
-	// Virtual field
-	_actualLength := utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))), func() any { return uint32((*extExtExtLength)) }, func() any {
+	actualLength, err := ReadVirtualField[uint32](ctx, "actualLength", (*uint32)(nil), utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))), func() any { return uint32((*extExtExtLength)) }, func() any {
 		return uint32((utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))), func() any { return uint32((*extExtLength)) }, func() any {
 			return uint32((utils.InlineIf(bool((lengthValueType) == (5)), func() any { return uint32((*extLength)) }, func() any { return uint32(lengthValueType) }).(uint32)))
 		}).(uint32)))
-	}).(uint32)
-	actualLength := uint32(_actualLength)
+	}).(uint32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLength' field"))
+	}
 	_ = actualLength
 
 	if closeErr := readBuffer.CloseContext("BACnetTagHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagHeader")
 	}
 
-	// Create the instance
-	return &_BACnetTagHeader{
-		TagNumber:       tagNumber,
-		TagClass:        tagClass,
-		LengthValueType: lengthValueType,
-		ExtTagNumber:    extTagNumber,
-		ExtLength:       extLength,
-		ExtExtLength:    extExtLength,
-		ExtExtExtLength: extExtExtLength,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetTagHeader) Serialize() ([]byte, error) {
@@ -439,40 +400,20 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagHeader")
 	}
 
-	// Simple Field (tagNumber)
-	tagNumber := uint8(m.GetTagNumber())
-	_tagNumberErr := writeBuffer.WriteUint8("tagNumber", 4, uint8((tagNumber)))
-	if _tagNumberErr != nil {
-		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
+	if err := WriteSimpleField[uint8](ctx, "tagNumber", m.GetTagNumber(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'tagNumber' field")
 	}
 
-	// Simple Field (tagClass)
-	if pushErr := writeBuffer.PushContext("tagClass"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for tagClass")
-	}
-	_tagClassErr := writeBuffer.WriteSerializable(ctx, m.GetTagClass())
-	if popErr := writeBuffer.PopContext("tagClass"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for tagClass")
-	}
-	if _tagClassErr != nil {
-		return errors.Wrap(_tagClassErr, "Error serializing 'tagClass' field")
+	if err := WriteSimpleEnumField[TagClass](ctx, "tagClass", "TagClass", m.GetTagClass(), WriteEnum[TagClass, uint8](TagClass.GetValue, TagClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 1))); err != nil {
+		return errors.Wrap(err, "Error serializing 'tagClass' field")
 	}
 
-	// Simple Field (lengthValueType)
-	lengthValueType := uint8(m.GetLengthValueType())
-	_lengthValueTypeErr := writeBuffer.WriteUint8("lengthValueType", 3, uint8((lengthValueType)))
-	if _lengthValueTypeErr != nil {
-		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
+	if err := WriteSimpleField[uint8](ctx, "lengthValueType", m.GetLengthValueType(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lengthValueType' field")
 	}
 
-	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
-	var extTagNumber *uint8 = nil
-	if m.GetExtTagNumber() != nil {
-		extTagNumber = m.GetExtTagNumber()
-		_extTagNumberErr := writeBuffer.WriteUint8("extTagNumber", 8, uint8(*(extTagNumber)))
-		if _extTagNumberErr != nil {
-			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
-		}
+	if err := WriteOptionalField[uint8](ctx, "extTagNumber", m.GetExtTagNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'extTagNumber' field")
 	}
 	// Virtual field
 	actualTagNumber := m.GetActualTagNumber()
@@ -499,34 +440,16 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_isPrimitiveAndNotBooleanErr, "Error serializing 'isPrimitiveAndNotBoolean' field")
 	}
 
-	// Optional Field (extLength) (Can be skipped, if the value is null)
-	var extLength *uint8 = nil
-	if m.GetExtLength() != nil {
-		extLength = m.GetExtLength()
-		_extLengthErr := writeBuffer.WriteUint8("extLength", 8, uint8(*(extLength)))
-		if _extLengthErr != nil {
-			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
-		}
+	if err := WriteOptionalField[uint8](ctx, "extLength", m.GetExtLength(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'extLength' field")
 	}
 
-	// Optional Field (extExtLength) (Can be skipped, if the value is null)
-	var extExtLength *uint16 = nil
-	if m.GetExtExtLength() != nil {
-		extExtLength = m.GetExtExtLength()
-		_extExtLengthErr := writeBuffer.WriteUint16("extExtLength", 16, uint16(*(extExtLength)))
-		if _extExtLengthErr != nil {
-			return errors.Wrap(_extExtLengthErr, "Error serializing 'extExtLength' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "extExtLength", m.GetExtExtLength(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'extExtLength' field")
 	}
 
-	// Optional Field (extExtExtLength) (Can be skipped, if the value is null)
-	var extExtExtLength *uint32 = nil
-	if m.GetExtExtExtLength() != nil {
-		extExtExtLength = m.GetExtExtExtLength()
-		_extExtExtLengthErr := writeBuffer.WriteUint32("extExtExtLength", 32, uint32(*(extExtExtLength)))
-		if _extExtExtLengthErr != nil {
-			return errors.Wrap(_extExtExtLengthErr, "Error serializing 'extExtExtLength' field")
-		}
+	if err := WriteOptionalField[uint32](ctx, "extExtExtLength", m.GetExtExtExtLength(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'extExtExtLength' field")
 	}
 	// Virtual field
 	actualLength := m.GetActualLength()
@@ -541,9 +464,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return nil
 }
 
-func (m *_BACnetTagHeader) isBACnetTagHeader() bool {
-	return true
-}
+func (m *_BACnetTagHeader) IsBACnetTagHeader() {}
 
 func (m *_BACnetTagHeader) String() string {
 	if m == nil {

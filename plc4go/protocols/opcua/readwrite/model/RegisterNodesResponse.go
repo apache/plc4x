@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type RegisterNodesResponse interface {
 	GetNoOfRegisteredNodeIds() int32
 	// GetRegisteredNodeIds returns RegisteredNodeIds (property field)
 	GetRegisteredNodeIds() []NodeId
-}
-
-// RegisterNodesResponseExactly can be used when we want exactly this type and not a type which fulfills RegisterNodesResponse.
-// This is useful for switch cases.
-type RegisterNodesResponseExactly interface {
-	RegisterNodesResponse
-	isRegisterNodesResponse() bool
+	// IsRegisterNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRegisterNodesResponse()
 }
 
 // _RegisterNodesResponse is the data-structure of this message
 type _RegisterNodesResponse struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader        ExtensionObjectDefinition
 	NoOfRegisteredNodeIds int32
 	RegisteredNodeIds     []NodeId
 }
+
+var _ RegisterNodesResponse = (*_RegisterNodesResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_RegisterNodesResponse) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RegisterNodesResponse) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_RegisterNodesResponse) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_RegisterNodesResponse) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_RegisterNodesResponse) GetRegisteredNodeIds() []NodeId {
 
 // NewRegisterNodesResponse factory function for _RegisterNodesResponse
 func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) *_RegisterNodesResponse {
-	_result := &_RegisterNodesResponse{
-		ResponseHeader:             responseHeader,
-		NoOfRegisteredNodeIds:      noOfRegisteredNodeIds,
-		RegisteredNodeIds:          registeredNodeIds,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterNodesResponse must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_RegisterNodesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfRegisteredNodeIds:             noOfRegisteredNodeIds,
+		RegisteredNodeIds:                 registeredNodeIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_RegisterNodesResponse) GetTypeName() string {
 }
 
 func (m *_RegisterNodesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -155,81 +156,40 @@ func (m *_RegisterNodesResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RegisterNodesResponseParse(ctx context.Context, theBytes []byte, identifier string) (RegisterNodesResponse, error) {
-	return RegisterNodesResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func RegisterNodesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterNodesResponse, error) {
+func (m *_RegisterNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerNodesResponse RegisterNodesResponse, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RegisterNodesResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RegisterNodesResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of RegisterNodesResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
-	// Simple Field (noOfRegisteredNodeIds)
-	_noOfRegisteredNodeIds, _noOfRegisteredNodeIdsErr := readBuffer.ReadInt32("noOfRegisteredNodeIds", 32)
-	if _noOfRegisteredNodeIdsErr != nil {
-		return nil, errors.Wrap(_noOfRegisteredNodeIdsErr, "Error parsing 'noOfRegisteredNodeIds' field of RegisterNodesResponse")
+	noOfRegisteredNodeIds, err := ReadSimpleField(ctx, "noOfRegisteredNodeIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRegisteredNodeIds' field"))
 	}
-	noOfRegisteredNodeIds := _noOfRegisteredNodeIds
+	m.NoOfRegisteredNodeIds = noOfRegisteredNodeIds
 
-	// Array field (registeredNodeIds)
-	if pullErr := readBuffer.PullContext("registeredNodeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for registeredNodeIds")
+	registeredNodeIds, err := ReadCountArrayField[NodeId](ctx, "registeredNodeIds", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfRegisteredNodeIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'registeredNodeIds' field"))
 	}
-	// Count array
-	registeredNodeIds := make([]NodeId, max(noOfRegisteredNodeIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(registeredNodeIds) == 0 {
-		registeredNodeIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfRegisteredNodeIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NodeIdParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'registeredNodeIds' field of RegisterNodesResponse")
-			}
-			registeredNodeIds[_curItem] = _item.(NodeId)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("registeredNodeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for registeredNodeIds")
-	}
+	m.RegisteredNodeIds = registeredNodeIds
 
 	if closeErr := readBuffer.CloseContext("RegisterNodesResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RegisterNodesResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RegisterNodesResponse{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-		NoOfRegisteredNodeIds:      noOfRegisteredNodeIds,
-		RegisteredNodeIds:          registeredNodeIds,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RegisterNodesResponse) Serialize() ([]byte, error) {
@@ -250,40 +210,16 @@ func (m *_RegisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for RegisterNodesResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfRegisteredNodeIds)
-		noOfRegisteredNodeIds := int32(m.GetNoOfRegisteredNodeIds())
-		_noOfRegisteredNodeIdsErr := writeBuffer.WriteInt32("noOfRegisteredNodeIds", 32, int32((noOfRegisteredNodeIds)))
-		if _noOfRegisteredNodeIdsErr != nil {
-			return errors.Wrap(_noOfRegisteredNodeIdsErr, "Error serializing 'noOfRegisteredNodeIds' field")
+		if err := WriteSimpleField[int32](ctx, "noOfRegisteredNodeIds", m.GetNoOfRegisteredNodeIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfRegisteredNodeIds' field")
 		}
 
-		// Array Field (registeredNodeIds)
-		if pushErr := writeBuffer.PushContext("registeredNodeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for registeredNodeIds")
-		}
-		for _curItem, _element := range m.GetRegisteredNodeIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRegisteredNodeIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'registeredNodeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("registeredNodeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for registeredNodeIds")
+		if err := WriteComplexTypeArrayField(ctx, "registeredNodeIds", m.GetRegisteredNodeIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'registeredNodeIds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RegisterNodesResponse"); popErr != nil {
@@ -291,12 +227,10 @@ func (m *_RegisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RegisterNodesResponse) isRegisterNodesResponse() bool {
-	return true
-}
+func (m *_RegisterNodesResponse) IsRegisterNodesResponse() {}
 
 func (m *_RegisterNodesResponse) String() string {
 	if m == nil {

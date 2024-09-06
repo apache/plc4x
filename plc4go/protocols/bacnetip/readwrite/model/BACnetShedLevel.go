@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,47 +35,40 @@ import (
 
 // BACnetShedLevel is the corresponding interface of BACnetShedLevel
 type BACnetShedLevel interface {
+	BACnetShedLevelContract
+	BACnetShedLevelRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetShedLevel()
+}
+
+// BACnetShedLevelContract provides a set of functions which can be overwritten by a sub struct
+type BACnetShedLevelContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// IsBACnetShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetShedLevel()
 }
 
-// BACnetShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevel.
-// This is useful for switch cases.
-type BACnetShedLevelExactly interface {
-	BACnetShedLevel
-	isBACnetShedLevel() bool
+// BACnetShedLevelRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetShedLevelRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetShedLevel is the data-structure of this message
 type _BACnetShedLevel struct {
-	_BACnetShedLevelChildRequirements
+	_SubType        BACnetShedLevel
 	PeekedTagHeader BACnetTagHeader
 }
 
-type _BACnetShedLevelChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetShedLevelParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetShedLevel, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetShedLevelChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetShedLevel, peekedTagHeader BACnetTagHeader)
-	GetParent() *BACnetShedLevel
-
-	GetTypeName() string
-	BACnetShedLevel
-}
+var _ BACnetShedLevelContract = (*_BACnetShedLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,7 +88,8 @@ func (m *_BACnetShedLevel) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -106,6 +102,9 @@ func (m *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
 
 // NewBACnetShedLevel factory function for _BACnetShedLevel
 func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetShedLevel must not be nil")
+	}
 	return &_BACnetShedLevel{PeekedTagHeader: peekedTagHeader}
 }
 
@@ -124,7 +123,7 @@ func (m *_BACnetShedLevel) GetTypeName() string {
 	return "BACnetShedLevel"
 }
 
-func (m *_BACnetShedLevel) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetShedLevel) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -133,71 +132,81 @@ func (m *_BACnetShedLevel) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetShedLevel) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetShedLevelParse(ctx context.Context, theBytes []byte) (BACnetShedLevel, error) {
-	return BACnetShedLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func BACnetShedLevelParse[T BACnetShedLevel](ctx context.Context, theBytes []byte) (T, error) {
+	return BACnetShedLevelParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevel, error) {
+func BACnetShedLevelParseWithBufferProducer[T BACnetShedLevel]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetShedLevelParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetShedLevelParseWithBuffer[T BACnetShedLevel](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_BACnetShedLevel{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetShedLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetShedLevel BACnetShedLevel, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetShedLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetShedLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetShedLevelChildSerializeRequirement interface {
-		BACnetShedLevel
-		InitializeParent(BACnetShedLevel, BACnetTagHeader)
-		GetParent() BACnetShedLevel
-	}
-	var _childTemp any
-	var _child BACnetShedLevelChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetShedLevel
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetShedLevelPercent
-		_childTemp, typeSwitchError = BACnetShedLevelPercentParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetShedLevelPercent{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelPercent for type-switch of BACnetShedLevel")
+		}
 	case peekedTagNumber == uint8(1): // BACnetShedLevelLevel
-		_childTemp, typeSwitchError = BACnetShedLevelLevelParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetShedLevelLevel{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelLevel for type-switch of BACnetShedLevel")
+		}
 	case peekedTagNumber == uint8(2): // BACnetShedLevelAmount
-		_childTemp, typeSwitchError = BACnetShedLevelAmountParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetShedLevelAmount{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelAmount for type-switch of BACnetShedLevel")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetShedLevel")
-	}
-	_child = _childTemp.(BACnetShedLevelChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetShedLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetShedLevel")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
 }
 
-func (pm *_BACnetShedLevel) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetShedLevel, serializeChildFunction func() error) error {
+func (pm *_BACnetShedLevel) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetShedLevel, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -226,17 +235,4 @@ func (pm *_BACnetShedLevel) SerializeParent(ctx context.Context, writeBuffer uti
 	return nil
 }
 
-func (m *_BACnetShedLevel) isBACnetShedLevel() bool {
-	return true
-}
-
-func (m *_BACnetShedLevel) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetShedLevel) IsBACnetShedLevel() {}

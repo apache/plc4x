@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,13 +44,8 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	GetCovIncrement() BACnetContextTagReal
 	// GetTimestamped returns Timestamped (property field)
 	GetTimestamped() BACnetContextTagBoolean
-}
-
-// BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry.
-// This is useful for switch cases.
-type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryExactly interface {
-	BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
-	isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry() bool
+	// IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry()
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry is the data-structure of this message
@@ -58,6 +54,8 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOf
 	CovIncrement      BACnetContextTagReal
 	Timestamped       BACnetContextTagBoolean
 }
+
+var _ BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,6 +81,12 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 
 // NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry factory function for _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
 func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry(monitoredProperty BACnetPropertyReferenceEnclosed, covIncrement BACnetContextTagReal, timestamped BACnetContextTagBoolean) *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry {
+	if monitoredProperty == nil {
+		panic("monitoredProperty of type BACnetPropertyReferenceEnclosed for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry must not be nil")
+	}
+	if timestamped == nil {
+		panic("timestamped of type BACnetContextTagBoolean for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry must not be nil")
+	}
 	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry{MonitoredProperty: monitoredProperty, CovIncrement: covIncrement, Timestamped: timestamped}
 }
 
@@ -126,75 +130,56 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, error) {
+		return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, error) {
+	v, err := (&_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (monitoredProperty)
-	if pullErr := readBuffer.PullContext("monitoredProperty"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoredProperty")
+	monitoredProperty, err := ReadSimpleField[BACnetPropertyReferenceEnclosed](ctx, "monitoredProperty", ReadComplex[BACnetPropertyReferenceEnclosed](BACnetPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredProperty' field"))
 	}
-	_monitoredProperty, _monitoredPropertyErr := BACnetPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _monitoredPropertyErr != nil {
-		return nil, errors.Wrap(_monitoredPropertyErr, "Error parsing 'monitoredProperty' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
+	m.MonitoredProperty = monitoredProperty
+
+	var covIncrement BACnetContextTagReal
+	_covIncrement, err := ReadOptionalField[BACnetContextTagReal](ctx, "covIncrement", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covIncrement' field"))
 	}
-	monitoredProperty := _monitoredProperty.(BACnetPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("monitoredProperty"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoredProperty")
+	if _covIncrement != nil {
+		covIncrement = *_covIncrement
+		m.CovIncrement = covIncrement
 	}
 
-	// Optional Field (covIncrement) (Can be skipped, if a given expression evaluates to false)
-	var covIncrement BACnetContextTagReal = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_REAL)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
-		default:
-			covIncrement = _val.(BACnetContextTagReal)
-			if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for covIncrement")
-			}
-		}
+	timestamped, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "timestamped", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamped' field"))
 	}
-
-	// Simple Field (timestamped)
-	if pullErr := readBuffer.PullContext("timestamped"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestamped")
-	}
-	_timestamped, _timestampedErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _timestampedErr != nil {
-		return nil, errors.Wrap(_timestampedErr, "Error parsing 'timestamped' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
-	}
-	timestamped := _timestamped.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("timestamped"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestamped")
-	}
+	m.Timestamped = timestamped
 
 	if closeErr := readBuffer.CloseContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 	}
 
-	// Create the instance
-	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry{
-		MonitoredProperty: monitoredProperty,
-		CovIncrement:      covIncrement,
-		Timestamped:       timestamped,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) Serialize() ([]byte, error) {
@@ -214,44 +199,16 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 		return errors.Wrap(pushErr, "Error pushing for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 	}
 
-	// Simple Field (monitoredProperty)
-	if pushErr := writeBuffer.PushContext("monitoredProperty"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for monitoredProperty")
-	}
-	_monitoredPropertyErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredProperty())
-	if popErr := writeBuffer.PopContext("monitoredProperty"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for monitoredProperty")
-	}
-	if _monitoredPropertyErr != nil {
-		return errors.Wrap(_monitoredPropertyErr, "Error serializing 'monitoredProperty' field")
+	if err := WriteSimpleField[BACnetPropertyReferenceEnclosed](ctx, "monitoredProperty", m.GetMonitoredProperty(), WriteComplex[BACnetPropertyReferenceEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitoredProperty' field")
 	}
 
-	// Optional Field (covIncrement) (Can be skipped, if the value is null)
-	var covIncrement BACnetContextTagReal = nil
-	if m.GetCovIncrement() != nil {
-		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covIncrement")
-		}
-		covIncrement = m.GetCovIncrement()
-		_covIncrementErr := writeBuffer.WriteSerializable(ctx, covIncrement)
-		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covIncrement")
-		}
-		if _covIncrementErr != nil {
-			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'covIncrement' field")
 	}
 
-	// Simple Field (timestamped)
-	if pushErr := writeBuffer.PushContext("timestamped"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timestamped")
-	}
-	_timestampedErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamped())
-	if popErr := writeBuffer.PopContext("timestamped"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timestamped")
-	}
-	if _timestampedErr != nil {
-		return errors.Wrap(_timestampedErr, "Error serializing 'timestamped' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "timestamped", m.GetTimestamped(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestamped' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry"); popErr != nil {
@@ -260,8 +217,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 	return nil
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry() bool {
-	return true
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry() {
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) String() string {

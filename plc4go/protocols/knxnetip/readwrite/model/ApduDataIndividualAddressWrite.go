@@ -37,19 +37,17 @@ type ApduDataIndividualAddressWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
-}
-
-// ApduDataIndividualAddressWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataIndividualAddressWrite.
-// This is useful for switch cases.
-type ApduDataIndividualAddressWriteExactly interface {
-	ApduDataIndividualAddressWrite
-	isApduDataIndividualAddressWrite() bool
+	// IsApduDataIndividualAddressWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataIndividualAddressWrite()
 }
 
 // _ApduDataIndividualAddressWrite is the data-structure of this message
 type _ApduDataIndividualAddressWrite struct {
-	*_ApduData
+	ApduDataContract
 }
+
+var _ ApduDataIndividualAddressWrite = (*_ApduDataIndividualAddressWrite)(nil)
+var _ ApduDataRequirements = (*_ApduDataIndividualAddressWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataIndividualAddressWrite) GetApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataIndividualAddressWrite) InitializeParent(parent ApduData) {}
-
-func (m *_ApduDataIndividualAddressWrite) GetParent() ApduData {
-	return m._ApduData
+func (m *_ApduDataIndividualAddressWrite) GetParent() ApduDataContract {
+	return m.ApduDataContract
 }
 
 // NewApduDataIndividualAddressWrite factory function for _ApduDataIndividualAddressWrite
 func NewApduDataIndividualAddressWrite(dataLength uint8) *_ApduDataIndividualAddressWrite {
 	_result := &_ApduDataIndividualAddressWrite{
-		_ApduData: NewApduData(dataLength),
+		ApduDataContract: NewApduData(dataLength),
 	}
-	_result._ApduData._ApduDataChildRequirements = _result
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataIndividualAddressWrite) GetTypeName() string {
 }
 
 func (m *_ApduDataIndividualAddressWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataIndividualAddressWrite) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataIndividualAddressWriteParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataIndividualAddressWrite, error) {
-	return ApduDataIndividualAddressWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
-}
-
-func ApduDataIndividualAddressWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataIndividualAddressWrite, error) {
+func (m *_ApduDataIndividualAddressWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataIndividualAddressWrite ApduDataIndividualAddressWrite, err error) {
+	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataIndividualAddressWrite")
 	}
@@ -124,14 +116,7 @@ func ApduDataIndividualAddressWriteParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataIndividualAddressWrite")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataIndividualAddressWrite{
-		_ApduData: &_ApduData{
-			DataLength: dataLength,
-		},
-	}
-	_child._ApduData._ApduDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataIndividualAddressWrite) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataIndividualAddressWrite) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataContract.(*_ApduData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataIndividualAddressWrite) isApduDataIndividualAddressWrite() bool {
-	return true
-}
+func (m *_ApduDataIndividualAddressWrite) IsApduDataIndividualAddressWrite() {}
 
 func (m *_ApduDataIndividualAddressWrite) String() string {
 	if m == nil {

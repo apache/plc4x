@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,13 +46,8 @@ type BACnetRouterEntry interface {
 	GetStatus() BACnetRouterEntryStatusTagged
 	// GetPerformanceIndex returns PerformanceIndex (property field)
 	GetPerformanceIndex() BACnetContextTagOctetString
-}
-
-// BACnetRouterEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetRouterEntry.
-// This is useful for switch cases.
-type BACnetRouterEntryExactly interface {
-	BACnetRouterEntry
-	isBACnetRouterEntry() bool
+	// IsBACnetRouterEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRouterEntry()
 }
 
 // _BACnetRouterEntry is the data-structure of this message
@@ -61,6 +57,8 @@ type _BACnetRouterEntry struct {
 	Status           BACnetRouterEntryStatusTagged
 	PerformanceIndex BACnetContextTagOctetString
 }
+
+var _ BACnetRouterEntry = (*_BACnetRouterEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,6 +88,15 @@ func (m *_BACnetRouterEntry) GetPerformanceIndex() BACnetContextTagOctetString {
 
 // NewBACnetRouterEntry factory function for _BACnetRouterEntry
 func NewBACnetRouterEntry(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged, performanceIndex BACnetContextTagOctetString) *_BACnetRouterEntry {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetContextTagUnsignedInteger for BACnetRouterEntry must not be nil")
+	}
+	if macAddress == nil {
+		panic("macAddress of type BACnetContextTagOctetString for BACnetRouterEntry must not be nil")
+	}
+	if status == nil {
+		panic("status of type BACnetRouterEntryStatusTagged for BACnetRouterEntry must not be nil")
+	}
 	return &_BACnetRouterEntry{NetworkNumber: networkNumber, MacAddress: macAddress, Status: status, PerformanceIndex: performanceIndex}
 }
 
@@ -136,89 +143,62 @@ func BACnetRouterEntryParse(ctx context.Context, theBytes []byte) (BACnetRouterE
 	return BACnetRouterEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetRouterEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
+		return BACnetRouterEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
+	v, err := (&_BACnetRouterEntry{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetRouterEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetRouterEntry BACnetRouterEntry, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRouterEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRouterEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkNumber)
-	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
+	networkNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "networkNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
-	_networkNumber, _networkNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _networkNumberErr != nil {
-		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetRouterEntry")
-	}
-	networkNumber := _networkNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkNumber")
-	}
+	m.NetworkNumber = networkNumber
 
-	// Simple Field (macAddress)
-	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
+	macAddress, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "macAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'macAddress' field"))
 	}
-	_macAddress, _macAddressErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
-	if _macAddressErr != nil {
-		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetRouterEntry")
-	}
-	macAddress := _macAddress.(BACnetContextTagOctetString)
-	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for macAddress")
-	}
+	m.MacAddress = macAddress
 
-	// Simple Field (status)
-	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for status")
+	status, err := ReadSimpleField[BACnetRouterEntryStatusTagged](ctx, "status", ReadComplex[BACnetRouterEntryStatusTagged](BACnetRouterEntryStatusTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	_status, _statusErr := BACnetRouterEntryStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of BACnetRouterEntry")
-	}
-	status := _status.(BACnetRouterEntryStatusTagged)
-	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for status")
-	}
+	m.Status = status
 
-	// Optional Field (performanceIndex) (Can be skipped, if a given expression evaluates to false)
-	var performanceIndex BACnetContextTagOctetString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("performanceIndex"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for performanceIndex")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'performanceIndex' field of BACnetRouterEntry")
-		default:
-			performanceIndex = _val.(BACnetContextTagOctetString)
-			if closeErr := readBuffer.CloseContext("performanceIndex"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for performanceIndex")
-			}
-		}
+	var performanceIndex BACnetContextTagOctetString
+	_performanceIndex, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'performanceIndex' field"))
+	}
+	if _performanceIndex != nil {
+		performanceIndex = *_performanceIndex
+		m.PerformanceIndex = performanceIndex
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRouterEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRouterEntry")
 	}
 
-	// Create the instance
-	return &_BACnetRouterEntry{
-		NetworkNumber:    networkNumber,
-		MacAddress:       macAddress,
-		Status:           status,
-		PerformanceIndex: performanceIndex,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetRouterEntry) Serialize() ([]byte, error) {
@@ -238,56 +218,20 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(pushErr, "Error pushing for BACnetRouterEntry")
 	}
 
-	// Simple Field (networkNumber)
-	if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkNumber")
-	}
-	_networkNumberErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkNumber())
-	if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkNumber")
-	}
-	if _networkNumberErr != nil {
-		return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "networkNumber", m.GetNetworkNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkNumber' field")
 	}
 
-	// Simple Field (macAddress)
-	if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for macAddress")
-	}
-	_macAddressErr := writeBuffer.WriteSerializable(ctx, m.GetMacAddress())
-	if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for macAddress")
-	}
-	if _macAddressErr != nil {
-		return errors.Wrap(_macAddressErr, "Error serializing 'macAddress' field")
+	if err := WriteSimpleField[BACnetContextTagOctetString](ctx, "macAddress", m.GetMacAddress(), WriteComplex[BACnetContextTagOctetString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'macAddress' field")
 	}
 
-	// Simple Field (status)
-	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for status")
-	}
-	_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
-	if popErr := writeBuffer.PopContext("status"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for status")
-	}
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleField[BACnetRouterEntryStatusTagged](ctx, "status", m.GetStatus(), WriteComplex[BACnetRouterEntryStatusTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
-	// Optional Field (performanceIndex) (Can be skipped, if the value is null)
-	var performanceIndex BACnetContextTagOctetString = nil
-	if m.GetPerformanceIndex() != nil {
-		if pushErr := writeBuffer.PushContext("performanceIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for performanceIndex")
-		}
-		performanceIndex = m.GetPerformanceIndex()
-		_performanceIndexErr := writeBuffer.WriteSerializable(ctx, performanceIndex)
-		if popErr := writeBuffer.PopContext("performanceIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for performanceIndex")
-		}
-		if _performanceIndexErr != nil {
-			return errors.Wrap(_performanceIndexErr, "Error serializing 'performanceIndex' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", GetRef(m.GetPerformanceIndex()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'performanceIndex' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetRouterEntry"); popErr != nil {
@@ -296,9 +240,7 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, write
 	return nil
 }
 
-func (m *_BACnetRouterEntry) isBACnetRouterEntry() bool {
-	return true
-}
+func (m *_BACnetRouterEntry) IsBACnetRouterEntry() {}
 
 func (m *_BACnetRouterEntry) String() string {
 	if m == nil {

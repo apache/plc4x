@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -36,48 +38,41 @@ const CycServiceItemType_FUNCTIONID uint8 = 0x12
 
 // CycServiceItemType is the corresponding interface of CycServiceItemType
 type CycServiceItemType interface {
+	CycServiceItemTypeContract
+	CycServiceItemTypeRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCycServiceItemType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCycServiceItemType()
+}
+
+// CycServiceItemTypeContract provides a set of functions which can be overwritten by a sub struct
+type CycServiceItemTypeContract interface {
 	// GetByteLength returns ByteLength (property field)
 	GetByteLength() uint8
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() uint8
+	// IsCycServiceItemType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCycServiceItemType()
 }
 
-// CycServiceItemTypeExactly can be used when we want exactly this type and not a type which fulfills CycServiceItemType.
-// This is useful for switch cases.
-type CycServiceItemTypeExactly interface {
-	CycServiceItemType
-	isCycServiceItemType() bool
+// CycServiceItemTypeRequirements provides a set of functions which need to be implemented by a sub struct
+type CycServiceItemTypeRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetSyntaxId returns SyntaxId (discriminator field)
+	GetSyntaxId() uint8
 }
 
 // _CycServiceItemType is the data-structure of this message
 type _CycServiceItemType struct {
-	_CycServiceItemTypeChildRequirements
+	_SubType   CycServiceItemType
 	ByteLength uint8
 	SyntaxId   uint8
 }
 
-type _CycServiceItemTypeChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetSyntaxId() uint8
-}
-
-type CycServiceItemTypeParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CycServiceItemType, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type CycServiceItemTypeChild interface {
-	utils.Serializable
-	InitializeParent(parent CycServiceItemType, byteLength uint8, syntaxId uint8)
-	GetParent() *CycServiceItemType
-
-	GetTypeName() string
-	CycServiceItemType
-}
+var _ CycServiceItemTypeContract = (*_CycServiceItemType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,7 +125,7 @@ func (m *_CycServiceItemType) GetTypeName() string {
 	return "CycServiceItemType"
 }
 
-func (m *_CycServiceItemType) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_CycServiceItemType) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (functionId)
@@ -146,79 +141,83 @@ func (m *_CycServiceItemType) GetParentLengthInBits(ctx context.Context) uint16 
 }
 
 func (m *_CycServiceItemType) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func CycServiceItemTypeParse(ctx context.Context, theBytes []byte) (CycServiceItemType, error) {
-	return CycServiceItemTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func CycServiceItemTypeParse[T CycServiceItemType](ctx context.Context, theBytes []byte) (T, error) {
+	return CycServiceItemTypeParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func CycServiceItemTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemType, error) {
+func CycServiceItemTypeParseWithBufferProducer[T CycServiceItemType]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := CycServiceItemTypeParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func CycServiceItemTypeParseWithBuffer[T CycServiceItemType](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_CycServiceItemType{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_CycServiceItemType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cycServiceItemType CycServiceItemType, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CycServiceItemType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CycServiceItemType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (functionId)
-	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
-	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of CycServiceItemType")
+	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)), CycServiceItemType_FUNCTIONID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
-	if functionId != CycServiceItemType_FUNCTIONID {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CycServiceItemType_FUNCTIONID) + " but got " + fmt.Sprintf("%d", functionId))
-	}
+	_ = functionId
 
-	// Simple Field (byteLength)
-	_byteLength, _byteLengthErr := readBuffer.ReadUint8("byteLength", 8)
-	if _byteLengthErr != nil {
-		return nil, errors.Wrap(_byteLengthErr, "Error parsing 'byteLength' field of CycServiceItemType")
+	byteLength, err := ReadSimpleField(ctx, "byteLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteLength' field"))
 	}
-	byteLength := _byteLength
+	m.ByteLength = byteLength
 
-	// Simple Field (syntaxId)
-	_syntaxId, _syntaxIdErr := readBuffer.ReadUint8("syntaxId", 8)
-	if _syntaxIdErr != nil {
-		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of CycServiceItemType")
+	syntaxId, err := ReadSimpleField(ctx, "syntaxId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'syntaxId' field"))
 	}
-	syntaxId := _syntaxId
+	m.SyntaxId = syntaxId
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type CycServiceItemTypeChildSerializeRequirement interface {
-		CycServiceItemType
-		InitializeParent(CycServiceItemType, uint8, uint8)
-		GetParent() CycServiceItemType
-	}
-	var _childTemp any
-	var _child CycServiceItemTypeChildSerializeRequirement
-	var typeSwitchError error
+	var _child CycServiceItemType
 	switch {
 	case syntaxId == 0x10: // CycServiceItemAnyType
-		_childTemp, typeSwitchError = CycServiceItemAnyTypeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_CycServiceItemAnyType{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CycServiceItemAnyType for type-switch of CycServiceItemType")
+		}
 	case syntaxId == 0xb0: // CycServiceItemDbReadType
-		_childTemp, typeSwitchError = CycServiceItemDbReadTypeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_CycServiceItemDbReadType{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CycServiceItemDbReadType for type-switch of CycServiceItemType")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [syntaxId=%v]", syntaxId)
+		return nil, errors.Errorf("Unmapped type for parameters [syntaxId=%v]", syntaxId)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CycServiceItemType")
-	}
-	_child = _childTemp.(CycServiceItemTypeChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CycServiceItemType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CycServiceItemType")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, byteLength, syntaxId)
 	return _child, nil
 }
 
-func (pm *_CycServiceItemType) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CycServiceItemType, serializeChildFunction func() error) error {
+func (pm *_CycServiceItemType) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CycServiceItemType, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -230,24 +229,16 @@ func (pm *_CycServiceItemType) SerializeParent(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for CycServiceItemType")
 	}
 
-	// Const Field (functionId)
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8(0x12))
-	if _functionIdErr != nil {
-		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+	if err := WriteConstField(ctx, "functionId", CycServiceItemType_FUNCTIONID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
-	// Simple Field (byteLength)
-	byteLength := uint8(m.GetByteLength())
-	_byteLengthErr := writeBuffer.WriteUint8("byteLength", 8, uint8((byteLength)))
-	if _byteLengthErr != nil {
-		return errors.Wrap(_byteLengthErr, "Error serializing 'byteLength' field")
+	if err := WriteSimpleField[uint8](ctx, "byteLength", m.GetByteLength(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'byteLength' field")
 	}
 
-	// Simple Field (syntaxId)
-	syntaxId := uint8(m.GetSyntaxId())
-	_syntaxIdErr := writeBuffer.WriteUint8("syntaxId", 8, uint8((syntaxId)))
-	if _syntaxIdErr != nil {
-		return errors.Wrap(_syntaxIdErr, "Error serializing 'syntaxId' field")
+	if err := WriteSimpleField[uint8](ctx, "syntaxId", m.GetSyntaxId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'syntaxId' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -261,17 +252,4 @@ func (pm *_CycServiceItemType) SerializeParent(ctx context.Context, writeBuffer 
 	return nil
 }
 
-func (m *_CycServiceItemType) isCycServiceItemType() bool {
-	return true
-}
-
-func (m *_CycServiceItemType) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_CycServiceItemType) IsCycServiceItemType() {}

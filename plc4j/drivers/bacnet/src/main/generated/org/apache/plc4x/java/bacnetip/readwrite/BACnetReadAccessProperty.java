@@ -75,14 +75,13 @@ public class BACnetReadAccessProperty implements Message {
     writeBuffer.pushContext("BACnetReadAccessProperty");
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (readResult) (Can be skipped, if the value is null)
-    writeOptionalField("readResult", readResult, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("readResult", readResult, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetReadAccessProperty");
   }
@@ -123,7 +122,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -132,7 +131,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -144,7 +143,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetReadAccessPropertyReadResult readResult =
         readOptionalField(
             "readResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReadAccessPropertyReadResult.staticParse(
                         readBuffer,

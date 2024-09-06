@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,23 +41,21 @@ type CBusPointToMultiPointCommandStatus interface {
 	CBusPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest (property field)
 	GetStatusRequest() StatusRequest
-}
-
-// CBusPointToMultiPointCommandStatusExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommandStatus.
-// This is useful for switch cases.
-type CBusPointToMultiPointCommandStatusExactly interface {
-	CBusPointToMultiPointCommandStatus
-	isCBusPointToMultiPointCommandStatus() bool
+	// IsCBusPointToMultiPointCommandStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToMultiPointCommandStatus()
 }
 
 // _CBusPointToMultiPointCommandStatus is the data-structure of this message
 type _CBusPointToMultiPointCommandStatus struct {
-	*_CBusPointToMultiPointCommand
+	CBusPointToMultiPointCommandContract
 	StatusRequest StatusRequest
 	// Reserved Fields
 	reservedField0 *byte
 	reservedField1 *byte
 }
+
+var _ CBusPointToMultiPointCommandStatus = (*_CBusPointToMultiPointCommandStatus)(nil)
+var _ CBusPointToMultiPointCommandRequirements = (*_CBusPointToMultiPointCommandStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,12 +67,8 @@ type _CBusPointToMultiPointCommandStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToMultiPointCommandStatus) InitializeParent(parent CBusPointToMultiPointCommand, peekedApplication byte) {
-	m.PeekedApplication = peekedApplication
-}
-
-func (m *_CBusPointToMultiPointCommandStatus) GetParent() CBusPointToMultiPointCommand {
-	return m._CBusPointToMultiPointCommand
+func (m *_CBusPointToMultiPointCommandStatus) GetParent() CBusPointToMultiPointCommandContract {
+	return m.CBusPointToMultiPointCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,11 +87,14 @@ func (m *_CBusPointToMultiPointCommandStatus) GetStatusRequest() StatusRequest {
 
 // NewCBusPointToMultiPointCommandStatus factory function for _CBusPointToMultiPointCommandStatus
 func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
-	_result := &_CBusPointToMultiPointCommandStatus{
-		StatusRequest:                 statusRequest,
-		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
+	if statusRequest == nil {
+		panic("statusRequest of type StatusRequest for CBusPointToMultiPointCommandStatus must not be nil")
 	}
-	_result._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _result
+	_result := &_CBusPointToMultiPointCommandStatus{
+		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
+		StatusRequest:                        statusRequest,
+	}
+	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
 	return _result
 }
 
@@ -115,7 +114,7 @@ func (m *_CBusPointToMultiPointCommandStatus) GetTypeName() string {
 }
 
 func (m *_CBusPointToMultiPointCommandStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -133,83 +132,40 @@ func (m *_CBusPointToMultiPointCommandStatus) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusPointToMultiPointCommandStatusParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
-	return CBusPointToMultiPointCommandStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func CBusPointToMultiPointCommandStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
+func (m *_CBusPointToMultiPointCommandStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusPointToMultiPointCommand, cBusOptions CBusOptions) (__cBusPointToMultiPointCommandStatus CBusPointToMultiPointCommandStatus, err error) {
+	m.CBusPointToMultiPointCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommandStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToMultiPointCommandStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToMultiPointCommandStatus")
-		}
-		if reserved != byte(0xFF) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0xFF),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0xFF))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	var reservedField1 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToMultiPointCommandStatus")
-		}
-		if reserved != byte(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField1 = reservedField1
 
-	// Simple Field (statusRequest)
-	if pullErr := readBuffer.PullContext("statusRequest"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusRequest")
+	statusRequest, err := ReadSimpleField[StatusRequest](ctx, "statusRequest", ReadComplex[StatusRequest](StatusRequestParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusRequest' field"))
 	}
-	_statusRequest, _statusRequestErr := StatusRequestParseWithBuffer(ctx, readBuffer)
-	if _statusRequestErr != nil {
-		return nil, errors.Wrap(_statusRequestErr, "Error parsing 'statusRequest' field of CBusPointToMultiPointCommandStatus")
-	}
-	statusRequest := _statusRequest.(StatusRequest)
-	if closeErr := readBuffer.CloseContext("statusRequest"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusRequest")
-	}
+	m.StatusRequest = statusRequest
 
 	if closeErr := readBuffer.CloseContext("CBusPointToMultiPointCommandStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToMultiPointCommandStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CBusPointToMultiPointCommandStatus{
-		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{
-			CBusOptions: cBusOptions,
-		},
-		StatusRequest:  statusRequest,
-		reservedField0: reservedField0,
-		reservedField1: reservedField1,
-	}
-	_child._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CBusPointToMultiPointCommandStatus) Serialize() ([]byte, error) {
@@ -230,48 +186,16 @@ func (m *_CBusPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToMultiPointCommandStatus")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0xFF)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0xFF),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0xFF), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0x00)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x00), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (statusRequest)
-		if pushErr := writeBuffer.PushContext("statusRequest"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusRequest")
-		}
-		_statusRequestErr := writeBuffer.WriteSerializable(ctx, m.GetStatusRequest())
-		if popErr := writeBuffer.PopContext("statusRequest"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusRequest")
-		}
-		if _statusRequestErr != nil {
-			return errors.Wrap(_statusRequestErr, "Error serializing 'statusRequest' field")
+		if err := WriteSimpleField[StatusRequest](ctx, "statusRequest", m.GetStatusRequest(), WriteComplex[StatusRequest](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusRequest' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToMultiPointCommandStatus"); popErr != nil {
@@ -279,12 +203,10 @@ func (m *_CBusPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CBusPointToMultiPointCommandStatus) isCBusPointToMultiPointCommandStatus() bool {
-	return true
-}
+func (m *_CBusPointToMultiPointCommandStatus) IsCBusPointToMultiPointCommandStatus() {}
 
 func (m *_CBusPointToMultiPointCommandStatus) String() string {
 	if m == nil {

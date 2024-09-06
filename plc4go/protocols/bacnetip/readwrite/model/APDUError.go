@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,24 +45,22 @@ type APDUError interface {
 	GetErrorChoice() BACnetConfirmedServiceChoice
 	// GetError returns Error (property field)
 	GetError() BACnetError
-}
-
-// APDUErrorExactly can be used when we want exactly this type and not a type which fulfills APDUError.
-// This is useful for switch cases.
-type APDUErrorExactly interface {
-	APDUError
-	isAPDUError() bool
+	// IsAPDUError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUError()
 }
 
 // _APDUError is the data-structure of this message
 type _APDUError struct {
-	*_APDU
+	APDUContract
 	OriginalInvokeId uint8
 	ErrorChoice      BACnetConfirmedServiceChoice
 	Error            BACnetError
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ APDUError = (*_APDUError)(nil)
+var _ APDURequirements = (*_APDUError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,10 +76,8 @@ func (m *_APDUError) GetApduType() ApduType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_APDUError) InitializeParent(parent APDU) {}
-
-func (m *_APDUError) GetParent() APDU {
-	return m._APDU
+func (m *_APDUError) GetParent() APDUContract {
+	return m.APDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,13 +104,16 @@ func (m *_APDUError) GetError() BACnetError {
 
 // NewAPDUError factory function for _APDUError
 func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError, apduLength uint16) *_APDUError {
+	if error == nil {
+		panic("error of type BACnetError for APDUError must not be nil")
+	}
 	_result := &_APDUError{
+		APDUContract:     NewAPDU(apduLength),
 		OriginalInvokeId: originalInvokeId,
 		ErrorChoice:      errorChoice,
 		Error:            error,
-		_APDU:            NewAPDU(apduLength),
 	}
-	_result._APDU._APDUChildRequirements = _result
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 
@@ -132,7 +133,7 @@ func (m *_APDUError) GetTypeName() string {
 }
 
 func (m *_APDUError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -153,87 +154,46 @@ func (m *_APDUError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUErrorParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUError, error) {
-	return APDUErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func APDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, error) {
+func (m *_APDUError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUError APDUError, err error) {
+	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDUError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 4)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUError")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(4)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
-	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUError")
+	originalInvokeId, err := ReadSimpleField(ctx, "originalInvokeId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalInvokeId' field"))
 	}
-	originalInvokeId := _originalInvokeId
+	m.OriginalInvokeId = originalInvokeId
 
-	// Simple Field (errorChoice)
-	if pullErr := readBuffer.PullContext("errorChoice"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorChoice")
+	errorChoice, err := ReadEnumField[BACnetConfirmedServiceChoice](ctx, "errorChoice", "BACnetConfirmedServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorChoice' field"))
 	}
-	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
-	if _errorChoiceErr != nil {
-		return nil, errors.Wrap(_errorChoiceErr, "Error parsing 'errorChoice' field of APDUError")
-	}
-	errorChoice := _errorChoice
-	if closeErr := readBuffer.CloseContext("errorChoice"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorChoice")
-	}
+	m.ErrorChoice = errorChoice
 
-	// Simple Field (error)
-	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for error")
+	error, err := ReadSimpleField[BACnetError](ctx, "error", ReadComplex[BACnetError](BACnetErrorParseWithBufferProducer[BACnetError]((BACnetConfirmedServiceChoice)(errorChoice)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
-	_error, _errorErr := BACnetErrorParseWithBuffer(ctx, readBuffer, BACnetConfirmedServiceChoice(errorChoice))
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of APDUError")
-	}
-	error := _error.(BACnetError)
-	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for error")
-	}
+	m.Error = error
 
 	if closeErr := readBuffer.CloseContext("APDUError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDUError")
 	}
 
-	// Create a partially initialized instance
-	_child := &_APDUError{
-		_APDU: &_APDU{
-			ApduLength: apduLength,
-		},
-		OriginalInvokeId: originalInvokeId,
-		ErrorChoice:      errorChoice,
-		Error:            error,
-		reservedField0:   reservedField0,
-	}
-	_child._APDU._APDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_APDUError) Serialize() ([]byte, error) {
@@ -254,51 +214,20 @@ func (m *_APDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for APDUError")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (errorChoice)
-		if pushErr := writeBuffer.PushContext("errorChoice"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorChoice")
-		}
-		_errorChoiceErr := writeBuffer.WriteSerializable(ctx, m.GetErrorChoice())
-		if popErr := writeBuffer.PopContext("errorChoice"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorChoice")
-		}
-		if _errorChoiceErr != nil {
-			return errors.Wrap(_errorChoiceErr, "Error serializing 'errorChoice' field")
+		if err := WriteSimpleEnumField[BACnetConfirmedServiceChoice](ctx, "errorChoice", "BACnetConfirmedServiceChoice", m.GetErrorChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorChoice' field")
 		}
 
-		// Simple Field (error)
-		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for error")
-		}
-		_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
-		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for error")
-		}
-		if _errorErr != nil {
-			return errors.Wrap(_errorErr, "Error serializing 'error' field")
+		if err := WriteSimpleField[BACnetError](ctx, "error", m.GetError(), WriteComplex[BACnetError](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'error' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUError"); popErr != nil {
@@ -306,12 +235,10 @@ func (m *_APDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.APDUContract.(*_APDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_APDUError) isAPDUError() bool {
-	return true
-}
+func (m *_APDUError) IsAPDUError() {}
 
 func (m *_APDUError) String() string {
 	if m == nil {

@@ -37,19 +37,17 @@ type TriggerControlDataIndicatorKill interface {
 	utils.LengthAware
 	utils.Serializable
 	TriggerControlData
-}
-
-// TriggerControlDataIndicatorKillExactly can be used when we want exactly this type and not a type which fulfills TriggerControlDataIndicatorKill.
-// This is useful for switch cases.
-type TriggerControlDataIndicatorKillExactly interface {
-	TriggerControlDataIndicatorKill
-	isTriggerControlDataIndicatorKill() bool
+	// IsTriggerControlDataIndicatorKill is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTriggerControlDataIndicatorKill()
 }
 
 // _TriggerControlDataIndicatorKill is the data-structure of this message
 type _TriggerControlDataIndicatorKill struct {
-	*_TriggerControlData
+	TriggerControlDataContract
 }
+
+var _ TriggerControlDataIndicatorKill = (*_TriggerControlDataIndicatorKill)(nil)
+var _ TriggerControlDataRequirements = (*_TriggerControlDataIndicatorKill)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _TriggerControlDataIndicatorKill struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TriggerControlDataIndicatorKill) InitializeParent(parent TriggerControlData, commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.TriggerGroup = triggerGroup
-}
-
-func (m *_TriggerControlDataIndicatorKill) GetParent() TriggerControlData {
-	return m._TriggerControlData
+func (m *_TriggerControlDataIndicatorKill) GetParent() TriggerControlDataContract {
+	return m.TriggerControlDataContract
 }
 
 // NewTriggerControlDataIndicatorKill factory function for _TriggerControlDataIndicatorKill
 func NewTriggerControlDataIndicatorKill(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataIndicatorKill {
 	_result := &_TriggerControlDataIndicatorKill{
-		_TriggerControlData: NewTriggerControlData(commandTypeContainer, triggerGroup),
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
 	}
-	_result._TriggerControlData._TriggerControlDataChildRequirements = _result
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_TriggerControlDataIndicatorKill) GetTypeName() string {
 }
 
 func (m *_TriggerControlDataIndicatorKill) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlDataIndicatorKillParse(ctx context.Context, theBytes []byte) (TriggerControlDataIndicatorKill, error) {
-	return TriggerControlDataIndicatorKillParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func TriggerControlDataIndicatorKillParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {
+func (m *_TriggerControlDataIndicatorKill) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TriggerControlData) (__triggerControlDataIndicatorKill TriggerControlDataIndicatorKill, err error) {
+	m.TriggerControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TriggerControlDataIndicatorKill"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TriggerControlDataIndicatorKill")
 	}
@@ -123,12 +112,7 @@ func TriggerControlDataIndicatorKillParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(closeErr, "Error closing for TriggerControlDataIndicatorKill")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TriggerControlDataIndicatorKill{
-		_TriggerControlData: &_TriggerControlData{},
-	}
-	_child._TriggerControlData._TriggerControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TriggerControlDataIndicatorKill) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_TriggerControlDataIndicatorKill) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TriggerControlDataContract.(*_TriggerControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TriggerControlDataIndicatorKill) isTriggerControlDataIndicatorKill() bool {
-	return true
-}
+func (m *_TriggerControlDataIndicatorKill) IsTriggerControlDataIndicatorKill() {}
 
 func (m *_TriggerControlDataIndicatorKill) String() string {
 	if m == nil {

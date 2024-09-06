@@ -92,26 +92,24 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (hvacType)
     writeSimpleEnumField(
         "hvacType",
         "HVACType",
         hvacType,
-        new DataWriterEnumDefault<>(
-            HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (hvacStatus)
-    writeSimpleField("hvacStatus", hvacStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hvacStatus", hvacStatus, writeComplex(writeBuffer));
 
     // Simple Field (hvacErrorCode)
     writeSimpleEnumField(
         "hvacErrorCode",
         "HVACError",
         hvacErrorCode,
-        new DataWriterEnumDefault<>(
-            HVACError::getValue, HVACError::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(HVACError::getValue, HVACError::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("AirConditioningDataZoneHvacPlantStatus");
   }
@@ -155,26 +153,23 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACType hvacType =
         readEnumField(
             "hvacType",
             "HVACType",
-            new DataReaderEnumDefault<>(HVACType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     HVACStatusFlags hvacStatus =
         readSimpleField(
-            "hvacStatus",
-            new DataReaderComplexDefault<>(
-                () -> HVACStatusFlags.staticParse(readBuffer), readBuffer));
+            "hvacStatus", readComplex(() -> HVACStatusFlags.staticParse(readBuffer), readBuffer));
 
     HVACError hvacErrorCode =
         readEnumField(
             "hvacErrorCode",
             "HVACError",
-            new DataReaderEnumDefault<>(HVACError::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACError::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("AirConditioningDataZoneHvacPlantStatus");
     // Create the instance

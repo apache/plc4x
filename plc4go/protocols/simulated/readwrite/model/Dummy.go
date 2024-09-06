@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,19 +42,16 @@ type Dummy interface {
 	utils.Serializable
 	// GetDummy returns Dummy (property field)
 	GetDummy() uint16
-}
-
-// DummyExactly can be used when we want exactly this type and not a type which fulfills Dummy.
-// This is useful for switch cases.
-type DummyExactly interface {
-	Dummy
-	isDummy() bool
+	// IsDummy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDummy()
 }
 
 // _Dummy is the data-structure of this message
 type _Dummy struct {
 	Dummy uint16
 }
+
+var _ Dummy = (*_Dummy)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -104,32 +104,40 @@ func DummyParse(ctx context.Context, theBytes []byte) (Dummy, error) {
 	return DummyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DummyParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Dummy, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Dummy, error) {
+		return DummyParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DummyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Dummy, error) {
+	v, err := (&_Dummy{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_Dummy) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dummy Dummy, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Dummy"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Dummy")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dummy)
-	_dummy, _dummyErr := readBuffer.ReadUint16("dummy", 16)
-	if _dummyErr != nil {
-		return nil, errors.Wrap(_dummyErr, "Error parsing 'dummy' field of Dummy")
+	dummy, err := ReadSimpleField(ctx, "dummy", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dummy' field"))
 	}
-	dummy := _dummy
+	m.Dummy = dummy
 
 	if closeErr := readBuffer.CloseContext("Dummy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Dummy")
 	}
 
-	// Create the instance
-	return &_Dummy{
-		Dummy: dummy,
-	}, nil
+	return m, nil
 }
 
 func (m *_Dummy) Serialize() ([]byte, error) {
@@ -149,11 +157,8 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for Dummy")
 	}
 
-	// Simple Field (dummy)
-	dummy := uint16(m.GetDummy())
-	_dummyErr := writeBuffer.WriteUint16("dummy", 16, uint16((dummy)))
-	if _dummyErr != nil {
-		return errors.Wrap(_dummyErr, "Error serializing 'dummy' field")
+	if err := WriteSimpleField[uint16](ctx, "dummy", m.GetDummy(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dummy' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Dummy"); popErr != nil {
@@ -162,9 +167,7 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 	return nil
 }
 
-func (m *_Dummy) isDummy() bool {
-	return true
-}
+func (m *_Dummy) IsDummy() {}
 
 func (m *_Dummy) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type S7ParameterUserData interface {
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7ParameterUserDataItem
-}
-
-// S7ParameterUserDataExactly can be used when we want exactly this type and not a type which fulfills S7ParameterUserData.
-// This is useful for switch cases.
-type S7ParameterUserDataExactly interface {
-	S7ParameterUserData
-	isS7ParameterUserData() bool
+	// IsS7ParameterUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterUserData()
 }
 
 // _S7ParameterUserData is the data-structure of this message
 type _S7ParameterUserData struct {
-	*_S7Parameter
+	S7ParameterContract
 	Items []S7ParameterUserDataItem
 }
+
+var _ S7ParameterUserData = (*_S7ParameterUserData)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterUserData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +72,8 @@ func (m *_S7ParameterUserData) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7ParameterUserData) InitializeParent(parent S7Parameter) {}
-
-func (m *_S7ParameterUserData) GetParent() S7Parameter {
-	return m._S7Parameter
+func (m *_S7ParameterUserData) GetParent() S7ParameterContract {
+	return m.S7ParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +93,10 @@ func (m *_S7ParameterUserData) GetItems() []S7ParameterUserDataItem {
 // NewS7ParameterUserData factory function for _S7ParameterUserData
 func NewS7ParameterUserData(items []S7ParameterUserDataItem) *_S7ParameterUserData {
 	_result := &_S7ParameterUserData{
-		Items:        items,
-		_S7Parameter: NewS7Parameter(),
+		S7ParameterContract: NewS7Parameter(),
+		Items:               items,
 	}
-	_result._S7Parameter._S7ParameterChildRequirements = _result
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 
@@ -118,7 +116,7 @@ func (m *_S7ParameterUserData) GetTypeName() string {
 }
 
 func (m *_S7ParameterUserData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
@@ -140,66 +138,34 @@ func (m *_S7ParameterUserData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterUserDataParse(ctx context.Context, theBytes []byte, messageType uint8) (S7ParameterUserData, error) {
-	return S7ParameterUserDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
-}
-
-func S7ParameterUserDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterUserData, error) {
+func (m *_S7ParameterUserData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterUserData S7ParameterUserData, err error) {
+	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterUserData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterUserData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
+	numItems, err := ReadImplicitField[uint8](ctx, "numItems", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numItems' field"))
+	}
 	_ = numItems
-	if _numItemsErr != nil {
-		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterUserData")
-	}
 
-	// Array field (items)
-	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for items")
+	items, err := ReadCountArrayField[S7ParameterUserDataItem](ctx, "items", ReadComplex[S7ParameterUserDataItem](S7ParameterUserDataItemParseWithBuffer, readBuffer), uint64(numItems))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
-	// Count array
-	items := make([]S7ParameterUserDataItem, max(numItems, 0))
-	// This happens when the size is set conditional to 0
-	if len(items) == 0 {
-		items = nil
-	}
-	{
-		_numItems := uint16(max(numItems, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := S7ParameterUserDataItemParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7ParameterUserData")
-			}
-			items[_curItem] = _item.(S7ParameterUserDataItem)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for items")
-	}
+	m.Items = items
 
 	if closeErr := readBuffer.CloseContext("S7ParameterUserData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterUserData")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7ParameterUserData{
-		_S7Parameter: &_S7Parameter{},
-		Items:        items,
-	}
-	_child._S7Parameter._S7ParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7ParameterUserData) Serialize() ([]byte, error) {
@@ -219,29 +185,13 @@ func (m *_S7ParameterUserData) SerializeWithWriteBuffer(ctx context.Context, wri
 		if pushErr := writeBuffer.PushContext("S7ParameterUserData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for S7ParameterUserData")
 		}
-
-		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.GetItems())))
-		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
-		if _numItemsErr != nil {
-			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
+		if err := WriteImplicitField(ctx, "numItems", numItems, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numItems' field")
 		}
 
-		// Array Field (items)
-		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for items")
-		}
-		for _curItem, _element := range m.GetItems() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'items' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for items")
+		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'items' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterUserData"); popErr != nil {
@@ -249,12 +199,10 @@ func (m *_S7ParameterUserData) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7ParameterContract.(*_S7Parameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7ParameterUserData) isS7ParameterUserData() bool {
-	return true
-}
+func (m *_S7ParameterUserData) IsS7ParameterUserData() {}
 
 func (m *_S7ParameterUserData) String() string {
 	if m == nil {

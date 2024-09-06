@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDoorUnlockDelayTime interface {
 	GetDoorUnlockDelayTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataDoorUnlockDelayTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorUnlockDelayTime.
-// This is useful for switch cases.
-type BACnetConstructedDataDoorUnlockDelayTimeExactly interface {
-	BACnetConstructedDataDoorUnlockDelayTime
-	isBACnetConstructedDataDoorUnlockDelayTime() bool
+	// IsBACnetConstructedDataDoorUnlockDelayTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDoorUnlockDelayTime()
 }
 
 // _BACnetConstructedDataDoorUnlockDelayTime is the data-structure of this message
 type _BACnetConstructedDataDoorUnlockDelayTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DoorUnlockDelayTime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataDoorUnlockDelayTime = (*_BACnetConstructedDataDoorUnlockDelayTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorUnlockDelayTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataDoorUnlockDelayTime factory function for _BACnetConstructedDataDoorUnlockDelayTime
 func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorUnlockDelayTime {
-	_result := &_BACnetConstructedDataDoorUnlockDelayTime{
-		DoorUnlockDelayTime:    doorUnlockDelayTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if doorUnlockDelayTime == nil {
+		panic("doorUnlockDelayTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorUnlockDelayTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDoorUnlockDelayTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorUnlockDelayTime:           doorUnlockDelayTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (doorUnlockDelayTime)
 	lengthInBits += m.DoorUnlockDelayTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDoorUnlockDelayTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorUnlockDelayTime, error) {
-	return BACnetConstructedDataDoorUnlockDelayTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDoorUnlockDelayTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorUnlockDelayTime, error) {
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDoorUnlockDelayTime BACnetConstructedDataDoorUnlockDelayTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorUnlockDelayTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDoorUnlockDelayTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorUnlockDelayTime)
-	if pullErr := readBuffer.PullContext("doorUnlockDelayTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorUnlockDelayTime")
+	doorUnlockDelayTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorUnlockDelayTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorUnlockDelayTime' field"))
 	}
-	_doorUnlockDelayTime, _doorUnlockDelayTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doorUnlockDelayTimeErr != nil {
-		return nil, errors.Wrap(_doorUnlockDelayTimeErr, "Error parsing 'doorUnlockDelayTime' field of BACnetConstructedDataDoorUnlockDelayTime")
-	}
-	doorUnlockDelayTime := _doorUnlockDelayTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("doorUnlockDelayTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorUnlockDelayTime")
-	}
+	m.DoorUnlockDelayTime = doorUnlockDelayTime
 
-	// Virtual field
-	_actualValue := doorUnlockDelayTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), doorUnlockDelayTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorUnlockDelayTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorUnlockDelayTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDoorUnlockDelayTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DoorUnlockDelayTime: doorUnlockDelayTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDoorUnlockDelayTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorUnlockDelayTime")
 		}
 
-		// Simple Field (doorUnlockDelayTime)
-		if pushErr := writeBuffer.PushContext("doorUnlockDelayTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorUnlockDelayTime")
-		}
-		_doorUnlockDelayTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDoorUnlockDelayTime())
-		if popErr := writeBuffer.PopContext("doorUnlockDelayTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorUnlockDelayTime")
-		}
-		if _doorUnlockDelayTimeErr != nil {
-			return errors.Wrap(_doorUnlockDelayTimeErr, "Error serializing 'doorUnlockDelayTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorUnlockDelayTime", m.GetDoorUnlockDelayTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorUnlockDelayTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) isBACnetConstructedDataDoorUnlockDelayTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) IsBACnetConstructedDataDoorUnlockDelayTime() {}
 
 func (m *_BACnetConstructedDataDoorUnlockDelayTime) String() string {
 	if m == nil {

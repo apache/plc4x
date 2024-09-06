@@ -37,19 +37,17 @@ type SysexCommandExtendedAnalog interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
-}
-
-// SysexCommandExtendedAnalogExactly can be used when we want exactly this type and not a type which fulfills SysexCommandExtendedAnalog.
-// This is useful for switch cases.
-type SysexCommandExtendedAnalogExactly interface {
-	SysexCommandExtendedAnalog
-	isSysexCommandExtendedAnalog() bool
+	// IsSysexCommandExtendedAnalog is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandExtendedAnalog()
 }
 
 // _SysexCommandExtendedAnalog is the data-structure of this message
 type _SysexCommandExtendedAnalog struct {
-	*_SysexCommand
+	SysexCommandContract
 }
+
+var _ SysexCommandExtendedAnalog = (*_SysexCommandExtendedAnalog)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandExtendedAnalog)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,18 +67,16 @@ func (m *_SysexCommandExtendedAnalog) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SysexCommandExtendedAnalog) InitializeParent(parent SysexCommand) {}
-
-func (m *_SysexCommandExtendedAnalog) GetParent() SysexCommand {
-	return m._SysexCommand
+func (m *_SysexCommandExtendedAnalog) GetParent() SysexCommandContract {
+	return m.SysexCommandContract
 }
 
 // NewSysexCommandExtendedAnalog factory function for _SysexCommandExtendedAnalog
 func NewSysexCommandExtendedAnalog() *_SysexCommandExtendedAnalog {
 	_result := &_SysexCommandExtendedAnalog{
-		_SysexCommand: NewSysexCommand(),
+		SysexCommandContract: NewSysexCommand(),
 	}
-	_result._SysexCommand._SysexCommandChildRequirements = _result
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 
@@ -100,7 +96,7 @@ func (m *_SysexCommandExtendedAnalog) GetTypeName() string {
 }
 
 func (m *_SysexCommandExtendedAnalog) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -109,15 +105,11 @@ func (m *_SysexCommandExtendedAnalog) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandExtendedAnalogParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandExtendedAnalog, error) {
-	return SysexCommandExtendedAnalogParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func SysexCommandExtendedAnalogParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedAnalog, error) {
+func (m *_SysexCommandExtendedAnalog) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandExtendedAnalog SysexCommandExtendedAnalog, err error) {
+	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedAnalog"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandExtendedAnalog")
 	}
@@ -128,12 +120,7 @@ func SysexCommandExtendedAnalogParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandExtendedAnalog")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SysexCommandExtendedAnalog{
-		_SysexCommand: &_SysexCommand{},
-	}
-	_child._SysexCommand._SysexCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SysexCommandExtendedAnalog) Serialize() ([]byte, error) {
@@ -159,12 +146,10 @@ func (m *_SysexCommandExtendedAnalog) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SysexCommandContract.(*_SysexCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SysexCommandExtendedAnalog) isSysexCommandExtendedAnalog() bool {
-	return true
-}
+func (m *_SysexCommandExtendedAnalog) IsSysexCommandExtendedAnalog() {}
 
 func (m *_SysexCommandExtendedAnalog) String() string {
 	if m == nil {

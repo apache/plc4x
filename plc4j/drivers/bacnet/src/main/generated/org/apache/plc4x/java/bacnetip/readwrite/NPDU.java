@@ -151,7 +151,7 @@ public class NPDU implements Message {
         "protocolVersionNumber", protocolVersionNumber, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (control)
-    writeSimpleField("control", control, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("control", control, writeComplex(writeBuffer));
 
     // Optional Field (destinationNetworkAddress) (Can be skipped, if the value is null)
     writeOptionalField(
@@ -209,17 +209,11 @@ public class NPDU implements Message {
 
     // Optional Field (nlm) (Can be skipped, if the value is null)
     writeOptionalField(
-        "nlm",
-        nlm,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getControl().getMessageTypeFieldPresent());
+        "nlm", nlm, writeComplex(writeBuffer), getControl().getMessageTypeFieldPresent());
 
     // Optional Field (apdu) (Can be skipped, if the value is null)
     writeOptionalField(
-        "apdu",
-        apdu,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getControl().getMessageTypeFieldPresent()));
+        "apdu", apdu, writeComplex(writeBuffer), !(getControl().getMessageTypeFieldPresent()));
 
     writeBuffer.popContext("NPDU");
   }
@@ -305,8 +299,7 @@ public class NPDU implements Message {
 
     NPDUControl control =
         readSimpleField(
-            "control",
-            new DataReaderComplexDefault<>(() -> NPDUControl.staticParse(readBuffer), readBuffer));
+            "control", readComplex(() -> NPDUControl.staticParse(readBuffer), readBuffer));
 
     Integer destinationNetworkAddress =
         readOptionalField(
@@ -364,7 +357,7 @@ public class NPDU implements Message {
     NLM nlm =
         readOptionalField(
             "nlm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> NLM.staticParse(readBuffer, (int) ((npduLength) - (payloadSubtraction))),
                 readBuffer),
             control.getMessageTypeFieldPresent());
@@ -372,7 +365,7 @@ public class NPDU implements Message {
     APDU apdu =
         readOptionalField(
             "apdu",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> APDU.staticParse(readBuffer, (int) ((npduLength) - (payloadSubtraction))),
                 readBuffer),
             !(control.getMessageTypeFieldPresent()));

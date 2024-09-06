@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type COTPParameterCalledTsap interface {
 	COTPParameter
 	// GetTsapId returns TsapId (property field)
 	GetTsapId() uint16
-}
-
-// COTPParameterCalledTsapExactly can be used when we want exactly this type and not a type which fulfills COTPParameterCalledTsap.
-// This is useful for switch cases.
-type COTPParameterCalledTsapExactly interface {
-	COTPParameterCalledTsap
-	isCOTPParameterCalledTsap() bool
+	// IsCOTPParameterCalledTsap is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPParameterCalledTsap()
 }
 
 // _COTPParameterCalledTsap is the data-structure of this message
 type _COTPParameterCalledTsap struct {
-	*_COTPParameter
+	COTPParameterContract
 	TsapId uint16
 }
+
+var _ COTPParameterCalledTsap = (*_COTPParameterCalledTsap)(nil)
+var _ COTPParameterRequirements = (*_COTPParameterCalledTsap)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_COTPParameterCalledTsap) GetParameterType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_COTPParameterCalledTsap) InitializeParent(parent COTPParameter) {}
-
-func (m *_COTPParameterCalledTsap) GetParent() COTPParameter {
-	return m._COTPParameter
+func (m *_COTPParameterCalledTsap) GetParent() COTPParameterContract {
+	return m.COTPParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_COTPParameterCalledTsap) GetTsapId() uint16 {
 // NewCOTPParameterCalledTsap factory function for _COTPParameterCalledTsap
 func NewCOTPParameterCalledTsap(tsapId uint16, rest uint8) *_COTPParameterCalledTsap {
 	_result := &_COTPParameterCalledTsap{
-		TsapId:         tsapId,
-		_COTPParameter: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(rest),
+		TsapId:                tsapId,
 	}
-	_result._COTPParameter._COTPParameterChildRequirements = _result
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_COTPParameterCalledTsap) GetTypeName() string {
 }
 
 func (m *_COTPParameterCalledTsap) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -126,41 +124,28 @@ func (m *_COTPParameterCalledTsap) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPParameterCalledTsapParse(ctx context.Context, theBytes []byte, rest uint8) (COTPParameterCalledTsap, error) {
-	return COTPParameterCalledTsapParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
-}
-
-func COTPParameterCalledTsapParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCalledTsap, error) {
+func (m *_COTPParameterCalledTsap) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPParameter, rest uint8) (__cOTPParameterCalledTsap COTPParameterCalledTsap, err error) {
+	m.COTPParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterCalledTsap")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tsapId)
-	_tsapId, _tsapIdErr := readBuffer.ReadUint16("tsapId", 16)
-	if _tsapIdErr != nil {
-		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field of COTPParameterCalledTsap")
+	tsapId, err := ReadSimpleField(ctx, "tsapId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tsapId' field"))
 	}
-	tsapId := _tsapId
+	m.TsapId = tsapId
 
 	if closeErr := readBuffer.CloseContext("COTPParameterCalledTsap"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterCalledTsap")
 	}
 
-	// Create a partially initialized instance
-	_child := &_COTPParameterCalledTsap{
-		_COTPParameter: &_COTPParameter{
-			Rest: rest,
-		},
-		TsapId: tsapId,
-	}
-	_child._COTPParameter._COTPParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_COTPParameterCalledTsap) Serialize() ([]byte, error) {
@@ -181,11 +166,8 @@ func (m *_COTPParameterCalledTsap) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for COTPParameterCalledTsap")
 		}
 
-		// Simple Field (tsapId)
-		tsapId := uint16(m.GetTsapId())
-		_tsapIdErr := writeBuffer.WriteUint16("tsapId", 16, uint16((tsapId)))
-		if _tsapIdErr != nil {
-			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
+		if err := WriteSimpleField[uint16](ctx, "tsapId", m.GetTsapId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tsapId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterCalledTsap"); popErr != nil {
@@ -193,12 +175,10 @@ func (m *_COTPParameterCalledTsap) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.COTPParameterContract.(*_COTPParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_COTPParameterCalledTsap) isCOTPParameterCalledTsap() bool {
-	return true
-}
+func (m *_COTPParameterCalledTsap) IsCOTPParameterCalledTsap() {}
 
 func (m *_COTPParameterCalledTsap) String() string {
 	if m == nil {

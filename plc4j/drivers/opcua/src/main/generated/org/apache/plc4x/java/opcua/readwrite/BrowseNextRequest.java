@@ -84,7 +84,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("BrowseNextRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -147,7 +147,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -163,8 +163,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     List<PascalByteString> continuationPoints =
         readCountArrayField(
             "continuationPoints",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
             noOfContinuationPoints);
 
     readBuffer.closeContext("BrowseNextRequest");

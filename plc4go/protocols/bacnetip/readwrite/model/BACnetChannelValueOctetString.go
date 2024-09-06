@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetChannelValueOctetString interface {
 	BACnetChannelValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-}
-
-// BACnetChannelValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueOctetString.
-// This is useful for switch cases.
-type BACnetChannelValueOctetStringExactly interface {
-	BACnetChannelValueOctetString
-	isBACnetChannelValueOctetString() bool
+	// IsBACnetChannelValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueOctetString()
 }
 
 // _BACnetChannelValueOctetString is the data-structure of this message
 type _BACnetChannelValueOctetString struct {
-	*_BACnetChannelValue
+	BACnetChannelValueContract
 	OctetStringValue BACnetApplicationTagOctetString
 }
+
+var _ BACnetChannelValueOctetString = (*_BACnetChannelValueOctetString)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueOctetString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetChannelValueOctetString struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetChannelValueOctetString) InitializeParent(parent BACnetChannelValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetChannelValueOctetString) GetParent() BACnetChannelValue {
-	return m._BACnetChannelValue
+func (m *_BACnetChannelValueOctetString) GetParent() BACnetChannelValueContract {
+	return m.BACnetChannelValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetChannelValueOctetString) GetOctetStringValue() BACnetApplication
 
 // NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
 func NewBACnetChannelValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueOctetString {
-	_result := &_BACnetChannelValueOctetString{
-		OctetStringValue:    octetStringValue,
-		_BACnetChannelValue: NewBACnetChannelValue(peekedTagHeader),
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
 	}
-	_result._BACnetChannelValue._BACnetChannelValueChildRequirements = _result
+	_result := &_BACnetChannelValueOctetString{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		OctetStringValue:           octetStringValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetChannelValueOctetString) GetTypeName() string {
 }
 
 func (m *_BACnetChannelValueOctetString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (octetStringValue)
 	lengthInBits += m.OctetStringValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetChannelValueOctetString) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueOctetStringParse(ctx context.Context, theBytes []byte) (BACnetChannelValueOctetString, error) {
-	return BACnetChannelValueOctetStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetChannelValueOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueOctetString, error) {
+func (m *_BACnetChannelValueOctetString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueOctetString BACnetChannelValueOctetString, err error) {
+	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueOctetString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueOctetString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (octetStringValue)
-	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
+	octetStringValue, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "octetStringValue", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octetStringValue' field"))
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _octetStringValueErr != nil {
-		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetChannelValueOctetString")
-	}
-	octetStringValue := _octetStringValue.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for octetStringValue")
-	}
+	m.OctetStringValue = octetStringValue
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueOctetString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueOctetString")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetChannelValueOctetString{
-		_BACnetChannelValue: &_BACnetChannelValue{},
-		OctetStringValue:    octetStringValue,
-	}
-	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetChannelValueOctetString) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetChannelValueOctetString) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueOctetString")
 		}
 
-		// Simple Field (octetStringValue)
-		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
-		}
-		_octetStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetOctetStringValue())
-		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for octetStringValue")
-		}
-		if _octetStringValueErr != nil {
-			return errors.Wrap(_octetStringValueErr, "Error serializing 'octetStringValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "octetStringValue", m.GetOctetStringValue(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'octetStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueOctetString"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetChannelValueOctetString) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetChannelValueContract.(*_BACnetChannelValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetChannelValueOctetString) isBACnetChannelValueOctetString() bool {
-	return true
-}
+func (m *_BACnetChannelValueOctetString) IsBACnetChannelValueOctetString() {}
 
 func (m *_BACnetChannelValueOctetString) String() string {
 	if m == nil {

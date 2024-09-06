@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataCredentialStatus interface {
 	GetBinaryPv() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
-}
-
-// BACnetConstructedDataCredentialStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialStatus.
-// This is useful for switch cases.
-type BACnetConstructedDataCredentialStatusExactly interface {
-	BACnetConstructedDataCredentialStatus
-	isBACnetConstructedDataCredentialStatus() bool
+	// IsBACnetConstructedDataCredentialStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCredentialStatus()
 }
 
 // _BACnetConstructedDataCredentialStatus is the data-structure of this message
 type _BACnetConstructedDataCredentialStatus struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	BinaryPv BACnetBinaryPVTagged
 }
+
+var _ BACnetConstructedDataCredentialStatus = (*_BACnetConstructedDataCredentialStatus)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataCredentialStatus) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCredentialStatus) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCredentialStatus) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCredentialStatus) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataCredentialStatus) GetActualValue() BACnetBinaryPV
 
 // NewBACnetConstructedDataCredentialStatus factory function for _BACnetConstructedDataCredentialStatus
 func NewBACnetConstructedDataCredentialStatus(binaryPv BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialStatus {
-	_result := &_BACnetConstructedDataCredentialStatus{
-		BinaryPv:               binaryPv,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataCredentialStatus must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataCredentialStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BinaryPv:                      binaryPv,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataCredentialStatus) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCredentialStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (binaryPv)
 	lengthInBits += m.BinaryPv.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataCredentialStatus) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCredentialStatusParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialStatus, error) {
-	return BACnetConstructedDataCredentialStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCredentialStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialStatus, error) {
+func (m *_BACnetConstructedDataCredentialStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCredentialStatus BACnetConstructedDataCredentialStatus, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCredentialStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (binaryPv)
-	if pullErr := readBuffer.PullContext("binaryPv"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for binaryPv")
+	binaryPv, err := ReadSimpleField[BACnetBinaryPVTagged](ctx, "binaryPv", ReadComplex[BACnetBinaryPVTagged](BACnetBinaryPVTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'binaryPv' field"))
 	}
-	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _binaryPvErr != nil {
-		return nil, errors.Wrap(_binaryPvErr, "Error parsing 'binaryPv' field of BACnetConstructedDataCredentialStatus")
-	}
-	binaryPv := _binaryPv.(BACnetBinaryPVTagged)
-	if closeErr := readBuffer.CloseContext("binaryPv"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for binaryPv")
-	}
+	m.BinaryPv = binaryPv
 
-	// Virtual field
-	_actualValue := binaryPv
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetBinaryPVTagged](ctx, "actualValue", (*BACnetBinaryPVTagged)(nil), binaryPv)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCredentialStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCredentialStatus{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		BinaryPv: binaryPv,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCredentialStatus) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataCredentialStatus) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCredentialStatus")
 		}
 
-		// Simple Field (binaryPv)
-		if pushErr := writeBuffer.PushContext("binaryPv"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for binaryPv")
-		}
-		_binaryPvErr := writeBuffer.WriteSerializable(ctx, m.GetBinaryPv())
-		if popErr := writeBuffer.PopContext("binaryPv"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for binaryPv")
-		}
-		if _binaryPvErr != nil {
-			return errors.Wrap(_binaryPvErr, "Error serializing 'binaryPv' field")
+		if err := WriteSimpleField[BACnetBinaryPVTagged](ctx, "binaryPv", m.GetBinaryPv(), WriteComplex[BACnetBinaryPVTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'binaryPv' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataCredentialStatus) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCredentialStatus) isBACnetConstructedDataCredentialStatus() bool {
-	return true
-}
+func (m *_BACnetConstructedDataCredentialStatus) IsBACnetConstructedDataCredentialStatus() {}
 
 func (m *_BACnetConstructedDataCredentialStatus) String() string {
 	if m == nil {

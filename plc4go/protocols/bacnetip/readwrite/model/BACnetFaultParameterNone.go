@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterNone interface {
 	BACnetFaultParameter
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
-}
-
-// BACnetFaultParameterNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterNone.
-// This is useful for switch cases.
-type BACnetFaultParameterNoneExactly interface {
-	BACnetFaultParameterNone
-	isBACnetFaultParameterNone() bool
+	// IsBACnetFaultParameterNone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterNone()
 }
 
 // _BACnetFaultParameterNone is the data-structure of this message
 type _BACnetFaultParameterNone struct {
-	*_BACnetFaultParameter
+	BACnetFaultParameterContract
 	None BACnetContextTagNull
 }
+
+var _ BACnetFaultParameterNone = (*_BACnetFaultParameterNone)(nil)
+var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterNone)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterNone struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterNone) InitializeParent(parent BACnetFaultParameter, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterNone) GetParent() BACnetFaultParameter {
-	return m._BACnetFaultParameter
+func (m *_BACnetFaultParameterNone) GetParent() BACnetFaultParameterContract {
+	return m.BACnetFaultParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterNone) GetNone() BACnetContextTagNull {
 
 // NewBACnetFaultParameterNone factory function for _BACnetFaultParameterNone
 func NewBACnetFaultParameterNone(none BACnetContextTagNull, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterNone {
-	_result := &_BACnetFaultParameterNone{
-		None:                  none,
-		_BACnetFaultParameter: NewBACnetFaultParameter(peekedTagHeader),
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetFaultParameterNone must not be nil")
 	}
-	_result._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _result
+	_result := &_BACnetFaultParameterNone{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		None:                         none,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterNone) GetTypeName() string {
 }
 
 func (m *_BACnetFaultParameterNone) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterContract.(*_BACnetFaultParameter).getLengthInBits(ctx))
 
 	// Simple field (none)
 	lengthInBits += m.None.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterNone) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterNoneParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterNone, error) {
-	return BACnetFaultParameterNoneParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterNoneParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterNone, error) {
+func (m *_BACnetFaultParameterNone) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameter) (__bACnetFaultParameterNone BACnetFaultParameterNone, err error) {
+	m.BACnetFaultParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterNone"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterNone")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (none)
-	if pullErr := readBuffer.PullContext("none"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for none")
+	none, err := ReadSimpleField[BACnetContextTagNull](ctx, "none", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer[BACnetContextTagNull]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'none' field"))
 	}
-	_none, _noneErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
-	if _noneErr != nil {
-		return nil, errors.Wrap(_noneErr, "Error parsing 'none' field of BACnetFaultParameterNone")
-	}
-	none := _none.(BACnetContextTagNull)
-	if closeErr := readBuffer.CloseContext("none"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for none")
-	}
+	m.None = none
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterNone"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterNone")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterNone{
-		_BACnetFaultParameter: &_BACnetFaultParameter{},
-		None:                  none,
-	}
-	_child._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterNone) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterNone) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterNone")
 		}
 
-		// Simple Field (none)
-		if pushErr := writeBuffer.PushContext("none"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for none")
-		}
-		_noneErr := writeBuffer.WriteSerializable(ctx, m.GetNone())
-		if popErr := writeBuffer.PopContext("none"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for none")
-		}
-		if _noneErr != nil {
-			return errors.Wrap(_noneErr, "Error serializing 'none' field")
+		if err := WriteSimpleField[BACnetContextTagNull](ctx, "none", m.GetNone(), WriteComplex[BACnetContextTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'none' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterNone"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetFaultParameterNone) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterContract.(*_BACnetFaultParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterNone) isBACnetFaultParameterNone() bool {
-	return true
-}
+func (m *_BACnetFaultParameterNone) IsBACnetFaultParameterNone() {}
 
 func (m *_BACnetFaultParameterNone) String() string {
 	if m == nil {

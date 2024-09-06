@@ -60,8 +60,7 @@ public class BACnetPropertyStatesDoorSecuredStatus extends BACnetPropertyStates 
     writeBuffer.pushContext("BACnetPropertyStatesDoorSecuredStatus");
 
     // Simple Field (doorSecuredStatus)
-    writeSimpleField(
-        "doorSecuredStatus", doorSecuredStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorSecuredStatus", doorSecuredStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesDoorSecuredStatus");
   }
@@ -92,7 +91,7 @@ public class BACnetPropertyStatesDoorSecuredStatus extends BACnetPropertyStates 
     BACnetDoorSecuredStatusTagged doorSecuredStatus =
         readSimpleField(
             "doorSecuredStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorSecuredStatusTagged.staticParse(
                         readBuffer,

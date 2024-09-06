@@ -75,13 +75,13 @@ public class BACnetPropertyReferenceEnclosed implements Message {
     writeBuffer.pushContext("BACnetPropertyReferenceEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (reference)
-    writeSimpleField("reference", reference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reference", reference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyReferenceEnclosed");
   }
@@ -118,19 +118,18 @@ public class BACnetPropertyReferenceEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetPropertyReference reference =
         readSimpleField(
             "reference",
-            new DataReaderComplexDefault<>(
-                () -> BACnetPropertyReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetPropertyReference.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetPropertyReferenceEnclosed");

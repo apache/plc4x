@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,21 +45,19 @@ type BACnetConstructedDataChannelListOfObjectPropertyReferences interface {
 	GetReferences() []BACnetDeviceObjectPropertyReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-}
-
-// BACnetConstructedDataChannelListOfObjectPropertyReferencesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChannelListOfObjectPropertyReferences.
-// This is useful for switch cases.
-type BACnetConstructedDataChannelListOfObjectPropertyReferencesExactly interface {
-	BACnetConstructedDataChannelListOfObjectPropertyReferences
-	isBACnetConstructedDataChannelListOfObjectPropertyReferences() bool
+	// IsBACnetConstructedDataChannelListOfObjectPropertyReferences is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataChannelListOfObjectPropertyReferences()
 }
 
 // _BACnetConstructedDataChannelListOfObjectPropertyReferences is the data-structure of this message
 type _BACnetConstructedDataChannelListOfObjectPropertyReferences struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	References           []BACnetDeviceObjectPropertyReference
 }
+
+var _ BACnetConstructedDataChannelListOfObjectPropertyReferences = (*_BACnetConstructedDataChannelListOfObjectPropertyReferences)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChannelListOfObjectPropertyReferences)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +77,8 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetPropert
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,7 +106,7 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetReferen
 func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -126,11 +119,11 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetZero() 
 // NewBACnetConstructedDataChannelListOfObjectPropertyReferences factory function for _BACnetConstructedDataChannelListOfObjectPropertyReferences
 func NewBACnetConstructedDataChannelListOfObjectPropertyReferences(numberOfDataElements BACnetApplicationTagUnsignedInteger, references []BACnetDeviceObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelListOfObjectPropertyReferences {
 	_result := &_BACnetConstructedDataChannelListOfObjectPropertyReferences{
-		NumberOfDataElements:   numberOfDataElements,
-		References:             references,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		References:                    references,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -150,7 +143,7 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetTypeNam
 }
 
 func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -173,82 +166,44 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthI
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
-	return BACnetConstructedDataChannelListOfObjectPropertyReferencesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataChannelListOfObjectPropertyReferencesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataChannelListOfObjectPropertyReferences BACnetConstructedDataChannelListOfObjectPropertyReferences, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChannelListOfObjectPropertyReferences"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataChannelListOfObjectPropertyReferences")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 	_ = zero
 
-	// Optional Field (numberOfDataElements) (Can be skipped, if a given expression evaluates to false)
-	var numberOfDataElements BACnetApplicationTagUnsignedInteger = nil
-	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
-		}
-		_val, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataChannelListOfObjectPropertyReferences")
-		default:
-			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
-			}
-		}
+	var numberOfDataElements BACnetApplicationTagUnsignedInteger
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
+	}
+	if _numberOfDataElements != nil {
+		numberOfDataElements = *_numberOfDataElements
+		m.NumberOfDataElements = numberOfDataElements
 	}
 
-	// Array field (references)
-	if pullErr := readBuffer.PullContext("references", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for references")
+	references, err := ReadTerminatedArrayField[BACnetDeviceObjectPropertyReference](ctx, "references", ReadComplex[BACnetDeviceObjectPropertyReference](BACnetDeviceObjectPropertyReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'references' field"))
 	}
-	// Terminated array
-	var references []BACnetDeviceObjectPropertyReference
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'references' field of BACnetConstructedDataChannelListOfObjectPropertyReferences")
-			}
-			references = append(references, _item.(BACnetDeviceObjectPropertyReference))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("references", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for references")
-	}
+	m.References = references
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChannelListOfObjectPropertyReferences"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChannelListOfObjectPropertyReferences")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataChannelListOfObjectPropertyReferences{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NumberOfDataElements: numberOfDataElements,
-		References:           references,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) Serialize() ([]byte, error) {
@@ -275,37 +230,12 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) SerializeW
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		// Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-		var numberOfDataElements BACnetApplicationTagUnsignedInteger = nil
-		if m.GetNumberOfDataElements() != nil {
-			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
-			}
-			numberOfDataElements = m.GetNumberOfDataElements()
-			_numberOfDataElementsErr := writeBuffer.WriteSerializable(ctx, numberOfDataElements)
-			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
-			}
-			if _numberOfDataElementsErr != nil {
-				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
-			}
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 
-		// Array Field (references)
-		if pushErr := writeBuffer.PushContext("references", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for references")
-		}
-		for _curItem, _element := range m.GetReferences() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReferences()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'references' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("references", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for references")
+		if err := WriteComplexTypeArrayField(ctx, "references", m.GetReferences(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'references' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataChannelListOfObjectPropertyReferences"); popErr != nil {
@@ -313,11 +243,10 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) SerializeW
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) isBACnetConstructedDataChannelListOfObjectPropertyReferences() bool {
-	return true
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) IsBACnetConstructedDataChannelListOfObjectPropertyReferences() {
 }
 
 func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) String() string {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ModbusPDUWriteFileRecordResponse interface {
 	ModbusPDU
 	// GetItems returns Items (property field)
 	GetItems() []ModbusPDUWriteFileRecordResponseItem
-}
-
-// ModbusPDUWriteFileRecordResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteFileRecordResponse.
-// This is useful for switch cases.
-type ModbusPDUWriteFileRecordResponseExactly interface {
-	ModbusPDUWriteFileRecordResponse
-	isModbusPDUWriteFileRecordResponse() bool
+	// IsModbusPDUWriteFileRecordResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteFileRecordResponse()
 }
 
 // _ModbusPDUWriteFileRecordResponse is the data-structure of this message
 type _ModbusPDUWriteFileRecordResponse struct {
-	*_ModbusPDU
+	ModbusPDUContract
 	Items []ModbusPDUWriteFileRecordResponseItem
 }
+
+var _ ModbusPDUWriteFileRecordResponse = (*_ModbusPDUWriteFileRecordResponse)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUWriteFileRecordResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,10 +76,8 @@ func (m *_ModbusPDUWriteFileRecordResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUWriteFileRecordResponse) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUWriteFileRecordResponse) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUWriteFileRecordResponse) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +97,10 @@ func (m *_ModbusPDUWriteFileRecordResponse) GetItems() []ModbusPDUWriteFileRecor
 // NewModbusPDUWriteFileRecordResponse factory function for _ModbusPDUWriteFileRecordResponse
 func NewModbusPDUWriteFileRecordResponse(items []ModbusPDUWriteFileRecordResponseItem) *_ModbusPDUWriteFileRecordResponse {
 	_result := &_ModbusPDUWriteFileRecordResponse{
-		Items:      items,
-		_ModbusPDU: NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
+		Items:             items,
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_ModbusPDUWriteFileRecordResponse) GetTypeName() string {
 }
 
 func (m *_ModbusPDUWriteFileRecordResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -141,60 +139,34 @@ func (m *_ModbusPDUWriteFileRecordResponse) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUWriteFileRecordResponseParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUWriteFileRecordResponse, error) {
-	return ModbusPDUWriteFileRecordResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUWriteFileRecordResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteFileRecordResponse, error) {
+func (m *_ModbusPDUWriteFileRecordResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUWriteFileRecordResponse ModbusPDUWriteFileRecordResponse, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUWriteFileRecordResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
+	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
+	}
 	_ = byteCount
-	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUWriteFileRecordResponse")
-	}
 
-	// Array field (items)
-	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for items")
+	items, err := ReadLengthArrayField[ModbusPDUWriteFileRecordResponseItem](ctx, "items", ReadComplex[ModbusPDUWriteFileRecordResponseItem](ModbusPDUWriteFileRecordResponseItemParseWithBuffer, readBuffer), int(byteCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
-	// Length array
-	var items []ModbusPDUWriteFileRecordResponseItem
-	{
-		_itemsLength := byteCount
-		_itemsEndPos := positionAware.GetPos() + uint16(_itemsLength)
-		for positionAware.GetPos() < _itemsEndPos {
-			_item, _err := ModbusPDUWriteFileRecordResponseItemParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field of ModbusPDUWriteFileRecordResponse")
-			}
-			items = append(items, _item.(ModbusPDUWriteFileRecordResponseItem))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for items")
-	}
+	m.Items = items
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteFileRecordResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUWriteFileRecordResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUWriteFileRecordResponse{
-		_ModbusPDU: &_ModbusPDU{},
-		Items:      items,
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUWriteFileRecordResponse) Serialize() ([]byte, error) {
@@ -221,29 +193,13 @@ func (m *_ModbusPDUWriteFileRecordResponse) SerializeWithWriteBuffer(ctx context
 		if pushErr := writeBuffer.PushContext("ModbusPDUWriteFileRecordResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUWriteFileRecordResponse")
 		}
-
-		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(itemsArraySizeInBytes(m.GetItems())))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
-		if _byteCountErr != nil {
-			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
+		if err := WriteImplicitField(ctx, "byteCount", byteCount, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'byteCount' field")
 		}
 
-		// Array Field (items)
-		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for items")
-		}
-		for _curItem, _element := range m.GetItems() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'items' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for items")
+		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'items' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUWriteFileRecordResponse"); popErr != nil {
@@ -251,12 +207,10 @@ func (m *_ModbusPDUWriteFileRecordResponse) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUWriteFileRecordResponse) isModbusPDUWriteFileRecordResponse() bool {
-	return true
-}
+func (m *_ModbusPDUWriteFileRecordResponse) IsModbusPDUWriteFileRecordResponse() {}
 
 func (m *_ModbusPDUWriteFileRecordResponse) String() string {
 	if m == nil {

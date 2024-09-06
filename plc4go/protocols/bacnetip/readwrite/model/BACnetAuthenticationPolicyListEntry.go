@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetAuthenticationPolicyListEntry interface {
 	GetCredentialDataInput() BACnetDeviceObjectReferenceEnclosed
 	// GetIndex returns Index (property field)
 	GetIndex() BACnetContextTagUnsignedInteger
-}
-
-// BACnetAuthenticationPolicyListEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicyListEntry.
-// This is useful for switch cases.
-type BACnetAuthenticationPolicyListEntryExactly interface {
-	BACnetAuthenticationPolicyListEntry
-	isBACnetAuthenticationPolicyListEntry() bool
+	// IsBACnetAuthenticationPolicyListEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationPolicyListEntry()
 }
 
 // _BACnetAuthenticationPolicyListEntry is the data-structure of this message
@@ -54,6 +51,8 @@ type _BACnetAuthenticationPolicyListEntry struct {
 	CredentialDataInput BACnetDeviceObjectReferenceEnclosed
 	Index               BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetAuthenticationPolicyListEntry = (*_BACnetAuthenticationPolicyListEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,12 @@ func (m *_BACnetAuthenticationPolicyListEntry) GetIndex() BACnetContextTagUnsign
 
 // NewBACnetAuthenticationPolicyListEntry factory function for _BACnetAuthenticationPolicyListEntry
 func NewBACnetAuthenticationPolicyListEntry(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) *_BACnetAuthenticationPolicyListEntry {
+	if credentialDataInput == nil {
+		panic("credentialDataInput of type BACnetDeviceObjectReferenceEnclosed for BACnetAuthenticationPolicyListEntry must not be nil")
+	}
+	if index == nil {
+		panic("index of type BACnetContextTagUnsignedInteger for BACnetAuthenticationPolicyListEntry must not be nil")
+	}
 	return &_BACnetAuthenticationPolicyListEntry{CredentialDataInput: credentialDataInput, Index: index}
 }
 
@@ -113,52 +118,46 @@ func BACnetAuthenticationPolicyListEntryParse(ctx context.Context, theBytes []by
 	return BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAuthenticationPolicyListEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
+		return BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
+	v, err := (&_BACnetAuthenticationPolicyListEntry{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetAuthenticationPolicyListEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAuthenticationPolicyListEntry BACnetAuthenticationPolicyListEntry, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationPolicyListEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationPolicyListEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (credentialDataInput)
-	if pullErr := readBuffer.PullContext("credentialDataInput"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for credentialDataInput")
+	credentialDataInput, err := ReadSimpleField[BACnetDeviceObjectReferenceEnclosed](ctx, "credentialDataInput", ReadComplex[BACnetDeviceObjectReferenceEnclosed](BACnetDeviceObjectReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'credentialDataInput' field"))
 	}
-	_credentialDataInput, _credentialDataInputErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _credentialDataInputErr != nil {
-		return nil, errors.Wrap(_credentialDataInputErr, "Error parsing 'credentialDataInput' field of BACnetAuthenticationPolicyListEntry")
-	}
-	credentialDataInput := _credentialDataInput.(BACnetDeviceObjectReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("credentialDataInput"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for credentialDataInput")
-	}
+	m.CredentialDataInput = credentialDataInput
 
-	// Simple Field (index)
-	if pullErr := readBuffer.PullContext("index"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for index")
+	index, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "index", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'index' field"))
 	}
-	_index, _indexErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _indexErr != nil {
-		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of BACnetAuthenticationPolicyListEntry")
-	}
-	index := _index.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("index"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for index")
-	}
+	m.Index = index
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationPolicyListEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthenticationPolicyListEntry")
 	}
 
-	// Create the instance
-	return &_BACnetAuthenticationPolicyListEntry{
-		CredentialDataInput: credentialDataInput,
-		Index:               index,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetAuthenticationPolicyListEntry) Serialize() ([]byte, error) {
@@ -178,28 +177,12 @@ func (m *_BACnetAuthenticationPolicyListEntry) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationPolicyListEntry")
 	}
 
-	// Simple Field (credentialDataInput)
-	if pushErr := writeBuffer.PushContext("credentialDataInput"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for credentialDataInput")
-	}
-	_credentialDataInputErr := writeBuffer.WriteSerializable(ctx, m.GetCredentialDataInput())
-	if popErr := writeBuffer.PopContext("credentialDataInput"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for credentialDataInput")
-	}
-	if _credentialDataInputErr != nil {
-		return errors.Wrap(_credentialDataInputErr, "Error serializing 'credentialDataInput' field")
+	if err := WriteSimpleField[BACnetDeviceObjectReferenceEnclosed](ctx, "credentialDataInput", m.GetCredentialDataInput(), WriteComplex[BACnetDeviceObjectReferenceEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'credentialDataInput' field")
 	}
 
-	// Simple Field (index)
-	if pushErr := writeBuffer.PushContext("index"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for index")
-	}
-	_indexErr := writeBuffer.WriteSerializable(ctx, m.GetIndex())
-	if popErr := writeBuffer.PopContext("index"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for index")
-	}
-	if _indexErr != nil {
-		return errors.Wrap(_indexErr, "Error serializing 'index' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "index", m.GetIndex(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'index' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationPolicyListEntry"); popErr != nil {
@@ -208,9 +191,7 @@ func (m *_BACnetAuthenticationPolicyListEntry) SerializeWithWriteBuffer(ctx cont
 	return nil
 }
 
-func (m *_BACnetAuthenticationPolicyListEntry) isBACnetAuthenticationPolicyListEntry() bool {
-	return true
-}
+func (m *_BACnetAuthenticationPolicyListEntry) IsBACnetAuthenticationPolicyListEntry() {}
 
 func (m *_BACnetAuthenticationPolicyListEntry) String() string {
 	if m == nil {

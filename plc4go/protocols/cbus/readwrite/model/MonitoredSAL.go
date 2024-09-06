@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,48 +35,43 @@ import (
 
 // MonitoredSAL is the corresponding interface of MonitoredSAL
 type MonitoredSAL interface {
+	MonitoredSALContract
+	MonitoredSALRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetSalType returns SalType (property field)
-	GetSalType() byte
+	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredSAL()
 }
 
-// MonitoredSALExactly can be used when we want exactly this type and not a type which fulfills MonitoredSAL.
-// This is useful for switch cases.
-type MonitoredSALExactly interface {
-	MonitoredSAL
-	isMonitoredSAL() bool
+// MonitoredSALContract provides a set of functions which can be overwritten by a sub struct
+type MonitoredSALContract interface {
+	// GetSalType returns SalType (property field)
+	GetSalType() byte
+	// GetCBusOptions() returns a parser argument
+	GetCBusOptions() CBusOptions
+	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredSAL()
+}
+
+// MonitoredSALRequirements provides a set of functions which need to be implemented by a sub struct
+type MonitoredSALRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetSalType returns SalType (discriminator field)
+	GetSalType() byte
 }
 
 // _MonitoredSAL is the data-structure of this message
 type _MonitoredSAL struct {
-	_MonitoredSALChildRequirements
-	SalType byte
+	_SubType MonitoredSAL
+	SalType  byte
 
 	// Arguments.
 	CBusOptions CBusOptions
 }
 
-type _MonitoredSALChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetSalType() byte
-}
-
-type MonitoredSALParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type MonitoredSALChild interface {
-	utils.Serializable
-	InitializeParent(parent MonitoredSAL, salType byte)
-	GetParent() *MonitoredSAL
-
-	GetTypeName() string
-	MonitoredSAL
-}
+var _ MonitoredSALContract = (*_MonitoredSAL)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,72 +107,78 @@ func (m *_MonitoredSAL) GetTypeName() string {
 	return "MonitoredSAL"
 }
 
-func (m *_MonitoredSAL) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_MonitoredSAL) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
 func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func MonitoredSALParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (MonitoredSAL, error) {
-	return MonitoredSALParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func MonitoredSALParse[T MonitoredSAL](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
+	return MonitoredSALParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSAL, error) {
+func MonitoredSALParseWithBufferProducer[T MonitoredSAL](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := MonitoredSALParseWithBuffer[T](ctx, readBuffer, cBusOptions)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func MonitoredSALParseWithBuffer[T MonitoredSAL](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
+	v, err := (&_MonitoredSAL{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_MonitoredSAL) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (__monitoredSAL MonitoredSAL, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoredSAL"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSAL")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (salType)
-	currentPos = positionAware.GetPos()
-	salType, _err := readBuffer.ReadByte("salType")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'salType' field of MonitoredSAL")
+	salType, err := ReadPeekField[byte](ctx, "salType", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salType' field"))
 	}
-
-	readBuffer.Reset(currentPos)
+	m.SalType = salType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type MonitoredSALChildSerializeRequirement interface {
-		MonitoredSAL
-		InitializeParent(MonitoredSAL, byte)
-		GetParent() MonitoredSAL
-	}
-	var _childTemp any
-	var _child MonitoredSALChildSerializeRequirement
-	var typeSwitchError error
+	var _child MonitoredSAL
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
-		_childTemp, typeSwitchError = MonitoredSALLongFormSmartModeParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if _child, err = (&_MonitoredSALLongFormSmartMode{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALLongFormSmartMode for type-switch of MonitoredSAL")
+		}
 	case 0 == 0: // MonitoredSALShortFormBasicMode
-		_childTemp, typeSwitchError = MonitoredSALShortFormBasicModeParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if _child, err = (&_MonitoredSALShortFormBasicMode{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALShortFormBasicMode for type-switch of MonitoredSAL")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [salType=%v]", salType)
+		return nil, errors.Errorf("Unmapped type for parameters [salType=%v]", salType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of MonitoredSAL")
-	}
-	_child = _childTemp.(MonitoredSALChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("MonitoredSAL"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSAL")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, salType)
 	return _child, nil
 }
 
-func (pm *_MonitoredSAL) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error {
+func (pm *_MonitoredSAL) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -208,17 +211,4 @@ func (m *_MonitoredSAL) GetCBusOptions() CBusOptions {
 //
 ////
 
-func (m *_MonitoredSAL) isMonitoredSAL() bool {
-	return true
-}
-
-func (m *_MonitoredSAL) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_MonitoredSAL) IsMonitoredSAL() {}

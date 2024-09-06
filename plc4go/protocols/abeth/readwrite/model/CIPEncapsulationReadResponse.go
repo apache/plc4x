@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,23 +43,21 @@ type CIPEncapsulationReadResponse interface {
 	CIPEncapsulationPacket
 	// GetResponse returns Response (property field)
 	GetResponse() DF1ResponseMessage
-}
-
-// CIPEncapsulationReadResponseExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationReadResponse.
-// This is useful for switch cases.
-type CIPEncapsulationReadResponseExactly interface {
-	CIPEncapsulationReadResponse
-	isCIPEncapsulationReadResponse() bool
+	// IsCIPEncapsulationReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPEncapsulationReadResponse()
 }
 
 // _CIPEncapsulationReadResponse is the data-structure of this message
 type _CIPEncapsulationReadResponse struct {
-	*_CIPEncapsulationPacket
+	CIPEncapsulationPacketContract
 	Response DF1ResponseMessage
 
 	// Arguments.
 	PacketLen uint16
 }
+
+var _ CIPEncapsulationReadResponse = (*_CIPEncapsulationReadResponse)(nil)
+var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationReadResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,15 +73,8 @@ func (m *_CIPEncapsulationReadResponse) GetCommandType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CIPEncapsulationReadResponse) InitializeParent(parent CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_CIPEncapsulationReadResponse) GetParent() CIPEncapsulationPacket {
-	return m._CIPEncapsulationPacket
+func (m *_CIPEncapsulationReadResponse) GetParent() CIPEncapsulationPacketContract {
+	return m.CIPEncapsulationPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,11 +93,14 @@ func (m *_CIPEncapsulationReadResponse) GetResponse() DF1ResponseMessage {
 
 // NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
 func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLen uint16) *_CIPEncapsulationReadResponse {
-	_result := &_CIPEncapsulationReadResponse{
-		Response:                response,
-		_CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+	if response == nil {
+		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
 	}
-	_result._CIPEncapsulationPacket._CIPEncapsulationPacketChildRequirements = _result
+	_result := &_CIPEncapsulationReadResponse{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		Response:                       response,
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
 	return _result
 }
 
@@ -123,7 +120,7 @@ func (m *_CIPEncapsulationReadResponse) GetTypeName() string {
 }
 
 func (m *_CIPEncapsulationReadResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).getLengthInBits(ctx))
 
 	// Simple field (response)
 	lengthInBits += m.Response.GetLengthInBits(ctx)
@@ -135,45 +132,28 @@ func (m *_CIPEncapsulationReadResponse) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CIPEncapsulationReadResponseParse(ctx context.Context, theBytes []byte, packetLen uint16) (CIPEncapsulationReadResponse, error) {
-	return CIPEncapsulationReadResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLen)
-}
-
-func CIPEncapsulationReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLen uint16) (CIPEncapsulationReadResponse, error) {
+func (m *_CIPEncapsulationReadResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CIPEncapsulationPacket, packetLen uint16) (__cIPEncapsulationReadResponse CIPEncapsulationReadResponse, err error) {
+	m.CIPEncapsulationPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationReadResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (response)
-	if pullErr := readBuffer.PullContext("response"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for response")
+	response, err := ReadSimpleField[DF1ResponseMessage](ctx, "response", ReadComplex[DF1ResponseMessage](DF1ResponseMessageParseWithBufferProducer[DF1ResponseMessage]((uint16)(packetLen)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'response' field"))
 	}
-	_response, _responseErr := DF1ResponseMessageParseWithBuffer(ctx, readBuffer, uint16(packetLen))
-	if _responseErr != nil {
-		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of CIPEncapsulationReadResponse")
-	}
-	response := _response.(DF1ResponseMessage)
-	if closeErr := readBuffer.CloseContext("response"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for response")
-	}
+	m.Response = response
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationReadResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CIPEncapsulationReadResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CIPEncapsulationReadResponse{
-		_CIPEncapsulationPacket: &_CIPEncapsulationPacket{},
-		Response:                response,
-	}
-	_child._CIPEncapsulationPacket._CIPEncapsulationPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CIPEncapsulationReadResponse) Serialize() ([]byte, error) {
@@ -194,16 +174,8 @@ func (m *_CIPEncapsulationReadResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationReadResponse")
 		}
 
-		// Simple Field (response)
-		if pushErr := writeBuffer.PushContext("response"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for response")
-		}
-		_responseErr := writeBuffer.WriteSerializable(ctx, m.GetResponse())
-		if popErr := writeBuffer.PopContext("response"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for response")
-		}
-		if _responseErr != nil {
-			return errors.Wrap(_responseErr, "Error serializing 'response' field")
+		if err := WriteSimpleField[DF1ResponseMessage](ctx, "response", m.GetResponse(), WriteComplex[DF1ResponseMessage](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'response' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CIPEncapsulationReadResponse"); popErr != nil {
@@ -211,7 +183,7 @@ func (m *_CIPEncapsulationReadResponse) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -224,9 +196,7 @@ func (m *_CIPEncapsulationReadResponse) GetPacketLen() uint16 {
 //
 ////
 
-func (m *_CIPEncapsulationReadResponse) isCIPEncapsulationReadResponse() bool {
-	return true
-}
+func (m *_CIPEncapsulationReadResponse) IsCIPEncapsulationReadResponse() {}
 
 func (m *_CIPEncapsulationReadResponse) String() string {
 	if m == nil {

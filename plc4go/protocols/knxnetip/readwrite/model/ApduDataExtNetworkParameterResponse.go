@@ -37,19 +37,17 @@ type ApduDataExtNetworkParameterResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
-}
-
-// ApduDataExtNetworkParameterResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtNetworkParameterResponse.
-// This is useful for switch cases.
-type ApduDataExtNetworkParameterResponseExactly interface {
-	ApduDataExtNetworkParameterResponse
-	isApduDataExtNetworkParameterResponse() bool
+	// IsApduDataExtNetworkParameterResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtNetworkParameterResponse()
 }
 
 // _ApduDataExtNetworkParameterResponse is the data-structure of this message
 type _ApduDataExtNetworkParameterResponse struct {
-	*_ApduDataExt
+	ApduDataExtContract
 }
+
+var _ ApduDataExtNetworkParameterResponse = (*_ApduDataExtNetworkParameterResponse)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataExtNetworkParameterResponse) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtNetworkParameterResponse) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtNetworkParameterResponse) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtNetworkParameterResponse) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 // NewApduDataExtNetworkParameterResponse factory function for _ApduDataExtNetworkParameterResponse
 func NewApduDataExtNetworkParameterResponse(length uint8) *_ApduDataExtNetworkParameterResponse {
 	_result := &_ApduDataExtNetworkParameterResponse{
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataExtNetworkParameterResponse) GetTypeName() string {
 }
 
 func (m *_ApduDataExtNetworkParameterResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataExtNetworkParameterResponse) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtNetworkParameterResponseParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtNetworkParameterResponse, error) {
-	return ApduDataExtNetworkParameterResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtNetworkParameterResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtNetworkParameterResponse, error) {
+func (m *_ApduDataExtNetworkParameterResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtNetworkParameterResponse ApduDataExtNetworkParameterResponse, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtNetworkParameterResponse")
 	}
@@ -124,14 +116,7 @@ func ApduDataExtNetworkParameterResponseParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtNetworkParameterResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtNetworkParameterResponse{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtNetworkParameterResponse) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataExtNetworkParameterResponse) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtNetworkParameterResponse) isApduDataExtNetworkParameterResponse() bool {
-	return true
-}
+func (m *_ApduDataExtNetworkParameterResponse) IsApduDataExtNetworkParameterResponse() {}
 
 func (m *_ApduDataExtNetworkParameterResponse) String() string {
 	if m == nil {

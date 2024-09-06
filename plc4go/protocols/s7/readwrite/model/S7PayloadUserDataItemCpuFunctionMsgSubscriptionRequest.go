@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,18 +47,13 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest interface {
 	GetAlarmtype() *AlarmStateType
 	// GetReserve returns Reserve (property field)
 	GetReserve() *uint8
-}
-
-// S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest.
-// This is useful for switch cases.
-type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestExactly interface {
-	S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
-	isS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest() bool
+	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest()
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 	Subscription uint8
 	MagicKey     string
 	Alarmtype    *AlarmStateType
@@ -65,6 +61,9 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,14 +87,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetCpuSubfunct
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -127,13 +120,13 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetReserve() *
 // NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
 func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(subscription uint8, magicKey string, alarmtype *AlarmStateType, reserve *uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
 	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
-		Subscription:           subscription,
-		MagicKey:               magicKey,
-		Alarmtype:              alarmtype,
-		Reserve:                reserve,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Subscription:                  subscription,
+		MagicKey:                      magicKey,
+		Alarmtype:                     alarmtype,
+		Reserve:                       reserve,
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -153,7 +146,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetTypeName() 
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Simple field (subscription)
 	lengthInBits += 8
@@ -181,105 +174,54 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetLengthInByt
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error) {
-	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error) {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subscription)
-	_subscription, _subscriptionErr := readBuffer.ReadUint8("subscription", 8)
-	if _subscriptionErr != nil {
-		return nil, errors.Wrap(_subscriptionErr, "Error parsing 'subscription' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+	subscription, err := ReadSimpleField(ctx, "subscription", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscription' field"))
 	}
-	subscription := _subscription
+	m.Subscription = subscription
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (magicKey)
-	_magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64), "UTF-8")
-	if _magicKeyErr != nil {
-		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+	magicKey, err := ReadSimpleField(ctx, "magicKey", ReadString(readBuffer, uint32(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'magicKey' field"))
 	}
-	magicKey := _magicKey
+	m.MagicKey = magicKey
 
-	// Optional Field (alarmtype) (Can be skipped, if a given expression evaluates to false)
-	var alarmtype *AlarmStateType = nil
-	if bool((subscription) >= (128)) {
-		if pullErr := readBuffer.PullContext("alarmtype"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for alarmtype")
-		}
-		currentPos = positionAware.GetPos()
-		_val, _err := AlarmStateTypeParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
-		default:
-			alarmtype = &_val
-		}
-		if closeErr := readBuffer.CloseContext("alarmtype"); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for alarmtype")
-		}
+	var alarmtype *AlarmStateType
+	alarmtype, err = ReadOptionalField[AlarmStateType](ctx, "alarmtype", ReadEnum(AlarmStateTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((subscription) >= (128)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmtype' field"))
 	}
+	m.Alarmtype = alarmtype
 
-	// Optional Field (reserve) (Can be skipped, if a given expression evaluates to false)
-	var reserve *uint8 = nil
-	if bool((subscription) >= (128)) {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("reserve", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'reserve' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
-		default:
-			reserve = &_val
-		}
+	var reserve *uint8
+	reserve, err = ReadOptionalField[uint8](ctx, "reserve", ReadUnsignedByte(readBuffer, uint8(8)), bool((subscription) >= (128)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reserve' field"))
 	}
+	m.Reserve = reserve
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		Subscription:           subscription,
-		MagicKey:               magicKey,
-		Alarmtype:              alarmtype,
-		Reserve:                reserve,
-		reservedField0:         reservedField0,
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) Serialize() ([]byte, error) {
@@ -300,60 +242,24 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 		}
 
-		// Simple Field (subscription)
-		subscription := uint8(m.GetSubscription())
-		_subscriptionErr := writeBuffer.WriteUint8("subscription", 8, uint8((subscription)))
-		if _subscriptionErr != nil {
-			return errors.Wrap(_subscriptionErr, "Error serializing 'subscription' field")
+		if err := WriteSimpleField[uint8](ctx, "subscription", m.GetSubscription(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscription' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (magicKey)
-		magicKey := string(m.GetMagicKey())
-		_magicKeyErr := writeBuffer.WriteString("magicKey", uint32(64), "UTF-8", (magicKey))
-		if _magicKeyErr != nil {
-			return errors.Wrap(_magicKeyErr, "Error serializing 'magicKey' field")
+		if err := WriteSimpleField[string](ctx, "magicKey", m.GetMagicKey(), WriteString(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'magicKey' field")
 		}
 
-		// Optional Field (alarmtype) (Can be skipped, if the value is null)
-		var alarmtype *AlarmStateType = nil
-		if m.GetAlarmtype() != nil {
-			if pushErr := writeBuffer.PushContext("alarmtype"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alarmtype")
-			}
-			alarmtype = m.GetAlarmtype()
-			_alarmtypeErr := writeBuffer.WriteSerializable(ctx, alarmtype)
-			if popErr := writeBuffer.PopContext("alarmtype"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alarmtype")
-			}
-			if _alarmtypeErr != nil {
-				return errors.Wrap(_alarmtypeErr, "Error serializing 'alarmtype' field")
-			}
+		if err := WriteOptionalEnumField[AlarmStateType](ctx, "alarmtype", "AlarmStateType", m.GetAlarmtype(), WriteEnum[AlarmStateType, uint8](AlarmStateType.GetValue, AlarmStateType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetSubscription()) >= (128))); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmtype' field")
 		}
 
-		// Optional Field (reserve) (Can be skipped, if the value is null)
-		var reserve *uint8 = nil
-		if m.GetReserve() != nil {
-			reserve = m.GetReserve()
-			_reserveErr := writeBuffer.WriteUint8("reserve", 8, uint8(*(reserve)))
-			if _reserveErr != nil {
-				return errors.Wrap(_reserveErr, "Error serializing 'reserve' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "reserve", m.GetReserve(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserve' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest"); popErr != nil {
@@ -361,11 +267,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) isS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest() bool {
-	return true
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest() {
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) String() string {

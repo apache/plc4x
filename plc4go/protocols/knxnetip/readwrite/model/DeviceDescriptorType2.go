@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -56,13 +58,8 @@ type DeviceDescriptorType2 interface {
 	GetChannelInfo3() ChannelInformation
 	// GetChannelInfo4 returns ChannelInfo4 (property field)
 	GetChannelInfo4() ChannelInformation
-}
-
-// DeviceDescriptorType2Exactly can be used when we want exactly this type and not a type which fulfills DeviceDescriptorType2.
-// This is useful for switch cases.
-type DeviceDescriptorType2Exactly interface {
-	DeviceDescriptorType2
-	isDeviceDescriptorType2() bool
+	// IsDeviceDescriptorType2 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceDescriptorType2()
 }
 
 // _DeviceDescriptorType2 is the data-structure of this message
@@ -78,6 +75,8 @@ type _DeviceDescriptorType2 struct {
 	ChannelInfo3   ChannelInformation
 	ChannelInfo4   ChannelInformation
 }
+
+var _ DeviceDescriptorType2 = (*_DeviceDescriptorType2)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +130,18 @@ func (m *_DeviceDescriptorType2) GetChannelInfo4() ChannelInformation {
 
 // NewDeviceDescriptorType2 factory function for _DeviceDescriptorType2
 func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version uint8, readSupported bool, writeSupported bool, logicalTagBase uint8, channelInfo1 ChannelInformation, channelInfo2 ChannelInformation, channelInfo3 ChannelInformation, channelInfo4 ChannelInformation) *_DeviceDescriptorType2 {
+	if channelInfo1 == nil {
+		panic("channelInfo1 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
+	}
+	if channelInfo2 == nil {
+		panic("channelInfo2 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
+	}
+	if channelInfo3 == nil {
+		panic("channelInfo3 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
+	}
+	if channelInfo4 == nil {
+		panic("channelInfo4 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
+	}
 	return &_DeviceDescriptorType2{ManufacturerId: manufacturerId, DeviceType: deviceType, Version: version, ReadSupported: readSupported, WriteSupported: writeSupported, LogicalTagBase: logicalTagBase, ChannelInfo1: channelInfo1, ChannelInfo2: channelInfo2, ChannelInfo3: channelInfo3, ChannelInfo4: channelInfo4}
 }
 
@@ -193,128 +204,94 @@ func DeviceDescriptorType2Parse(ctx context.Context, theBytes []byte) (DeviceDes
 	return DeviceDescriptorType2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DeviceDescriptorType2ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
+		return DeviceDescriptorType2ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DeviceDescriptorType2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
+	v, err := (&_DeviceDescriptorType2{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_DeviceDescriptorType2) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__deviceDescriptorType2 DeviceDescriptorType2, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeviceDescriptorType2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeviceDescriptorType2")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (manufacturerId)
-	_manufacturerId, _manufacturerIdErr := readBuffer.ReadUint16("manufacturerId", 16)
-	if _manufacturerIdErr != nil {
-		return nil, errors.Wrap(_manufacturerIdErr, "Error parsing 'manufacturerId' field of DeviceDescriptorType2")
+	manufacturerId, err := ReadSimpleField(ctx, "manufacturerId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manufacturerId' field"))
 	}
-	manufacturerId := _manufacturerId
+	m.ManufacturerId = manufacturerId
 
-	// Simple Field (deviceType)
-	_deviceType, _deviceTypeErr := readBuffer.ReadUint16("deviceType", 16)
-	if _deviceTypeErr != nil {
-		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of DeviceDescriptorType2")
+	deviceType, err := ReadSimpleField(ctx, "deviceType", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceType' field"))
 	}
-	deviceType := _deviceType
+	m.DeviceType = deviceType
 
-	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint8("version", 8)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of DeviceDescriptorType2")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
+	m.Version = version
 
-	// Simple Field (readSupported)
-	_readSupported, _readSupportedErr := readBuffer.ReadBit("readSupported")
-	if _readSupportedErr != nil {
-		return nil, errors.Wrap(_readSupportedErr, "Error parsing 'readSupported' field of DeviceDescriptorType2")
+	readSupported, err := ReadSimpleField(ctx, "readSupported", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readSupported' field"))
 	}
-	readSupported := _readSupported
+	m.ReadSupported = readSupported
 
-	// Simple Field (writeSupported)
-	_writeSupported, _writeSupportedErr := readBuffer.ReadBit("writeSupported")
-	if _writeSupportedErr != nil {
-		return nil, errors.Wrap(_writeSupportedErr, "Error parsing 'writeSupported' field of DeviceDescriptorType2")
+	writeSupported, err := ReadSimpleField(ctx, "writeSupported", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeSupported' field"))
 	}
-	writeSupported := _writeSupported
+	m.WriteSupported = writeSupported
 
-	// Simple Field (logicalTagBase)
-	_logicalTagBase, _logicalTagBaseErr := readBuffer.ReadUint8("logicalTagBase", 6)
-	if _logicalTagBaseErr != nil {
-		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field of DeviceDescriptorType2")
+	logicalTagBase, err := ReadSimpleField(ctx, "logicalTagBase", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logicalTagBase' field"))
 	}
-	logicalTagBase := _logicalTagBase
+	m.LogicalTagBase = logicalTagBase
 
-	// Simple Field (channelInfo1)
-	if pullErr := readBuffer.PullContext("channelInfo1"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo1")
+	channelInfo1, err := ReadSimpleField[ChannelInformation](ctx, "channelInfo1", ReadComplex[ChannelInformation](ChannelInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelInfo1' field"))
 	}
-	_channelInfo1, _channelInfo1Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
-	if _channelInfo1Err != nil {
-		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field of DeviceDescriptorType2")
-	}
-	channelInfo1 := _channelInfo1.(ChannelInformation)
-	if closeErr := readBuffer.CloseContext("channelInfo1"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelInfo1")
-	}
+	m.ChannelInfo1 = channelInfo1
 
-	// Simple Field (channelInfo2)
-	if pullErr := readBuffer.PullContext("channelInfo2"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo2")
+	channelInfo2, err := ReadSimpleField[ChannelInformation](ctx, "channelInfo2", ReadComplex[ChannelInformation](ChannelInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelInfo2' field"))
 	}
-	_channelInfo2, _channelInfo2Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
-	if _channelInfo2Err != nil {
-		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field of DeviceDescriptorType2")
-	}
-	channelInfo2 := _channelInfo2.(ChannelInformation)
-	if closeErr := readBuffer.CloseContext("channelInfo2"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelInfo2")
-	}
+	m.ChannelInfo2 = channelInfo2
 
-	// Simple Field (channelInfo3)
-	if pullErr := readBuffer.PullContext("channelInfo3"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo3")
+	channelInfo3, err := ReadSimpleField[ChannelInformation](ctx, "channelInfo3", ReadComplex[ChannelInformation](ChannelInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelInfo3' field"))
 	}
-	_channelInfo3, _channelInfo3Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
-	if _channelInfo3Err != nil {
-		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field of DeviceDescriptorType2")
-	}
-	channelInfo3 := _channelInfo3.(ChannelInformation)
-	if closeErr := readBuffer.CloseContext("channelInfo3"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelInfo3")
-	}
+	m.ChannelInfo3 = channelInfo3
 
-	// Simple Field (channelInfo4)
-	if pullErr := readBuffer.PullContext("channelInfo4"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo4")
+	channelInfo4, err := ReadSimpleField[ChannelInformation](ctx, "channelInfo4", ReadComplex[ChannelInformation](ChannelInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelInfo4' field"))
 	}
-	_channelInfo4, _channelInfo4Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
-	if _channelInfo4Err != nil {
-		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field of DeviceDescriptorType2")
-	}
-	channelInfo4 := _channelInfo4.(ChannelInformation)
-	if closeErr := readBuffer.CloseContext("channelInfo4"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelInfo4")
-	}
+	m.ChannelInfo4 = channelInfo4
 
 	if closeErr := readBuffer.CloseContext("DeviceDescriptorType2"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeviceDescriptorType2")
 	}
 
-	// Create the instance
-	return &_DeviceDescriptorType2{
-		ManufacturerId: manufacturerId,
-		DeviceType:     deviceType,
-		Version:        version,
-		ReadSupported:  readSupported,
-		WriteSupported: writeSupported,
-		LogicalTagBase: logicalTagBase,
-		ChannelInfo1:   channelInfo1,
-		ChannelInfo2:   channelInfo2,
-		ChannelInfo3:   channelInfo3,
-		ChannelInfo4:   channelInfo4,
-	}, nil
+	return m, nil
 }
 
 func (m *_DeviceDescriptorType2) Serialize() ([]byte, error) {
@@ -334,94 +311,44 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for DeviceDescriptorType2")
 	}
 
-	// Simple Field (manufacturerId)
-	manufacturerId := uint16(m.GetManufacturerId())
-	_manufacturerIdErr := writeBuffer.WriteUint16("manufacturerId", 16, uint16((manufacturerId)))
-	if _manufacturerIdErr != nil {
-		return errors.Wrap(_manufacturerIdErr, "Error serializing 'manufacturerId' field")
+	if err := WriteSimpleField[uint16](ctx, "manufacturerId", m.GetManufacturerId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'manufacturerId' field")
 	}
 
-	// Simple Field (deviceType)
-	deviceType := uint16(m.GetDeviceType())
-	_deviceTypeErr := writeBuffer.WriteUint16("deviceType", 16, uint16((deviceType)))
-	if _deviceTypeErr != nil {
-		return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
+	if err := WriteSimpleField[uint16](ctx, "deviceType", m.GetDeviceType(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceType' field")
 	}
 
-	// Simple Field (version)
-	version := uint8(m.GetVersion())
-	_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
-	if _versionErr != nil {
-		return errors.Wrap(_versionErr, "Error serializing 'version' field")
+	if err := WriteSimpleField[uint8](ctx, "version", m.GetVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'version' field")
 	}
 
-	// Simple Field (readSupported)
-	readSupported := bool(m.GetReadSupported())
-	_readSupportedErr := writeBuffer.WriteBit("readSupported", (readSupported))
-	if _readSupportedErr != nil {
-		return errors.Wrap(_readSupportedErr, "Error serializing 'readSupported' field")
+	if err := WriteSimpleField[bool](ctx, "readSupported", m.GetReadSupported(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'readSupported' field")
 	}
 
-	// Simple Field (writeSupported)
-	writeSupported := bool(m.GetWriteSupported())
-	_writeSupportedErr := writeBuffer.WriteBit("writeSupported", (writeSupported))
-	if _writeSupportedErr != nil {
-		return errors.Wrap(_writeSupportedErr, "Error serializing 'writeSupported' field")
+	if err := WriteSimpleField[bool](ctx, "writeSupported", m.GetWriteSupported(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'writeSupported' field")
 	}
 
-	// Simple Field (logicalTagBase)
-	logicalTagBase := uint8(m.GetLogicalTagBase())
-	_logicalTagBaseErr := writeBuffer.WriteUint8("logicalTagBase", 6, uint8((logicalTagBase)))
-	if _logicalTagBaseErr != nil {
-		return errors.Wrap(_logicalTagBaseErr, "Error serializing 'logicalTagBase' field")
+	if err := WriteSimpleField[uint8](ctx, "logicalTagBase", m.GetLogicalTagBase(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+		return errors.Wrap(err, "Error serializing 'logicalTagBase' field")
 	}
 
-	// Simple Field (channelInfo1)
-	if pushErr := writeBuffer.PushContext("channelInfo1"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channelInfo1")
-	}
-	_channelInfo1Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo1())
-	if popErr := writeBuffer.PopContext("channelInfo1"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channelInfo1")
-	}
-	if _channelInfo1Err != nil {
-		return errors.Wrap(_channelInfo1Err, "Error serializing 'channelInfo1' field")
+	if err := WriteSimpleField[ChannelInformation](ctx, "channelInfo1", m.GetChannelInfo1(), WriteComplex[ChannelInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelInfo1' field")
 	}
 
-	// Simple Field (channelInfo2)
-	if pushErr := writeBuffer.PushContext("channelInfo2"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channelInfo2")
-	}
-	_channelInfo2Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo2())
-	if popErr := writeBuffer.PopContext("channelInfo2"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channelInfo2")
-	}
-	if _channelInfo2Err != nil {
-		return errors.Wrap(_channelInfo2Err, "Error serializing 'channelInfo2' field")
+	if err := WriteSimpleField[ChannelInformation](ctx, "channelInfo2", m.GetChannelInfo2(), WriteComplex[ChannelInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelInfo2' field")
 	}
 
-	// Simple Field (channelInfo3)
-	if pushErr := writeBuffer.PushContext("channelInfo3"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channelInfo3")
-	}
-	_channelInfo3Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo3())
-	if popErr := writeBuffer.PopContext("channelInfo3"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channelInfo3")
-	}
-	if _channelInfo3Err != nil {
-		return errors.Wrap(_channelInfo3Err, "Error serializing 'channelInfo3' field")
+	if err := WriteSimpleField[ChannelInformation](ctx, "channelInfo3", m.GetChannelInfo3(), WriteComplex[ChannelInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelInfo3' field")
 	}
 
-	// Simple Field (channelInfo4)
-	if pushErr := writeBuffer.PushContext("channelInfo4"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channelInfo4")
-	}
-	_channelInfo4Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo4())
-	if popErr := writeBuffer.PopContext("channelInfo4"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channelInfo4")
-	}
-	if _channelInfo4Err != nil {
-		return errors.Wrap(_channelInfo4Err, "Error serializing 'channelInfo4' field")
+	if err := WriteSimpleField[ChannelInformation](ctx, "channelInfo4", m.GetChannelInfo4(), WriteComplex[ChannelInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelInfo4' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceDescriptorType2"); popErr != nil {
@@ -430,9 +357,7 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-func (m *_DeviceDescriptorType2) isDeviceDescriptorType2() bool {
-	return true
-}
+func (m *_DeviceDescriptorType2) IsDeviceDescriptorType2() {}
 
 func (m *_DeviceDescriptorType2) String() string {
 	if m == nil {

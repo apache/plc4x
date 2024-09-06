@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,23 +41,21 @@ type BACnetConfirmedServiceRequestReadPropertyMultiple interface {
 	BACnetConfirmedServiceRequest
 	// GetData returns Data (property field)
 	GetData() []BACnetReadAccessSpecification
-}
-
-// BACnetConfirmedServiceRequestReadPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadPropertyMultiple.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestReadPropertyMultipleExactly interface {
-	BACnetConfirmedServiceRequestReadPropertyMultiple
-	isBACnetConfirmedServiceRequestReadPropertyMultiple() bool
+	// IsBACnetConfirmedServiceRequestReadPropertyMultiple is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadPropertyMultiple()
 }
 
 // _BACnetConfirmedServiceRequestReadPropertyMultiple is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadPropertyMultiple struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	Data []BACnetReadAccessSpecification
 
 	// Arguments.
 	ServiceRequestPayloadLength uint32
 }
+
+var _ BACnetConfirmedServiceRequestReadPropertyMultiple = (*_BACnetConfirmedServiceRequestReadPropertyMultiple)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReadPropertyMultiple)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +71,8 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetServiceChoice() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +92,10 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetData() []BACnetR
 // NewBACnetConfirmedServiceRequestReadPropertyMultiple factory function for _BACnetConfirmedServiceRequestReadPropertyMultiple
 func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []BACnetReadAccessSpecification, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadPropertyMultiple {
 	_result := &_BACnetConfirmedServiceRequestReadPropertyMultiple{
-		Data:                           data,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		Data:                                  data,
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -118,7 +115,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetTypeName() strin
 }
 
 func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -134,55 +131,28 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyMultipleParse(ctx context.Context, theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
-	return BACnetConfirmedServiceRequestReadPropertyMultipleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestReadPropertyMultipleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
+func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestReadPropertyMultiple BACnetConfirmedServiceRequestReadPropertyMultiple, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadPropertyMultiple")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
+	data, err := ReadLengthArrayField[BACnetReadAccessSpecification](ctx, "data", ReadComplex[BACnetReadAccessSpecification](BACnetReadAccessSpecificationParseWithBuffer, readBuffer), int(serviceRequestPayloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Length array
-	var data []BACnetReadAccessSpecification
-	{
-		_dataLength := serviceRequestPayloadLength
-		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
-		for positionAware.GetPos() < _dataEndPos {
-			_item, _err := BACnetReadAccessSpecificationParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetConfirmedServiceRequestReadPropertyMultiple")
-			}
-			data = append(data, _item.(BACnetReadAccessSpecification))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReadPropertyMultiple")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestReadPropertyMultiple{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		Data: data,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) Serialize() ([]byte, error) {
@@ -203,21 +173,8 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadPropertyMultiple")
 		}
 
-		// Array Field (data)
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
-		}
-		for _curItem, _element := range m.GetData() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetData()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
+		if err := WriteComplexTypeArrayField(ctx, "data", m.GetData(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); popErr != nil {
@@ -225,7 +182,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -238,8 +195,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetServiceRequestPa
 //
 ////
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) isBACnetConfirmedServiceRequestReadPropertyMultiple() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) IsBACnetConfirmedServiceRequestReadPropertyMultiple() {
 }
 
 func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) String() string {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,18 +55,13 @@ type MonitoredSALLongFormSmartMode interface {
 	GetSalData() SALData
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
 	GetIsUnitAddress() bool
-}
-
-// MonitoredSALLongFormSmartModeExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALLongFormSmartMode.
-// This is useful for switch cases.
-type MonitoredSALLongFormSmartModeExactly interface {
-	MonitoredSALLongFormSmartMode
-	isMonitoredSALLongFormSmartMode() bool
+	// IsMonitoredSALLongFormSmartMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredSALLongFormSmartMode()
 }
 
 // _MonitoredSALLongFormSmartMode is the data-structure of this message
 type _MonitoredSALLongFormSmartMode struct {
-	*_MonitoredSAL
+	MonitoredSALContract
 	TerminatingByte uint32
 	UnitAddress     UnitAddress
 	BridgeAddress   BridgeAddress
@@ -77,6 +73,9 @@ type _MonitoredSALLongFormSmartMode struct {
 	reservedField0 *byte
 }
 
+var _ MonitoredSALLongFormSmartMode = (*_MonitoredSALLongFormSmartMode)(nil)
+var _ MonitoredSALRequirements = (*_MonitoredSALLongFormSmartMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,12 +86,8 @@ type _MonitoredSALLongFormSmartMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte) {
-	m.SalType = salType
-}
-
-func (m *_MonitoredSALLongFormSmartMode) GetParent() MonitoredSAL {
-	return m._MonitoredSAL
+func (m *_MonitoredSALLongFormSmartMode) GetParent() MonitoredSALContract {
+	return m.MonitoredSALContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -140,15 +135,15 @@ func (m *_MonitoredSALLongFormSmartMode) GetSalData() SALData {
 func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 	ctx := context.Background()
 	_ = ctx
-	unitAddress := m.UnitAddress
+	unitAddress := m.GetUnitAddress()
 	_ = unitAddress
-	bridgeAddress := m.BridgeAddress
+	bridgeAddress := m.GetBridgeAddress()
 	_ = bridgeAddress
-	reservedByte := m.ReservedByte
+	reservedByte := m.GetReservedByte()
 	_ = reservedByte
-	replyNetwork := m.ReplyNetwork
+	replyNetwork := m.GetReplyNetwork()
 	_ = replyNetwork
-	salData := m.SalData
+	salData := m.GetSalData()
 	_ = salData
 	return bool(bool((m.GetTerminatingByte() & 0xff) == (0x00)))
 }
@@ -161,16 +156,16 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 // NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
 func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
 	_result := &_MonitoredSALLongFormSmartMode{
-		TerminatingByte: terminatingByte,
-		UnitAddress:     unitAddress,
-		BridgeAddress:   bridgeAddress,
-		Application:     application,
-		ReservedByte:    reservedByte,
-		ReplyNetwork:    replyNetwork,
-		SalData:         salData,
-		_MonitoredSAL:   NewMonitoredSAL(salType, cBusOptions),
+		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		TerminatingByte:      terminatingByte,
+		UnitAddress:          unitAddress,
+		BridgeAddress:        bridgeAddress,
+		Application:          application,
+		ReservedByte:         reservedByte,
+		ReplyNetwork:         replyNetwork,
+		SalData:              salData,
 	}
-	_result._MonitoredSAL._MonitoredSALChildRequirements = _result
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
 	return _result
 }
 
@@ -190,7 +185,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetTypeName() string {
 }
 
 func (m *_MonitoredSALLongFormSmartMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MonitoredSALContract.(*_MonitoredSAL).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -232,194 +227,98 @@ func (m *_MonitoredSALLongFormSmartMode) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MonitoredSALLongFormSmartModeParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
-	return MonitoredSALLongFormSmartModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
+func (m *_MonitoredSALLongFormSmartMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MonitoredSAL, cBusOptions CBusOptions) (__monitoredSALLongFormSmartMode MonitoredSALLongFormSmartMode, err error) {
+	m.MonitoredSALContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoredSALLongFormSmartMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSALLongFormSmartMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MonitoredSALLongFormSmartMode")
-		}
-		if reserved != byte(0x05) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0x05),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x05))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Peek Field (terminatingByte)
-	currentPos = positionAware.GetPos()
-	terminatingByte, _err := readBuffer.ReadUint32("terminatingByte", 24)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field of MonitoredSALLongFormSmartMode")
+	terminatingByte, err := ReadPeekField[uint32](ctx, "terminatingByte", ReadUnsignedInt(readBuffer, uint8(24)), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminatingByte' field"))
 	}
+	m.TerminatingByte = terminatingByte
 
-	readBuffer.Reset(currentPos)
-
-	// Virtual field
-	_isUnitAddress := bool((terminatingByte & 0xff) == (0x00))
-	isUnitAddress := bool(_isUnitAddress)
+	isUnitAddress, err := ReadVirtualField[bool](ctx, "isUnitAddress", (*bool)(nil), bool((terminatingByte&0xff) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnitAddress' field"))
+	}
 	_ = isUnitAddress
 
-	// Optional Field (unitAddress) (Can be skipped, if a given expression evaluates to false)
-	var unitAddress UnitAddress = nil
-	if isUnitAddress {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
-		}
-		_val, _err := UnitAddressParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field of MonitoredSALLongFormSmartMode")
-		default:
-			unitAddress = _val.(UnitAddress)
-			if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
-			}
-		}
+	var unitAddress UnitAddress
+	_unitAddress, err := ReadOptionalField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer), isUnitAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitAddress' field"))
+	}
+	if _unitAddress != nil {
+		unitAddress = *_unitAddress
+		m.UnitAddress = unitAddress
 	}
 
-	// Optional Field (bridgeAddress) (Can be skipped, if a given expression evaluates to false)
-	var bridgeAddress BridgeAddress = nil
-	if !(isUnitAddress) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
-		}
-		_val, _err := BridgeAddressParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field of MonitoredSALLongFormSmartMode")
-		default:
-			bridgeAddress = _val.(BridgeAddress)
-			if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for bridgeAddress")
-			}
-		}
+	var bridgeAddress BridgeAddress
+	_bridgeAddress, err := ReadOptionalField[BridgeAddress](ctx, "bridgeAddress", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer), !(isUnitAddress))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeAddress' field"))
+	}
+	if _bridgeAddress != nil {
+		bridgeAddress = *_bridgeAddress
+		m.BridgeAddress = bridgeAddress
 	}
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of MonitoredSALLongFormSmartMode")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
-	}
+	m.Application = application
 
-	// Optional Field (reservedByte) (Can be skipped, if a given expression evaluates to false)
-	var reservedByte *byte = nil
-	if isUnitAddress {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("reservedByte")
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'reservedByte' field of MonitoredSALLongFormSmartMode")
-		default:
-			reservedByte = &_val
-		}
+	var reservedByte *byte
+	reservedByte, err = ReadOptionalField[byte](ctx, "reservedByte", ReadByte(readBuffer, 8), isUnitAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reservedByte' field"))
 	}
+	m.ReservedByte = reservedByte
 
 	// Validation
 	if !(bool(bool(isUnitAddress) && bool(bool((*reservedByte) == (0x00)))) || bool(!(isUnitAddress))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"invalid unit address"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "invalid unit address"})
 	}
 
-	// Optional Field (replyNetwork) (Can be skipped, if a given expression evaluates to false)
-	var replyNetwork ReplyNetwork = nil
-	if !(isUnitAddress) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("replyNetwork"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for replyNetwork")
-		}
-		_val, _err := ReplyNetworkParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field of MonitoredSALLongFormSmartMode")
-		default:
-			replyNetwork = _val.(ReplyNetwork)
-			if closeErr := readBuffer.CloseContext("replyNetwork"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for replyNetwork")
-			}
-		}
+	var replyNetwork ReplyNetwork
+	_replyNetwork, err := ReadOptionalField[ReplyNetwork](ctx, "replyNetwork", ReadComplex[ReplyNetwork](ReplyNetworkParseWithBuffer, readBuffer), !(isUnitAddress))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'replyNetwork' field"))
+	}
+	if _replyNetwork != nil {
+		replyNetwork = *_replyNetwork
+		m.ReplyNetwork = replyNetwork
 	}
 
-	// Optional Field (salData) (Can be skipped, if a given expression evaluates to false)
-	var salData SALData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for salData")
-		}
-		_val, _err := SALDataParseWithBuffer(ctx, readBuffer, application.ApplicationId())
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'salData' field of MonitoredSALLongFormSmartMode")
-		default:
-			salData = _val.(SALData)
-			if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for salData")
-			}
-		}
+	var salData SALData
+	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(application.ApplicationId())), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
+	}
+	if _salData != nil {
+		salData = *_salData
+		m.SalData = salData
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredSALLongFormSmartMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSALLongFormSmartMode")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MonitoredSALLongFormSmartMode{
-		_MonitoredSAL: &_MonitoredSAL{
-			CBusOptions: cBusOptions,
-		},
-		TerminatingByte: terminatingByte,
-		UnitAddress:     unitAddress,
-		BridgeAddress:   bridgeAddress,
-		Application:     application,
-		ReservedByte:    reservedByte,
-		ReplyNetwork:    replyNetwork,
-		SalData:         salData,
-		reservedField0:  reservedField0,
-	}
-	_child._MonitoredSAL._MonitoredSALChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MonitoredSALLongFormSmartMode) Serialize() ([]byte, error) {
@@ -440,20 +339,8 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for MonitoredSALLongFormSmartMode")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0x05)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0x05),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x05), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 		// Virtual field
 		isUnitAddress := m.GetIsUnitAddress()
@@ -462,90 +349,28 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(_isUnitAddressErr, "Error serializing 'isUnitAddress' field")
 		}
 
-		// Optional Field (unitAddress) (Can be skipped, if the value is null)
-		var unitAddress UnitAddress = nil
-		if m.GetUnitAddress() != nil {
-			if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for unitAddress")
-			}
-			unitAddress = m.GetUnitAddress()
-			_unitAddressErr := writeBuffer.WriteSerializable(ctx, unitAddress)
-			if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for unitAddress")
-			}
-			if _unitAddressErr != nil {
-				return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
-			}
+		if err := WriteOptionalField[UnitAddress](ctx, "unitAddress", GetRef(m.GetUnitAddress()), WriteComplex[UnitAddress](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitAddress' field")
 		}
 
-		// Optional Field (bridgeAddress) (Can be skipped, if the value is null)
-		var bridgeAddress BridgeAddress = nil
-		if m.GetBridgeAddress() != nil {
-			if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
-			}
-			bridgeAddress = m.GetBridgeAddress()
-			_bridgeAddressErr := writeBuffer.WriteSerializable(ctx, bridgeAddress)
-			if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bridgeAddress")
-			}
-			if _bridgeAddressErr != nil {
-				return errors.Wrap(_bridgeAddressErr, "Error serializing 'bridgeAddress' field")
-			}
+		if err := WriteOptionalField[BridgeAddress](ctx, "bridgeAddress", GetRef(m.GetBridgeAddress()), WriteComplex[BridgeAddress](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'bridgeAddress' field")
 		}
 
-		// Simple Field (application)
-		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for application")
-		}
-		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
-		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for application")
-		}
-		if _applicationErr != nil {
-			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		// Optional Field (reservedByte) (Can be skipped, if the value is null)
-		var reservedByte *byte = nil
-		if m.GetReservedByte() != nil {
-			reservedByte = m.GetReservedByte()
-			_reservedByteErr := writeBuffer.WriteByte("reservedByte", *(reservedByte))
-			if _reservedByteErr != nil {
-				return errors.Wrap(_reservedByteErr, "Error serializing 'reservedByte' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "reservedByte", m.GetReservedByte(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'reservedByte' field")
 		}
 
-		// Optional Field (replyNetwork) (Can be skipped, if the value is null)
-		var replyNetwork ReplyNetwork = nil
-		if m.GetReplyNetwork() != nil {
-			if pushErr := writeBuffer.PushContext("replyNetwork"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for replyNetwork")
-			}
-			replyNetwork = m.GetReplyNetwork()
-			_replyNetworkErr := writeBuffer.WriteSerializable(ctx, replyNetwork)
-			if popErr := writeBuffer.PopContext("replyNetwork"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for replyNetwork")
-			}
-			if _replyNetworkErr != nil {
-				return errors.Wrap(_replyNetworkErr, "Error serializing 'replyNetwork' field")
-			}
+		if err := WriteOptionalField[ReplyNetwork](ctx, "replyNetwork", GetRef(m.GetReplyNetwork()), WriteComplex[ReplyNetwork](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'replyNetwork' field")
 		}
 
-		// Optional Field (salData) (Can be skipped, if the value is null)
-		var salData SALData = nil
-		if m.GetSalData() != nil {
-			if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for salData")
-			}
-			salData = m.GetSalData()
-			_salDataErr := writeBuffer.WriteSerializable(ctx, salData)
-			if popErr := writeBuffer.PopContext("salData"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for salData")
-			}
-			if _salDataErr != nil {
-				return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
-			}
+		if err := WriteOptionalField[SALData](ctx, "salData", GetRef(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'salData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredSALLongFormSmartMode"); popErr != nil {
@@ -553,12 +378,10 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MonitoredSALContract.(*_MonitoredSAL).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MonitoredSALLongFormSmartMode) isMonitoredSALLongFormSmartMode() bool {
-	return true
-}
+func (m *_MonitoredSALLongFormSmartMode) IsMonitoredSALLongFormSmartMode() {}
 
 func (m *_MonitoredSALLongFormSmartMode) String() string {
 	if m == nil {

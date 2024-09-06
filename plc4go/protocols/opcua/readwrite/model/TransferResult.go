@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type TransferResult interface {
 	GetNoOfAvailableSequenceNumbers() int32
 	// GetAvailableSequenceNumbers returns AvailableSequenceNumbers (property field)
 	GetAvailableSequenceNumbers() []uint32
-}
-
-// TransferResultExactly can be used when we want exactly this type and not a type which fulfills TransferResult.
-// This is useful for switch cases.
-type TransferResultExactly interface {
-	TransferResult
-	isTransferResult() bool
+	// IsTransferResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTransferResult()
 }
 
 // _TransferResult is the data-structure of this message
 type _TransferResult struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	StatusCode                   StatusCode
 	NoOfAvailableSequenceNumbers int32
 	AvailableSequenceNumbers     []uint32
 }
+
+var _ TransferResult = (*_TransferResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_TransferResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_TransferResult) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TransferResult) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_TransferResult) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_TransferResult) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_TransferResult) GetAvailableSequenceNumbers() []uint32 {
 
 // NewTransferResult factory function for _TransferResult
 func NewTransferResult(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) *_TransferResult {
-	_result := &_TransferResult{
-		StatusCode:                   statusCode,
-		NoOfAvailableSequenceNumbers: noOfAvailableSequenceNumbers,
-		AvailableSequenceNumbers:     availableSequenceNumbers,
-		_ExtensionObjectDefinition:   NewExtensionObjectDefinition(),
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for TransferResult must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_TransferResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfAvailableSequenceNumbers:      noOfAvailableSequenceNumbers,
+		AvailableSequenceNumbers:          availableSequenceNumbers,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_TransferResult) GetTypeName() string {
 }
 
 func (m *_TransferResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -150,81 +151,40 @@ func (m *_TransferResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TransferResultParse(ctx context.Context, theBytes []byte, identifier string) (TransferResult, error) {
-	return TransferResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func TransferResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TransferResult, error) {
+func (m *_TransferResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__transferResult TransferResult, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TransferResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TransferResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of TransferResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
-	}
+	m.StatusCode = statusCode
 
-	// Simple Field (noOfAvailableSequenceNumbers)
-	_noOfAvailableSequenceNumbers, _noOfAvailableSequenceNumbersErr := readBuffer.ReadInt32("noOfAvailableSequenceNumbers", 32)
-	if _noOfAvailableSequenceNumbersErr != nil {
-		return nil, errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error parsing 'noOfAvailableSequenceNumbers' field of TransferResult")
+	noOfAvailableSequenceNumbers, err := ReadSimpleField(ctx, "noOfAvailableSequenceNumbers", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAvailableSequenceNumbers' field"))
 	}
-	noOfAvailableSequenceNumbers := _noOfAvailableSequenceNumbers
+	m.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
 
-	// Array field (availableSequenceNumbers)
-	if pullErr := readBuffer.PullContext("availableSequenceNumbers", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for availableSequenceNumbers")
+	availableSequenceNumbers, err := ReadCountArrayField[uint32](ctx, "availableSequenceNumbers", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfAvailableSequenceNumbers))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'availableSequenceNumbers' field"))
 	}
-	// Count array
-	availableSequenceNumbers := make([]uint32, max(noOfAvailableSequenceNumbers, 0))
-	// This happens when the size is set conditional to 0
-	if len(availableSequenceNumbers) == 0 {
-		availableSequenceNumbers = nil
-	}
-	{
-		_numItems := uint16(max(noOfAvailableSequenceNumbers, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'availableSequenceNumbers' field of TransferResult")
-			}
-			availableSequenceNumbers[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("availableSequenceNumbers", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for availableSequenceNumbers")
-	}
+	m.AvailableSequenceNumbers = availableSequenceNumbers
 
 	if closeErr := readBuffer.CloseContext("TransferResult"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TransferResult")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TransferResult{
-		_ExtensionObjectDefinition:   &_ExtensionObjectDefinition{},
-		StatusCode:                   statusCode,
-		NoOfAvailableSequenceNumbers: noOfAvailableSequenceNumbers,
-		AvailableSequenceNumbers:     availableSequenceNumbers,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TransferResult) Serialize() ([]byte, error) {
@@ -245,38 +205,16 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for TransferResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (noOfAvailableSequenceNumbers)
-		noOfAvailableSequenceNumbers := int32(m.GetNoOfAvailableSequenceNumbers())
-		_noOfAvailableSequenceNumbersErr := writeBuffer.WriteInt32("noOfAvailableSequenceNumbers", 32, int32((noOfAvailableSequenceNumbers)))
-		if _noOfAvailableSequenceNumbersErr != nil {
-			return errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error serializing 'noOfAvailableSequenceNumbers' field")
+		if err := WriteSimpleField[int32](ctx, "noOfAvailableSequenceNumbers", m.GetNoOfAvailableSequenceNumbers(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfAvailableSequenceNumbers' field")
 		}
 
-		// Array Field (availableSequenceNumbers)
-		if pushErr := writeBuffer.PushContext("availableSequenceNumbers", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for availableSequenceNumbers")
-		}
-		for _curItem, _element := range m.GetAvailableSequenceNumbers() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'availableSequenceNumbers' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("availableSequenceNumbers", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for availableSequenceNumbers")
+		if err := WriteSimpleTypeArrayField(ctx, "availableSequenceNumbers", m.GetAvailableSequenceNumbers(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'availableSequenceNumbers' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TransferResult"); popErr != nil {
@@ -284,12 +222,10 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TransferResult) isTransferResult() bool {
-	return true
-}
+func (m *_TransferResult) IsTransferResult() {}
 
 func (m *_TransferResult) String() string {
 	if m == nil {

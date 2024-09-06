@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataSystemStatus interface {
 	GetSystemStatus() BACnetDeviceStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceStatusTagged
-}
-
-// BACnetConstructedDataSystemStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSystemStatus.
-// This is useful for switch cases.
-type BACnetConstructedDataSystemStatusExactly interface {
-	BACnetConstructedDataSystemStatus
-	isBACnetConstructedDataSystemStatus() bool
+	// IsBACnetConstructedDataSystemStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSystemStatus()
 }
 
 // _BACnetConstructedDataSystemStatus is the data-structure of this message
 type _BACnetConstructedDataSystemStatus struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	SystemStatus BACnetDeviceStatusTagged
 }
+
+var _ BACnetConstructedDataSystemStatus = (*_BACnetConstructedDataSystemStatus)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSystemStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataSystemStatus) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataSystemStatus) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataSystemStatus) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataSystemStatus) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataSystemStatus) GetActualValue() BACnetDeviceStatus
 
 // NewBACnetConstructedDataSystemStatus factory function for _BACnetConstructedDataSystemStatus
 func NewBACnetConstructedDataSystemStatus(systemStatus BACnetDeviceStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSystemStatus {
-	_result := &_BACnetConstructedDataSystemStatus{
-		SystemStatus:           systemStatus,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if systemStatus == nil {
+		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetConstructedDataSystemStatus must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataSystemStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SystemStatus:                  systemStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataSystemStatus) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataSystemStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (systemStatus)
 	lengthInBits += m.SystemStatus.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataSystemStatus) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataSystemStatusParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSystemStatus, error) {
-	return BACnetConstructedDataSystemStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataSystemStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSystemStatus, error) {
+func (m *_BACnetConstructedDataSystemStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataSystemStatus BACnetConstructedDataSystemStatus, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSystemStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSystemStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (systemStatus)
-	if pullErr := readBuffer.PullContext("systemStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for systemStatus")
+	systemStatus, err := ReadSimpleField[BACnetDeviceStatusTagged](ctx, "systemStatus", ReadComplex[BACnetDeviceStatusTagged](BACnetDeviceStatusTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'systemStatus' field"))
 	}
-	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _systemStatusErr != nil {
-		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field of BACnetConstructedDataSystemStatus")
-	}
-	systemStatus := _systemStatus.(BACnetDeviceStatusTagged)
-	if closeErr := readBuffer.CloseContext("systemStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for systemStatus")
-	}
+	m.SystemStatus = systemStatus
 
-	// Virtual field
-	_actualValue := systemStatus
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceStatusTagged](ctx, "actualValue", (*BACnetDeviceStatusTagged)(nil), systemStatus)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSystemStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSystemStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataSystemStatus{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		SystemStatus: systemStatus,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataSystemStatus) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSystemStatus")
 		}
 
-		// Simple Field (systemStatus)
-		if pushErr := writeBuffer.PushContext("systemStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for systemStatus")
-		}
-		_systemStatusErr := writeBuffer.WriteSerializable(ctx, m.GetSystemStatus())
-		if popErr := writeBuffer.PopContext("systemStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for systemStatus")
-		}
-		if _systemStatusErr != nil {
-			return errors.Wrap(_systemStatusErr, "Error serializing 'systemStatus' field")
+		if err := WriteSimpleField[BACnetDeviceStatusTagged](ctx, "systemStatus", m.GetSystemStatus(), WriteComplex[BACnetDeviceStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'systemStatus' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataSystemStatus) isBACnetConstructedDataSystemStatus() bool {
-	return true
-}
+func (m *_BACnetConstructedDataSystemStatus) IsBACnetConstructedDataSystemStatus() {}
 
 func (m *_BACnetConstructedDataSystemStatus) String() string {
 	if m == nil {

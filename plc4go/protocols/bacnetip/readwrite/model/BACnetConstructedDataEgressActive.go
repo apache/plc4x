@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataEgressActive interface {
 	GetEgressActive() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataEgressActiveExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEgressActive.
-// This is useful for switch cases.
-type BACnetConstructedDataEgressActiveExactly interface {
-	BACnetConstructedDataEgressActive
-	isBACnetConstructedDataEgressActive() bool
+	// IsBACnetConstructedDataEgressActive is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEgressActive()
 }
 
 // _BACnetConstructedDataEgressActive is the data-structure of this message
 type _BACnetConstructedDataEgressActive struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	EgressActive BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataEgressActive = (*_BACnetConstructedDataEgressActive)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressActive)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataEgressActive) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataEgressActive) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataEgressActive) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataEgressActive) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataEgressActive) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataEgressActive factory function for _BACnetConstructedDataEgressActive
 func NewBACnetConstructedDataEgressActive(egressActive BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressActive {
-	_result := &_BACnetConstructedDataEgressActive{
-		EgressActive:           egressActive,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if egressActive == nil {
+		panic("egressActive of type BACnetApplicationTagBoolean for BACnetConstructedDataEgressActive must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataEgressActive{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EgressActive:                  egressActive,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataEgressActive) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEgressActive) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (egressActive)
 	lengthInBits += m.EgressActive.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataEgressActive) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataEgressActiveParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressActive, error) {
-	return BACnetConstructedDataEgressActiveParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataEgressActiveParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressActive, error) {
+func (m *_BACnetConstructedDataEgressActive) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEgressActive BACnetConstructedDataEgressActive, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEgressActive"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEgressActive")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (egressActive)
-	if pullErr := readBuffer.PullContext("egressActive"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for egressActive")
+	egressActive, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "egressActive", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'egressActive' field"))
 	}
-	_egressActive, _egressActiveErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _egressActiveErr != nil {
-		return nil, errors.Wrap(_egressActiveErr, "Error parsing 'egressActive' field of BACnetConstructedDataEgressActive")
-	}
-	egressActive := _egressActive.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("egressActive"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for egressActive")
-	}
+	m.EgressActive = egressActive
 
-	// Virtual field
-	_actualValue := egressActive
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), egressActive)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEgressActive"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEgressActive")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataEgressActive{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		EgressActive: egressActive,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataEgressActive) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataEgressActive) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEgressActive")
 		}
 
-		// Simple Field (egressActive)
-		if pushErr := writeBuffer.PushContext("egressActive"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for egressActive")
-		}
-		_egressActiveErr := writeBuffer.WriteSerializable(ctx, m.GetEgressActive())
-		if popErr := writeBuffer.PopContext("egressActive"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for egressActive")
-		}
-		if _egressActiveErr != nil {
-			return errors.Wrap(_egressActiveErr, "Error serializing 'egressActive' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "egressActive", m.GetEgressActive(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'egressActive' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataEgressActive) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataEgressActive) isBACnetConstructedDataEgressActive() bool {
-	return true
-}
+func (m *_BACnetConstructedDataEgressActive) IsBACnetConstructedDataEgressActive() {}
 
 func (m *_BACnetConstructedDataEgressActive) String() string {
 	if m == nil {

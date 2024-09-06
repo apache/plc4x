@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataTimeSynchronizationRecipients interface {
 	BACnetConstructedData
 	// GetTimeSynchronizationRecipients returns TimeSynchronizationRecipients (property field)
 	GetTimeSynchronizationRecipients() []BACnetRecipient
-}
-
-// BACnetConstructedDataTimeSynchronizationRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeSynchronizationRecipients.
-// This is useful for switch cases.
-type BACnetConstructedDataTimeSynchronizationRecipientsExactly interface {
-	BACnetConstructedDataTimeSynchronizationRecipients
-	isBACnetConstructedDataTimeSynchronizationRecipients() bool
+	// IsBACnetConstructedDataTimeSynchronizationRecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeSynchronizationRecipients()
 }
 
 // _BACnetConstructedDataTimeSynchronizationRecipients is the data-structure of this message
 type _BACnetConstructedDataTimeSynchronizationRecipients struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	TimeSynchronizationRecipients []BACnetRecipient
 }
+
+var _ BACnetConstructedDataTimeSynchronizationRecipients = (*_BACnetConstructedDataTimeSynchronizationRecipients)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeSynchronizationRecipients)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetPropertyIdentif
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTimeSynchronizationRecipients) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetTimeSynchroniza
 // NewBACnetConstructedDataTimeSynchronizationRecipients factory function for _BACnetConstructedDataTimeSynchronizationRecipients
 func NewBACnetConstructedDataTimeSynchronizationRecipients(timeSynchronizationRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationRecipients {
 	_result := &_BACnetConstructedDataTimeSynchronizationRecipients{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		TimeSynchronizationRecipients: timeSynchronizationRecipients,
-		_BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetTypeName() stri
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.TimeSynchronizationRecipients) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBytes(c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTimeSynchronizationRecipientsParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationRecipients, error) {
-	return BACnetConstructedDataTimeSynchronizationRecipientsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTimeSynchronizationRecipientsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationRecipients, error) {
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimeSynchronizationRecipients BACnetConstructedDataTimeSynchronizationRecipients, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeSynchronizationRecipients"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeSynchronizationRecipients")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (timeSynchronizationRecipients)
-	if pullErr := readBuffer.PullContext("timeSynchronizationRecipients", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeSynchronizationRecipients")
+	timeSynchronizationRecipients, err := ReadTerminatedArrayField[BACnetRecipient](ctx, "timeSynchronizationRecipients", ReadComplex[BACnetRecipient](BACnetRecipientParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeSynchronizationRecipients' field"))
 	}
-	// Terminated array
-	var timeSynchronizationRecipients []BACnetRecipient
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetRecipientParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'timeSynchronizationRecipients' field of BACnetConstructedDataTimeSynchronizationRecipients")
-			}
-			timeSynchronizationRecipients = append(timeSynchronizationRecipients, _item.(BACnetRecipient))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("timeSynchronizationRecipients", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeSynchronizationRecipients")
-	}
+	m.TimeSynchronizationRecipients = timeSynchronizationRecipients
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeSynchronizationRecipients"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeSynchronizationRecipients")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTimeSynchronizationRecipients{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		TimeSynchronizationRecipients: timeSynchronizationRecipients,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationRecipients) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) SerializeWithWrite
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeSynchronizationRecipients")
 		}
 
-		// Array Field (timeSynchronizationRecipients)
-		if pushErr := writeBuffer.PushContext("timeSynchronizationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeSynchronizationRecipients")
-		}
-		for _curItem, _element := range m.GetTimeSynchronizationRecipients() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTimeSynchronizationRecipients()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'timeSynchronizationRecipients' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("timeSynchronizationRecipients", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeSynchronizationRecipients")
+		if err := WriteComplexTypeArrayField(ctx, "timeSynchronizationRecipients", m.GetTimeSynchronizationRecipients(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeSynchronizationRecipients' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeSynchronizationRecipients"); popErr != nil {
@@ -228,11 +183,10 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) SerializeWithWrite
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationRecipients) isBACnetConstructedDataTimeSynchronizationRecipients() bool {
-	return true
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) IsBACnetConstructedDataTimeSynchronizationRecipients() {
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationRecipients) String() string {

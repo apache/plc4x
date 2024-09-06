@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,47 +35,40 @@ import (
 
 // BACnetCalendarEntry is the corresponding interface of BACnetCalendarEntry
 type BACnetCalendarEntry interface {
+	BACnetCalendarEntryContract
+	BACnetCalendarEntryRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCalendarEntry()
+}
+
+// BACnetCalendarEntryContract provides a set of functions which can be overwritten by a sub struct
+type BACnetCalendarEntryContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// IsBACnetCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCalendarEntry()
 }
 
-// BACnetCalendarEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntry.
-// This is useful for switch cases.
-type BACnetCalendarEntryExactly interface {
-	BACnetCalendarEntry
-	isBACnetCalendarEntry() bool
+// BACnetCalendarEntryRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetCalendarEntryRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetCalendarEntry is the data-structure of this message
 type _BACnetCalendarEntry struct {
-	_BACnetCalendarEntryChildRequirements
+	_SubType        BACnetCalendarEntry
 	PeekedTagHeader BACnetTagHeader
 }
 
-type _BACnetCalendarEntryChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetCalendarEntryParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetCalendarEntry, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetCalendarEntryChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetCalendarEntry, peekedTagHeader BACnetTagHeader)
-	GetParent() *BACnetCalendarEntry
-
-	GetTypeName() string
-	BACnetCalendarEntry
-}
+var _ BACnetCalendarEntryContract = (*_BACnetCalendarEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,7 +88,8 @@ func (m *_BACnetCalendarEntry) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -106,6 +102,9 @@ func (m *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
 
 // NewBACnetCalendarEntry factory function for _BACnetCalendarEntry
 func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntry {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetCalendarEntry must not be nil")
+	}
 	return &_BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader}
 }
 
@@ -124,7 +123,7 @@ func (m *_BACnetCalendarEntry) GetTypeName() string {
 	return "BACnetCalendarEntry"
 }
 
-func (m *_BACnetCalendarEntry) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetCalendarEntry) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -133,76 +132,86 @@ func (m *_BACnetCalendarEntry) GetParentLengthInBits(ctx context.Context) uint16
 }
 
 func (m *_BACnetCalendarEntry) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCalendarEntryParse(ctx context.Context, theBytes []byte) (BACnetCalendarEntry, error) {
-	return BACnetCalendarEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func BACnetCalendarEntryParse[T BACnetCalendarEntry](ctx context.Context, theBytes []byte) (T, error) {
+	return BACnetCalendarEntryParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntry, error) {
+func BACnetCalendarEntryParseWithBufferProducer[T BACnetCalendarEntry]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetCalendarEntryParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetCalendarEntryParseWithBuffer[T BACnetCalendarEntry](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_BACnetCalendarEntry{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetCalendarEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCalendarEntry BACnetCalendarEntry, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCalendarEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Validation
 	if !(bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Validation failed"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "Validation failed"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetCalendarEntryChildSerializeRequirement interface {
-		BACnetCalendarEntry
-		InitializeParent(BACnetCalendarEntry, BACnetTagHeader)
-		GetParent() BACnetCalendarEntry
-	}
-	var _childTemp any
-	var _child BACnetCalendarEntryChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetCalendarEntry
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetCalendarEntryDate
-		_childTemp, typeSwitchError = BACnetCalendarEntryDateParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetCalendarEntryDate{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryDate for type-switch of BACnetCalendarEntry")
+		}
 	case peekedTagNumber == uint8(1): // BACnetCalendarEntryDateRange
-		_childTemp, typeSwitchError = BACnetCalendarEntryDateRangeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetCalendarEntryDateRange{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryDateRange for type-switch of BACnetCalendarEntry")
+		}
 	case peekedTagNumber == uint8(2): // BACnetCalendarEntryWeekNDay
-		_childTemp, typeSwitchError = BACnetCalendarEntryWeekNDayParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetCalendarEntryWeekNDay{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryWeekNDay for type-switch of BACnetCalendarEntry")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetCalendarEntry")
-	}
-	_child = _childTemp.(BACnetCalendarEntryChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetCalendarEntry")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
 }
 
-func (pm *_BACnetCalendarEntry) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetCalendarEntry, serializeChildFunction func() error) error {
+func (pm *_BACnetCalendarEntry) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetCalendarEntry, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -231,17 +240,4 @@ func (pm *_BACnetCalendarEntry) SerializeParent(ctx context.Context, writeBuffer
 	return nil
 }
 
-func (m *_BACnetCalendarEntry) isBACnetCalendarEntry() bool {
-	return true
-}
-
-func (m *_BACnetCalendarEntry) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetCalendarEntry) IsBACnetCalendarEntry() {}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type BACnetServiceAckAtomicReadFileRecord interface {
 	GetReturnedRecordCount() BACnetApplicationTagUnsignedInteger
 	// GetFileRecordData returns FileRecordData (property field)
 	GetFileRecordData() []BACnetApplicationTagOctetString
-}
-
-// BACnetServiceAckAtomicReadFileRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFileRecord.
-// This is useful for switch cases.
-type BACnetServiceAckAtomicReadFileRecordExactly interface {
-	BACnetServiceAckAtomicReadFileRecord
-	isBACnetServiceAckAtomicReadFileRecord() bool
+	// IsBACnetServiceAckAtomicReadFileRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAtomicReadFileRecord()
 }
 
 // _BACnetServiceAckAtomicReadFileRecord is the data-structure of this message
 type _BACnetServiceAckAtomicReadFileRecord struct {
-	*_BACnetServiceAckAtomicReadFileStreamOrRecord
+	BACnetServiceAckAtomicReadFileStreamOrRecordContract
 	FileStartRecord     BACnetApplicationTagSignedInteger
 	ReturnedRecordCount BACnetApplicationTagUnsignedInteger
 	FileRecordData      []BACnetApplicationTagOctetString
 }
+
+var _ BACnetServiceAckAtomicReadFileRecord = (*_BACnetServiceAckAtomicReadFileRecord)(nil)
+var _ BACnetServiceAckAtomicReadFileStreamOrRecordRequirements = (*_BACnetServiceAckAtomicReadFileRecord)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,14 +70,8 @@ type _BACnetServiceAckAtomicReadFileRecord struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetServiceAckAtomicReadFileRecord) InitializeParent(parent BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) {
-	m.PeekedTagHeader = peekedTagHeader
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetServiceAckAtomicReadFileRecord) GetParent() BACnetServiceAckAtomicReadFileStreamOrRecord {
-	return m._BACnetServiceAckAtomicReadFileStreamOrRecord
+func (m *_BACnetServiceAckAtomicReadFileRecord) GetParent() BACnetServiceAckAtomicReadFileStreamOrRecordContract {
+	return m.BACnetServiceAckAtomicReadFileStreamOrRecordContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +98,19 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) GetFileRecordData() []BACnetAppl
 
 // NewBACnetServiceAckAtomicReadFileRecord factory function for _BACnetServiceAckAtomicReadFileRecord
 func NewBACnetServiceAckAtomicReadFileRecord(fileStartRecord BACnetApplicationTagSignedInteger, returnedRecordCount BACnetApplicationTagUnsignedInteger, fileRecordData []BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetServiceAckAtomicReadFileRecord {
+	if fileStartRecord == nil {
+		panic("fileStartRecord of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileRecord must not be nil")
+	}
+	if returnedRecordCount == nil {
+		panic("returnedRecordCount of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckAtomicReadFileRecord must not be nil")
+	}
 	_result := &_BACnetServiceAckAtomicReadFileRecord{
+		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 		FileStartRecord:     fileStartRecord,
 		ReturnedRecordCount: returnedRecordCount,
 		FileRecordData:      fileRecordData,
-		_BACnetServiceAckAtomicReadFileStreamOrRecord: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 	}
-	_result._BACnetServiceAckAtomicReadFileStreamOrRecord._BACnetServiceAckAtomicReadFileStreamOrRecordChildRequirements = _result
+	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
 	return _result
 }
 
@@ -130,7 +130,7 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).getLengthInBits(ctx))
 
 	// Simple field (fileStartRecord)
 	lengthInBits += m.FileStartRecord.GetLengthInBits(ctx)
@@ -155,87 +155,40 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckAtomicReadFileRecordParse(ctx context.Context, theBytes []byte) (BACnetServiceAckAtomicReadFileRecord, error) {
-	return BACnetServiceAckAtomicReadFileRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileRecord, error) {
+func (m *_BACnetServiceAckAtomicReadFileRecord) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAckAtomicReadFileStreamOrRecord) (__bACnetServiceAckAtomicReadFileRecord BACnetServiceAckAtomicReadFileRecord, err error) {
+	m.BACnetServiceAckAtomicReadFileStreamOrRecordContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckAtomicReadFileRecord")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileStartRecord)
-	if pullErr := readBuffer.PullContext("fileStartRecord"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileStartRecord")
+	fileStartRecord, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartRecord", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileStartRecord' field"))
 	}
-	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileStartRecordErr != nil {
-		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field of BACnetServiceAckAtomicReadFileRecord")
-	}
-	fileStartRecord := _fileStartRecord.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("fileStartRecord"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileStartRecord")
-	}
+	m.FileStartRecord = fileStartRecord
 
-	// Simple Field (returnedRecordCount)
-	if pullErr := readBuffer.PullContext("returnedRecordCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for returnedRecordCount")
+	returnedRecordCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "returnedRecordCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnedRecordCount' field"))
 	}
-	_returnedRecordCount, _returnedRecordCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _returnedRecordCountErr != nil {
-		return nil, errors.Wrap(_returnedRecordCountErr, "Error parsing 'returnedRecordCount' field of BACnetServiceAckAtomicReadFileRecord")
-	}
-	returnedRecordCount := _returnedRecordCount.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("returnedRecordCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for returnedRecordCount")
-	}
+	m.ReturnedRecordCount = returnedRecordCount
 
-	// Array field (fileRecordData)
-	if pullErr := readBuffer.PullContext("fileRecordData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileRecordData")
+	fileRecordData, err := ReadCountArrayField[BACnetApplicationTagOctetString](ctx, "fileRecordData", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer), uint64(returnedRecordCount.GetPayload().GetActualValue()))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileRecordData' field"))
 	}
-	// Count array
-	fileRecordData := make([]BACnetApplicationTagOctetString, max(returnedRecordCount.GetPayload().GetActualValue(), 0))
-	// This happens when the size is set conditional to 0
-	if len(fileRecordData) == 0 {
-		fileRecordData = nil
-	}
-	{
-		_numItems := uint16(max(returnedRecordCount.GetPayload().GetActualValue(), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := BACnetApplicationTagParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'fileRecordData' field of BACnetServiceAckAtomicReadFileRecord")
-			}
-			fileRecordData[_curItem] = _item.(BACnetApplicationTagOctetString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("fileRecordData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileRecordData")
-	}
+	m.FileRecordData = fileRecordData
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAtomicReadFileRecord"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckAtomicReadFileRecord")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetServiceAckAtomicReadFileRecord{
-		_BACnetServiceAckAtomicReadFileStreamOrRecord: &_BACnetServiceAckAtomicReadFileStreamOrRecord{},
-		FileStartRecord:     fileStartRecord,
-		ReturnedRecordCount: returnedRecordCount,
-		FileRecordData:      fileRecordData,
-	}
-	_child._BACnetServiceAckAtomicReadFileStreamOrRecord._BACnetServiceAckAtomicReadFileStreamOrRecordChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) Serialize() ([]byte, error) {
@@ -256,45 +209,16 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicReadFileRecord")
 		}
 
-		// Simple Field (fileStartRecord)
-		if pushErr := writeBuffer.PushContext("fileStartRecord"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartRecord")
-		}
-		_fileStartRecordErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartRecord())
-		if popErr := writeBuffer.PopContext("fileStartRecord"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartRecord")
-		}
-		if _fileStartRecordErr != nil {
-			return errors.Wrap(_fileStartRecordErr, "Error serializing 'fileStartRecord' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartRecord", m.GetFileStartRecord(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartRecord' field")
 		}
 
-		// Simple Field (returnedRecordCount)
-		if pushErr := writeBuffer.PushContext("returnedRecordCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for returnedRecordCount")
-		}
-		_returnedRecordCountErr := writeBuffer.WriteSerializable(ctx, m.GetReturnedRecordCount())
-		if popErr := writeBuffer.PopContext("returnedRecordCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for returnedRecordCount")
-		}
-		if _returnedRecordCountErr != nil {
-			return errors.Wrap(_returnedRecordCountErr, "Error serializing 'returnedRecordCount' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "returnedRecordCount", m.GetReturnedRecordCount(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'returnedRecordCount' field")
 		}
 
-		// Array Field (fileRecordData)
-		if pushErr := writeBuffer.PushContext("fileRecordData", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileRecordData")
-		}
-		for _curItem, _element := range m.GetFileRecordData() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFileRecordData()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'fileRecordData' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("fileRecordData", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileRecordData")
+		if err := WriteComplexTypeArrayField(ctx, "fileRecordData", m.GetFileRecordData(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileRecordData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicReadFileRecord"); popErr != nil {
@@ -302,12 +226,10 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetServiceAckAtomicReadFileRecord) isBACnetServiceAckAtomicReadFileRecord() bool {
-	return true
-}
+func (m *_BACnetServiceAckAtomicReadFileRecord) IsBACnetServiceAckAtomicReadFileRecord() {}
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) String() string {
 	if m == nil {

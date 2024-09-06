@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPriorityValueOctetString interface {
 	BACnetPriorityValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-}
-
-// BACnetPriorityValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueOctetString.
-// This is useful for switch cases.
-type BACnetPriorityValueOctetStringExactly interface {
-	BACnetPriorityValueOctetString
-	isBACnetPriorityValueOctetString() bool
+	// IsBACnetPriorityValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueOctetString()
 }
 
 // _BACnetPriorityValueOctetString is the data-structure of this message
 type _BACnetPriorityValueOctetString struct {
-	*_BACnetPriorityValue
+	BACnetPriorityValueContract
 	OctetStringValue BACnetApplicationTagOctetString
 }
+
+var _ BACnetPriorityValueOctetString = (*_BACnetPriorityValueOctetString)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueOctetString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPriorityValueOctetString struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPriorityValueOctetString) InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPriorityValueOctetString) GetParent() BACnetPriorityValue {
-	return m._BACnetPriorityValue
+func (m *_BACnetPriorityValueOctetString) GetParent() BACnetPriorityValueContract {
+	return m.BACnetPriorityValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPriorityValueOctetString) GetOctetStringValue() BACnetApplicatio
 
 // NewBACnetPriorityValueOctetString factory function for _BACnetPriorityValueOctetString
 func NewBACnetPriorityValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueOctetString {
-	_result := &_BACnetPriorityValueOctetString{
-		OctetStringValue:     octetStringValue,
-		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetPriorityValueOctetString must not be nil")
 	}
-	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result
+	_result := &_BACnetPriorityValueOctetString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		OctetStringValue:            octetStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPriorityValueOctetString) GetTypeName() string {
 }
 
 func (m *_BACnetPriorityValueOctetString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (octetStringValue)
 	lengthInBits += m.OctetStringValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetPriorityValueOctetString) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueOctetStringParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
-	return BACnetPriorityValueOctetStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetPriorityValueOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
+func (m *_BACnetPriorityValueOctetString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueOctetString BACnetPriorityValueOctetString, err error) {
+	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueOctetString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueOctetString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (octetStringValue)
-	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
+	octetStringValue, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "octetStringValue", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octetStringValue' field"))
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _octetStringValueErr != nil {
-		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetPriorityValueOctetString")
-	}
-	octetStringValue := _octetStringValue.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for octetStringValue")
-	}
+	m.OctetStringValue = octetStringValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueOctetString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueOctetString")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPriorityValueOctetString{
-		_BACnetPriorityValue: &_BACnetPriorityValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		OctetStringValue: octetStringValue,
-	}
-	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPriorityValueOctetString) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetPriorityValueOctetString) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueOctetString")
 		}
 
-		// Simple Field (octetStringValue)
-		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
-		}
-		_octetStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetOctetStringValue())
-		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for octetStringValue")
-		}
-		if _octetStringValueErr != nil {
-			return errors.Wrap(_octetStringValueErr, "Error serializing 'octetStringValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "octetStringValue", m.GetOctetStringValue(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'octetStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueOctetString"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetPriorityValueOctetString) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPriorityValueContract.(*_BACnetPriorityValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPriorityValueOctetString) isBACnetPriorityValueOctetString() bool {
-	return true
-}
+func (m *_BACnetPriorityValueOctetString) IsBACnetPriorityValueOctetString() {}
 
 func (m *_BACnetPriorityValueOctetString) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type BACnetFaultParameterFaultListed interface {
 	GetFaultListReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetFaultParameterFaultListedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultListed.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultListedExactly interface {
-	BACnetFaultParameterFaultListed
-	isBACnetFaultParameterFaultListed() bool
+	// IsBACnetFaultParameterFaultListed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultListed()
 }
 
 // _BACnetFaultParameterFaultListed is the data-structure of this message
 type _BACnetFaultParameterFaultListed struct {
-	*_BACnetFaultParameter
+	BACnetFaultParameterContract
 	OpeningTag         BACnetOpeningTag
 	FaultListReference BACnetDeviceObjectPropertyReferenceEnclosed
 	ClosingTag         BACnetClosingTag
 }
+
+var _ BACnetFaultParameterFaultListed = (*_BACnetFaultParameterFaultListed)(nil)
+var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultListed)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,12 +70,8 @@ type _BACnetFaultParameterFaultListed struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultListed) InitializeParent(parent BACnetFaultParameter, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultListed) GetParent() BACnetFaultParameter {
-	return m._BACnetFaultParameter
+func (m *_BACnetFaultParameterFaultListed) GetParent() BACnetFaultParameterContract {
+	return m.BACnetFaultParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,13 +98,22 @@ func (m *_BACnetFaultParameterFaultListed) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetFaultParameterFaultListed factory function for _BACnetFaultParameterFaultListed
 func NewBACnetFaultParameterFaultListed(openingTag BACnetOpeningTag, faultListReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultListed {
-	_result := &_BACnetFaultParameterFaultListed{
-		OpeningTag:            openingTag,
-		FaultListReference:    faultListReference,
-		ClosingTag:            closingTag,
-		_BACnetFaultParameter: NewBACnetFaultParameter(peekedTagHeader),
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultListed must not be nil")
 	}
-	_result._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _result
+	if faultListReference == nil {
+		panic("faultListReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultListed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultListed must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultListed{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		FaultListReference:           faultListReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
 
@@ -128,7 +133,7 @@ func (m *_BACnetFaultParameterFaultListed) GetTypeName() string {
 }
 
 func (m *_BACnetFaultParameterFaultListed) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterContract.(*_BACnetFaultParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -146,73 +151,40 @@ func (m *_BACnetFaultParameterFaultListed) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultListedParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultListed, error) {
-	return BACnetFaultParameterFaultListedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultListedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultListed, error) {
+func (m *_BACnetFaultParameterFaultListed) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameter) (__bACnetFaultParameterFaultListed BACnetFaultParameterFaultListed, err error) {
+	m.BACnetFaultParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultListed"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultListed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(7))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(7)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultListed")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (faultListReference)
-	if pullErr := readBuffer.PullContext("faultListReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultListReference")
+	faultListReference, err := ReadSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "faultListReference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultListReference' field"))
 	}
-	_faultListReference, _faultListReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _faultListReferenceErr != nil {
-		return nil, errors.Wrap(_faultListReferenceErr, "Error parsing 'faultListReference' field of BACnetFaultParameterFaultListed")
-	}
-	faultListReference := _faultListReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("faultListReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultListReference")
-	}
+	m.FaultListReference = faultListReference
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(7))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(7)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultListed")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultListed"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultListed")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultListed{
-		_BACnetFaultParameter: &_BACnetFaultParameter{},
-		OpeningTag:            openingTag,
-		FaultListReference:    faultListReference,
-		ClosingTag:            closingTag,
-	}
-	_child._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultListed) Serialize() ([]byte, error) {
@@ -233,40 +205,16 @@ func (m *_BACnetFaultParameterFaultListed) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultListed")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (faultListReference)
-		if pushErr := writeBuffer.PushContext("faultListReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultListReference")
-		}
-		_faultListReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetFaultListReference())
-		if popErr := writeBuffer.PopContext("faultListReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultListReference")
-		}
-		if _faultListReferenceErr != nil {
-			return errors.Wrap(_faultListReferenceErr, "Error serializing 'faultListReference' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "faultListReference", m.GetFaultListReference(), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultListReference' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultListed"); popErr != nil {
@@ -274,12 +222,10 @@ func (m *_BACnetFaultParameterFaultListed) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterContract.(*_BACnetFaultParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultListed) isBACnetFaultParameterFaultListed() bool {
-	return true
-}
+func (m *_BACnetFaultParameterFaultListed) IsBACnetFaultParameterFaultListed() {}
 
 func (m *_BACnetFaultParameterFaultListed) String() string {
 	if m == nil {

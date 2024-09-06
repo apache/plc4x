@@ -37,19 +37,17 @@ type SecurityDataEntryDelayStarted interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataEntryDelayStartedExactly can be used when we want exactly this type and not a type which fulfills SecurityDataEntryDelayStarted.
-// This is useful for switch cases.
-type SecurityDataEntryDelayStartedExactly interface {
-	SecurityDataEntryDelayStarted
-	isSecurityDataEntryDelayStarted() bool
+	// IsSecurityDataEntryDelayStarted is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataEntryDelayStarted()
 }
 
 // _SecurityDataEntryDelayStarted is the data-structure of this message
 type _SecurityDataEntryDelayStarted struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataEntryDelayStarted = (*_SecurityDataEntryDelayStarted)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataEntryDelayStarted)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataEntryDelayStarted struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataEntryDelayStarted) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataEntryDelayStarted) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataEntryDelayStarted) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataEntryDelayStarted factory function for _SecurityDataEntryDelayStarted
 func NewSecurityDataEntryDelayStarted(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataEntryDelayStarted {
 	_result := &_SecurityDataEntryDelayStarted{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataEntryDelayStarted) GetTypeName() string {
 }
 
 func (m *_SecurityDataEntryDelayStarted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataEntryDelayStarted) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataEntryDelayStartedParse(ctx context.Context, theBytes []byte) (SecurityDataEntryDelayStarted, error) {
-	return SecurityDataEntryDelayStartedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataEntryDelayStartedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEntryDelayStarted, error) {
+func (m *_SecurityDataEntryDelayStarted) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataEntryDelayStarted SecurityDataEntryDelayStarted, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataEntryDelayStarted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataEntryDelayStarted")
 	}
@@ -123,12 +112,7 @@ func SecurityDataEntryDelayStartedParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataEntryDelayStarted")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataEntryDelayStarted{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataEntryDelayStarted) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataEntryDelayStarted) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataEntryDelayStarted) isSecurityDataEntryDelayStarted() bool {
-	return true
-}
+func (m *_SecurityDataEntryDelayStarted) IsSecurityDataEntryDelayStarted() {}
 
 func (m *_SecurityDataEntryDelayStarted) String() string {
 	if m == nil {

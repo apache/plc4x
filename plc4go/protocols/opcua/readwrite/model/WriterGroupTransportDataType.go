@@ -37,19 +37,17 @@ type WriterGroupTransportDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// WriterGroupTransportDataTypeExactly can be used when we want exactly this type and not a type which fulfills WriterGroupTransportDataType.
-// This is useful for switch cases.
-type WriterGroupTransportDataTypeExactly interface {
-	WriterGroupTransportDataType
-	isWriterGroupTransportDataType() bool
+	// IsWriterGroupTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsWriterGroupTransportDataType()
 }
 
 // _WriterGroupTransportDataType is the data-structure of this message
 type _WriterGroupTransportDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ WriterGroupTransportDataType = (*_WriterGroupTransportDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_WriterGroupTransportDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_WriterGroupTransportDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_WriterGroupTransportDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_WriterGroupTransportDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_WriterGroupTransportDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewWriterGroupTransportDataType factory function for _WriterGroupTransportDataType
 func NewWriterGroupTransportDataType() *_WriterGroupTransportDataType {
 	_result := &_WriterGroupTransportDataType{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_WriterGroupTransportDataType) GetTypeName() string {
 }
 
 func (m *_WriterGroupTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_WriterGroupTransportDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func WriterGroupTransportDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (WriterGroupTransportDataType, error) {
-	return WriterGroupTransportDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func WriterGroupTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (WriterGroupTransportDataType, error) {
+func (m *_WriterGroupTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__writerGroupTransportDataType WriterGroupTransportDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("WriterGroupTransportDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for WriterGroupTransportDataType")
 	}
@@ -124,12 +116,7 @@ func WriterGroupTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for WriterGroupTransportDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_WriterGroupTransportDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_WriterGroupTransportDataType) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_WriterGroupTransportDataType) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_WriterGroupTransportDataType) isWriterGroupTransportDataType() bool {
-	return true
-}
+func (m *_WriterGroupTransportDataType) IsWriterGroupTransportDataType() {}
 
 func (m *_WriterGroupTransportDataType) String() string {
 	if m == nil {

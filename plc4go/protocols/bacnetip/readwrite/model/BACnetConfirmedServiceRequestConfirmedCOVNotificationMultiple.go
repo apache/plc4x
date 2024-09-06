@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,24 +49,22 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 	GetTimestamp() BACnetTimeStampEnclosed
 	// GetListOfCovNotifications returns ListOfCovNotifications (property field)
 	GetListOfCovNotifications() ListOfCovNotificationsList
-}
-
-// BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleExactly interface {
-	BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-	isBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() bool
+	// IsBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple()
 }
 
 // _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	SubscriberProcessIdentifier BACnetContextTagUnsignedInteger
 	InitiatingDeviceIdentifier  BACnetContextTagObjectIdentifier
 	TimeRemaining               BACnetContextTagUnsignedInteger
 	Timestamp                   BACnetTimeStampEnclosed
 	ListOfCovNotifications      ListOfCovNotificationsList
 }
+
+var _ BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple = (*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +80,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetServ
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -120,15 +116,27 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetList
 
 // NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple factory function for _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, timestamp BACnetTimeStampEnclosed, listOfCovNotifications ListOfCovNotificationsList, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
-	_result := &_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
-		SubscriberProcessIdentifier:    subscriberProcessIdentifier,
-		InitiatingDeviceIdentifier:     initiatingDeviceIdentifier,
-		TimeRemaining:                  timeRemaining,
-		Timestamp:                      timestamp,
-		ListOfCovNotifications:         listOfCovNotifications,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if initiatingDeviceIdentifier == nil {
+		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple must not be nil")
+	}
+	if listOfCovNotifications == nil {
+		panic("listOfCovNotifications of type ListOfCovNotificationsList for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
+		InitiatingDeviceIdentifier:            initiatingDeviceIdentifier,
+		TimeRemaining:                         timeRemaining,
+		Timestamp:                             timestamp,
+		ListOfCovNotifications:                listOfCovNotifications,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -148,7 +156,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetType
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
 	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
@@ -174,112 +182,56 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetLeng
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, error) {
-	return BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, error) {
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subscriberProcessIdentifier)
-	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
+	subscriberProcessIdentifier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "subscriberProcessIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriberProcessIdentifier' field"))
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _subscriberProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+	m.SubscriberProcessIdentifier = subscriberProcessIdentifier
+
+	initiatingDeviceIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "initiatingDeviceIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initiatingDeviceIdentifier' field"))
 	}
-	subscriberProcessIdentifier := _subscriberProcessIdentifier.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("subscriberProcessIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for subscriberProcessIdentifier")
+	m.InitiatingDeviceIdentifier = initiatingDeviceIdentifier
+
+	timeRemaining, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeRemaining", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeRemaining' field"))
+	}
+	m.TimeRemaining = timeRemaining
+
+	var timestamp BACnetTimeStampEnclosed
+	_timestamp, err := ReadOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", ReadComplex[BACnetTimeStampEnclosed](BACnetTimeStampEnclosedParseWithBufferProducer((uint8)(uint8(3))), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
+	}
+	if _timestamp != nil {
+		timestamp = *_timestamp
+		m.Timestamp = timestamp
 	}
 
-	// Simple Field (initiatingDeviceIdentifier)
-	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for initiatingDeviceIdentifier")
+	listOfCovNotifications, err := ReadSimpleField[ListOfCovNotificationsList](ctx, "listOfCovNotifications", ReadComplex[ListOfCovNotificationsList](ListOfCovNotificationsListParseWithBufferProducer((uint8)(uint8(4))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfCovNotifications' field"))
 	}
-	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _initiatingDeviceIdentifierErr != nil {
-		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
-	}
-	initiatingDeviceIdentifier := _initiatingDeviceIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("initiatingDeviceIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for initiatingDeviceIdentifier")
-	}
-
-	// Simple Field (timeRemaining)
-	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
-	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeRemainingErr != nil {
-		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
-	}
-	timeRemaining := _timeRemaining.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeRemaining")
-	}
-
-	// Optional Field (timestamp) (Can be skipped, if a given expression evaluates to false)
-	var timestamp BACnetTimeStampEnclosed = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
-		}
-		_val, _err := BACnetTimeStampEnclosedParseWithBuffer(ctx, readBuffer, uint8(3))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timestamp' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
-		default:
-			timestamp = _val.(BACnetTimeStampEnclosed)
-			if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for timestamp")
-			}
-		}
-	}
-
-	// Simple Field (listOfCovNotifications)
-	if pullErr := readBuffer.PullContext("listOfCovNotifications"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovNotifications")
-	}
-	_listOfCovNotifications, _listOfCovNotificationsErr := ListOfCovNotificationsListParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
-	if _listOfCovNotificationsErr != nil {
-		return nil, errors.Wrap(_listOfCovNotificationsErr, "Error parsing 'listOfCovNotifications' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
-	}
-	listOfCovNotifications := _listOfCovNotifications.(ListOfCovNotificationsList)
-	if closeErr := readBuffer.CloseContext("listOfCovNotifications"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfCovNotifications")
-	}
+	m.ListOfCovNotifications = listOfCovNotifications
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		SubscriberProcessIdentifier: subscriberProcessIdentifier,
-		InitiatingDeviceIdentifier:  initiatingDeviceIdentifier,
-		TimeRemaining:               timeRemaining,
-		Timestamp:                   timestamp,
-		ListOfCovNotifications:      listOfCovNotifications,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize() ([]byte, error) {
@@ -300,68 +252,24 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Seriali
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 		}
 
-		// Simple Field (subscriberProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
-		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
-		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
-		}
-		if _subscriberProcessIdentifierErr != nil {
-			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "subscriberProcessIdentifier", m.GetSubscriberProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		// Simple Field (initiatingDeviceIdentifier)
-		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
-		}
-		_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetInitiatingDeviceIdentifier())
-		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
-		}
-		if _initiatingDeviceIdentifierErr != nil {
-			return errors.Wrap(_initiatingDeviceIdentifierErr, "Error serializing 'initiatingDeviceIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "initiatingDeviceIdentifier", m.GetInitiatingDeviceIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'initiatingDeviceIdentifier' field")
 		}
 
-		// Simple Field (timeRemaining)
-		if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeRemaining")
-		}
-		_timeRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeRemaining())
-		if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeRemaining")
-		}
-		if _timeRemainingErr != nil {
-			return errors.Wrap(_timeRemainingErr, "Error serializing 'timeRemaining' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeRemaining", m.GetTimeRemaining(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeRemaining' field")
 		}
 
-		// Optional Field (timestamp) (Can be skipped, if the value is null)
-		var timestamp BACnetTimeStampEnclosed = nil
-		if m.GetTimestamp() != nil {
-			if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for timestamp")
-			}
-			timestamp = m.GetTimestamp()
-			_timestampErr := writeBuffer.WriteSerializable(ctx, timestamp)
-			if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for timestamp")
-			}
-			if _timestampErr != nil {
-				return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
-			}
+		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", GetRef(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		// Simple Field (listOfCovNotifications)
-		if pushErr := writeBuffer.PushContext("listOfCovNotifications"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfCovNotifications")
-		}
-		_listOfCovNotificationsErr := writeBuffer.WriteSerializable(ctx, m.GetListOfCovNotifications())
-		if popErr := writeBuffer.PopContext("listOfCovNotifications"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfCovNotifications")
-		}
-		if _listOfCovNotificationsErr != nil {
-			return errors.Wrap(_listOfCovNotificationsErr, "Error serializing 'listOfCovNotifications' field")
+		if err := WriteSimpleField[ListOfCovNotificationsList](ctx, "listOfCovNotifications", m.GetListOfCovNotifications(), WriteComplex[ListOfCovNotificationsList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfCovNotifications' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); popErr != nil {
@@ -369,11 +277,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Seriali
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) isBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) IsBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() {
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) String() string {

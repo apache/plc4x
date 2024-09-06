@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,13 +40,8 @@ type DeviceStatus interface {
 	utils.Serializable
 	// GetProgramMode returns ProgramMode (property field)
 	GetProgramMode() bool
-}
-
-// DeviceStatusExactly can be used when we want exactly this type and not a type which fulfills DeviceStatus.
-// This is useful for switch cases.
-type DeviceStatusExactly interface {
-	DeviceStatus
-	isDeviceStatus() bool
+	// IsDeviceStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceStatus()
 }
 
 // _DeviceStatus is the data-structure of this message
@@ -53,6 +50,8 @@ type _DeviceStatus struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ DeviceStatus = (*_DeviceStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,50 +107,46 @@ func DeviceStatusParse(ctx context.Context, theBytes []byte) (DeviceStatus, erro
 	return DeviceStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DeviceStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceStatus, error) {
+		return DeviceStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DeviceStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceStatus, error) {
+	v, err := (&_DeviceStatus{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_DeviceStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__deviceStatus DeviceStatus, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeviceStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeviceStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DeviceStatus")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (programMode)
-	_programMode, _programModeErr := readBuffer.ReadBit("programMode")
-	if _programModeErr != nil {
-		return nil, errors.Wrap(_programModeErr, "Error parsing 'programMode' field of DeviceStatus")
+	programMode, err := ReadSimpleField(ctx, "programMode", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programMode' field"))
 	}
-	programMode := _programMode
+	m.ProgramMode = programMode
 
 	if closeErr := readBuffer.CloseContext("DeviceStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeviceStatus")
 	}
 
-	// Create the instance
-	return &_DeviceStatus{
-		ProgramMode:    programMode,
-		reservedField0: reservedField0,
-	}, nil
+	return m, nil
 }
 
 func (m *_DeviceStatus) Serialize() ([]byte, error) {
@@ -171,27 +166,12 @@ func (m *_DeviceStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for DeviceStatus")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0x00)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (programMode)
-	programMode := bool(m.GetProgramMode())
-	_programModeErr := writeBuffer.WriteBit("programMode", (programMode))
-	if _programModeErr != nil {
-		return errors.Wrap(_programModeErr, "Error serializing 'programMode' field")
+	if err := WriteSimpleField[bool](ctx, "programMode", m.GetProgramMode(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'programMode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceStatus"); popErr != nil {
@@ -200,9 +180,7 @@ func (m *_DeviceStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_DeviceStatus) isDeviceStatus() bool {
-	return true
-}
+func (m *_DeviceStatus) IsDeviceStatus() {}
 
 func (m *_DeviceStatus) String() string {
 	if m == nil {

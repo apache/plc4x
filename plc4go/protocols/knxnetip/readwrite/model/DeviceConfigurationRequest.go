@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,24 +45,22 @@ type DeviceConfigurationRequest interface {
 	GetDeviceConfigurationRequestDataBlock() DeviceConfigurationRequestDataBlock
 	// GetCemi returns Cemi (property field)
 	GetCemi() CEMI
-}
-
-// DeviceConfigurationRequestExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationRequest.
-// This is useful for switch cases.
-type DeviceConfigurationRequestExactly interface {
-	DeviceConfigurationRequest
-	isDeviceConfigurationRequest() bool
+	// IsDeviceConfigurationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceConfigurationRequest()
 }
 
 // _DeviceConfigurationRequest is the data-structure of this message
 type _DeviceConfigurationRequest struct {
-	*_KnxNetIpMessage
+	KnxNetIpMessageContract
 	DeviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock
 	Cemi                                CEMI
 
 	// Arguments.
 	TotalLength uint16
 }
+
+var _ DeviceConfigurationRequest = (*_DeviceConfigurationRequest)(nil)
+var _ KnxNetIpMessageRequirements = (*_DeviceConfigurationRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,10 +76,8 @@ func (m *_DeviceConfigurationRequest) GetMsgType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DeviceConfigurationRequest) InitializeParent(parent KnxNetIpMessage) {}
-
-func (m *_DeviceConfigurationRequest) GetParent() KnxNetIpMessage {
-	return m._KnxNetIpMessage
+func (m *_DeviceConfigurationRequest) GetParent() KnxNetIpMessageContract {
+	return m.KnxNetIpMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,12 +100,18 @@ func (m *_DeviceConfigurationRequest) GetCemi() CEMI {
 
 // NewDeviceConfigurationRequest factory function for _DeviceConfigurationRequest
 func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI, totalLength uint16) *_DeviceConfigurationRequest {
+	if deviceConfigurationRequestDataBlock == nil {
+		panic("deviceConfigurationRequestDataBlock of type DeviceConfigurationRequestDataBlock for DeviceConfigurationRequest must not be nil")
+	}
+	if cemi == nil {
+		panic("cemi of type CEMI for DeviceConfigurationRequest must not be nil")
+	}
 	_result := &_DeviceConfigurationRequest{
+		KnxNetIpMessageContract:             NewKnxNetIpMessage(),
 		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
 		Cemi:                                cemi,
-		_KnxNetIpMessage:                    NewKnxNetIpMessage(),
 	}
-	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 
@@ -126,7 +131,7 @@ func (m *_DeviceConfigurationRequest) GetTypeName() string {
 }
 
 func (m *_DeviceConfigurationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (deviceConfigurationRequestDataBlock)
 	lengthInBits += m.DeviceConfigurationRequestDataBlock.GetLengthInBits(ctx)
@@ -141,59 +146,34 @@ func (m *_DeviceConfigurationRequest) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceConfigurationRequestParse(ctx context.Context, theBytes []byte, totalLength uint16) (DeviceConfigurationRequest, error) {
-	return DeviceConfigurationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
-}
-
-func DeviceConfigurationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (DeviceConfigurationRequest, error) {
+func (m *_DeviceConfigurationRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage, totalLength uint16) (__deviceConfigurationRequest DeviceConfigurationRequest, err error) {
+	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeviceConfigurationRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceConfigurationRequestDataBlock)
-	if pullErr := readBuffer.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationRequestDataBlock")
+	deviceConfigurationRequestDataBlock, err := ReadSimpleField[DeviceConfigurationRequestDataBlock](ctx, "deviceConfigurationRequestDataBlock", ReadComplex[DeviceConfigurationRequestDataBlock](DeviceConfigurationRequestDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceConfigurationRequestDataBlock' field"))
 	}
-	_deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParseWithBuffer(ctx, readBuffer)
-	if _deviceConfigurationRequestDataBlockErr != nil {
-		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field of DeviceConfigurationRequest")
-	}
-	deviceConfigurationRequestDataBlock := _deviceConfigurationRequestDataBlock.(DeviceConfigurationRequestDataBlock)
-	if closeErr := readBuffer.CloseContext("deviceConfigurationRequestDataBlock"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceConfigurationRequestDataBlock")
-	}
+	m.DeviceConfigurationRequestDataBlock = deviceConfigurationRequestDataBlock
 
-	// Simple Field (cemi)
-	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
+	cemi, err := ReadSimpleField[CEMI](ctx, "cemi", ReadComplex[CEMI](CEMIParseWithBufferProducer[CEMI]((uint16)(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes(ctx)))))), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cemi' field"))
 	}
-	_cemi, _cemiErr := CEMIParseWithBuffer(ctx, readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes(ctx))))))
-	if _cemiErr != nil {
-		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of DeviceConfigurationRequest")
-	}
-	cemi := _cemi.(CEMI)
-	if closeErr := readBuffer.CloseContext("cemi"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for cemi")
-	}
+	m.Cemi = cemi
 
 	if closeErr := readBuffer.CloseContext("DeviceConfigurationRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeviceConfigurationRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DeviceConfigurationRequest{
-		_KnxNetIpMessage:                    &_KnxNetIpMessage{},
-		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
-		Cemi:                                cemi,
-	}
-	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DeviceConfigurationRequest) Serialize() ([]byte, error) {
@@ -214,28 +194,12 @@ func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationRequest")
 		}
 
-		// Simple Field (deviceConfigurationRequestDataBlock)
-		if pushErr := writeBuffer.PushContext("deviceConfigurationRequestDataBlock"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationRequestDataBlock")
-		}
-		_deviceConfigurationRequestDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceConfigurationRequestDataBlock())
-		if popErr := writeBuffer.PopContext("deviceConfigurationRequestDataBlock"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceConfigurationRequestDataBlock")
-		}
-		if _deviceConfigurationRequestDataBlockErr != nil {
-			return errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error serializing 'deviceConfigurationRequestDataBlock' field")
+		if err := WriteSimpleField[DeviceConfigurationRequestDataBlock](ctx, "deviceConfigurationRequestDataBlock", m.GetDeviceConfigurationRequestDataBlock(), WriteComplex[DeviceConfigurationRequestDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceConfigurationRequestDataBlock' field")
 		}
 
-		// Simple Field (cemi)
-		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for cemi")
-		}
-		_cemiErr := writeBuffer.WriteSerializable(ctx, m.GetCemi())
-		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for cemi")
-		}
-		if _cemiErr != nil {
-			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
+		if err := WriteSimpleField[CEMI](ctx, "cemi", m.GetCemi(), WriteComplex[CEMI](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cemi' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeviceConfigurationRequest"); popErr != nil {
@@ -243,7 +207,7 @@ func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -256,9 +220,7 @@ func (m *_DeviceConfigurationRequest) GetTotalLength() uint16 {
 //
 ////
 
-func (m *_DeviceConfigurationRequest) isDeviceConfigurationRequest() bool {
-	return true
-}
+func (m *_DeviceConfigurationRequest) IsDeviceConfigurationRequest() {}
 
 func (m *_DeviceConfigurationRequest) String() string {
 	if m == nil {

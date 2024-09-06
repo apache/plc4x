@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataPositiveIntegerValueDeadband interface {
 	GetDeadband() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataPositiveIntegerValueDeadbandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueDeadband.
-// This is useful for switch cases.
-type BACnetConstructedDataPositiveIntegerValueDeadbandExactly interface {
-	BACnetConstructedDataPositiveIntegerValueDeadband
-	isBACnetConstructedDataPositiveIntegerValueDeadband() bool
+	// IsBACnetConstructedDataPositiveIntegerValueDeadband is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPositiveIntegerValueDeadband()
 }
 
 // _BACnetConstructedDataPositiveIntegerValueDeadband is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueDeadband struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Deadband BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataPositiveIntegerValueDeadband = (*_BACnetConstructedDataPositiveIntegerValueDeadband)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueDeadband)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetPropertyIdentifi
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetActualValue() BA
 
 // NewBACnetConstructedDataPositiveIntegerValueDeadband factory function for _BACnetConstructedDataPositiveIntegerValueDeadband
 func NewBACnetConstructedDataPositiveIntegerValueDeadband(deadband BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueDeadband {
-	_result := &_BACnetConstructedDataPositiveIntegerValueDeadband{
-		Deadband:               deadband,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if deadband == nil {
+		panic("deadband of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueDeadband must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataPositiveIntegerValueDeadband{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Deadband:                      deadband,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetTypeName() strin
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (deadband)
 	lengthInBits += m.Deadband.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueDeadbandParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueDeadband, error) {
-	return BACnetConstructedDataPositiveIntegerValueDeadbandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataPositiveIntegerValueDeadbandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueDeadband, error) {
+func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPositiveIntegerValueDeadband BACnetConstructedDataPositiveIntegerValueDeadband, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueDeadband"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPositiveIntegerValueDeadband")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deadband)
-	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deadband")
+	deadband, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "deadband", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadband' field"))
 	}
-	_deadband, _deadbandErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _deadbandErr != nil {
-		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetConstructedDataPositiveIntegerValueDeadband")
-	}
-	deadband := _deadband.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deadband")
-	}
+	m.Deadband = deadband
 
-	// Virtual field
-	_actualValue := deadband
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), deadband)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueDeadband"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueDeadband")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataPositiveIntegerValueDeadband{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Deadband: deadband,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPositiveIntegerValueDeadband")
 		}
 
-		// Simple Field (deadband)
-		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deadband")
-		}
-		_deadbandErr := writeBuffer.WriteSerializable(ctx, m.GetDeadband())
-		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deadband")
-		}
-		if _deadbandErr != nil {
-			return errors.Wrap(_deadbandErr, "Error serializing 'deadband' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "deadband", m.GetDeadband(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deadband' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) isBACnetConstructedDataPositiveIntegerValueDeadband() bool {
-	return true
+func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) IsBACnetConstructedDataPositiveIntegerValueDeadband() {
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) String() string {

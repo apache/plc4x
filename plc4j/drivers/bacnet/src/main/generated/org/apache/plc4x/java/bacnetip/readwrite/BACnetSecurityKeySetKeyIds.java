@@ -75,13 +75,13 @@ public class BACnetSecurityKeySetKeyIds implements Message {
     writeBuffer.pushContext("BACnetSecurityKeySetKeyIds");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (keyIds)
     writeComplexTypeArrayField("keyIds", keyIds, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSecurityKeySetKeyIds");
   }
@@ -122,14 +122,13 @@ public class BACnetSecurityKeySetKeyIds implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetKeyIdentifier> keyIds =
         readTerminatedArrayField(
             "keyIds",
-            new DataReaderComplexDefault<>(
-                () -> BACnetKeyIdentifier.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetKeyIdentifier.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -138,7 +137,7 @@ public class BACnetSecurityKeySetKeyIds implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetSecurityKeySetKeyIds");

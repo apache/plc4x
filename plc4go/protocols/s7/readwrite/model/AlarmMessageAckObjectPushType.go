@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -51,13 +53,8 @@ type AlarmMessageAckObjectPushType interface {
 	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
 	GetAckStateComing() State
-}
-
-// AlarmMessageAckObjectPushTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageAckObjectPushType.
-// This is useful for switch cases.
-type AlarmMessageAckObjectPushTypeExactly interface {
-	AlarmMessageAckObjectPushType
-	isAlarmMessageAckObjectPushType() bool
+	// IsAlarmMessageAckObjectPushType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessageAckObjectPushType()
 }
 
 // _AlarmMessageAckObjectPushType is the data-structure of this message
@@ -69,6 +66,8 @@ type _AlarmMessageAckObjectPushType struct {
 	AckStateGoing  State
 	AckStateComing State
 }
+
+var _ AlarmMessageAckObjectPushType = (*_AlarmMessageAckObjectPushType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -119,6 +118,12 @@ func (m *_AlarmMessageAckObjectPushType) GetVariableSpec() uint8 {
 
 // NewAlarmMessageAckObjectPushType factory function for _AlarmMessageAckObjectPushType
 func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageAckObjectPushType {
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageAckObjectPushType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageAckObjectPushType must not be nil")
+	}
 	return &_AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
 }
 
@@ -172,99 +177,76 @@ func AlarmMessageAckObjectPushTypeParse(ctx context.Context, theBytes []byte) (A
 	return AlarmMessageAckObjectPushTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AlarmMessageAckObjectPushTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckObjectPushType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckObjectPushType, error) {
+		return AlarmMessageAckObjectPushTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AlarmMessageAckObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckObjectPushType, error) {
+	v, err := (&_AlarmMessageAckObjectPushType{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_AlarmMessageAckObjectPushType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alarmMessageAckObjectPushType AlarmMessageAckObjectPushType, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AlarmMessageAckObjectPushType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageAckObjectPushType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (variableSpec)
-	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
-	if _variableSpecErr != nil {
-		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field of AlarmMessageAckObjectPushType")
+	variableSpec, err := ReadConstField[uint8](ctx, "variableSpec", ReadUnsignedByte(readBuffer, uint8(8)), AlarmMessageAckObjectPushType_VARIABLESPEC)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'variableSpec' field"))
 	}
-	if variableSpec != AlarmMessageAckObjectPushType_VARIABLESPEC {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageAckObjectPushType_VARIABLESPEC) + " but got " + fmt.Sprintf("%d", variableSpec))
-	}
+	_ = variableSpec
 
-	// Simple Field (lengthSpec)
-	_lengthSpec, _lengthSpecErr := readBuffer.ReadUint8("lengthSpec", 8)
-	if _lengthSpecErr != nil {
-		return nil, errors.Wrap(_lengthSpecErr, "Error parsing 'lengthSpec' field of AlarmMessageAckObjectPushType")
+	lengthSpec, err := ReadSimpleField(ctx, "lengthSpec", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lengthSpec' field"))
 	}
-	lengthSpec := _lengthSpec
+	m.LengthSpec = lengthSpec
 
-	// Simple Field (syntaxId)
-	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for syntaxId")
+	syntaxId, err := ReadEnumField[SyntaxIdType](ctx, "syntaxId", "SyntaxIdType", ReadEnum(SyntaxIdTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'syntaxId' field"))
 	}
-	_syntaxId, _syntaxIdErr := SyntaxIdTypeParseWithBuffer(ctx, readBuffer)
-	if _syntaxIdErr != nil {
-		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of AlarmMessageAckObjectPushType")
-	}
-	syntaxId := _syntaxId
-	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for syntaxId")
-	}
+	m.SyntaxId = syntaxId
 
-	// Simple Field (numberOfValues)
-	_numberOfValues, _numberOfValuesErr := readBuffer.ReadUint8("numberOfValues", 8)
-	if _numberOfValuesErr != nil {
-		return nil, errors.Wrap(_numberOfValuesErr, "Error parsing 'numberOfValues' field of AlarmMessageAckObjectPushType")
+	numberOfValues, err := ReadSimpleField(ctx, "numberOfValues", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfValues' field"))
 	}
-	numberOfValues := _numberOfValues
+	m.NumberOfValues = numberOfValues
 
-	// Simple Field (eventId)
-	_eventId, _eventIdErr := readBuffer.ReadUint32("eventId", 32)
-	if _eventIdErr != nil {
-		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field of AlarmMessageAckObjectPushType")
+	eventId, err := ReadSimpleField(ctx, "eventId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventId' field"))
 	}
-	eventId := _eventId
+	m.EventId = eventId
 
-	// Simple Field (ackStateGoing)
-	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ackStateGoing")
+	ackStateGoing, err := ReadSimpleField[State](ctx, "ackStateGoing", ReadComplex[State](StateParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ackStateGoing' field"))
 	}
-	_ackStateGoing, _ackStateGoingErr := StateParseWithBuffer(ctx, readBuffer)
-	if _ackStateGoingErr != nil {
-		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field of AlarmMessageAckObjectPushType")
-	}
-	ackStateGoing := _ackStateGoing.(State)
-	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ackStateGoing")
-	}
+	m.AckStateGoing = ackStateGoing
 
-	// Simple Field (ackStateComing)
-	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ackStateComing")
+	ackStateComing, err := ReadSimpleField[State](ctx, "ackStateComing", ReadComplex[State](StateParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ackStateComing' field"))
 	}
-	_ackStateComing, _ackStateComingErr := StateParseWithBuffer(ctx, readBuffer)
-	if _ackStateComingErr != nil {
-		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field of AlarmMessageAckObjectPushType")
-	}
-	ackStateComing := _ackStateComing.(State)
-	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ackStateComing")
-	}
+	m.AckStateComing = ackStateComing
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageAckObjectPushType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessageAckObjectPushType")
 	}
 
-	// Create the instance
-	return &_AlarmMessageAckObjectPushType{
-		LengthSpec:     lengthSpec,
-		SyntaxId:       syntaxId,
-		NumberOfValues: numberOfValues,
-		EventId:        eventId,
-		AckStateGoing:  ackStateGoing,
-		AckStateComing: ackStateComing,
-	}, nil
+	return m, nil
 }
 
 func (m *_AlarmMessageAckObjectPushType) Serialize() ([]byte, error) {
@@ -284,67 +266,32 @@ func (m *_AlarmMessageAckObjectPushType) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(pushErr, "Error pushing for AlarmMessageAckObjectPushType")
 	}
 
-	// Const Field (variableSpec)
-	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
-	if _variableSpecErr != nil {
-		return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
+	if err := WriteConstField(ctx, "variableSpec", AlarmMessageAckObjectPushType_VARIABLESPEC, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'variableSpec' field")
 	}
 
-	// Simple Field (lengthSpec)
-	lengthSpec := uint8(m.GetLengthSpec())
-	_lengthSpecErr := writeBuffer.WriteUint8("lengthSpec", 8, uint8((lengthSpec)))
-	if _lengthSpecErr != nil {
-		return errors.Wrap(_lengthSpecErr, "Error serializing 'lengthSpec' field")
+	if err := WriteSimpleField[uint8](ctx, "lengthSpec", m.GetLengthSpec(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lengthSpec' field")
 	}
 
-	// Simple Field (syntaxId)
-	if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for syntaxId")
-	}
-	_syntaxIdErr := writeBuffer.WriteSerializable(ctx, m.GetSyntaxId())
-	if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for syntaxId")
-	}
-	if _syntaxIdErr != nil {
-		return errors.Wrap(_syntaxIdErr, "Error serializing 'syntaxId' field")
+	if err := WriteSimpleEnumField[SyntaxIdType](ctx, "syntaxId", "SyntaxIdType", m.GetSyntaxId(), WriteEnum[SyntaxIdType, uint8](SyntaxIdType.GetValue, SyntaxIdType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'syntaxId' field")
 	}
 
-	// Simple Field (numberOfValues)
-	numberOfValues := uint8(m.GetNumberOfValues())
-	_numberOfValuesErr := writeBuffer.WriteUint8("numberOfValues", 8, uint8((numberOfValues)))
-	if _numberOfValuesErr != nil {
-		return errors.Wrap(_numberOfValuesErr, "Error serializing 'numberOfValues' field")
+	if err := WriteSimpleField[uint8](ctx, "numberOfValues", m.GetNumberOfValues(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberOfValues' field")
 	}
 
-	// Simple Field (eventId)
-	eventId := uint32(m.GetEventId())
-	_eventIdErr := writeBuffer.WriteUint32("eventId", 32, uint32((eventId)))
-	if _eventIdErr != nil {
-		return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
+	if err := WriteSimpleField[uint32](ctx, "eventId", m.GetEventId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventId' field")
 	}
 
-	// Simple Field (ackStateGoing)
-	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
-	}
-	_ackStateGoingErr := writeBuffer.WriteSerializable(ctx, m.GetAckStateGoing())
-	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ackStateGoing")
-	}
-	if _ackStateGoingErr != nil {
-		return errors.Wrap(_ackStateGoingErr, "Error serializing 'ackStateGoing' field")
+	if err := WriteSimpleField[State](ctx, "ackStateGoing", m.GetAckStateGoing(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackStateGoing' field")
 	}
 
-	// Simple Field (ackStateComing)
-	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
-	}
-	_ackStateComingErr := writeBuffer.WriteSerializable(ctx, m.GetAckStateComing())
-	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ackStateComing")
-	}
-	if _ackStateComingErr != nil {
-		return errors.Wrap(_ackStateComingErr, "Error serializing 'ackStateComing' field")
+	if err := WriteSimpleField[State](ctx, "ackStateComing", m.GetAckStateComing(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackStateComing' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageAckObjectPushType"); popErr != nil {
@@ -353,9 +300,7 @@ func (m *_AlarmMessageAckObjectPushType) SerializeWithWriteBuffer(ctx context.Co
 	return nil
 }
 
-func (m *_AlarmMessageAckObjectPushType) isAlarmMessageAckObjectPushType() bool {
-	return true
-}
+func (m *_AlarmMessageAckObjectPushType) IsAlarmMessageAckObjectPushType() {}
 
 func (m *_AlarmMessageAckObjectPushType) String() string {
 	if m == nil {

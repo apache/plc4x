@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLandingCallStatusCommandDirection interface {
 	BACnetLandingCallStatusCommand
 	// GetDirection returns Direction (property field)
 	GetDirection() BACnetLiftCarDirectionTagged
-}
-
-// BACnetLandingCallStatusCommandDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommandDirection.
-// This is useful for switch cases.
-type BACnetLandingCallStatusCommandDirectionExactly interface {
-	BACnetLandingCallStatusCommandDirection
-	isBACnetLandingCallStatusCommandDirection() bool
+	// IsBACnetLandingCallStatusCommandDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingCallStatusCommandDirection()
 }
 
 // _BACnetLandingCallStatusCommandDirection is the data-structure of this message
 type _BACnetLandingCallStatusCommandDirection struct {
-	*_BACnetLandingCallStatusCommand
+	BACnetLandingCallStatusCommandContract
 	Direction BACnetLiftCarDirectionTagged
 }
+
+var _ BACnetLandingCallStatusCommandDirection = (*_BACnetLandingCallStatusCommandDirection)(nil)
+var _ BACnetLandingCallStatusCommandRequirements = (*_BACnetLandingCallStatusCommandDirection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetLandingCallStatusCommandDirection struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLandingCallStatusCommandDirection) InitializeParent(parent BACnetLandingCallStatusCommand, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetLandingCallStatusCommandDirection) GetParent() BACnetLandingCallStatusCommand {
-	return m._BACnetLandingCallStatusCommand
+func (m *_BACnetLandingCallStatusCommandDirection) GetParent() BACnetLandingCallStatusCommandContract {
+	return m.BACnetLandingCallStatusCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetLandingCallStatusCommandDirection) GetDirection() BACnetLiftCarD
 
 // NewBACnetLandingCallStatusCommandDirection factory function for _BACnetLandingCallStatusCommandDirection
 func NewBACnetLandingCallStatusCommandDirection(direction BACnetLiftCarDirectionTagged, peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommandDirection {
-	_result := &_BACnetLandingCallStatusCommandDirection{
-		Direction:                       direction,
-		_BACnetLandingCallStatusCommand: NewBACnetLandingCallStatusCommand(peekedTagHeader),
+	if direction == nil {
+		panic("direction of type BACnetLiftCarDirectionTagged for BACnetLandingCallStatusCommandDirection must not be nil")
 	}
-	_result._BACnetLandingCallStatusCommand._BACnetLandingCallStatusCommandChildRequirements = _result
+	_result := &_BACnetLandingCallStatusCommandDirection{
+		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
+		Direction:                              direction,
+	}
+	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetLandingCallStatusCommandDirection) GetTypeName() string {
 }
 
 func (m *_BACnetLandingCallStatusCommandDirection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).getLengthInBits(ctx))
 
 	// Simple field (direction)
 	lengthInBits += m.Direction.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetLandingCallStatusCommandDirection) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLandingCallStatusCommandDirectionParse(ctx context.Context, theBytes []byte) (BACnetLandingCallStatusCommandDirection, error) {
-	return BACnetLandingCallStatusCommandDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetLandingCallStatusCommandDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDirection, error) {
+func (m *_BACnetLandingCallStatusCommandDirection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLandingCallStatusCommand) (__bACnetLandingCallStatusCommandDirection BACnetLandingCallStatusCommandDirection, err error) {
+	m.BACnetLandingCallStatusCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingCallStatusCommandDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (direction)
-	if pullErr := readBuffer.PullContext("direction"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for direction")
+	direction, err := ReadSimpleField[BACnetLiftCarDirectionTagged](ctx, "direction", ReadComplex[BACnetLiftCarDirectionTagged](BACnetLiftCarDirectionTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'direction' field"))
 	}
-	_direction, _directionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _directionErr != nil {
-		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of BACnetLandingCallStatusCommandDirection")
-	}
-	direction := _direction.(BACnetLiftCarDirectionTagged)
-	if closeErr := readBuffer.CloseContext("direction"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for direction")
-	}
+	m.Direction = direction
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatusCommandDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingCallStatusCommandDirection")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLandingCallStatusCommandDirection{
-		_BACnetLandingCallStatusCommand: &_BACnetLandingCallStatusCommand{},
-		Direction:                       direction,
-	}
-	_child._BACnetLandingCallStatusCommand._BACnetLandingCallStatusCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLandingCallStatusCommandDirection) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetLandingCallStatusCommandDirection) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatusCommandDirection")
 		}
 
-		// Simple Field (direction)
-		if pushErr := writeBuffer.PushContext("direction"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for direction")
-		}
-		_directionErr := writeBuffer.WriteSerializable(ctx, m.GetDirection())
-		if popErr := writeBuffer.PopContext("direction"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for direction")
-		}
-		if _directionErr != nil {
-			return errors.Wrap(_directionErr, "Error serializing 'direction' field")
+		if err := WriteSimpleField[BACnetLiftCarDirectionTagged](ctx, "direction", m.GetDirection(), WriteComplex[BACnetLiftCarDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'direction' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLandingCallStatusCommandDirection"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetLandingCallStatusCommandDirection) SerializeWithWriteBuffer(ctx 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLandingCallStatusCommandDirection) isBACnetLandingCallStatusCommandDirection() bool {
-	return true
-}
+func (m *_BACnetLandingCallStatusCommandDirection) IsBACnetLandingCallStatusCommandDirection() {}
 
 func (m *_BACnetLandingCallStatusCommandDirection) String() string {
 	if m == nil {

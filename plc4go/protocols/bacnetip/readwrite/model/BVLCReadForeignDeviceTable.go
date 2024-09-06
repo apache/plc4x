@@ -38,19 +38,17 @@ type BVLCReadForeignDeviceTable interface {
 	utils.LengthAware
 	utils.Serializable
 	BVLC
-}
-
-// BVLCReadForeignDeviceTableExactly can be used when we want exactly this type and not a type which fulfills BVLCReadForeignDeviceTable.
-// This is useful for switch cases.
-type BVLCReadForeignDeviceTableExactly interface {
-	BVLCReadForeignDeviceTable
-	isBVLCReadForeignDeviceTable() bool
+	// IsBVLCReadForeignDeviceTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCReadForeignDeviceTable()
 }
 
 // _BVLCReadForeignDeviceTable is the data-structure of this message
 type _BVLCReadForeignDeviceTable struct {
-	*_BVLC
+	BVLCContract
 }
+
+var _ BVLCReadForeignDeviceTable = (*_BVLCReadForeignDeviceTable)(nil)
+var _ BVLCRequirements = (*_BVLCReadForeignDeviceTable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,18 +64,16 @@ func (m *_BVLCReadForeignDeviceTable) GetBvlcFunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BVLCReadForeignDeviceTable) InitializeParent(parent BVLC) {}
-
-func (m *_BVLCReadForeignDeviceTable) GetParent() BVLC {
-	return m._BVLC
+func (m *_BVLCReadForeignDeviceTable) GetParent() BVLCContract {
+	return m.BVLCContract
 }
 
 // NewBVLCReadForeignDeviceTable factory function for _BVLCReadForeignDeviceTable
 func NewBVLCReadForeignDeviceTable() *_BVLCReadForeignDeviceTable {
 	_result := &_BVLCReadForeignDeviceTable{
-		_BVLC: NewBVLC(),
+		BVLCContract: NewBVLC(),
 	}
-	_result._BVLC._BVLCChildRequirements = _result
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 
@@ -97,7 +93,7 @@ func (m *_BVLCReadForeignDeviceTable) GetTypeName() string {
 }
 
 func (m *_BVLCReadForeignDeviceTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -106,15 +102,11 @@ func (m *_BVLCReadForeignDeviceTable) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCReadForeignDeviceTableParse(ctx context.Context, theBytes []byte) (BVLCReadForeignDeviceTable, error) {
-	return BVLCReadForeignDeviceTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func BVLCReadForeignDeviceTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTable, error) {
+func (m *_BVLCReadForeignDeviceTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCReadForeignDeviceTable BVLCReadForeignDeviceTable, err error) {
+	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCReadForeignDeviceTable")
 	}
@@ -125,12 +117,7 @@ func BVLCReadForeignDeviceTableParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCReadForeignDeviceTable")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BVLCReadForeignDeviceTable{
-		_BVLC: &_BVLC{},
-	}
-	_child._BVLC._BVLCChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BVLCReadForeignDeviceTable) Serialize() ([]byte, error) {
@@ -156,12 +143,10 @@ func (m *_BVLCReadForeignDeviceTable) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BVLCReadForeignDeviceTable) isBVLCReadForeignDeviceTable() bool {
-	return true
-}
+func (m *_BVLCReadForeignDeviceTable) IsBVLCReadForeignDeviceTable() {}
 
 func (m *_BVLCReadForeignDeviceTable) String() string {
 	if m == nil {

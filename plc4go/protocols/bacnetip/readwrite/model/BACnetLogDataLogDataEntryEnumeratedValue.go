@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogDataLogDataEntryEnumeratedValue interface {
 	BACnetLogDataLogDataEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetContextTagEnumerated
-}
-
-// BACnetLogDataLogDataEntryEnumeratedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryEnumeratedValue.
-// This is useful for switch cases.
-type BACnetLogDataLogDataEntryEnumeratedValueExactly interface {
-	BACnetLogDataLogDataEntryEnumeratedValue
-	isBACnetLogDataLogDataEntryEnumeratedValue() bool
+	// IsBACnetLogDataLogDataEntryEnumeratedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryEnumeratedValue()
 }
 
 // _BACnetLogDataLogDataEntryEnumeratedValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryEnumeratedValue struct {
-	*_BACnetLogDataLogDataEntry
+	BACnetLogDataLogDataEntryContract
 	EnumeratedValue BACnetContextTagEnumerated
 }
+
+var _ BACnetLogDataLogDataEntryEnumeratedValue = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
+var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetLogDataLogDataEntryEnumeratedValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogDataLogDataEntryEnumeratedValue) InitializeParent(parent BACnetLogDataLogDataEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetParent() BACnetLogDataLogDataEntry {
-	return m._BACnetLogDataLogDataEntry
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetParent() BACnetLogDataLogDataEntryContract {
+	return m.BACnetLogDataLogDataEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetEnumeratedValue() BACnetC
 
 // NewBACnetLogDataLogDataEntryEnumeratedValue factory function for _BACnetLogDataLogDataEntryEnumeratedValue
 func NewBACnetLogDataLogDataEntryEnumeratedValue(enumeratedValue BACnetContextTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryEnumeratedValue {
-	_result := &_BACnetLogDataLogDataEntryEnumeratedValue{
-		EnumeratedValue:            enumeratedValue,
-		_BACnetLogDataLogDataEntry: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogDataLogDataEntryEnumeratedValue must not be nil")
 	}
-	_result._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _result
+	_result := &_BACnetLogDataLogDataEntryEnumeratedValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		EnumeratedValue:                   enumeratedValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
 
 	// Simple field (enumeratedValue)
 	lengthInBits += m.EnumeratedValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogDataLogDataEntryEnumeratedValueParse(ctx context.Context, theBytes []byte) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
-	return BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogDataLogDataEntry) (__bACnetLogDataLogDataEntryEnumeratedValue BACnetLogDataLogDataEntryEnumeratedValue, err error) {
+	m.BACnetLogDataLogDataEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryEnumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryEnumeratedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (enumeratedValue)
-	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
+	enumeratedValue, err := ReadSimpleField[BACnetContextTagEnumerated](ctx, "enumeratedValue", ReadComplex[BACnetContextTagEnumerated](BACnetContextTagParseWithBufferProducer[BACnetContextTagEnumerated]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_ENUMERATED)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumeratedValue' field"))
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_ENUMERATED))
-	if _enumeratedValueErr != nil {
-		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetLogDataLogDataEntryEnumeratedValue")
-	}
-	enumeratedValue := _enumeratedValue.(BACnetContextTagEnumerated)
-	if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enumeratedValue")
-	}
+	m.EnumeratedValue = enumeratedValue
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryEnumeratedValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryEnumeratedValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogDataLogDataEntryEnumeratedValue{
-		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
-		EnumeratedValue:            enumeratedValue,
-	}
-	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryEnumeratedValue")
 		}
 
-		// Simple Field (enumeratedValue)
-		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
-		}
-		_enumeratedValueErr := writeBuffer.WriteSerializable(ctx, m.GetEnumeratedValue())
-		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enumeratedValue")
-		}
-		if _enumeratedValueErr != nil {
-			return errors.Wrap(_enumeratedValueErr, "Error serializing 'enumeratedValue' field")
+		if err := WriteSimpleField[BACnetContextTagEnumerated](ctx, "enumeratedValue", m.GetEnumeratedValue(), WriteComplex[BACnetContextTagEnumerated](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enumeratedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryEnumeratedValue"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogDataLogDataEntryEnumeratedValue) isBACnetLogDataLogDataEntryEnumeratedValue() bool {
-	return true
-}
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) IsBACnetLogDataLogDataEntryEnumeratedValue() {}
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) String() string {
 	if m == nil {

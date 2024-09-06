@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataInputReference interface {
 	GetInputReference() BACnetObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectPropertyReference
-}
-
-// BACnetConstructedDataInputReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInputReference.
-// This is useful for switch cases.
-type BACnetConstructedDataInputReferenceExactly interface {
-	BACnetConstructedDataInputReference
-	isBACnetConstructedDataInputReference() bool
+	// IsBACnetConstructedDataInputReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataInputReference()
 }
 
 // _BACnetConstructedDataInputReference is the data-structure of this message
 type _BACnetConstructedDataInputReference struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	InputReference BACnetObjectPropertyReference
 }
+
+var _ BACnetConstructedDataInputReference = (*_BACnetConstructedDataInputReference)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInputReference)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataInputReference) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataInputReference) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataInputReference) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataInputReference) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataInputReference) GetActualValue() BACnetObjectProp
 
 // NewBACnetConstructedDataInputReference factory function for _BACnetConstructedDataInputReference
 func NewBACnetConstructedDataInputReference(inputReference BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInputReference {
-	_result := &_BACnetConstructedDataInputReference{
-		InputReference:         inputReference,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if inputReference == nil {
+		panic("inputReference of type BACnetObjectPropertyReference for BACnetConstructedDataInputReference must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataInputReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InputReference:                inputReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataInputReference) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataInputReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (inputReference)
 	lengthInBits += m.InputReference.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataInputReference) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataInputReferenceParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInputReference, error) {
-	return BACnetConstructedDataInputReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataInputReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInputReference, error) {
+func (m *_BACnetConstructedDataInputReference) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataInputReference BACnetConstructedDataInputReference, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInputReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInputReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (inputReference)
-	if pullErr := readBuffer.PullContext("inputReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for inputReference")
+	inputReference, err := ReadSimpleField[BACnetObjectPropertyReference](ctx, "inputReference", ReadComplex[BACnetObjectPropertyReference](BACnetObjectPropertyReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inputReference' field"))
 	}
-	_inputReference, _inputReferenceErr := BACnetObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
-	if _inputReferenceErr != nil {
-		return nil, errors.Wrap(_inputReferenceErr, "Error parsing 'inputReference' field of BACnetConstructedDataInputReference")
-	}
-	inputReference := _inputReference.(BACnetObjectPropertyReference)
-	if closeErr := readBuffer.CloseContext("inputReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for inputReference")
-	}
+	m.InputReference = inputReference
 
-	// Virtual field
-	_actualValue := inputReference
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetObjectPropertyReference](ctx, "actualValue", (*BACnetObjectPropertyReference)(nil), inputReference)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInputReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInputReference")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataInputReference{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		InputReference: inputReference,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataInputReference) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInputReference")
 		}
 
-		// Simple Field (inputReference)
-		if pushErr := writeBuffer.PushContext("inputReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inputReference")
-		}
-		_inputReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetInputReference())
-		if popErr := writeBuffer.PopContext("inputReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inputReference")
-		}
-		if _inputReferenceErr != nil {
-			return errors.Wrap(_inputReferenceErr, "Error serializing 'inputReference' field")
+		if err := WriteSimpleField[BACnetObjectPropertyReference](ctx, "inputReference", m.GetInputReference(), WriteComplex[BACnetObjectPropertyReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'inputReference' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataInputReference) isBACnetConstructedDataInputReference() bool {
-	return true
-}
+func (m *_BACnetConstructedDataInputReference) IsBACnetConstructedDataInputReference() {}
 
 func (m *_BACnetConstructedDataInputReference) String() string {
 	if m == nil {

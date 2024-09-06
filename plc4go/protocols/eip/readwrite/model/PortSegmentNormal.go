@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type PortSegmentNormal interface {
 	GetPort() uint8
 	// GetLinkAddress returns LinkAddress (property field)
 	GetLinkAddress() uint8
-}
-
-// PortSegmentNormalExactly can be used when we want exactly this type and not a type which fulfills PortSegmentNormal.
-// This is useful for switch cases.
-type PortSegmentNormalExactly interface {
-	PortSegmentNormal
-	isPortSegmentNormal() bool
+	// IsPortSegmentNormal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortSegmentNormal()
 }
 
 // _PortSegmentNormal is the data-structure of this message
 type _PortSegmentNormal struct {
-	*_PortSegmentType
+	PortSegmentTypeContract
 	Port        uint8
 	LinkAddress uint8
 }
+
+var _ PortSegmentNormal = (*_PortSegmentNormal)(nil)
+var _ PortSegmentTypeRequirements = (*_PortSegmentNormal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_PortSegmentNormal) GetExtendedLinkAddress() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PortSegmentNormal) InitializeParent(parent PortSegmentType) {}
-
-func (m *_PortSegmentNormal) GetParent() PortSegmentType {
-	return m._PortSegmentType
+func (m *_PortSegmentNormal) GetParent() PortSegmentTypeContract {
+	return m.PortSegmentTypeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_PortSegmentNormal) GetLinkAddress() uint8 {
 // NewPortSegmentNormal factory function for _PortSegmentNormal
 func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
 	_result := &_PortSegmentNormal{
-		Port:             port,
-		LinkAddress:      linkAddress,
-		_PortSegmentType: NewPortSegmentType(),
+		PortSegmentTypeContract: NewPortSegmentType(),
+		Port:                    port,
+		LinkAddress:             linkAddress,
 	}
-	_result._PortSegmentType._PortSegmentTypeChildRequirements = _result
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_PortSegmentNormal) GetTypeName() string {
 }
 
 func (m *_PortSegmentNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.PortSegmentTypeContract.(*_PortSegmentType).getLengthInBits(ctx))
 
 	// Simple field (port)
 	lengthInBits += 4
@@ -137,47 +135,34 @@ func (m *_PortSegmentNormal) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PortSegmentNormalParse(ctx context.Context, theBytes []byte) (PortSegmentNormal, error) {
-	return PortSegmentNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func PortSegmentNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentNormal, error) {
+func (m *_PortSegmentNormal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_PortSegmentType) (__portSegmentNormal PortSegmentNormal, err error) {
+	m.PortSegmentTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PortSegmentNormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PortSegmentNormal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (port)
-	_port, _portErr := readBuffer.ReadUint8("port", 4)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of PortSegmentNormal")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
+	m.Port = port
 
-	// Simple Field (linkAddress)
-	_linkAddress, _linkAddressErr := readBuffer.ReadUint8("linkAddress", 8)
-	if _linkAddressErr != nil {
-		return nil, errors.Wrap(_linkAddressErr, "Error parsing 'linkAddress' field of PortSegmentNormal")
+	linkAddress, err := ReadSimpleField(ctx, "linkAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkAddress' field"))
 	}
-	linkAddress := _linkAddress
+	m.LinkAddress = linkAddress
 
 	if closeErr := readBuffer.CloseContext("PortSegmentNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PortSegmentNormal")
 	}
 
-	// Create a partially initialized instance
-	_child := &_PortSegmentNormal{
-		_PortSegmentType: &_PortSegmentType{},
-		Port:             port,
-		LinkAddress:      linkAddress,
-	}
-	_child._PortSegmentType._PortSegmentTypeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_PortSegmentNormal) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_PortSegmentNormal) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for PortSegmentNormal")
 		}
 
-		// Simple Field (port)
-		port := uint8(m.GetPort())
-		_portErr := writeBuffer.WriteUint8("port", 4, uint8((port)))
-		if _portErr != nil {
-			return errors.Wrap(_portErr, "Error serializing 'port' field")
+		if err := WriteSimpleField[uint8](ctx, "port", m.GetPort(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'port' field")
 		}
 
-		// Simple Field (linkAddress)
-		linkAddress := uint8(m.GetLinkAddress())
-		_linkAddressErr := writeBuffer.WriteUint8("linkAddress", 8, uint8((linkAddress)))
-		if _linkAddressErr != nil {
-			return errors.Wrap(_linkAddressErr, "Error serializing 'linkAddress' field")
+		if err := WriteSimpleField[uint8](ctx, "linkAddress", m.GetLinkAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linkAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PortSegmentNormal"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_PortSegmentNormal) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.PortSegmentTypeContract.(*_PortSegmentType).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_PortSegmentNormal) isPortSegmentNormal() bool {
-	return true
-}
+func (m *_PortSegmentNormal) IsPortSegmentNormal() {}
 
 func (m *_PortSegmentNormal) String() string {
 	if m == nil {

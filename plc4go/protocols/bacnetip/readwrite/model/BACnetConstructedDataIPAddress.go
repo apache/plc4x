@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataIPAddress interface {
 	GetIpAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-}
-
-// BACnetConstructedDataIPAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPAddress.
-// This is useful for switch cases.
-type BACnetConstructedDataIPAddressExactly interface {
-	BACnetConstructedDataIPAddress
-	isBACnetConstructedDataIPAddress() bool
+	// IsBACnetConstructedDataIPAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPAddress()
 }
 
 // _BACnetConstructedDataIPAddress is the data-structure of this message
 type _BACnetConstructedDataIPAddress struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	IpAddress BACnetApplicationTagOctetString
 }
+
+var _ BACnetConstructedDataIPAddress = (*_BACnetConstructedDataIPAddress)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataIPAddress) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataIPAddress) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataIPAddress) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataIPAddress) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataIPAddress) GetActualValue() BACnetApplicationTagO
 
 // NewBACnetConstructedDataIPAddress factory function for _BACnetConstructedDataIPAddress
 func NewBACnetConstructedDataIPAddress(ipAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPAddress {
-	_result := &_BACnetConstructedDataIPAddress{
-		IpAddress:              ipAddress,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if ipAddress == nil {
+		panic("ipAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataIPAddress must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataIPAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpAddress:                     ipAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataIPAddress) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIPAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipAddress)
 	lengthInBits += m.IpAddress.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataIPAddress) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataIPAddressParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPAddress, error) {
-	return BACnetConstructedDataIPAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataIPAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPAddress, error) {
+func (m *_BACnetConstructedDataIPAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPAddress BACnetConstructedDataIPAddress, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipAddress)
-	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
+	ipAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipAddress' field"))
 	}
-	_ipAddress, _ipAddressErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipAddressErr != nil {
-		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of BACnetConstructedDataIPAddress")
-	}
-	ipAddress := _ipAddress.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
-	}
+	m.IpAddress = ipAddress
 
-	// Virtual field
-	_actualValue := ipAddress
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagOctetString](ctx, "actualValue", (*BACnetApplicationTagOctetString)(nil), ipAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPAddress")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataIPAddress{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		IpAddress: ipAddress,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataIPAddress) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataIPAddress) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPAddress")
 		}
 
-		// Simple Field (ipAddress)
-		if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipAddress")
-		}
-		_ipAddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpAddress())
-		if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipAddress")
-		}
-		if _ipAddressErr != nil {
-			return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "ipAddress", m.GetIpAddress(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipAddress' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataIPAddress) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataIPAddress) isBACnetConstructedDataIPAddress() bool {
-	return true
-}
+func (m *_BACnetConstructedDataIPAddress) IsBACnetConstructedDataIPAddress() {}
 
 func (m *_BACnetConstructedDataIPAddress) String() string {
 	if m == nil {

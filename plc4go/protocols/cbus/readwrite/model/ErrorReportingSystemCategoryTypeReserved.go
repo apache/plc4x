@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ErrorReportingSystemCategoryTypeReserved interface {
 	ErrorReportingSystemCategoryType
 	// GetReservedValue returns ReservedValue (property field)
 	GetReservedValue() uint8
-}
-
-// ErrorReportingSystemCategoryTypeReservedExactly can be used when we want exactly this type and not a type which fulfills ErrorReportingSystemCategoryTypeReserved.
-// This is useful for switch cases.
-type ErrorReportingSystemCategoryTypeReservedExactly interface {
-	ErrorReportingSystemCategoryTypeReserved
-	isErrorReportingSystemCategoryTypeReserved() bool
+	// IsErrorReportingSystemCategoryTypeReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingSystemCategoryTypeReserved()
 }
 
 // _ErrorReportingSystemCategoryTypeReserved is the data-structure of this message
 type _ErrorReportingSystemCategoryTypeReserved struct {
-	*_ErrorReportingSystemCategoryType
+	ErrorReportingSystemCategoryTypeContract
 	ReservedValue uint8
 }
+
+var _ ErrorReportingSystemCategoryTypeReserved = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
+var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,11 +68,8 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetErrorReportingSystemCateg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ErrorReportingSystemCategoryTypeReserved) InitializeParent(parent ErrorReportingSystemCategoryType) {
-}
-
-func (m *_ErrorReportingSystemCategoryTypeReserved) GetParent() ErrorReportingSystemCategoryType {
-	return m._ErrorReportingSystemCategoryType
+func (m *_ErrorReportingSystemCategoryTypeReserved) GetParent() ErrorReportingSystemCategoryTypeContract {
+	return m.ErrorReportingSystemCategoryTypeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,10 +89,10 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetReservedValue() uint8 {
 // NewErrorReportingSystemCategoryTypeReserved factory function for _ErrorReportingSystemCategoryTypeReserved
 func NewErrorReportingSystemCategoryTypeReserved(reservedValue uint8) *_ErrorReportingSystemCategoryTypeReserved {
 	_result := &_ErrorReportingSystemCategoryTypeReserved{
-		ReservedValue:                     reservedValue,
-		_ErrorReportingSystemCategoryType: NewErrorReportingSystemCategoryType(),
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		ReservedValue:                            reservedValue,
 	}
-	_result._ErrorReportingSystemCategoryType._ErrorReportingSystemCategoryTypeChildRequirements = _result
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
 	return _result
 }
 
@@ -115,7 +112,7 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetTypeName() string {
 }
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).getLengthInBits(ctx))
 
 	// Simple field (reservedValue)
 	lengthInBits += 4
@@ -127,39 +124,28 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingSystemCategoryTypeReservedParse(ctx context.Context, theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeReserved, error) {
-	return ErrorReportingSystemCategoryTypeReservedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
-}
-
-func ErrorReportingSystemCategoryTypeReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeReserved, error) {
+func (m *_ErrorReportingSystemCategoryTypeReserved) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ErrorReportingSystemCategoryType, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (__errorReportingSystemCategoryTypeReserved ErrorReportingSystemCategoryTypeReserved, err error) {
+	m.ErrorReportingSystemCategoryTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeReserved"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ErrorReportingSystemCategoryTypeReserved")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reservedValue)
-	_reservedValue, _reservedValueErr := readBuffer.ReadUint8("reservedValue", 4)
-	if _reservedValueErr != nil {
-		return nil, errors.Wrap(_reservedValueErr, "Error parsing 'reservedValue' field of ErrorReportingSystemCategoryTypeReserved")
+	reservedValue, err := ReadSimpleField(ctx, "reservedValue", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reservedValue' field"))
 	}
-	reservedValue := _reservedValue
+	m.ReservedValue = reservedValue
 
 	if closeErr := readBuffer.CloseContext("ErrorReportingSystemCategoryTypeReserved"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ErrorReportingSystemCategoryTypeReserved")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ErrorReportingSystemCategoryTypeReserved{
-		_ErrorReportingSystemCategoryType: &_ErrorReportingSystemCategoryType{},
-		ReservedValue:                     reservedValue,
-	}
-	_child._ErrorReportingSystemCategoryType._ErrorReportingSystemCategoryTypeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) Serialize() ([]byte, error) {
@@ -180,11 +166,8 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for ErrorReportingSystemCategoryTypeReserved")
 		}
 
-		// Simple Field (reservedValue)
-		reservedValue := uint8(m.GetReservedValue())
-		_reservedValueErr := writeBuffer.WriteUint8("reservedValue", 4, uint8((reservedValue)))
-		if _reservedValueErr != nil {
-			return errors.Wrap(_reservedValueErr, "Error serializing 'reservedValue' field")
+		if err := WriteSimpleField[uint8](ctx, "reservedValue", m.GetReservedValue(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reservedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ErrorReportingSystemCategoryTypeReserved"); popErr != nil {
@@ -192,12 +175,10 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ErrorReportingSystemCategoryTypeReserved) isErrorReportingSystemCategoryTypeReserved() bool {
-	return true
-}
+func (m *_ErrorReportingSystemCategoryTypeReserved) IsErrorReportingSystemCategoryTypeReserved() {}
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) String() string {
 	if m == nil {

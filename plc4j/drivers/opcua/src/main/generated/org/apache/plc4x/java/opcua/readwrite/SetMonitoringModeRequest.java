@@ -91,7 +91,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("SetMonitoringModeRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (subscriptionId)
     writeSimpleField("subscriptionId", subscriptionId, writeUnsignedLong(writeBuffer, 32));
@@ -101,7 +101,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
         "monitoringMode",
         "MonitoringMode",
         monitoringMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MonitoringMode::getValue, MonitoringMode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (noOfMonitoredItemIds)
@@ -154,7 +154,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -164,8 +164,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
         readEnumField(
             "monitoringMode",
             "MonitoringMode",
-            new DataReaderEnumDefault<>(
-                MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfMonitoredItemIds =
         readSimpleField("noOfMonitoredItemIds", readSignedInt(readBuffer, 32));

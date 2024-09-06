@@ -103,7 +103,7 @@ func OpcuaNodeIdServicesVariableExceptionParse(ctx context.Context, theBytes []b
 func OpcuaNodeIdServicesVariableExceptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaNodeIdServicesVariableException, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadInt32("OpcuaNodeIdServicesVariableException", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("OpcuaNodeIdServicesVariableException", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading OpcuaNodeIdServicesVariableException")
 	}
@@ -126,7 +126,11 @@ func (e OpcuaNodeIdServicesVariableException) Serialize() ([]byte, error) {
 func (e OpcuaNodeIdServicesVariableException) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteInt32("OpcuaNodeIdServicesVariableException", 32, int32(int32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteInt32("OpcuaNodeIdServicesVariableException", 32, int32(int32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+func (e OpcuaNodeIdServicesVariableException) GetValue() int32 {
+	return int32(e)
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

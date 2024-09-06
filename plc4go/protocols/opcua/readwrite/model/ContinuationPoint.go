@@ -36,18 +36,15 @@ type ContinuationPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// ContinuationPointExactly can be used when we want exactly this type and not a type which fulfills ContinuationPoint.
-// This is useful for switch cases.
-type ContinuationPointExactly interface {
-	ContinuationPoint
-	isContinuationPoint() bool
+	// IsContinuationPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsContinuationPoint()
 }
 
 // _ContinuationPoint is the data-structure of this message
 type _ContinuationPoint struct {
 }
+
+var _ ContinuationPoint = (*_ContinuationPoint)(nil)
 
 // NewContinuationPoint factory function for _ContinuationPoint
 func NewContinuationPoint() *_ContinuationPoint {
@@ -83,11 +80,23 @@ func ContinuationPointParse(ctx context.Context, theBytes []byte) (ContinuationP
 	return ContinuationPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ContinuationPointParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ContinuationPoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ContinuationPoint, error) {
+		return ContinuationPointParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ContinuationPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ContinuationPoint, error) {
+	v, err := (&_ContinuationPoint{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ContinuationPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__continuationPoint ContinuationPoint, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ContinuationPoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ContinuationPoint")
 	}
@@ -98,8 +107,7 @@ func ContinuationPointParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(closeErr, "Error closing for ContinuationPoint")
 	}
 
-	// Create the instance
-	return &_ContinuationPoint{}, nil
+	return m, nil
 }
 
 func (m *_ContinuationPoint) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_ContinuationPoint) SerializeWithWriteBuffer(ctx context.Context, write
 	return nil
 }
 
-func (m *_ContinuationPoint) isContinuationPoint() bool {
-	return true
-}
+func (m *_ContinuationPoint) IsContinuationPoint() {}
 
 func (m *_ContinuationPoint) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataNotificationClass interface {
 	GetNotificationClass() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataNotificationClassExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotificationClass.
-// This is useful for switch cases.
-type BACnetConstructedDataNotificationClassExactly interface {
-	BACnetConstructedDataNotificationClass
-	isBACnetConstructedDataNotificationClass() bool
+	// IsBACnetConstructedDataNotificationClass is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNotificationClass()
 }
 
 // _BACnetConstructedDataNotificationClass is the data-structure of this message
 type _BACnetConstructedDataNotificationClass struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NotificationClass BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataNotificationClass = (*_BACnetConstructedDataNotificationClass)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationClass)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataNotificationClass) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataNotificationClass) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataNotificationClass) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataNotificationClass) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataNotificationClass) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataNotificationClass factory function for _BACnetConstructedDataNotificationClass
 func NewBACnetConstructedDataNotificationClass(notificationClass BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClass {
-	_result := &_BACnetConstructedDataNotificationClass{
-		NotificationClass:      notificationClass,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if notificationClass == nil {
+		panic("notificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationClass must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataNotificationClass{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NotificationClass:             notificationClass,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataNotificationClass) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNotificationClass) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (notificationClass)
 	lengthInBits += m.NotificationClass.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataNotificationClass) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataNotificationClassParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationClass, error) {
-	return BACnetConstructedDataNotificationClassParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataNotificationClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationClass, error) {
+func (m *_BACnetConstructedDataNotificationClass) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNotificationClass BACnetConstructedDataNotificationClass, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNotificationClass")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (notificationClass)
-	if pullErr := readBuffer.PullContext("notificationClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notificationClass")
+	notificationClass, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "notificationClass", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationClass' field"))
 	}
-	_notificationClass, _notificationClassErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _notificationClassErr != nil {
-		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field of BACnetConstructedDataNotificationClass")
-	}
-	notificationClass := _notificationClass.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("notificationClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notificationClass")
-	}
+	m.NotificationClass = notificationClass
 
-	// Virtual field
-	_actualValue := notificationClass
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), notificationClass)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotificationClass"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNotificationClass")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataNotificationClass{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NotificationClass: notificationClass,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataNotificationClass) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataNotificationClass) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNotificationClass")
 		}
 
-		// Simple Field (notificationClass)
-		if pushErr := writeBuffer.PushContext("notificationClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notificationClass")
-		}
-		_notificationClassErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationClass())
-		if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notificationClass")
-		}
-		if _notificationClassErr != nil {
-			return errors.Wrap(_notificationClassErr, "Error serializing 'notificationClass' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "notificationClass", m.GetNotificationClass(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationClass' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataNotificationClass) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataNotificationClass) isBACnetConstructedDataNotificationClass() bool {
-	return true
-}
+func (m *_BACnetConstructedDataNotificationClass) IsBACnetConstructedDataNotificationClass() {}
 
 func (m *_BACnetConstructedDataNotificationClass) String() string {
 	if m == nil {

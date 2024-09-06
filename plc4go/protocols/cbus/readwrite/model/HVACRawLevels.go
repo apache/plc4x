@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,19 +42,16 @@ type HVACRawLevels interface {
 	GetRawValue() int16
 	// GetValueInPercent returns ValueInPercent (virtual field)
 	GetValueInPercent() float32
-}
-
-// HVACRawLevelsExactly can be used when we want exactly this type and not a type which fulfills HVACRawLevels.
-// This is useful for switch cases.
-type HVACRawLevelsExactly interface {
-	HVACRawLevels
-	isHVACRawLevels() bool
+	// IsHVACRawLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACRawLevels()
 }
 
 // _HVACRawLevels is the data-structure of this message
 type _HVACRawLevels struct {
 	RawValue int16
 }
+
+var _ HVACRawLevels = (*_HVACRawLevels)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,37 +121,46 @@ func HVACRawLevelsParse(ctx context.Context, theBytes []byte) (HVACRawLevels, er
 	return HVACRawLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACRawLevelsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
+		return HVACRawLevelsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
+	v, err := (&_HVACRawLevels{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_HVACRawLevels) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACRawLevels HVACRawLevels, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HVACRawLevels"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HVACRawLevels")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (rawValue)
-	_rawValue, _rawValueErr := readBuffer.ReadInt16("rawValue", 16)
-	if _rawValueErr != nil {
-		return nil, errors.Wrap(_rawValueErr, "Error parsing 'rawValue' field of HVACRawLevels")
+	rawValue, err := ReadSimpleField(ctx, "rawValue", ReadSignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawValue' field"))
 	}
-	rawValue := _rawValue
+	m.RawValue = rawValue
 
-	// Virtual field
-	_valueInPercent := float32(rawValue) / float32(float32(32767))
-	valueInPercent := float32(_valueInPercent)
+	valueInPercent, err := ReadVirtualField[float32](ctx, "valueInPercent", (*float32)(nil), float32(rawValue)/float32(float32(32767)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInPercent' field"))
+	}
 	_ = valueInPercent
 
 	if closeErr := readBuffer.CloseContext("HVACRawLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACRawLevels")
 	}
 
-	// Create the instance
-	return &_HVACRawLevels{
-		RawValue: rawValue,
-	}, nil
+	return m, nil
 }
 
 func (m *_HVACRawLevels) Serialize() ([]byte, error) {
@@ -172,11 +180,8 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for HVACRawLevels")
 	}
 
-	// Simple Field (rawValue)
-	rawValue := int16(m.GetRawValue())
-	_rawValueErr := writeBuffer.WriteInt16("rawValue", 16, int16((rawValue)))
-	if _rawValueErr != nil {
-		return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
+	if err := WriteSimpleField[int16](ctx, "rawValue", m.GetRawValue(), WriteSignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'rawValue' field")
 	}
 	// Virtual field
 	valueInPercent := m.GetValueInPercent()
@@ -191,9 +196,7 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_HVACRawLevels) isHVACRawLevels() bool {
-	return true
-}
+func (m *_HVACRawLevels) IsHVACRawLevels() {}
 
 func (m *_HVACRawLevels) String() string {
 	if m == nil {

@@ -134,7 +134,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
     writeSimpleField("info2", info2, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (timeStamp)
-    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeStamp", timeStamp, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7PayloadDiagnosticMessage");
   }
@@ -195,8 +195,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
 
     DateAndTime timeStamp =
         readSimpleField(
-            "timeStamp",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeStamp", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadDiagnosticMessage");
     // Create the instance

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type NLMEstablishConnectionToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 	// GetTerminationTime returns TerminationTime (property field)
 	GetTerminationTime() uint8
-}
-
-// NLMEstablishConnectionToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMEstablishConnectionToNetwork.
-// This is useful for switch cases.
-type NLMEstablishConnectionToNetworkExactly interface {
-	NLMEstablishConnectionToNetwork
-	isNLMEstablishConnectionToNetwork() bool
+	// IsNLMEstablishConnectionToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMEstablishConnectionToNetwork()
 }
 
 // _NLMEstablishConnectionToNetwork is the data-structure of this message
 type _NLMEstablishConnectionToNetwork struct {
-	*_NLM
+	NLMContract
 	DestinationNetworkAddress uint16
 	TerminationTime           uint8
 }
+
+var _ NLMEstablishConnectionToNetwork = (*_NLMEstablishConnectionToNetwork)(nil)
+var _ NLMRequirements = (*_NLMEstablishConnectionToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_NLMEstablishConnectionToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMEstablishConnectionToNetwork) InitializeParent(parent NLM) {}
-
-func (m *_NLMEstablishConnectionToNetwork) GetParent() NLM {
-	return m._NLM
+func (m *_NLMEstablishConnectionToNetwork) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_NLMEstablishConnectionToNetwork) GetTerminationTime() uint8 {
 // NewNLMEstablishConnectionToNetwork factory function for _NLMEstablishConnectionToNetwork
 func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, apduLength uint16) *_NLMEstablishConnectionToNetwork {
 	_result := &_NLMEstablishConnectionToNetwork{
+		NLMContract:               NewNLM(apduLength),
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
-		_NLM:                      NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_NLMEstablishConnectionToNetwork) GetTypeName() string {
 }
 
 func (m *_NLMEstablishConnectionToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -137,49 +135,34 @@ func (m *_NLMEstablishConnectionToNetwork) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMEstablishConnectionToNetworkParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMEstablishConnectionToNetwork, error) {
-	return NLMEstablishConnectionToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMEstablishConnectionToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMEstablishConnectionToNetwork, error) {
+func (m *_NLMEstablishConnectionToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMEstablishConnectionToNetwork NLMEstablishConnectionToNetwork, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMEstablishConnectionToNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMEstablishConnectionToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMEstablishConnectionToNetwork")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
+	m.DestinationNetworkAddress = destinationNetworkAddress
 
-	// Simple Field (terminationTime)
-	_terminationTime, _terminationTimeErr := readBuffer.ReadUint8("terminationTime", 8)
-	if _terminationTimeErr != nil {
-		return nil, errors.Wrap(_terminationTimeErr, "Error parsing 'terminationTime' field of NLMEstablishConnectionToNetwork")
+	terminationTime, err := ReadSimpleField(ctx, "terminationTime", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminationTime' field"))
 	}
-	terminationTime := _terminationTime
+	m.TerminationTime = terminationTime
 
 	if closeErr := readBuffer.CloseContext("NLMEstablishConnectionToNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMEstablishConnectionToNetwork")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMEstablishConnectionToNetwork{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		DestinationNetworkAddress: destinationNetworkAddress,
-		TerminationTime:           terminationTime,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMEstablishConnectionToNetwork) Serialize() ([]byte, error) {
@@ -200,18 +183,12 @@ func (m *_NLMEstablishConnectionToNetwork) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for NLMEstablishConnectionToNetwork")
 		}
 
-		// Simple Field (destinationNetworkAddress)
-		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-		if _destinationNetworkAddressErr != nil {
-			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 		}
 
-		// Simple Field (terminationTime)
-		terminationTime := uint8(m.GetTerminationTime())
-		_terminationTimeErr := writeBuffer.WriteUint8("terminationTime", 8, uint8((terminationTime)))
-		if _terminationTimeErr != nil {
-			return errors.Wrap(_terminationTimeErr, "Error serializing 'terminationTime' field")
+		if err := WriteSimpleField[uint8](ctx, "terminationTime", m.GetTerminationTime(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'terminationTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMEstablishConnectionToNetwork"); popErr != nil {
@@ -219,12 +196,10 @@ func (m *_NLMEstablishConnectionToNetwork) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMEstablishConnectionToNetwork) isNLMEstablishConnectionToNetwork() bool {
-	return true
-}
+func (m *_NLMEstablishConnectionToNetwork) IsNLMEstablishConnectionToNetwork() {}
 
 func (m *_NLMEstablishConnectionToNetwork) String() string {
 	if m == nil {

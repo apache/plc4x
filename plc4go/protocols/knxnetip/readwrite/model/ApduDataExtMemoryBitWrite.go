@@ -37,19 +37,17 @@ type ApduDataExtMemoryBitWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
-}
-
-// ApduDataExtMemoryBitWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtMemoryBitWrite.
-// This is useful for switch cases.
-type ApduDataExtMemoryBitWriteExactly interface {
-	ApduDataExtMemoryBitWrite
-	isApduDataExtMemoryBitWrite() bool
+	// IsApduDataExtMemoryBitWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtMemoryBitWrite()
 }
 
 // _ApduDataExtMemoryBitWrite is the data-structure of this message
 type _ApduDataExtMemoryBitWrite struct {
-	*_ApduDataExt
+	ApduDataExtContract
 }
+
+var _ ApduDataExtMemoryBitWrite = (*_ApduDataExtMemoryBitWrite)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtMemoryBitWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataExtMemoryBitWrite) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtMemoryBitWrite) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtMemoryBitWrite) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtMemoryBitWrite) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 // NewApduDataExtMemoryBitWrite factory function for _ApduDataExtMemoryBitWrite
 func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
 	_result := &_ApduDataExtMemoryBitWrite{
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataExtMemoryBitWrite) GetTypeName() string {
 }
 
 func (m *_ApduDataExtMemoryBitWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataExtMemoryBitWrite) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtMemoryBitWriteParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtMemoryBitWrite, error) {
-	return ApduDataExtMemoryBitWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtMemoryBitWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtMemoryBitWrite, error) {
+func (m *_ApduDataExtMemoryBitWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtMemoryBitWrite ApduDataExtMemoryBitWrite, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtMemoryBitWrite")
 	}
@@ -124,14 +116,7 @@ func ApduDataExtMemoryBitWriteParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtMemoryBitWrite")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtMemoryBitWrite{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtMemoryBitWrite) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataExtMemoryBitWrite) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtMemoryBitWrite) isApduDataExtMemoryBitWrite() bool {
-	return true
-}
+func (m *_ApduDataExtMemoryBitWrite) IsApduDataExtMemoryBitWrite() {}
 
 func (m *_ApduDataExtMemoryBitWrite) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type QueryDataDescription interface {
 	GetAttributeId() uint32
 	// GetIndexRange returns IndexRange (property field)
 	GetIndexRange() PascalString
-}
-
-// QueryDataDescriptionExactly can be used when we want exactly this type and not a type which fulfills QueryDataDescription.
-// This is useful for switch cases.
-type QueryDataDescriptionExactly interface {
-	QueryDataDescription
-	isQueryDataDescription() bool
+	// IsQueryDataDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQueryDataDescription()
 }
 
 // _QueryDataDescription is the data-structure of this message
 type _QueryDataDescription struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RelativePath ExtensionObjectDefinition
 	AttributeId  uint32
 	IndexRange   PascalString
 }
+
+var _ QueryDataDescription = (*_QueryDataDescription)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QueryDataDescription)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_QueryDataDescription) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_QueryDataDescription) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_QueryDataDescription) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_QueryDataDescription) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,19 @@ func (m *_QueryDataDescription) GetIndexRange() PascalString {
 
 // NewQueryDataDescription factory function for _QueryDataDescription
 func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) *_QueryDataDescription {
-	_result := &_QueryDataDescription{
-		RelativePath:               relativePath,
-		AttributeId:                attributeId,
-		IndexRange:                 indexRange,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if relativePath == nil {
+		panic("relativePath of type ExtensionObjectDefinition for QueryDataDescription must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if indexRange == nil {
+		panic("indexRange of type PascalString for QueryDataDescription must not be nil")
+	}
+	_result := &_QueryDataDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RelativePath:                      relativePath,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +134,7 @@ func (m *_QueryDataDescription) GetTypeName() string {
 }
 
 func (m *_QueryDataDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (relativePath)
 	lengthInBits += m.RelativePath.GetLengthInBits(ctx)
@@ -148,67 +152,40 @@ func (m *_QueryDataDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func QueryDataDescriptionParse(ctx context.Context, theBytes []byte, identifier string) (QueryDataDescription, error) {
-	return QueryDataDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func QueryDataDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryDataDescription, error) {
+func (m *_QueryDataDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryDataDescription QueryDataDescription, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QueryDataDescription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QueryDataDescription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (relativePath)
-	if pullErr := readBuffer.PullContext("relativePath"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relativePath")
+	relativePath, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "relativePath", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("542")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativePath' field"))
 	}
-	_relativePath, _relativePathErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("542"))
-	if _relativePathErr != nil {
-		return nil, errors.Wrap(_relativePathErr, "Error parsing 'relativePath' field of QueryDataDescription")
-	}
-	relativePath := _relativePath.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("relativePath"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relativePath")
-	}
+	m.RelativePath = relativePath
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of QueryDataDescription")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
-	attributeId := _attributeId
+	m.AttributeId = attributeId
 
-	// Simple Field (indexRange)
-	if pullErr := readBuffer.PullContext("indexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for indexRange")
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
 	}
-	_indexRange, _indexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _indexRangeErr != nil {
-		return nil, errors.Wrap(_indexRangeErr, "Error parsing 'indexRange' field of QueryDataDescription")
-	}
-	indexRange := _indexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("indexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for indexRange")
-	}
+	m.IndexRange = indexRange
 
 	if closeErr := readBuffer.CloseContext("QueryDataDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for QueryDataDescription")
 	}
 
-	// Create a partially initialized instance
-	_child := &_QueryDataDescription{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RelativePath:               relativePath,
-		AttributeId:                attributeId,
-		IndexRange:                 indexRange,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_QueryDataDescription) Serialize() ([]byte, error) {
@@ -229,35 +206,16 @@ func (m *_QueryDataDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for QueryDataDescription")
 		}
 
-		// Simple Field (relativePath)
-		if pushErr := writeBuffer.PushContext("relativePath"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relativePath")
-		}
-		_relativePathErr := writeBuffer.WriteSerializable(ctx, m.GetRelativePath())
-		if popErr := writeBuffer.PopContext("relativePath"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relativePath")
-		}
-		if _relativePathErr != nil {
-			return errors.Wrap(_relativePathErr, "Error serializing 'relativePath' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "relativePath", m.GetRelativePath(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relativePath' field")
 		}
 
-		// Simple Field (attributeId)
-		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
-		if _attributeIdErr != nil {
-			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		// Simple Field (indexRange)
-		if pushErr := writeBuffer.PushContext("indexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for indexRange")
-		}
-		_indexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetIndexRange())
-		if popErr := writeBuffer.PopContext("indexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for indexRange")
-		}
-		if _indexRangeErr != nil {
-			return errors.Wrap(_indexRangeErr, "Error serializing 'indexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexRange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryDataDescription"); popErr != nil {
@@ -265,12 +223,10 @@ func (m *_QueryDataDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_QueryDataDescription) isQueryDataDescription() bool {
-	return true
-}
+func (m *_QueryDataDescription) IsQueryDataDescription() {}
 
 func (m *_QueryDataDescription) String() string {
 	if m == nil {

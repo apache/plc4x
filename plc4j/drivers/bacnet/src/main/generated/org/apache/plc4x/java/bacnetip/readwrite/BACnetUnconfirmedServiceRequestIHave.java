@@ -83,15 +83,13 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestIHave");
 
     // Simple Field (deviceIdentifier)
-    writeSimpleField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (objectName)
-    writeSimpleField("objectName", objectName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectName", objectName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestIHave");
   }
@@ -129,7 +127,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -138,7 +136,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -147,7 +145,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     BACnetApplicationTagCharacterString objectName =
         readSimpleField(
             "objectName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

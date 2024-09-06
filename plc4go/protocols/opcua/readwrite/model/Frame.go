@@ -37,19 +37,17 @@ type Frame interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// FrameExactly can be used when we want exactly this type and not a type which fulfills Frame.
-// This is useful for switch cases.
-type FrameExactly interface {
-	Frame
-	isFrame() bool
+	// IsFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFrame()
 }
 
 // _Frame is the data-structure of this message
 type _Frame struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ Frame = (*_Frame)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_Frame)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_Frame) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_Frame) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_Frame) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_Frame) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewFrame factory function for _Frame
 func NewFrame() *_Frame {
 	_result := &_Frame{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_Frame) GetTypeName() string {
 }
 
 func (m *_Frame) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_Frame) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FrameParse(ctx context.Context, theBytes []byte, identifier string) (Frame, error) {
-	return FrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func FrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Frame, error) {
+func (m *_Frame) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__frame Frame, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Frame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Frame")
 	}
@@ -124,12 +116,7 @@ func FrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, iden
 		return nil, errors.Wrap(closeErr, "Error closing for Frame")
 	}
 
-	// Create a partially initialized instance
-	_child := &_Frame{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_Frame) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_Frame) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_Frame) isFrame() bool {
-	return true
-}
+func (m *_Frame) IsFrame() {}
 
 func (m *_Frame) String() string {
 	if m == nil {

@@ -91,7 +91,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     writeBuffer.pushContext("FindServersOnNetworkRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (startingRecordId)
     writeSimpleField("startingRecordId", startingRecordId, writeUnsignedLong(writeBuffer, 32));
@@ -153,7 +153,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -168,7 +168,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     List<PascalString> serverCapabilityFilter =
         readCountArrayField(
             "serverCapabilityFilter",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfServerCapabilityFilter);
 
     readBuffer.closeContext("FindServersOnNetworkRequest");

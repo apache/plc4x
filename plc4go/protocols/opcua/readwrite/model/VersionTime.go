@@ -36,18 +36,15 @@ type VersionTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// VersionTimeExactly can be used when we want exactly this type and not a type which fulfills VersionTime.
-// This is useful for switch cases.
-type VersionTimeExactly interface {
-	VersionTime
-	isVersionTime() bool
+	// IsVersionTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVersionTime()
 }
 
 // _VersionTime is the data-structure of this message
 type _VersionTime struct {
 }
+
+var _ VersionTime = (*_VersionTime)(nil)
 
 // NewVersionTime factory function for _VersionTime
 func NewVersionTime() *_VersionTime {
@@ -83,11 +80,23 @@ func VersionTimeParse(ctx context.Context, theBytes []byte) (VersionTime, error)
 	return VersionTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func VersionTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
+		return VersionTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func VersionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
+	v, err := (&_VersionTime{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_VersionTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__versionTime VersionTime, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VersionTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VersionTime")
 	}
@@ -98,8 +107,7 @@ func VersionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for VersionTime")
 	}
 
-	// Create the instance
-	return &_VersionTime{}, nil
+	return m, nil
 }
 
 func (m *_VersionTime) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_VersionTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	return nil
 }
 
-func (m *_VersionTime) isVersionTime() bool {
-	return true
-}
+func (m *_VersionTime) IsVersionTime() {}
 
 func (m *_VersionTime) String() string {
 	if m == nil {

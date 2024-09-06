@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,18 +41,15 @@ type AdsConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// AdsConstantsExactly can be used when we want exactly this type and not a type which fulfills AdsConstants.
-// This is useful for switch cases.
-type AdsConstantsExactly interface {
-	AdsConstants
-	isAdsConstants() bool
+	// IsAdsConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsConstants()
 }
 
 // _AdsConstants is the data-structure of this message
 type _AdsConstants struct {
 }
+
+var _ AdsConstants = (*_AdsConstants)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func AdsConstantsParse(ctx context.Context, theBytes []byte) (AdsConstants, erro
 	return AdsConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsConstants, error) {
+		return AdsConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsConstants, error) {
+	v, err := (&_AdsConstants{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_AdsConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsConstants AdsConstants, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsConstants"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsConstants")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (adsTcpDefaultPort)
-	adsTcpDefaultPort, _adsTcpDefaultPortErr := readBuffer.ReadUint16("adsTcpDefaultPort", 16)
-	if _adsTcpDefaultPortErr != nil {
-		return nil, errors.Wrap(_adsTcpDefaultPortErr, "Error parsing 'adsTcpDefaultPort' field of AdsConstants")
+	adsTcpDefaultPort, err := ReadConstField[uint16](ctx, "adsTcpDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), AdsConstants_ADSTCPDEFAULTPORT)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adsTcpDefaultPort' field"))
 	}
-	if adsTcpDefaultPort != AdsConstants_ADSTCPDEFAULTPORT {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsConstants_ADSTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", adsTcpDefaultPort))
-	}
+	_ = adsTcpDefaultPort
 
 	if closeErr := readBuffer.CloseContext("AdsConstants"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsConstants")
 	}
 
-	// Create the instance
-	return &_AdsConstants{}, nil
+	return m, nil
 }
 
 func (m *_AdsConstants) Serialize() ([]byte, error) {
@@ -148,10 +155,8 @@ func (m *_AdsConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for AdsConstants")
 	}
 
-	// Const Field (adsTcpDefaultPort)
-	_adsTcpDefaultPortErr := writeBuffer.WriteUint16("adsTcpDefaultPort", 16, uint16(48898))
-	if _adsTcpDefaultPortErr != nil {
-		return errors.Wrap(_adsTcpDefaultPortErr, "Error serializing 'adsTcpDefaultPort' field")
+	if err := WriteConstField(ctx, "adsTcpDefaultPort", AdsConstants_ADSTCPDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'adsTcpDefaultPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsConstants"); popErr != nil {
@@ -160,9 +165,7 @@ func (m *_AdsConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_AdsConstants) isAdsConstants() bool {
-	return true
-}
+func (m *_AdsConstants) IsAdsConstants() {}
 
 func (m *_AdsConstants) String() string {
 	if m == nil {

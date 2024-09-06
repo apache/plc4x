@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetOptionalBinaryPVNull interface {
 	BACnetOptionalBinaryPV
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-}
-
-// BACnetOptionalBinaryPVNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalBinaryPVNull.
-// This is useful for switch cases.
-type BACnetOptionalBinaryPVNullExactly interface {
-	BACnetOptionalBinaryPVNull
-	isBACnetOptionalBinaryPVNull() bool
+	// IsBACnetOptionalBinaryPVNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalBinaryPVNull()
 }
 
 // _BACnetOptionalBinaryPVNull is the data-structure of this message
 type _BACnetOptionalBinaryPVNull struct {
-	*_BACnetOptionalBinaryPV
+	BACnetOptionalBinaryPVContract
 	NullValue BACnetApplicationTagNull
 }
+
+var _ BACnetOptionalBinaryPVNull = (*_BACnetOptionalBinaryPVNull)(nil)
+var _ BACnetOptionalBinaryPVRequirements = (*_BACnetOptionalBinaryPVNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetOptionalBinaryPVNull struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetOptionalBinaryPVNull) InitializeParent(parent BACnetOptionalBinaryPV, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetOptionalBinaryPVNull) GetParent() BACnetOptionalBinaryPV {
-	return m._BACnetOptionalBinaryPV
+func (m *_BACnetOptionalBinaryPVNull) GetParent() BACnetOptionalBinaryPVContract {
+	return m.BACnetOptionalBinaryPVContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetOptionalBinaryPVNull) GetNullValue() BACnetApplicationTagNull {
 
 // NewBACnetOptionalBinaryPVNull factory function for _BACnetOptionalBinaryPVNull
 func NewBACnetOptionalBinaryPVNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPVNull {
-	_result := &_BACnetOptionalBinaryPVNull{
-		NullValue:               nullValue,
-		_BACnetOptionalBinaryPV: NewBACnetOptionalBinaryPV(peekedTagHeader),
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalBinaryPVNull must not be nil")
 	}
-	_result._BACnetOptionalBinaryPV._BACnetOptionalBinaryPVChildRequirements = _result
+	_result := &_BACnetOptionalBinaryPVNull{
+		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
+		NullValue:                      nullValue,
+	}
+	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetOptionalBinaryPVNull) GetTypeName() string {
 }
 
 func (m *_BACnetOptionalBinaryPVNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).getLengthInBits(ctx))
 
 	// Simple field (nullValue)
 	lengthInBits += m.NullValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetOptionalBinaryPVNull) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalBinaryPVNullParse(ctx context.Context, theBytes []byte) (BACnetOptionalBinaryPVNull, error) {
-	return BACnetOptionalBinaryPVNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetOptionalBinaryPVNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPVNull, error) {
+func (m *_BACnetOptionalBinaryPVNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetOptionalBinaryPV) (__bACnetOptionalBinaryPVNull BACnetOptionalBinaryPVNull, err error) {
+	m.BACnetOptionalBinaryPVContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetOptionalBinaryPVNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalBinaryPVNull")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nullValue)
-	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
+	nullValue, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "nullValue", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullValue' field"))
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetOptionalBinaryPVNull")
-	}
-	nullValue := _nullValue.(BACnetApplicationTagNull)
-	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
-	}
+	m.NullValue = nullValue
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalBinaryPVNull"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalBinaryPVNull")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetOptionalBinaryPVNull{
-		_BACnetOptionalBinaryPV: &_BACnetOptionalBinaryPV{},
-		NullValue:               nullValue,
-	}
-	_child._BACnetOptionalBinaryPV._BACnetOptionalBinaryPVChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetOptionalBinaryPVNull) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetOptionalBinaryPVNull) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalBinaryPVNull")
 		}
 
-		// Simple Field (nullValue)
-		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nullValue")
-		}
-		_nullValueErr := writeBuffer.WriteSerializable(ctx, m.GetNullValue())
-		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nullValue")
-		}
-		if _nullValueErr != nil {
-			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagNull](ctx, "nullValue", m.GetNullValue(), WriteComplex[BACnetApplicationTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nullValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalBinaryPVNull"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetOptionalBinaryPVNull) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetOptionalBinaryPVNull) isBACnetOptionalBinaryPVNull() bool {
-	return true
-}
+func (m *_BACnetOptionalBinaryPVNull) IsBACnetOptionalBinaryPVNull() {}
 
 func (m *_BACnetOptionalBinaryPVNull) String() string {
 	if m == nil {

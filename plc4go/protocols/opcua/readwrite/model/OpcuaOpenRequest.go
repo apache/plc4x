@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,24 +43,22 @@ type OpcuaOpenRequest interface {
 	GetOpenRequest() OpenChannelMessage
 	// GetMessage returns Message (property field)
 	GetMessage() Payload
-}
-
-// OpcuaOpenRequestExactly can be used when we want exactly this type and not a type which fulfills OpcuaOpenRequest.
-// This is useful for switch cases.
-type OpcuaOpenRequestExactly interface {
-	OpcuaOpenRequest
-	isOpcuaOpenRequest() bool
+	// IsOpcuaOpenRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaOpenRequest()
 }
 
 // _OpcuaOpenRequest is the data-structure of this message
 type _OpcuaOpenRequest struct {
-	*_MessagePDU
+	MessagePDUContract
 	OpenRequest OpenChannelMessage
 	Message     Payload
 
 	// Arguments.
 	TotalLength uint32
 }
+
+var _ OpcuaOpenRequest = (*_OpcuaOpenRequest)(nil)
+var _ MessagePDURequirements = (*_OpcuaOpenRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,12 +78,8 @@ func (m *_OpcuaOpenRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaOpenRequest) InitializeParent(parent MessagePDU, chunk ChunkType) {
-	m.Chunk = chunk
-}
-
-func (m *_OpcuaOpenRequest) GetParent() MessagePDU {
-	return m._MessagePDU
+func (m *_OpcuaOpenRequest) GetParent() MessagePDUContract {
+	return m.MessagePDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,12 +102,18 @@ func (m *_OpcuaOpenRequest) GetMessage() Payload {
 
 // NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
 func NewOpcuaOpenRequest(openRequest OpenChannelMessage, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaOpenRequest {
-	_result := &_OpcuaOpenRequest{
-		OpenRequest: openRequest,
-		Message:     message,
-		_MessagePDU: NewMessagePDU(chunk),
+	if openRequest == nil {
+		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
 	}
-	_result._MessagePDU._MessagePDUChildRequirements = _result
+	if message == nil {
+		panic("message of type Payload for OpcuaOpenRequest must not be nil")
+	}
+	_result := &_OpcuaOpenRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		OpenRequest:        openRequest,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 
@@ -131,7 +133,7 @@ func (m *_OpcuaOpenRequest) GetTypeName() string {
 }
 
 func (m *_OpcuaOpenRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (openRequest)
 	lengthInBits += m.OpenRequest.GetLengthInBits(ctx)
@@ -146,59 +148,34 @@ func (m *_OpcuaOpenRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpcuaOpenRequestParse(ctx context.Context, theBytes []byte, totalLength uint32, response bool) (OpcuaOpenRequest, error) {
-	return OpcuaOpenRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), totalLength, response)
-}
-
-func OpcuaOpenRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint32, response bool) (OpcuaOpenRequest, error) {
+func (m *_OpcuaOpenRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, totalLength uint32, response bool) (__opcuaOpenRequest OpcuaOpenRequest, err error) {
+	m.MessagePDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaOpenRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaOpenRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openRequest)
-	if pullErr := readBuffer.PullContext("openRequest"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openRequest")
+	openRequest, err := ReadSimpleField[OpenChannelMessage](ctx, "openRequest", ReadComplex[OpenChannelMessage](OpenChannelMessageParseWithBufferProducer[OpenChannelMessage]((bool)(response)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openRequest' field"))
 	}
-	_openRequest, _openRequestErr := OpenChannelMessageParseWithBuffer(ctx, readBuffer, bool(response))
-	if _openRequestErr != nil {
-		return nil, errors.Wrap(_openRequestErr, "Error parsing 'openRequest' field of OpcuaOpenRequest")
-	}
-	openRequest := _openRequest.(OpenChannelMessage)
-	if closeErr := readBuffer.CloseContext("openRequest"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openRequest")
-	}
+	m.OpenRequest = openRequest
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
+	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(bool(false)), (uint32)(uint32(uint32(totalLength)-uint32(openRequest.GetLengthInBytes(ctx)))-uint32(uint32(16)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
-	_message, _messageErr := PayloadParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint32(uint32(uint32(totalLength)-uint32(openRequest.GetLengthInBytes(ctx)))-uint32(uint32(16))))
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of OpcuaOpenRequest")
-	}
-	message := _message.(Payload)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
-	}
+	m.Message = message
 
 	if closeErr := readBuffer.CloseContext("OpcuaOpenRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaOpenRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_OpcuaOpenRequest{
-		_MessagePDU: &_MessagePDU{},
-		OpenRequest: openRequest,
-		Message:     message,
-	}
-	_child._MessagePDU._MessagePDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_OpcuaOpenRequest) Serialize() ([]byte, error) {
@@ -219,28 +196,12 @@ func (m *_OpcuaOpenRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for OpcuaOpenRequest")
 		}
 
-		// Simple Field (openRequest)
-		if pushErr := writeBuffer.PushContext("openRequest"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openRequest")
-		}
-		_openRequestErr := writeBuffer.WriteSerializable(ctx, m.GetOpenRequest())
-		if popErr := writeBuffer.PopContext("openRequest"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openRequest")
-		}
-		if _openRequestErr != nil {
-			return errors.Wrap(_openRequestErr, "Error serializing 'openRequest' field")
+		if err := WriteSimpleField[OpenChannelMessage](ctx, "openRequest", m.GetOpenRequest(), WriteComplex[OpenChannelMessage](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openRequest' field")
 		}
 
-		// Simple Field (message)
-		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for message")
-		}
-		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-		if popErr := writeBuffer.PopContext("message"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for message")
-		}
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[Payload](ctx, "message", m.GetMessage(), WriteComplex[Payload](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaOpenRequest"); popErr != nil {
@@ -248,7 +209,7 @@ func (m *_OpcuaOpenRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MessagePDUContract.(*_MessagePDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -261,9 +222,7 @@ func (m *_OpcuaOpenRequest) GetTotalLength() uint32 {
 //
 ////
 
-func (m *_OpcuaOpenRequest) isOpcuaOpenRequest() bool {
-	return true
-}
+func (m *_OpcuaOpenRequest) IsOpcuaOpenRequest() {}
 
 func (m *_OpcuaOpenRequest) String() string {
 	if m == nil {

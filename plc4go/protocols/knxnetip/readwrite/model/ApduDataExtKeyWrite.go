@@ -37,19 +37,17 @@ type ApduDataExtKeyWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
-}
-
-// ApduDataExtKeyWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtKeyWrite.
-// This is useful for switch cases.
-type ApduDataExtKeyWriteExactly interface {
-	ApduDataExtKeyWrite
-	isApduDataExtKeyWrite() bool
+	// IsApduDataExtKeyWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtKeyWrite()
 }
 
 // _ApduDataExtKeyWrite is the data-structure of this message
 type _ApduDataExtKeyWrite struct {
-	*_ApduDataExt
+	ApduDataExtContract
 }
+
+var _ ApduDataExtKeyWrite = (*_ApduDataExtKeyWrite)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtKeyWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataExtKeyWrite) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtKeyWrite) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtKeyWrite) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtKeyWrite) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 // NewApduDataExtKeyWrite factory function for _ApduDataExtKeyWrite
 func NewApduDataExtKeyWrite(length uint8) *_ApduDataExtKeyWrite {
 	_result := &_ApduDataExtKeyWrite{
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataExtKeyWrite) GetTypeName() string {
 }
 
 func (m *_ApduDataExtKeyWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataExtKeyWrite) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtKeyWriteParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtKeyWrite, error) {
-	return ApduDataExtKeyWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtKeyWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtKeyWrite, error) {
+func (m *_ApduDataExtKeyWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtKeyWrite ApduDataExtKeyWrite, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtKeyWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtKeyWrite")
 	}
@@ -124,14 +116,7 @@ func ApduDataExtKeyWriteParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtKeyWrite")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtKeyWrite{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtKeyWrite) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataExtKeyWrite) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtKeyWrite) isApduDataExtKeyWrite() bool {
-	return true
-}
+func (m *_ApduDataExtKeyWrite) IsApduDataExtKeyWrite() {}
 
 func (m *_ApduDataExtKeyWrite) String() string {
 	if m == nil {

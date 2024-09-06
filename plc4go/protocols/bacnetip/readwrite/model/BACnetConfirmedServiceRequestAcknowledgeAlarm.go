@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	GetAcknowledgmentSource() BACnetContextTagCharacterString
 	// GetTimeOfAcknowledgment returns TimeOfAcknowledgment (property field)
 	GetTimeOfAcknowledgment() BACnetTimeStampEnclosed
-}
-
-// BACnetConfirmedServiceRequestAcknowledgeAlarmExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAcknowledgeAlarm.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestAcknowledgeAlarmExactly interface {
-	BACnetConfirmedServiceRequestAcknowledgeAlarm
-	isBACnetConfirmedServiceRequestAcknowledgeAlarm() bool
+	// IsBACnetConfirmedServiceRequestAcknowledgeAlarm is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAcknowledgeAlarm()
 }
 
 // _BACnetConfirmedServiceRequestAcknowledgeAlarm is the data-structure of this message
 type _BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	AcknowledgingProcessIdentifier BACnetContextTagUnsignedInteger
 	EventObjectIdentifier          BACnetContextTagObjectIdentifier
 	EventStateAcknowledged         BACnetEventStateTagged
@@ -68,6 +65,9 @@ type _BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	AcknowledgmentSource           BACnetContextTagCharacterString
 	TimeOfAcknowledgment           BACnetTimeStampEnclosed
 }
+
+var _ BACnetConfirmedServiceRequestAcknowledgeAlarm = (*_BACnetConfirmedServiceRequestAcknowledgeAlarm)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAcknowledgeAlarm)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,11 +83,8 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetServiceChoice() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -126,16 +123,34 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimeOfAcknowledgment
 
 // NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for _BACnetConfirmedServiceRequestAcknowledgeAlarm
 func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
-	_result := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
-		AcknowledgingProcessIdentifier: acknowledgingProcessIdentifier,
-		EventObjectIdentifier:          eventObjectIdentifier,
-		EventStateAcknowledged:         eventStateAcknowledged,
-		Timestamp:                      timestamp,
-		AcknowledgmentSource:           acknowledgmentSource,
-		TimeOfAcknowledgment:           timeOfAcknowledgment,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if acknowledgingProcessIdentifier == nil {
+		panic("acknowledgingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if eventObjectIdentifier == nil {
+		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if eventStateAcknowledged == nil {
+		panic("eventStateAcknowledged of type BACnetEventStateTagged for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if timestamp == nil {
+		panic("timestamp of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if acknowledgmentSource == nil {
+		panic("acknowledgmentSource of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if timeOfAcknowledgment == nil {
+		panic("timeOfAcknowledgment of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		AcknowledgingProcessIdentifier:        acknowledgingProcessIdentifier,
+		EventObjectIdentifier:                 eventObjectIdentifier,
+		EventStateAcknowledged:                eventStateAcknowledged,
+		Timestamp:                             timestamp,
+		AcknowledgmentSource:                  acknowledgmentSource,
+		TimeOfAcknowledgment:                  timeOfAcknowledgment,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -155,7 +170,7 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (acknowledgingProcessIdentifier)
 	lengthInBits += m.AcknowledgingProcessIdentifier.GetLengthInBits(ctx)
@@ -182,117 +197,58 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBytes(ctx co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
-	return BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestAcknowledgeAlarm BACnetConfirmedServiceRequestAcknowledgeAlarm, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (acknowledgingProcessIdentifier)
-	if pullErr := readBuffer.PullContext("acknowledgingProcessIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgingProcessIdentifier")
+	acknowledgingProcessIdentifier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "acknowledgingProcessIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledgingProcessIdentifier' field"))
 	}
-	_acknowledgingProcessIdentifier, _acknowledgingProcessIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _acknowledgingProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_acknowledgingProcessIdentifierErr, "Error parsing 'acknowledgingProcessIdentifier' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
-	}
-	acknowledgingProcessIdentifier := _acknowledgingProcessIdentifier.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("acknowledgingProcessIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for acknowledgingProcessIdentifier")
-	}
+	m.AcknowledgingProcessIdentifier = acknowledgingProcessIdentifier
 
-	// Simple Field (eventObjectIdentifier)
-	if pullErr := readBuffer.PullContext("eventObjectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventObjectIdentifier")
+	eventObjectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "eventObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventObjectIdentifier' field"))
 	}
-	_eventObjectIdentifier, _eventObjectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _eventObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_eventObjectIdentifierErr, "Error parsing 'eventObjectIdentifier' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
-	}
-	eventObjectIdentifier := _eventObjectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("eventObjectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventObjectIdentifier")
-	}
+	m.EventObjectIdentifier = eventObjectIdentifier
 
-	// Simple Field (eventStateAcknowledged)
-	if pullErr := readBuffer.PullContext("eventStateAcknowledged"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventStateAcknowledged")
+	eventStateAcknowledged, err := ReadSimpleField[BACnetEventStateTagged](ctx, "eventStateAcknowledged", ReadComplex[BACnetEventStateTagged](BACnetEventStateTaggedParseWithBufferProducer((uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventStateAcknowledged' field"))
 	}
-	_eventStateAcknowledged, _eventStateAcknowledgedErr := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _eventStateAcknowledgedErr != nil {
-		return nil, errors.Wrap(_eventStateAcknowledgedErr, "Error parsing 'eventStateAcknowledged' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
-	}
-	eventStateAcknowledged := _eventStateAcknowledged.(BACnetEventStateTagged)
-	if closeErr := readBuffer.CloseContext("eventStateAcknowledged"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventStateAcknowledged")
-	}
+	m.EventStateAcknowledged = eventStateAcknowledged
 
-	// Simple Field (timestamp)
-	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
+	timestamp, err := ReadSimpleField[BACnetTimeStampEnclosed](ctx, "timestamp", ReadComplex[BACnetTimeStampEnclosed](BACnetTimeStampEnclosedParseWithBufferProducer((uint8)(uint8(3))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
-	_timestamp, _timestampErr := BACnetTimeStampEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
-	}
-	timestamp := _timestamp.(BACnetTimeStampEnclosed)
-	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestamp")
-	}
+	m.Timestamp = timestamp
 
-	// Simple Field (acknowledgmentSource)
-	if pullErr := readBuffer.PullContext("acknowledgmentSource"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgmentSource")
+	acknowledgmentSource, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "acknowledgmentSource", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledgmentSource' field"))
 	}
-	_acknowledgmentSource, _acknowledgmentSourceErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
-	if _acknowledgmentSourceErr != nil {
-		return nil, errors.Wrap(_acknowledgmentSourceErr, "Error parsing 'acknowledgmentSource' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
-	}
-	acknowledgmentSource := _acknowledgmentSource.(BACnetContextTagCharacterString)
-	if closeErr := readBuffer.CloseContext("acknowledgmentSource"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for acknowledgmentSource")
-	}
+	m.AcknowledgmentSource = acknowledgmentSource
 
-	// Simple Field (timeOfAcknowledgment)
-	if pullErr := readBuffer.PullContext("timeOfAcknowledgment"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeOfAcknowledgment")
+	timeOfAcknowledgment, err := ReadSimpleField[BACnetTimeStampEnclosed](ctx, "timeOfAcknowledgment", ReadComplex[BACnetTimeStampEnclosed](BACnetTimeStampEnclosedParseWithBufferProducer((uint8)(uint8(5))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeOfAcknowledgment' field"))
 	}
-	_timeOfAcknowledgment, _timeOfAcknowledgmentErr := BACnetTimeStampEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(5)))
-	if _timeOfAcknowledgmentErr != nil {
-		return nil, errors.Wrap(_timeOfAcknowledgmentErr, "Error parsing 'timeOfAcknowledgment' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
-	}
-	timeOfAcknowledgment := _timeOfAcknowledgment.(BACnetTimeStampEnclosed)
-	if closeErr := readBuffer.CloseContext("timeOfAcknowledgment"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeOfAcknowledgment")
-	}
+	m.TimeOfAcknowledgment = timeOfAcknowledgment
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		AcknowledgingProcessIdentifier: acknowledgingProcessIdentifier,
-		EventObjectIdentifier:          eventObjectIdentifier,
-		EventStateAcknowledged:         eventStateAcknowledged,
-		Timestamp:                      timestamp,
-		AcknowledgmentSource:           acknowledgmentSource,
-		TimeOfAcknowledgment:           timeOfAcknowledgment,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize() ([]byte, error) {
@@ -313,76 +269,28 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAcknowledgeAlarm")
 		}
 
-		// Simple Field (acknowledgingProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("acknowledgingProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for acknowledgingProcessIdentifier")
-		}
-		_acknowledgingProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetAcknowledgingProcessIdentifier())
-		if popErr := writeBuffer.PopContext("acknowledgingProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for acknowledgingProcessIdentifier")
-		}
-		if _acknowledgingProcessIdentifierErr != nil {
-			return errors.Wrap(_acknowledgingProcessIdentifierErr, "Error serializing 'acknowledgingProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "acknowledgingProcessIdentifier", m.GetAcknowledgingProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'acknowledgingProcessIdentifier' field")
 		}
 
-		// Simple Field (eventObjectIdentifier)
-		if pushErr := writeBuffer.PushContext("eventObjectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventObjectIdentifier")
-		}
-		_eventObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetEventObjectIdentifier())
-		if popErr := writeBuffer.PopContext("eventObjectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventObjectIdentifier")
-		}
-		if _eventObjectIdentifierErr != nil {
-			return errors.Wrap(_eventObjectIdentifierErr, "Error serializing 'eventObjectIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "eventObjectIdentifier", m.GetEventObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventObjectIdentifier' field")
 		}
 
-		// Simple Field (eventStateAcknowledged)
-		if pushErr := writeBuffer.PushContext("eventStateAcknowledged"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventStateAcknowledged")
-		}
-		_eventStateAcknowledgedErr := writeBuffer.WriteSerializable(ctx, m.GetEventStateAcknowledged())
-		if popErr := writeBuffer.PopContext("eventStateAcknowledged"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventStateAcknowledged")
-		}
-		if _eventStateAcknowledgedErr != nil {
-			return errors.Wrap(_eventStateAcknowledgedErr, "Error serializing 'eventStateAcknowledged' field")
+		if err := WriteSimpleField[BACnetEventStateTagged](ctx, "eventStateAcknowledged", m.GetEventStateAcknowledged(), WriteComplex[BACnetEventStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventStateAcknowledged' field")
 		}
 
-		// Simple Field (timestamp)
-		if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timestamp")
-		}
-		_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
-		if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timestamp")
-		}
-		if _timestampErr != nil {
-			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+		if err := WriteSimpleField[BACnetTimeStampEnclosed](ctx, "timestamp", m.GetTimestamp(), WriteComplex[BACnetTimeStampEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		// Simple Field (acknowledgmentSource)
-		if pushErr := writeBuffer.PushContext("acknowledgmentSource"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for acknowledgmentSource")
-		}
-		_acknowledgmentSourceErr := writeBuffer.WriteSerializable(ctx, m.GetAcknowledgmentSource())
-		if popErr := writeBuffer.PopContext("acknowledgmentSource"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for acknowledgmentSource")
-		}
-		if _acknowledgmentSourceErr != nil {
-			return errors.Wrap(_acknowledgmentSourceErr, "Error serializing 'acknowledgmentSource' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "acknowledgmentSource", m.GetAcknowledgmentSource(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'acknowledgmentSource' field")
 		}
 
-		// Simple Field (timeOfAcknowledgment)
-		if pushErr := writeBuffer.PushContext("timeOfAcknowledgment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeOfAcknowledgment")
-		}
-		_timeOfAcknowledgmentErr := writeBuffer.WriteSerializable(ctx, m.GetTimeOfAcknowledgment())
-		if popErr := writeBuffer.PopContext("timeOfAcknowledgment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeOfAcknowledgment")
-		}
-		if _timeOfAcknowledgmentErr != nil {
-			return errors.Wrap(_timeOfAcknowledgmentErr, "Error serializing 'timeOfAcknowledgment' field")
+		if err := WriteSimpleField[BACnetTimeStampEnclosed](ctx, "timeOfAcknowledgment", m.GetTimeOfAcknowledgment(), WriteComplex[BACnetTimeStampEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeOfAcknowledgment' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); popErr != nil {
@@ -390,11 +298,10 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) isBACnetConfirmedServiceRequestAcknowledgeAlarm() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) IsBACnetConfirmedServiceRequestAcknowledgeAlarm() {
 }
 
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {

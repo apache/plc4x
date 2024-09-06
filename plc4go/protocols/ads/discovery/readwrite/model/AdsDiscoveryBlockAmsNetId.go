@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,20 +44,18 @@ type AdsDiscoveryBlockAmsNetId interface {
 	AdsDiscoveryBlock
 	// GetAmsNetId returns AmsNetId (property field)
 	GetAmsNetId() AmsNetId
-}
-
-// AdsDiscoveryBlockAmsNetIdExactly can be used when we want exactly this type and not a type which fulfills AdsDiscoveryBlockAmsNetId.
-// This is useful for switch cases.
-type AdsDiscoveryBlockAmsNetIdExactly interface {
-	AdsDiscoveryBlockAmsNetId
-	isAdsDiscoveryBlockAmsNetId() bool
+	// IsAdsDiscoveryBlockAmsNetId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockAmsNetId()
 }
 
 // _AdsDiscoveryBlockAmsNetId is the data-structure of this message
 type _AdsDiscoveryBlockAmsNetId struct {
-	*_AdsDiscoveryBlock
+	AdsDiscoveryBlockContract
 	AmsNetId AmsNetId
 }
+
+var _ AdsDiscoveryBlockAmsNetId = (*_AdsDiscoveryBlockAmsNetId)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockAmsNetId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetBlockType() AdsDiscoveryBlockType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsDiscoveryBlockAmsNetId) InitializeParent(parent AdsDiscoveryBlock) {}
-
-func (m *_AdsDiscoveryBlockAmsNetId) GetParent() AdsDiscoveryBlock {
-	return m._AdsDiscoveryBlock
+func (m *_AdsDiscoveryBlockAmsNetId) GetParent() AdsDiscoveryBlockContract {
+	return m.AdsDiscoveryBlockContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,11 +104,14 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetAmsNetIdLength() uint16 {
 
 // NewAdsDiscoveryBlockAmsNetId factory function for _AdsDiscoveryBlockAmsNetId
 func NewAdsDiscoveryBlockAmsNetId(amsNetId AmsNetId) *_AdsDiscoveryBlockAmsNetId {
-	_result := &_AdsDiscoveryBlockAmsNetId{
-		AmsNetId:           amsNetId,
-		_AdsDiscoveryBlock: NewAdsDiscoveryBlock(),
+	if amsNetId == nil {
+		panic("amsNetId of type AmsNetId for AdsDiscoveryBlockAmsNetId must not be nil")
 	}
-	_result._AdsDiscoveryBlock._AdsDiscoveryBlockChildRequirements = _result
+	_result := &_AdsDiscoveryBlockAmsNetId{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		AmsNetId:                  amsNetId,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Const Field (amsNetIdLength)
 	lengthInBits += 16
@@ -145,54 +146,34 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockAmsNetIdParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockAmsNetId, error) {
-	return AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockAmsNetId, error) {
+func (m *_AdsDiscoveryBlockAmsNetId) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockAmsNetId AdsDiscoveryBlockAmsNetId, err error) {
+	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockAmsNetId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockAmsNetId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (amsNetIdLength)
-	amsNetIdLength, _amsNetIdLengthErr := readBuffer.ReadUint16("amsNetIdLength", 16)
-	if _amsNetIdLengthErr != nil {
-		return nil, errors.Wrap(_amsNetIdLengthErr, "Error parsing 'amsNetIdLength' field of AdsDiscoveryBlockAmsNetId")
+	amsNetIdLength, err := ReadConstField[uint16](ctx, "amsNetIdLength", ReadUnsignedShort(readBuffer, uint8(16)), AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amsNetIdLength' field"))
 	}
-	if amsNetIdLength != AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH) + " but got " + fmt.Sprintf("%d", amsNetIdLength))
-	}
+	_ = amsNetIdLength
 
-	// Simple Field (amsNetId)
-	if pullErr := readBuffer.PullContext("amsNetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for amsNetId")
+	amsNetId, err := ReadSimpleField[AmsNetId](ctx, "amsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amsNetId' field"))
 	}
-	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
-	if _amsNetIdErr != nil {
-		return nil, errors.Wrap(_amsNetIdErr, "Error parsing 'amsNetId' field of AdsDiscoveryBlockAmsNetId")
-	}
-	amsNetId := _amsNetId.(AmsNetId)
-	if closeErr := readBuffer.CloseContext("amsNetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for amsNetId")
-	}
+	m.AmsNetId = amsNetId
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockAmsNetId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDiscoveryBlockAmsNetId")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsDiscoveryBlockAmsNetId{
-		_AdsDiscoveryBlock: &_AdsDiscoveryBlock{},
-		AmsNetId:           amsNetId,
-	}
-	_child._AdsDiscoveryBlock._AdsDiscoveryBlockChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsDiscoveryBlockAmsNetId) Serialize() ([]byte, error) {
@@ -213,22 +194,12 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockAmsNetId")
 		}
 
-		// Const Field (amsNetIdLength)
-		_amsNetIdLengthErr := writeBuffer.WriteUint16("amsNetIdLength", 16, uint16(0x0006))
-		if _amsNetIdLengthErr != nil {
-			return errors.Wrap(_amsNetIdLengthErr, "Error serializing 'amsNetIdLength' field")
+		if err := WriteConstField(ctx, "amsNetIdLength", AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'amsNetIdLength' field")
 		}
 
-		// Simple Field (amsNetId)
-		if pushErr := writeBuffer.PushContext("amsNetId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for amsNetId")
-		}
-		_amsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetAmsNetId())
-		if popErr := writeBuffer.PopContext("amsNetId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for amsNetId")
-		}
-		if _amsNetIdErr != nil {
-			return errors.Wrap(_amsNetIdErr, "Error serializing 'amsNetId' field")
+		if err := WriteSimpleField[AmsNetId](ctx, "amsNetId", m.GetAmsNetId(), WriteComplex[AmsNetId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'amsNetId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDiscoveryBlockAmsNetId"); popErr != nil {
@@ -236,12 +207,10 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsDiscoveryBlockAmsNetId) isAdsDiscoveryBlockAmsNetId() bool {
-	return true
-}
+func (m *_AdsDiscoveryBlockAmsNetId) IsAdsDiscoveryBlockAmsNetId() {}
 
 func (m *_AdsDiscoveryBlockAmsNetId) String() string {
 	if m == nil {

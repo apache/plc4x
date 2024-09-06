@@ -77,7 +77,7 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -87,7 +87,7 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     serializeBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild(writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord");
   }
@@ -125,13 +125,12 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
 
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetOpeningTag.staticParse(
                         readBuffer, (short) (peekedTagHeader.getActualTagNumber())),
@@ -164,7 +163,7 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetClosingTag.staticParse(
                         readBuffer, (short) (peekedTagHeader.getActualTagNumber())),

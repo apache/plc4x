@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type IdentifyReplyCommandType interface {
 	IdentifyReplyCommand
 	// GetUnitType returns UnitType (property field)
 	GetUnitType() string
-}
-
-// IdentifyReplyCommandTypeExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandType.
-// This is useful for switch cases.
-type IdentifyReplyCommandTypeExactly interface {
-	IdentifyReplyCommandType
-	isIdentifyReplyCommandType() bool
+	// IsIdentifyReplyCommandType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandType()
 }
 
 // _IdentifyReplyCommandType is the data-structure of this message
 type _IdentifyReplyCommandType struct {
-	*_IdentifyReplyCommand
+	IdentifyReplyCommandContract
 	UnitType string
 }
+
+var _ IdentifyReplyCommandType = (*_IdentifyReplyCommandType)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_IdentifyReplyCommandType) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_IdentifyReplyCommandType) InitializeParent(parent IdentifyReplyCommand) {}
-
-func (m *_IdentifyReplyCommandType) GetParent() IdentifyReplyCommand {
-	return m._IdentifyReplyCommand
+func (m *_IdentifyReplyCommandType) GetParent() IdentifyReplyCommandContract {
+	return m.IdentifyReplyCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_IdentifyReplyCommandType) GetUnitType() string {
 // NewIdentifyReplyCommandType factory function for _IdentifyReplyCommandType
 func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyReplyCommandType {
 	_result := &_IdentifyReplyCommandType{
-		UnitType:              unitType,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		UnitType:                     unitType,
 	}
-	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_IdentifyReplyCommandType) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (unitType)
 	lengthInBits += 64
@@ -126,41 +124,28 @@ func (m *_IdentifyReplyCommandType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandTypeParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandType, error) {
-	return IdentifyReplyCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
-}
-
-func IdentifyReplyCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandType, error) {
+func (m *_IdentifyReplyCommandType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandType IdentifyReplyCommandType, err error) {
+	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unitType)
-	_unitType, _unitTypeErr := readBuffer.ReadString("unitType", uint32(64), "UTF-8")
-	if _unitTypeErr != nil {
-		return nil, errors.Wrap(_unitTypeErr, "Error parsing 'unitType' field of IdentifyReplyCommandType")
+	unitType, err := ReadSimpleField(ctx, "unitType", ReadString(readBuffer, uint32(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitType' field"))
 	}
-	unitType := _unitType
+	m.UnitType = unitType
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_IdentifyReplyCommandType{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
-		UnitType: unitType,
-	}
-	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_IdentifyReplyCommandType) Serialize() ([]byte, error) {
@@ -181,11 +166,8 @@ func (m *_IdentifyReplyCommandType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandType")
 		}
 
-		// Simple Field (unitType)
-		unitType := string(m.GetUnitType())
-		_unitTypeErr := writeBuffer.WriteString("unitType", uint32(64), "UTF-8", (unitType))
-		if _unitTypeErr != nil {
-			return errors.Wrap(_unitTypeErr, "Error serializing 'unitType' field")
+		if err := WriteSimpleField[string](ctx, "unitType", m.GetUnitType(), WriteString(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandType"); popErr != nil {
@@ -193,12 +175,10 @@ func (m *_IdentifyReplyCommandType) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_IdentifyReplyCommandType) isIdentifyReplyCommandType() bool {
-	return true
-}
+func (m *_IdentifyReplyCommandType) IsIdentifyReplyCommandType() {}
 
 func (m *_IdentifyReplyCommandType) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type SignatureData interface {
 	GetAlgorithm() PascalString
 	// GetSignature returns Signature (property field)
 	GetSignature() PascalByteString
-}
-
-// SignatureDataExactly can be used when we want exactly this type and not a type which fulfills SignatureData.
-// This is useful for switch cases.
-type SignatureDataExactly interface {
-	SignatureData
-	isSignatureData() bool
+	// IsSignatureData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSignatureData()
 }
 
 // _SignatureData is the data-structure of this message
 type _SignatureData struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	Algorithm PascalString
 	Signature PascalByteString
 }
+
+var _ SignatureData = (*_SignatureData)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SignatureData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_SignatureData) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SignatureData) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_SignatureData) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_SignatureData) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_SignatureData) GetSignature() PascalByteString {
 
 // NewSignatureData factory function for _SignatureData
 func NewSignatureData(algorithm PascalString, signature PascalByteString) *_SignatureData {
-	_result := &_SignatureData{
-		Algorithm:                  algorithm,
-		Signature:                  signature,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if algorithm == nil {
+		panic("algorithm of type PascalString for SignatureData must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if signature == nil {
+		panic("signature of type PascalByteString for SignatureData must not be nil")
+	}
+	_result := &_SignatureData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Algorithm:                         algorithm,
+		Signature:                         signature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_SignatureData) GetTypeName() string {
 }
 
 func (m *_SignatureData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (algorithm)
 	lengthInBits += m.Algorithm.GetLengthInBits(ctx)
@@ -137,59 +141,34 @@ func (m *_SignatureData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SignatureDataParse(ctx context.Context, theBytes []byte, identifier string) (SignatureData, error) {
-	return SignatureDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func SignatureDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SignatureData, error) {
+func (m *_SignatureData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__signatureData SignatureData, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SignatureData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SignatureData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (algorithm)
-	if pullErr := readBuffer.PullContext("algorithm"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for algorithm")
+	algorithm, err := ReadSimpleField[PascalString](ctx, "algorithm", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'algorithm' field"))
 	}
-	_algorithm, _algorithmErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _algorithmErr != nil {
-		return nil, errors.Wrap(_algorithmErr, "Error parsing 'algorithm' field of SignatureData")
-	}
-	algorithm := _algorithm.(PascalString)
-	if closeErr := readBuffer.CloseContext("algorithm"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for algorithm")
-	}
+	m.Algorithm = algorithm
 
-	// Simple Field (signature)
-	if pullErr := readBuffer.PullContext("signature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for signature")
+	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'signature' field"))
 	}
-	_signature, _signatureErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _signatureErr != nil {
-		return nil, errors.Wrap(_signatureErr, "Error parsing 'signature' field of SignatureData")
-	}
-	signature := _signature.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("signature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for signature")
-	}
+	m.Signature = signature
 
 	if closeErr := readBuffer.CloseContext("SignatureData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SignatureData")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SignatureData{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		Algorithm:                  algorithm,
-		Signature:                  signature,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SignatureData) Serialize() ([]byte, error) {
@@ -210,28 +189,12 @@ func (m *_SignatureData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for SignatureData")
 		}
 
-		// Simple Field (algorithm)
-		if pushErr := writeBuffer.PushContext("algorithm"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for algorithm")
-		}
-		_algorithmErr := writeBuffer.WriteSerializable(ctx, m.GetAlgorithm())
-		if popErr := writeBuffer.PopContext("algorithm"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for algorithm")
-		}
-		if _algorithmErr != nil {
-			return errors.Wrap(_algorithmErr, "Error serializing 'algorithm' field")
+		if err := WriteSimpleField[PascalString](ctx, "algorithm", m.GetAlgorithm(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'algorithm' field")
 		}
 
-		// Simple Field (signature)
-		if pushErr := writeBuffer.PushContext("signature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for signature")
-		}
-		_signatureErr := writeBuffer.WriteSerializable(ctx, m.GetSignature())
-		if popErr := writeBuffer.PopContext("signature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for signature")
-		}
-		if _signatureErr != nil {
-			return errors.Wrap(_signatureErr, "Error serializing 'signature' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'signature' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SignatureData"); popErr != nil {
@@ -239,12 +202,10 @@ func (m *_SignatureData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SignatureData) isSignatureData() bool {
-	return true
-}
+func (m *_SignatureData) IsSignatureData() {}
 
 func (m *_SignatureData) String() string {
 	if m == nil {

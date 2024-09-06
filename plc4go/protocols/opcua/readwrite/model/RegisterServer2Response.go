@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type RegisterServer2Response interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
-}
-
-// RegisterServer2ResponseExactly can be used when we want exactly this type and not a type which fulfills RegisterServer2Response.
-// This is useful for switch cases.
-type RegisterServer2ResponseExactly interface {
-	RegisterServer2Response
-	isRegisterServer2Response() bool
+	// IsRegisterServer2Response is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRegisterServer2Response()
 }
 
 // _RegisterServer2Response is the data-structure of this message
 type _RegisterServer2Response struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader           ExtensionObjectDefinition
 	NoOfConfigurationResults int32
 	ConfigurationResults     []StatusCode
 	NoOfDiagnosticInfos      int32
 	DiagnosticInfos          []DiagnosticInfo
 }
+
+var _ RegisterServer2Response = (*_RegisterServer2Response)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RegisterServer2Response)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_RegisterServer2Response) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RegisterServer2Response) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_RegisterServer2Response) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_RegisterServer2Response) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,18 @@ func (m *_RegisterServer2Response) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewRegisterServer2Response factory function for _RegisterServer2Response
 func NewRegisterServer2Response(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_RegisterServer2Response {
-	_result := &_RegisterServer2Response{
-		ResponseHeader:             responseHeader,
-		NoOfConfigurationResults:   noOfConfigurationResults,
-		ConfigurationResults:       configurationResults,
-		NoOfDiagnosticInfos:        noOfDiagnosticInfos,
-		DiagnosticInfos:            diagnosticInfos,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterServer2Response must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_RegisterServer2Response{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfConfigurationResults:          noOfConfigurationResults,
+		ConfigurationResults:              configurationResults,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +147,7 @@ func (m *_RegisterServer2Response) GetTypeName() string {
 }
 
 func (m *_RegisterServer2Response) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -184,117 +185,52 @@ func (m *_RegisterServer2Response) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RegisterServer2ResponseParse(ctx context.Context, theBytes []byte, identifier string) (RegisterServer2Response, error) {
-	return RegisterServer2ResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func RegisterServer2ResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterServer2Response, error) {
+func (m *_RegisterServer2Response) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerServer2Response RegisterServer2Response, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RegisterServer2Response"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RegisterServer2Response")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of RegisterServer2Response")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
-	// Simple Field (noOfConfigurationResults)
-	_noOfConfigurationResults, _noOfConfigurationResultsErr := readBuffer.ReadInt32("noOfConfigurationResults", 32)
-	if _noOfConfigurationResultsErr != nil {
-		return nil, errors.Wrap(_noOfConfigurationResultsErr, "Error parsing 'noOfConfigurationResults' field of RegisterServer2Response")
+	noOfConfigurationResults, err := ReadSimpleField(ctx, "noOfConfigurationResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConfigurationResults' field"))
 	}
-	noOfConfigurationResults := _noOfConfigurationResults
+	m.NoOfConfigurationResults = noOfConfigurationResults
 
-	// Array field (configurationResults)
-	if pullErr := readBuffer.PullContext("configurationResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for configurationResults")
+	configurationResults, err := ReadCountArrayField[StatusCode](ctx, "configurationResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfConfigurationResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationResults' field"))
 	}
-	// Count array
-	configurationResults := make([]StatusCode, max(noOfConfigurationResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(configurationResults) == 0 {
-		configurationResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfConfigurationResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'configurationResults' field of RegisterServer2Response")
-			}
-			configurationResults[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("configurationResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for configurationResults")
-	}
+	m.ConfigurationResults = configurationResults
 
-	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
-	if _noOfDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of RegisterServer2Response")
+	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	noOfDiagnosticInfos := _noOfDiagnosticInfos
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
 
-	// Array field (diagnosticInfos)
-	if pullErr := readBuffer.PullContext("diagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfos")
+	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfos' field"))
 	}
-	// Count array
-	diagnosticInfos := make([]DiagnosticInfo, max(noOfDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(diagnosticInfos) == 0 {
-		diagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'diagnosticInfos' field of RegisterServer2Response")
-			}
-			diagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("diagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for diagnosticInfos")
-	}
+	m.DiagnosticInfos = diagnosticInfos
 
 	if closeErr := readBuffer.CloseContext("RegisterServer2Response"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RegisterServer2Response")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RegisterServer2Response{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-		NoOfConfigurationResults:   noOfConfigurationResults,
-		ConfigurationResults:       configurationResults,
-		NoOfDiagnosticInfos:        noOfDiagnosticInfos,
-		DiagnosticInfos:            diagnosticInfos,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RegisterServer2Response) Serialize() ([]byte, error) {
@@ -315,64 +251,24 @@ func (m *_RegisterServer2Response) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for RegisterServer2Response")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfConfigurationResults)
-		noOfConfigurationResults := int32(m.GetNoOfConfigurationResults())
-		_noOfConfigurationResultsErr := writeBuffer.WriteInt32("noOfConfigurationResults", 32, int32((noOfConfigurationResults)))
-		if _noOfConfigurationResultsErr != nil {
-			return errors.Wrap(_noOfConfigurationResultsErr, "Error serializing 'noOfConfigurationResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfConfigurationResults", m.GetNoOfConfigurationResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfConfigurationResults' field")
 		}
 
-		// Array Field (configurationResults)
-		if pushErr := writeBuffer.PushContext("configurationResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for configurationResults")
-		}
-		for _curItem, _element := range m.GetConfigurationResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConfigurationResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'configurationResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("configurationResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for configurationResults")
+		if err := WriteComplexTypeArrayField(ctx, "configurationResults", m.GetConfigurationResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'configurationResults' field")
 		}
 
-		// Simple Field (noOfDiagnosticInfos)
-		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
-		if _noOfDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
-		// Array Field (diagnosticInfos)
-		if pushErr := writeBuffer.PushContext("diagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for diagnosticInfos")
-		}
-		for _curItem, _element := range m.GetDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'diagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("diagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for diagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "diagnosticInfos", m.GetDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'diagnosticInfos' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RegisterServer2Response"); popErr != nil {
@@ -380,12 +276,10 @@ func (m *_RegisterServer2Response) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RegisterServer2Response) isRegisterServer2Response() bool {
-	return true
-}
+func (m *_RegisterServer2Response) IsRegisterServer2Response() {}
 
 func (m *_RegisterServer2Response) String() string {
 	if m == nil {

@@ -32,12 +32,12 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 
 	passLogToModel bool
-	log            zerolog.Logger `ignore:"true"`
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
@@ -58,7 +58,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(message spi.Message) error {
 	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	tpktPacket := message.(model.TPKTPacketExactly)
+	tpktPacket := message.(model.TPKTPacket)
 	// Serialize the request
 	theBytes, err := tpktPacket.Serialize()
 	if err != nil {

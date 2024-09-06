@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,23 +43,21 @@ type CloseSessionRequest interface {
 	GetRequestHeader() ExtensionObjectDefinition
 	// GetDeleteSubscriptions returns DeleteSubscriptions (property field)
 	GetDeleteSubscriptions() bool
-}
-
-// CloseSessionRequestExactly can be used when we want exactly this type and not a type which fulfills CloseSessionRequest.
-// This is useful for switch cases.
-type CloseSessionRequestExactly interface {
-	CloseSessionRequest
-	isCloseSessionRequest() bool
+	// IsCloseSessionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCloseSessionRequest()
 }
 
 // _CloseSessionRequest is the data-structure of this message
 type _CloseSessionRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader       ExtensionObjectDefinition
 	DeleteSubscriptions bool
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ CloseSessionRequest = (*_CloseSessionRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,10 +73,8 @@ func (m *_CloseSessionRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CloseSessionRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CloseSessionRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CloseSessionRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,12 +97,15 @@ func (m *_CloseSessionRequest) GetDeleteSubscriptions() bool {
 
 // NewCloseSessionRequest factory function for _CloseSessionRequest
 func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) *_CloseSessionRequest {
-	_result := &_CloseSessionRequest{
-		RequestHeader:              requestHeader,
-		DeleteSubscriptions:        deleteSubscriptions,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CloseSessionRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_CloseSessionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		DeleteSubscriptions:               deleteSubscriptions,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -124,7 +125,7 @@ func (m *_CloseSessionRequest) GetTypeName() string {
 }
 
 func (m *_CloseSessionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -142,71 +143,40 @@ func (m *_CloseSessionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CloseSessionRequestParse(ctx context.Context, theBytes []byte, identifier string) (CloseSessionRequest, error) {
-	return CloseSessionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CloseSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CloseSessionRequest, error) {
+func (m *_CloseSessionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSessionRequest CloseSessionRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CloseSessionRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CloseSessionRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of CloseSessionRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CloseSessionRequest")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (deleteSubscriptions)
-	_deleteSubscriptions, _deleteSubscriptionsErr := readBuffer.ReadBit("deleteSubscriptions")
-	if _deleteSubscriptionsErr != nil {
-		return nil, errors.Wrap(_deleteSubscriptionsErr, "Error parsing 'deleteSubscriptions' field of CloseSessionRequest")
+	deleteSubscriptions, err := ReadSimpleField(ctx, "deleteSubscriptions", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteSubscriptions' field"))
 	}
-	deleteSubscriptions := _deleteSubscriptions
+	m.DeleteSubscriptions = deleteSubscriptions
 
 	if closeErr := readBuffer.CloseContext("CloseSessionRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CloseSessionRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CloseSessionRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		DeleteSubscriptions:        deleteSubscriptions,
-		reservedField0:             reservedField0,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CloseSessionRequest) Serialize() ([]byte, error) {
@@ -227,39 +197,16 @@ func (m *_CloseSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for CloseSessionRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (deleteSubscriptions)
-		deleteSubscriptions := bool(m.GetDeleteSubscriptions())
-		_deleteSubscriptionsErr := writeBuffer.WriteBit("deleteSubscriptions", (deleteSubscriptions))
-		if _deleteSubscriptionsErr != nil {
-			return errors.Wrap(_deleteSubscriptionsErr, "Error serializing 'deleteSubscriptions' field")
+		if err := WriteSimpleField[bool](ctx, "deleteSubscriptions", m.GetDeleteSubscriptions(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteSubscriptions' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CloseSessionRequest"); popErr != nil {
@@ -267,12 +214,10 @@ func (m *_CloseSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CloseSessionRequest) isCloseSessionRequest() bool {
-	return true
-}
+func (m *_CloseSessionRequest) IsCloseSessionRequest() {}
 
 func (m *_CloseSessionRequest) String() string {
 	if m == nil {

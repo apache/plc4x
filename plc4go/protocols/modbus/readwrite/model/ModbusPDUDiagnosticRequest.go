@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ModbusPDUDiagnosticRequest interface {
 	GetSubFunction() uint16
 	// GetData returns Data (property field)
 	GetData() uint16
-}
-
-// ModbusPDUDiagnosticRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUDiagnosticRequest.
-// This is useful for switch cases.
-type ModbusPDUDiagnosticRequestExactly interface {
-	ModbusPDUDiagnosticRequest
-	isModbusPDUDiagnosticRequest() bool
+	// IsModbusPDUDiagnosticRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUDiagnosticRequest()
 }
 
 // _ModbusPDUDiagnosticRequest is the data-structure of this message
 type _ModbusPDUDiagnosticRequest struct {
-	*_ModbusPDU
+	ModbusPDUContract
 	SubFunction uint16
 	Data        uint16
 }
+
+var _ ModbusPDUDiagnosticRequest = (*_ModbusPDUDiagnosticRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUDiagnosticRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,10 +79,8 @@ func (m *_ModbusPDUDiagnosticRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUDiagnosticRequest) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUDiagnosticRequest) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUDiagnosticRequest) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,11 +104,11 @@ func (m *_ModbusPDUDiagnosticRequest) GetData() uint16 {
 // NewModbusPDUDiagnosticRequest factory function for _ModbusPDUDiagnosticRequest
 func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *_ModbusPDUDiagnosticRequest {
 	_result := &_ModbusPDUDiagnosticRequest{
-		SubFunction: subFunction,
-		Data:        data,
-		_ModbusPDU:  NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
+		SubFunction:       subFunction,
+		Data:              data,
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -130,7 +128,7 @@ func (m *_ModbusPDUDiagnosticRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUDiagnosticRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (subFunction)
 	lengthInBits += 16
@@ -145,47 +143,34 @@ func (m *_ModbusPDUDiagnosticRequest) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUDiagnosticRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUDiagnosticRequest, error) {
-	return ModbusPDUDiagnosticRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUDiagnosticRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUDiagnosticRequest, error) {
+func (m *_ModbusPDUDiagnosticRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUDiagnosticRequest ModbusPDUDiagnosticRequest, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUDiagnosticRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUDiagnosticRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subFunction)
-	_subFunction, _subFunctionErr := readBuffer.ReadUint16("subFunction", 16)
-	if _subFunctionErr != nil {
-		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field of ModbusPDUDiagnosticRequest")
+	subFunction, err := ReadSimpleField(ctx, "subFunction", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subFunction' field"))
 	}
-	subFunction := _subFunction
+	m.SubFunction = subFunction
 
-	// Simple Field (data)
-	_data, _dataErr := readBuffer.ReadUint16("data", 16)
-	if _dataErr != nil {
-		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of ModbusPDUDiagnosticRequest")
+	data, err := ReadSimpleField(ctx, "data", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	data := _data
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUDiagnosticRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUDiagnosticRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUDiagnosticRequest{
-		_ModbusPDU:  &_ModbusPDU{},
-		SubFunction: subFunction,
-		Data:        data,
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUDiagnosticRequest) Serialize() ([]byte, error) {
@@ -206,18 +191,12 @@ func (m *_ModbusPDUDiagnosticRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUDiagnosticRequest")
 		}
 
-		// Simple Field (subFunction)
-		subFunction := uint16(m.GetSubFunction())
-		_subFunctionErr := writeBuffer.WriteUint16("subFunction", 16, uint16((subFunction)))
-		if _subFunctionErr != nil {
-			return errors.Wrap(_subFunctionErr, "Error serializing 'subFunction' field")
+		if err := WriteSimpleField[uint16](ctx, "subFunction", m.GetSubFunction(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subFunction' field")
 		}
 
-		// Simple Field (data)
-		data := uint16(m.GetData())
-		_dataErr := writeBuffer.WriteUint16("data", 16, uint16((data)))
-		if _dataErr != nil {
-			return errors.Wrap(_dataErr, "Error serializing 'data' field")
+		if err := WriteSimpleField[uint16](ctx, "data", m.GetData(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUDiagnosticRequest"); popErr != nil {
@@ -225,12 +204,10 @@ func (m *_ModbusPDUDiagnosticRequest) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUDiagnosticRequest) isModbusPDUDiagnosticRequest() bool {
-	return true
-}
+func (m *_ModbusPDUDiagnosticRequest) IsModbusPDUDiagnosticRequest() {}
 
 func (m *_ModbusPDUDiagnosticRequest) String() string {
 	if m == nil {

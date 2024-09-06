@@ -75,13 +75,13 @@ public class BACnetAuthenticationPolicyList implements Message {
     writeBuffer.pushContext("BACnetAuthenticationPolicyList");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (entries)
     writeComplexTypeArrayField("entries", entries, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationPolicyList");
   }
@@ -122,13 +122,13 @@ public class BACnetAuthenticationPolicyList implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetAuthenticationPolicyListEntry> entries =
         readTerminatedArrayField(
             "entries",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAuthenticationPolicyListEntry.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
@@ -138,7 +138,7 @@ public class BACnetAuthenticationPolicyList implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetAuthenticationPolicyList");

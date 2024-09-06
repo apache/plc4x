@@ -83,7 +83,7 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataCredentialStatus");
 
     // Simple Field (binaryPv)
-    writeSimpleField("binaryPv", binaryPv, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("binaryPv", binaryPv, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetBinaryPVTagged actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
     BACnetBinaryPVTagged binaryPv =
         readSimpleField(
             "binaryPv",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

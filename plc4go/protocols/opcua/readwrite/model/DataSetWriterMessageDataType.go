@@ -37,19 +37,17 @@ type DataSetWriterMessageDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// DataSetWriterMessageDataTypeExactly can be used when we want exactly this type and not a type which fulfills DataSetWriterMessageDataType.
-// This is useful for switch cases.
-type DataSetWriterMessageDataTypeExactly interface {
-	DataSetWriterMessageDataType
-	isDataSetWriterMessageDataType() bool
+	// IsDataSetWriterMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSetWriterMessageDataType()
 }
 
 // _DataSetWriterMessageDataType is the data-structure of this message
 type _DataSetWriterMessageDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ DataSetWriterMessageDataType = (*_DataSetWriterMessageDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DataSetWriterMessageDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_DataSetWriterMessageDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DataSetWriterMessageDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_DataSetWriterMessageDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_DataSetWriterMessageDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewDataSetWriterMessageDataType factory function for _DataSetWriterMessageDataType
 func NewDataSetWriterMessageDataType() *_DataSetWriterMessageDataType {
 	_result := &_DataSetWriterMessageDataType{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_DataSetWriterMessageDataType) GetTypeName() string {
 }
 
 func (m *_DataSetWriterMessageDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_DataSetWriterMessageDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DataSetWriterMessageDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (DataSetWriterMessageDataType, error) {
-	return DataSetWriterMessageDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func DataSetWriterMessageDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataSetWriterMessageDataType, error) {
+func (m *_DataSetWriterMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetWriterMessageDataType DataSetWriterMessageDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DataSetWriterMessageDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DataSetWriterMessageDataType")
 	}
@@ -124,12 +116,7 @@ func DataSetWriterMessageDataTypeParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for DataSetWriterMessageDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DataSetWriterMessageDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DataSetWriterMessageDataType) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_DataSetWriterMessageDataType) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DataSetWriterMessageDataType) isDataSetWriterMessageDataType() bool {
-	return true
-}
+func (m *_DataSetWriterMessageDataType) IsDataSetWriterMessageDataType() {}
 
 func (m *_DataSetWriterMessageDataType) String() string {
 	if m == nil {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,21 +45,19 @@ type BACnetConstructedDataValueSourceArray interface {
 	GetVtClassesSupported() []BACnetValueSource
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-}
-
-// BACnetConstructedDataValueSourceArrayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataValueSourceArray.
-// This is useful for switch cases.
-type BACnetConstructedDataValueSourceArrayExactly interface {
-	BACnetConstructedDataValueSourceArray
-	isBACnetConstructedDataValueSourceArray() bool
+	// IsBACnetConstructedDataValueSourceArray is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataValueSourceArray()
 }
 
 // _BACnetConstructedDataValueSourceArray is the data-structure of this message
 type _BACnetConstructedDataValueSourceArray struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	VtClassesSupported   []BACnetValueSource
 }
+
+var _ BACnetConstructedDataValueSourceArray = (*_BACnetConstructedDataValueSourceArray)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSourceArray)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +77,8 @@ func (m *_BACnetConstructedDataValueSourceArray) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataValueSourceArray) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataValueSourceArray) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataValueSourceArray) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,7 +106,7 @@ func (m *_BACnetConstructedDataValueSourceArray) GetVtClassesSupported() []BACne
 func (m *_BACnetConstructedDataValueSourceArray) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -126,11 +119,11 @@ func (m *_BACnetConstructedDataValueSourceArray) GetZero() uint64 {
 // NewBACnetConstructedDataValueSourceArray factory function for _BACnetConstructedDataValueSourceArray
 func NewBACnetConstructedDataValueSourceArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, vtClassesSupported []BACnetValueSource, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSourceArray {
 	_result := &_BACnetConstructedDataValueSourceArray{
-		NumberOfDataElements:   numberOfDataElements,
-		VtClassesSupported:     vtClassesSupported,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		VtClassesSupported:            vtClassesSupported,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -150,7 +143,7 @@ func (m *_BACnetConstructedDataValueSourceArray) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataValueSourceArray) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -173,87 +166,49 @@ func (m *_BACnetConstructedDataValueSourceArray) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataValueSourceArrayParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSourceArray, error) {
-	return BACnetConstructedDataValueSourceArrayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataValueSourceArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSourceArray, error) {
+func (m *_BACnetConstructedDataValueSourceArray) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataValueSourceArray BACnetConstructedDataValueSourceArray, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSourceArray"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValueSourceArray")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 	_ = zero
 
-	// Optional Field (numberOfDataElements) (Can be skipped, if a given expression evaluates to false)
-	var numberOfDataElements BACnetApplicationTagUnsignedInteger = nil
-	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
-		}
-		_val, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataValueSourceArray")
-		default:
-			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
-			}
-		}
+	var numberOfDataElements BACnetApplicationTagUnsignedInteger
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
+	}
+	if _numberOfDataElements != nil {
+		numberOfDataElements = *_numberOfDataElements
+		m.NumberOfDataElements = numberOfDataElements
 	}
 
-	// Array field (vtClassesSupported)
-	if pullErr := readBuffer.PullContext("vtClassesSupported", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vtClassesSupported")
+	vtClassesSupported, err := ReadTerminatedArrayField[BACnetValueSource](ctx, "vtClassesSupported", ReadComplex[BACnetValueSource](BACnetValueSourceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vtClassesSupported' field"))
 	}
-	// Terminated array
-	var vtClassesSupported []BACnetValueSource
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetValueSourceParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'vtClassesSupported' field of BACnetConstructedDataValueSourceArray")
-			}
-			vtClassesSupported = append(vtClassesSupported, _item.(BACnetValueSource))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("vtClassesSupported", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vtClassesSupported")
-	}
+	m.VtClassesSupported = vtClassesSupported
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(vtClassesSupported)) == (16)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"vtClassesSupported should have exactly 16 values"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "vtClassesSupported should have exactly 16 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSourceArray"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSourceArray")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataValueSourceArray{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NumberOfDataElements: numberOfDataElements,
-		VtClassesSupported:   vtClassesSupported,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataValueSourceArray) Serialize() ([]byte, error) {
@@ -280,37 +235,12 @@ func (m *_BACnetConstructedDataValueSourceArray) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		// Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-		var numberOfDataElements BACnetApplicationTagUnsignedInteger = nil
-		if m.GetNumberOfDataElements() != nil {
-			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
-			}
-			numberOfDataElements = m.GetNumberOfDataElements()
-			_numberOfDataElementsErr := writeBuffer.WriteSerializable(ctx, numberOfDataElements)
-			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
-			}
-			if _numberOfDataElementsErr != nil {
-				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
-			}
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 
-		// Array Field (vtClassesSupported)
-		if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
-		}
-		for _curItem, _element := range m.GetVtClassesSupported() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetVtClassesSupported()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'vtClassesSupported' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vtClassesSupported")
+		if err := WriteComplexTypeArrayField(ctx, "vtClassesSupported", m.GetVtClassesSupported(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'vtClassesSupported' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueSourceArray"); popErr != nil {
@@ -318,12 +248,10 @@ func (m *_BACnetConstructedDataValueSourceArray) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataValueSourceArray) isBACnetConstructedDataValueSourceArray() bool {
-	return true
-}
+func (m *_BACnetConstructedDataValueSourceArray) IsBACnetConstructedDataValueSourceArray() {}
 
 func (m *_BACnetConstructedDataValueSourceArray) String() string {
 	if m == nil {

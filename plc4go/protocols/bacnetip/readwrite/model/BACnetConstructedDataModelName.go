@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataModelName interface {
 	GetModelName() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataModelNameExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataModelName.
-// This is useful for switch cases.
-type BACnetConstructedDataModelNameExactly interface {
-	BACnetConstructedDataModelName
-	isBACnetConstructedDataModelName() bool
+	// IsBACnetConstructedDataModelName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataModelName()
 }
 
 // _BACnetConstructedDataModelName is the data-structure of this message
 type _BACnetConstructedDataModelName struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ModelName BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataModelName = (*_BACnetConstructedDataModelName)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataModelName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataModelName) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataModelName) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataModelName) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataModelName) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataModelName) GetActualValue() BACnetApplicationTagC
 
 // NewBACnetConstructedDataModelName factory function for _BACnetConstructedDataModelName
 func NewBACnetConstructedDataModelName(modelName BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataModelName {
-	_result := &_BACnetConstructedDataModelName{
-		ModelName:              modelName,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if modelName == nil {
+		panic("modelName of type BACnetApplicationTagCharacterString for BACnetConstructedDataModelName must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataModelName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ModelName:                     modelName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataModelName) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataModelName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (modelName)
 	lengthInBits += m.ModelName.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataModelName) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataModelNameParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataModelName, error) {
-	return BACnetConstructedDataModelNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataModelNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataModelName, error) {
+func (m *_BACnetConstructedDataModelName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataModelName BACnetConstructedDataModelName, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataModelName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataModelName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (modelName)
-	if pullErr := readBuffer.PullContext("modelName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for modelName")
+	modelName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "modelName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modelName' field"))
 	}
-	_modelName, _modelNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _modelNameErr != nil {
-		return nil, errors.Wrap(_modelNameErr, "Error parsing 'modelName' field of BACnetConstructedDataModelName")
-	}
-	modelName := _modelName.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("modelName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for modelName")
-	}
+	m.ModelName = modelName
 
-	// Virtual field
-	_actualValue := modelName
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), modelName)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataModelName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataModelName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataModelName{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ModelName: modelName,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataModelName) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataModelName) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataModelName")
 		}
 
-		// Simple Field (modelName)
-		if pushErr := writeBuffer.PushContext("modelName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for modelName")
-		}
-		_modelNameErr := writeBuffer.WriteSerializable(ctx, m.GetModelName())
-		if popErr := writeBuffer.PopContext("modelName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for modelName")
-		}
-		if _modelNameErr != nil {
-			return errors.Wrap(_modelNameErr, "Error serializing 'modelName' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "modelName", m.GetModelName(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'modelName' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataModelName) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataModelName) isBACnetConstructedDataModelName() bool {
-	return true
-}
+func (m *_BACnetConstructedDataModelName) IsBACnetConstructedDataModelName() {}
 
 func (m *_BACnetConstructedDataModelName) String() string {
 	if m == nil {

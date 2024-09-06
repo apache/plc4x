@@ -22,7 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.CaseUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultByteOrderTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultFloatTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
@@ -40,7 +43,9 @@ import java.util.*;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoLanguageTemplateHelper.class);
+
+    private final Map<String, String> options;
 
     // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
 
@@ -48,8 +53,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public final SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
-    public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+    public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+                                    Map<String, String> options) {
         super(thisType, protocolName, flavorName, types);
+        this.options = options;
     }
 
     public String fileName(String protocolName, String languageName, String languageFlavorName) {
@@ -311,64 +318,68 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return isNotAnComplexTypeReference && arrayTypeIsNotAnComplexTypeReference;
     }
 
+    @Deprecated
     public String getSpecialReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, TypedField field) {
-        return getReadBufferReadMethodCall(logicalName, simpleTypeReference, null, field);
+        return "/*TODO: migrate me*/" + getReadBufferReadMethodCall(logicalName, simpleTypeReference, null, field);
     }
 
+    @Deprecated
     public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, TypedField field) {
-        return getReadBufferReadMethodCall(logicalName, simpleTypeReference, null, field);
+        return "/*TODO: migrate me*/" + getReadBufferReadMethodCall(logicalName, simpleTypeReference, null, field);
     }
 
     @Override
+    @Deprecated
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
-        return getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
+        return "/*TODO: migrate me*/" + getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
     }
 
+    @Deprecated
     public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "readBuffer.ReadBit(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBit(\"" + logicalName + "\")";
             case BYTE:
-                return "readBuffer.ReadByte(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadByte(\"" + logicalName + "\")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "readBuffer.ReadUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "readBuffer.ReadUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "readBuffer.ReadUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "readBuffer.ReadUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
                 }
-                return "readBuffer.ReadBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "readBuffer.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "readBuffer.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "readBuffer.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "readBuffer.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "readBuffer.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "readBuffer.ReadFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "readBuffer.ReadFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
                 }
-                return "readBuffer.ReadBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
             case STRING: {
                 String encoding = "UTF-8";
                 if (field != null) {
@@ -379,7 +390,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), \"" + encoding + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), utils.WithEncoding(\"" + encoding + "\"))";
             }
             case VSTRING: {
                 String encoding = "UTF-8";
@@ -397,41 +408,211 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 } else {
                     lengthExpression = "uint32(" + lengthExpression + ")";
                 }
-                return "readBuffer.ReadString(\"" + logicalName + "\", " + lengthExpression + ", \"" + encoding + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadString(\"" + logicalName + "\", " + lengthExpression + ", utils.WithEncoding(\"" + encoding + "\"))";
             }
             case TIME:
             case DATE:
             case DATETIME:
                 emitRequiredImport("time");
-                return "func() (time.Time, error) {raw, err := readBuffer.ReadUint32(\"" + logicalName + "\", 32);return time.UnixMilli(int64(raw)), err;}()";
+                return "/*TODO: migrate me*/" + "func() (time.Time, error) {raw, err := readBuffer.ReadUint32(\"" + logicalName + "\", 32);return time.UnixMilli(int64(raw)), err;}()";
             default:
                 throw new FreemarkerException("Unsupported base type " + simpleTypeReference.getBaseType());
         }
     }
 
+    public String getDataReaderCall(TypeReference typeReference) {
+        emitDataReaderRequiredImports();
+        return getDataReaderCall(typeReference, "ByValue");
+    }
+
+    public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
+        emitDataReaderRequiredImports();
+        if (typeReference.isEnumTypeReference()) {
+            final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
+            final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
+            return "ReadEnum(" + languageTypeName + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+        } else if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
+            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
+        } else if (typeReference.isSimpleTypeReference()) {
+            SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
+            return getDataReaderCall(simpleTypeReference);
+        } else if (typeReference.isComplexTypeReference()) {
+            StringBuilder paramsString = new StringBuilder();
+            ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
+            ComplexTypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
+            String typeName = getLanguageTypeNameForTypeReference(typeReference);
+            String parserCallString = typeName;
+            // In case of DataIo we actually need to use the type name and not what above returns.
+            // (In this case the mspec type name and the result type name differ)
+            if (typeReference.isDataIoTypeReference()) {
+                parserCallString = typeReference.asDataIoTypeReference().orElseThrow().getName();
+            }
+            if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
+                parserCallString = typeDefinition.getParentType().orElseThrow().getName();
+            }
+            List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
+            for (int i = 0; i < paramTerms.size(); i++) {
+                Term paramTerm = paramTerms.get(i);
+                final TypeReference argumentType = getArgumentType(complexTypeReference, i);
+                paramsString
+                    .append(", (")
+                    .append(getLanguageTypeNameForTypeReference(argumentType))
+                    .append(") (")
+                    .append(toParseExpression(null, argumentType, paramTerm, null))
+                    .append(")");
+            }
+            String paramsStringString = paramsString.toString();
+            if (StringUtils.isNotBlank(paramsStringString) || typeDefinition.isDiscriminatedChildTypeDefinition()) { // In this case we need to spell the function out
+                String genericTypeParam = "";
+                if (typeDefinition.isDiscriminatedParentTypeDefinition() || typeDefinition.isDiscriminatedChildTypeDefinition()) {
+                    genericTypeParam = "[" + typeName + "]";
+                }
+                return "ReadComplex[" + typeName + "](" + parserCallString + "ParseWithBufferProducer" + genericTypeParam + "(" + StringUtils.substring(paramsStringString, 2) + "), readBuffer)";
+            } else {
+                return "ReadComplex[" + typeName + "](" + parserCallString + "ParseWithBuffer, readBuffer)";
+            }
+        } else {
+            throw new IllegalStateException("What is this type? " + typeReference);
+        }
+    }
+
+    public String getDataReaderCall(SimpleTypeReference simpleTypeReference) {
+        emitDataReaderRequiredImports();
+        final int sizeInBits = simpleTypeReference.getSizeInBits();
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return "ReadBoolean(readBuffer)";
+            case BYTE:
+                return "ReadByte(readBuffer, " + sizeInBits + ")";
+            case UINT:
+                if (sizeInBits <= 8) return "ReadUnsignedByte(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 16) return "ReadUnsignedShort(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 32) return "ReadUnsignedInt(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 64) return "ReadUnsignedLong(readBuffer, uint8(" + sizeInBits + "))";
+                return "ReadUnsignedBigInteger(readBuffer, uint8(" + sizeInBits + "))";
+            case INT:
+                if (sizeInBits <= 8) return "ReadSignedByte(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 16) return "ReadSignedShort(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 32) return "ReadSignedInt(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 64) return "ReadSignedLong(readBuffer, uint8(" + sizeInBits + "))";
+                return "ReadSignedBigInteger(readBuffer, uint8(" + sizeInBits + "))";
+            case FLOAT:
+                if (sizeInBits <= 32) return "ReadFloat(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 64) return "ReadDouble(readBuffer, uint8(" + sizeInBits + "))";
+                return "ReadBigDecimal(readBuffer, uint8(" + sizeInBits + "))";
+            case STRING:
+                return "ReadString(readBuffer, uint32(" + sizeInBits + "))";
+            case VSTRING:
+                VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
+                return "ReadString(readBuffer, uint32(" + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + "))";
+            case TIME:
+                return "ReadTime(readBuffer)";
+            case DATE:
+                return "ReadDate(readBuffer)";
+            case DATETIME:
+                return "ReadDateTime(readBuffer)";
+            default:
+                throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
+        }
+    }
+
+    public String getDataWriterCall(TypeReference typeReference, String fieldName) {
+        emitDataReaderRequiredImports();
+        if (typeReference.isSimpleTypeReference()) {
+            SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
+            return getDataWriterCall(simpleTypeReference);
+        } else if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
+            return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
+        } else if (typeReference.isComplexTypeReference()) {
+            return "WriteComplex[" + getLanguageTypeNameForTypeReference(typeReference) + "](writeBuffer)";
+        } else {
+            throw new IllegalStateException("What is this type? " + typeReference);
+        }
+    }
+
+    public String getEnumDataWriterCall(EnumTypeReference typeReference, String fieldName, String attributeName) {
+        emitDataReaderRequiredImports();
+        if (!typeReference.isEnumTypeReference()) {
+            throw new IllegalArgumentException("this method should only be called for enum types");
+        }
+        final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
+        SimpleTypeReference outputTypeReference;
+        if ("value".equals(attributeName)) {
+            outputTypeReference = getEnumBaseTypeReference(typeReference);
+        } else {
+            outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
+        }
+        return "WriteEnum[" + languageTypeName + "," + getLanguageTypeNameForTypeReference(outputTypeReference) + "](" + languageTypeName + ".Get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + ".PLC4XEnumName, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+    }
+
+    public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {
+        emitDataReaderRequiredImports();
+        final int sizeInBits = simpleTypeReference.getSizeInBits();
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return "WriteBoolean(writeBuffer)";
+            case BYTE:
+                return "WriteByte(writeBuffer, " + sizeInBits + ")";
+            case UINT:
+                if (sizeInBits <= 8) return "WriteUnsignedByte(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "WriteUnsignedShort(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "WriteUnsignedInt(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "WriteUnsignedLong(writeBuffer, " + sizeInBits + ")";
+                return "WriteUnsignedBigInteger(writeBuffer, " + sizeInBits + ")";
+            case INT:
+                if (sizeInBits <= 8) return "WriteSignedByte(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "WriteSignedShort(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "WriteSignedInt(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "WriteSignedLong(writeBuffer, " + sizeInBits + ")";
+                return "WriteSignedBigInteger(writeBuffer, " + sizeInBits + ")";
+            case FLOAT:
+                if (sizeInBits <= 32) return "WriteFloat(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "WriteDouble(writeBuffer, " + sizeInBits + ")";
+                return "WriteBigDecimal(writeBuffer, " + sizeInBits + ")";
+            case STRING:
+                return "WriteString(writeBuffer, " + sizeInBits + ")";
+            case VSTRING:
+                VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
+                return "WriteString(writeBuffer, int32(" + toSerializationExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + "))";
+            case TIME:
+                return "WriteTime(writeBuffer)";
+            case DATE:
+                return "WriteDate(writeBuffer)";
+            case DATETIME:
+                return "WriteDateTime(writeBuffer)";
+            default:
+                throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
+        }
+    }
+
     @Override
+    @Deprecated
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         // Fallback if somewhere the method gets called without a name
         String logicalName = fieldName.replaceAll("[\"()*]", "").replaceFirst("_", "");
-        return getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, fieldName, field);
+        return "/*TODO: migrate me*/" + getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, fieldName, field);
     }
 
+    @Deprecated
     public String getWriteBufferWriteMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, Term valueTerm, TypedField field, String... writerArgs) {
         if (valueTerm instanceof BooleanLiteral) {
-            return getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, Boolean.toString(((BooleanLiteral) valueTerm).getValue()), field, writerArgs);
+            return "/*TODO: migrate me*/" + getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, Boolean.toString(((BooleanLiteral) valueTerm).getValue()), field, writerArgs);
         }
         if (valueTerm instanceof NumericLiteral) {
-            return getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, ((NumericLiteral) valueTerm).getNumber().toString(), field, writerArgs);
+            return "/*TODO: migrate me*/" + getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, ((NumericLiteral) valueTerm).getNumber().toString(), field, writerArgs);
         }
         if (valueTerm instanceof HexadecimalLiteral) {
-            return getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, ((HexadecimalLiteral) valueTerm).getHexString(), field, writerArgs);
+            return "/*TODO: migrate me*/" + getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, ((HexadecimalLiteral) valueTerm).getHexString(), field, writerArgs);
         }
         if (valueTerm instanceof StringLiteral) {
-            return getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, "\"" + ((StringLiteral) valueTerm).getValue() + "\"", field, writerArgs);
+            return "/*TODO: migrate me*/" + getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, "\"" + ((StringLiteral) valueTerm).getValue() + "\"", field, writerArgs);
         }
         throw new FreemarkerException("Outputting " + valueTerm.toString() + " not implemented yet. Please continue defining other types in the GoLanguageHelper.getWriteBufferWriteMethodCall.");
     }
 
+    @Deprecated
     public String getWriteBufferWriteMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String fieldName, TypedField field, String... writerArgs) {
         String writerArgsString = "";
         if (writerArgs.length > 0) {
@@ -439,49 +620,49 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "writeBuffer.WriteBit(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteBit(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
             case BYTE:
-                return "writeBuffer.WriteByte(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteByte(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "writeBuffer.WriteUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint8(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint8(" + fieldName + ")" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "writeBuffer.WriteUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint16(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint16(" + fieldName + ")" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint32(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint32(" + fieldName + ")" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint64(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint64(" + fieldName + ")" + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int8(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int8(" + fieldName + ")" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int16(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int16(" + fieldName + ")" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int32(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int32(" + fieldName + ")" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int64(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int64(" + fieldName + ")" + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 String encoding = "UTF-8";
@@ -493,8 +674,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), \"" +
-                    encoding + "\", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), " + fieldName + writerArgsString + ", utils.WithEncoding(\"" + encoding + ")\"))";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
@@ -513,13 +693,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     lengthExpression = "uint32(" + lengthExpression + ")";
                 }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", " + lengthExpression + ", \"" +
-                    encoding + "\", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteString(\"" + logicalName + "\", " + lengthExpression + ", " + fieldName + writerArgsString + ", utils.WithEncoding(\"" + encoding + ")\"))";
             }
             case DATE:
             case TIME:
             case DATETIME:
-                return "writeBuffer.WriteUint32(\"" + logicalName + "\", uint32(" + fieldName + ")" + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteUint32(\"" + logicalName + "\", uint32(" + fieldName + ")" + writerArgsString + ")";
             default:
                 throw new FreemarkerException("Unsupported base type " + simpleTypeReference.getBaseType());
         }
@@ -921,7 +1100,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if ((serializerArguments != null) && serializerArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("serialization argument");
-            return tracer + "m." + capitalize(variableLiteralName) +
+            return tracer + "m.Get" + capitalize(variableLiteralName) +"()"+
                 variableLiteral.getChild()
                     .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
@@ -1295,6 +1474,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return new ArrayList<>(switchCases.values());
     }
 
+    public void emitRequiredImportRaw(String requiredImport) {
+        LOGGER.debug("emitting import '{}'", requiredImport);
+        requiredImports.add(requiredImport);
+    }
+
     public void emitRequiredImport(String requiredImport) {
         LOGGER.debug("emitting import '\"{}\"'", requiredImport);
         requiredImports.add('"' + requiredImport + '"');
@@ -1307,6 +1491,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public Set<String> getRequiredImports() {
         return requiredImports;
+    }
+
+    public void emitDataReaderRequiredImports() {
+        requiredImports.add(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"");
+        requiredImports.add(". \"github.com/apache/plc4x/plc4go/spi/codegen/io\"");
+    }
+
+    public void emitCodegenRequiredImports() {
+        requiredImports.add("\"github.com/apache/plc4x/plc4go/spi/codegen\"");
     }
 
     public void emitDataIoRequiredImport(String requiredImport) {
@@ -1634,6 +1827,62 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         }
         return "";
+    }
+
+    public String getFieldOptions(TypedField field, List<Argument> parserArguments) {
+        StringBuilder sb = new StringBuilder();
+        field.getEncoding().ifPresent(term -> {
+            emitCodegenRequiredImports();
+            final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
+            sb.append(", codegen.WithEncoding(").append(encoding).append(")");
+        });
+
+        field.getByteOrder().ifPresent(term -> {
+            emitCodegenRequiredImports();
+            emitRequiredImport("encoding/binary");
+            String byteOrder = "binary.BigEndian";
+            switch (term.stringRepresentation()) {
+                case "BIG_ENDIAN":
+                    byteOrder = "binary.BigEndian";
+                    break;
+                case "LITTLE_ENDIAN":
+                    byteOrder = "binary.LittleEndian";
+                    break;
+                default:
+                    throw new RuntimeException("unmapped bytes order " + term.stringRepresentation());
+            }
+            sb.append(", codegen.WithByteOrder(").append(byteOrder).append(")");
+        });
+
+        field.getAttribute("nullBytesHex").ifPresent(term -> {
+            emitCodegenRequiredImports();
+            final String nullBytesHex = toParseExpression(field, field.getType(), term, parserArguments);
+            sb.append(", codegen.WithNullBytesHex(\"").append(nullBytesHex).append("\")");
+        });
+        return sb.toString();
+    }
+
+    public boolean isBigIntegerSource(Term term) {
+        boolean isBigInteger = term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .flatMap(VariableLiteral::getChild)
+            .map(Term.class::cast)
+            .map(this::isBigIntegerSource)
+            .orElse(false);
+        return isBigInteger || term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .map(VariableLiteral::getTypeReference)
+            .flatMap(TypeReferenceConversions::asIntegerTypeReference)
+            .map(integerTypeReference -> integerTypeReference.getSizeInBits() >= 64)
+            .orElse(false);
+    }
+
+    public boolean isGeneratePropertiesForParserArguments() {
+        return options.getOrDefault("generate-properties-for-parser-arguments", "false").equals("true");
+    }
+
+    public boolean isGeneratePropertiesForReservedFields() {
+        return options.getOrDefault("generate-properties-for-reserved-fields", "false").equals("true");
     }
 
 }

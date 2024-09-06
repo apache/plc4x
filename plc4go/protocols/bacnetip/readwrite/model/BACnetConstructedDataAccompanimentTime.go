@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAccompanimentTime interface {
 	GetAccompanimentTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataAccompanimentTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccompanimentTime.
-// This is useful for switch cases.
-type BACnetConstructedDataAccompanimentTimeExactly interface {
-	BACnetConstructedDataAccompanimentTime
-	isBACnetConstructedDataAccompanimentTime() bool
+	// IsBACnetConstructedDataAccompanimentTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccompanimentTime()
 }
 
 // _BACnetConstructedDataAccompanimentTime is the data-structure of this message
 type _BACnetConstructedDataAccompanimentTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AccompanimentTime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataAccompanimentTime = (*_BACnetConstructedDataAccompanimentTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccompanimentTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAccompanimentTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAccompanimentTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAccompanimentTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataAccompanimentTime factory function for _BACnetConstructedDataAccompanimentTime
 func NewBACnetConstructedDataAccompanimentTime(accompanimentTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompanimentTime {
-	_result := &_BACnetConstructedDataAccompanimentTime{
-		AccompanimentTime:      accompanimentTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if accompanimentTime == nil {
+		panic("accompanimentTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccompanimentTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAccompanimentTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccompanimentTime:             accompanimentTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (accompanimentTime)
 	lengthInBits += m.AccompanimentTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAccompanimentTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
-	return BACnetConstructedDataAccompanimentTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAccompanimentTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
+func (m *_BACnetConstructedDataAccompanimentTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAccompanimentTime BACnetConstructedDataAccompanimentTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccompanimentTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccompanimentTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accompanimentTime)
-	if pullErr := readBuffer.PullContext("accompanimentTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accompanimentTime")
+	accompanimentTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accompanimentTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accompanimentTime' field"))
 	}
-	_accompanimentTime, _accompanimentTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _accompanimentTimeErr != nil {
-		return nil, errors.Wrap(_accompanimentTimeErr, "Error parsing 'accompanimentTime' field of BACnetConstructedDataAccompanimentTime")
-	}
-	accompanimentTime := _accompanimentTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("accompanimentTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accompanimentTime")
-	}
+	m.AccompanimentTime = accompanimentTime
 
-	// Virtual field
-	_actualValue := accompanimentTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), accompanimentTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccompanimentTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccompanimentTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAccompanimentTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AccompanimentTime: accompanimentTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAccompanimentTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccompanimentTime")
 		}
 
-		// Simple Field (accompanimentTime)
-		if pushErr := writeBuffer.PushContext("accompanimentTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accompanimentTime")
-		}
-		_accompanimentTimeErr := writeBuffer.WriteSerializable(ctx, m.GetAccompanimentTime())
-		if popErr := writeBuffer.PopContext("accompanimentTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accompanimentTime")
-		}
-		if _accompanimentTimeErr != nil {
-			return errors.Wrap(_accompanimentTimeErr, "Error serializing 'accompanimentTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accompanimentTime", m.GetAccompanimentTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accompanimentTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAccompanimentTime) isBACnetConstructedDataAccompanimentTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAccompanimentTime) IsBACnetConstructedDataAccompanimentTime() {}
 
 func (m *_BACnetConstructedDataAccompanimentTime) String() string {
 	if m == nil {

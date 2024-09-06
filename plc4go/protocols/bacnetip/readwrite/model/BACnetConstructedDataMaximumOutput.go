@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataMaximumOutput interface {
 	GetMaximumOutput() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataMaximumOutputExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaximumOutput.
-// This is useful for switch cases.
-type BACnetConstructedDataMaximumOutputExactly interface {
-	BACnetConstructedDataMaximumOutput
-	isBACnetConstructedDataMaximumOutput() bool
+	// IsBACnetConstructedDataMaximumOutput is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMaximumOutput()
 }
 
 // _BACnetConstructedDataMaximumOutput is the data-structure of this message
 type _BACnetConstructedDataMaximumOutput struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MaximumOutput BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataMaximumOutput = (*_BACnetConstructedDataMaximumOutput)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumOutput)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataMaximumOutput) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMaximumOutput) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMaximumOutput) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMaximumOutput) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataMaximumOutput) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataMaximumOutput factory function for _BACnetConstructedDataMaximumOutput
 func NewBACnetConstructedDataMaximumOutput(maximumOutput BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumOutput {
-	_result := &_BACnetConstructedDataMaximumOutput{
-		MaximumOutput:          maximumOutput,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if maximumOutput == nil {
+		panic("maximumOutput of type BACnetApplicationTagReal for BACnetConstructedDataMaximumOutput must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataMaximumOutput{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaximumOutput:                 maximumOutput,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataMaximumOutput) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maximumOutput)
 	lengthInBits += m.MaximumOutput.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMaximumOutputParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumOutput, error) {
-	return BACnetConstructedDataMaximumOutputParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMaximumOutputParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumOutput, error) {
+func (m *_BACnetConstructedDataMaximumOutput) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMaximumOutput BACnetConstructedDataMaximumOutput, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaximumOutput"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMaximumOutput")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maximumOutput)
-	if pullErr := readBuffer.PullContext("maximumOutput"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maximumOutput")
+	maximumOutput, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "maximumOutput", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maximumOutput' field"))
 	}
-	_maximumOutput, _maximumOutputErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maximumOutputErr != nil {
-		return nil, errors.Wrap(_maximumOutputErr, "Error parsing 'maximumOutput' field of BACnetConstructedDataMaximumOutput")
-	}
-	maximumOutput := _maximumOutput.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("maximumOutput"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maximumOutput")
-	}
+	m.MaximumOutput = maximumOutput
 
-	// Virtual field
-	_actualValue := maximumOutput
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), maximumOutput)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaximumOutput"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaximumOutput")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMaximumOutput{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MaximumOutput: maximumOutput,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMaximumOutput) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataMaximumOutput) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaximumOutput")
 		}
 
-		// Simple Field (maximumOutput)
-		if pushErr := writeBuffer.PushContext("maximumOutput"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maximumOutput")
-		}
-		_maximumOutputErr := writeBuffer.WriteSerializable(ctx, m.GetMaximumOutput())
-		if popErr := writeBuffer.PopContext("maximumOutput"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maximumOutput")
-		}
-		if _maximumOutputErr != nil {
-			return errors.Wrap(_maximumOutputErr, "Error serializing 'maximumOutput' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "maximumOutput", m.GetMaximumOutput(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maximumOutput' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataMaximumOutput) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMaximumOutput) isBACnetConstructedDataMaximumOutput() bool {
-	return true
-}
+func (m *_BACnetConstructedDataMaximumOutput) IsBACnetConstructedDataMaximumOutput() {}
 
 func (m *_BACnetConstructedDataMaximumOutput) String() string {
 	if m == nil {

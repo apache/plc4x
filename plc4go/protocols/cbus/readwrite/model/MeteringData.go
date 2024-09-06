@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,51 +35,45 @@ import (
 
 // MeteringData is the corresponding interface of MeteringData
 type MeteringData interface {
+	MeteringDataContract
+	MeteringDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsMeteringData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringData()
+}
+
+// MeteringDataContract provides a set of functions which can be overwritten by a sub struct
+type MeteringDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MeteringCommandTypeContainer
 	// GetArgument returns Argument (property field)
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() MeteringCommandType
+	// IsMeteringData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringData()
 }
 
-// MeteringDataExactly can be used when we want exactly this type and not a type which fulfills MeteringData.
-// This is useful for switch cases.
-type MeteringDataExactly interface {
-	MeteringData
-	isMeteringData() bool
+// MeteringDataRequirements provides a set of functions which need to be implemented by a sub struct
+type MeteringDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetArgument returns Argument (discriminator field)
+	GetArgument() byte
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() MeteringCommandType
 }
 
 // _MeteringData is the data-structure of this message
 type _MeteringData struct {
-	_MeteringDataChildRequirements
+	_SubType             MeteringData
 	CommandTypeContainer MeteringCommandTypeContainer
 	Argument             byte
 }
 
-type _MeteringDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetArgument() byte
-	GetCommandType() MeteringCommandType
-}
-
-type MeteringDataParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MeteringData, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type MeteringDataChild interface {
-	utils.Serializable
-	InitializeParent(parent MeteringData, commandTypeContainer MeteringCommandTypeContainer, argument byte)
-	GetParent() *MeteringData
-
-	GetTypeName() string
-	MeteringData
-}
+var _ MeteringDataContract = (*_MeteringData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,7 +97,8 @@ func (m *_MeteringData) GetArgument() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_MeteringData) GetCommandType() MeteringCommandType {
+func (pm *_MeteringData) GetCommandType() MeteringCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastMeteringCommandType(m.GetCommandTypeContainer().CommandType())
@@ -132,7 +129,7 @@ func (m *_MeteringData) GetTypeName() string {
 	return "MeteringData"
 }
 
-func (m *_MeteringData) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_MeteringData) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -147,18 +144,36 @@ func (m *_MeteringData) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_MeteringData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataParse(ctx context.Context, theBytes []byte) (MeteringData, error) {
-	return MeteringDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func MeteringDataParse[T MeteringData](ctx context.Context, theBytes []byte) (T, error) {
+	return MeteringDataParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeteringDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringData, error) {
+func MeteringDataParseWithBufferProducer[T MeteringData]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := MeteringDataParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func MeteringDataParseWithBuffer[T MeteringData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_MeteringData{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_MeteringData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__meteringData MeteringData, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeteringData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeteringData")
 	}
@@ -167,82 +182,82 @@ func MeteringDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Validation
 	if !(KnowsMeteringCommandTypeContainer(ctx, readBuffer)) {
-		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[MeteringCommandTypeContainer](ctx, "commandTypeContainer", "MeteringCommandTypeContainer", ReadEnum(MeteringCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
-	_commandTypeContainer, _commandTypeContainerErr := MeteringCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of MeteringData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
-	}
+	m.CommandTypeContainer = commandTypeContainer
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := MeteringCommandType(_commandType)
+	commandType, err := ReadVirtualField[MeteringCommandType](ctx, "commandType", (*MeteringCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 	_ = commandType
 
-	// Simple Field (argument)
-	_argument, _argumentErr := readBuffer.ReadByte("argument")
-	if _argumentErr != nil {
-		return nil, errors.Wrap(_argumentErr, "Error parsing 'argument' field of MeteringData")
+	argument, err := ReadSimpleField(ctx, "argument", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'argument' field"))
 	}
-	argument := _argument
+	m.Argument = argument
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type MeteringDataChildSerializeRequirement interface {
-		MeteringData
-		InitializeParent(MeteringData, MeteringCommandTypeContainer, byte)
-		GetParent() MeteringData
-	}
-	var _childTemp any
-	var _child MeteringDataChildSerializeRequirement
-	var typeSwitchError error
+	var _child MeteringData
 	switch {
 	case commandType == MeteringCommandType_EVENT && argument == 0x01: // MeteringDataMeasureElectricity
-		_childTemp, typeSwitchError = MeteringDataMeasureElectricityParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataMeasureElectricity{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureElectricity for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x02: // MeteringDataMeasureGas
-		_childTemp, typeSwitchError = MeteringDataMeasureGasParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataMeasureGas{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureGas for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x03: // MeteringDataMeasureDrinkingWater
-		_childTemp, typeSwitchError = MeteringDataMeasureDrinkingWaterParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataMeasureDrinkingWater{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureDrinkingWater for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x04: // MeteringDataMeasureOtherWater
-		_childTemp, typeSwitchError = MeteringDataMeasureOtherWaterParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataMeasureOtherWater{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureOtherWater for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x05: // MeteringDataMeasureOil
-		_childTemp, typeSwitchError = MeteringDataMeasureOilParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataMeasureOil{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureOil for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x81: // MeteringDataElectricityConsumption
-		_childTemp, typeSwitchError = MeteringDataElectricityConsumptionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataElectricityConsumption{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataElectricityConsumption for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x82: // MeteringDataGasConsumption
-		_childTemp, typeSwitchError = MeteringDataGasConsumptionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataGasConsumption{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataGasConsumption for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x83: // MeteringDataDrinkingWaterConsumption
-		_childTemp, typeSwitchError = MeteringDataDrinkingWaterConsumptionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataDrinkingWaterConsumption{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataDrinkingWaterConsumption for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x84: // MeteringDataOtherWaterConsumption
-		_childTemp, typeSwitchError = MeteringDataOtherWaterConsumptionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataOtherWaterConsumption{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataOtherWaterConsumption for type-switch of MeteringData")
+		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x85: // MeteringDataOilConsumption
-		_childTemp, typeSwitchError = MeteringDataOilConsumptionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_MeteringDataOilConsumption{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataOilConsumption for type-switch of MeteringData")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
+		return nil, errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of MeteringData")
-	}
-	_child = _childTemp.(MeteringDataChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("MeteringData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MeteringData")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, commandTypeContainer, argument)
 	return _child, nil
 }
 
-func (pm *_MeteringData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MeteringData, serializeChildFunction func() error) error {
+func (pm *_MeteringData) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MeteringData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -254,16 +269,8 @@ func (pm *_MeteringData) SerializeParent(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(pushErr, "Error pushing for MeteringData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[MeteringCommandTypeContainer](ctx, "commandTypeContainer", "MeteringCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[MeteringCommandTypeContainer, uint8](MeteringCommandTypeContainer.GetValue, MeteringCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
@@ -272,11 +279,8 @@ func (pm *_MeteringData) SerializeParent(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
-	// Simple Field (argument)
-	argument := byte(m.GetArgument())
-	_argumentErr := writeBuffer.WriteByte("argument", (argument))
-	if _argumentErr != nil {
-		return errors.Wrap(_argumentErr, "Error serializing 'argument' field")
+	if err := WriteSimpleField[byte](ctx, "argument", m.GetArgument(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'argument' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -290,17 +294,4 @@ func (pm *_MeteringData) SerializeParent(ctx context.Context, writeBuffer utils.
 	return nil
 }
 
-func (m *_MeteringData) isMeteringData() bool {
-	return true
-}
-
-func (m *_MeteringData) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_MeteringData) IsMeteringData() {}

@@ -60,7 +60,7 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
     writeBuffer.pushContext("BACnetPropertyStatesLifeSafetyMode");
 
     // Simple Field (lifeSafetyMode)
-    writeSimpleField("lifeSafetyMode", lifeSafetyMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lifeSafetyMode", lifeSafetyMode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLifeSafetyMode");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
     BACnetLifeSafetyModeTagged lifeSafetyMode =
         readSimpleField(
             "lifeSafetyMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyModeTagged.staticParse(
                         readBuffer,

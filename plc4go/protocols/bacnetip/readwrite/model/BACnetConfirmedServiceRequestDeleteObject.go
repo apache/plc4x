@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConfirmedServiceRequestDeleteObject interface {
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
-}
-
-// BACnetConfirmedServiceRequestDeleteObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestDeleteObject.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestDeleteObjectExactly interface {
-	BACnetConfirmedServiceRequestDeleteObject
-	isBACnetConfirmedServiceRequestDeleteObject() bool
+	// IsBACnetConfirmedServiceRequestDeleteObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestDeleteObject()
 }
 
 // _BACnetConfirmedServiceRequestDeleteObject is the data-structure of this message
 type _BACnetConfirmedServiceRequestDeleteObject struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	ObjectIdentifier BACnetApplicationTagObjectIdentifier
 }
+
+var _ BACnetConfirmedServiceRequestDeleteObject = (*_BACnetConfirmedServiceRequestDeleteObject)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestDeleteObject)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,11 +68,8 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetServiceChoice() BACnetCo
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestDeleteObject) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestDeleteObject) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestDeleteObject) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,11 +88,14 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetObjectIdentifier() BACne
 
 // NewBACnetConfirmedServiceRequestDeleteObject factory function for _BACnetConfirmedServiceRequestDeleteObject
 func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeleteObject {
-	_result := &_BACnetConfirmedServiceRequestDeleteObject{
-		ObjectIdentifier:               objectIdentifier,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestDeleteObject must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	_result := &_BACnetConfirmedServiceRequestDeleteObject{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ObjectIdentifier:                      objectIdentifier,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -115,7 +115,7 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -127,47 +127,28 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestDeleteObjectParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeleteObject, error) {
-	return BACnetConfirmedServiceRequestDeleteObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestDeleteObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeleteObject, error) {
+func (m *_BACnetConfirmedServiceRequestDeleteObject) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestDeleteObject BACnetConfirmedServiceRequestDeleteObject, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeleteObject"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestDeleteObject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIdentifier)
-	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
+	objectIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestDeleteObject")
-	}
-	objectIdentifier := _objectIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
-	}
+	m.ObjectIdentifier = objectIdentifier
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestDeleteObject"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestDeleteObject")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestDeleteObject{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		ObjectIdentifier: objectIdentifier,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestDeleteObject) Serialize() ([]byte, error) {
@@ -188,16 +169,8 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestDeleteObject")
 		}
 
-		// Simple Field (objectIdentifier)
-		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
-		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectIdentifier")
-		}
-		if _objectIdentifierErr != nil {
-			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", m.GetObjectIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestDeleteObject"); popErr != nil {
@@ -205,12 +178,10 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestDeleteObject) isBACnetConfirmedServiceRequestDeleteObject() bool {
-	return true
-}
+func (m *_BACnetConfirmedServiceRequestDeleteObject) IsBACnetConfirmedServiceRequestDeleteObject() {}
 
 func (m *_BACnetConfirmedServiceRequestDeleteObject) String() string {
 	if m == nil {

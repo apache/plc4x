@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,19 +43,17 @@ type EipConnectionResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
-}
-
-// EipConnectionResponseExactly can be used when we want exactly this type and not a type which fulfills EipConnectionResponse.
-// This is useful for switch cases.
-type EipConnectionResponseExactly interface {
-	EipConnectionResponse
-	isEipConnectionResponse() bool
+	// IsEipConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEipConnectionResponse()
 }
 
 // _EipConnectionResponse is the data-structure of this message
 type _EipConnectionResponse struct {
-	*_EipPacket
+	EipPacketContract
 }
+
+var _ EipConnectionResponse = (*_EipConnectionResponse)(nil)
+var _ EipPacketRequirements = (*_EipConnectionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -77,15 +77,8 @@ func (m *_EipConnectionResponse) GetPacketLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EipConnectionResponse) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_EipConnectionResponse) GetParent() EipPacket {
-	return m._EipPacket
+func (m *_EipConnectionResponse) GetParent() EipPacketContract {
+	return m.EipPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,9 +102,9 @@ func (m *_EipConnectionResponse) GetFlags() uint16 {
 // NewEipConnectionResponse factory function for _EipConnectionResponse
 func NewEipConnectionResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipConnectionResponse {
 	_result := &_EipConnectionResponse{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	_result._EipPacket._EipPacketChildRequirements = _result
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 
@@ -131,7 +124,7 @@ func (m *_EipConnectionResponse) GetTypeName() string {
 }
 
 func (m *_EipConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	// Const Field (protocolVersion)
 	lengthInBits += 16
@@ -146,49 +139,34 @@ func (m *_EipConnectionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipConnectionResponseParse(ctx context.Context, theBytes []byte, response bool) (EipConnectionResponse, error) {
-	return EipConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func EipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipConnectionResponse, error) {
+func (m *_EipConnectionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__eipConnectionResponse EipConnectionResponse, err error) {
+	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EipConnectionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EipConnectionResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (protocolVersion)
-	protocolVersion, _protocolVersionErr := readBuffer.ReadUint16("protocolVersion", 16)
-	if _protocolVersionErr != nil {
-		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of EipConnectionResponse")
+	protocolVersion, err := ReadConstField[uint16](ctx, "protocolVersion", ReadUnsignedShort(readBuffer, uint8(16)), EipConnectionResponse_PROTOCOLVERSION)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}
-	if protocolVersion != EipConnectionResponse_PROTOCOLVERSION {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", EipConnectionResponse_PROTOCOLVERSION) + " but got " + fmt.Sprintf("%d", protocolVersion))
-	}
+	_ = protocolVersion
 
-	// Const Field (flags)
-	flags, _flagsErr := readBuffer.ReadUint16("flags", 16)
-	if _flagsErr != nil {
-		return nil, errors.Wrap(_flagsErr, "Error parsing 'flags' field of EipConnectionResponse")
+	flags, err := ReadConstField[uint16](ctx, "flags", ReadUnsignedShort(readBuffer, uint8(16)), EipConnectionResponse_FLAGS)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flags' field"))
 	}
-	if flags != EipConnectionResponse_FLAGS {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", EipConnectionResponse_FLAGS) + " but got " + fmt.Sprintf("%d", flags))
-	}
+	_ = flags
 
 	if closeErr := readBuffer.CloseContext("EipConnectionResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EipConnectionResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_EipConnectionResponse{
-		_EipPacket: &_EipPacket{},
-	}
-	_child._EipPacket._EipPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_EipConnectionResponse) Serialize() ([]byte, error) {
@@ -209,16 +187,12 @@ func (m *_EipConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for EipConnectionResponse")
 		}
 
-		// Const Field (protocolVersion)
-		_protocolVersionErr := writeBuffer.WriteUint16("protocolVersion", 16, uint16(0x01))
-		if _protocolVersionErr != nil {
-			return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
+		if err := WriteConstField(ctx, "protocolVersion", EipConnectionResponse_PROTOCOLVERSION, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 		}
 
-		// Const Field (flags)
-		_flagsErr := writeBuffer.WriteUint16("flags", 16, uint16(0x00))
-		if _flagsErr != nil {
-			return errors.Wrap(_flagsErr, "Error serializing 'flags' field")
+		if err := WriteConstField(ctx, "flags", EipConnectionResponse_FLAGS, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'flags' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EipConnectionResponse"); popErr != nil {
@@ -226,12 +200,10 @@ func (m *_EipConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.EipPacketContract.(*_EipPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_EipConnectionResponse) isEipConnectionResponse() bool {
-	return true
-}
+func (m *_EipConnectionResponse) IsEipConnectionResponse() {}
 
 func (m *_EipConnectionResponse) String() string {
 	if m == nil {

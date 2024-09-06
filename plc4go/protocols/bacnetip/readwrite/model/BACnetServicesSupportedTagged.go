@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -60,13 +62,8 @@ type BACnetServicesSupportedTagged interface {
 	GetSubscribeCovProperty() bool
 	// GetGetEventInformation returns GetEventInformation (virtual field)
 	GetGetEventInformation() bool
-}
-
-// BACnetServicesSupportedTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetServicesSupportedTagged.
-// This is useful for switch cases.
-type BACnetServicesSupportedTaggedExactly interface {
-	BACnetServicesSupportedTagged
-	isBACnetServicesSupportedTagged() bool
+	// IsBACnetServicesSupportedTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServicesSupportedTagged()
 }
 
 // _BACnetServicesSupportedTagged is the data-structure of this message
@@ -78,6 +75,8 @@ type _BACnetServicesSupportedTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetServicesSupportedTagged = (*_BACnetServicesSupportedTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -168,6 +167,12 @@ func (m *_BACnetServicesSupportedTagged) GetGetEventInformation() bool {
 
 // NewBACnetServicesSupportedTagged factory function for _BACnetServicesSupportedTagged
 func NewBACnetServicesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetServicesSupportedTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetServicesSupportedTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetServicesSupportedTagged must not be nil")
+	}
 	return &_BACnetServicesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -226,114 +231,116 @@ func BACnetServicesSupportedTaggedParse(ctx context.Context, theBytes []byte, ta
 	return BACnetServicesSupportedTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetServicesSupportedTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServicesSupportedTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServicesSupportedTagged, error) {
+		return BACnetServicesSupportedTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetServicesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetServicesSupportedTagged, error) {
+	v, err := (&_BACnetServicesSupportedTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetServicesSupportedTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetServicesSupportedTagged BACnetServicesSupportedTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServicesSupportedTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServicesSupportedTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetServicesSupportedTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadBitString](ctx, "payload", ReadComplex[BACnetTagPayloadBitString](BACnetTagPayloadBitStringParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetServicesSupportedTagged")
-	}
-	payload := _payload.(BACnetTagPayloadBitString)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
-	}
+	m.Payload = payload
 
-	// Virtual field
-	_writeGroup := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
-	writeGroup := bool(_writeGroup)
+	writeGroup, err := ReadVirtualField[bool](ctx, "writeGroup", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeGroup' field"))
+	}
 	_ = writeGroup
 
-	// Virtual field
-	_subscribeCovPropertyMultiple := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
-	subscribeCovPropertyMultiple := bool(_subscribeCovPropertyMultiple)
+	subscribeCovPropertyMultiple, err := ReadVirtualField[bool](ctx, "subscribeCovPropertyMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscribeCovPropertyMultiple' field"))
+	}
 	_ = subscribeCovPropertyMultiple
 
-	// Virtual field
-	_confirmedCovNotificationMultiple := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
-	confirmedCovNotificationMultiple := bool(_confirmedCovNotificationMultiple)
+	confirmedCovNotificationMultiple, err := ReadVirtualField[bool](ctx, "confirmedCovNotificationMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmedCovNotificationMultiple' field"))
+	}
 	_ = confirmedCovNotificationMultiple
 
-	// Virtual field
-	_unconfirmedCovNotificationMultiple := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool)
-	unconfirmedCovNotificationMultiple := bool(_unconfirmedCovNotificationMultiple)
+	unconfirmedCovNotificationMultiple, err := ReadVirtualField[bool](ctx, "unconfirmedCovNotificationMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unconfirmedCovNotificationMultiple' field"))
+	}
 	_ = unconfirmedCovNotificationMultiple
 
-	// Virtual field
-	_whoIs := utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool)
-	whoIs := bool(_whoIs)
+	whoIs, err := ReadVirtualField[bool](ctx, "whoIs", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'whoIs' field"))
+	}
 	_ = whoIs
 
-	// Virtual field
-	_readRange := utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool)
-	readRange := bool(_readRange)
+	readRange, err := ReadVirtualField[bool](ctx, "readRange", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readRange' field"))
+	}
 	_ = readRange
 
-	// Virtual field
-	_utcTimeSynchronization := utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool)
-	utcTimeSynchronization := bool(_utcTimeSynchronization)
+	utcTimeSynchronization, err := ReadVirtualField[bool](ctx, "utcTimeSynchronization", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'utcTimeSynchronization' field"))
+	}
 	_ = utcTimeSynchronization
 
-	// Virtual field
-	_lifeSafetyOperation := utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool)
-	lifeSafetyOperation := bool(_lifeSafetyOperation)
+	lifeSafetyOperation, err := ReadVirtualField[bool](ctx, "lifeSafetyOperation", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lifeSafetyOperation' field"))
+	}
 	_ = lifeSafetyOperation
 
-	// Virtual field
-	_subscribeCovProperty := utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool)
-	subscribeCovProperty := bool(_subscribeCovProperty)
+	subscribeCovProperty, err := ReadVirtualField[bool](ctx, "subscribeCovProperty", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscribeCovProperty' field"))
+	}
 	_ = subscribeCovProperty
 
-	// Virtual field
-	_getEventInformation := utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool)
-	getEventInformation := bool(_getEventInformation)
+	getEventInformation, err := ReadVirtualField[bool](ctx, "getEventInformation", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'getEventInformation' field"))
+	}
 	_ = getEventInformation
 
 	if closeErr := readBuffer.CloseContext("BACnetServicesSupportedTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServicesSupportedTagged")
 	}
 
-	// Create the instance
-	return &_BACnetServicesSupportedTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Payload:   payload,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetServicesSupportedTagged) Serialize() ([]byte, error) {
@@ -353,28 +360,12 @@ func (m *_BACnetServicesSupportedTagged) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(pushErr, "Error pushing for BACnetServicesSupportedTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Simple Field (payload)
-	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for payload")
-	}
-	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for payload")
-	}
-	if _payloadErr != nil {
-		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+	if err := WriteSimpleField[BACnetTagPayloadBitString](ctx, "payload", m.GetPayload(), WriteComplex[BACnetTagPayloadBitString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 	// Virtual field
 	writeGroup := m.GetWriteGroup()
@@ -456,9 +447,7 @@ func (m *_BACnetServicesSupportedTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetServicesSupportedTagged) isBACnetServicesSupportedTagged() bool {
-	return true
-}
+func (m *_BACnetServicesSupportedTagged) IsBACnetServicesSupportedTagged() {}
 
 func (m *_BACnetServicesSupportedTagged) String() string {
 	if m == nil {

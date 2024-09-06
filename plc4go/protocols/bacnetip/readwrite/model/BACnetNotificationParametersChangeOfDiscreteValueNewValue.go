@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,9 +35,17 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValue is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValue
 type BACnetNotificationParametersChangeOfDiscreteValueNewValue interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValue()
+}
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueContract provides a set of functions which can be overwritten by a sub struct
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -46,18 +56,25 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValue interface {
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
+	// GetTagNumber() returns a parser argument
+	GetTagNumber() uint8
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValue()
 }
 
-// BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValue.
-// This is useful for switch cases.
-type BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly interface {
-	BACnetNotificationParametersChangeOfDiscreteValueNewValue
-	isBACnetNotificationParametersChangeOfDiscreteValueNewValue() bool
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
+	GetPeekedIsContextTag() bool
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValue is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
-	_BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements
+	_SubType        BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -66,26 +83,7 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
 	TagNumber uint8
 }
 
-type _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedIsContextTag() bool
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetNotificationParametersChangeOfDiscreteValueNewValueParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetNotificationParametersChangeOfDiscreteValueNewValue, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetNotificationParametersChangeOfDiscreteValueNewValueChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetNotificationParametersChangeOfDiscreteValueNewValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
-	GetParent() *BACnetNotificationParametersChangeOfDiscreteValueNewValue
-
-	GetTypeName() string
-	BACnetNotificationParametersChangeOfDiscreteValueNewValue
-}
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,13 +111,15 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetClosingT
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedIsContextTag() bool {
+func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedIsContextTag() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
@@ -132,6 +132,15 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedIs
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValue factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValue
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValue {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfDiscreteValueNewValue must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetNotificationParametersChangeOfDiscreteValueNewValue must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfDiscreteValueNewValue must not be nil")
+	}
 	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -150,7 +159,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetTypeName
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValue"
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
@@ -167,121 +176,132 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetParentLe
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
-	return BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse[T BACnetNotificationParametersChangeOfDiscreteValueNewValue](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBufferProducer[T BACnetNotificationParametersChangeOfDiscreteValueNewValue](tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer[T](ctx, readBuffer, tagNumber)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer[T BACnetNotificationParametersChangeOfDiscreteValueNewValue](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
+	v, err := (&_BACnetNotificationParametersChangeOfDiscreteValueNewValue{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetNotificationParametersChangeOfDiscreteValueNewValue BACnetNotificationParametersChangeOfDiscreteValueNewValue, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
-	// Virtual field
-	_peekedIsContextTag := bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))
-	peekedIsContextTag := bool(_peekedIsContextTag)
+	peekedIsContextTag, err := ReadVirtualField[bool](ctx, "peekedIsContextTag", (*bool)(nil), bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedIsContextTag' field"))
+	}
 	_ = peekedIsContextTag
 
 	// Validation
 	if !(bool((!(peekedIsContextTag))) || bool((bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"unexpected opening or closing tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "unexpected opening or closing tag"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement interface {
-		BACnetNotificationParametersChangeOfDiscreteValueNewValue
-		InitializeParent(BACnetNotificationParametersChangeOfDiscreteValueNewValue, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
-		GetParent() BACnetNotificationParametersChangeOfDiscreteValueNewValue
-	}
-	var _childTemp any
-	var _child BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	switch {
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
-	}
-	_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, openingTag, peekedTagHeader, closingTag)
 	return _child, nil
 }
 
-func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetNotificationParametersChangeOfDiscreteValueNewValue, serializeChildFunction func() error) error {
+func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetNotificationParametersChangeOfDiscreteValueNewValue, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -293,16 +313,8 @@ func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) SerializeP
 		return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
 	peekedTagNumber := m.GetPeekedTagNumber()
@@ -322,16 +334,8 @@ func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) SerializeP
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue"); popErr != nil {
@@ -350,17 +354,5 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetTagNumbe
 //
 ////
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) isBACnetNotificationParametersChangeOfDiscreteValueNewValue() bool {
-	return true
-}
-
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) IsBACnetNotificationParametersChangeOfDiscreteValueNewValue() {
 }

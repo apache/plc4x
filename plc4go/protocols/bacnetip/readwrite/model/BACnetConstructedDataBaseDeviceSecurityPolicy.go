@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataBaseDeviceSecurityPolicy interface {
 	GetBaseDeviceSecurityPolicy() BACnetSecurityLevelTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSecurityLevelTagged
-}
-
-// BACnetConstructedDataBaseDeviceSecurityPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBaseDeviceSecurityPolicy.
-// This is useful for switch cases.
-type BACnetConstructedDataBaseDeviceSecurityPolicyExactly interface {
-	BACnetConstructedDataBaseDeviceSecurityPolicy
-	isBACnetConstructedDataBaseDeviceSecurityPolicy() bool
+	// IsBACnetConstructedDataBaseDeviceSecurityPolicy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBaseDeviceSecurityPolicy()
 }
 
 // _BACnetConstructedDataBaseDeviceSecurityPolicy is the data-structure of this message
 type _BACnetConstructedDataBaseDeviceSecurityPolicy struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	BaseDeviceSecurityPolicy BACnetSecurityLevelTagged
 }
+
+var _ BACnetConstructedDataBaseDeviceSecurityPolicy = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetPropertyIdentifierAr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetActualValue() BACnet
 
 // NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for _BACnetConstructedDataBaseDeviceSecurityPolicy
 func NewBACnetConstructedDataBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy BACnetSecurityLevelTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
-	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
-		BaseDeviceSecurityPolicy: baseDeviceSecurityPolicy,
-		_BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if baseDeviceSecurityPolicy == nil {
+		panic("baseDeviceSecurityPolicy of type BACnetSecurityLevelTagged for BACnetConstructedDataBaseDeviceSecurityPolicy must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BaseDeviceSecurityPolicy:      baseDeviceSecurityPolicy,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (baseDeviceSecurityPolicy)
 	lengthInBits += m.BaseDeviceSecurityPolicy.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBytes(ctx co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataBaseDeviceSecurityPolicyParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
-	return BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBaseDeviceSecurityPolicy BACnetConstructedDataBaseDeviceSecurityPolicy, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBaseDeviceSecurityPolicy")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (baseDeviceSecurityPolicy)
-	if pullErr := readBuffer.PullContext("baseDeviceSecurityPolicy"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for baseDeviceSecurityPolicy")
+	baseDeviceSecurityPolicy, err := ReadSimpleField[BACnetSecurityLevelTagged](ctx, "baseDeviceSecurityPolicy", ReadComplex[BACnetSecurityLevelTagged](BACnetSecurityLevelTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'baseDeviceSecurityPolicy' field"))
 	}
-	_baseDeviceSecurityPolicy, _baseDeviceSecurityPolicyErr := BACnetSecurityLevelTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _baseDeviceSecurityPolicyErr != nil {
-		return nil, errors.Wrap(_baseDeviceSecurityPolicyErr, "Error parsing 'baseDeviceSecurityPolicy' field of BACnetConstructedDataBaseDeviceSecurityPolicy")
-	}
-	baseDeviceSecurityPolicy := _baseDeviceSecurityPolicy.(BACnetSecurityLevelTagged)
-	if closeErr := readBuffer.CloseContext("baseDeviceSecurityPolicy"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for baseDeviceSecurityPolicy")
-	}
+	m.BaseDeviceSecurityPolicy = baseDeviceSecurityPolicy
 
-	// Virtual field
-	_actualValue := baseDeviceSecurityPolicy
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetSecurityLevelTagged](ctx, "actualValue", (*BACnetSecurityLevelTagged)(nil), baseDeviceSecurityPolicy)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBaseDeviceSecurityPolicy")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		BaseDeviceSecurityPolicy: baseDeviceSecurityPolicy,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBaseDeviceSecurityPolicy")
 		}
 
-		// Simple Field (baseDeviceSecurityPolicy)
-		if pushErr := writeBuffer.PushContext("baseDeviceSecurityPolicy"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for baseDeviceSecurityPolicy")
-		}
-		_baseDeviceSecurityPolicyErr := writeBuffer.WriteSerializable(ctx, m.GetBaseDeviceSecurityPolicy())
-		if popErr := writeBuffer.PopContext("baseDeviceSecurityPolicy"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for baseDeviceSecurityPolicy")
-		}
-		if _baseDeviceSecurityPolicyErr != nil {
-			return errors.Wrap(_baseDeviceSecurityPolicyErr, "Error serializing 'baseDeviceSecurityPolicy' field")
+		if err := WriteSimpleField[BACnetSecurityLevelTagged](ctx, "baseDeviceSecurityPolicy", m.GetBaseDeviceSecurityPolicy(), WriteComplex[BACnetSecurityLevelTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'baseDeviceSecurityPolicy' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) isBACnetConstructedDataBaseDeviceSecurityPolicy() bool {
-	return true
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) IsBACnetConstructedDataBaseDeviceSecurityPolicy() {
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) String() string {

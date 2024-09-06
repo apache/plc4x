@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetContextTagDate interface {
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDate
-}
-
-// BACnetContextTagDateExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagDate.
-// This is useful for switch cases.
-type BACnetContextTagDateExactly interface {
-	BACnetContextTagDate
-	isBACnetContextTagDate() bool
+	// IsBACnetContextTagDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagDate()
 }
 
 // _BACnetContextTagDate is the data-structure of this message
 type _BACnetContextTagDate struct {
-	*_BACnetContextTag
+	BACnetContextTagContract
 	Payload BACnetTagPayloadDate
 }
+
+var _ BACnetContextTagDate = (*_BACnetContextTagDate)(nil)
+var _ BACnetContextTagRequirements = (*_BACnetContextTagDate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_BACnetContextTagDate) GetDataType() BACnetDataType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetContextTagDate) InitializeParent(parent BACnetContextTag, header BACnetTagHeader) {
-	m.Header = header
-}
-
-func (m *_BACnetContextTagDate) GetParent() BACnetContextTag {
-	return m._BACnetContextTag
+func (m *_BACnetContextTagDate) GetParent() BACnetContextTagContract {
+	return m.BACnetContextTagContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_BACnetContextTagDate) GetPayload() BACnetTagPayloadDate {
 
 // NewBACnetContextTagDate factory function for _BACnetContextTagDate
 func NewBACnetContextTagDate(payload BACnetTagPayloadDate, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagDate {
-	_result := &_BACnetContextTagDate{
-		Payload:           payload,
-		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDate for BACnetContextTagDate must not be nil")
 	}
-	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result
+	_result := &_BACnetContextTagDate{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_BACnetContextTagDate) GetTypeName() string {
 }
 
 func (m *_BACnetContextTagDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -128,47 +127,28 @@ func (m *_BACnetContextTagDate) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetContextTagDateParse(ctx context.Context, theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagDate, error) {
-	return BACnetContextTagDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
-}
-
-func BACnetContextTagDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagDate, error) {
+func (m *_BACnetContextTagDate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetContextTag, tagNumberArgument uint8, dataType BACnetDataType) (__bACnetContextTagDate BACnetContextTagDate, err error) {
+	m.BACnetContextTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadDate](ctx, "payload", ReadComplex[BACnetTagPayloadDate](BACnetTagPayloadDateParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
-	_payload, _payloadErr := BACnetTagPayloadDateParseWithBuffer(ctx, readBuffer)
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagDate")
-	}
-	payload := _payload.(BACnetTagPayloadDate)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
-	}
+	m.Payload = payload
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTagDate")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetContextTagDate{
-		_BACnetContextTag: &_BACnetContextTag{
-			TagNumberArgument: tagNumberArgument,
-		},
-		Payload: payload,
-	}
-	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetContextTagDate) Serialize() ([]byte, error) {
@@ -189,16 +169,8 @@ func (m *_BACnetContextTagDate) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for BACnetContextTagDate")
 		}
 
-		// Simple Field (payload)
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		if err := WriteSimpleField[BACnetTagPayloadDate](ctx, "payload", m.GetPayload(), WriteComplex[BACnetTagPayloadDate](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagDate"); popErr != nil {
@@ -206,12 +178,10 @@ func (m *_BACnetContextTagDate) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetContextTagContract.(*_BACnetContextTag).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetContextTagDate) isBACnetContextTagDate() bool {
-	return true
-}
+func (m *_BACnetContextTagDate) IsBACnetContextTagDate() {}
 
 func (m *_BACnetContextTagDate) String() string {
 	if m == nil {

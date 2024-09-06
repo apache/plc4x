@@ -67,7 +67,7 @@ public class BACnetTimerStateChangeValueInteger extends BACnetTimerStateChangeVa
     writeBuffer.pushContext("BACnetTimerStateChangeValueInteger");
 
     // Simple Field (integerValue)
-    writeSimpleField("integerValue", integerValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("integerValue", integerValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueInteger");
   }
@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueInteger extends BACnetTimerStateChangeVa
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

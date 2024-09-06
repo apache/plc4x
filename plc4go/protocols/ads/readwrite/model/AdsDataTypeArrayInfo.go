@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,13 +46,8 @@ type AdsDataTypeArrayInfo interface {
 	GetNumElements() uint32
 	// GetUpperBound returns UpperBound (virtual field)
 	GetUpperBound() uint32
-}
-
-// AdsDataTypeArrayInfoExactly can be used when we want exactly this type and not a type which fulfills AdsDataTypeArrayInfo.
-// This is useful for switch cases.
-type AdsDataTypeArrayInfoExactly interface {
-	AdsDataTypeArrayInfo
-	isAdsDataTypeArrayInfo() bool
+	// IsAdsDataTypeArrayInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDataTypeArrayInfo()
 }
 
 // _AdsDataTypeArrayInfo is the data-structure of this message
@@ -57,6 +55,8 @@ type _AdsDataTypeArrayInfo struct {
 	LowerBound  uint32
 	NumElements uint32
 }
+
+var _ AdsDataTypeArrayInfo = (*_AdsDataTypeArrayInfo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -133,45 +133,52 @@ func AdsDataTypeArrayInfoParse(ctx context.Context, theBytes []byte) (AdsDataTyp
 	return AdsDataTypeArrayInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
+func AdsDataTypeArrayInfoParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
+		return AdsDataTypeArrayInfoParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
+	v, err := (&_AdsDataTypeArrayInfo{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_AdsDataTypeArrayInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDataTypeArrayInfo AdsDataTypeArrayInfo, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDataTypeArrayInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDataTypeArrayInfo")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lowerBound)
-	_lowerBound, _lowerBoundErr := readBuffer.ReadUint32("lowerBound", 32)
-	if _lowerBoundErr != nil {
-		return nil, errors.Wrap(_lowerBoundErr, "Error parsing 'lowerBound' field of AdsDataTypeArrayInfo")
+	lowerBound, err := ReadSimpleField(ctx, "lowerBound", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowerBound' field"))
 	}
-	lowerBound := _lowerBound
+	m.LowerBound = lowerBound
 
-	// Simple Field (numElements)
-	_numElements, _numElementsErr := readBuffer.ReadUint32("numElements", 32)
-	if _numElementsErr != nil {
-		return nil, errors.Wrap(_numElementsErr, "Error parsing 'numElements' field of AdsDataTypeArrayInfo")
+	numElements, err := ReadSimpleField(ctx, "numElements", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numElements' field"))
 	}
-	numElements := _numElements
+	m.NumElements = numElements
 
-	// Virtual field
-	_upperBound := uint32(lowerBound) + uint32(numElements)
-	upperBound := uint32(_upperBound)
+	upperBound, err := ReadVirtualField[uint32](ctx, "upperBound", (*uint32)(nil), uint32(lowerBound)+uint32(numElements), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'upperBound' field"))
+	}
 	_ = upperBound
 
 	if closeErr := readBuffer.CloseContext("AdsDataTypeArrayInfo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDataTypeArrayInfo")
 	}
 
-	// Create the instance
-	return &_AdsDataTypeArrayInfo{
-		LowerBound:  lowerBound,
-		NumElements: numElements,
-	}, nil
+	return m, nil
 }
 
 func (m *_AdsDataTypeArrayInfo) Serialize() ([]byte, error) {
@@ -191,18 +198,12 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for AdsDataTypeArrayInfo")
 	}
 
-	// Simple Field (lowerBound)
-	lowerBound := uint32(m.GetLowerBound())
-	_lowerBoundErr := writeBuffer.WriteUint32("lowerBound", 32, uint32((lowerBound)))
-	if _lowerBoundErr != nil {
-		return errors.Wrap(_lowerBoundErr, "Error serializing 'lowerBound' field")
+	if err := WriteSimpleField[uint32](ctx, "lowerBound", m.GetLowerBound(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lowerBound' field")
 	}
 
-	// Simple Field (numElements)
-	numElements := uint32(m.GetNumElements())
-	_numElementsErr := writeBuffer.WriteUint32("numElements", 32, uint32((numElements)))
-	if _numElementsErr != nil {
-		return errors.Wrap(_numElementsErr, "Error serializing 'numElements' field")
+	if err := WriteSimpleField[uint32](ctx, "numElements", m.GetNumElements(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numElements' field")
 	}
 	// Virtual field
 	upperBound := m.GetUpperBound()
@@ -217,9 +218,7 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-func (m *_AdsDataTypeArrayInfo) isAdsDataTypeArrayInfo() bool {
-	return true
-}
+func (m *_AdsDataTypeArrayInfo) IsAdsDataTypeArrayInfo() {}
 
 func (m *_AdsDataTypeArrayInfo) String() string {
 	if m == nil {

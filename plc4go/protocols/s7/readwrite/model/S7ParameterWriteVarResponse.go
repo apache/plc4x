@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type S7ParameterWriteVarResponse interface {
 	S7Parameter
 	// GetNumItems returns NumItems (property field)
 	GetNumItems() uint8
-}
-
-// S7ParameterWriteVarResponseExactly can be used when we want exactly this type and not a type which fulfills S7ParameterWriteVarResponse.
-// This is useful for switch cases.
-type S7ParameterWriteVarResponseExactly interface {
-	S7ParameterWriteVarResponse
-	isS7ParameterWriteVarResponse() bool
+	// IsS7ParameterWriteVarResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterWriteVarResponse()
 }
 
 // _S7ParameterWriteVarResponse is the data-structure of this message
 type _S7ParameterWriteVarResponse struct {
-	*_S7Parameter
+	S7ParameterContract
 	NumItems uint8
 }
+
+var _ S7ParameterWriteVarResponse = (*_S7ParameterWriteVarResponse)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterWriteVarResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +72,8 @@ func (m *_S7ParameterWriteVarResponse) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7ParameterWriteVarResponse) InitializeParent(parent S7Parameter) {}
-
-func (m *_S7ParameterWriteVarResponse) GetParent() S7Parameter {
-	return m._S7Parameter
+func (m *_S7ParameterWriteVarResponse) GetParent() S7ParameterContract {
+	return m.S7ParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +93,10 @@ func (m *_S7ParameterWriteVarResponse) GetNumItems() uint8 {
 // NewS7ParameterWriteVarResponse factory function for _S7ParameterWriteVarResponse
 func NewS7ParameterWriteVarResponse(numItems uint8) *_S7ParameterWriteVarResponse {
 	_result := &_S7ParameterWriteVarResponse{
-		NumItems:     numItems,
-		_S7Parameter: NewS7Parameter(),
+		S7ParameterContract: NewS7Parameter(),
+		NumItems:            numItems,
 	}
-	_result._S7Parameter._S7ParameterChildRequirements = _result
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 
@@ -118,7 +116,7 @@ func (m *_S7ParameterWriteVarResponse) GetTypeName() string {
 }
 
 func (m *_S7ParameterWriteVarResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
 
 	// Simple field (numItems)
 	lengthInBits += 8
@@ -130,39 +128,28 @@ func (m *_S7ParameterWriteVarResponse) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterWriteVarResponseParse(ctx context.Context, theBytes []byte, messageType uint8) (S7ParameterWriteVarResponse, error) {
-	return S7ParameterWriteVarResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
-}
-
-func S7ParameterWriteVarResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterWriteVarResponse, error) {
+func (m *_S7ParameterWriteVarResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterWriteVarResponse S7ParameterWriteVarResponse, err error) {
+	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterWriteVarResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterWriteVarResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numItems)
-	_numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
-	if _numItemsErr != nil {
-		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterWriteVarResponse")
+	numItems, err := ReadSimpleField(ctx, "numItems", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numItems' field"))
 	}
-	numItems := _numItems
+	m.NumItems = numItems
 
 	if closeErr := readBuffer.CloseContext("S7ParameterWriteVarResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterWriteVarResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7ParameterWriteVarResponse{
-		_S7Parameter: &_S7Parameter{},
-		NumItems:     numItems,
-	}
-	_child._S7Parameter._S7ParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7ParameterWriteVarResponse) Serialize() ([]byte, error) {
@@ -183,11 +170,8 @@ func (m *_S7ParameterWriteVarResponse) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for S7ParameterWriteVarResponse")
 		}
 
-		// Simple Field (numItems)
-		numItems := uint8(m.GetNumItems())
-		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
-		if _numItemsErr != nil {
-			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
+		if err := WriteSimpleField[uint8](ctx, "numItems", m.GetNumItems(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numItems' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterWriteVarResponse"); popErr != nil {
@@ -195,12 +179,10 @@ func (m *_S7ParameterWriteVarResponse) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7ParameterContract.(*_S7Parameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7ParameterWriteVarResponse) isS7ParameterWriteVarResponse() bool {
-	return true
-}
+func (m *_S7ParameterWriteVarResponse) IsS7ParameterWriteVarResponse() {}
 
 func (m *_S7ParameterWriteVarResponse) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type CBusMessageToClient interface {
 	CBusMessage
 	// GetReply returns Reply (property field)
 	GetReply() ReplyOrConfirmation
-}
-
-// CBusMessageToClientExactly can be used when we want exactly this type and not a type which fulfills CBusMessageToClient.
-// This is useful for switch cases.
-type CBusMessageToClientExactly interface {
-	CBusMessageToClient
-	isCBusMessageToClient() bool
+	// IsCBusMessageToClient is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusMessageToClient()
 }
 
 // _CBusMessageToClient is the data-structure of this message
 type _CBusMessageToClient struct {
-	*_CBusMessage
+	CBusMessageContract
 	Reply ReplyOrConfirmation
 }
+
+var _ CBusMessageToClient = (*_CBusMessageToClient)(nil)
+var _ CBusMessageRequirements = (*_CBusMessageToClient)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_CBusMessageToClient) GetIsResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusMessageToClient) InitializeParent(parent CBusMessage) {}
-
-func (m *_CBusMessageToClient) GetParent() CBusMessage {
-	return m._CBusMessage
+func (m *_CBusMessageToClient) GetParent() CBusMessageContract {
+	return m.CBusMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_CBusMessageToClient) GetReply() ReplyOrConfirmation {
 
 // NewCBusMessageToClient factory function for _CBusMessageToClient
 func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToClient {
-	_result := &_CBusMessageToClient{
-		Reply:        reply,
-		_CBusMessage: NewCBusMessage(requestContext, cBusOptions),
+	if reply == nil {
+		panic("reply of type ReplyOrConfirmation for CBusMessageToClient must not be nil")
 	}
-	_result._CBusMessage._CBusMessageChildRequirements = _result
+	_result := &_CBusMessageToClient{
+		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
+		Reply:               reply,
+	}
+	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_CBusMessageToClient) GetTypeName() string {
 }
 
 func (m *_CBusMessageToClient) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusMessageContract.(*_CBusMessage).getLengthInBits(ctx))
 
 	// Simple field (reply)
 	lengthInBits += m.Reply.GetLengthInBits(ctx)
@@ -126,48 +127,28 @@ func (m *_CBusMessageToClient) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusMessageToClientParse(ctx context.Context, theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
-	return CBusMessageToClientParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
-}
-
-func CBusMessageToClientParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
+func (m *_CBusMessageToClient) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusMessage, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (__cBusMessageToClient CBusMessageToClient, err error) {
+	m.CBusMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusMessageToClient"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusMessageToClient")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reply)
-	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reply")
+	reply, err := ReadSimpleField[ReplyOrConfirmation](ctx, "reply", ReadComplex[ReplyOrConfirmation](ReplyOrConfirmationParseWithBufferProducer[ReplyOrConfirmation]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reply' field"))
 	}
-	_reply, _replyErr := ReplyOrConfirmationParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
-	if _replyErr != nil {
-		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of CBusMessageToClient")
-	}
-	reply := _reply.(ReplyOrConfirmation)
-	if closeErr := readBuffer.CloseContext("reply"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reply")
-	}
+	m.Reply = reply
 
 	if closeErr := readBuffer.CloseContext("CBusMessageToClient"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusMessageToClient")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CBusMessageToClient{
-		_CBusMessage: &_CBusMessage{
-			RequestContext: requestContext,
-			CBusOptions:    cBusOptions,
-		},
-		Reply: reply,
-	}
-	_child._CBusMessage._CBusMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CBusMessageToClient) Serialize() ([]byte, error) {
@@ -188,16 +169,8 @@ func (m *_CBusMessageToClient) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for CBusMessageToClient")
 		}
 
-		// Simple Field (reply)
-		if pushErr := writeBuffer.PushContext("reply"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reply")
-		}
-		_replyErr := writeBuffer.WriteSerializable(ctx, m.GetReply())
-		if popErr := writeBuffer.PopContext("reply"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reply")
-		}
-		if _replyErr != nil {
-			return errors.Wrap(_replyErr, "Error serializing 'reply' field")
+		if err := WriteSimpleField[ReplyOrConfirmation](ctx, "reply", m.GetReply(), WriteComplex[ReplyOrConfirmation](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reply' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusMessageToClient"); popErr != nil {
@@ -205,12 +178,10 @@ func (m *_CBusMessageToClient) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CBusMessageContract.(*_CBusMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CBusMessageToClient) isCBusMessageToClient() bool {
-	return true
-}
+func (m *_CBusMessageToClient) IsCBusMessageToClient() {}
 
 func (m *_CBusMessageToClient) String() string {
 	if m == nil {

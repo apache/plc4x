@@ -83,7 +83,7 @@ public class BACnetConstructedDataBinaryOutputInterfaceValue extends BACnetConst
     writeBuffer.pushContext("BACnetConstructedDataBinaryOutputInterfaceValue");
 
     // Simple Field (interfaceValue)
-    writeSimpleField("interfaceValue", interfaceValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("interfaceValue", interfaceValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetOptionalBinaryPV actualValue = getActualValue();
@@ -125,8 +125,7 @@ public class BACnetConstructedDataBinaryOutputInterfaceValue extends BACnetConst
     BACnetOptionalBinaryPV interfaceValue =
         readSimpleField(
             "interfaceValue",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOptionalBinaryPV.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetOptionalBinaryPV.staticParse(readBuffer), readBuffer));
     BACnetOptionalBinaryPV actualValue =
         readVirtualField("actualValue", BACnetOptionalBinaryPV.class, interfaceValue);
 

@@ -33,44 +33,35 @@ import (
 
 // ExtensionObjectDefinition is the corresponding interface of ExtensionObjectDefinition
 type ExtensionObjectDefinition interface {
+	ExtensionObjectDefinitionContract
+	ExtensionObjectDefinitionRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsExtensionObjectDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsExtensionObjectDefinition()
+}
+
+// ExtensionObjectDefinitionContract provides a set of functions which can be overwritten by a sub struct
+type ExtensionObjectDefinitionContract interface {
+	// IsExtensionObjectDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsExtensionObjectDefinition()
+}
+
+// ExtensionObjectDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
+type ExtensionObjectDefinitionRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetIdentifier returns Identifier (discriminator field)
 	GetIdentifier() string
 }
 
-// ExtensionObjectDefinitionExactly can be used when we want exactly this type and not a type which fulfills ExtensionObjectDefinition.
-// This is useful for switch cases.
-type ExtensionObjectDefinitionExactly interface {
-	ExtensionObjectDefinition
-	isExtensionObjectDefinition() bool
-}
-
 // _ExtensionObjectDefinition is the data-structure of this message
 type _ExtensionObjectDefinition struct {
-	_ExtensionObjectDefinitionChildRequirements
+	_SubType ExtensionObjectDefinition
 }
 
-type _ExtensionObjectDefinitionChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIdentifier() string
-}
-
-type ExtensionObjectDefinitionParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ExtensionObjectDefinition, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type ExtensionObjectDefinitionChild interface {
-	utils.Serializable
-	InitializeParent(parent ExtensionObjectDefinition)
-	GetParent() *ExtensionObjectDefinition
-
-	GetTypeName() string
-	ExtensionObjectDefinition
-}
+var _ ExtensionObjectDefinitionContract = (*_ExtensionObjectDefinition)(nil)
 
 // NewExtensionObjectDefinition factory function for _ExtensionObjectDefinition
 func NewExtensionObjectDefinition() *_ExtensionObjectDefinition {
@@ -92,25 +83,43 @@ func (m *_ExtensionObjectDefinition) GetTypeName() string {
 	return "ExtensionObjectDefinition"
 }
 
-func (m *_ExtensionObjectDefinition) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_ExtensionObjectDefinition) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
 func (m *_ExtensionObjectDefinition) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func ExtensionObjectDefinitionParse(ctx context.Context, theBytes []byte, identifier string) (ExtensionObjectDefinition, error) {
-	return ExtensionObjectDefinitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
+func ExtensionObjectDefinitionParse[T ExtensionObjectDefinition](ctx context.Context, theBytes []byte, identifier string) (T, error) {
+	return ExtensionObjectDefinitionParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
-func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ExtensionObjectDefinition, error) {
+func ExtensionObjectDefinitionParseWithBufferProducer[T ExtensionObjectDefinition](identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer[T](ctx, readBuffer, identifier)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func ExtensionObjectDefinitionParseWithBuffer[T ExtensionObjectDefinition](ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (T, error) {
+	v, err := (&_ExtensionObjectDefinition{}).parse(ctx, readBuffer, identifier)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (__extensionObjectDefinition ExtensionObjectDefinition, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ExtensionObjectDefinition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ExtensionObjectDefinition")
 	}
@@ -118,497 +127,948 @@ func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type ExtensionObjectDefinitionChildSerializeRequirement interface {
-		ExtensionObjectDefinition
-		InitializeParent(ExtensionObjectDefinition)
-		GetParent() ExtensionObjectDefinition
-	}
-	var _childTemp any
-	var _child ExtensionObjectDefinitionChildSerializeRequirement
-	var typeSwitchError error
+	var _child ExtensionObjectDefinition
 	switch {
 	case identifier == "0": // NullExtension
-		_childTemp, typeSwitchError = NullExtensionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_NullExtension{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NullExtension for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12758": // Union
-		_childTemp, typeSwitchError = UnionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_Union{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type Union for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "14535": // KeyValuePair
-		_childTemp, typeSwitchError = KeyValuePairParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_KeyValuePair{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type KeyValuePair for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "16315": // AdditionalParametersType
-		_childTemp, typeSwitchError = AdditionalParametersTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AdditionalParametersType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdditionalParametersType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "17550": // EphemeralKeyType
-		_childTemp, typeSwitchError = EphemeralKeyTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EphemeralKeyType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EphemeralKeyType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15530": // EndpointType
-		_childTemp, typeSwitchError = EndpointTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EndpointType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EndpointType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "32423": // BitFieldDefinition
-		_childTemp, typeSwitchError = BitFieldDefinitionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BitFieldDefinition{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BitFieldDefinition for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "18808": // RationalNumber
-		_childTemp, typeSwitchError = RationalNumberParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RationalNumber{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RationalNumber for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "18809": // OpcuaVector
-		_childTemp, typeSwitchError = OpcuaVectorParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_OpcuaVector{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaVector for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "18811": // CartesianCoordinates
-		_childTemp, typeSwitchError = CartesianCoordinatesParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CartesianCoordinates{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CartesianCoordinates for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "18813": // Orientation
-		_childTemp, typeSwitchError = OrientationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_Orientation{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type Orientation for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "18815": // Frame
-		_childTemp, typeSwitchError = FrameParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_Frame{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type Frame for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15636": // IdentityMappingRuleType
-		_childTemp, typeSwitchError = IdentityMappingRuleTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_IdentityMappingRuleType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type IdentityMappingRuleType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "23500": // CurrencyUnitType
-		_childTemp, typeSwitchError = CurrencyUnitTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CurrencyUnitType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CurrencyUnitType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "32436": // AnnotationDataType
-		_childTemp, typeSwitchError = AnnotationDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AnnotationDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AnnotationDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "32437": // LinearConversionDataType
-		_childTemp, typeSwitchError = LinearConversionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_LinearConversionDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LinearConversionDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "32440": // QuantityDimension
-		_childTemp, typeSwitchError = QuantityDimensionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_QuantityDimension{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QuantityDimension for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12556": // TrustListDataType
-		_childTemp, typeSwitchError = TrustListDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_TrustListDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TrustListDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "32287": // TransactionErrorType
-		_childTemp, typeSwitchError = TransactionErrorTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_TransactionErrorType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransactionErrorType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15536": // DataTypeSchemaHeader
-		_childTemp, typeSwitchError = DataTypeSchemaHeaderParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataTypeSchemaHeader{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataTypeSchemaHeader for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "14527": // DataTypeDescription
-		_childTemp, typeSwitchError = DataTypeDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataTypeDescription{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataTypeDescription for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "24107": // PortableQualifiedName
-		_childTemp, typeSwitchError = PortableQualifiedNameParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PortableQualifiedName{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PortableQualifiedName for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "24109": // UnsignedRationalNumber
-		_childTemp, typeSwitchError = UnsignedRationalNumberParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_UnsignedRationalNumber{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UnsignedRationalNumber for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "14526": // FieldMetaData
-		_childTemp, typeSwitchError = FieldMetaDataParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_FieldMetaData{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FieldMetaData for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "14595": // ConfigurationVersionDataType
-		_childTemp, typeSwitchError = ConfigurationVersionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ConfigurationVersionDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ConfigurationVersionDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15582": // PublishedDataSetSourceDataType
-		_childTemp, typeSwitchError = PublishedDataSetSourceDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PublishedDataSetSourceDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishedDataSetSourceDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "14275": // PublishedVariableDataType
-		_childTemp, typeSwitchError = PublishedVariableDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PublishedVariableDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishedVariableDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15599": // DataSetWriterDataType
-		_childTemp, typeSwitchError = DataSetWriterDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataSetWriterDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataSetWriterDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15600": // DataSetWriterTransportDataType
-		_childTemp, typeSwitchError = DataSetWriterTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataSetWriterTransportDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataSetWriterTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15607": // DataSetWriterMessageDataType
-		_childTemp, typeSwitchError = DataSetWriterMessageDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataSetWriterMessageDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataSetWriterMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15611": // PubSubGroupDataType
-		_childTemp, typeSwitchError = PubSubGroupDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PubSubGroupDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PubSubGroupDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15613": // WriterGroupTransportDataType
-		_childTemp, typeSwitchError = WriterGroupTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_WriterGroupTransportDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriterGroupTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15618": // WriterGroupMessageDataType
-		_childTemp, typeSwitchError = WriterGroupMessageDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_WriterGroupMessageDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriterGroupMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15619": // PubSubConnectionDataType
-		_childTemp, typeSwitchError = PubSubConnectionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PubSubConnectionDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConnectionDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15620": // ConnectionTransportDataType
-		_childTemp, typeSwitchError = ConnectionTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ConnectionTransportDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15504": // NetworkAddressDataType
-		_childTemp, typeSwitchError = NetworkAddressDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_NetworkAddressDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NetworkAddressDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15623": // ReaderGroupTransportDataType
-		_childTemp, typeSwitchError = ReaderGroupTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ReaderGroupTransportDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReaderGroupTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15624": // ReaderGroupMessageDataType
-		_childTemp, typeSwitchError = ReaderGroupMessageDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ReaderGroupMessageDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReaderGroupMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15630": // DataSetReaderTransportDataType
-		_childTemp, typeSwitchError = DataSetReaderTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataSetReaderTransportDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataSetReaderTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15631": // DataSetReaderMessageDataType
-		_childTemp, typeSwitchError = DataSetReaderMessageDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataSetReaderMessageDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataSetReaderMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15632": // SubscribedDataSetDataType
-		_childTemp, typeSwitchError = SubscribedDataSetDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SubscribedDataSetDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SubscribedDataSetDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "14746": // FieldTargetDataType
-		_childTemp, typeSwitchError = FieldTargetDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_FieldTargetDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FieldTargetDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15532": // PubSubConfigurationDataType
-		_childTemp, typeSwitchError = PubSubConfigurationDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PubSubConfigurationDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConfigurationDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "23603": // SecurityGroupDataType
-		_childTemp, typeSwitchError = SecurityGroupDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SecurityGroupDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SecurityGroupDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "25272": // PubSubKeyPushTargetDataType
-		_childTemp, typeSwitchError = PubSubKeyPushTargetDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PubSubKeyPushTargetDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PubSubKeyPushTargetDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "23605": // QosDataType
-		_childTemp, typeSwitchError = QosDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_QosDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QosDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "25521": // PubSubConfigurationRefDataType
-		_childTemp, typeSwitchError = PubSubConfigurationRefDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PubSubConfigurationRefDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConfigurationRefDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "23470": // AliasNameDataType
-		_childTemp, typeSwitchError = AliasNameDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AliasNameDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AliasNameDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "24283": // UserManagementDataType
-		_childTemp, typeSwitchError = UserManagementDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_UserManagementDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UserManagementDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "25222": // PriorityMappingEntryType
-		_childTemp, typeSwitchError = PriorityMappingEntryTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PriorityMappingEntryType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PriorityMappingEntryType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "32661": // ReferenceDescriptionDataType
-		_childTemp, typeSwitchError = ReferenceDescriptionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ReferenceDescriptionDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReferenceDescriptionDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "32662": // ReferenceListEntryDataType
-		_childTemp, typeSwitchError = ReferenceListEntryDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ReferenceListEntryDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReferenceListEntryDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "98": // RolePermissionType
-		_childTemp, typeSwitchError = RolePermissionTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RolePermissionType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RolePermissionType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "99": // DataTypeDefinition
-		_childTemp, typeSwitchError = DataTypeDefinitionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataTypeDefinition{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataTypeDefinition for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "103": // StructureField
-		_childTemp, typeSwitchError = StructureFieldParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_StructureField{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StructureField for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "298": // Argument
-		_childTemp, typeSwitchError = ArgumentParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_Argument{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type Argument for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "7596": // EnumValueType
-		_childTemp, typeSwitchError = EnumValueTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EnumValueType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EnumValueType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12757": // OptionSet
-		_childTemp, typeSwitchError = OptionSetParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_OptionSet{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OptionSet for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "8914": // TimeZoneDataType
-		_childTemp, typeSwitchError = TimeZoneDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_TimeZoneDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TimeZoneDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "310": // ApplicationDescription
-		_childTemp, typeSwitchError = ApplicationDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ApplicationDescription{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ApplicationDescription for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "391": // RequestHeader
-		_childTemp, typeSwitchError = RequestHeaderParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RequestHeader{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RequestHeader for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "394": // ResponseHeader
-		_childTemp, typeSwitchError = ResponseHeaderParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ResponseHeader{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ResponseHeader for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "397": // ServiceFault
-		_childTemp, typeSwitchError = ServiceFaultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ServiceFault{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServiceFault for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "15903": // SessionlessInvokeRequestType
-		_childTemp, typeSwitchError = SessionlessInvokeRequestTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SessionlessInvokeRequestType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SessionlessInvokeRequestType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "21001": // SessionlessInvokeResponseType
-		_childTemp, typeSwitchError = SessionlessInvokeResponseTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SessionlessInvokeResponseType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SessionlessInvokeResponseType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "422": // FindServersRequest
-		_childTemp, typeSwitchError = FindServersRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_FindServersRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FindServersRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "425": // FindServersResponse
-		_childTemp, typeSwitchError = FindServersResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_FindServersResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FindServersResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12191": // ServerOnNetwork
-		_childTemp, typeSwitchError = ServerOnNetworkParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ServerOnNetwork{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServerOnNetwork for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12192": // FindServersOnNetworkRequest
-		_childTemp, typeSwitchError = FindServersOnNetworkRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_FindServersOnNetworkRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FindServersOnNetworkRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12193": // FindServersOnNetworkResponse
-		_childTemp, typeSwitchError = FindServersOnNetworkResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_FindServersOnNetworkResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FindServersOnNetworkResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "306": // UserTokenPolicy
-		_childTemp, typeSwitchError = UserTokenPolicyParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_UserTokenPolicy{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UserTokenPolicy for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "314": // EndpointDescription
-		_childTemp, typeSwitchError = EndpointDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EndpointDescription{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EndpointDescription for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "428": // GetEndpointsRequest
-		_childTemp, typeSwitchError = GetEndpointsRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_GetEndpointsRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type GetEndpointsRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "431": // GetEndpointsResponse
-		_childTemp, typeSwitchError = GetEndpointsResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_GetEndpointsResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type GetEndpointsResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "434": // RegisteredServer
-		_childTemp, typeSwitchError = RegisteredServerParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RegisteredServer{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisteredServer for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "437": // RegisterServerRequest
-		_childTemp, typeSwitchError = RegisterServerRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RegisterServerRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisterServerRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "440": // RegisterServerResponse
-		_childTemp, typeSwitchError = RegisterServerResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RegisterServerResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisterServerResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12892": // DiscoveryConfiguration
-		_childTemp, typeSwitchError = DiscoveryConfigurationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DiscoveryConfiguration{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DiscoveryConfiguration for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12195": // RegisterServer2Request
-		_childTemp, typeSwitchError = RegisterServer2RequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RegisterServer2Request{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisterServer2Request for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12196": // RegisterServer2Response
-		_childTemp, typeSwitchError = RegisterServer2ResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RegisterServer2Response{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisterServer2Response for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "443": // ChannelSecurityToken
-		_childTemp, typeSwitchError = ChannelSecurityTokenParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ChannelSecurityToken{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ChannelSecurityToken for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "446": // OpenSecureChannelRequest
-		_childTemp, typeSwitchError = OpenSecureChannelRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_OpenSecureChannelRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpenSecureChannelRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "449": // OpenSecureChannelResponse
-		_childTemp, typeSwitchError = OpenSecureChannelResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_OpenSecureChannelResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type OpenSecureChannelResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "452": // CloseSecureChannelRequest
-		_childTemp, typeSwitchError = CloseSecureChannelRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CloseSecureChannelRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CloseSecureChannelRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "455": // CloseSecureChannelResponse
-		_childTemp, typeSwitchError = CloseSecureChannelResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CloseSecureChannelResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CloseSecureChannelResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "346": // SignedSoftwareCertificate
-		_childTemp, typeSwitchError = SignedSoftwareCertificateParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SignedSoftwareCertificate{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SignedSoftwareCertificate for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "458": // SignatureData
-		_childTemp, typeSwitchError = SignatureDataParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SignatureData{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SignatureData for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "461": // CreateSessionRequest
-		_childTemp, typeSwitchError = CreateSessionRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CreateSessionRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateSessionRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "464": // CreateSessionResponse
-		_childTemp, typeSwitchError = CreateSessionResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CreateSessionResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateSessionResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "467": // ActivateSessionRequest
-		_childTemp, typeSwitchError = ActivateSessionRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ActivateSessionRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ActivateSessionRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "470": // ActivateSessionResponse
-		_childTemp, typeSwitchError = ActivateSessionResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ActivateSessionResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ActivateSessionResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "473": // CloseSessionRequest
-		_childTemp, typeSwitchError = CloseSessionRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CloseSessionRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CloseSessionRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "476": // CloseSessionResponse
-		_childTemp, typeSwitchError = CloseSessionResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CloseSessionResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CloseSessionResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "479": // CancelRequest
-		_childTemp, typeSwitchError = CancelRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CancelRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CancelRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "482": // CancelResponse
-		_childTemp, typeSwitchError = CancelResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CancelResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CancelResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "351": // NodeAttributes
-		_childTemp, typeSwitchError = NodeAttributesParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_NodeAttributes{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NodeAttributes for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "17608": // GenericAttributeValue
-		_childTemp, typeSwitchError = GenericAttributeValueParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_GenericAttributeValue{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type GenericAttributeValue for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "378": // AddNodesItem
-		_childTemp, typeSwitchError = AddNodesItemParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AddNodesItem{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesItem for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "485": // AddNodesResult
-		_childTemp, typeSwitchError = AddNodesResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AddNodesResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "488": // AddNodesRequest
-		_childTemp, typeSwitchError = AddNodesRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AddNodesRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "491": // AddNodesResponse
-		_childTemp, typeSwitchError = AddNodesResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AddNodesResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "381": // AddReferencesItem
-		_childTemp, typeSwitchError = AddReferencesItemParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AddReferencesItem{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesItem for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "494": // AddReferencesRequest
-		_childTemp, typeSwitchError = AddReferencesRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AddReferencesRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "497": // AddReferencesResponse
-		_childTemp, typeSwitchError = AddReferencesResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AddReferencesResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "384": // DeleteNodesItem
-		_childTemp, typeSwitchError = DeleteNodesItemParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteNodesItem{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesItem for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "500": // DeleteNodesRequest
-		_childTemp, typeSwitchError = DeleteNodesRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteNodesRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "503": // DeleteNodesResponse
-		_childTemp, typeSwitchError = DeleteNodesResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteNodesResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "387": // DeleteReferencesItem
-		_childTemp, typeSwitchError = DeleteReferencesItemParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteReferencesItem{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesItem for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "506": // DeleteReferencesRequest
-		_childTemp, typeSwitchError = DeleteReferencesRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteReferencesRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "509": // DeleteReferencesResponse
-		_childTemp, typeSwitchError = DeleteReferencesResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteReferencesResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "513": // ViewDescription
-		_childTemp, typeSwitchError = ViewDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ViewDescription{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ViewDescription for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "516": // BrowseDescription
-		_childTemp, typeSwitchError = BrowseDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowseDescription{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseDescription for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "520": // ReferenceDescription
-		_childTemp, typeSwitchError = ReferenceDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ReferenceDescription{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReferenceDescription for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "524": // BrowseResult
-		_childTemp, typeSwitchError = BrowseResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowseResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "527": // BrowseRequest
-		_childTemp, typeSwitchError = BrowseRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowseRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "530": // BrowseResponse
-		_childTemp, typeSwitchError = BrowseResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowseResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "533": // BrowseNextRequest
-		_childTemp, typeSwitchError = BrowseNextRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowseNextRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseNextRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "536": // BrowseNextResponse
-		_childTemp, typeSwitchError = BrowseNextResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowseNextResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseNextResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "539": // RelativePathElement
-		_childTemp, typeSwitchError = RelativePathElementParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RelativePathElement{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RelativePathElement for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "542": // RelativePath
-		_childTemp, typeSwitchError = RelativePathParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RelativePath{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RelativePath for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "545": // BrowsePath
-		_childTemp, typeSwitchError = BrowsePathParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowsePath{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePath for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "548": // BrowsePathTarget
-		_childTemp, typeSwitchError = BrowsePathTargetParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowsePathTarget{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePathTarget for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "551": // BrowsePathResult
-		_childTemp, typeSwitchError = BrowsePathResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BrowsePathResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePathResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "554": // TranslateBrowsePathsToNodeIdsRequest
-		_childTemp, typeSwitchError = TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_TranslateBrowsePathsToNodeIdsRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TranslateBrowsePathsToNodeIdsRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "557": // TranslateBrowsePathsToNodeIdsResponse
-		_childTemp, typeSwitchError = TranslateBrowsePathsToNodeIdsResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_TranslateBrowsePathsToNodeIdsResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TranslateBrowsePathsToNodeIdsResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "560": // RegisterNodesRequest
-		_childTemp, typeSwitchError = RegisterNodesRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RegisterNodesRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisterNodesRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "563": // RegisterNodesResponse
-		_childTemp, typeSwitchError = RegisterNodesResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RegisterNodesResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisterNodesResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "566": // UnregisterNodesRequest
-		_childTemp, typeSwitchError = UnregisterNodesRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_UnregisterNodesRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UnregisterNodesRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "569": // UnregisterNodesResponse
-		_childTemp, typeSwitchError = UnregisterNodesResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_UnregisterNodesResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UnregisterNodesResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "333": // EndpointConfiguration
-		_childTemp, typeSwitchError = EndpointConfigurationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EndpointConfiguration{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EndpointConfiguration for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "572": // QueryDataDescription
-		_childTemp, typeSwitchError = QueryDataDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_QueryDataDescription{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryDataDescription for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "575": // NodeTypeDescription
-		_childTemp, typeSwitchError = NodeTypeDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_NodeTypeDescription{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NodeTypeDescription for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "579": // QueryDataSet
-		_childTemp, typeSwitchError = QueryDataSetParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_QueryDataSet{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryDataSet for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "582": // NodeReference
-		_childTemp, typeSwitchError = NodeReferenceParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_NodeReference{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NodeReference for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "585": // ContentFilterElement
-		_childTemp, typeSwitchError = ContentFilterElementParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ContentFilterElement{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterElement for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "588": // ContentFilter
-		_childTemp, typeSwitchError = ContentFilterParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ContentFilter{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilter for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "591": // FilterOperand
-		_childTemp, typeSwitchError = FilterOperandParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_FilterOperand{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FilterOperand for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "606": // ContentFilterElementResult
-		_childTemp, typeSwitchError = ContentFilterElementResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ContentFilterElementResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterElementResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "609": // ContentFilterResult
-		_childTemp, typeSwitchError = ContentFilterResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ContentFilterResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "612": // ParsingResult
-		_childTemp, typeSwitchError = ParsingResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ParsingResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParsingResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "615": // QueryFirstRequest
-		_childTemp, typeSwitchError = QueryFirstRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_QueryFirstRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryFirstRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "618": // QueryFirstResponse
-		_childTemp, typeSwitchError = QueryFirstResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_QueryFirstResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryFirstResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "621": // QueryNextRequest
-		_childTemp, typeSwitchError = QueryNextRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_QueryNextRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryNextRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "624": // QueryNextResponse
-		_childTemp, typeSwitchError = QueryNextResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_QueryNextResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryNextResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "628": // ReadValueId
-		_childTemp, typeSwitchError = ReadValueIdParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ReadValueId{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadValueId for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "631": // ReadRequest
-		_childTemp, typeSwitchError = ReadRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ReadRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "634": // ReadResponse
-		_childTemp, typeSwitchError = ReadResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ReadResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "637": // HistoryReadValueId
-		_childTemp, typeSwitchError = HistoryReadValueIdParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryReadValueId{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadValueId for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "640": // HistoryReadResult
-		_childTemp, typeSwitchError = HistoryReadResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryReadResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "643": // HistoryReadDetails
-		_childTemp, typeSwitchError = HistoryReadDetailsParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryReadDetails{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadDetails for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "658": // HistoryData
-		_childTemp, typeSwitchError = HistoryDataParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryData{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryData for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "11218": // ModificationInfo
-		_childTemp, typeSwitchError = ModificationInfoParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ModificationInfo{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModificationInfo for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "661": // HistoryEvent
-		_childTemp, typeSwitchError = HistoryEventParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryEvent{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryEvent for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "664": // HistoryReadRequest
-		_childTemp, typeSwitchError = HistoryReadRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryReadRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "667": // HistoryReadResponse
-		_childTemp, typeSwitchError = HistoryReadResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryReadResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "670": // WriteValue
-		_childTemp, typeSwitchError = WriteValueParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_WriteValue{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriteValue for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "673": // WriteRequest
-		_childTemp, typeSwitchError = WriteRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_WriteRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriteRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "676": // WriteResponse
-		_childTemp, typeSwitchError = WriteResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_WriteResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriteResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "679": // HistoryUpdateDetails
-		_childTemp, typeSwitchError = HistoryUpdateDetailsParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryUpdateDetails{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateDetails for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "697": // HistoryUpdateResult
-		_childTemp, typeSwitchError = HistoryUpdateResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryUpdateResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "700": // HistoryUpdateRequest
-		_childTemp, typeSwitchError = HistoryUpdateRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryUpdateRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "703": // HistoryUpdateResponse
-		_childTemp, typeSwitchError = HistoryUpdateResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryUpdateResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "706": // CallMethodRequest
-		_childTemp, typeSwitchError = CallMethodRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CallMethodRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CallMethodRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "709": // CallMethodResult
-		_childTemp, typeSwitchError = CallMethodResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CallMethodResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CallMethodResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "712": // CallRequest
-		_childTemp, typeSwitchError = CallRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CallRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CallRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "715": // CallResponse
-		_childTemp, typeSwitchError = CallResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CallResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CallResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "721": // MonitoringFilter
-		_childTemp, typeSwitchError = MonitoringFilterParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_MonitoringFilter{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringFilter for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "950": // AggregateConfiguration
-		_childTemp, typeSwitchError = AggregateConfigurationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AggregateConfiguration{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AggregateConfiguration for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "733": // MonitoringFilterResult
-		_childTemp, typeSwitchError = MonitoringFilterResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_MonitoringFilterResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringFilterResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "742": // MonitoringParameters
-		_childTemp, typeSwitchError = MonitoringParametersParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_MonitoringParameters{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringParameters for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "745": // MonitoredItemCreateRequest
-		_childTemp, typeSwitchError = MonitoredItemCreateRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_MonitoredItemCreateRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemCreateRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "748": // MonitoredItemCreateResult
-		_childTemp, typeSwitchError = MonitoredItemCreateResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_MonitoredItemCreateResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemCreateResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "751": // CreateMonitoredItemsRequest
-		_childTemp, typeSwitchError = CreateMonitoredItemsRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CreateMonitoredItemsRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "754": // CreateMonitoredItemsResponse
-		_childTemp, typeSwitchError = CreateMonitoredItemsResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CreateMonitoredItemsResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "757": // MonitoredItemModifyRequest
-		_childTemp, typeSwitchError = MonitoredItemModifyRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_MonitoredItemModifyRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemModifyRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "760": // MonitoredItemModifyResult
-		_childTemp, typeSwitchError = MonitoredItemModifyResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_MonitoredItemModifyResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemModifyResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "763": // ModifyMonitoredItemsRequest
-		_childTemp, typeSwitchError = ModifyMonitoredItemsRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ModifyMonitoredItemsRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModifyMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "766": // ModifyMonitoredItemsResponse
-		_childTemp, typeSwitchError = ModifyMonitoredItemsResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ModifyMonitoredItemsResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModifyMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "769": // SetMonitoringModeRequest
-		_childTemp, typeSwitchError = SetMonitoringModeRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SetMonitoringModeRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetMonitoringModeRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "772": // SetMonitoringModeResponse
-		_childTemp, typeSwitchError = SetMonitoringModeResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SetMonitoringModeResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetMonitoringModeResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "775": // SetTriggeringRequest
-		_childTemp, typeSwitchError = SetTriggeringRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SetTriggeringRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetTriggeringRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "778": // SetTriggeringResponse
-		_childTemp, typeSwitchError = SetTriggeringResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SetTriggeringResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetTriggeringResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "781": // DeleteMonitoredItemsRequest
-		_childTemp, typeSwitchError = DeleteMonitoredItemsRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteMonitoredItemsRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "784": // DeleteMonitoredItemsResponse
-		_childTemp, typeSwitchError = DeleteMonitoredItemsResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteMonitoredItemsResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "787": // CreateSubscriptionRequest
-		_childTemp, typeSwitchError = CreateSubscriptionRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CreateSubscriptionRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateSubscriptionRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "790": // CreateSubscriptionResponse
-		_childTemp, typeSwitchError = CreateSubscriptionResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_CreateSubscriptionResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateSubscriptionResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "793": // ModifySubscriptionRequest
-		_childTemp, typeSwitchError = ModifySubscriptionRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ModifySubscriptionRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModifySubscriptionRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "796": // ModifySubscriptionResponse
-		_childTemp, typeSwitchError = ModifySubscriptionResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ModifySubscriptionResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModifySubscriptionResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "799": // SetPublishingModeRequest
-		_childTemp, typeSwitchError = SetPublishingModeRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SetPublishingModeRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetPublishingModeRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "802": // SetPublishingModeResponse
-		_childTemp, typeSwitchError = SetPublishingModeResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SetPublishingModeResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetPublishingModeResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "805": // NotificationMessage
-		_childTemp, typeSwitchError = NotificationMessageParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_NotificationMessage{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NotificationMessage for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "947": // NotificationData
-		_childTemp, typeSwitchError = NotificationDataParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_NotificationData{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NotificationData for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "808": // MonitoredItemNotification
-		_childTemp, typeSwitchError = MonitoredItemNotificationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_MonitoredItemNotification{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemNotification for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "919": // EventFieldList
-		_childTemp, typeSwitchError = EventFieldListParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EventFieldList{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EventFieldList for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "922": // HistoryEventFieldList
-		_childTemp, typeSwitchError = HistoryEventFieldListParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_HistoryEventFieldList{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryEventFieldList for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "823": // SubscriptionAcknowledgement
-		_childTemp, typeSwitchError = SubscriptionAcknowledgementParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SubscriptionAcknowledgement{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SubscriptionAcknowledgement for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "826": // PublishRequest
-		_childTemp, typeSwitchError = PublishRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PublishRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "829": // PublishResponse
-		_childTemp, typeSwitchError = PublishResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_PublishResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "832": // RepublishRequest
-		_childTemp, typeSwitchError = RepublishRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RepublishRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RepublishRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "835": // RepublishResponse
-		_childTemp, typeSwitchError = RepublishResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RepublishResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RepublishResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "838": // TransferResult
-		_childTemp, typeSwitchError = TransferResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_TransferResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransferResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "841": // TransferSubscriptionsRequest
-		_childTemp, typeSwitchError = TransferSubscriptionsRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_TransferSubscriptionsRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransferSubscriptionsRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "844": // TransferSubscriptionsResponse
-		_childTemp, typeSwitchError = TransferSubscriptionsResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_TransferSubscriptionsResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransferSubscriptionsResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "847": // DeleteSubscriptionsRequest
-		_childTemp, typeSwitchError = DeleteSubscriptionsRequestParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteSubscriptionsRequest{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteSubscriptionsRequest for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "850": // DeleteSubscriptionsResponse
-		_childTemp, typeSwitchError = DeleteSubscriptionsResponseParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DeleteSubscriptionsResponse{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteSubscriptionsResponse for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "340": // BuildInfo
-		_childTemp, typeSwitchError = BuildInfoParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_BuildInfo{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BuildInfo for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "855": // RedundantServerDataType
-		_childTemp, typeSwitchError = RedundantServerDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_RedundantServerDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RedundantServerDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "11945": // EndpointUrlListDataType
-		_childTemp, typeSwitchError = EndpointUrlListDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EndpointUrlListDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EndpointUrlListDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "11946": // NetworkGroupDataType
-		_childTemp, typeSwitchError = NetworkGroupDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_NetworkGroupDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NetworkGroupDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "858": // SamplingIntervalDiagnosticsDataType
-		_childTemp, typeSwitchError = SamplingIntervalDiagnosticsDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SamplingIntervalDiagnosticsDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SamplingIntervalDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "861": // ServerDiagnosticsSummaryDataType
-		_childTemp, typeSwitchError = ServerDiagnosticsSummaryDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ServerDiagnosticsSummaryDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServerDiagnosticsSummaryDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "864": // ServerStatusDataType
-		_childTemp, typeSwitchError = ServerStatusDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ServerStatusDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServerStatusDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "867": // SessionDiagnosticsDataType
-		_childTemp, typeSwitchError = SessionDiagnosticsDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SessionDiagnosticsDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SessionDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "870": // SessionSecurityDiagnosticsDataType
-		_childTemp, typeSwitchError = SessionSecurityDiagnosticsDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SessionSecurityDiagnosticsDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SessionSecurityDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "873": // ServiceCounterDataType
-		_childTemp, typeSwitchError = ServiceCounterDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ServiceCounterDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServiceCounterDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "301": // StatusResult
-		_childTemp, typeSwitchError = StatusResultParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_StatusResult{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StatusResult for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "876": // SubscriptionDiagnosticsDataType
-		_childTemp, typeSwitchError = SubscriptionDiagnosticsDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SubscriptionDiagnosticsDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SubscriptionDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "879": // ModelChangeStructureDataType
-		_childTemp, typeSwitchError = ModelChangeStructureDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ModelChangeStructureDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModelChangeStructureDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "899": // SemanticChangeStructureDataType
-		_childTemp, typeSwitchError = SemanticChangeStructureDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_SemanticChangeStructureDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SemanticChangeStructureDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "886": // Range
-		_childTemp, typeSwitchError = RangeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_Range{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type Range for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "889": // EUInformation
-		_childTemp, typeSwitchError = EUInformationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EUInformation{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EUInformation for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12173": // ComplexNumberType
-		_childTemp, typeSwitchError = ComplexNumberTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ComplexNumberType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ComplexNumberType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12174": // DoubleComplexNumberType
-		_childTemp, typeSwitchError = DoubleComplexNumberTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DoubleComplexNumberType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DoubleComplexNumberType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12081": // AxisInformation
-		_childTemp, typeSwitchError = AxisInformationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_AxisInformation{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AxisInformation for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "12082": // XVType
-		_childTemp, typeSwitchError = XVTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_XVType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type XVType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "896": // ProgramDiagnosticDataType
-		_childTemp, typeSwitchError = ProgramDiagnosticDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ProgramDiagnosticDataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ProgramDiagnosticDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "24035": // ProgramDiagnostic2DataType
-		_childTemp, typeSwitchError = ProgramDiagnostic2DataTypeParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_ProgramDiagnostic2DataType{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ProgramDiagnostic2DataType for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "893": // Annotation
-		_childTemp, typeSwitchError = AnnotationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_Annotation{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type Annotation for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "811": // DataChangeNotification
-		_childTemp, typeSwitchError = DataChangeNotificationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_DataChangeNotification{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataChangeNotification for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "916": // EventNotificationList
-		_childTemp, typeSwitchError = EventNotificationListParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_EventNotificationList{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EventNotificationList for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "820": // StatusChangeNotification
-		_childTemp, typeSwitchError = StatusChangeNotificationParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_StatusChangeNotification{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StatusChangeNotification for type-switch of ExtensionObjectDefinition")
+		}
 	case identifier == "316": // UserIdentityToken
-		_childTemp, typeSwitchError = UserIdentityTokenParseWithBuffer(ctx, readBuffer, identifier)
+		if _child, err = (&_UserIdentityToken{}).parse(ctx, readBuffer, m, identifier); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UserIdentityToken for type-switch of ExtensionObjectDefinition")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [identifier=%v]", identifier)
+		return nil, errors.Errorf("Unmapped type for parameters [identifier=%v]", identifier)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ExtensionObjectDefinition")
-	}
-	_child = _childTemp.(ExtensionObjectDefinitionChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ExtensionObjectDefinition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ExtensionObjectDefinition")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_ExtensionObjectDefinition) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ExtensionObjectDefinition, serializeChildFunction func() error) error {
+func (pm *_ExtensionObjectDefinition) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ExtensionObjectDefinition, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -631,17 +1091,4 @@ func (pm *_ExtensionObjectDefinition) SerializeParent(ctx context.Context, write
 	return nil
 }
 
-func (m *_ExtensionObjectDefinition) isExtensionObjectDefinition() bool {
-	return true
-}
-
-func (m *_ExtensionObjectDefinition) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_ExtensionObjectDefinition) IsExtensionObjectDefinition() {}

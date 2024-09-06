@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type CipRRData interface {
 	GetTimeout() uint16
 	// GetTypeIds returns TypeIds (property field)
 	GetTypeIds() []TypeId
-}
-
-// CipRRDataExactly can be used when we want exactly this type and not a type which fulfills CipRRData.
-// This is useful for switch cases.
-type CipRRDataExactly interface {
-	CipRRData
-	isCipRRData() bool
+	// IsCipRRData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipRRData()
 }
 
 // _CipRRData is the data-structure of this message
 type _CipRRData struct {
-	*_EipPacket
+	EipPacketContract
 	InterfaceHandle uint32
 	Timeout         uint16
 	TypeIds         []TypeId
 }
+
+var _ CipRRData = (*_CipRRData)(nil)
+var _ EipPacketRequirements = (*_CipRRData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,15 +82,8 @@ func (m *_CipRRData) GetPacketLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipRRData) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_CipRRData) GetParent() EipPacket {
-	return m._EipPacket
+func (m *_CipRRData) GetParent() EipPacketContract {
+	return m.EipPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,12 +111,12 @@ func (m *_CipRRData) GetTypeIds() []TypeId {
 // NewCipRRData factory function for _CipRRData
 func NewCipRRData(interfaceHandle uint32, timeout uint16, typeIds []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_CipRRData {
 	_result := &_CipRRData{
-		InterfaceHandle: interfaceHandle,
-		Timeout:         timeout,
-		TypeIds:         typeIds,
-		_EipPacket:      NewEipPacket(sessionHandle, status, senderContext, options),
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		InterfaceHandle:   interfaceHandle,
+		Timeout:           timeout,
+		TypeIds:           typeIds,
 	}
-	_result._EipPacket._EipPacketChildRequirements = _result
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 
@@ -143,7 +136,7 @@ func (m *_CipRRData) GetTypeName() string {
 }
 
 func (m *_CipRRData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	// Simple field (interfaceHandle)
 	lengthInBits += 32
@@ -171,82 +164,46 @@ func (m *_CipRRData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipRRDataParse(ctx context.Context, theBytes []byte, response bool) (CipRRData, error) {
-	return CipRRDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (CipRRData, error) {
+func (m *_CipRRData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__cipRRData CipRRData, err error) {
+	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipRRData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (interfaceHandle)
-	_interfaceHandle, _interfaceHandleErr := readBuffer.ReadUint32("interfaceHandle", 32)
-	if _interfaceHandleErr != nil {
-		return nil, errors.Wrap(_interfaceHandleErr, "Error parsing 'interfaceHandle' field of CipRRData")
+	interfaceHandle, err := ReadSimpleField(ctx, "interfaceHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceHandle' field"))
 	}
-	interfaceHandle := _interfaceHandle
+	m.InterfaceHandle = interfaceHandle
 
-	// Simple Field (timeout)
-	_timeout, _timeoutErr := readBuffer.ReadUint16("timeout", 16)
-	if _timeoutErr != nil {
-		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of CipRRData")
+	timeout, err := ReadSimpleField(ctx, "timeout", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeout' field"))
 	}
-	timeout := _timeout
+	m.Timeout = timeout
 
-	// Implicit Field (typeIdCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	typeIdCount, _typeIdCountErr := readBuffer.ReadUint16("typeIdCount", 16)
+	typeIdCount, err := ReadImplicitField[uint16](ctx, "typeIdCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIdCount' field"))
+	}
 	_ = typeIdCount
-	if _typeIdCountErr != nil {
-		return nil, errors.Wrap(_typeIdCountErr, "Error parsing 'typeIdCount' field of CipRRData")
-	}
 
-	// Array field (typeIds)
-	if pullErr := readBuffer.PullContext("typeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeIds")
+	typeIds, err := ReadCountArrayField[TypeId](ctx, "typeIds", ReadComplex[TypeId](TypeIdParseWithBuffer, readBuffer), uint64(typeIdCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIds' field"))
 	}
-	// Count array
-	typeIds := make([]TypeId, max(typeIdCount, 0))
-	// This happens when the size is set conditional to 0
-	if len(typeIds) == 0 {
-		typeIds = nil
-	}
-	{
-		_numItems := uint16(max(typeIdCount, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := TypeIdParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'typeIds' field of CipRRData")
-			}
-			typeIds[_curItem] = _item.(TypeId)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("typeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeIds")
-	}
+	m.TypeIds = typeIds
 
 	if closeErr := readBuffer.CloseContext("CipRRData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipRRData")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CipRRData{
-		_EipPacket:      &_EipPacket{},
-		InterfaceHandle: interfaceHandle,
-		Timeout:         timeout,
-		TypeIds:         typeIds,
-	}
-	_child._EipPacket._EipPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CipRRData) Serialize() ([]byte, error) {
@@ -267,42 +224,20 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for CipRRData")
 		}
 
-		// Simple Field (interfaceHandle)
-		interfaceHandle := uint32(m.GetInterfaceHandle())
-		_interfaceHandleErr := writeBuffer.WriteUint32("interfaceHandle", 32, uint32((interfaceHandle)))
-		if _interfaceHandleErr != nil {
-			return errors.Wrap(_interfaceHandleErr, "Error serializing 'interfaceHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "interfaceHandle", m.GetInterfaceHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'interfaceHandle' field")
 		}
 
-		// Simple Field (timeout)
-		timeout := uint16(m.GetTimeout())
-		_timeoutErr := writeBuffer.WriteUint16("timeout", 16, uint16((timeout)))
-		if _timeoutErr != nil {
-			return errors.Wrap(_timeoutErr, "Error serializing 'timeout' field")
+		if err := WriteSimpleField[uint16](ctx, "timeout", m.GetTimeout(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeout' field")
 		}
-
-		// Implicit Field (typeIdCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		typeIdCount := uint16(uint16(len(m.GetTypeIds())))
-		_typeIdCountErr := writeBuffer.WriteUint16("typeIdCount", 16, uint16((typeIdCount)))
-		if _typeIdCountErr != nil {
-			return errors.Wrap(_typeIdCountErr, "Error serializing 'typeIdCount' field")
+		if err := WriteImplicitField(ctx, "typeIdCount", typeIdCount, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeIdCount' field")
 		}
 
-		// Array Field (typeIds)
-		if pushErr := writeBuffer.PushContext("typeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for typeIds")
-		}
-		for _curItem, _element := range m.GetTypeIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTypeIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'typeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("typeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for typeIds")
+		if err := WriteComplexTypeArrayField(ctx, "typeIds", m.GetTypeIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeIds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipRRData"); popErr != nil {
@@ -310,12 +245,10 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.EipPacketContract.(*_EipPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CipRRData) isCipRRData() bool {
-	return true
-}
+func (m *_CipRRData) IsCipRRData() {}
 
 func (m *_CipRRData) String() string {
 	if m == nil {

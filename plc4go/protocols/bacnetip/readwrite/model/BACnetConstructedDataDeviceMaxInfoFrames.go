@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDeviceMaxInfoFrames interface {
 	GetMaxInfoFrames() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataDeviceMaxInfoFramesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceMaxInfoFrames.
-// This is useful for switch cases.
-type BACnetConstructedDataDeviceMaxInfoFramesExactly interface {
-	BACnetConstructedDataDeviceMaxInfoFrames
-	isBACnetConstructedDataDeviceMaxInfoFrames() bool
+	// IsBACnetConstructedDataDeviceMaxInfoFrames is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDeviceMaxInfoFrames()
 }
 
 // _BACnetConstructedDataDeviceMaxInfoFrames is the data-structure of this message
 type _BACnetConstructedDataDeviceMaxInfoFrames struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MaxInfoFrames BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataDeviceMaxInfoFrames = (*_BACnetConstructedDataDeviceMaxInfoFrames)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceMaxInfoFrames)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDeviceMaxInfoFrames) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataDeviceMaxInfoFrames factory function for _BACnetConstructedDataDeviceMaxInfoFrames
 func NewBACnetConstructedDataDeviceMaxInfoFrames(maxInfoFrames BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxInfoFrames {
-	_result := &_BACnetConstructedDataDeviceMaxInfoFrames{
-		MaxInfoFrames:          maxInfoFrames,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if maxInfoFrames == nil {
+		panic("maxInfoFrames of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDeviceMaxInfoFrames must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDeviceMaxInfoFrames{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxInfoFrames:                 maxInfoFrames,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxInfoFrames)
 	lengthInBits += m.MaxInfoFrames.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDeviceMaxInfoFramesParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxInfoFrames, error) {
-	return BACnetConstructedDataDeviceMaxInfoFramesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDeviceMaxInfoFramesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxInfoFrames, error) {
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDeviceMaxInfoFrames BACnetConstructedDataDeviceMaxInfoFrames, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceMaxInfoFrames"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDeviceMaxInfoFrames")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxInfoFrames)
-	if pullErr := readBuffer.PullContext("maxInfoFrames"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxInfoFrames")
+	maxInfoFrames, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxInfoFrames", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxInfoFrames' field"))
 	}
-	_maxInfoFrames, _maxInfoFramesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxInfoFramesErr != nil {
-		return nil, errors.Wrap(_maxInfoFramesErr, "Error parsing 'maxInfoFrames' field of BACnetConstructedDataDeviceMaxInfoFrames")
-	}
-	maxInfoFrames := _maxInfoFrames.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxInfoFrames"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxInfoFrames")
-	}
+	m.MaxInfoFrames = maxInfoFrames
 
-	// Virtual field
-	_actualValue := maxInfoFrames
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), maxInfoFrames)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceMaxInfoFrames"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceMaxInfoFrames")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDeviceMaxInfoFrames{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MaxInfoFrames: maxInfoFrames,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDeviceMaxInfoFrames) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeviceMaxInfoFrames")
 		}
 
-		// Simple Field (maxInfoFrames)
-		if pushErr := writeBuffer.PushContext("maxInfoFrames"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxInfoFrames")
-		}
-		_maxInfoFramesErr := writeBuffer.WriteSerializable(ctx, m.GetMaxInfoFrames())
-		if popErr := writeBuffer.PopContext("maxInfoFrames"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxInfoFrames")
-		}
-		if _maxInfoFramesErr != nil {
-			return errors.Wrap(_maxInfoFramesErr, "Error serializing 'maxInfoFrames' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxInfoFrames", m.GetMaxInfoFrames(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxInfoFrames' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDeviceMaxInfoFrames) isBACnetConstructedDataDeviceMaxInfoFrames() bool {
-	return true
-}
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) IsBACnetConstructedDataDeviceMaxInfoFrames() {}
 
 func (m *_BACnetConstructedDataDeviceMaxInfoFrames) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLocalTime interface {
 	GetLocalTime() BACnetApplicationTagTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagTime
-}
-
-// BACnetConstructedDataLocalTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocalTime.
-// This is useful for switch cases.
-type BACnetConstructedDataLocalTimeExactly interface {
-	BACnetConstructedDataLocalTime
-	isBACnetConstructedDataLocalTime() bool
+	// IsBACnetConstructedDataLocalTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLocalTime()
 }
 
 // _BACnetConstructedDataLocalTime is the data-structure of this message
 type _BACnetConstructedDataLocalTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LocalTime BACnetApplicationTagTime
 }
+
+var _ BACnetConstructedDataLocalTime = (*_BACnetConstructedDataLocalTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLocalTime) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLocalTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLocalTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLocalTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLocalTime) GetActualValue() BACnetApplicationTagT
 
 // NewBACnetConstructedDataLocalTime factory function for _BACnetConstructedDataLocalTime
 func NewBACnetConstructedDataLocalTime(localTime BACnetApplicationTagTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
-	_result := &_BACnetConstructedDataLocalTime{
-		LocalTime:              localTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if localTime == nil {
+		panic("localTime of type BACnetApplicationTagTime for BACnetConstructedDataLocalTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLocalTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LocalTime:                     localTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLocalTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLocalTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (localTime)
 	lengthInBits += m.LocalTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLocalTime) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLocalTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalTime, error) {
-	return BACnetConstructedDataLocalTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLocalTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalTime, error) {
+func (m *_BACnetConstructedDataLocalTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLocalTime BACnetConstructedDataLocalTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLocalTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (localTime)
-	if pullErr := readBuffer.PullContext("localTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localTime")
+	localTime, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "localTime", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localTime' field"))
 	}
-	_localTime, _localTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _localTimeErr != nil {
-		return nil, errors.Wrap(_localTimeErr, "Error parsing 'localTime' field of BACnetConstructedDataLocalTime")
-	}
-	localTime := _localTime.(BACnetApplicationTagTime)
-	if closeErr := readBuffer.CloseContext("localTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localTime")
-	}
+	m.LocalTime = localTime
 
-	// Virtual field
-	_actualValue := localTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagTime](ctx, "actualValue", (*BACnetApplicationTagTime)(nil), localTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLocalTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLocalTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LocalTime: localTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLocalTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLocalTime) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocalTime")
 		}
 
-		// Simple Field (localTime)
-		if pushErr := writeBuffer.PushContext("localTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localTime")
-		}
-		_localTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLocalTime())
-		if popErr := writeBuffer.PopContext("localTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localTime")
-		}
-		if _localTimeErr != nil {
-			return errors.Wrap(_localTimeErr, "Error serializing 'localTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "localTime", m.GetLocalTime(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'localTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataLocalTime) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLocalTime) isBACnetConstructedDataLocalTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataLocalTime) IsBACnetConstructedDataLocalTime() {}
 
 func (m *_BACnetConstructedDataLocalTime) String() string {
 	if m == nil {

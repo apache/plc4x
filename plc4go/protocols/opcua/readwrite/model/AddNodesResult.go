@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type AddNodesResult interface {
 	GetStatusCode() StatusCode
 	// GetAddedNodeId returns AddedNodeId (property field)
 	GetAddedNodeId() NodeId
-}
-
-// AddNodesResultExactly can be used when we want exactly this type and not a type which fulfills AddNodesResult.
-// This is useful for switch cases.
-type AddNodesResultExactly interface {
-	AddNodesResult
-	isAddNodesResult() bool
+	// IsAddNodesResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAddNodesResult()
 }
 
 // _AddNodesResult is the data-structure of this message
 type _AddNodesResult struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	StatusCode  StatusCode
 	AddedNodeId NodeId
 }
+
+var _ AddNodesResult = (*_AddNodesResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AddNodesResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_AddNodesResult) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AddNodesResult) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_AddNodesResult) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_AddNodesResult) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_AddNodesResult) GetAddedNodeId() NodeId {
 
 // NewAddNodesResult factory function for _AddNodesResult
 func NewAddNodesResult(statusCode StatusCode, addedNodeId NodeId) *_AddNodesResult {
-	_result := &_AddNodesResult{
-		StatusCode:                 statusCode,
-		AddedNodeId:                addedNodeId,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for AddNodesResult must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if addedNodeId == nil {
+		panic("addedNodeId of type NodeId for AddNodesResult must not be nil")
+	}
+	_result := &_AddNodesResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		AddedNodeId:                       addedNodeId,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_AddNodesResult) GetTypeName() string {
 }
 
 func (m *_AddNodesResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -137,59 +141,34 @@ func (m *_AddNodesResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AddNodesResultParse(ctx context.Context, theBytes []byte, identifier string) (AddNodesResult, error) {
-	return AddNodesResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func AddNodesResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddNodesResult, error) {
+func (m *_AddNodesResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addNodesResult AddNodesResult, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AddNodesResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AddNodesResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of AddNodesResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
-	}
+	m.StatusCode = statusCode
 
-	// Simple Field (addedNodeId)
-	if pullErr := readBuffer.PullContext("addedNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addedNodeId")
+	addedNodeId, err := ReadSimpleField[NodeId](ctx, "addedNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addedNodeId' field"))
 	}
-	_addedNodeId, _addedNodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _addedNodeIdErr != nil {
-		return nil, errors.Wrap(_addedNodeIdErr, "Error parsing 'addedNodeId' field of AddNodesResult")
-	}
-	addedNodeId := _addedNodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("addedNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addedNodeId")
-	}
+	m.AddedNodeId = addedNodeId
 
 	if closeErr := readBuffer.CloseContext("AddNodesResult"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AddNodesResult")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AddNodesResult{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		StatusCode:                 statusCode,
-		AddedNodeId:                addedNodeId,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AddNodesResult) Serialize() ([]byte, error) {
@@ -210,28 +189,12 @@ func (m *_AddNodesResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for AddNodesResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (addedNodeId)
-		if pushErr := writeBuffer.PushContext("addedNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addedNodeId")
-		}
-		_addedNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetAddedNodeId())
-		if popErr := writeBuffer.PopContext("addedNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addedNodeId")
-		}
-		if _addedNodeIdErr != nil {
-			return errors.Wrap(_addedNodeIdErr, "Error serializing 'addedNodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "addedNodeId", m.GetAddedNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'addedNodeId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AddNodesResult"); popErr != nil {
@@ -239,12 +202,10 @@ func (m *_AddNodesResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AddNodesResult) isAddNodesResult() bool {
-	return true
-}
+func (m *_AddNodesResult) IsAddNodesResult() {}
 
 func (m *_AddNodesResult) String() string {
 	if m == nil {

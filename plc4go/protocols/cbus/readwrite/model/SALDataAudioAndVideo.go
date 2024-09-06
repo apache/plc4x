@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SALDataAudioAndVideo interface {
 	SALData
 	// GetAudioVideoData returns AudioVideoData (property field)
 	GetAudioVideoData() LightingData
-}
-
-// SALDataAudioAndVideoExactly can be used when we want exactly this type and not a type which fulfills SALDataAudioAndVideo.
-// This is useful for switch cases.
-type SALDataAudioAndVideoExactly interface {
-	SALDataAudioAndVideo
-	isSALDataAudioAndVideo() bool
+	// IsSALDataAudioAndVideo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataAudioAndVideo()
 }
 
 // _SALDataAudioAndVideo is the data-structure of this message
 type _SALDataAudioAndVideo struct {
-	*_SALData
+	SALDataContract
 	AudioVideoData LightingData
 }
+
+var _ SALDataAudioAndVideo = (*_SALDataAudioAndVideo)(nil)
+var _ SALDataRequirements = (*_SALDataAudioAndVideo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_SALDataAudioAndVideo) GetApplicationId() ApplicationId {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataAudioAndVideo) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataAudioAndVideo) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataAudioAndVideo) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_SALDataAudioAndVideo) GetAudioVideoData() LightingData {
 
 // NewSALDataAudioAndVideo factory function for _SALDataAudioAndVideo
 func NewSALDataAudioAndVideo(audioVideoData LightingData, salData SALData) *_SALDataAudioAndVideo {
-	_result := &_SALDataAudioAndVideo{
-		AudioVideoData: audioVideoData,
-		_SALData:       NewSALData(salData),
+	if audioVideoData == nil {
+		panic("audioVideoData of type LightingData for SALDataAudioAndVideo must not be nil")
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result := &_SALDataAudioAndVideo{
+		SALDataContract: NewSALData(salData),
+		AudioVideoData:  audioVideoData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_SALDataAudioAndVideo) GetTypeName() string {
 }
 
 func (m *_SALDataAudioAndVideo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (audioVideoData)
 	lengthInBits += m.AudioVideoData.GetLengthInBits(ctx)
@@ -128,45 +127,28 @@ func (m *_SALDataAudioAndVideo) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataAudioAndVideoParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
-	return SALDataAudioAndVideoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataAudioAndVideoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
+func (m *_SALDataAudioAndVideo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataAudioAndVideo SALDataAudioAndVideo, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataAudioAndVideo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataAudioAndVideo")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (audioVideoData)
-	if pullErr := readBuffer.PullContext("audioVideoData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for audioVideoData")
+	audioVideoData, err := ReadSimpleField[LightingData](ctx, "audioVideoData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'audioVideoData' field"))
 	}
-	_audioVideoData, _audioVideoDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _audioVideoDataErr != nil {
-		return nil, errors.Wrap(_audioVideoDataErr, "Error parsing 'audioVideoData' field of SALDataAudioAndVideo")
-	}
-	audioVideoData := _audioVideoData.(LightingData)
-	if closeErr := readBuffer.CloseContext("audioVideoData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for audioVideoData")
-	}
+	m.AudioVideoData = audioVideoData
 
 	if closeErr := readBuffer.CloseContext("SALDataAudioAndVideo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataAudioAndVideo")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataAudioAndVideo{
-		_SALData:       &_SALData{},
-		AudioVideoData: audioVideoData,
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataAudioAndVideo) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_SALDataAudioAndVideo) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SALDataAudioAndVideo")
 		}
 
-		// Simple Field (audioVideoData)
-		if pushErr := writeBuffer.PushContext("audioVideoData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for audioVideoData")
-		}
-		_audioVideoDataErr := writeBuffer.WriteSerializable(ctx, m.GetAudioVideoData())
-		if popErr := writeBuffer.PopContext("audioVideoData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for audioVideoData")
-		}
-		if _audioVideoDataErr != nil {
-			return errors.Wrap(_audioVideoDataErr, "Error serializing 'audioVideoData' field")
+		if err := WriteSimpleField[LightingData](ctx, "audioVideoData", m.GetAudioVideoData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'audioVideoData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataAudioAndVideo"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_SALDataAudioAndVideo) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataAudioAndVideo) isSALDataAudioAndVideo() bool {
-	return true
-}
+func (m *_SALDataAudioAndVideo) IsSALDataAudioAndVideo() {}
 
 func (m *_SALDataAudioAndVideo) String() string {
 	if m == nil {

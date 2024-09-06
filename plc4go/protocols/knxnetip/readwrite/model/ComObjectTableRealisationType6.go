@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ComObjectTableRealisationType6 interface {
 	ComObjectTable
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() GroupObjectDescriptorRealisationType6
-}
-
-// ComObjectTableRealisationType6Exactly can be used when we want exactly this type and not a type which fulfills ComObjectTableRealisationType6.
-// This is useful for switch cases.
-type ComObjectTableRealisationType6Exactly interface {
-	ComObjectTableRealisationType6
-	isComObjectTableRealisationType6() bool
+	// IsComObjectTableRealisationType6 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsComObjectTableRealisationType6()
 }
 
 // _ComObjectTableRealisationType6 is the data-structure of this message
 type _ComObjectTableRealisationType6 struct {
-	*_ComObjectTable
+	ComObjectTableContract
 	ComObjectDescriptors GroupObjectDescriptorRealisationType6
 }
+
+var _ ComObjectTableRealisationType6 = (*_ComObjectTableRealisationType6)(nil)
+var _ ComObjectTableRequirements = (*_ComObjectTableRealisationType6)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_ComObjectTableRealisationType6) GetFirmwareType() FirmwareType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ComObjectTableRealisationType6) InitializeParent(parent ComObjectTable) {}
-
-func (m *_ComObjectTableRealisationType6) GetParent() ComObjectTable {
-	return m._ComObjectTable
+func (m *_ComObjectTableRealisationType6) GetParent() ComObjectTableContract {
+	return m.ComObjectTableContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_ComObjectTableRealisationType6) GetComObjectDescriptors() GroupObjectD
 
 // NewComObjectTableRealisationType6 factory function for _ComObjectTableRealisationType6
 func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescriptorRealisationType6) *_ComObjectTableRealisationType6 {
-	_result := &_ComObjectTableRealisationType6{
-		ComObjectDescriptors: comObjectDescriptors,
-		_ComObjectTable:      NewComObjectTable(),
+	if comObjectDescriptors == nil {
+		panic("comObjectDescriptors of type GroupObjectDescriptorRealisationType6 for ComObjectTableRealisationType6 must not be nil")
 	}
-	_result._ComObjectTable._ComObjectTableChildRequirements = _result
+	_result := &_ComObjectTableRealisationType6{
+		ComObjectTableContract: NewComObjectTable(),
+		ComObjectDescriptors:   comObjectDescriptors,
+	}
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_ComObjectTableRealisationType6) GetTypeName() string {
 }
 
 func (m *_ComObjectTableRealisationType6) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ComObjectTableContract.(*_ComObjectTable).getLengthInBits(ctx))
 
 	// Simple field (comObjectDescriptors)
 	lengthInBits += m.ComObjectDescriptors.GetLengthInBits(ctx)
@@ -126,45 +127,28 @@ func (m *_ComObjectTableRealisationType6) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ComObjectTableRealisationType6Parse(ctx context.Context, theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
-	return ComObjectTableRealisationType6ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
-}
-
-func ComObjectTableRealisationType6ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
+func (m *_ComObjectTableRealisationType6) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ComObjectTable, firmwareType FirmwareType) (__comObjectTableRealisationType6 ComObjectTableRealisationType6, err error) {
+	m.ComObjectTableContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType6"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ComObjectTableRealisationType6")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (comObjectDescriptors)
-	if pullErr := readBuffer.PullContext("comObjectDescriptors"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for comObjectDescriptors")
+	comObjectDescriptors, err := ReadSimpleField[GroupObjectDescriptorRealisationType6](ctx, "comObjectDescriptors", ReadComplex[GroupObjectDescriptorRealisationType6](GroupObjectDescriptorRealisationType6ParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'comObjectDescriptors' field"))
 	}
-	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6ParseWithBuffer(ctx, readBuffer)
-	if _comObjectDescriptorsErr != nil {
-		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType6")
-	}
-	comObjectDescriptors := _comObjectDescriptors.(GroupObjectDescriptorRealisationType6)
-	if closeErr := readBuffer.CloseContext("comObjectDescriptors"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for comObjectDescriptors")
-	}
+	m.ComObjectDescriptors = comObjectDescriptors
 
 	if closeErr := readBuffer.CloseContext("ComObjectTableRealisationType6"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ComObjectTableRealisationType6")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ComObjectTableRealisationType6{
-		_ComObjectTable:      &_ComObjectTable{},
-		ComObjectDescriptors: comObjectDescriptors,
-	}
-	_child._ComObjectTable._ComObjectTableChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ComObjectTableRealisationType6) Serialize() ([]byte, error) {
@@ -185,16 +169,8 @@ func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for ComObjectTableRealisationType6")
 		}
 
-		// Simple Field (comObjectDescriptors)
-		if pushErr := writeBuffer.PushContext("comObjectDescriptors"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
-		}
-		_comObjectDescriptorsErr := writeBuffer.WriteSerializable(ctx, m.GetComObjectDescriptors())
-		if popErr := writeBuffer.PopContext("comObjectDescriptors"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
-		}
-		if _comObjectDescriptorsErr != nil {
-			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
+		if err := WriteSimpleField[GroupObjectDescriptorRealisationType6](ctx, "comObjectDescriptors", m.GetComObjectDescriptors(), WriteComplex[GroupObjectDescriptorRealisationType6](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'comObjectDescriptors' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ComObjectTableRealisationType6"); popErr != nil {
@@ -202,12 +178,10 @@ func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ComObjectTableContract.(*_ComObjectTable).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ComObjectTableRealisationType6) isComObjectTableRealisationType6() bool {
-	return true
-}
+func (m *_ComObjectTableRealisationType6) IsComObjectTableRealisationType6() {}
 
 func (m *_ComObjectTableRealisationType6) String() string {
 	if m == nil {

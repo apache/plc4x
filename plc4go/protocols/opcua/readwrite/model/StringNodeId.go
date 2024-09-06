@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type StringNodeId interface {
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() PascalString
-}
-
-// StringNodeIdExactly can be used when we want exactly this type and not a type which fulfills StringNodeId.
-// This is useful for switch cases.
-type StringNodeIdExactly interface {
-	StringNodeId
-	isStringNodeId() bool
+	// IsStringNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStringNodeId()
 }
 
 // _StringNodeId is the data-structure of this message
@@ -54,6 +51,8 @@ type _StringNodeId struct {
 	NamespaceIndex uint16
 	Identifier     PascalString
 }
+
+var _ StringNodeId = (*_StringNodeId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,9 @@ func (m *_StringNodeId) GetIdentifier() PascalString {
 
 // NewStringNodeId factory function for _StringNodeId
 func NewStringNodeId(namespaceIndex uint16, identifier PascalString) *_StringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalString for StringNodeId must not be nil")
+	}
 	return &_StringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
 }
 
@@ -113,46 +115,46 @@ func StringNodeIdParse(ctx context.Context, theBytes []byte) (StringNodeId, erro
 	return StringNodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StringNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (StringNodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StringNodeId, error) {
+		return StringNodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StringNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StringNodeId, error) {
+	v, err := (&_StringNodeId{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_StringNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__stringNodeId StringNodeId, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StringNodeId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StringNodeId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := readBuffer.ReadUint16("namespaceIndex", 16)
-	if _namespaceIndexErr != nil {
-		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of StringNodeId")
+	namespaceIndex, err := ReadSimpleField(ctx, "namespaceIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceIndex' field"))
 	}
-	namespaceIndex := _namespaceIndex
+	m.NamespaceIndex = namespaceIndex
 
-	// Simple Field (identifier)
-	if pullErr := readBuffer.PullContext("identifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for identifier")
+	identifier, err := ReadSimpleField[PascalString](ctx, "identifier", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
-	_identifier, _identifierErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _identifierErr != nil {
-		return nil, errors.Wrap(_identifierErr, "Error parsing 'identifier' field of StringNodeId")
-	}
-	identifier := _identifier.(PascalString)
-	if closeErr := readBuffer.CloseContext("identifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for identifier")
-	}
+	m.Identifier = identifier
 
 	if closeErr := readBuffer.CloseContext("StringNodeId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StringNodeId")
 	}
 
-	// Create the instance
-	return &_StringNodeId{
-		NamespaceIndex: namespaceIndex,
-		Identifier:     identifier,
-	}, nil
+	return m, nil
 }
 
 func (m *_StringNodeId) Serialize() ([]byte, error) {
@@ -172,23 +174,12 @@ func (m *_StringNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for StringNodeId")
 	}
 
-	// Simple Field (namespaceIndex)
-	namespaceIndex := uint16(m.GetNamespaceIndex())
-	_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
-	if _namespaceIndexErr != nil {
-		return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
+	if err := WriteSimpleField[uint16](ctx, "namespaceIndex", m.GetNamespaceIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'namespaceIndex' field")
 	}
 
-	// Simple Field (identifier)
-	if pushErr := writeBuffer.PushContext("identifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for identifier")
-	}
-	_identifierErr := writeBuffer.WriteSerializable(ctx, m.GetIdentifier())
-	if popErr := writeBuffer.PopContext("identifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for identifier")
-	}
-	if _identifierErr != nil {
-		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
+	if err := WriteSimpleField[PascalString](ctx, "identifier", m.GetIdentifier(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'identifier' field")
 	}
 
 	if popErr := writeBuffer.PopContext("StringNodeId"); popErr != nil {
@@ -197,9 +188,7 @@ func (m *_StringNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_StringNodeId) isStringNodeId() bool {
-	return true
-}
+func (m *_StringNodeId) IsStringNodeId() {}
 
 func (m *_StringNodeId) String() string {
 	if m == nil {

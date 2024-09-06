@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,13 +42,8 @@ type BACnetRecipientProcess interface {
 	GetRecipient() BACnetRecipientEnclosed
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
-}
-
-// BACnetRecipientProcessExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientProcess.
-// This is useful for switch cases.
-type BACnetRecipientProcessExactly interface {
-	BACnetRecipientProcess
-	isBACnetRecipientProcess() bool
+	// IsBACnetRecipientProcess is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientProcess()
 }
 
 // _BACnetRecipientProcess is the data-structure of this message
@@ -55,6 +51,8 @@ type _BACnetRecipientProcess struct {
 	Recipient         BACnetRecipientEnclosed
 	ProcessIdentifier BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetRecipientProcess = (*_BACnetRecipientProcess)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,6 +74,9 @@ func (m *_BACnetRecipientProcess) GetProcessIdentifier() BACnetContextTagUnsigne
 
 // NewBACnetRecipientProcess factory function for _BACnetRecipientProcess
 func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger) *_BACnetRecipientProcess {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientEnclosed for BACnetRecipientProcess must not be nil")
+	}
 	return &_BACnetRecipientProcess{Recipient: recipient, ProcessIdentifier: processIdentifier}
 }
 
@@ -116,61 +117,50 @@ func BACnetRecipientProcessParse(ctx context.Context, theBytes []byte) (BACnetRe
 	return BACnetRecipientProcessParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetRecipientProcessParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
+		return BACnetRecipientProcessParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetRecipientProcessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
+	v, err := (&_BACnetRecipientProcess{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetRecipientProcess) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetRecipientProcess BACnetRecipientProcess, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRecipientProcess"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRecipientProcess")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recipient)
-	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
+	recipient, err := ReadSimpleField[BACnetRecipientEnclosed](ctx, "recipient", ReadComplex[BACnetRecipientEnclosed](BACnetRecipientEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recipient' field"))
 	}
-	_recipient, _recipientErr := BACnetRecipientEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetRecipientProcess")
-	}
-	recipient := _recipient.(BACnetRecipientEnclosed)
-	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for recipient")
-	}
+	m.Recipient = recipient
 
-	// Optional Field (processIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var processIdentifier BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'processIdentifier' field of BACnetRecipientProcess")
-		default:
-			processIdentifier = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
-			}
-		}
+	var processIdentifier BACnetContextTagUnsignedInteger
+	_processIdentifier, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'processIdentifier' field"))
+	}
+	if _processIdentifier != nil {
+		processIdentifier = *_processIdentifier
+		m.ProcessIdentifier = processIdentifier
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipientProcess"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRecipientProcess")
 	}
 
-	// Create the instance
-	return &_BACnetRecipientProcess{
-		Recipient:         recipient,
-		ProcessIdentifier: processIdentifier,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetRecipientProcess) Serialize() ([]byte, error) {
@@ -190,32 +180,12 @@ func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(pushErr, "Error pushing for BACnetRecipientProcess")
 	}
 
-	// Simple Field (recipient)
-	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for recipient")
-	}
-	_recipientErr := writeBuffer.WriteSerializable(ctx, m.GetRecipient())
-	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for recipient")
-	}
-	if _recipientErr != nil {
-		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
+	if err := WriteSimpleField[BACnetRecipientEnclosed](ctx, "recipient", m.GetRecipient(), WriteComplex[BACnetRecipientEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'recipient' field")
 	}
 
-	// Optional Field (processIdentifier) (Can be skipped, if the value is null)
-	var processIdentifier BACnetContextTagUnsignedInteger = nil
-	if m.GetProcessIdentifier() != nil {
-		if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
-		}
-		processIdentifier = m.GetProcessIdentifier()
-		_processIdentifierErr := writeBuffer.WriteSerializable(ctx, processIdentifier)
-		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for processIdentifier")
-		}
-		if _processIdentifierErr != nil {
-			return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", GetRef(m.GetProcessIdentifier()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetRecipientProcess"); popErr != nil {
@@ -224,9 +194,7 @@ func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(ctx context.Context, 
 	return nil
 }
 
-func (m *_BACnetRecipientProcess) isBACnetRecipientProcess() bool {
-	return true
-}
+func (m *_BACnetRecipientProcess) IsBACnetRecipientProcess() {}
 
 func (m *_BACnetRecipientProcess) String() string {
 	if m == nil {

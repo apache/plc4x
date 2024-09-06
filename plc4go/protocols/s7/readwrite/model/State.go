@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,13 +54,8 @@ type State interface {
 	GetSIG_2() bool
 	// GetSIG_1 returns SIG_1 (property field)
 	GetSIG_1() bool
-}
-
-// StateExactly can be used when we want exactly this type and not a type which fulfills State.
-// This is useful for switch cases.
-type StateExactly interface {
-	State
-	isState() bool
+	// IsState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsState()
 }
 
 // _State is the data-structure of this message
@@ -72,6 +69,8 @@ type _State struct {
 	SIG_2 bool
 	SIG_1 bool
 }
+
+var _ State = (*_State)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -173,88 +172,82 @@ func StateParse(ctx context.Context, theBytes []byte) (State, error) {
 	return StateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StateParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (State, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (State, error) {
+		return StateParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (State, error) {
+	v, err := (&_State{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_State) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__state State, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("State"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for State")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (SIG_8)
-	_SIG_8, _SIG_8Err := readBuffer.ReadBit("SIG_8")
-	if _SIG_8Err != nil {
-		return nil, errors.Wrap(_SIG_8Err, "Error parsing 'SIG_8' field of State")
+	SIG_8, err := ReadSimpleField(ctx, "SIG_8", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'SIG_8' field"))
 	}
-	SIG_8 := _SIG_8
+	m.SIG_8 = SIG_8
 
-	// Simple Field (SIG_7)
-	_SIG_7, _SIG_7Err := readBuffer.ReadBit("SIG_7")
-	if _SIG_7Err != nil {
-		return nil, errors.Wrap(_SIG_7Err, "Error parsing 'SIG_7' field of State")
+	SIG_7, err := ReadSimpleField(ctx, "SIG_7", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'SIG_7' field"))
 	}
-	SIG_7 := _SIG_7
+	m.SIG_7 = SIG_7
 
-	// Simple Field (SIG_6)
-	_SIG_6, _SIG_6Err := readBuffer.ReadBit("SIG_6")
-	if _SIG_6Err != nil {
-		return nil, errors.Wrap(_SIG_6Err, "Error parsing 'SIG_6' field of State")
+	SIG_6, err := ReadSimpleField(ctx, "SIG_6", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'SIG_6' field"))
 	}
-	SIG_6 := _SIG_6
+	m.SIG_6 = SIG_6
 
-	// Simple Field (SIG_5)
-	_SIG_5, _SIG_5Err := readBuffer.ReadBit("SIG_5")
-	if _SIG_5Err != nil {
-		return nil, errors.Wrap(_SIG_5Err, "Error parsing 'SIG_5' field of State")
+	SIG_5, err := ReadSimpleField(ctx, "SIG_5", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'SIG_5' field"))
 	}
-	SIG_5 := _SIG_5
+	m.SIG_5 = SIG_5
 
-	// Simple Field (SIG_4)
-	_SIG_4, _SIG_4Err := readBuffer.ReadBit("SIG_4")
-	if _SIG_4Err != nil {
-		return nil, errors.Wrap(_SIG_4Err, "Error parsing 'SIG_4' field of State")
+	SIG_4, err := ReadSimpleField(ctx, "SIG_4", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'SIG_4' field"))
 	}
-	SIG_4 := _SIG_4
+	m.SIG_4 = SIG_4
 
-	// Simple Field (SIG_3)
-	_SIG_3, _SIG_3Err := readBuffer.ReadBit("SIG_3")
-	if _SIG_3Err != nil {
-		return nil, errors.Wrap(_SIG_3Err, "Error parsing 'SIG_3' field of State")
+	SIG_3, err := ReadSimpleField(ctx, "SIG_3", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'SIG_3' field"))
 	}
-	SIG_3 := _SIG_3
+	m.SIG_3 = SIG_3
 
-	// Simple Field (SIG_2)
-	_SIG_2, _SIG_2Err := readBuffer.ReadBit("SIG_2")
-	if _SIG_2Err != nil {
-		return nil, errors.Wrap(_SIG_2Err, "Error parsing 'SIG_2' field of State")
+	SIG_2, err := ReadSimpleField(ctx, "SIG_2", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'SIG_2' field"))
 	}
-	SIG_2 := _SIG_2
+	m.SIG_2 = SIG_2
 
-	// Simple Field (SIG_1)
-	_SIG_1, _SIG_1Err := readBuffer.ReadBit("SIG_1")
-	if _SIG_1Err != nil {
-		return nil, errors.Wrap(_SIG_1Err, "Error parsing 'SIG_1' field of State")
+	SIG_1, err := ReadSimpleField(ctx, "SIG_1", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'SIG_1' field"))
 	}
-	SIG_1 := _SIG_1
+	m.SIG_1 = SIG_1
 
 	if closeErr := readBuffer.CloseContext("State"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for State")
 	}
 
-	// Create the instance
-	return &_State{
-		SIG_8: SIG_8,
-		SIG_7: SIG_7,
-		SIG_6: SIG_6,
-		SIG_5: SIG_5,
-		SIG_4: SIG_4,
-		SIG_3: SIG_3,
-		SIG_2: SIG_2,
-		SIG_1: SIG_1,
-	}, nil
+	return m, nil
 }
 
 func (m *_State) Serialize() ([]byte, error) {
@@ -274,60 +267,36 @@ func (m *_State) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for State")
 	}
 
-	// Simple Field (SIG_8)
-	SIG_8 := bool(m.GetSIG_8())
-	_SIG_8Err := writeBuffer.WriteBit("SIG_8", (SIG_8))
-	if _SIG_8Err != nil {
-		return errors.Wrap(_SIG_8Err, "Error serializing 'SIG_8' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_8", m.GetSIG_8(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_8' field")
 	}
 
-	// Simple Field (SIG_7)
-	SIG_7 := bool(m.GetSIG_7())
-	_SIG_7Err := writeBuffer.WriteBit("SIG_7", (SIG_7))
-	if _SIG_7Err != nil {
-		return errors.Wrap(_SIG_7Err, "Error serializing 'SIG_7' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_7", m.GetSIG_7(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_7' field")
 	}
 
-	// Simple Field (SIG_6)
-	SIG_6 := bool(m.GetSIG_6())
-	_SIG_6Err := writeBuffer.WriteBit("SIG_6", (SIG_6))
-	if _SIG_6Err != nil {
-		return errors.Wrap(_SIG_6Err, "Error serializing 'SIG_6' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_6", m.GetSIG_6(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_6' field")
 	}
 
-	// Simple Field (SIG_5)
-	SIG_5 := bool(m.GetSIG_5())
-	_SIG_5Err := writeBuffer.WriteBit("SIG_5", (SIG_5))
-	if _SIG_5Err != nil {
-		return errors.Wrap(_SIG_5Err, "Error serializing 'SIG_5' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_5", m.GetSIG_5(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_5' field")
 	}
 
-	// Simple Field (SIG_4)
-	SIG_4 := bool(m.GetSIG_4())
-	_SIG_4Err := writeBuffer.WriteBit("SIG_4", (SIG_4))
-	if _SIG_4Err != nil {
-		return errors.Wrap(_SIG_4Err, "Error serializing 'SIG_4' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_4", m.GetSIG_4(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_4' field")
 	}
 
-	// Simple Field (SIG_3)
-	SIG_3 := bool(m.GetSIG_3())
-	_SIG_3Err := writeBuffer.WriteBit("SIG_3", (SIG_3))
-	if _SIG_3Err != nil {
-		return errors.Wrap(_SIG_3Err, "Error serializing 'SIG_3' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_3", m.GetSIG_3(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_3' field")
 	}
 
-	// Simple Field (SIG_2)
-	SIG_2 := bool(m.GetSIG_2())
-	_SIG_2Err := writeBuffer.WriteBit("SIG_2", (SIG_2))
-	if _SIG_2Err != nil {
-		return errors.Wrap(_SIG_2Err, "Error serializing 'SIG_2' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_2", m.GetSIG_2(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_2' field")
 	}
 
-	// Simple Field (SIG_1)
-	SIG_1 := bool(m.GetSIG_1())
-	_SIG_1Err := writeBuffer.WriteBit("SIG_1", (SIG_1))
-	if _SIG_1Err != nil {
-		return errors.Wrap(_SIG_1Err, "Error serializing 'SIG_1' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_1", m.GetSIG_1(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_1' field")
 	}
 
 	if popErr := writeBuffer.PopContext("State"); popErr != nil {
@@ -336,9 +305,7 @@ func (m *_State) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 	return nil
 }
 
-func (m *_State) isState() bool {
-	return true
-}
+func (m *_State) IsState() {}
 
 func (m *_State) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type AdsMultiRequestItemReadWrite interface {
 	GetItemReadLength() uint32
 	// GetItemWriteLength returns ItemWriteLength (property field)
 	GetItemWriteLength() uint32
-}
-
-// AdsMultiRequestItemReadWriteExactly can be used when we want exactly this type and not a type which fulfills AdsMultiRequestItemReadWrite.
-// This is useful for switch cases.
-type AdsMultiRequestItemReadWriteExactly interface {
-	AdsMultiRequestItemReadWrite
-	isAdsMultiRequestItemReadWrite() bool
+	// IsAdsMultiRequestItemReadWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsMultiRequestItemReadWrite()
 }
 
 // _AdsMultiRequestItemReadWrite is the data-structure of this message
 type _AdsMultiRequestItemReadWrite struct {
-	*_AdsMultiRequestItem
+	AdsMultiRequestItemContract
 	ItemIndexGroup  uint32
 	ItemIndexOffset uint32
 	ItemReadLength  uint32
 	ItemWriteLength uint32
 }
+
+var _ AdsMultiRequestItemReadWrite = (*_AdsMultiRequestItemReadWrite)(nil)
+var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemReadWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -77,10 +77,8 @@ func (m *_AdsMultiRequestItemReadWrite) GetIndexGroup() uint32 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsMultiRequestItemReadWrite) InitializeParent(parent AdsMultiRequestItem) {}
-
-func (m *_AdsMultiRequestItemReadWrite) GetParent() AdsMultiRequestItem {
-	return m._AdsMultiRequestItem
+func (m *_AdsMultiRequestItemReadWrite) GetParent() AdsMultiRequestItemContract {
+	return m.AdsMultiRequestItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,13 +110,13 @@ func (m *_AdsMultiRequestItemReadWrite) GetItemWriteLength() uint32 {
 // NewAdsMultiRequestItemReadWrite factory function for _AdsMultiRequestItemReadWrite
 func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *_AdsMultiRequestItemReadWrite {
 	_result := &_AdsMultiRequestItemReadWrite{
-		ItemIndexGroup:       itemIndexGroup,
-		ItemIndexOffset:      itemIndexOffset,
-		ItemReadLength:       itemReadLength,
-		ItemWriteLength:      itemWriteLength,
-		_AdsMultiRequestItem: NewAdsMultiRequestItem(),
+		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
+		ItemIndexGroup:              itemIndexGroup,
+		ItemIndexOffset:             itemIndexOffset,
+		ItemReadLength:              itemReadLength,
+		ItemWriteLength:             itemWriteLength,
 	}
-	_result._AdsMultiRequestItem._AdsMultiRequestItemChildRequirements = _result
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
 	return _result
 }
 
@@ -138,7 +136,7 @@ func (m *_AdsMultiRequestItemReadWrite) GetTypeName() string {
 }
 
 func (m *_AdsMultiRequestItemReadWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).getLengthInBits(ctx))
 
 	// Simple field (itemIndexGroup)
 	lengthInBits += 32
@@ -159,63 +157,46 @@ func (m *_AdsMultiRequestItemReadWrite) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsMultiRequestItemReadWriteParse(ctx context.Context, theBytes []byte, indexGroup uint32) (AdsMultiRequestItemReadWrite, error) {
-	return AdsMultiRequestItemReadWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), indexGroup)
-}
-
-func AdsMultiRequestItemReadWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItemReadWrite, error) {
+func (m *_AdsMultiRequestItemReadWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsMultiRequestItem, indexGroup uint32) (__adsMultiRequestItemReadWrite AdsMultiRequestItemReadWrite, err error) {
+	m.AdsMultiRequestItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItemReadWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsMultiRequestItemReadWrite")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (itemIndexGroup)
-	_itemIndexGroup, _itemIndexGroupErr := readBuffer.ReadUint32("itemIndexGroup", 32)
-	if _itemIndexGroupErr != nil {
-		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field of AdsMultiRequestItemReadWrite")
+	itemIndexGroup, err := ReadSimpleField(ctx, "itemIndexGroup", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemIndexGroup' field"))
 	}
-	itemIndexGroup := _itemIndexGroup
+	m.ItemIndexGroup = itemIndexGroup
 
-	// Simple Field (itemIndexOffset)
-	_itemIndexOffset, _itemIndexOffsetErr := readBuffer.ReadUint32("itemIndexOffset", 32)
-	if _itemIndexOffsetErr != nil {
-		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field of AdsMultiRequestItemReadWrite")
+	itemIndexOffset, err := ReadSimpleField(ctx, "itemIndexOffset", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemIndexOffset' field"))
 	}
-	itemIndexOffset := _itemIndexOffset
+	m.ItemIndexOffset = itemIndexOffset
 
-	// Simple Field (itemReadLength)
-	_itemReadLength, _itemReadLengthErr := readBuffer.ReadUint32("itemReadLength", 32)
-	if _itemReadLengthErr != nil {
-		return nil, errors.Wrap(_itemReadLengthErr, "Error parsing 'itemReadLength' field of AdsMultiRequestItemReadWrite")
+	itemReadLength, err := ReadSimpleField(ctx, "itemReadLength", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemReadLength' field"))
 	}
-	itemReadLength := _itemReadLength
+	m.ItemReadLength = itemReadLength
 
-	// Simple Field (itemWriteLength)
-	_itemWriteLength, _itemWriteLengthErr := readBuffer.ReadUint32("itemWriteLength", 32)
-	if _itemWriteLengthErr != nil {
-		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field of AdsMultiRequestItemReadWrite")
+	itemWriteLength, err := ReadSimpleField(ctx, "itemWriteLength", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemWriteLength' field"))
 	}
-	itemWriteLength := _itemWriteLength
+	m.ItemWriteLength = itemWriteLength
 
 	if closeErr := readBuffer.CloseContext("AdsMultiRequestItemReadWrite"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsMultiRequestItemReadWrite")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsMultiRequestItemReadWrite{
-		_AdsMultiRequestItem: &_AdsMultiRequestItem{},
-		ItemIndexGroup:       itemIndexGroup,
-		ItemIndexOffset:      itemIndexOffset,
-		ItemReadLength:       itemReadLength,
-		ItemWriteLength:      itemWriteLength,
-	}
-	_child._AdsMultiRequestItem._AdsMultiRequestItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsMultiRequestItemReadWrite) Serialize() ([]byte, error) {
@@ -236,32 +217,20 @@ func (m *_AdsMultiRequestItemReadWrite) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for AdsMultiRequestItemReadWrite")
 		}
 
-		// Simple Field (itemIndexGroup)
-		itemIndexGroup := uint32(m.GetItemIndexGroup())
-		_itemIndexGroupErr := writeBuffer.WriteUint32("itemIndexGroup", 32, uint32((itemIndexGroup)))
-		if _itemIndexGroupErr != nil {
-			return errors.Wrap(_itemIndexGroupErr, "Error serializing 'itemIndexGroup' field")
+		if err := WriteSimpleField[uint32](ctx, "itemIndexGroup", m.GetItemIndexGroup(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemIndexGroup' field")
 		}
 
-		// Simple Field (itemIndexOffset)
-		itemIndexOffset := uint32(m.GetItemIndexOffset())
-		_itemIndexOffsetErr := writeBuffer.WriteUint32("itemIndexOffset", 32, uint32((itemIndexOffset)))
-		if _itemIndexOffsetErr != nil {
-			return errors.Wrap(_itemIndexOffsetErr, "Error serializing 'itemIndexOffset' field")
+		if err := WriteSimpleField[uint32](ctx, "itemIndexOffset", m.GetItemIndexOffset(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemIndexOffset' field")
 		}
 
-		// Simple Field (itemReadLength)
-		itemReadLength := uint32(m.GetItemReadLength())
-		_itemReadLengthErr := writeBuffer.WriteUint32("itemReadLength", 32, uint32((itemReadLength)))
-		if _itemReadLengthErr != nil {
-			return errors.Wrap(_itemReadLengthErr, "Error serializing 'itemReadLength' field")
+		if err := WriteSimpleField[uint32](ctx, "itemReadLength", m.GetItemReadLength(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemReadLength' field")
 		}
 
-		// Simple Field (itemWriteLength)
-		itemWriteLength := uint32(m.GetItemWriteLength())
-		_itemWriteLengthErr := writeBuffer.WriteUint32("itemWriteLength", 32, uint32((itemWriteLength)))
-		if _itemWriteLengthErr != nil {
-			return errors.Wrap(_itemWriteLengthErr, "Error serializing 'itemWriteLength' field")
+		if err := WriteSimpleField[uint32](ctx, "itemWriteLength", m.GetItemWriteLength(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemWriteLength' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsMultiRequestItemReadWrite"); popErr != nil {
@@ -269,12 +238,10 @@ func (m *_AdsMultiRequestItemReadWrite) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsMultiRequestItemReadWrite) isAdsMultiRequestItemReadWrite() bool {
-	return true
-}
+func (m *_AdsMultiRequestItemReadWrite) IsAdsMultiRequestItemReadWrite() {}
 
 func (m *_AdsMultiRequestItemReadWrite) String() string {
 	if m == nil {

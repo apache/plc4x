@@ -83,10 +83,7 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataNotificationThreshold");
 
     // Simple Field (notificationThreshold)
-    writeSimpleField(
-        "notificationThreshold",
-        notificationThreshold,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notificationThreshold", notificationThreshold, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger notificationThreshold =
         readSimpleField(
             "notificationThreshold",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -60,7 +60,7 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
     writeBuffer.pushContext("BACnetChannelValueTime");
 
     // Simple Field (timeValue)
-    writeSimpleField("timeValue", timeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeValue", timeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueTime");
   }
@@ -91,7 +91,7 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
     BACnetApplicationTagTime timeValue =
         readSimpleField(
             "timeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

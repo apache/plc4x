@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,21 +45,19 @@ type BACnetConstructedDataAction interface {
 	GetActionLists() []BACnetActionList
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-}
-
-// BACnetConstructedDataActionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAction.
-// This is useful for switch cases.
-type BACnetConstructedDataActionExactly interface {
-	BACnetConstructedDataAction
-	isBACnetConstructedDataAction() bool
+	// IsBACnetConstructedDataAction is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAction()
 }
 
 // _BACnetConstructedDataAction is the data-structure of this message
 type _BACnetConstructedDataAction struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	ActionLists          []BACnetActionList
 }
+
+var _ BACnetConstructedDataAction = (*_BACnetConstructedDataAction)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAction)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +77,8 @@ func (m *_BACnetConstructedDataAction) GetPropertyIdentifierArgument() BACnetPro
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAction) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAction) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAction) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,7 +106,7 @@ func (m *_BACnetConstructedDataAction) GetActionLists() []BACnetActionList {
 func (m *_BACnetConstructedDataAction) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -126,11 +119,11 @@ func (m *_BACnetConstructedDataAction) GetZero() uint64 {
 // NewBACnetConstructedDataAction factory function for _BACnetConstructedDataAction
 func NewBACnetConstructedDataAction(numberOfDataElements BACnetApplicationTagUnsignedInteger, actionLists []BACnetActionList, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAction {
 	_result := &_BACnetConstructedDataAction{
-		NumberOfDataElements:   numberOfDataElements,
-		ActionLists:            actionLists,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ActionLists:                   actionLists,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -150,7 +143,7 @@ func (m *_BACnetConstructedDataAction) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAction) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 
@@ -173,82 +166,44 @@ func (m *_BACnetConstructedDataAction) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataActionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAction, error) {
-	return BACnetConstructedDataActionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataActionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAction, error) {
+func (m *_BACnetConstructedDataAction) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAction BACnetConstructedDataAction, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAction"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAction")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 	_ = zero
 
-	// Optional Field (numberOfDataElements) (Can be skipped, if a given expression evaluates to false)
-	var numberOfDataElements BACnetApplicationTagUnsignedInteger = nil
-	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
-		}
-		_val, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataAction")
-		default:
-			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
-			}
-		}
+	var numberOfDataElements BACnetApplicationTagUnsignedInteger
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
+	}
+	if _numberOfDataElements != nil {
+		numberOfDataElements = *_numberOfDataElements
+		m.NumberOfDataElements = numberOfDataElements
 	}
 
-	// Array field (actionLists)
-	if pullErr := readBuffer.PullContext("actionLists", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for actionLists")
+	actionLists, err := ReadTerminatedArrayField[BACnetActionList](ctx, "actionLists", ReadComplex[BACnetActionList](BACnetActionListParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionLists' field"))
 	}
-	// Terminated array
-	var actionLists []BACnetActionList
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetActionListParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'actionLists' field of BACnetConstructedDataAction")
-			}
-			actionLists = append(actionLists, _item.(BACnetActionList))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("actionLists", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for actionLists")
-	}
+	m.ActionLists = actionLists
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAction"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAction")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAction{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NumberOfDataElements: numberOfDataElements,
-		ActionLists:          actionLists,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAction) Serialize() ([]byte, error) {
@@ -275,37 +230,12 @@ func (m *_BACnetConstructedDataAction) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
 
-		// Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-		var numberOfDataElements BACnetApplicationTagUnsignedInteger = nil
-		if m.GetNumberOfDataElements() != nil {
-			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
-			}
-			numberOfDataElements = m.GetNumberOfDataElements()
-			_numberOfDataElementsErr := writeBuffer.WriteSerializable(ctx, numberOfDataElements)
-			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
-			}
-			if _numberOfDataElementsErr != nil {
-				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
-			}
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", GetRef(m.GetNumberOfDataElements()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfDataElements' field")
 		}
 
-		// Array Field (actionLists)
-		if pushErr := writeBuffer.PushContext("actionLists", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for actionLists")
-		}
-		for _curItem, _element := range m.GetActionLists() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetActionLists()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'actionLists' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("actionLists", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for actionLists")
+		if err := WriteComplexTypeArrayField(ctx, "actionLists", m.GetActionLists(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'actionLists' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAction"); popErr != nil {
@@ -313,12 +243,10 @@ func (m *_BACnetConstructedDataAction) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAction) isBACnetConstructedDataAction() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAction) IsBACnetConstructedDataAction() {}
 
 func (m *_BACnetConstructedDataAction) String() string {
 	if m == nil {

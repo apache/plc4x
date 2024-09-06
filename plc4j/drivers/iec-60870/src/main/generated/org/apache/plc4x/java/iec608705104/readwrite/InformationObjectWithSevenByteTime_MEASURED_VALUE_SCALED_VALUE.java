@@ -77,23 +77,17 @@ public class InformationObjectWithSevenByteTime_MEASURED_VALUE_SCALED_VALUE
 
     // Simple Field (sva)
     writeSimpleField(
-        "sva",
-        sva,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "sva", sva, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qds)
     writeSimpleField(
-        "qds",
-        qds,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qds", qds, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp56Time2a)
     writeSimpleField(
         "cp56Time2a",
         cp56Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithSevenByteTime_MEASURED_VALUE_SCALED_VALUE");
@@ -133,21 +127,19 @@ public class InformationObjectWithSevenByteTime_MEASURED_VALUE_SCALED_VALUE
     ScaledValue sva =
         readSimpleField(
             "sva",
-            new DataReaderComplexDefault<>(() -> ScaledValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ScaledValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptor qds =
         readSimpleField(
             "qds",
-            new DataReaderComplexDefault<>(
-                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualityDescriptor.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithSevenByteTime_MEASURED_VALUE_SCALED_VALUE");

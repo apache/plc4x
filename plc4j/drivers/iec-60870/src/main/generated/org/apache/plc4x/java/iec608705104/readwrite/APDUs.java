@@ -89,7 +89,7 @@ public class APDUs implements Message {
     List<APDU> apdus =
         readTerminatedArrayField(
             "apdus",
-            new DataReaderComplexDefault<>(() -> APDU.staticParse(readBuffer), readBuffer),
+            readComplex(() -> APDU.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.iec608705104.readwrite.utils.StaticHelper.finished(

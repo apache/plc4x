@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type MeteringDataElectricityConsumption interface {
 	MeteringData
 	// GetKWhr returns KWhr (property field)
 	GetKWhr() uint32
-}
-
-// MeteringDataElectricityConsumptionExactly can be used when we want exactly this type and not a type which fulfills MeteringDataElectricityConsumption.
-// This is useful for switch cases.
-type MeteringDataElectricityConsumptionExactly interface {
-	MeteringDataElectricityConsumption
-	isMeteringDataElectricityConsumption() bool
+	// IsMeteringDataElectricityConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataElectricityConsumption()
 }
 
 // _MeteringDataElectricityConsumption is the data-structure of this message
 type _MeteringDataElectricityConsumption struct {
-	*_MeteringData
+	MeteringDataContract
 	KWhr uint32
 }
+
+var _ MeteringDataElectricityConsumption = (*_MeteringDataElectricityConsumption)(nil)
+var _ MeteringDataRequirements = (*_MeteringDataElectricityConsumption)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _MeteringDataElectricityConsumption struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MeteringDataElectricityConsumption) InitializeParent(parent MeteringData, commandTypeContainer MeteringCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_MeteringDataElectricityConsumption) GetParent() MeteringData {
-	return m._MeteringData
+func (m *_MeteringDataElectricityConsumption) GetParent() MeteringDataContract {
+	return m.MeteringDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_MeteringDataElectricityConsumption) GetKWhr() uint32 {
 // NewMeteringDataElectricityConsumption factory function for _MeteringDataElectricityConsumption
 func NewMeteringDataElectricityConsumption(kWhr uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataElectricityConsumption {
 	_result := &_MeteringDataElectricityConsumption{
-		KWhr:          kWhr,
-		_MeteringData: NewMeteringData(commandTypeContainer, argument),
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		KWhr:                 kWhr,
 	}
-	_result._MeteringData._MeteringDataChildRequirements = _result
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_MeteringDataElectricityConsumption) GetTypeName() string {
 }
 
 func (m *_MeteringDataElectricityConsumption) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	// Simple field (kWhr)
 	lengthInBits += 32
@@ -125,39 +120,28 @@ func (m *_MeteringDataElectricityConsumption) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataElectricityConsumptionParse(ctx context.Context, theBytes []byte) (MeteringDataElectricityConsumption, error) {
-	return MeteringDataElectricityConsumptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MeteringDataElectricityConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
+func (m *_MeteringDataElectricityConsumption) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeteringData) (__meteringDataElectricityConsumption MeteringDataElectricityConsumption, err error) {
+	m.MeteringDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeteringDataElectricityConsumption"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeteringDataElectricityConsumption")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (kWhr)
-	_kWhr, _kWhrErr := readBuffer.ReadUint32("kWhr", 32)
-	if _kWhrErr != nil {
-		return nil, errors.Wrap(_kWhrErr, "Error parsing 'kWhr' field of MeteringDataElectricityConsumption")
+	kWhr, err := ReadSimpleField(ctx, "kWhr", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'kWhr' field"))
 	}
-	kWhr := _kWhr
+	m.KWhr = kWhr
 
 	if closeErr := readBuffer.CloseContext("MeteringDataElectricityConsumption"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MeteringDataElectricityConsumption")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MeteringDataElectricityConsumption{
-		_MeteringData: &_MeteringData{},
-		KWhr:          kWhr,
-	}
-	_child._MeteringData._MeteringDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MeteringDataElectricityConsumption) Serialize() ([]byte, error) {
@@ -178,11 +162,8 @@ func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for MeteringDataElectricityConsumption")
 		}
 
-		// Simple Field (kWhr)
-		kWhr := uint32(m.GetKWhr())
-		_kWhrErr := writeBuffer.WriteUint32("kWhr", 32, uint32((kWhr)))
-		if _kWhrErr != nil {
-			return errors.Wrap(_kWhrErr, "Error serializing 'kWhr' field")
+		if err := WriteSimpleField[uint32](ctx, "kWhr", m.GetKWhr(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'kWhr' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MeteringDataElectricityConsumption"); popErr != nil {
@@ -190,12 +171,10 @@ func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MeteringDataContract.(*_MeteringData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MeteringDataElectricityConsumption) isMeteringDataElectricityConsumption() bool {
-	return true
-}
+func (m *_MeteringDataElectricityConsumption) IsMeteringDataElectricityConsumption() {}
 
 func (m *_MeteringDataElectricityConsumption) String() string {
 	if m == nil {

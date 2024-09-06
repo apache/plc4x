@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,13 +46,8 @@ type BACnetEscalatorModeTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-}
-
-// BACnetEscalatorModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEscalatorModeTagged.
-// This is useful for switch cases.
-type BACnetEscalatorModeTaggedExactly interface {
-	BACnetEscalatorModeTagged
-	isBACnetEscalatorModeTagged() bool
+	// IsBACnetEscalatorModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEscalatorModeTagged()
 }
 
 // _BACnetEscalatorModeTagged is the data-structure of this message
@@ -63,6 +60,8 @@ type _BACnetEscalatorModeTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetEscalatorModeTagged = (*_BACnetEscalatorModeTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,6 +102,9 @@ func (m *_BACnetEscalatorModeTagged) GetIsProprietary() bool {
 
 // NewBACnetEscalatorModeTagged factory function for _BACnetEscalatorModeTagged
 func NewBACnetEscalatorModeTagged(header BACnetTagHeader, value BACnetEscalatorMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEscalatorModeTagged must not be nil")
+	}
 	return &_BACnetEscalatorModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -146,77 +148,68 @@ func BACnetEscalatorModeTaggedParse(ctx context.Context, theBytes []byte, tagNum
 	return BACnetEscalatorModeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetEscalatorModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEscalatorModeTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEscalatorModeTagged, error) {
+		return BACnetEscalatorModeTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetEscalatorModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorModeTagged, error) {
+	v, err := (&_BACnetEscalatorModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetEscalatorModeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetEscalatorModeTagged BACnetEscalatorModeTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEscalatorModeTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEscalatorModeTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetEscalatorModeTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetEscalatorModeTagged")
+	value, err := ReadManualField[BACnetEscalatorMode](ctx, "value", readBuffer, EnsureType[BACnetEscalatorMode](ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetEscalatorMode
-	if _value != nil {
-		value = _value.(BACnetEscalatorMode)
-	}
+	m.Value = value
 
-	// Virtual field
-	_isProprietary := bool((value) == (BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
+	isProprietary, err := ReadVirtualField[bool](ctx, "isProprietary", (*bool)(nil), bool((value) == (BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isProprietary' field"))
+	}
 	_ = isProprietary
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetEscalatorModeTagged")
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}
-	var proprietaryValue uint32
-	if _proprietaryValue != nil {
-		proprietaryValue = _proprietaryValue.(uint32)
-	}
+	m.ProprietaryValue = proprietaryValue
 
 	if closeErr := readBuffer.CloseContext("BACnetEscalatorModeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEscalatorModeTagged")
 	}
 
-	// Create the instance
-	return &_BACnetEscalatorModeTagged{
-		TagNumber:        tagNumber,
-		TagClass:         tagClass,
-		Header:           header,
-		Value:            value,
-		ProprietaryValue: proprietaryValue,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetEscalatorModeTagged) Serialize() ([]byte, error) {
@@ -236,22 +229,12 @@ func (m *_BACnetEscalatorModeTagged) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(pushErr, "Error pushing for BACnetEscalatorModeTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetEscalatorMode](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 	// Virtual field
 	isProprietary := m.GetIsProprietary()
@@ -260,10 +243,10 @@ func (m *_BACnetEscalatorModeTagged) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
-	if _proprietaryValueErr != nil {
-		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
+	if err := WriteManualField[uint32](ctx, "proprietaryValue", func(ctx context.Context) error {
+		return WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
+	}, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'proprietaryValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEscalatorModeTagged"); popErr != nil {
@@ -285,9 +268,7 @@ func (m *_BACnetEscalatorModeTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetEscalatorModeTagged) isBACnetEscalatorModeTagged() bool {
-	return true
-}
+func (m *_BACnetEscalatorModeTagged) IsBACnetEscalatorModeTagged() {}
 
 func (m *_BACnetEscalatorModeTagged) String() string {
 	if m == nil {

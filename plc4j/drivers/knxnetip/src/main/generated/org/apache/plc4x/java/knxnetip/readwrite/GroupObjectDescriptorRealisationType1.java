@@ -130,15 +130,14 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
         "priority",
         "CEMIPriority",
         priority,
-        new DataWriterEnumDefault<>(
-            CEMIPriority::getValue, CEMIPriority::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(CEMIPriority::getValue, CEMIPriority::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (valueType)
     writeSimpleEnumField(
         "valueType",
         "ComObjectValueType",
         valueType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ComObjectValueType::getValue,
             ComObjectValueType::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -213,15 +212,13 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
         readEnumField(
             "priority",
             "CEMIPriority",
-            new DataReaderEnumDefault<>(
-                CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     ComObjectValueType valueType =
         readEnumField(
             "valueType",
             "ComObjectValueType",
-            new DataReaderEnumDefault<>(
-                ComObjectValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ComObjectValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("GroupObjectDescriptorRealisationType1");
     // Create the instance

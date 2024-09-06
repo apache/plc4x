@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type ApduDataExtPropertyValueResponse interface {
 	GetIndex() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// ApduDataExtPropertyValueResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyValueResponse.
-// This is useful for switch cases.
-type ApduDataExtPropertyValueResponseExactly interface {
-	ApduDataExtPropertyValueResponse
-	isApduDataExtPropertyValueResponse() bool
+	// IsApduDataExtPropertyValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtPropertyValueResponse()
 }
 
 // _ApduDataExtPropertyValueResponse is the data-structure of this message
 type _ApduDataExtPropertyValueResponse struct {
-	*_ApduDataExt
+	ApduDataExtContract
 	ObjectIndex uint8
 	PropertyId  uint8
 	Count       uint8
 	Index       uint16
 	Data        []byte
 }
+
+var _ ApduDataExtPropertyValueResponse = (*_ApduDataExtPropertyValueResponse)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_ApduDataExtPropertyValueResponse) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtPropertyValueResponse) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtPropertyValueResponse) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtPropertyValueResponse) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -119,14 +117,14 @@ func (m *_ApduDataExtPropertyValueResponse) GetData() []byte {
 // NewApduDataExtPropertyValueResponse factory function for _ApduDataExtPropertyValueResponse
 func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueResponse {
 	_result := &_ApduDataExtPropertyValueResponse{
-		ObjectIndex:  objectIndex,
-		PropertyId:   propertyId,
-		Count:        count,
-		Index:        index,
-		Data:         data,
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Count:               count,
+		Index:               index,
+		Data:                data,
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -146,7 +144,7 @@ func (m *_ApduDataExtPropertyValueResponse) GetTypeName() string {
 }
 
 func (m *_ApduDataExtPropertyValueResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -172,72 +170,52 @@ func (m *_ApduDataExtPropertyValueResponse) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtPropertyValueResponseParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtPropertyValueResponse, error) {
-	return ApduDataExtPropertyValueResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtPropertyValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyValueResponse, error) {
+func (m *_ApduDataExtPropertyValueResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtPropertyValueResponse ApduDataExtPropertyValueResponse, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtPropertyValueResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIndex)
-	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
-	if _objectIndexErr != nil {
-		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field of ApduDataExtPropertyValueResponse")
+	objectIndex, err := ReadSimpleField(ctx, "objectIndex", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIndex' field"))
 	}
-	objectIndex := _objectIndex
+	m.ObjectIndex = objectIndex
 
-	// Simple Field (propertyId)
-	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
-	if _propertyIdErr != nil {
-		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of ApduDataExtPropertyValueResponse")
+	propertyId, err := ReadSimpleField(ctx, "propertyId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyId' field"))
 	}
-	propertyId := _propertyId
+	m.PropertyId = propertyId
 
-	// Simple Field (count)
-	_count, _countErr := readBuffer.ReadUint8("count", 4)
-	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of ApduDataExtPropertyValueResponse")
+	count, err := ReadSimpleField(ctx, "count", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}
-	count := _count
+	m.Count = count
 
-	// Simple Field (index)
-	_index, _indexErr := readBuffer.ReadUint16("index", 12)
-	if _indexErr != nil {
-		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of ApduDataExtPropertyValueResponse")
+	index, err := ReadSimpleField(ctx, "index", ReadUnsignedShort(readBuffer, uint8(12)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'index' field"))
 	}
-	index := _index
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(length) - uint16(uint16(5)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataExtPropertyValueResponse")
+	m.Index = index
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(length)-int32(int32(5))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyValueResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtPropertyValueResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtPropertyValueResponse{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-		ObjectIndex: objectIndex,
-		PropertyId:  propertyId,
-		Count:       count,
-		Index:       index,
-		Data:        data,
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtPropertyValueResponse) Serialize() ([]byte, error) {
@@ -258,37 +236,23 @@ func (m *_ApduDataExtPropertyValueResponse) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for ApduDataExtPropertyValueResponse")
 		}
 
-		// Simple Field (objectIndex)
-		objectIndex := uint8(m.GetObjectIndex())
-		_objectIndexErr := writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
-		if _objectIndexErr != nil {
-			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
+		if err := WriteSimpleField[uint8](ctx, "objectIndex", m.GetObjectIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIndex' field")
 		}
 
-		// Simple Field (propertyId)
-		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
-		if _propertyIdErr != nil {
-			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
+		if err := WriteSimpleField[uint8](ctx, "propertyId", m.GetPropertyId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyId' field")
 		}
 
-		// Simple Field (count)
-		count := uint8(m.GetCount())
-		_countErr := writeBuffer.WriteUint8("count", 4, uint8((count)))
-		if _countErr != nil {
-			return errors.Wrap(_countErr, "Error serializing 'count' field")
+		if err := WriteSimpleField[uint8](ctx, "count", m.GetCount(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'count' field")
 		}
 
-		// Simple Field (index)
-		index := uint16(m.GetIndex())
-		_indexErr := writeBuffer.WriteUint16("index", 12, uint16((index)))
-		if _indexErr != nil {
-			return errors.Wrap(_indexErr, "Error serializing 'index' field")
+		if err := WriteSimpleField[uint16](ctx, "index", m.GetIndex(), WriteUnsignedShort(writeBuffer, 12)); err != nil {
+			return errors.Wrap(err, "Error serializing 'index' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -297,12 +261,10 @@ func (m *_ApduDataExtPropertyValueResponse) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtPropertyValueResponse) isApduDataExtPropertyValueResponse() bool {
-	return true
-}
+func (m *_ApduDataExtPropertyValueResponse) IsApduDataExtPropertyValueResponse() {}
 
 func (m *_ApduDataExtPropertyValueResponse) String() string {
 	if m == nil {

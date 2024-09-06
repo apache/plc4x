@@ -61,8 +61,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
     writeBuffer.pushContext("BACnetPropertyStatesAuthenticationStatus");
 
     // Simple Field (authenticationStatus)
-    writeSimpleField(
-        "authenticationStatus", authenticationStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationStatus", authenticationStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesAuthenticationStatus");
   }
@@ -93,7 +92,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
     BACnetAuthenticationStatusTagged authenticationStatus =
         readSimpleField(
             "authenticationStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthenticationStatusTagged.staticParse(
                         readBuffer,

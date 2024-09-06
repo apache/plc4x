@@ -37,19 +37,17 @@ type SALDataRoomControlSystem interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
-}
-
-// SALDataRoomControlSystemExactly can be used when we want exactly this type and not a type which fulfills SALDataRoomControlSystem.
-// This is useful for switch cases.
-type SALDataRoomControlSystemExactly interface {
-	SALDataRoomControlSystem
-	isSALDataRoomControlSystem() bool
+	// IsSALDataRoomControlSystem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataRoomControlSystem()
 }
 
 // _SALDataRoomControlSystem is the data-structure of this message
 type _SALDataRoomControlSystem struct {
-	*_SALData
+	SALDataContract
 }
+
+var _ SALDataRoomControlSystem = (*_SALDataRoomControlSystem)(nil)
+var _ SALDataRequirements = (*_SALDataRoomControlSystem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,20 +63,16 @@ func (m *_SALDataRoomControlSystem) GetApplicationId() ApplicationId {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataRoomControlSystem) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataRoomControlSystem) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataRoomControlSystem) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 // NewSALDataRoomControlSystem factory function for _SALDataRoomControlSystem
 func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
 	_result := &_SALDataRoomControlSystem{
-		_SALData: NewSALData(salData),
+		SALDataContract: NewSALData(salData),
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -98,7 +92,7 @@ func (m *_SALDataRoomControlSystem) GetTypeName() string {
 }
 
 func (m *_SALDataRoomControlSystem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -107,15 +101,11 @@ func (m *_SALDataRoomControlSystem) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataRoomControlSystemParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
-	return SALDataRoomControlSystemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataRoomControlSystemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
+func (m *_SALDataRoomControlSystem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataRoomControlSystem SALDataRoomControlSystem, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataRoomControlSystem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataRoomControlSystem")
 	}
@@ -124,19 +114,14 @@ func SALDataRoomControlSystemParseWithBuffer(ctx context.Context, readBuffer uti
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"ROOM_CONTROL_SYSTEM Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "ROOM_CONTROL_SYSTEM Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataRoomControlSystem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataRoomControlSystem")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataRoomControlSystem{
-		_SALData: &_SALData{},
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataRoomControlSystem) Serialize() ([]byte, error) {
@@ -162,12 +147,10 @@ func (m *_SALDataRoomControlSystem) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataRoomControlSystem) isSALDataRoomControlSystem() bool {
-	return true
-}
+func (m *_SALDataRoomControlSystem) IsSALDataRoomControlSystem() {}
 
 func (m *_SALDataRoomControlSystem) String() string {
 	if m == nil {

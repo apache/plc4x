@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetTimerStateChangeValueCharacterString interface {
 	BACnetTimerStateChangeValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetTimerStateChangeValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueCharacterString.
-// This is useful for switch cases.
-type BACnetTimerStateChangeValueCharacterStringExactly interface {
-	BACnetTimerStateChangeValueCharacterString
-	isBACnetTimerStateChangeValueCharacterString() bool
+	// IsBACnetTimerStateChangeValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueCharacterString()
 }
 
 // _BACnetTimerStateChangeValueCharacterString is the data-structure of this message
 type _BACnetTimerStateChangeValueCharacterString struct {
-	*_BACnetTimerStateChangeValue
+	BACnetTimerStateChangeValueContract
 	CharacterStringValue BACnetApplicationTagCharacterString
 }
+
+var _ BACnetTimerStateChangeValueCharacterString = (*_BACnetTimerStateChangeValueCharacterString)(nil)
+var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueCharacterString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetTimerStateChangeValueCharacterString struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetTimerStateChangeValueCharacterString) InitializeParent(parent BACnetTimerStateChangeValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetTimerStateChangeValueCharacterString) GetParent() BACnetTimerStateChangeValue {
-	return m._BACnetTimerStateChangeValue
+func (m *_BACnetTimerStateChangeValueCharacterString) GetParent() BACnetTimerStateChangeValueContract {
+	return m.BACnetTimerStateChangeValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetTimerStateChangeValueCharacterString) GetCharacterStringValue() 
 
 // NewBACnetTimerStateChangeValueCharacterString factory function for _BACnetTimerStateChangeValueCharacterString
 func NewBACnetTimerStateChangeValueCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueCharacterString {
-	_result := &_BACnetTimerStateChangeValueCharacterString{
-		CharacterStringValue:         characterStringValue,
-		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetTimerStateChangeValueCharacterString must not be nil")
 	}
-	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result
+	_result := &_BACnetTimerStateChangeValueCharacterString{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		CharacterStringValue:                characterStringValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetTimerStateChangeValueCharacterString) GetTypeName() string {
 }
 
 func (m *_BACnetTimerStateChangeValueCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
 
 	// Simple field (characterStringValue)
 	lengthInBits += m.CharacterStringValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetTimerStateChangeValueCharacterString) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerStateChangeValueCharacterStringParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueCharacterString, error) {
-	return BACnetTimerStateChangeValueCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetTimerStateChangeValueCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueCharacterString, error) {
+func (m *_BACnetTimerStateChangeValueCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetTimerStateChangeValue, objectTypeArgument BACnetObjectType) (__bACnetTimerStateChangeValueCharacterString BACnetTimerStateChangeValueCharacterString, err error) {
+	m.BACnetTimerStateChangeValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueCharacterString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueCharacterString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (characterStringValue)
-	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
+	characterStringValue, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterStringValue' field"))
 	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _characterStringValueErr != nil {
-		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetTimerStateChangeValueCharacterString")
-	}
-	characterStringValue := _characterStringValue.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for characterStringValue")
-	}
+	m.CharacterStringValue = characterStringValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueCharacterString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueCharacterString")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetTimerStateChangeValueCharacterString{
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		CharacterStringValue: characterStringValue,
-	}
-	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetTimerStateChangeValueCharacterString) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetTimerStateChangeValueCharacterString) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueCharacterString")
 		}
 
-		// Simple Field (characterStringValue)
-		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
-		}
-		_characterStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterStringValue())
-		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for characterStringValue")
-		}
-		if _characterStringValueErr != nil {
-			return errors.Wrap(_characterStringValueErr, "Error serializing 'characterStringValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", m.GetCharacterStringValue(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'characterStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueCharacterString"); popErr != nil {
@@ -202,11 +174,10 @@ func (m *_BACnetTimerStateChangeValueCharacterString) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetTimerStateChangeValueCharacterString) isBACnetTimerStateChangeValueCharacterString() bool {
-	return true
+func (m *_BACnetTimerStateChangeValueCharacterString) IsBACnetTimerStateChangeValueCharacterString() {
 }
 
 func (m *_BACnetTimerStateChangeValueCharacterString) String() string {

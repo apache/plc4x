@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,13 +40,8 @@ type BACnetTagPayloadOctetString interface {
 	utils.Serializable
 	// GetOctets returns Octets (property field)
 	GetOctets() []byte
-}
-
-// BACnetTagPayloadOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadOctetString.
-// This is useful for switch cases.
-type BACnetTagPayloadOctetStringExactly interface {
-	BACnetTagPayloadOctetString
-	isBACnetTagPayloadOctetString() bool
+	// IsBACnetTagPayloadOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadOctetString()
 }
 
 // _BACnetTagPayloadOctetString is the data-structure of this message
@@ -54,6 +51,8 @@ type _BACnetTagPayloadOctetString struct {
 	// Arguments.
 	ActualLength uint32
 }
+
+var _ BACnetTagPayloadOctetString = (*_BACnetTagPayloadOctetString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,32 +107,40 @@ func BACnetTagPayloadOctetStringParse(ctx context.Context, theBytes []byte, actu
 	return BACnetTagPayloadOctetStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetTagPayloadOctetStringParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadOctetString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadOctetString, error) {
+		return BACnetTagPayloadOctetStringParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetTagPayloadOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadOctetString, error) {
+	v, err := (&_BACnetTagPayloadOctetString{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetTagPayloadOctetString) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadOctetString BACnetTagPayloadOctetString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadOctetString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadOctetString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (octets)
-	numberOfBytesoctets := int(actualLength)
-	octets, _readArrayErr := readBuffer.ReadByteArray("octets", numberOfBytesoctets)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'octets' field of BACnetTagPayloadOctetString")
+
+	octets, err := readBuffer.ReadByteArray("octets", int(actualLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octets' field"))
 	}
+	m.Octets = octets
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadOctetString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadOctetString")
 	}
 
-	// Create the instance
-	return &_BACnetTagPayloadOctetString{
-		ActualLength: actualLength,
-		Octets:       octets,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetTagPayloadOctetString) Serialize() ([]byte, error) {
@@ -153,9 +160,7 @@ func (m *_BACnetTagPayloadOctetString) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadOctetString")
 	}
 
-	// Array Field (octets)
-	// Byte Array field (octets)
-	if err := writeBuffer.WriteByteArray("octets", m.GetOctets()); err != nil {
+	if err := WriteByteArrayField(ctx, "octets", m.GetOctets(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'octets' field")
 	}
 
@@ -175,9 +180,7 @@ func (m *_BACnetTagPayloadOctetString) GetActualLength() uint32 {
 //
 ////
 
-func (m *_BACnetTagPayloadOctetString) isBACnetTagPayloadOctetString() bool {
-	return true
-}
+func (m *_BACnetTagPayloadOctetString) IsBACnetTagPayloadOctetString() {}
 
 func (m *_BACnetTagPayloadOctetString) String() string {
 	if m == nil {

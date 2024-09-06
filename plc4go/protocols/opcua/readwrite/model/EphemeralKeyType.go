@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type EphemeralKeyType interface {
 	GetPublicKey() PascalByteString
 	// GetSignature returns Signature (property field)
 	GetSignature() PascalByteString
-}
-
-// EphemeralKeyTypeExactly can be used when we want exactly this type and not a type which fulfills EphemeralKeyType.
-// This is useful for switch cases.
-type EphemeralKeyTypeExactly interface {
-	EphemeralKeyType
-	isEphemeralKeyType() bool
+	// IsEphemeralKeyType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEphemeralKeyType()
 }
 
 // _EphemeralKeyType is the data-structure of this message
 type _EphemeralKeyType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	PublicKey PascalByteString
 	Signature PascalByteString
 }
+
+var _ EphemeralKeyType = (*_EphemeralKeyType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EphemeralKeyType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_EphemeralKeyType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EphemeralKeyType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_EphemeralKeyType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_EphemeralKeyType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_EphemeralKeyType) GetSignature() PascalByteString {
 
 // NewEphemeralKeyType factory function for _EphemeralKeyType
 func NewEphemeralKeyType(publicKey PascalByteString, signature PascalByteString) *_EphemeralKeyType {
-	_result := &_EphemeralKeyType{
-		PublicKey:                  publicKey,
-		Signature:                  signature,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if publicKey == nil {
+		panic("publicKey of type PascalByteString for EphemeralKeyType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if signature == nil {
+		panic("signature of type PascalByteString for EphemeralKeyType must not be nil")
+	}
+	_result := &_EphemeralKeyType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PublicKey:                         publicKey,
+		Signature:                         signature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_EphemeralKeyType) GetTypeName() string {
 }
 
 func (m *_EphemeralKeyType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (publicKey)
 	lengthInBits += m.PublicKey.GetLengthInBits(ctx)
@@ -137,59 +141,34 @@ func (m *_EphemeralKeyType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EphemeralKeyTypeParse(ctx context.Context, theBytes []byte, identifier string) (EphemeralKeyType, error) {
-	return EphemeralKeyTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func EphemeralKeyTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EphemeralKeyType, error) {
+func (m *_EphemeralKeyType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__ephemeralKeyType EphemeralKeyType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EphemeralKeyType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EphemeralKeyType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (publicKey)
-	if pullErr := readBuffer.PullContext("publicKey"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for publicKey")
+	publicKey, err := ReadSimpleField[PascalByteString](ctx, "publicKey", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publicKey' field"))
 	}
-	_publicKey, _publicKeyErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _publicKeyErr != nil {
-		return nil, errors.Wrap(_publicKeyErr, "Error parsing 'publicKey' field of EphemeralKeyType")
-	}
-	publicKey := _publicKey.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("publicKey"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for publicKey")
-	}
+	m.PublicKey = publicKey
 
-	// Simple Field (signature)
-	if pullErr := readBuffer.PullContext("signature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for signature")
+	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'signature' field"))
 	}
-	_signature, _signatureErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _signatureErr != nil {
-		return nil, errors.Wrap(_signatureErr, "Error parsing 'signature' field of EphemeralKeyType")
-	}
-	signature := _signature.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("signature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for signature")
-	}
+	m.Signature = signature
 
 	if closeErr := readBuffer.CloseContext("EphemeralKeyType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EphemeralKeyType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_EphemeralKeyType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		PublicKey:                  publicKey,
-		Signature:                  signature,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_EphemeralKeyType) Serialize() ([]byte, error) {
@@ -210,28 +189,12 @@ func (m *_EphemeralKeyType) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for EphemeralKeyType")
 		}
 
-		// Simple Field (publicKey)
-		if pushErr := writeBuffer.PushContext("publicKey"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for publicKey")
-		}
-		_publicKeyErr := writeBuffer.WriteSerializable(ctx, m.GetPublicKey())
-		if popErr := writeBuffer.PopContext("publicKey"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for publicKey")
-		}
-		if _publicKeyErr != nil {
-			return errors.Wrap(_publicKeyErr, "Error serializing 'publicKey' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "publicKey", m.GetPublicKey(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'publicKey' field")
 		}
 
-		// Simple Field (signature)
-		if pushErr := writeBuffer.PushContext("signature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for signature")
-		}
-		_signatureErr := writeBuffer.WriteSerializable(ctx, m.GetSignature())
-		if popErr := writeBuffer.PopContext("signature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for signature")
-		}
-		if _signatureErr != nil {
-			return errors.Wrap(_signatureErr, "Error serializing 'signature' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'signature' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EphemeralKeyType"); popErr != nil {
@@ -239,12 +202,10 @@ func (m *_EphemeralKeyType) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_EphemeralKeyType) isEphemeralKeyType() bool {
-	return true
-}
+func (m *_EphemeralKeyType) IsEphemeralKeyType() {}
 
 func (m *_EphemeralKeyType) String() string {
 	if m == nil {

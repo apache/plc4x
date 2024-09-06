@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAnalogValueMaxPresValue interface {
 	GetMaxPresValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataAnalogValueMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogValueMaxPresValue.
-// This is useful for switch cases.
-type BACnetConstructedDataAnalogValueMaxPresValueExactly interface {
-	BACnetConstructedDataAnalogValueMaxPresValue
-	isBACnetConstructedDataAnalogValueMaxPresValue() bool
+	// IsBACnetConstructedDataAnalogValueMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAnalogValueMaxPresValue()
 }
 
 // _BACnetConstructedDataAnalogValueMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataAnalogValueMaxPresValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MaxPresValue BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataAnalogValueMaxPresValue = (*_BACnetConstructedDataAnalogValueMaxPresValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogValueMaxPresValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAnalogValueMaxPresValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetActualValue() BACnetA
 
 // NewBACnetConstructedDataAnalogValueMaxPresValue factory function for _BACnetConstructedDataAnalogValueMaxPresValue
 func NewBACnetConstructedDataAnalogValueMaxPresValue(maxPresValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValueMaxPresValue {
-	_result := &_BACnetConstructedDataAnalogValueMaxPresValue{
-		MaxPresValue:           maxPresValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if maxPresValue == nil {
+		panic("maxPresValue of type BACnetApplicationTagReal for BACnetConstructedDataAnalogValueMaxPresValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAnalogValueMaxPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxPresValue:                  maxPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxPresValue)
 	lengthInBits += m.MaxPresValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAnalogValueMaxPresValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueMaxPresValue, error) {
-	return BACnetConstructedDataAnalogValueMaxPresValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAnalogValueMaxPresValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueMaxPresValue, error) {
+func (m *_BACnetConstructedDataAnalogValueMaxPresValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAnalogValueMaxPresValue BACnetConstructedDataAnalogValueMaxPresValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogValueMaxPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAnalogValueMaxPresValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxPresValue)
-	if pullErr := readBuffer.PullContext("maxPresValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxPresValue")
+	maxPresValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "maxPresValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxPresValue' field"))
 	}
-	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxPresValueErr != nil {
-		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field of BACnetConstructedDataAnalogValueMaxPresValue")
-	}
-	maxPresValue := _maxPresValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("maxPresValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxPresValue")
-	}
+	m.MaxPresValue = maxPresValue
 
-	// Virtual field
-	_actualValue := maxPresValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), maxPresValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAnalogValueMaxPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAnalogValueMaxPresValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAnalogValueMaxPresValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MaxPresValue: maxPresValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAnalogValueMaxPresValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAnalogValueMaxPresValue) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAnalogValueMaxPresValue")
 		}
 
-		// Simple Field (maxPresValue)
-		if pushErr := writeBuffer.PushContext("maxPresValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxPresValue")
-		}
-		_maxPresValueErr := writeBuffer.WriteSerializable(ctx, m.GetMaxPresValue())
-		if popErr := writeBuffer.PopContext("maxPresValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxPresValue")
-		}
-		if _maxPresValueErr != nil {
-			return errors.Wrap(_maxPresValueErr, "Error serializing 'maxPresValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "maxPresValue", m.GetMaxPresValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxPresValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataAnalogValueMaxPresValue) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAnalogValueMaxPresValue) isBACnetConstructedDataAnalogValueMaxPresValue() bool {
-	return true
+func (m *_BACnetConstructedDataAnalogValueMaxPresValue) IsBACnetConstructedDataAnalogValueMaxPresValue() {
 }
 
 func (m *_BACnetConstructedDataAnalogValueMaxPresValue) String() string {

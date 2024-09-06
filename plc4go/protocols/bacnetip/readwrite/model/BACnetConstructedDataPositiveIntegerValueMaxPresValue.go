@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataPositiveIntegerValueMaxPresValue interface {
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataPositiveIntegerValueMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueMaxPresValue.
-// This is useful for switch cases.
-type BACnetConstructedDataPositiveIntegerValueMaxPresValueExactly interface {
-	BACnetConstructedDataPositiveIntegerValueMaxPresValue
-	isBACnetConstructedDataPositiveIntegerValueMaxPresValue() bool
+	// IsBACnetConstructedDataPositiveIntegerValueMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPositiveIntegerValueMaxPresValue()
 }
 
 // _BACnetConstructedDataPositiveIntegerValueMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueMaxPresValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MaxPresValue BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataPositiveIntegerValueMaxPresValue = (*_BACnetConstructedDataPositiveIntegerValueMaxPresValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueMaxPresValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetPropertyIden
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetActualValue(
 
 // NewBACnetConstructedDataPositiveIntegerValueMaxPresValue factory function for _BACnetConstructedDataPositiveIntegerValueMaxPresValue
 func NewBACnetConstructedDataPositiveIntegerValueMaxPresValue(maxPresValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueMaxPresValue {
-	_result := &_BACnetConstructedDataPositiveIntegerValueMaxPresValue{
-		MaxPresValue:           maxPresValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if maxPresValue == nil {
+		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueMaxPresValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataPositiveIntegerValueMaxPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxPresValue:                  maxPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetTypeName() s
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxPresValue)
 	lengthInBits += m.MaxPresValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetLengthInByte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueMaxPresValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueMaxPresValue, error) {
-	return BACnetConstructedDataPositiveIntegerValueMaxPresValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataPositiveIntegerValueMaxPresValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueMaxPresValue, error) {
+func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPositiveIntegerValueMaxPresValue BACnetConstructedDataPositiveIntegerValueMaxPresValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueMaxPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPositiveIntegerValueMaxPresValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxPresValue)
-	if pullErr := readBuffer.PullContext("maxPresValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxPresValue")
+	maxPresValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxPresValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxPresValue' field"))
 	}
-	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxPresValueErr != nil {
-		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field of BACnetConstructedDataPositiveIntegerValueMaxPresValue")
-	}
-	maxPresValue := _maxPresValue.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxPresValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxPresValue")
-	}
+	m.MaxPresValue = maxPresValue
 
-	// Virtual field
-	_actualValue := maxPresValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), maxPresValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueMaxPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueMaxPresValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataPositiveIntegerValueMaxPresValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MaxPresValue: maxPresValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPositiveIntegerValueMaxPresValue")
 		}
 
-		// Simple Field (maxPresValue)
-		if pushErr := writeBuffer.PushContext("maxPresValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxPresValue")
-		}
-		_maxPresValueErr := writeBuffer.WriteSerializable(ctx, m.GetMaxPresValue())
-		if popErr := writeBuffer.PopContext("maxPresValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxPresValue")
-		}
-		if _maxPresValueErr != nil {
-			return errors.Wrap(_maxPresValueErr, "Error serializing 'maxPresValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxPresValue", m.GetMaxPresValue(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxPresValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) SerializeWithWr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) isBACnetConstructedDataPositiveIntegerValueMaxPresValue() bool {
-	return true
+func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) IsBACnetConstructedDataPositiveIntegerValueMaxPresValue() {
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) String() string {

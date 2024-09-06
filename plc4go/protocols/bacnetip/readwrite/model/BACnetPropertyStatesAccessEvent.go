@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesAccessEvent interface {
 	BACnetPropertyStates
 	// GetAccessEvent returns AccessEvent (property field)
 	GetAccessEvent() BACnetAccessEventTagged
-}
-
-// BACnetPropertyStatesAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAccessEvent.
-// This is useful for switch cases.
-type BACnetPropertyStatesAccessEventExactly interface {
-	BACnetPropertyStatesAccessEvent
-	isBACnetPropertyStatesAccessEvent() bool
+	// IsBACnetPropertyStatesAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesAccessEvent()
 }
 
 // _BACnetPropertyStatesAccessEvent is the data-structure of this message
 type _BACnetPropertyStatesAccessEvent struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	AccessEvent BACnetAccessEventTagged
 }
+
+var _ BACnetPropertyStatesAccessEvent = (*_BACnetPropertyStatesAccessEvent)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAccessEvent)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesAccessEvent struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesAccessEvent) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesAccessEvent) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesAccessEvent) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesAccessEvent) GetAccessEvent() BACnetAccessEventTag
 
 // NewBACnetPropertyStatesAccessEvent factory function for _BACnetPropertyStatesAccessEvent
 func NewBACnetPropertyStatesAccessEvent(accessEvent BACnetAccessEventTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAccessEvent {
-	_result := &_BACnetPropertyStatesAccessEvent{
-		AccessEvent:           accessEvent,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if accessEvent == nil {
+		panic("accessEvent of type BACnetAccessEventTagged for BACnetPropertyStatesAccessEvent must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesAccessEvent{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		AccessEvent:                  accessEvent,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesAccessEvent) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesAccessEvent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (accessEvent)
 	lengthInBits += m.AccessEvent.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesAccessEvent) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesAccessEventParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAccessEvent, error) {
-	return BACnetPropertyStatesAccessEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesAccessEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessEvent, error) {
+func (m *_BACnetPropertyStatesAccessEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesAccessEvent BACnetPropertyStatesAccessEvent, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessEvent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesAccessEvent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessEvent)
-	if pullErr := readBuffer.PullContext("accessEvent"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessEvent")
+	accessEvent, err := ReadSimpleField[BACnetAccessEventTagged](ctx, "accessEvent", ReadComplex[BACnetAccessEventTagged](BACnetAccessEventTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEvent' field"))
 	}
-	_accessEvent, _accessEventErr := BACnetAccessEventTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _accessEventErr != nil {
-		return nil, errors.Wrap(_accessEventErr, "Error parsing 'accessEvent' field of BACnetPropertyStatesAccessEvent")
-	}
-	accessEvent := _accessEvent.(BACnetAccessEventTagged)
-	if closeErr := readBuffer.CloseContext("accessEvent"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessEvent")
-	}
+	m.AccessEvent = accessEvent
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAccessEvent"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesAccessEvent")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesAccessEvent{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		AccessEvent:           accessEvent,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesAccessEvent) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesAccessEvent) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAccessEvent")
 		}
 
-		// Simple Field (accessEvent)
-		if pushErr := writeBuffer.PushContext("accessEvent"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessEvent")
-		}
-		_accessEventErr := writeBuffer.WriteSerializable(ctx, m.GetAccessEvent())
-		if popErr := writeBuffer.PopContext("accessEvent"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessEvent")
-		}
-		if _accessEventErr != nil {
-			return errors.Wrap(_accessEventErr, "Error serializing 'accessEvent' field")
+		if err := WriteSimpleField[BACnetAccessEventTagged](ctx, "accessEvent", m.GetAccessEvent(), WriteComplex[BACnetAccessEventTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessEvent' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAccessEvent"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesAccessEvent) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesAccessEvent) isBACnetPropertyStatesAccessEvent() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesAccessEvent) IsBACnetPropertyStatesAccessEvent() {}
 
 func (m *_BACnetPropertyStatesAccessEvent) String() string {
 	if m == nil {

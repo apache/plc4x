@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataCredentialsInZone interface {
 	BACnetConstructedData
 	// GetCredentialsInZone returns CredentialsInZone (property field)
 	GetCredentialsInZone() []BACnetDeviceObjectReference
-}
-
-// BACnetConstructedDataCredentialsInZoneExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialsInZone.
-// This is useful for switch cases.
-type BACnetConstructedDataCredentialsInZoneExactly interface {
-	BACnetConstructedDataCredentialsInZone
-	isBACnetConstructedDataCredentialsInZone() bool
+	// IsBACnetConstructedDataCredentialsInZone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCredentialsInZone()
 }
 
 // _BACnetConstructedDataCredentialsInZone is the data-structure of this message
 type _BACnetConstructedDataCredentialsInZone struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	CredentialsInZone []BACnetDeviceObjectReference
 }
+
+var _ BACnetConstructedDataCredentialsInZone = (*_BACnetConstructedDataCredentialsInZone)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialsInZone)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCredentialsInZone) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCredentialsInZone) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCredentialsInZone) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetCredentialsInZone() []BACne
 // NewBACnetConstructedDataCredentialsInZone factory function for _BACnetConstructedDataCredentialsInZone
 func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialsInZone {
 	_result := &_BACnetConstructedDataCredentialsInZone{
-		CredentialsInZone:      credentialsInZone,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CredentialsInZone:             credentialsInZone,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.CredentialsInZone) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCredentialsInZoneParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialsInZone, error) {
-	return BACnetConstructedDataCredentialsInZoneParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCredentialsInZoneParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialsInZone, error) {
+func (m *_BACnetConstructedDataCredentialsInZone) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCredentialsInZone BACnetConstructedDataCredentialsInZone, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialsInZone"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCredentialsInZone")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (credentialsInZone)
-	if pullErr := readBuffer.PullContext("credentialsInZone", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for credentialsInZone")
+	credentialsInZone, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "credentialsInZone", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'credentialsInZone' field"))
 	}
-	// Terminated array
-	var credentialsInZone []BACnetDeviceObjectReference
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'credentialsInZone' field of BACnetConstructedDataCredentialsInZone")
-			}
-			credentialsInZone = append(credentialsInZone, _item.(BACnetDeviceObjectReference))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("credentialsInZone", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for credentialsInZone")
-	}
+	m.CredentialsInZone = credentialsInZone
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialsInZone"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCredentialsInZone")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCredentialsInZone{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		CredentialsInZone: credentialsInZone,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCredentialsInZone) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataCredentialsInZone) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCredentialsInZone")
 		}
 
-		// Array Field (credentialsInZone)
-		if pushErr := writeBuffer.PushContext("credentialsInZone", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for credentialsInZone")
-		}
-		for _curItem, _element := range m.GetCredentialsInZone() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetCredentialsInZone()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'credentialsInZone' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("credentialsInZone", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for credentialsInZone")
+		if err := WriteComplexTypeArrayField(ctx, "credentialsInZone", m.GetCredentialsInZone(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'credentialsInZone' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentialsInZone"); popErr != nil {
@@ -228,12 +183,10 @@ func (m *_BACnetConstructedDataCredentialsInZone) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCredentialsInZone) isBACnetConstructedDataCredentialsInZone() bool {
-	return true
-}
+func (m *_BACnetConstructedDataCredentialsInZone) IsBACnetConstructedDataCredentialsInZone() {}
 
 func (m *_BACnetConstructedDataCredentialsInZone) String() string {
 	if m == nil {

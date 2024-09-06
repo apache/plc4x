@@ -75,13 +75,13 @@ public class BACnetDateRangeEnclosed implements Message {
     writeBuffer.pushContext("BACnetDateRangeEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (dateRange)
-    writeSimpleField("dateRange", dateRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateRange", dateRange, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDateRangeEnclosed");
   }
@@ -118,19 +118,17 @@ public class BACnetDateRangeEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetDateRange dateRange =
         readSimpleField(
-            "dateRange",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateRange.staticParse(readBuffer), readBuffer));
+            "dateRange", readComplex(() -> BACnetDateRange.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetDateRangeEnclosed");

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogDataLogDataEntryBooleanValue interface {
 	BACnetLogDataLogDataEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
-}
-
-// BACnetLogDataLogDataEntryBooleanValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryBooleanValue.
-// This is useful for switch cases.
-type BACnetLogDataLogDataEntryBooleanValueExactly interface {
-	BACnetLogDataLogDataEntryBooleanValue
-	isBACnetLogDataLogDataEntryBooleanValue() bool
+	// IsBACnetLogDataLogDataEntryBooleanValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryBooleanValue()
 }
 
 // _BACnetLogDataLogDataEntryBooleanValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryBooleanValue struct {
-	*_BACnetLogDataLogDataEntry
+	BACnetLogDataLogDataEntryContract
 	BooleanValue BACnetContextTagBoolean
 }
+
+var _ BACnetLogDataLogDataEntryBooleanValue = (*_BACnetLogDataLogDataEntryBooleanValue)(nil)
+var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryBooleanValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetLogDataLogDataEntryBooleanValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogDataLogDataEntryBooleanValue) InitializeParent(parent BACnetLogDataLogDataEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetLogDataLogDataEntryBooleanValue) GetParent() BACnetLogDataLogDataEntry {
-	return m._BACnetLogDataLogDataEntry
+func (m *_BACnetLogDataLogDataEntryBooleanValue) GetParent() BACnetLogDataLogDataEntryContract {
+	return m.BACnetLogDataLogDataEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) GetBooleanValue() BACnetContext
 
 // NewBACnetLogDataLogDataEntryBooleanValue factory function for _BACnetLogDataLogDataEntryBooleanValue
 func NewBACnetLogDataLogDataEntryBooleanValue(booleanValue BACnetContextTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryBooleanValue {
-	_result := &_BACnetLogDataLogDataEntryBooleanValue{
-		BooleanValue:               booleanValue,
-		_BACnetLogDataLogDataEntry: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogDataLogDataEntryBooleanValue must not be nil")
 	}
-	_result._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _result
+	_result := &_BACnetLogDataLogDataEntryBooleanValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		BooleanValue:                      booleanValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogDataLogDataEntryBooleanValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).getLengthInBits(ctx))
 
 	// Simple field (booleanValue)
 	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogDataLogDataEntryBooleanValueParse(ctx context.Context, theBytes []byte) (BACnetLogDataLogDataEntryBooleanValue, error) {
-	return BACnetLogDataLogDataEntryBooleanValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetLogDataLogDataEntryBooleanValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryBooleanValue, error) {
+func (m *_BACnetLogDataLogDataEntryBooleanValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogDataLogDataEntry) (__bACnetLogDataLogDataEntryBooleanValue BACnetLogDataLogDataEntryBooleanValue, err error) {
+	m.BACnetLogDataLogDataEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryBooleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryBooleanValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (booleanValue)
-	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
+	booleanValue, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "booleanValue", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'booleanValue' field"))
 	}
-	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _booleanValueErr != nil {
-		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetLogDataLogDataEntryBooleanValue")
-	}
-	booleanValue := _booleanValue.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for booleanValue")
-	}
+	m.BooleanValue = booleanValue
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryBooleanValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryBooleanValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogDataLogDataEntryBooleanValue{
-		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
-		BooleanValue:               booleanValue,
-	}
-	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogDataLogDataEntryBooleanValue) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryBooleanValue")
 		}
 
-		// Simple Field (booleanValue)
-		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for booleanValue")
-		}
-		_booleanValueErr := writeBuffer.WriteSerializable(ctx, m.GetBooleanValue())
-		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for booleanValue")
-		}
-		if _booleanValueErr != nil {
-			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
+		if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "booleanValue", m.GetBooleanValue(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'booleanValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryBooleanValue"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogDataLogDataEntryBooleanValue) isBACnetLogDataLogDataEntryBooleanValue() bool {
-	return true
-}
+func (m *_BACnetLogDataLogDataEntryBooleanValue) IsBACnetLogDataLogDataEntryBooleanValue() {}
 
 func (m *_BACnetLogDataLogDataEntryBooleanValue) String() string {
 	if m == nil {

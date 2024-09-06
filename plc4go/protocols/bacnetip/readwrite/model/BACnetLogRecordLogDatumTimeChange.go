@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogRecordLogDatumTimeChange interface {
 	BACnetLogRecordLogDatum
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
-}
-
-// BACnetLogRecordLogDatumTimeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumTimeChange.
-// This is useful for switch cases.
-type BACnetLogRecordLogDatumTimeChangeExactly interface {
-	BACnetLogRecordLogDatumTimeChange
-	isBACnetLogRecordLogDatumTimeChange() bool
+	// IsBACnetLogRecordLogDatumTimeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumTimeChange()
 }
 
 // _BACnetLogRecordLogDatumTimeChange is the data-structure of this message
 type _BACnetLogRecordLogDatumTimeChange struct {
-	*_BACnetLogRecordLogDatum
+	BACnetLogRecordLogDatumContract
 	TimeChange BACnetContextTagReal
 }
+
+var _ BACnetLogRecordLogDatumTimeChange = (*_BACnetLogRecordLogDatumTimeChange)(nil)
+var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumTimeChange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetLogRecordLogDatumTimeChange struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogRecordLogDatumTimeChange) InitializeParent(parent BACnetLogRecordLogDatum, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetLogRecordLogDatumTimeChange) GetParent() BACnetLogRecordLogDatum {
-	return m._BACnetLogRecordLogDatum
+func (m *_BACnetLogRecordLogDatumTimeChange) GetParent() BACnetLogRecordLogDatumContract {
+	return m.BACnetLogRecordLogDatumContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetLogRecordLogDatumTimeChange) GetTimeChange() BACnetContextTagRea
 
 // NewBACnetLogRecordLogDatumTimeChange factory function for _BACnetLogRecordLogDatumTimeChange
 func NewBACnetLogRecordLogDatumTimeChange(timeChange BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumTimeChange {
-	_result := &_BACnetLogRecordLogDatumTimeChange{
-		TimeChange:               timeChange,
-		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if timeChange == nil {
+		panic("timeChange of type BACnetContextTagReal for BACnetLogRecordLogDatumTimeChange must not be nil")
 	}
-	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result
+	_result := &_BACnetLogRecordLogDatumTimeChange{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		TimeChange:                      timeChange,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetLogRecordLogDatumTimeChange) GetTypeName() string {
 }
 
 func (m *_BACnetLogRecordLogDatumTimeChange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (timeChange)
 	lengthInBits += m.TimeChange.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetLogRecordLogDatumTimeChange) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogRecordLogDatumTimeChangeParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumTimeChange, error) {
-	return BACnetLogRecordLogDatumTimeChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetLogRecordLogDatumTimeChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumTimeChange, error) {
+func (m *_BACnetLogRecordLogDatumTimeChange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogRecordLogDatum, tagNumber uint8) (__bACnetLogRecordLogDatumTimeChange BACnetLogRecordLogDatumTimeChange, err error) {
+	m.BACnetLogRecordLogDatumContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumTimeChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumTimeChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeChange)
-	if pullErr := readBuffer.PullContext("timeChange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeChange")
+	timeChange, err := ReadSimpleField[BACnetContextTagReal](ctx, "timeChange", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(9)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeChange' field"))
 	}
-	_timeChange, _timeChangeErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(9)), BACnetDataType(BACnetDataType_REAL))
-	if _timeChangeErr != nil {
-		return nil, errors.Wrap(_timeChangeErr, "Error parsing 'timeChange' field of BACnetLogRecordLogDatumTimeChange")
-	}
-	timeChange := _timeChange.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("timeChange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeChange")
-	}
+	m.TimeChange = timeChange
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumTimeChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumTimeChange")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogRecordLogDatumTimeChange{
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
-			TagNumber: tagNumber,
-		},
-		TimeChange: timeChange,
-	}
-	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogRecordLogDatumTimeChange) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetLogRecordLogDatumTimeChange) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumTimeChange")
 		}
 
-		// Simple Field (timeChange)
-		if pushErr := writeBuffer.PushContext("timeChange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeChange")
-		}
-		_timeChangeErr := writeBuffer.WriteSerializable(ctx, m.GetTimeChange())
-		if popErr := writeBuffer.PopContext("timeChange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeChange")
-		}
-		if _timeChangeErr != nil {
-			return errors.Wrap(_timeChangeErr, "Error serializing 'timeChange' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "timeChange", m.GetTimeChange(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumTimeChange"); popErr != nil {
@@ -204,12 +174,10 @@ func (m *_BACnetLogRecordLogDatumTimeChange) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogRecordLogDatumTimeChange) isBACnetLogRecordLogDatumTimeChange() bool {
-	return true
-}
+func (m *_BACnetLogRecordLogDatumTimeChange) IsBACnetLogRecordLogDatumTimeChange() {}
 
 func (m *_BACnetLogRecordLogDatumTimeChange) String() string {
 	if m == nil {

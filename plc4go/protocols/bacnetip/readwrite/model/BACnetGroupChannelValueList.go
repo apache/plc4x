@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetGroupChannelValueList interface {
 	GetListOfEventSummaries() []BACnetEventSummary
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetGroupChannelValueListExactly can be used when we want exactly this type and not a type which fulfills BACnetGroupChannelValueList.
-// This is useful for switch cases.
-type BACnetGroupChannelValueListExactly interface {
-	BACnetGroupChannelValueList
-	isBACnetGroupChannelValueList() bool
+	// IsBACnetGroupChannelValueList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetGroupChannelValueList()
 }
 
 // _BACnetGroupChannelValueList is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetGroupChannelValueList struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetGroupChannelValueList = (*_BACnetGroupChannelValueList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,12 @@ func (m *_BACnetGroupChannelValueList) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetGroupChannelValueList factory function for _BACnetGroupChannelValueList
 func NewBACnetGroupChannelValueList(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetGroupChannelValueList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetGroupChannelValueList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetGroupChannelValueList must not be nil")
+	}
 	return &_BACnetGroupChannelValueList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -130,73 +135,52 @@ func BACnetGroupChannelValueListParse(ctx context.Context, theBytes []byte, tagN
 	return BACnetGroupChannelValueListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetGroupChannelValueListParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValueList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValueList, error) {
+		return BACnetGroupChannelValueListParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetGroupChannelValueListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetGroupChannelValueList, error) {
+	v, err := (&_BACnetGroupChannelValueList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetGroupChannelValueList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetGroupChannelValueList BACnetGroupChannelValueList, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetGroupChannelValueList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetGroupChannelValueList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetGroupChannelValueList")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (listOfEventSummaries)
-	if pullErr := readBuffer.PullContext("listOfEventSummaries", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfEventSummaries")
+	listOfEventSummaries, err := ReadTerminatedArrayField[BACnetEventSummary](ctx, "listOfEventSummaries", ReadComplex[BACnetEventSummary](BACnetEventSummaryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfEventSummaries' field"))
 	}
-	// Terminated array
-	var listOfEventSummaries []BACnetEventSummary
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetEventSummaryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfEventSummaries' field of BACnetGroupChannelValueList")
-			}
-			listOfEventSummaries = append(listOfEventSummaries, _item.(BACnetEventSummary))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfEventSummaries", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfEventSummaries")
-	}
+	m.ListOfEventSummaries = listOfEventSummaries
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetGroupChannelValueList")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetGroupChannelValueList"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetGroupChannelValueList")
 	}
 
-	// Create the instance
-	return &_BACnetGroupChannelValueList{
-		TagNumber:            tagNumber,
-		OpeningTag:           openingTag,
-		ListOfEventSummaries: listOfEventSummaries,
-		ClosingTag:           closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetGroupChannelValueList) Serialize() ([]byte, error) {
@@ -216,45 +200,16 @@ func (m *_BACnetGroupChannelValueList) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetGroupChannelValueList")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfEventSummaries)
-	if pushErr := writeBuffer.PushContext("listOfEventSummaries", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfEventSummaries")
-	}
-	for _curItem, _element := range m.GetListOfEventSummaries() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfEventSummaries()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfEventSummaries' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfEventSummaries", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfEventSummaries")
+	if err := WriteComplexTypeArrayField(ctx, "listOfEventSummaries", m.GetListOfEventSummaries(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfEventSummaries' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetGroupChannelValueList"); popErr != nil {
@@ -273,9 +228,7 @@ func (m *_BACnetGroupChannelValueList) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetGroupChannelValueList) isBACnetGroupChannelValueList() bool {
-	return true
-}
+func (m *_BACnetGroupChannelValueList) IsBACnetGroupChannelValueList() {}
 
 func (m *_BACnetGroupChannelValueList) String() string {
 	if m == nil {

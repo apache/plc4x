@@ -115,7 +115,7 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (eventMessageTexts)
@@ -185,7 +185,7 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -195,8 +195,7 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
     List<BACnetOptionalCharacterString> eventMessageTexts =
         readTerminatedArrayField(
             "eventMessageTexts",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOptionalCharacterString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetOptionalCharacterString.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

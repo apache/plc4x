@@ -36,18 +36,15 @@ type IntegerId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// IntegerIdExactly can be used when we want exactly this type and not a type which fulfills IntegerId.
-// This is useful for switch cases.
-type IntegerIdExactly interface {
-	IntegerId
-	isIntegerId() bool
+	// IsIntegerId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIntegerId()
 }
 
 // _IntegerId is the data-structure of this message
 type _IntegerId struct {
 }
+
+var _ IntegerId = (*_IntegerId)(nil)
 
 // NewIntegerId factory function for _IntegerId
 func NewIntegerId() *_IntegerId {
@@ -83,11 +80,23 @@ func IntegerIdParse(ctx context.Context, theBytes []byte) (IntegerId, error) {
 	return IntegerIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func IntegerIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (IntegerId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IntegerId, error) {
+		return IntegerIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func IntegerIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IntegerId, error) {
+	v, err := (&_IntegerId{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_IntegerId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__integerId IntegerId, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IntegerId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IntegerId")
 	}
@@ -98,8 +107,7 @@ func IntegerIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return nil, errors.Wrap(closeErr, "Error closing for IntegerId")
 	}
 
-	// Create the instance
-	return &_IntegerId{}, nil
+	return m, nil
 }
 
 func (m *_IntegerId) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_IntegerId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	return nil
 }
 
-func (m *_IntegerId) isIntegerId() bool {
-	return true
-}
+func (m *_IntegerId) IsIntegerId() {}
 
 func (m *_IntegerId) String() string {
 	if m == nil {

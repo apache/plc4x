@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataChangesPending interface {
 	GetChangesPending() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataChangesPendingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChangesPending.
-// This is useful for switch cases.
-type BACnetConstructedDataChangesPendingExactly interface {
-	BACnetConstructedDataChangesPending
-	isBACnetConstructedDataChangesPending() bool
+	// IsBACnetConstructedDataChangesPending is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataChangesPending()
 }
 
 // _BACnetConstructedDataChangesPending is the data-structure of this message
 type _BACnetConstructedDataChangesPending struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ChangesPending BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataChangesPending = (*_BACnetConstructedDataChangesPending)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangesPending)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataChangesPending) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataChangesPending) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataChangesPending) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataChangesPending) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataChangesPending) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataChangesPending factory function for _BACnetConstructedDataChangesPending
 func NewBACnetConstructedDataChangesPending(changesPending BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
-	_result := &_BACnetConstructedDataChangesPending{
-		ChangesPending:         changesPending,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if changesPending == nil {
+		panic("changesPending of type BACnetApplicationTagBoolean for BACnetConstructedDataChangesPending must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataChangesPending{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ChangesPending:                changesPending,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataChangesPending) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataChangesPending) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (changesPending)
 	lengthInBits += m.ChangesPending.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataChangesPending) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataChangesPendingParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
-	return BACnetConstructedDataChangesPendingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataChangesPendingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
+func (m *_BACnetConstructedDataChangesPending) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataChangesPending BACnetConstructedDataChangesPending, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangesPending"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataChangesPending")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (changesPending)
-	if pullErr := readBuffer.PullContext("changesPending"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for changesPending")
+	changesPending, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "changesPending", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changesPending' field"))
 	}
-	_changesPending, _changesPendingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _changesPendingErr != nil {
-		return nil, errors.Wrap(_changesPendingErr, "Error parsing 'changesPending' field of BACnetConstructedDataChangesPending")
-	}
-	changesPending := _changesPending.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("changesPending"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for changesPending")
-	}
+	m.ChangesPending = changesPending
 
-	// Virtual field
-	_actualValue := changesPending
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), changesPending)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangesPending"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangesPending")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataChangesPending{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ChangesPending: changesPending,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataChangesPending) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChangesPending")
 		}
 
-		// Simple Field (changesPending)
-		if pushErr := writeBuffer.PushContext("changesPending"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changesPending")
-		}
-		_changesPendingErr := writeBuffer.WriteSerializable(ctx, m.GetChangesPending())
-		if popErr := writeBuffer.PopContext("changesPending"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changesPending")
-		}
-		if _changesPendingErr != nil {
-			return errors.Wrap(_changesPendingErr, "Error serializing 'changesPending' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "changesPending", m.GetChangesPending(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changesPending' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataChangesPending) isBACnetConstructedDataChangesPending() bool {
-	return true
-}
+func (m *_BACnetConstructedDataChangesPending) IsBACnetConstructedDataChangesPending() {}
 
 func (m *_BACnetConstructedDataChangesPending) String() string {
 	if m == nil {

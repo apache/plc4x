@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataTimerMinPresValue interface {
 	GetMinPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataTimerMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerMinPresValue.
-// This is useful for switch cases.
-type BACnetConstructedDataTimerMinPresValueExactly interface {
-	BACnetConstructedDataTimerMinPresValue
-	isBACnetConstructedDataTimerMinPresValue() bool
+	// IsBACnetConstructedDataTimerMinPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimerMinPresValue()
 }
 
 // _BACnetConstructedDataTimerMinPresValue is the data-structure of this message
 type _BACnetConstructedDataTimerMinPresValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MinPresValue BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataTimerMinPresValue = (*_BACnetConstructedDataTimerMinPresValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerMinPresValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataTimerMinPresValue) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTimerMinPresValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTimerMinPresValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTimerMinPresValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataTimerMinPresValue) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataTimerMinPresValue factory function for _BACnetConstructedDataTimerMinPresValue
 func NewBACnetConstructedDataTimerMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerMinPresValue {
-	_result := &_BACnetConstructedDataTimerMinPresValue{
-		MinPresValue:           minPresValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if minPresValue == nil {
+		panic("minPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerMinPresValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataTimerMinPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinPresValue:                  minPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataTimerMinPresValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTimerMinPresValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minPresValue)
 	lengthInBits += m.MinPresValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataTimerMinPresValue) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTimerMinPresValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerMinPresValue, error) {
-	return BACnetConstructedDataTimerMinPresValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTimerMinPresValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerMinPresValue, error) {
+func (m *_BACnetConstructedDataTimerMinPresValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimerMinPresValue BACnetConstructedDataTimerMinPresValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerMinPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimerMinPresValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minPresValue)
-	if pullErr := readBuffer.PullContext("minPresValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minPresValue")
+	minPresValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "minPresValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minPresValue' field"))
 	}
-	_minPresValue, _minPresValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _minPresValueErr != nil {
-		return nil, errors.Wrap(_minPresValueErr, "Error parsing 'minPresValue' field of BACnetConstructedDataTimerMinPresValue")
-	}
-	minPresValue := _minPresValue.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("minPresValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minPresValue")
-	}
+	m.MinPresValue = minPresValue
 
-	// Virtual field
-	_actualValue := minPresValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), minPresValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimerMinPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimerMinPresValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTimerMinPresValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MinPresValue: minPresValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTimerMinPresValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataTimerMinPresValue) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimerMinPresValue")
 		}
 
-		// Simple Field (minPresValue)
-		if pushErr := writeBuffer.PushContext("minPresValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minPresValue")
-		}
-		_minPresValueErr := writeBuffer.WriteSerializable(ctx, m.GetMinPresValue())
-		if popErr := writeBuffer.PopContext("minPresValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minPresValue")
-		}
-		if _minPresValueErr != nil {
-			return errors.Wrap(_minPresValueErr, "Error serializing 'minPresValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "minPresValue", m.GetMinPresValue(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minPresValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataTimerMinPresValue) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTimerMinPresValue) isBACnetConstructedDataTimerMinPresValue() bool {
-	return true
-}
+func (m *_BACnetConstructedDataTimerMinPresValue) IsBACnetConstructedDataTimerMinPresValue() {}
 
 func (m *_BACnetConstructedDataTimerMinPresValue) String() string {
 	if m == nil {

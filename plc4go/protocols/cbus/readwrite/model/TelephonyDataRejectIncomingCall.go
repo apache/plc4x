@@ -37,19 +37,17 @@ type TelephonyDataRejectIncomingCall interface {
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
-}
-
-// TelephonyDataRejectIncomingCallExactly can be used when we want exactly this type and not a type which fulfills TelephonyDataRejectIncomingCall.
-// This is useful for switch cases.
-type TelephonyDataRejectIncomingCallExactly interface {
-	TelephonyDataRejectIncomingCall
-	isTelephonyDataRejectIncomingCall() bool
+	// IsTelephonyDataRejectIncomingCall is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataRejectIncomingCall()
 }
 
 // _TelephonyDataRejectIncomingCall is the data-structure of this message
 type _TelephonyDataRejectIncomingCall struct {
-	*_TelephonyData
+	TelephonyDataContract
 }
+
+var _ TelephonyDataRejectIncomingCall = (*_TelephonyDataRejectIncomingCall)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataRejectIncomingCall)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _TelephonyDataRejectIncomingCall struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TelephonyDataRejectIncomingCall) InitializeParent(parent TelephonyData, commandTypeContainer TelephonyCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_TelephonyDataRejectIncomingCall) GetParent() TelephonyData {
-	return m._TelephonyData
+func (m *_TelephonyDataRejectIncomingCall) GetParent() TelephonyDataContract {
+	return m.TelephonyDataContract
 }
 
 // NewTelephonyDataRejectIncomingCall factory function for _TelephonyDataRejectIncomingCall
 func NewTelephonyDataRejectIncomingCall(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataRejectIncomingCall {
 	_result := &_TelephonyDataRejectIncomingCall{
-		_TelephonyData: NewTelephonyData(commandTypeContainer, argument),
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 	}
-	_result._TelephonyData._TelephonyDataChildRequirements = _result
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_TelephonyDataRejectIncomingCall) GetTypeName() string {
 }
 
 func (m *_TelephonyDataRejectIncomingCall) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataRejectIncomingCallParse(ctx context.Context, theBytes []byte) (TelephonyDataRejectIncomingCall, error) {
-	return TelephonyDataRejectIncomingCallParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func TelephonyDataRejectIncomingCallParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
+func (m *_TelephonyDataRejectIncomingCall) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataRejectIncomingCall TelephonyDataRejectIncomingCall, err error) {
+	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataRejectIncomingCall"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataRejectIncomingCall")
 	}
@@ -123,12 +112,7 @@ func TelephonyDataRejectIncomingCallParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataRejectIncomingCall")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TelephonyDataRejectIncomingCall{
-		_TelephonyData: &_TelephonyData{},
-	}
-	_child._TelephonyData._TelephonyDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TelephonyDataRejectIncomingCall) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_TelephonyDataRejectIncomingCall) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TelephonyDataContract.(*_TelephonyData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TelephonyDataRejectIncomingCall) isTelephonyDataRejectIncomingCall() bool {
-	return true
-}
+func (m *_TelephonyDataRejectIncomingCall) IsTelephonyDataRejectIncomingCall() {}
 
 func (m *_TelephonyDataRejectIncomingCall) String() string {
 	if m == nil {

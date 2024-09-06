@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type IdentifyReplyCommandCurrentSenseLevels interface {
 	IdentifyReplyCommand
 	// GetCurrentSenseLevels returns CurrentSenseLevels (property field)
 	GetCurrentSenseLevels() []byte
-}
-
-// IdentifyReplyCommandCurrentSenseLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandCurrentSenseLevels.
-// This is useful for switch cases.
-type IdentifyReplyCommandCurrentSenseLevelsExactly interface {
-	IdentifyReplyCommandCurrentSenseLevels
-	isIdentifyReplyCommandCurrentSenseLevels() bool
+	// IsIdentifyReplyCommandCurrentSenseLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandCurrentSenseLevels()
 }
 
 // _IdentifyReplyCommandCurrentSenseLevels is the data-structure of this message
 type _IdentifyReplyCommandCurrentSenseLevels struct {
-	*_IdentifyReplyCommand
+	IdentifyReplyCommandContract
 	CurrentSenseLevels []byte
 }
+
+var _ IdentifyReplyCommandCurrentSenseLevels = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_IdentifyReplyCommandCurrentSenseLevels) InitializeParent(parent IdentifyReplyCommand) {}
-
-func (m *_IdentifyReplyCommandCurrentSenseLevels) GetParent() IdentifyReplyCommand {
-	return m._IdentifyReplyCommand
+func (m *_IdentifyReplyCommandCurrentSenseLevels) GetParent() IdentifyReplyCommandContract {
+	return m.IdentifyReplyCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetCurrentSenseLevels() []byte
 // NewIdentifyReplyCommandCurrentSenseLevels factory function for _IdentifyReplyCommandCurrentSenseLevels
 func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numBytes uint8) *_IdentifyReplyCommandCurrentSenseLevels {
 	_result := &_IdentifyReplyCommandCurrentSenseLevels{
-		CurrentSenseLevels:    currentSenseLevels,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		CurrentSenseLevels:           currentSenseLevels,
 	}
-	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.CurrentSenseLevels) > 0 {
@@ -128,40 +126,28 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandCurrentSenseLevelsParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
-	return IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
-}
-
-func IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
+func (m *_IdentifyReplyCommandCurrentSenseLevels) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandCurrentSenseLevels IdentifyReplyCommandCurrentSenseLevels, err error) {
+	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandCurrentSenseLevels"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandCurrentSenseLevels")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (currentSenseLevels)
-	numberOfBytescurrentSenseLevels := int(numBytes)
-	currentSenseLevels, _readArrayErr := readBuffer.ReadByteArray("currentSenseLevels", numberOfBytescurrentSenseLevels)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'currentSenseLevels' field of IdentifyReplyCommandCurrentSenseLevels")
+
+	currentSenseLevels, err := readBuffer.ReadByteArray("currentSenseLevels", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSenseLevels' field"))
 	}
+	m.CurrentSenseLevels = currentSenseLevels
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandCurrentSenseLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandCurrentSenseLevels")
 	}
 
-	// Create a partially initialized instance
-	_child := &_IdentifyReplyCommandCurrentSenseLevels{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
-		CurrentSenseLevels: currentSenseLevels,
-	}
-	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) Serialize() ([]byte, error) {
@@ -182,9 +168,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandCurrentSenseLevels")
 		}
 
-		// Array Field (currentSenseLevels)
-		// Byte Array field (currentSenseLevels)
-		if err := writeBuffer.WriteByteArray("currentSenseLevels", m.GetCurrentSenseLevels()); err != nil {
+		if err := WriteByteArrayField(ctx, "currentSenseLevels", m.GetCurrentSenseLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentSenseLevels' field")
 		}
 
@@ -193,12 +177,10 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_IdentifyReplyCommandCurrentSenseLevels) isIdentifyReplyCommandCurrentSenseLevels() bool {
-	return true
-}
+func (m *_IdentifyReplyCommandCurrentSenseLevels) IsIdentifyReplyCommandCurrentSenseLevels() {}
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) String() string {
 	if m == nil {

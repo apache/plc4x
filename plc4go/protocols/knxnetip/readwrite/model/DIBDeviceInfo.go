@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,13 +56,8 @@ type DIBDeviceInfo interface {
 	GetKnxNetIpDeviceMacAddress() MACAddress
 	// GetDeviceFriendlyName returns DeviceFriendlyName (property field)
 	GetDeviceFriendlyName() []byte
-}
-
-// DIBDeviceInfoExactly can be used when we want exactly this type and not a type which fulfills DIBDeviceInfo.
-// This is useful for switch cases.
-type DIBDeviceInfoExactly interface {
-	DIBDeviceInfo
-	isDIBDeviceInfo() bool
+	// IsDIBDeviceInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDIBDeviceInfo()
 }
 
 // _DIBDeviceInfo is the data-structure of this message
@@ -75,6 +72,8 @@ type _DIBDeviceInfo struct {
 	KnxNetIpDeviceMacAddress       MACAddress
 	DeviceFriendlyName             []byte
 }
+
+var _ DIBDeviceInfo = (*_DIBDeviceInfo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -124,6 +123,21 @@ func (m *_DIBDeviceInfo) GetDeviceFriendlyName() []byte {
 
 // NewDIBDeviceInfo factory function for _DIBDeviceInfo
 func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) *_DIBDeviceInfo {
+	if deviceStatus == nil {
+		panic("deviceStatus of type DeviceStatus for DIBDeviceInfo must not be nil")
+	}
+	if knxAddress == nil {
+		panic("knxAddress of type KnxAddress for DIBDeviceInfo must not be nil")
+	}
+	if projectInstallationIdentifier == nil {
+		panic("projectInstallationIdentifier of type ProjectInstallationIdentifier for DIBDeviceInfo must not be nil")
+	}
+	if knxNetIpDeviceMulticastAddress == nil {
+		panic("knxNetIpDeviceMulticastAddress of type IPAddress for DIBDeviceInfo must not be nil")
+	}
+	if knxNetIpDeviceMacAddress == nil {
+		panic("knxNetIpDeviceMacAddress of type MACAddress for DIBDeviceInfo must not be nil")
+	}
 	return &_DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
 }
 
@@ -190,137 +204,94 @@ func DIBDeviceInfoParse(ctx context.Context, theBytes []byte) (DIBDeviceInfo, er
 	return DIBDeviceInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DIBDeviceInfoParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
+		return DIBDeviceInfoParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
+	v, err := (&_DIBDeviceInfo{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_DIBDeviceInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dIBDeviceInfo DIBDeviceInfo, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DIBDeviceInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DIBDeviceInfo")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
+	}
 	_ = structureLength
-	if _structureLengthErr != nil {
-		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of DIBDeviceInfo")
-	}
 
-	// Simple Field (descriptionType)
-	_descriptionType, _descriptionTypeErr := readBuffer.ReadUint8("descriptionType", 8)
-	if _descriptionTypeErr != nil {
-		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field of DIBDeviceInfo")
+	descriptionType, err := ReadSimpleField(ctx, "descriptionType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'descriptionType' field"))
 	}
-	descriptionType := _descriptionType
+	m.DescriptionType = descriptionType
 
-	// Simple Field (knxMedium)
-	if pullErr := readBuffer.PullContext("knxMedium"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for knxMedium")
+	knxMedium, err := ReadEnumField[KnxMedium](ctx, "knxMedium", "KnxMedium", ReadEnum(KnxMediumByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'knxMedium' field"))
 	}
-	_knxMedium, _knxMediumErr := KnxMediumParseWithBuffer(ctx, readBuffer)
-	if _knxMediumErr != nil {
-		return nil, errors.Wrap(_knxMediumErr, "Error parsing 'knxMedium' field of DIBDeviceInfo")
-	}
-	knxMedium := _knxMedium
-	if closeErr := readBuffer.CloseContext("knxMedium"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for knxMedium")
-	}
+	m.KnxMedium = knxMedium
 
-	// Simple Field (deviceStatus)
-	if pullErr := readBuffer.PullContext("deviceStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceStatus")
+	deviceStatus, err := ReadSimpleField[DeviceStatus](ctx, "deviceStatus", ReadComplex[DeviceStatus](DeviceStatusParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceStatus' field"))
 	}
-	_deviceStatus, _deviceStatusErr := DeviceStatusParseWithBuffer(ctx, readBuffer)
-	if _deviceStatusErr != nil {
-		return nil, errors.Wrap(_deviceStatusErr, "Error parsing 'deviceStatus' field of DIBDeviceInfo")
-	}
-	deviceStatus := _deviceStatus.(DeviceStatus)
-	if closeErr := readBuffer.CloseContext("deviceStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceStatus")
-	}
+	m.DeviceStatus = deviceStatus
 
-	// Simple Field (knxAddress)
-	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for knxAddress")
+	knxAddress, err := ReadSimpleField[KnxAddress](ctx, "knxAddress", ReadComplex[KnxAddress](KnxAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'knxAddress' field"))
 	}
-	_knxAddress, _knxAddressErr := KnxAddressParseWithBuffer(ctx, readBuffer)
-	if _knxAddressErr != nil {
-		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field of DIBDeviceInfo")
-	}
-	knxAddress := _knxAddress.(KnxAddress)
-	if closeErr := readBuffer.CloseContext("knxAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for knxAddress")
-	}
+	m.KnxAddress = knxAddress
 
-	// Simple Field (projectInstallationIdentifier)
-	if pullErr := readBuffer.PullContext("projectInstallationIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for projectInstallationIdentifier")
+	projectInstallationIdentifier, err := ReadSimpleField[ProjectInstallationIdentifier](ctx, "projectInstallationIdentifier", ReadComplex[ProjectInstallationIdentifier](ProjectInstallationIdentifierParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'projectInstallationIdentifier' field"))
 	}
-	_projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParseWithBuffer(ctx, readBuffer)
-	if _projectInstallationIdentifierErr != nil {
-		return nil, errors.Wrap(_projectInstallationIdentifierErr, "Error parsing 'projectInstallationIdentifier' field of DIBDeviceInfo")
-	}
-	projectInstallationIdentifier := _projectInstallationIdentifier.(ProjectInstallationIdentifier)
-	if closeErr := readBuffer.CloseContext("projectInstallationIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for projectInstallationIdentifier")
-	}
-	// Byte Array field (knxNetIpDeviceSerialNumber)
-	numberOfBytesknxNetIpDeviceSerialNumber := int(uint16(6))
-	knxNetIpDeviceSerialNumber, _readArrayErr := readBuffer.ReadByteArray("knxNetIpDeviceSerialNumber", numberOfBytesknxNetIpDeviceSerialNumber)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'knxNetIpDeviceSerialNumber' field of DIBDeviceInfo")
-	}
+	m.ProjectInstallationIdentifier = projectInstallationIdentifier
 
-	// Simple Field (knxNetIpDeviceMulticastAddress)
-	if pullErr := readBuffer.PullContext("knxNetIpDeviceMulticastAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for knxNetIpDeviceMulticastAddress")
+	knxNetIpDeviceSerialNumber, err := readBuffer.ReadByteArray("knxNetIpDeviceSerialNumber", int(int32(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'knxNetIpDeviceSerialNumber' field"))
 	}
-	_knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParseWithBuffer(ctx, readBuffer)
-	if _knxNetIpDeviceMulticastAddressErr != nil {
-		return nil, errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error parsing 'knxNetIpDeviceMulticastAddress' field of DIBDeviceInfo")
-	}
-	knxNetIpDeviceMulticastAddress := _knxNetIpDeviceMulticastAddress.(IPAddress)
-	if closeErr := readBuffer.CloseContext("knxNetIpDeviceMulticastAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for knxNetIpDeviceMulticastAddress")
-	}
+	m.KnxNetIpDeviceSerialNumber = knxNetIpDeviceSerialNumber
 
-	// Simple Field (knxNetIpDeviceMacAddress)
-	if pullErr := readBuffer.PullContext("knxNetIpDeviceMacAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for knxNetIpDeviceMacAddress")
+	knxNetIpDeviceMulticastAddress, err := ReadSimpleField[IPAddress](ctx, "knxNetIpDeviceMulticastAddress", ReadComplex[IPAddress](IPAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'knxNetIpDeviceMulticastAddress' field"))
 	}
-	_knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParseWithBuffer(ctx, readBuffer)
-	if _knxNetIpDeviceMacAddressErr != nil {
-		return nil, errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error parsing 'knxNetIpDeviceMacAddress' field of DIBDeviceInfo")
+	m.KnxNetIpDeviceMulticastAddress = knxNetIpDeviceMulticastAddress
+
+	knxNetIpDeviceMacAddress, err := ReadSimpleField[MACAddress](ctx, "knxNetIpDeviceMacAddress", ReadComplex[MACAddress](MACAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'knxNetIpDeviceMacAddress' field"))
 	}
-	knxNetIpDeviceMacAddress := _knxNetIpDeviceMacAddress.(MACAddress)
-	if closeErr := readBuffer.CloseContext("knxNetIpDeviceMacAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for knxNetIpDeviceMacAddress")
+	m.KnxNetIpDeviceMacAddress = knxNetIpDeviceMacAddress
+
+	deviceFriendlyName, err := readBuffer.ReadByteArray("deviceFriendlyName", int(int32(30)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceFriendlyName' field"))
 	}
-	// Byte Array field (deviceFriendlyName)
-	numberOfBytesdeviceFriendlyName := int(uint16(30))
-	deviceFriendlyName, _readArrayErr := readBuffer.ReadByteArray("deviceFriendlyName", numberOfBytesdeviceFriendlyName)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'deviceFriendlyName' field of DIBDeviceInfo")
-	}
+	m.DeviceFriendlyName = deviceFriendlyName
 
 	if closeErr := readBuffer.CloseContext("DIBDeviceInfo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DIBDeviceInfo")
 	}
 
-	// Create the instance
-	return &_DIBDeviceInfo{
-		DescriptionType:                descriptionType,
-		KnxMedium:                      knxMedium,
-		DeviceStatus:                   deviceStatus,
-		KnxAddress:                     knxAddress,
-		ProjectInstallationIdentifier:  projectInstallationIdentifier,
-		KnxNetIpDeviceSerialNumber:     knxNetIpDeviceSerialNumber,
-		KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress,
-		KnxNetIpDeviceMacAddress:       knxNetIpDeviceMacAddress,
-		DeviceFriendlyName:             deviceFriendlyName,
-	}, nil
+	return m, nil
 }
 
 func (m *_DIBDeviceInfo) Serialize() ([]byte, error) {
@@ -339,102 +310,44 @@ func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	if pushErr := writeBuffer.PushContext("DIBDeviceInfo"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for DIBDeviceInfo")
 	}
-
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
-	if _structureLengthErr != nil {
-		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
+	if err := WriteImplicitField(ctx, "structureLength", structureLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (descriptionType)
-	descriptionType := uint8(m.GetDescriptionType())
-	_descriptionTypeErr := writeBuffer.WriteUint8("descriptionType", 8, uint8((descriptionType)))
-	if _descriptionTypeErr != nil {
-		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
+	if err := WriteSimpleField[uint8](ctx, "descriptionType", m.GetDescriptionType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'descriptionType' field")
 	}
 
-	// Simple Field (knxMedium)
-	if pushErr := writeBuffer.PushContext("knxMedium"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for knxMedium")
-	}
-	_knxMediumErr := writeBuffer.WriteSerializable(ctx, m.GetKnxMedium())
-	if popErr := writeBuffer.PopContext("knxMedium"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for knxMedium")
-	}
-	if _knxMediumErr != nil {
-		return errors.Wrap(_knxMediumErr, "Error serializing 'knxMedium' field")
+	if err := WriteSimpleEnumField[KnxMedium](ctx, "knxMedium", "KnxMedium", m.GetKnxMedium(), WriteEnum[KnxMedium, uint8](KnxMedium.GetValue, KnxMedium.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxMedium' field")
 	}
 
-	// Simple Field (deviceStatus)
-	if pushErr := writeBuffer.PushContext("deviceStatus"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for deviceStatus")
-	}
-	_deviceStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceStatus())
-	if popErr := writeBuffer.PopContext("deviceStatus"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for deviceStatus")
-	}
-	if _deviceStatusErr != nil {
-		return errors.Wrap(_deviceStatusErr, "Error serializing 'deviceStatus' field")
+	if err := WriteSimpleField[DeviceStatus](ctx, "deviceStatus", m.GetDeviceStatus(), WriteComplex[DeviceStatus](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceStatus' field")
 	}
 
-	// Simple Field (knxAddress)
-	if pushErr := writeBuffer.PushContext("knxAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for knxAddress")
-	}
-	_knxAddressErr := writeBuffer.WriteSerializable(ctx, m.GetKnxAddress())
-	if popErr := writeBuffer.PopContext("knxAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for knxAddress")
-	}
-	if _knxAddressErr != nil {
-		return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
+	if err := WriteSimpleField[KnxAddress](ctx, "knxAddress", m.GetKnxAddress(), WriteComplex[KnxAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxAddress' field")
 	}
 
-	// Simple Field (projectInstallationIdentifier)
-	if pushErr := writeBuffer.PushContext("projectInstallationIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for projectInstallationIdentifier")
-	}
-	_projectInstallationIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetProjectInstallationIdentifier())
-	if popErr := writeBuffer.PopContext("projectInstallationIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for projectInstallationIdentifier")
-	}
-	if _projectInstallationIdentifierErr != nil {
-		return errors.Wrap(_projectInstallationIdentifierErr, "Error serializing 'projectInstallationIdentifier' field")
+	if err := WriteSimpleField[ProjectInstallationIdentifier](ctx, "projectInstallationIdentifier", m.GetProjectInstallationIdentifier(), WriteComplex[ProjectInstallationIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'projectInstallationIdentifier' field")
 	}
 
-	// Array Field (knxNetIpDeviceSerialNumber)
-	// Byte Array field (knxNetIpDeviceSerialNumber)
-	if err := writeBuffer.WriteByteArray("knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber()); err != nil {
+	if err := WriteByteArrayField(ctx, "knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 	}
 
-	// Simple Field (knxNetIpDeviceMulticastAddress)
-	if pushErr := writeBuffer.PushContext("knxNetIpDeviceMulticastAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for knxNetIpDeviceMulticastAddress")
-	}
-	_knxNetIpDeviceMulticastAddressErr := writeBuffer.WriteSerializable(ctx, m.GetKnxNetIpDeviceMulticastAddress())
-	if popErr := writeBuffer.PopContext("knxNetIpDeviceMulticastAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for knxNetIpDeviceMulticastAddress")
-	}
-	if _knxNetIpDeviceMulticastAddressErr != nil {
-		return errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error serializing 'knxNetIpDeviceMulticastAddress' field")
+	if err := WriteSimpleField[IPAddress](ctx, "knxNetIpDeviceMulticastAddress", m.GetKnxNetIpDeviceMulticastAddress(), WriteComplex[IPAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceMulticastAddress' field")
 	}
 
-	// Simple Field (knxNetIpDeviceMacAddress)
-	if pushErr := writeBuffer.PushContext("knxNetIpDeviceMacAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for knxNetIpDeviceMacAddress")
-	}
-	_knxNetIpDeviceMacAddressErr := writeBuffer.WriteSerializable(ctx, m.GetKnxNetIpDeviceMacAddress())
-	if popErr := writeBuffer.PopContext("knxNetIpDeviceMacAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for knxNetIpDeviceMacAddress")
-	}
-	if _knxNetIpDeviceMacAddressErr != nil {
-		return errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error serializing 'knxNetIpDeviceMacAddress' field")
+	if err := WriteSimpleField[MACAddress](ctx, "knxNetIpDeviceMacAddress", m.GetKnxNetIpDeviceMacAddress(), WriteComplex[MACAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceMacAddress' field")
 	}
 
-	// Array Field (deviceFriendlyName)
-	// Byte Array field (deviceFriendlyName)
-	if err := writeBuffer.WriteByteArray("deviceFriendlyName", m.GetDeviceFriendlyName()); err != nil {
+	if err := WriteByteArrayField(ctx, "deviceFriendlyName", m.GetDeviceFriendlyName(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'deviceFriendlyName' field")
 	}
 
@@ -444,9 +357,7 @@ func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_DIBDeviceInfo) isDIBDeviceInfo() bool {
-	return true
-}
+func (m *_DIBDeviceInfo) IsDIBDeviceInfo() {}
 
 func (m *_DIBDeviceInfo) String() string {
 	if m == nil {

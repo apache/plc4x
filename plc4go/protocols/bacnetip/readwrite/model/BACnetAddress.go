@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,13 +48,8 @@ type BACnetAddress interface {
 	GetIsLocalNetwork() bool
 	// GetIsBroadcast returns IsBroadcast (virtual field)
 	GetIsBroadcast() bool
-}
-
-// BACnetAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetAddress.
-// This is useful for switch cases.
-type BACnetAddressExactly interface {
-	BACnetAddress
-	isBACnetAddress() bool
+	// IsBACnetAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAddress()
 }
 
 // _BACnetAddress is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetAddress struct {
 	NetworkNumber BACnetApplicationTagUnsignedInteger
 	MacAddress    BACnetApplicationTagOctetString
 }
+
+var _ BACnetAddress = (*_BACnetAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,6 +107,12 @@ func (m *_BACnetAddress) GetIsBroadcast() bool {
 
 // NewBACnetAddress factory function for _BACnetAddress
 func NewBACnetAddress(networkNumber BACnetApplicationTagUnsignedInteger, macAddress BACnetApplicationTagOctetString) *_BACnetAddress {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetAddress must not be nil")
+	}
+	if macAddress == nil {
+		panic("macAddress of type BACnetApplicationTagOctetString for BACnetAddress must not be nil")
+	}
 	return &_BACnetAddress{NetworkNumber: networkNumber, MacAddress: macAddress}
 }
 
@@ -152,67 +157,64 @@ func BACnetAddressParse(ctx context.Context, theBytes []byte) (BACnetAddress, er
 	return BACnetAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
+		return BACnetAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
+	v, err := (&_BACnetAddress{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAddress BACnetAddress, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkNumber)
-	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
+	networkNumber, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "networkNumber", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
-	_networkNumber, _networkNumberErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _networkNumberErr != nil {
-		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetAddress")
-	}
-	networkNumber := _networkNumber.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkNumber")
-	}
+	m.NetworkNumber = networkNumber
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 	_ = zero
 
-	// Virtual field
-	_isLocalNetwork := bool((networkNumber.GetActualValue()) == (zero))
-	isLocalNetwork := bool(_isLocalNetwork)
+	isLocalNetwork, err := ReadVirtualField[bool](ctx, "isLocalNetwork", (*bool)(nil), bool((networkNumber.GetActualValue()) == (zero)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLocalNetwork' field"))
+	}
 	_ = isLocalNetwork
 
-	// Simple Field (macAddress)
-	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
+	macAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'macAddress' field"))
 	}
-	_macAddress, _macAddressErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _macAddressErr != nil {
-		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetAddress")
-	}
-	macAddress := _macAddress.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for macAddress")
-	}
+	m.MacAddress = macAddress
 
-	// Virtual field
-	_isBroadcast := bool((macAddress.GetActualLength()) == (0))
-	isBroadcast := bool(_isBroadcast)
+	isBroadcast, err := ReadVirtualField[bool](ctx, "isBroadcast", (*bool)(nil), bool((macAddress.GetActualLength()) == (0)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isBroadcast' field"))
+	}
 	_ = isBroadcast
 
 	if closeErr := readBuffer.CloseContext("BACnetAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAddress")
 	}
 
-	// Create the instance
-	return &_BACnetAddress{
-		NetworkNumber: networkNumber,
-		MacAddress:    macAddress,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetAddress) Serialize() ([]byte, error) {
@@ -232,16 +234,8 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for BACnetAddress")
 	}
 
-	// Simple Field (networkNumber)
-	if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkNumber")
-	}
-	_networkNumberErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkNumber())
-	if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkNumber")
-	}
-	if _networkNumberErr != nil {
-		return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "networkNumber", m.GetNetworkNumber(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkNumber' field")
 	}
 	// Virtual field
 	zero := m.GetZero()
@@ -256,16 +250,8 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(_isLocalNetworkErr, "Error serializing 'isLocalNetwork' field")
 	}
 
-	// Simple Field (macAddress)
-	if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for macAddress")
-	}
-	_macAddressErr := writeBuffer.WriteSerializable(ctx, m.GetMacAddress())
-	if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for macAddress")
-	}
-	if _macAddressErr != nil {
-		return errors.Wrap(_macAddressErr, "Error serializing 'macAddress' field")
+	if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", m.GetMacAddress(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'macAddress' field")
 	}
 	// Virtual field
 	isBroadcast := m.GetIsBroadcast()
@@ -280,9 +266,7 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_BACnetAddress) isBACnetAddress() bool {
-	return true
-}
+func (m *_BACnetAddress) IsBACnetAddress() {}
 
 func (m *_BACnetAddress) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,19 +40,16 @@ type BACnetTagPayloadDouble interface {
 	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() float64
-}
-
-// BACnetTagPayloadDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadDouble.
-// This is useful for switch cases.
-type BACnetTagPayloadDoubleExactly interface {
-	BACnetTagPayloadDouble
-	isBACnetTagPayloadDouble() bool
+	// IsBACnetTagPayloadDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadDouble()
 }
 
 // _BACnetTagPayloadDouble is the data-structure of this message
 type _BACnetTagPayloadDouble struct {
 	Value float64
 }
+
+var _ BACnetTagPayloadDouble = (*_BACnetTagPayloadDouble)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func BACnetTagPayloadDoubleParse(ctx context.Context, theBytes []byte) (BACnetTa
 	return BACnetTagPayloadDoubleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTagPayloadDoubleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDouble, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDouble, error) {
+		return BACnetTagPayloadDoubleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetTagPayloadDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDouble, error) {
+	v, err := (&_BACnetTagPayloadDouble{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetTagPayloadDouble) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTagPayloadDouble BACnetTagPayloadDouble, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDouble"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadDouble")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadFloat64("value", 64)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadDouble")
+	value, err := ReadSimpleField(ctx, "value", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadDouble"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadDouble")
 	}
 
-	// Create the instance
-	return &_BACnetTagPayloadDouble{
-		Value: value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetTagPayloadDouble) Serialize() ([]byte, error) {
@@ -148,11 +155,8 @@ func (m *_BACnetTagPayloadDouble) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadDouble")
 	}
 
-	// Simple Field (value)
-	value := float64(m.GetValue())
-	_valueErr := writeBuffer.WriteFloat64("value", 64, (value))
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[float64](ctx, "value", m.GetValue(), WriteDouble(writeBuffer, 64)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadDouble"); popErr != nil {
@@ -161,9 +165,7 @@ func (m *_BACnetTagPayloadDouble) SerializeWithWriteBuffer(ctx context.Context, 
 	return nil
 }
 
-func (m *_BACnetTagPayloadDouble) isBACnetTagPayloadDouble() bool {
-	return true
-}
+func (m *_BACnetTagPayloadDouble) IsBACnetTagPayloadDouble() {}
 
 func (m *_BACnetTagPayloadDouble) String() string {
 	if m == nil {

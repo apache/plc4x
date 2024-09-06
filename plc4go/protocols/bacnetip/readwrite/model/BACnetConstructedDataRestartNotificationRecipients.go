@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataRestartNotificationRecipients interface {
 	BACnetConstructedData
 	// GetRestartNotificationRecipients returns RestartNotificationRecipients (property field)
 	GetRestartNotificationRecipients() []BACnetRecipient
-}
-
-// BACnetConstructedDataRestartNotificationRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestartNotificationRecipients.
-// This is useful for switch cases.
-type BACnetConstructedDataRestartNotificationRecipientsExactly interface {
-	BACnetConstructedDataRestartNotificationRecipients
-	isBACnetConstructedDataRestartNotificationRecipients() bool
+	// IsBACnetConstructedDataRestartNotificationRecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRestartNotificationRecipients()
 }
 
 // _BACnetConstructedDataRestartNotificationRecipients is the data-structure of this message
 type _BACnetConstructedDataRestartNotificationRecipients struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	RestartNotificationRecipients []BACnetRecipient
 }
+
+var _ BACnetConstructedDataRestartNotificationRecipients = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetPropertyIdentif
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataRestartNotificationRecipients) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataRestartNotificationRecipients) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetRestartNotifica
 // NewBACnetConstructedDataRestartNotificationRecipients factory function for _BACnetConstructedDataRestartNotificationRecipients
 func NewBACnetConstructedDataRestartNotificationRecipients(restartNotificationRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestartNotificationRecipients {
 	_result := &_BACnetConstructedDataRestartNotificationRecipients{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RestartNotificationRecipients: restartNotificationRecipients,
-		_BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetTypeName() stri
 }
 
 func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.RestartNotificationRecipients) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBytes(c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataRestartNotificationRecipientsParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestartNotificationRecipients, error) {
-	return BACnetConstructedDataRestartNotificationRecipientsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataRestartNotificationRecipientsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestartNotificationRecipients, error) {
+func (m *_BACnetConstructedDataRestartNotificationRecipients) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataRestartNotificationRecipients BACnetConstructedDataRestartNotificationRecipients, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestartNotificationRecipients"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRestartNotificationRecipients")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (restartNotificationRecipients)
-	if pullErr := readBuffer.PullContext("restartNotificationRecipients", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for restartNotificationRecipients")
+	restartNotificationRecipients, err := ReadTerminatedArrayField[BACnetRecipient](ctx, "restartNotificationRecipients", ReadComplex[BACnetRecipient](BACnetRecipientParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'restartNotificationRecipients' field"))
 	}
-	// Terminated array
-	var restartNotificationRecipients []BACnetRecipient
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetRecipientParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'restartNotificationRecipients' field of BACnetConstructedDataRestartNotificationRecipients")
-			}
-			restartNotificationRecipients = append(restartNotificationRecipients, _item.(BACnetRecipient))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("restartNotificationRecipients", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for restartNotificationRecipients")
-	}
+	m.RestartNotificationRecipients = restartNotificationRecipients
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestartNotificationRecipients"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRestartNotificationRecipients")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataRestartNotificationRecipients{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		RestartNotificationRecipients: restartNotificationRecipients,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataRestartNotificationRecipients) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) SerializeWithWrite
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRestartNotificationRecipients")
 		}
 
-		// Array Field (restartNotificationRecipients)
-		if pushErr := writeBuffer.PushContext("restartNotificationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for restartNotificationRecipients")
-		}
-		for _curItem, _element := range m.GetRestartNotificationRecipients() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRestartNotificationRecipients()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'restartNotificationRecipients' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("restartNotificationRecipients", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for restartNotificationRecipients")
+		if err := WriteComplexTypeArrayField(ctx, "restartNotificationRecipients", m.GetRestartNotificationRecipients(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'restartNotificationRecipients' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRestartNotificationRecipients"); popErr != nil {
@@ -228,11 +183,10 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) SerializeWithWrite
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) isBACnetConstructedDataRestartNotificationRecipients() bool {
-	return true
+func (m *_BACnetConstructedDataRestartNotificationRecipients) IsBACnetConstructedDataRestartNotificationRecipients() {
 }
 
 func (m *_BACnetConstructedDataRestartNotificationRecipients) String() string {

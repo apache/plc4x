@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,18 +49,13 @@ type PubSubConfigurationDataType interface {
 	GetConnections() []ExtensionObjectDefinition
 	// GetEnabled returns Enabled (property field)
 	GetEnabled() bool
-}
-
-// PubSubConfigurationDataTypeExactly can be used when we want exactly this type and not a type which fulfills PubSubConfigurationDataType.
-// This is useful for switch cases.
-type PubSubConfigurationDataTypeExactly interface {
-	PubSubConfigurationDataType
-	isPubSubConfigurationDataType() bool
+	// IsPubSubConfigurationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPubSubConfigurationDataType()
 }
 
 // _PubSubConfigurationDataType is the data-structure of this message
 type _PubSubConfigurationDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NoOfPublishedDataSets int32
 	PublishedDataSets     []ExtensionObjectDefinition
 	NoOfConnections       int32
@@ -67,6 +64,9 @@ type _PubSubConfigurationDataType struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ PubSubConfigurationDataType = (*_PubSubConfigurationDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PubSubConfigurationDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,10 +82,8 @@ func (m *_PubSubConfigurationDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PubSubConfigurationDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_PubSubConfigurationDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_PubSubConfigurationDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -121,14 +119,14 @@ func (m *_PubSubConfigurationDataType) GetEnabled() bool {
 // NewPubSubConfigurationDataType factory function for _PubSubConfigurationDataType
 func NewPubSubConfigurationDataType(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) *_PubSubConfigurationDataType {
 	_result := &_PubSubConfigurationDataType{
-		NoOfPublishedDataSets:      noOfPublishedDataSets,
-		PublishedDataSets:          publishedDataSets,
-		NoOfConnections:            noOfConnections,
-		Connections:                connections,
-		Enabled:                    enabled,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfPublishedDataSets:             noOfPublishedDataSets,
+		PublishedDataSets:                 publishedDataSets,
+		NoOfConnections:                   noOfConnections,
+		Connections:                       connections,
+		Enabled:                           enabled,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -148,7 +146,7 @@ func (m *_PubSubConfigurationDataType) GetTypeName() string {
 }
 
 func (m *_PubSubConfigurationDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (noOfPublishedDataSets)
 	lengthInBits += 32
@@ -189,129 +187,58 @@ func (m *_PubSubConfigurationDataType) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PubSubConfigurationDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (PubSubConfigurationDataType, error) {
-	return PubSubConfigurationDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubConfigurationDataType, error) {
+func (m *_PubSubConfigurationDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubConfigurationDataType PubSubConfigurationDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PubSubConfigurationDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PubSubConfigurationDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfPublishedDataSets)
-	_noOfPublishedDataSets, _noOfPublishedDataSetsErr := readBuffer.ReadInt32("noOfPublishedDataSets", 32)
-	if _noOfPublishedDataSetsErr != nil {
-		return nil, errors.Wrap(_noOfPublishedDataSetsErr, "Error parsing 'noOfPublishedDataSets' field of PubSubConfigurationDataType")
+	noOfPublishedDataSets, err := ReadSimpleField(ctx, "noOfPublishedDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPublishedDataSets' field"))
 	}
-	noOfPublishedDataSets := _noOfPublishedDataSets
+	m.NoOfPublishedDataSets = noOfPublishedDataSets
 
-	// Array field (publishedDataSets)
-	if pullErr := readBuffer.PullContext("publishedDataSets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for publishedDataSets")
+	publishedDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "publishedDataSets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("15580")), readBuffer), uint64(noOfPublishedDataSets))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishedDataSets' field"))
 	}
-	// Count array
-	publishedDataSets := make([]ExtensionObjectDefinition, max(noOfPublishedDataSets, 0))
-	// This happens when the size is set conditional to 0
-	if len(publishedDataSets) == 0 {
-		publishedDataSets = nil
-	}
-	{
-		_numItems := uint16(max(noOfPublishedDataSets, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "15580")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'publishedDataSets' field of PubSubConfigurationDataType")
-			}
-			publishedDataSets[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("publishedDataSets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for publishedDataSets")
-	}
+	m.PublishedDataSets = publishedDataSets
 
-	// Simple Field (noOfConnections)
-	_noOfConnections, _noOfConnectionsErr := readBuffer.ReadInt32("noOfConnections", 32)
-	if _noOfConnectionsErr != nil {
-		return nil, errors.Wrap(_noOfConnectionsErr, "Error parsing 'noOfConnections' field of PubSubConfigurationDataType")
+	noOfConnections, err := ReadSimpleField(ctx, "noOfConnections", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConnections' field"))
 	}
-	noOfConnections := _noOfConnections
+	m.NoOfConnections = noOfConnections
 
-	// Array field (connections)
-	if pullErr := readBuffer.PullContext("connections", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for connections")
+	connections, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connections", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("15619")), readBuffer), uint64(noOfConnections))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connections' field"))
 	}
-	// Count array
-	connections := make([]ExtensionObjectDefinition, max(noOfConnections, 0))
-	// This happens when the size is set conditional to 0
-	if len(connections) == 0 {
-		connections = nil
-	}
-	{
-		_numItems := uint16(max(noOfConnections, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "15619")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'connections' field of PubSubConfigurationDataType")
-			}
-			connections[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("connections", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for connections")
-	}
+	m.Connections = connections
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of PubSubConfigurationDataType")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (enabled)
-	_enabled, _enabledErr := readBuffer.ReadBit("enabled")
-	if _enabledErr != nil {
-		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of PubSubConfigurationDataType")
+	enabled, err := ReadSimpleField(ctx, "enabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enabled' field"))
 	}
-	enabled := _enabled
+	m.Enabled = enabled
 
 	if closeErr := readBuffer.CloseContext("PubSubConfigurationDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PubSubConfigurationDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_PubSubConfigurationDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NoOfPublishedDataSets:      noOfPublishedDataSets,
-		PublishedDataSets:          publishedDataSets,
-		NoOfConnections:            noOfConnections,
-		Connections:                connections,
-		Enabled:                    enabled,
-		reservedField0:             reservedField0,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_PubSubConfigurationDataType) Serialize() ([]byte, error) {
@@ -332,75 +259,28 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for PubSubConfigurationDataType")
 		}
 
-		// Simple Field (noOfPublishedDataSets)
-		noOfPublishedDataSets := int32(m.GetNoOfPublishedDataSets())
-		_noOfPublishedDataSetsErr := writeBuffer.WriteInt32("noOfPublishedDataSets", 32, int32((noOfPublishedDataSets)))
-		if _noOfPublishedDataSetsErr != nil {
-			return errors.Wrap(_noOfPublishedDataSetsErr, "Error serializing 'noOfPublishedDataSets' field")
+		if err := WriteSimpleField[int32](ctx, "noOfPublishedDataSets", m.GetNoOfPublishedDataSets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfPublishedDataSets' field")
 		}
 
-		// Array Field (publishedDataSets)
-		if pushErr := writeBuffer.PushContext("publishedDataSets", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for publishedDataSets")
-		}
-		for _curItem, _element := range m.GetPublishedDataSets() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPublishedDataSets()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'publishedDataSets' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("publishedDataSets", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for publishedDataSets")
+		if err := WriteComplexTypeArrayField(ctx, "publishedDataSets", m.GetPublishedDataSets(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'publishedDataSets' field")
 		}
 
-		// Simple Field (noOfConnections)
-		noOfConnections := int32(m.GetNoOfConnections())
-		_noOfConnectionsErr := writeBuffer.WriteInt32("noOfConnections", 32, int32((noOfConnections)))
-		if _noOfConnectionsErr != nil {
-			return errors.Wrap(_noOfConnectionsErr, "Error serializing 'noOfConnections' field")
+		if err := WriteSimpleField[int32](ctx, "noOfConnections", m.GetNoOfConnections(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfConnections' field")
 		}
 
-		// Array Field (connections)
-		if pushErr := writeBuffer.PushContext("connections", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for connections")
-		}
-		for _curItem, _element := range m.GetConnections() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConnections()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'connections' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("connections", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for connections")
+		if err := WriteComplexTypeArrayField(ctx, "connections", m.GetConnections(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'connections' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (enabled)
-		enabled := bool(m.GetEnabled())
-		_enabledErr := writeBuffer.WriteBit("enabled", (enabled))
-		if _enabledErr != nil {
-			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
+		if err := WriteSimpleField[bool](ctx, "enabled", m.GetEnabled(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enabled' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PubSubConfigurationDataType"); popErr != nil {
@@ -408,12 +288,10 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_PubSubConfigurationDataType) isPubSubConfigurationDataType() bool {
-	return true
-}
+func (m *_PubSubConfigurationDataType) IsPubSubConfigurationDataType() {}
 
 func (m *_PubSubConfigurationDataType) String() string {
 	if m == nil {

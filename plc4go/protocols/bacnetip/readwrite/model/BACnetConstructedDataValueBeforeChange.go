@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataValueBeforeChange interface {
 	GetValuesBeforeChange() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataValueBeforeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataValueBeforeChange.
-// This is useful for switch cases.
-type BACnetConstructedDataValueBeforeChangeExactly interface {
-	BACnetConstructedDataValueBeforeChange
-	isBACnetConstructedDataValueBeforeChange() bool
+	// IsBACnetConstructedDataValueBeforeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataValueBeforeChange()
 }
 
 // _BACnetConstructedDataValueBeforeChange is the data-structure of this message
 type _BACnetConstructedDataValueBeforeChange struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ValuesBeforeChange BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataValueBeforeChange = (*_BACnetConstructedDataValueBeforeChange)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueBeforeChange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataValueBeforeChange) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataValueBeforeChange) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataValueBeforeChange) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataValueBeforeChange) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataValueBeforeChange) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataValueBeforeChange factory function for _BACnetConstructedDataValueBeforeChange
 func NewBACnetConstructedDataValueBeforeChange(valuesBeforeChange BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueBeforeChange {
-	_result := &_BACnetConstructedDataValueBeforeChange{
-		ValuesBeforeChange:     valuesBeforeChange,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if valuesBeforeChange == nil {
+		panic("valuesBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueBeforeChange must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataValueBeforeChange{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValuesBeforeChange:            valuesBeforeChange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataValueBeforeChange) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataValueBeforeChange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (valuesBeforeChange)
 	lengthInBits += m.ValuesBeforeChange.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataValueBeforeChange) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataValueBeforeChangeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueBeforeChange, error) {
-	return BACnetConstructedDataValueBeforeChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataValueBeforeChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueBeforeChange, error) {
+func (m *_BACnetConstructedDataValueBeforeChange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataValueBeforeChange BACnetConstructedDataValueBeforeChange, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueBeforeChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValueBeforeChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (valuesBeforeChange)
-	if pullErr := readBuffer.PullContext("valuesBeforeChange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valuesBeforeChange")
+	valuesBeforeChange, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valuesBeforeChange", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valuesBeforeChange' field"))
 	}
-	_valuesBeforeChange, _valuesBeforeChangeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _valuesBeforeChangeErr != nil {
-		return nil, errors.Wrap(_valuesBeforeChangeErr, "Error parsing 'valuesBeforeChange' field of BACnetConstructedDataValueBeforeChange")
-	}
-	valuesBeforeChange := _valuesBeforeChange.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("valuesBeforeChange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valuesBeforeChange")
-	}
+	m.ValuesBeforeChange = valuesBeforeChange
 
-	// Virtual field
-	_actualValue := valuesBeforeChange
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), valuesBeforeChange)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueBeforeChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueBeforeChange")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataValueBeforeChange{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ValuesBeforeChange: valuesBeforeChange,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataValueBeforeChange) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataValueBeforeChange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueBeforeChange")
 		}
 
-		// Simple Field (valuesBeforeChange)
-		if pushErr := writeBuffer.PushContext("valuesBeforeChange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for valuesBeforeChange")
-		}
-		_valuesBeforeChangeErr := writeBuffer.WriteSerializable(ctx, m.GetValuesBeforeChange())
-		if popErr := writeBuffer.PopContext("valuesBeforeChange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for valuesBeforeChange")
-		}
-		if _valuesBeforeChangeErr != nil {
-			return errors.Wrap(_valuesBeforeChangeErr, "Error serializing 'valuesBeforeChange' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valuesBeforeChange", m.GetValuesBeforeChange(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'valuesBeforeChange' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataValueBeforeChange) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataValueBeforeChange) isBACnetConstructedDataValueBeforeChange() bool {
-	return true
-}
+func (m *_BACnetConstructedDataValueBeforeChange) IsBACnetConstructedDataValueBeforeChange() {}
 
 func (m *_BACnetConstructedDataValueBeforeChange) String() string {
 	if m == nil {

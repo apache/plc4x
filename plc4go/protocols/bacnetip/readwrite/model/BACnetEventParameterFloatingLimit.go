@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -51,18 +53,13 @@ type BACnetEventParameterFloatingLimit interface {
 	GetDeadband() BACnetContextTagReal
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetEventParameterFloatingLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterFloatingLimit.
-// This is useful for switch cases.
-type BACnetEventParameterFloatingLimitExactly interface {
-	BACnetEventParameterFloatingLimit
-	isBACnetEventParameterFloatingLimit() bool
+	// IsBACnetEventParameterFloatingLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterFloatingLimit()
 }
 
 // _BACnetEventParameterFloatingLimit is the data-structure of this message
 type _BACnetEventParameterFloatingLimit struct {
-	*_BACnetEventParameter
+	BACnetEventParameterContract
 	OpeningTag        BACnetOpeningTag
 	TimeDelay         BACnetContextTagUnsignedInteger
 	SetpointReference BACnetDeviceObjectPropertyReferenceEnclosed
@@ -71,6 +68,9 @@ type _BACnetEventParameterFloatingLimit struct {
 	Deadband          BACnetContextTagReal
 	ClosingTag        BACnetClosingTag
 }
+
+var _ BACnetEventParameterFloatingLimit = (*_BACnetEventParameterFloatingLimit)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterFloatingLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,12 +82,8 @@ type _BACnetEventParameterFloatingLimit struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetEventParameterFloatingLimit) InitializeParent(parent BACnetEventParameter, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetEventParameterFloatingLimit) GetParent() BACnetEventParameter {
-	return m._BACnetEventParameter
+func (m *_BACnetEventParameterFloatingLimit) GetParent() BACnetEventParameterContract {
+	return m.BACnetEventParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -130,17 +126,38 @@ func (m *_BACnetEventParameterFloatingLimit) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetEventParameterFloatingLimit factory function for _BACnetEventParameterFloatingLimit
 func NewBACnetEventParameterFloatingLimit(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, setpointReference BACnetDeviceObjectPropertyReferenceEnclosed, lowDiffLimit BACnetContextTagReal, highDiffLimit BACnetContextTagReal, deadband BACnetContextTagReal, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterFloatingLimit {
-	_result := &_BACnetEventParameterFloatingLimit{
-		OpeningTag:            openingTag,
-		TimeDelay:             timeDelay,
-		SetpointReference:     setpointReference,
-		LowDiffLimit:          lowDiffLimit,
-		HighDiffLimit:         highDiffLimit,
-		Deadband:              deadband,
-		ClosingTag:            closingTag,
-		_BACnetEventParameter: NewBACnetEventParameter(peekedTagHeader),
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterFloatingLimit must not be nil")
 	}
-	_result._BACnetEventParameter._BACnetEventParameterChildRequirements = _result
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if setpointReference == nil {
+		panic("setpointReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if lowDiffLimit == nil {
+		panic("lowDiffLimit of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if highDiffLimit == nil {
+		panic("highDiffLimit of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	_result := &_BACnetEventParameterFloatingLimit{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		SetpointReference:            setpointReference,
+		LowDiffLimit:                 lowDiffLimit,
+		HighDiffLimit:                highDiffLimit,
+		Deadband:                     deadband,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 
@@ -160,7 +177,7 @@ func (m *_BACnetEventParameterFloatingLimit) GetTypeName() string {
 }
 
 func (m *_BACnetEventParameterFloatingLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -190,129 +207,64 @@ func (m *_BACnetEventParameterFloatingLimit) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterFloatingLimitParse(ctx context.Context, theBytes []byte) (BACnetEventParameterFloatingLimit, error) {
-	return BACnetEventParameterFloatingLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetEventParameterFloatingLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterFloatingLimit, error) {
+func (m *_BACnetEventParameterFloatingLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterFloatingLimit BACnetEventParameterFloatingLimit, err error) {
+	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterFloatingLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterFloatingLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(4))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterFloatingLimit")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (timeDelay)
-	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
+	timeDelay, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDelay' field"))
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterFloatingLimit")
-	}
-	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
-	}
+	m.TimeDelay = timeDelay
 
-	// Simple Field (setpointReference)
-	if pullErr := readBuffer.PullContext("setpointReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for setpointReference")
+	setpointReference, err := ReadSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "setpointReference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setpointReference' field"))
 	}
-	_setpointReference, _setpointReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _setpointReferenceErr != nil {
-		return nil, errors.Wrap(_setpointReferenceErr, "Error parsing 'setpointReference' field of BACnetEventParameterFloatingLimit")
-	}
-	setpointReference := _setpointReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("setpointReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for setpointReference")
-	}
+	m.SetpointReference = setpointReference
 
-	// Simple Field (lowDiffLimit)
-	if pullErr := readBuffer.PullContext("lowDiffLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lowDiffLimit")
+	lowDiffLimit, err := ReadSimpleField[BACnetContextTagReal](ctx, "lowDiffLimit", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowDiffLimit' field"))
 	}
-	_lowDiffLimit, _lowDiffLimitErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
-	if _lowDiffLimitErr != nil {
-		return nil, errors.Wrap(_lowDiffLimitErr, "Error parsing 'lowDiffLimit' field of BACnetEventParameterFloatingLimit")
-	}
-	lowDiffLimit := _lowDiffLimit.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("lowDiffLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lowDiffLimit")
-	}
+	m.LowDiffLimit = lowDiffLimit
 
-	// Simple Field (highDiffLimit)
-	if pullErr := readBuffer.PullContext("highDiffLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for highDiffLimit")
+	highDiffLimit, err := ReadSimpleField[BACnetContextTagReal](ctx, "highDiffLimit", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highDiffLimit' field"))
 	}
-	_highDiffLimit, _highDiffLimitErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
-	if _highDiffLimitErr != nil {
-		return nil, errors.Wrap(_highDiffLimitErr, "Error parsing 'highDiffLimit' field of BACnetEventParameterFloatingLimit")
-	}
-	highDiffLimit := _highDiffLimit.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("highDiffLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for highDiffLimit")
-	}
+	m.HighDiffLimit = highDiffLimit
 
-	// Simple Field (deadband)
-	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deadband")
+	deadband, err := ReadSimpleField[BACnetContextTagReal](ctx, "deadband", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadband' field"))
 	}
-	_deadband, _deadbandErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_REAL))
-	if _deadbandErr != nil {
-		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetEventParameterFloatingLimit")
-	}
-	deadband := _deadband.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deadband")
-	}
+	m.Deadband = deadband
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(4))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterFloatingLimit")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterFloatingLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterFloatingLimit")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetEventParameterFloatingLimit{
-		_BACnetEventParameter: &_BACnetEventParameter{},
-		OpeningTag:            openingTag,
-		TimeDelay:             timeDelay,
-		SetpointReference:     setpointReference,
-		LowDiffLimit:          lowDiffLimit,
-		HighDiffLimit:         highDiffLimit,
-		Deadband:              deadband,
-		ClosingTag:            closingTag,
-	}
-	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetEventParameterFloatingLimit) Serialize() ([]byte, error) {
@@ -333,88 +285,32 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterFloatingLimit")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (timeDelay)
-		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelay")
-		}
-		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
-		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelay")
-		}
-		if _timeDelayErr != nil {
-			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", m.GetTimeDelay(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelay' field")
 		}
 
-		// Simple Field (setpointReference)
-		if pushErr := writeBuffer.PushContext("setpointReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setpointReference")
-		}
-		_setpointReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetSetpointReference())
-		if popErr := writeBuffer.PopContext("setpointReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setpointReference")
-		}
-		if _setpointReferenceErr != nil {
-			return errors.Wrap(_setpointReferenceErr, "Error serializing 'setpointReference' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "setpointReference", m.GetSetpointReference(), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setpointReference' field")
 		}
 
-		// Simple Field (lowDiffLimit)
-		if pushErr := writeBuffer.PushContext("lowDiffLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lowDiffLimit")
-		}
-		_lowDiffLimitErr := writeBuffer.WriteSerializable(ctx, m.GetLowDiffLimit())
-		if popErr := writeBuffer.PopContext("lowDiffLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lowDiffLimit")
-		}
-		if _lowDiffLimitErr != nil {
-			return errors.Wrap(_lowDiffLimitErr, "Error serializing 'lowDiffLimit' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "lowDiffLimit", m.GetLowDiffLimit(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lowDiffLimit' field")
 		}
 
-		// Simple Field (highDiffLimit)
-		if pushErr := writeBuffer.PushContext("highDiffLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for highDiffLimit")
-		}
-		_highDiffLimitErr := writeBuffer.WriteSerializable(ctx, m.GetHighDiffLimit())
-		if popErr := writeBuffer.PopContext("highDiffLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for highDiffLimit")
-		}
-		if _highDiffLimitErr != nil {
-			return errors.Wrap(_highDiffLimitErr, "Error serializing 'highDiffLimit' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "highDiffLimit", m.GetHighDiffLimit(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'highDiffLimit' field")
 		}
 
-		// Simple Field (deadband)
-		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deadband")
-		}
-		_deadbandErr := writeBuffer.WriteSerializable(ctx, m.GetDeadband())
-		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deadband")
-		}
-		if _deadbandErr != nil {
-			return errors.Wrap(_deadbandErr, "Error serializing 'deadband' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "deadband", m.GetDeadband(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deadband' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterFloatingLimit"); popErr != nil {
@@ -422,12 +318,10 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetEventParameterContract.(*_BACnetEventParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetEventParameterFloatingLimit) isBACnetEventParameterFloatingLimit() bool {
-	return true
-}
+func (m *_BACnetEventParameterFloatingLimit) IsBACnetEventParameterFloatingLimit() {}
 
 func (m *_BACnetEventParameterFloatingLimit) String() string {
 	if m == nil {

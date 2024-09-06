@@ -77,7 +77,7 @@ public class LightingLabelOptions implements Message {
         "labelFlavour",
         "LightingLabelFlavour",
         labelFlavour,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             LightingLabelFlavour::getValue,
             LightingLabelFlavour::name,
             writeUnsignedByte(writeBuffer, 2)));
@@ -99,7 +99,7 @@ public class LightingLabelOptions implements Message {
         "labelType",
         "LightingLabelType",
         labelType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             LightingLabelType::getValue,
             LightingLabelType::name,
             writeUnsignedByte(writeBuffer, 2)));
@@ -157,8 +157,7 @@ public class LightingLabelOptions implements Message {
         readEnumField(
             "labelFlavour",
             "LightingLabelFlavour",
-            new DataReaderEnumDefault<>(
-                LightingLabelFlavour::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(LightingLabelFlavour::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     Boolean reservedField1 =
         readReservedField("reserved", readBoolean(readBuffer), (boolean) false);
@@ -170,8 +169,7 @@ public class LightingLabelOptions implements Message {
         readEnumField(
             "labelType",
             "LightingLabelType",
-            new DataReaderEnumDefault<>(
-                LightingLabelType::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(LightingLabelType::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     Boolean reservedField3 =
         readReservedField("reserved", readBoolean(readBuffer), (boolean) false);

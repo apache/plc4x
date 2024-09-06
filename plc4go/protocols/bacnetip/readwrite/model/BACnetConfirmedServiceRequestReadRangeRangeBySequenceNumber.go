@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
 	GetReferenceSequenceNumber() BACnetApplicationTagUnsignedInteger
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
-}
-
-// BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberExactly interface {
-	BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
-	isBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() bool
+	// IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber()
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber struct {
-	*_BACnetConfirmedServiceRequestReadRangeRange
+	BACnetConfirmedServiceRequestReadRangeRangeContract
 	ReferenceSequenceNumber BACnetApplicationTagUnsignedInteger
 	Count                   BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber)(nil)
+var _ BACnetConfirmedServiceRequestReadRangeRangeRequirements = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,14 +67,8 @@ type _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) InitializeParent(parent BACnetConfirmedServiceRequestReadRangeRange, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) {
-	m.PeekedTagHeader = peekedTagHeader
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetParent() BACnetConfirmedServiceRequestReadRangeRange {
-	return m._BACnetConfirmedServiceRequestReadRangeRange
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetParent() BACnetConfirmedServiceRequestReadRangeRangeContract {
+	return m.BACnetConfirmedServiceRequestReadRangeRangeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +91,18 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetCount(
 
 // NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber factory function for _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
 func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(referenceSequenceNumber BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
-	_result := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
-		ReferenceSequenceNumber: referenceSequenceNumber,
-		Count:                   count,
-		_BACnetConfirmedServiceRequestReadRangeRange: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
+	if referenceSequenceNumber == nil {
+		panic("referenceSequenceNumber of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequestReadRangeRange._BACnetConfirmedServiceRequestReadRangeRangeChildRequirements = _result
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
+		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
+		ReferenceSequenceNumber:                             referenceSequenceNumber,
+		Count:                                               count,
+	}
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
 	return _result
 }
 
@@ -122,7 +122,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetTypeNa
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).getLengthInBits(ctx))
 
 	// Simple field (referenceSequenceNumber)
 	lengthInBits += m.ReferenceSequenceNumber.GetLengthInBits(ctx)
@@ -137,59 +137,34 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLength
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(ctx context.Context, theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
-	return BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequestReadRangeRange) (__bACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, err error) {
+	m.BACnetConfirmedServiceRequestReadRangeRangeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceSequenceNumber)
-	if pullErr := readBuffer.PullContext("referenceSequenceNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceSequenceNumber")
+	referenceSequenceNumber, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referenceSequenceNumber", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceSequenceNumber' field"))
 	}
-	_referenceSequenceNumber, _referenceSequenceNumberErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _referenceSequenceNumberErr != nil {
-		return nil, errors.Wrap(_referenceSequenceNumberErr, "Error parsing 'referenceSequenceNumber' field of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
-	}
-	referenceSequenceNumber := _referenceSequenceNumber.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("referenceSequenceNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceSequenceNumber")
-	}
+	m.ReferenceSequenceNumber = referenceSequenceNumber
 
-	// Simple Field (count)
-	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for count")
+	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}
-	_count, _countErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
-	}
-	count := _count.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for count")
-	}
+	m.Count = count
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
-		_BACnetConfirmedServiceRequestReadRangeRange: &_BACnetConfirmedServiceRequestReadRangeRange{},
-		ReferenceSequenceNumber:                      referenceSequenceNumber,
-		Count:                                        count,
-	}
-	_child._BACnetConfirmedServiceRequestReadRangeRange._BACnetConfirmedServiceRequestReadRangeRangeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize() ([]byte, error) {
@@ -210,28 +185,12 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 		}
 
-		// Simple Field (referenceSequenceNumber)
-		if pushErr := writeBuffer.PushContext("referenceSequenceNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceSequenceNumber")
-		}
-		_referenceSequenceNumberErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceSequenceNumber())
-		if popErr := writeBuffer.PopContext("referenceSequenceNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceSequenceNumber")
-		}
-		if _referenceSequenceNumberErr != nil {
-			return errors.Wrap(_referenceSequenceNumberErr, "Error serializing 'referenceSequenceNumber' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referenceSequenceNumber", m.GetReferenceSequenceNumber(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceSequenceNumber' field")
 		}
 
-		// Simple Field (count)
-		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for count")
-		}
-		_countErr := writeBuffer.WriteSerializable(ctx, m.GetCount())
-		if popErr := writeBuffer.PopContext("count"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for count")
-		}
-		if _countErr != nil {
-			return errors.Wrap(_countErr, "Error serializing 'count' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", m.GetCount(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); popErr != nil {
@@ -239,11 +198,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) isBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() {
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) String() string {

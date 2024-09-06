@@ -160,7 +160,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     List<PascalString> namespaceUris =
         readCountArrayField(
             "namespaceUris",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfNamespaceUris);
 
     int noOfServerUris = readSimpleField("noOfServerUris", readSignedInt(readBuffer, 32));
@@ -168,7 +168,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     List<PascalString> serverUris =
         readCountArrayField(
             "serverUris",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfServerUris);
 
     long serviceId = readSimpleField("serviceId", readUnsignedLong(readBuffer, 32));

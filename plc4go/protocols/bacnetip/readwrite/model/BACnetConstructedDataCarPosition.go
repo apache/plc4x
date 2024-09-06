@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataCarPosition interface {
 	GetCarPosition() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataCarPositionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarPosition.
-// This is useful for switch cases.
-type BACnetConstructedDataCarPositionExactly interface {
-	BACnetConstructedDataCarPosition
-	isBACnetConstructedDataCarPosition() bool
+	// IsBACnetConstructedDataCarPosition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarPosition()
 }
 
 // _BACnetConstructedDataCarPosition is the data-structure of this message
 type _BACnetConstructedDataCarPosition struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	CarPosition BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataCarPosition = (*_BACnetConstructedDataCarPosition)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarPosition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataCarPosition) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCarPosition) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCarPosition) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCarPosition) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataCarPosition) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataCarPosition factory function for _BACnetConstructedDataCarPosition
 func NewBACnetConstructedDataCarPosition(carPosition BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarPosition {
-	_result := &_BACnetConstructedDataCarPosition{
-		CarPosition:            carPosition,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if carPosition == nil {
+		panic("carPosition of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCarPosition must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataCarPosition{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarPosition:                   carPosition,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataCarPosition) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCarPosition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (carPosition)
 	lengthInBits += m.CarPosition.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataCarPosition) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCarPositionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarPosition, error) {
-	return BACnetConstructedDataCarPositionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCarPositionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarPosition, error) {
+func (m *_BACnetConstructedDataCarPosition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCarPosition BACnetConstructedDataCarPosition, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCarPosition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (carPosition)
-	if pullErr := readBuffer.PullContext("carPosition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for carPosition")
+	carPosition, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "carPosition", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'carPosition' field"))
 	}
-	_carPosition, _carPositionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _carPositionErr != nil {
-		return nil, errors.Wrap(_carPositionErr, "Error parsing 'carPosition' field of BACnetConstructedDataCarPosition")
-	}
-	carPosition := _carPosition.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("carPosition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for carPosition")
-	}
+	m.CarPosition = carPosition
 
-	// Virtual field
-	_actualValue := carPosition
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), carPosition)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarPosition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarPosition")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCarPosition{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		CarPosition: carPosition,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCarPosition) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataCarPosition) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarPosition")
 		}
 
-		// Simple Field (carPosition)
-		if pushErr := writeBuffer.PushContext("carPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for carPosition")
-		}
-		_carPositionErr := writeBuffer.WriteSerializable(ctx, m.GetCarPosition())
-		if popErr := writeBuffer.PopContext("carPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for carPosition")
-		}
-		if _carPositionErr != nil {
-			return errors.Wrap(_carPositionErr, "Error serializing 'carPosition' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "carPosition", m.GetCarPosition(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'carPosition' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataCarPosition) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCarPosition) isBACnetConstructedDataCarPosition() bool {
-	return true
-}
+func (m *_BACnetConstructedDataCarPosition) IsBACnetConstructedDataCarPosition() {}
 
 func (m *_BACnetConstructedDataCarPosition) String() string {
 	if m == nil {

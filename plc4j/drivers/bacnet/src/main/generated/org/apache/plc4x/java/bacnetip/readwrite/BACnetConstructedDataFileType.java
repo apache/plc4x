@@ -82,7 +82,7 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataFileType");
 
     // Simple Field (fileType)
-    writeSimpleField("fileType", fileType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileType", fileType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
     BACnetApplicationTagCharacterString fileType =
         readSimpleField(
             "fileType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

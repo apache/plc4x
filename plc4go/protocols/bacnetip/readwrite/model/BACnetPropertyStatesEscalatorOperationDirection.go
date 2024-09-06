@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesEscalatorOperationDirection interface {
 	BACnetPropertyStates
 	// GetEscalatorOperationDirection returns EscalatorOperationDirection (property field)
 	GetEscalatorOperationDirection() BACnetEscalatorOperationDirectionTagged
-}
-
-// BACnetPropertyStatesEscalatorOperationDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEscalatorOperationDirection.
-// This is useful for switch cases.
-type BACnetPropertyStatesEscalatorOperationDirectionExactly interface {
-	BACnetPropertyStatesEscalatorOperationDirection
-	isBACnetPropertyStatesEscalatorOperationDirection() bool
+	// IsBACnetPropertyStatesEscalatorOperationDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesEscalatorOperationDirection()
 }
 
 // _BACnetPropertyStatesEscalatorOperationDirection is the data-structure of this message
 type _BACnetPropertyStatesEscalatorOperationDirection struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	EscalatorOperationDirection BACnetEscalatorOperationDirectionTagged
 }
+
+var _ BACnetPropertyStatesEscalatorOperationDirection = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesEscalatorOperationDirection struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetEscalatorOperation
 
 // NewBACnetPropertyStatesEscalatorOperationDirection factory function for _BACnetPropertyStatesEscalatorOperationDirection
 func NewBACnetPropertyStatesEscalatorOperationDirection(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEscalatorOperationDirection {
-	_result := &_BACnetPropertyStatesEscalatorOperationDirection{
-		EscalatorOperationDirection: escalatorOperationDirection,
-		_BACnetPropertyStates:       NewBACnetPropertyStates(peekedTagHeader),
+	if escalatorOperationDirection == nil {
+		panic("escalatorOperationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetPropertyStatesEscalatorOperationDirection must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesEscalatorOperationDirection{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EscalatorOperationDirection:  escalatorOperationDirection,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetTypeName() string 
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (escalatorOperationDirection)
 	lengthInBits += m.EscalatorOperationDirection.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesEscalatorOperationDirectionParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
-	return BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesEscalatorOperationDirection BACnetPropertyStatesEscalatorOperationDirection, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorOperationDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesEscalatorOperationDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (escalatorOperationDirection)
-	if pullErr := readBuffer.PullContext("escalatorOperationDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for escalatorOperationDirection")
+	escalatorOperationDirection, err := ReadSimpleField[BACnetEscalatorOperationDirectionTagged](ctx, "escalatorOperationDirection", ReadComplex[BACnetEscalatorOperationDirectionTagged](BACnetEscalatorOperationDirectionTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'escalatorOperationDirection' field"))
 	}
-	_escalatorOperationDirection, _escalatorOperationDirectionErr := BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _escalatorOperationDirectionErr != nil {
-		return nil, errors.Wrap(_escalatorOperationDirectionErr, "Error parsing 'escalatorOperationDirection' field of BACnetPropertyStatesEscalatorOperationDirection")
-	}
-	escalatorOperationDirection := _escalatorOperationDirection.(BACnetEscalatorOperationDirectionTagged)
-	if closeErr := readBuffer.CloseContext("escalatorOperationDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for escalatorOperationDirection")
-	}
+	m.EscalatorOperationDirection = escalatorOperationDirection
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEscalatorOperationDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesEscalatorOperationDirection")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesEscalatorOperationDirection{
-		_BACnetPropertyStates:       &_BACnetPropertyStates{},
-		EscalatorOperationDirection: escalatorOperationDirection,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEscalatorOperationDirection")
 		}
 
-		// Simple Field (escalatorOperationDirection)
-		if pushErr := writeBuffer.PushContext("escalatorOperationDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for escalatorOperationDirection")
-		}
-		_escalatorOperationDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorOperationDirection())
-		if popErr := writeBuffer.PopContext("escalatorOperationDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for escalatorOperationDirection")
-		}
-		if _escalatorOperationDirectionErr != nil {
-			return errors.Wrap(_escalatorOperationDirectionErr, "Error serializing 'escalatorOperationDirection' field")
+		if err := WriteSimpleField[BACnetEscalatorOperationDirectionTagged](ctx, "escalatorOperationDirection", m.GetEscalatorOperationDirection(), WriteComplex[BACnetEscalatorOperationDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'escalatorOperationDirection' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEscalatorOperationDirection"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) isBACnetPropertyStatesEscalatorOperationDirection() bool {
-	return true
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) IsBACnetPropertyStatesEscalatorOperationDirection() {
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) String() string {

@@ -37,19 +37,17 @@ type SysexCommandCapabilityQuery interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
-}
-
-// SysexCommandCapabilityQueryExactly can be used when we want exactly this type and not a type which fulfills SysexCommandCapabilityQuery.
-// This is useful for switch cases.
-type SysexCommandCapabilityQueryExactly interface {
-	SysexCommandCapabilityQuery
-	isSysexCommandCapabilityQuery() bool
+	// IsSysexCommandCapabilityQuery is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandCapabilityQuery()
 }
 
 // _SysexCommandCapabilityQuery is the data-structure of this message
 type _SysexCommandCapabilityQuery struct {
-	*_SysexCommand
+	SysexCommandContract
 }
+
+var _ SysexCommandCapabilityQuery = (*_SysexCommandCapabilityQuery)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandCapabilityQuery)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,18 +67,16 @@ func (m *_SysexCommandCapabilityQuery) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SysexCommandCapabilityQuery) InitializeParent(parent SysexCommand) {}
-
-func (m *_SysexCommandCapabilityQuery) GetParent() SysexCommand {
-	return m._SysexCommand
+func (m *_SysexCommandCapabilityQuery) GetParent() SysexCommandContract {
+	return m.SysexCommandContract
 }
 
 // NewSysexCommandCapabilityQuery factory function for _SysexCommandCapabilityQuery
 func NewSysexCommandCapabilityQuery() *_SysexCommandCapabilityQuery {
 	_result := &_SysexCommandCapabilityQuery{
-		_SysexCommand: NewSysexCommand(),
+		SysexCommandContract: NewSysexCommand(),
 	}
-	_result._SysexCommand._SysexCommandChildRequirements = _result
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 
@@ -100,7 +96,7 @@ func (m *_SysexCommandCapabilityQuery) GetTypeName() string {
 }
 
 func (m *_SysexCommandCapabilityQuery) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -109,15 +105,11 @@ func (m *_SysexCommandCapabilityQuery) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandCapabilityQueryParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandCapabilityQuery, error) {
-	return SysexCommandCapabilityQueryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func SysexCommandCapabilityQueryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityQuery, error) {
+func (m *_SysexCommandCapabilityQuery) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandCapabilityQuery SysexCommandCapabilityQuery, err error) {
+	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityQuery"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandCapabilityQuery")
 	}
@@ -128,12 +120,7 @@ func SysexCommandCapabilityQueryParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandCapabilityQuery")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SysexCommandCapabilityQuery{
-		_SysexCommand: &_SysexCommand{},
-	}
-	_child._SysexCommand._SysexCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SysexCommandCapabilityQuery) Serialize() ([]byte, error) {
@@ -159,12 +146,10 @@ func (m *_SysexCommandCapabilityQuery) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SysexCommandContract.(*_SysexCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SysexCommandCapabilityQuery) isSysexCommandCapabilityQuery() bool {
-	return true
-}
+func (m *_SysexCommandCapabilityQuery) IsSysexCommandCapabilityQuery() {}
 
 func (m *_SysexCommandCapabilityQuery) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLargeAnalogValueFaultHighLimit interface {
 	GetFaultHighLimit() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
-}
-
-// BACnetConstructedDataLargeAnalogValueFaultHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueFaultHighLimit.
-// This is useful for switch cases.
-type BACnetConstructedDataLargeAnalogValueFaultHighLimitExactly interface {
-	BACnetConstructedDataLargeAnalogValueFaultHighLimit
-	isBACnetConstructedDataLargeAnalogValueFaultHighLimit() bool
+	// IsBACnetConstructedDataLargeAnalogValueFaultHighLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueFaultHighLimit()
 }
 
 // _BACnetConstructedDataLargeAnalogValueFaultHighLimit is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueFaultHighLimit struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FaultHighLimit BACnetApplicationTagDouble
 }
+
+var _ BACnetConstructedDataLargeAnalogValueFaultHighLimit = (*_BACnetConstructedDataLargeAnalogValueFaultHighLimit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueFaultHighLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) GetPropertyIdenti
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) GetActualValue() 
 
 // NewBACnetConstructedDataLargeAnalogValueFaultHighLimit factory function for _BACnetConstructedDataLargeAnalogValueFaultHighLimit
 func NewBACnetConstructedDataLargeAnalogValueFaultHighLimit(faultHighLimit BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueFaultHighLimit {
-	_result := &_BACnetConstructedDataLargeAnalogValueFaultHighLimit{
-		FaultHighLimit:         faultHighLimit,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if faultHighLimit == nil {
+		panic("faultHighLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueFaultHighLimit must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLargeAnalogValueFaultHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultHighLimit:                faultHighLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) GetTypeName() str
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (faultHighLimit)
 	lengthInBits += m.FaultHighLimit.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) GetLengthInBytes(
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLargeAnalogValueFaultHighLimitParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueFaultHighLimit, error) {
-	return BACnetConstructedDataLargeAnalogValueFaultHighLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLargeAnalogValueFaultHighLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueFaultHighLimit, error) {
+func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLargeAnalogValueFaultHighLimit BACnetConstructedDataLargeAnalogValueFaultHighLimit, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLargeAnalogValueFaultHighLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (faultHighLimit)
-	if pullErr := readBuffer.PullContext("faultHighLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultHighLimit")
+	faultHighLimit, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "faultHighLimit", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultHighLimit' field"))
 	}
-	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _faultHighLimitErr != nil {
-		return nil, errors.Wrap(_faultHighLimitErr, "Error parsing 'faultHighLimit' field of BACnetConstructedDataLargeAnalogValueFaultHighLimit")
-	}
-	faultHighLimit := _faultHighLimit.(BACnetApplicationTagDouble)
-	if closeErr := readBuffer.CloseContext("faultHighLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultHighLimit")
-	}
+	m.FaultHighLimit = faultHighLimit
 
-	// Virtual field
-	_actualValue := faultHighLimit
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagDouble](ctx, "actualValue", (*BACnetApplicationTagDouble)(nil), faultHighLimit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueFaultHighLimit")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLargeAnalogValueFaultHighLimit{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FaultHighLimit: faultHighLimit,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) SerializeWithWrit
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLargeAnalogValueFaultHighLimit")
 		}
 
-		// Simple Field (faultHighLimit)
-		if pushErr := writeBuffer.PushContext("faultHighLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultHighLimit")
-		}
-		_faultHighLimitErr := writeBuffer.WriteSerializable(ctx, m.GetFaultHighLimit())
-		if popErr := writeBuffer.PopContext("faultHighLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultHighLimit")
-		}
-		if _faultHighLimitErr != nil {
-			return errors.Wrap(_faultHighLimitErr, "Error serializing 'faultHighLimit' field")
+		if err := WriteSimpleField[BACnetApplicationTagDouble](ctx, "faultHighLimit", m.GetFaultHighLimit(), WriteComplex[BACnetApplicationTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultHighLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) SerializeWithWrit
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) isBACnetConstructedDataLargeAnalogValueFaultHighLimit() bool {
-	return true
+func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) IsBACnetConstructedDataLargeAnalogValueFaultHighLimit() {
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) String() string {

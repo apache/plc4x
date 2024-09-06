@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type AdsDiscoveryBlockOsData interface {
 	AdsDiscoveryBlock
 	// GetOsData returns OsData (property field)
 	GetOsData() []byte
-}
-
-// AdsDiscoveryBlockOsDataExactly can be used when we want exactly this type and not a type which fulfills AdsDiscoveryBlockOsData.
-// This is useful for switch cases.
-type AdsDiscoveryBlockOsDataExactly interface {
-	AdsDiscoveryBlockOsData
-	isAdsDiscoveryBlockOsData() bool
+	// IsAdsDiscoveryBlockOsData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockOsData()
 }
 
 // _AdsDiscoveryBlockOsData is the data-structure of this message
 type _AdsDiscoveryBlockOsData struct {
-	*_AdsDiscoveryBlock
+	AdsDiscoveryBlockContract
 	OsData []byte
 }
+
+var _ AdsDiscoveryBlockOsData = (*_AdsDiscoveryBlockOsData)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockOsData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_AdsDiscoveryBlockOsData) GetBlockType() AdsDiscoveryBlockType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsDiscoveryBlockOsData) InitializeParent(parent AdsDiscoveryBlock) {}
-
-func (m *_AdsDiscoveryBlockOsData) GetParent() AdsDiscoveryBlock {
-	return m._AdsDiscoveryBlock
+func (m *_AdsDiscoveryBlockOsData) GetParent() AdsDiscoveryBlockContract {
+	return m.AdsDiscoveryBlockContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_AdsDiscoveryBlockOsData) GetOsData() []byte {
 // NewAdsDiscoveryBlockOsData factory function for _AdsDiscoveryBlockOsData
 func NewAdsDiscoveryBlockOsData(osData []byte) *_AdsDiscoveryBlockOsData {
 	_result := &_AdsDiscoveryBlockOsData{
-		OsData:             osData,
-		_AdsDiscoveryBlock: NewAdsDiscoveryBlock(),
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		OsData:                    osData,
 	}
-	_result._AdsDiscoveryBlock._AdsDiscoveryBlockChildRequirements = _result
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_AdsDiscoveryBlockOsData) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockOsData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Implicit Field (osDataLen)
 	lengthInBits += 16
@@ -131,45 +129,34 @@ func (m *_AdsDiscoveryBlockOsData) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockOsDataParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockOsData, error) {
-	return AdsDiscoveryBlockOsDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
+func (m *_AdsDiscoveryBlockOsData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockOsData AdsDiscoveryBlockOsData, err error) {
+	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockOsData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockOsData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (osDataLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	osDataLen, _osDataLenErr := readBuffer.ReadUint16("osDataLen", 16)
+	osDataLen, err := ReadImplicitField[uint16](ctx, "osDataLen", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'osDataLen' field"))
+	}
 	_ = osDataLen
-	if _osDataLenErr != nil {
-		return nil, errors.Wrap(_osDataLenErr, "Error parsing 'osDataLen' field of AdsDiscoveryBlockOsData")
+
+	osData, err := readBuffer.ReadByteArray("osData", int(osDataLen))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'osData' field"))
 	}
-	// Byte Array field (osData)
-	numberOfBytesosData := int(osDataLen)
-	osData, _readArrayErr := readBuffer.ReadByteArray("osData", numberOfBytesosData)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'osData' field of AdsDiscoveryBlockOsData")
-	}
+	m.OsData = osData
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockOsData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDiscoveryBlockOsData")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsDiscoveryBlockOsData{
-		_AdsDiscoveryBlock: &_AdsDiscoveryBlock{},
-		OsData:             osData,
-	}
-	_child._AdsDiscoveryBlock._AdsDiscoveryBlockChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsDiscoveryBlockOsData) Serialize() ([]byte, error) {
@@ -189,17 +176,12 @@ func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(ctx context.Context,
 		if pushErr := writeBuffer.PushContext("AdsDiscoveryBlockOsData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockOsData")
 		}
-
-		// Implicit Field (osDataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		osDataLen := uint16(uint16(len(m.GetOsData())))
-		_osDataLenErr := writeBuffer.WriteUint16("osDataLen", 16, uint16((osDataLen)))
-		if _osDataLenErr != nil {
-			return errors.Wrap(_osDataLenErr, "Error serializing 'osDataLen' field")
+		if err := WriteImplicitField(ctx, "osDataLen", osDataLen, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'osDataLen' field")
 		}
 
-		// Array Field (osData)
-		// Byte Array field (osData)
-		if err := writeBuffer.WriteByteArray("osData", m.GetOsData()); err != nil {
+		if err := WriteByteArrayField(ctx, "osData", m.GetOsData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'osData' field")
 		}
 
@@ -208,12 +190,10 @@ func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsDiscoveryBlockOsData) isAdsDiscoveryBlockOsData() bool {
-	return true
-}
+func (m *_AdsDiscoveryBlockOsData) IsAdsDiscoveryBlockOsData() {}
 
 func (m *_AdsDiscoveryBlockOsData) String() string {
 	if m == nil {

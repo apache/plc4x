@@ -82,16 +82,16 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (minPriority)
-    writeSimpleField("minPriority", minPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minPriority", minPriority, writeComplex(writeBuffer));
 
     // Simple Field (maxPriority)
-    writeSimpleField("maxPriority", maxPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxPriority", maxPriority, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");
   }
@@ -131,13 +131,13 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetContextTagUnsignedInteger minPriority =
         readSimpleField(
             "minPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -149,7 +149,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetContextTagUnsignedInteger maxPriority =
         readSimpleField(
             "maxPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -161,7 +161,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");

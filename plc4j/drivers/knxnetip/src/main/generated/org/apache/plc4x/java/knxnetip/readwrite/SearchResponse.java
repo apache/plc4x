@@ -80,21 +80,21 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "hpaiControlEndpoint",
         hpaiControlEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (dibDeviceInfo)
     writeSimpleField(
         "dibDeviceInfo",
         dibDeviceInfo,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (dibSuppSvcFamilies)
     writeSimpleField(
         "dibSuppSvcFamilies",
         dibSuppSvcFamilies,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("SearchResponse");
@@ -132,21 +132,19 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
     HPAIControlEndpoint hpaiControlEndpoint =
         readSimpleField(
             "hpaiControlEndpoint",
-            new DataReaderComplexDefault<>(
-                () -> HPAIControlEndpoint.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HPAIControlEndpoint.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     DIBDeviceInfo dibDeviceInfo =
         readSimpleField(
             "dibDeviceInfo",
-            new DataReaderComplexDefault<>(() -> DIBDeviceInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DIBDeviceInfo.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     DIBSuppSvcFamilies dibSuppSvcFamilies =
         readSimpleField(
             "dibSuppSvcFamilies",
-            new DataReaderComplexDefault<>(
-                () -> DIBSuppSvcFamilies.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DIBSuppSvcFamilies.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("SearchResponse");

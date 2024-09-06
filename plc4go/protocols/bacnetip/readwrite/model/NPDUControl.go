@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,13 +48,8 @@ type NPDUControl interface {
 	GetExpectingReply() bool
 	// GetNetworkPriority returns NetworkPriority (property field)
 	GetNetworkPriority() NPDUNetworkPriority
-}
-
-// NPDUControlExactly can be used when we want exactly this type and not a type which fulfills NPDUControl.
-// This is useful for switch cases.
-type NPDUControlExactly interface {
-	NPDUControl
-	isNPDUControl() bool
+	// IsNPDUControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNPDUControl()
 }
 
 // _NPDUControl is the data-structure of this message
@@ -66,6 +63,8 @@ type _NPDUControl struct {
 	reservedField0 *uint8
 	reservedField1 *uint8
 }
+
+var _ NPDUControl = (*_NPDUControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,106 +151,76 @@ func NPDUControlParse(ctx context.Context, theBytes []byte) (NPDUControl, error)
 	return NPDUControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NPDUControlParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUControl, error) {
+		return NPDUControlParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUControl, error) {
+	v, err := (&_NPDUControl{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_NPDUControl) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nPDUControl NPDUControl, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NPDUControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NPDUControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (messageTypeFieldPresent)
-	_messageTypeFieldPresent, _messageTypeFieldPresentErr := readBuffer.ReadBit("messageTypeFieldPresent")
-	if _messageTypeFieldPresentErr != nil {
-		return nil, errors.Wrap(_messageTypeFieldPresentErr, "Error parsing 'messageTypeFieldPresent' field of NPDUControl")
+	messageTypeFieldPresent, err := ReadSimpleField(ctx, "messageTypeFieldPresent", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageTypeFieldPresent' field"))
 	}
-	messageTypeFieldPresent := _messageTypeFieldPresent
+	m.MessageTypeFieldPresent = messageTypeFieldPresent
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 1)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NPDUControl")
-		}
-		if reserved != uint8(0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (destinationSpecified)
-	_destinationSpecified, _destinationSpecifiedErr := readBuffer.ReadBit("destinationSpecified")
-	if _destinationSpecifiedErr != nil {
-		return nil, errors.Wrap(_destinationSpecifiedErr, "Error parsing 'destinationSpecified' field of NPDUControl")
+	destinationSpecified, err := ReadSimpleField(ctx, "destinationSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationSpecified' field"))
 	}
-	destinationSpecified := _destinationSpecified
+	m.DestinationSpecified = destinationSpecified
 
-	var reservedField1 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 1)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NPDUControl")
-		}
-		if reserved != uint8(0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField1 = reservedField1
 
-	// Simple Field (sourceSpecified)
-	_sourceSpecified, _sourceSpecifiedErr := readBuffer.ReadBit("sourceSpecified")
-	if _sourceSpecifiedErr != nil {
-		return nil, errors.Wrap(_sourceSpecifiedErr, "Error parsing 'sourceSpecified' field of NPDUControl")
+	sourceSpecified, err := ReadSimpleField(ctx, "sourceSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceSpecified' field"))
 	}
-	sourceSpecified := _sourceSpecified
+	m.SourceSpecified = sourceSpecified
 
-	// Simple Field (expectingReply)
-	_expectingReply, _expectingReplyErr := readBuffer.ReadBit("expectingReply")
-	if _expectingReplyErr != nil {
-		return nil, errors.Wrap(_expectingReplyErr, "Error parsing 'expectingReply' field of NPDUControl")
+	expectingReply, err := ReadSimpleField(ctx, "expectingReply", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expectingReply' field"))
 	}
-	expectingReply := _expectingReply
+	m.ExpectingReply = expectingReply
 
-	// Simple Field (networkPriority)
-	if pullErr := readBuffer.PullContext("networkPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkPriority")
+	networkPriority, err := ReadEnumField[NPDUNetworkPriority](ctx, "networkPriority", "NPDUNetworkPriority", ReadEnum(NPDUNetworkPriorityByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPriority' field"))
 	}
-	_networkPriority, _networkPriorityErr := NPDUNetworkPriorityParseWithBuffer(ctx, readBuffer)
-	if _networkPriorityErr != nil {
-		return nil, errors.Wrap(_networkPriorityErr, "Error parsing 'networkPriority' field of NPDUControl")
-	}
-	networkPriority := _networkPriority
-	if closeErr := readBuffer.CloseContext("networkPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkPriority")
-	}
+	m.NetworkPriority = networkPriority
 
 	if closeErr := readBuffer.CloseContext("NPDUControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NPDUControl")
 	}
 
-	// Create the instance
-	return &_NPDUControl{
-		MessageTypeFieldPresent: messageTypeFieldPresent,
-		DestinationSpecified:    destinationSpecified,
-		SourceSpecified:         sourceSpecified,
-		ExpectingReply:          expectingReply,
-		NetworkPriority:         networkPriority,
-		reservedField0:          reservedField0,
-		reservedField1:          reservedField1,
-	}, nil
+	return m, nil
 }
 
 func (m *_NPDUControl) Serialize() ([]byte, error) {
@@ -271,76 +240,32 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for NPDUControl")
 	}
 
-	// Simple Field (messageTypeFieldPresent)
-	messageTypeFieldPresent := bool(m.GetMessageTypeFieldPresent())
-	_messageTypeFieldPresentErr := writeBuffer.WriteBit("messageTypeFieldPresent", (messageTypeFieldPresent))
-	if _messageTypeFieldPresentErr != nil {
-		return errors.Wrap(_messageTypeFieldPresentErr, "Error serializing 'messageTypeFieldPresent' field")
+	if err := WriteSimpleField[bool](ctx, "messageTypeFieldPresent", m.GetMessageTypeFieldPresent(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageTypeFieldPresent' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (destinationSpecified)
-	destinationSpecified := bool(m.GetDestinationSpecified())
-	_destinationSpecifiedErr := writeBuffer.WriteBit("destinationSpecified", (destinationSpecified))
-	if _destinationSpecifiedErr != nil {
-		return errors.Wrap(_destinationSpecifiedErr, "Error serializing 'destinationSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "destinationSpecified", m.GetDestinationSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationSpecified' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0)
-		if m.reservedField1 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField1
-		}
-		_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
-	// Simple Field (sourceSpecified)
-	sourceSpecified := bool(m.GetSourceSpecified())
-	_sourceSpecifiedErr := writeBuffer.WriteBit("sourceSpecified", (sourceSpecified))
-	if _sourceSpecifiedErr != nil {
-		return errors.Wrap(_sourceSpecifiedErr, "Error serializing 'sourceSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "sourceSpecified", m.GetSourceSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceSpecified' field")
 	}
 
-	// Simple Field (expectingReply)
-	expectingReply := bool(m.GetExpectingReply())
-	_expectingReplyErr := writeBuffer.WriteBit("expectingReply", (expectingReply))
-	if _expectingReplyErr != nil {
-		return errors.Wrap(_expectingReplyErr, "Error serializing 'expectingReply' field")
+	if err := WriteSimpleField[bool](ctx, "expectingReply", m.GetExpectingReply(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'expectingReply' field")
 	}
 
-	// Simple Field (networkPriority)
-	if pushErr := writeBuffer.PushContext("networkPriority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkPriority")
-	}
-	_networkPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkPriority())
-	if popErr := writeBuffer.PopContext("networkPriority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkPriority")
-	}
-	if _networkPriorityErr != nil {
-		return errors.Wrap(_networkPriorityErr, "Error serializing 'networkPriority' field")
+	if err := WriteSimpleEnumField[NPDUNetworkPriority](ctx, "networkPriority", "NPDUNetworkPriority", m.GetNetworkPriority(), WriteEnum[NPDUNetworkPriority, uint8](NPDUNetworkPriority.GetValue, NPDUNetworkPriority.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkPriority' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NPDUControl"); popErr != nil {
@@ -349,9 +274,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	return nil
 }
 
-func (m *_NPDUControl) isNPDUControl() bool {
-	return true
-}
+func (m *_NPDUControl) IsNPDUControl() {}
 
 func (m *_NPDUControl) String() string {
 	if m == nil {

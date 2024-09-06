@@ -37,19 +37,17 @@ type AccessControlDataAccessPointForcedOpen interface {
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
-}
-
-// AccessControlDataAccessPointForcedOpenExactly can be used when we want exactly this type and not a type which fulfills AccessControlDataAccessPointForcedOpen.
-// This is useful for switch cases.
-type AccessControlDataAccessPointForcedOpenExactly interface {
-	AccessControlDataAccessPointForcedOpen
-	isAccessControlDataAccessPointForcedOpen() bool
+	// IsAccessControlDataAccessPointForcedOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataAccessPointForcedOpen()
 }
 
 // _AccessControlDataAccessPointForcedOpen is the data-structure of this message
 type _AccessControlDataAccessPointForcedOpen struct {
-	*_AccessControlData
+	AccessControlDataContract
 }
+
+var _ AccessControlDataAccessPointForcedOpen = (*_AccessControlDataAccessPointForcedOpen)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataAccessPointForcedOpen)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,22 +59,16 @@ type _AccessControlDataAccessPointForcedOpen struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AccessControlDataAccessPointForcedOpen) InitializeParent(parent AccessControlData, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.NetworkId = networkId
-	m.AccessPointId = accessPointId
-}
-
-func (m *_AccessControlDataAccessPointForcedOpen) GetParent() AccessControlData {
-	return m._AccessControlData
+func (m *_AccessControlDataAccessPointForcedOpen) GetParent() AccessControlDataContract {
+	return m.AccessControlDataContract
 }
 
 // NewAccessControlDataAccessPointForcedOpen factory function for _AccessControlDataAccessPointForcedOpen
 func NewAccessControlDataAccessPointForcedOpen(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataAccessPointForcedOpen {
 	_result := &_AccessControlDataAccessPointForcedOpen{
-		_AccessControlData: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
 	}
-	_result._AccessControlData._AccessControlDataChildRequirements = _result
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 
@@ -96,7 +88,7 @@ func (m *_AccessControlDataAccessPointForcedOpen) GetTypeName() string {
 }
 
 func (m *_AccessControlDataAccessPointForcedOpen) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +97,11 @@ func (m *_AccessControlDataAccessPointForcedOpen) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataAccessPointForcedOpenParse(ctx context.Context, theBytes []byte) (AccessControlDataAccessPointForcedOpen, error) {
-	return AccessControlDataAccessPointForcedOpenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AccessControlDataAccessPointForcedOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataAccessPointForcedOpen, error) {
+func (m *_AccessControlDataAccessPointForcedOpen) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData) (__accessControlDataAccessPointForcedOpen AccessControlDataAccessPointForcedOpen, err error) {
+	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlDataAccessPointForcedOpen"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlDataAccessPointForcedOpen")
 	}
@@ -124,12 +112,7 @@ func AccessControlDataAccessPointForcedOpenParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(closeErr, "Error closing for AccessControlDataAccessPointForcedOpen")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AccessControlDataAccessPointForcedOpen{
-		_AccessControlData: &_AccessControlData{},
-	}
-	_child._AccessControlData._AccessControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AccessControlDataAccessPointForcedOpen) Serialize() ([]byte, error) {
@@ -155,12 +138,10 @@ func (m *_AccessControlDataAccessPointForcedOpen) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AccessControlDataContract.(*_AccessControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AccessControlDataAccessPointForcedOpen) isAccessControlDataAccessPointForcedOpen() bool {
-	return true
-}
+func (m *_AccessControlDataAccessPointForcedOpen) IsAccessControlDataAccessPointForcedOpen() {}
 
 func (m *_AccessControlDataAccessPointForcedOpen) String() string {
 	if m == nil {

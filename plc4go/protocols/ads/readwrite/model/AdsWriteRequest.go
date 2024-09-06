@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type AdsWriteRequest interface {
 	GetIndexOffset() uint32
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// AdsWriteRequestExactly can be used when we want exactly this type and not a type which fulfills AdsWriteRequest.
-// This is useful for switch cases.
-type AdsWriteRequestExactly interface {
-	AdsWriteRequest
-	isAdsWriteRequest() bool
+	// IsAdsWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsWriteRequest()
 }
 
 // _AdsWriteRequest is the data-structure of this message
 type _AdsWriteRequest struct {
-	*_AmsPacket
+	AmsPacketContract
 	IndexGroup  uint32
 	IndexOffset uint32
 	Data        []byte
 }
+
+var _ AdsWriteRequest = (*_AdsWriteRequest)(nil)
+var _ AmsPacketRequirements = (*_AdsWriteRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +78,8 @@ func (m *_AdsWriteRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsWriteRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
-	m.TargetAmsNetId = targetAmsNetId
-	m.TargetAmsPort = targetAmsPort
-	m.SourceAmsNetId = sourceAmsNetId
-	m.SourceAmsPort = sourceAmsPort
-	m.ErrorCode = errorCode
-	m.InvokeId = invokeId
-}
-
-func (m *_AdsWriteRequest) GetParent() AmsPacket {
-	return m._AmsPacket
+func (m *_AdsWriteRequest) GetParent() AmsPacketContract {
+	return m.AmsPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,12 +107,12 @@ func (m *_AdsWriteRequest) GetData() []byte {
 // NewAdsWriteRequest factory function for _AdsWriteRequest
 func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteRequest {
 	_result := &_AdsWriteRequest{
-		IndexGroup:  indexGroup,
-		IndexOffset: indexOffset,
-		Data:        data,
-		_AmsPacket:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		IndexGroup:        indexGroup,
+		IndexOffset:       indexOffset,
+		Data:              data,
 	}
-	_result._AmsPacket._AmsPacketChildRequirements = _result
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 
@@ -141,7 +132,7 @@ func (m *_AdsWriteRequest) GetTypeName() string {
 }
 
 func (m *_AdsWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -164,61 +155,46 @@ func (m *_AdsWriteRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsWriteRequestParse(ctx context.Context, theBytes []byte) (AdsWriteRequest, error) {
-	return AdsWriteRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteRequest, error) {
+func (m *_AdsWriteRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsWriteRequest AdsWriteRequest, err error) {
+	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsWriteRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsWriteRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (indexGroup)
-	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
-	if _indexGroupErr != nil {
-		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsWriteRequest")
+	indexGroup, err := ReadSimpleField(ctx, "indexGroup", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexGroup' field"))
 	}
-	indexGroup := _indexGroup
+	m.IndexGroup = indexGroup
 
-	// Simple Field (indexOffset)
-	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
-	if _indexOffsetErr != nil {
-		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsWriteRequest")
+	indexOffset, err := ReadSimpleField(ctx, "indexOffset", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexOffset' field"))
 	}
-	indexOffset := _indexOffset
+	m.IndexOffset = indexOffset
 
-	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
+	}
 	_ = length
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsWriteRequest")
+
+	data, err := readBuffer.ReadByteArray("data", int(length))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(length)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsWriteRequest")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("AdsWriteRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsWriteRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsWriteRequest{
-		_AmsPacket:  &_AmsPacket{},
-		IndexGroup:  indexGroup,
-		IndexOffset: indexOffset,
-		Data:        data,
-	}
-	_child._AmsPacket._AmsPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsWriteRequest) Serialize() ([]byte, error) {
@@ -239,30 +215,19 @@ func (m *_AdsWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AdsWriteRequest")
 		}
 
-		// Simple Field (indexGroup)
-		indexGroup := uint32(m.GetIndexGroup())
-		_indexGroupErr := writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
-		if _indexGroupErr != nil {
-			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
+		if err := WriteSimpleField[uint32](ctx, "indexGroup", m.GetIndexGroup(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexGroup' field")
 		}
 
-		// Simple Field (indexOffset)
-		indexOffset := uint32(m.GetIndexOffset())
-		_indexOffsetErr := writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
-		if _indexOffsetErr != nil {
-			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
+		if err := WriteSimpleField[uint32](ctx, "indexOffset", m.GetIndexOffset(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexOffset' field")
 		}
-
-		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.GetData())))
-		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
-		if _lengthErr != nil {
-			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+		if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -271,12 +236,10 @@ func (m *_AdsWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AmsPacketContract.(*_AmsPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsWriteRequest) isAdsWriteRequest() bool {
-	return true
-}
+func (m *_AdsWriteRequest) IsAdsWriteRequest() {}
 
 func (m *_AdsWriteRequest) String() string {
 	if m == nil {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -63,13 +64,8 @@ type ConfirmedEventNotificationRequest interface {
 	GetToState() BACnetEventStateTagged
 	// GetEventValues returns EventValues (property field)
 	GetEventValues() BACnetNotificationParameters
-}
-
-// ConfirmedEventNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills ConfirmedEventNotificationRequest.
-// This is useful for switch cases.
-type ConfirmedEventNotificationRequestExactly interface {
-	ConfirmedEventNotificationRequest
-	isConfirmedEventNotificationRequest() bool
+	// IsConfirmedEventNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConfirmedEventNotificationRequest()
 }
 
 // _ConfirmedEventNotificationRequest is the data-structure of this message
@@ -88,6 +84,8 @@ type _ConfirmedEventNotificationRequest struct {
 	ToState                    BACnetEventStateTagged
 	EventValues                BACnetNotificationParameters
 }
+
+var _ ConfirmedEventNotificationRequest = (*_ConfirmedEventNotificationRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -153,6 +151,33 @@ func (m *_ConfirmedEventNotificationRequest) GetEventValues() BACnetNotification
 
 // NewConfirmedEventNotificationRequest factory function for _ConfirmedEventNotificationRequest
 func NewConfirmedEventNotificationRequest(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, messageText BACnetContextTagCharacterString, notifyType BACnetNotifyTypeTagged, ackRequired BACnetContextTagBoolean, fromState BACnetEventStateTagged, toState BACnetEventStateTagged, eventValues BACnetNotificationParameters) *_ConfirmedEventNotificationRequest {
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetContextTagUnsignedInteger for ConfirmedEventNotificationRequest must not be nil")
+	}
+	if initiatingDeviceIdentifier == nil {
+		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for ConfirmedEventNotificationRequest must not be nil")
+	}
+	if eventObjectIdentifier == nil {
+		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for ConfirmedEventNotificationRequest must not be nil")
+	}
+	if timestamp == nil {
+		panic("timestamp of type BACnetTimeStampEnclosed for ConfirmedEventNotificationRequest must not be nil")
+	}
+	if notificationClass == nil {
+		panic("notificationClass of type BACnetContextTagUnsignedInteger for ConfirmedEventNotificationRequest must not be nil")
+	}
+	if priority == nil {
+		panic("priority of type BACnetContextTagUnsignedInteger for ConfirmedEventNotificationRequest must not be nil")
+	}
+	if eventType == nil {
+		panic("eventType of type BACnetEventTypeTagged for ConfirmedEventNotificationRequest must not be nil")
+	}
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for ConfirmedEventNotificationRequest must not be nil")
+	}
+	if toState == nil {
+		panic("toState of type BACnetEventStateTagged for ConfirmedEventNotificationRequest must not be nil")
+	}
 	return &_ConfirmedEventNotificationRequest{ProcessIdentifier: processIdentifier, InitiatingDeviceIdentifier: initiatingDeviceIdentifier, EventObjectIdentifier: eventObjectIdentifier, Timestamp: timestamp, NotificationClass: notificationClass, Priority: priority, EventType: eventType, MessageText: messageText, NotifyType: notifyType, AckRequired: ackRequired, FromState: fromState, ToState: toState, EventValues: eventValues}
 }
 
@@ -232,242 +257,128 @@ func ConfirmedEventNotificationRequestParse(ctx context.Context, theBytes []byte
 	return ConfirmedEventNotificationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConfirmedEventNotificationRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConfirmedEventNotificationRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConfirmedEventNotificationRequest, error) {
+		return ConfirmedEventNotificationRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConfirmedEventNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConfirmedEventNotificationRequest, error) {
+	v, err := (&_ConfirmedEventNotificationRequest{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ConfirmedEventNotificationRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__confirmedEventNotificationRequest ConfirmedEventNotificationRequest, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConfirmedEventNotificationRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConfirmedEventNotificationRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (processIdentifier)
-	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
+	processIdentifier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'processIdentifier' field"))
 	}
-	_processIdentifier, _processIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _processIdentifierErr != nil {
-		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of ConfirmedEventNotificationRequest")
+	m.ProcessIdentifier = processIdentifier
+
+	initiatingDeviceIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "initiatingDeviceIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initiatingDeviceIdentifier' field"))
 	}
-	processIdentifier := _processIdentifier.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
+	m.InitiatingDeviceIdentifier = initiatingDeviceIdentifier
+
+	eventObjectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "eventObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventObjectIdentifier' field"))
+	}
+	m.EventObjectIdentifier = eventObjectIdentifier
+
+	timestamp, err := ReadSimpleField[BACnetTimeStampEnclosed](ctx, "timestamp", ReadComplex[BACnetTimeStampEnclosed](BACnetTimeStampEnclosedParseWithBufferProducer((uint8)(uint8(3))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
+	}
+	m.Timestamp = timestamp
+
+	notificationClass, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "notificationClass", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationClass' field"))
+	}
+	m.NotificationClass = notificationClass
+
+	priority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "priority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
+	}
+	m.Priority = priority
+
+	eventType, err := ReadSimpleField[BACnetEventTypeTagged](ctx, "eventType", ReadComplex[BACnetEventTypeTagged](BACnetEventTypeTaggedParseWithBufferProducer((uint8)(uint8(6)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventType' field"))
+	}
+	m.EventType = eventType
+
+	var messageText BACnetContextTagCharacterString
+	_messageText, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "messageText", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(7)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageText' field"))
+	}
+	if _messageText != nil {
+		messageText = *_messageText
+		m.MessageText = messageText
 	}
 
-	// Simple Field (initiatingDeviceIdentifier)
-	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for initiatingDeviceIdentifier")
+	notifyType, err := ReadSimpleField[BACnetNotifyTypeTagged](ctx, "notifyType", ReadComplex[BACnetNotifyTypeTagged](BACnetNotifyTypeTaggedParseWithBufferProducer((uint8)(uint8(8)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notifyType' field"))
 	}
-	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _initiatingDeviceIdentifierErr != nil {
-		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field of ConfirmedEventNotificationRequest")
+	m.NotifyType = notifyType
+
+	var ackRequired BACnetContextTagBoolean
+	_ackRequired, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "ackRequired", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(9)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ackRequired' field"))
 	}
-	initiatingDeviceIdentifier := _initiatingDeviceIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("initiatingDeviceIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for initiatingDeviceIdentifier")
+	if _ackRequired != nil {
+		ackRequired = *_ackRequired
+		m.AckRequired = ackRequired
 	}
 
-	// Simple Field (eventObjectIdentifier)
-	if pullErr := readBuffer.PullContext("eventObjectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventObjectIdentifier")
+	var fromState BACnetEventStateTagged
+	_fromState, err := ReadOptionalField[BACnetEventStateTagged](ctx, "fromState", ReadComplex[BACnetEventStateTagged](BACnetEventStateTaggedParseWithBufferProducer((uint8)(uint8(10)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fromState' field"))
 	}
-	_eventObjectIdentifier, _eventObjectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _eventObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_eventObjectIdentifierErr, "Error parsing 'eventObjectIdentifier' field of ConfirmedEventNotificationRequest")
-	}
-	eventObjectIdentifier := _eventObjectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("eventObjectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventObjectIdentifier")
+	if _fromState != nil {
+		fromState = *_fromState
+		m.FromState = fromState
 	}
 
-	// Simple Field (timestamp)
-	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
+	toState, err := ReadSimpleField[BACnetEventStateTagged](ctx, "toState", ReadComplex[BACnetEventStateTagged](BACnetEventStateTaggedParseWithBufferProducer((uint8)(uint8(11)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toState' field"))
 	}
-	_timestamp, _timestampErr := BACnetTimeStampEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of ConfirmedEventNotificationRequest")
-	}
-	timestamp := _timestamp.(BACnetTimeStampEnclosed)
-	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestamp")
-	}
+	m.ToState = toState
 
-	// Simple Field (notificationClass)
-	if pullErr := readBuffer.PullContext("notificationClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notificationClass")
+	var eventValues BACnetNotificationParameters
+	_eventValues, err := ReadOptionalField[BACnetNotificationParameters](ctx, "eventValues", ReadComplex[BACnetNotificationParameters](BACnetNotificationParametersParseWithBufferProducer[BACnetNotificationParameters]((uint8)(uint8(12)), (BACnetObjectType)(eventObjectIdentifier.GetObjectType())), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventValues' field"))
 	}
-	_notificationClass, _notificationClassErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _notificationClassErr != nil {
-		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field of ConfirmedEventNotificationRequest")
-	}
-	notificationClass := _notificationClass.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("notificationClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notificationClass")
-	}
-
-	// Simple Field (priority)
-	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priority")
-	}
-	_priority, _priorityErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(5)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of ConfirmedEventNotificationRequest")
-	}
-	priority := _priority.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priority")
-	}
-
-	// Simple Field (eventType)
-	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventType")
-	}
-	_eventType, _eventTypeErr := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(6)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _eventTypeErr != nil {
-		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of ConfirmedEventNotificationRequest")
-	}
-	eventType := _eventType.(BACnetEventTypeTagged)
-	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventType")
-	}
-
-	// Optional Field (messageText) (Can be skipped, if a given expression evaluates to false)
-	var messageText BACnetContextTagCharacterString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("messageText"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for messageText")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(7), BACnetDataType_CHARACTER_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'messageText' field of ConfirmedEventNotificationRequest")
-		default:
-			messageText = _val.(BACnetContextTagCharacterString)
-			if closeErr := readBuffer.CloseContext("messageText"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for messageText")
-			}
-		}
-	}
-
-	// Simple Field (notifyType)
-	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notifyType")
-	}
-	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(8)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _notifyTypeErr != nil {
-		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of ConfirmedEventNotificationRequest")
-	}
-	notifyType := _notifyType.(BACnetNotifyTypeTagged)
-	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notifyType")
-	}
-
-	// Optional Field (ackRequired) (Can be skipped, if a given expression evaluates to false)
-	var ackRequired BACnetContextTagBoolean = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("ackRequired"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for ackRequired")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(9), BACnetDataType_BOOLEAN)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'ackRequired' field of ConfirmedEventNotificationRequest")
-		default:
-			ackRequired = _val.(BACnetContextTagBoolean)
-			if closeErr := readBuffer.CloseContext("ackRequired"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for ackRequired")
-			}
-		}
-	}
-
-	// Optional Field (fromState) (Can be skipped, if a given expression evaluates to false)
-	var fromState BACnetEventStateTagged = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("fromState"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for fromState")
-		}
-		_val, _err := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, uint8(10), TagClass_CONTEXT_SPECIFIC_TAGS)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'fromState' field of ConfirmedEventNotificationRequest")
-		default:
-			fromState = _val.(BACnetEventStateTagged)
-			if closeErr := readBuffer.CloseContext("fromState"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for fromState")
-			}
-		}
-	}
-
-	// Simple Field (toState)
-	if pullErr := readBuffer.PullContext("toState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for toState")
-	}
-	_toState, _toStateErr := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(11)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _toStateErr != nil {
-		return nil, errors.Wrap(_toStateErr, "Error parsing 'toState' field of ConfirmedEventNotificationRequest")
-	}
-	toState := _toState.(BACnetEventStateTagged)
-	if closeErr := readBuffer.CloseContext("toState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for toState")
-	}
-
-	// Optional Field (eventValues) (Can be skipped, if a given expression evaluates to false)
-	var eventValues BACnetNotificationParameters = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("eventValues"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for eventValues")
-		}
-		_val, _err := BACnetNotificationParametersParseWithBuffer(ctx, readBuffer, uint8(12), eventObjectIdentifier.GetObjectType())
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'eventValues' field of ConfirmedEventNotificationRequest")
-		default:
-			eventValues = _val.(BACnetNotificationParameters)
-			if closeErr := readBuffer.CloseContext("eventValues"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for eventValues")
-			}
-		}
+	if _eventValues != nil {
+		eventValues = *_eventValues
+		m.EventValues = eventValues
 	}
 
 	if closeErr := readBuffer.CloseContext("ConfirmedEventNotificationRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConfirmedEventNotificationRequest")
 	}
 
-	// Create the instance
-	return &_ConfirmedEventNotificationRequest{
-		ProcessIdentifier:          processIdentifier,
-		InitiatingDeviceIdentifier: initiatingDeviceIdentifier,
-		EventObjectIdentifier:      eventObjectIdentifier,
-		Timestamp:                  timestamp,
-		NotificationClass:          notificationClass,
-		Priority:                   priority,
-		EventType:                  eventType,
-		MessageText:                messageText,
-		NotifyType:                 notifyType,
-		AckRequired:                ackRequired,
-		FromState:                  fromState,
-		ToState:                    toState,
-		EventValues:                eventValues,
-	}, nil
+	return m, nil
 }
 
 func (m *_ConfirmedEventNotificationRequest) Serialize() ([]byte, error) {
@@ -487,176 +398,56 @@ func (m *_ConfirmedEventNotificationRequest) SerializeWithWriteBuffer(ctx contex
 		return errors.Wrap(pushErr, "Error pushing for ConfirmedEventNotificationRequest")
 	}
 
-	// Simple Field (processIdentifier)
-	if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for processIdentifier")
-	}
-	_processIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetProcessIdentifier())
-	if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for processIdentifier")
-	}
-	if _processIdentifierErr != nil {
-		return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", m.GetProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 	}
 
-	// Simple Field (initiatingDeviceIdentifier)
-	if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
-	}
-	_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetInitiatingDeviceIdentifier())
-	if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
-	}
-	if _initiatingDeviceIdentifierErr != nil {
-		return errors.Wrap(_initiatingDeviceIdentifierErr, "Error serializing 'initiatingDeviceIdentifier' field")
+	if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "initiatingDeviceIdentifier", m.GetInitiatingDeviceIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'initiatingDeviceIdentifier' field")
 	}
 
-	// Simple Field (eventObjectIdentifier)
-	if pushErr := writeBuffer.PushContext("eventObjectIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventObjectIdentifier")
-	}
-	_eventObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetEventObjectIdentifier())
-	if popErr := writeBuffer.PopContext("eventObjectIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventObjectIdentifier")
-	}
-	if _eventObjectIdentifierErr != nil {
-		return errors.Wrap(_eventObjectIdentifierErr, "Error serializing 'eventObjectIdentifier' field")
+	if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "eventObjectIdentifier", m.GetEventObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventObjectIdentifier' field")
 	}
 
-	// Simple Field (timestamp)
-	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timestamp")
-	}
-	_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
-	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timestamp")
-	}
-	if _timestampErr != nil {
-		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+	if err := WriteSimpleField[BACnetTimeStampEnclosed](ctx, "timestamp", m.GetTimestamp(), WriteComplex[BACnetTimeStampEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestamp' field")
 	}
 
-	// Simple Field (notificationClass)
-	if pushErr := writeBuffer.PushContext("notificationClass"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for notificationClass")
-	}
-	_notificationClassErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationClass())
-	if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for notificationClass")
-	}
-	if _notificationClassErr != nil {
-		return errors.Wrap(_notificationClassErr, "Error serializing 'notificationClass' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "notificationClass", m.GetNotificationClass(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'notificationClass' field")
 	}
 
-	// Simple Field (priority)
-	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for priority")
-	}
-	_priorityErr := writeBuffer.WriteSerializable(ctx, m.GetPriority())
-	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for priority")
-	}
-	if _priorityErr != nil {
-		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "priority", m.GetPriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 
-	// Simple Field (eventType)
-	if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventType")
-	}
-	_eventTypeErr := writeBuffer.WriteSerializable(ctx, m.GetEventType())
-	if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventType")
-	}
-	if _eventTypeErr != nil {
-		return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
+	if err := WriteSimpleField[BACnetEventTypeTagged](ctx, "eventType", m.GetEventType(), WriteComplex[BACnetEventTypeTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventType' field")
 	}
 
-	// Optional Field (messageText) (Can be skipped, if the value is null)
-	var messageText BACnetContextTagCharacterString = nil
-	if m.GetMessageText() != nil {
-		if pushErr := writeBuffer.PushContext("messageText"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for messageText")
-		}
-		messageText = m.GetMessageText()
-		_messageTextErr := writeBuffer.WriteSerializable(ctx, messageText)
-		if popErr := writeBuffer.PopContext("messageText"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for messageText")
-		}
-		if _messageTextErr != nil {
-			return errors.Wrap(_messageTextErr, "Error serializing 'messageText' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "messageText", GetRef(m.GetMessageText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageText' field")
 	}
 
-	// Simple Field (notifyType)
-	if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for notifyType")
-	}
-	_notifyTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNotifyType())
-	if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for notifyType")
-	}
-	if _notifyTypeErr != nil {
-		return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
+	if err := WriteSimpleField[BACnetNotifyTypeTagged](ctx, "notifyType", m.GetNotifyType(), WriteComplex[BACnetNotifyTypeTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'notifyType' field")
 	}
 
-	// Optional Field (ackRequired) (Can be skipped, if the value is null)
-	var ackRequired BACnetContextTagBoolean = nil
-	if m.GetAckRequired() != nil {
-		if pushErr := writeBuffer.PushContext("ackRequired"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ackRequired")
-		}
-		ackRequired = m.GetAckRequired()
-		_ackRequiredErr := writeBuffer.WriteSerializable(ctx, ackRequired)
-		if popErr := writeBuffer.PopContext("ackRequired"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ackRequired")
-		}
-		if _ackRequiredErr != nil {
-			return errors.Wrap(_ackRequiredErr, "Error serializing 'ackRequired' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "ackRequired", GetRef(m.GetAckRequired()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackRequired' field")
 	}
 
-	// Optional Field (fromState) (Can be skipped, if the value is null)
-	var fromState BACnetEventStateTagged = nil
-	if m.GetFromState() != nil {
-		if pushErr := writeBuffer.PushContext("fromState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fromState")
-		}
-		fromState = m.GetFromState()
-		_fromStateErr := writeBuffer.WriteSerializable(ctx, fromState)
-		if popErr := writeBuffer.PopContext("fromState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fromState")
-		}
-		if _fromStateErr != nil {
-			return errors.Wrap(_fromStateErr, "Error serializing 'fromState' field")
-		}
+	if err := WriteOptionalField[BACnetEventStateTagged](ctx, "fromState", GetRef(m.GetFromState()), WriteComplex[BACnetEventStateTagged](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'fromState' field")
 	}
 
-	// Simple Field (toState)
-	if pushErr := writeBuffer.PushContext("toState"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toState")
-	}
-	_toStateErr := writeBuffer.WriteSerializable(ctx, m.GetToState())
-	if popErr := writeBuffer.PopContext("toState"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toState")
-	}
-	if _toStateErr != nil {
-		return errors.Wrap(_toStateErr, "Error serializing 'toState' field")
+	if err := WriteSimpleField[BACnetEventStateTagged](ctx, "toState", m.GetToState(), WriteComplex[BACnetEventStateTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toState' field")
 	}
 
-	// Optional Field (eventValues) (Can be skipped, if the value is null)
-	var eventValues BACnetNotificationParameters = nil
-	if m.GetEventValues() != nil {
-		if pushErr := writeBuffer.PushContext("eventValues"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventValues")
-		}
-		eventValues = m.GetEventValues()
-		_eventValuesErr := writeBuffer.WriteSerializable(ctx, eventValues)
-		if popErr := writeBuffer.PopContext("eventValues"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventValues")
-		}
-		if _eventValuesErr != nil {
-			return errors.Wrap(_eventValuesErr, "Error serializing 'eventValues' field")
-		}
+	if err := WriteOptionalField[BACnetNotificationParameters](ctx, "eventValues", GetRef(m.GetEventValues()), WriteComplex[BACnetNotificationParameters](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventValues' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ConfirmedEventNotificationRequest"); popErr != nil {
@@ -665,9 +456,7 @@ func (m *_ConfirmedEventNotificationRequest) SerializeWithWriteBuffer(ctx contex
 	return nil
 }
 
-func (m *_ConfirmedEventNotificationRequest) isConfirmedEventNotificationRequest() bool {
-	return true
-}
+func (m *_ConfirmedEventNotificationRequest) IsConfirmedEventNotificationRequest() {}
 
 func (m *_ConfirmedEventNotificationRequest) String() string {
 	if m == nil {

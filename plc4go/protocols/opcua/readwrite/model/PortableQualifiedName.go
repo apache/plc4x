@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type PortableQualifiedName interface {
 	GetNamespaceUri() PascalString
 	// GetName returns Name (property field)
 	GetName() PascalString
-}
-
-// PortableQualifiedNameExactly can be used when we want exactly this type and not a type which fulfills PortableQualifiedName.
-// This is useful for switch cases.
-type PortableQualifiedNameExactly interface {
-	PortableQualifiedName
-	isPortableQualifiedName() bool
+	// IsPortableQualifiedName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortableQualifiedName()
 }
 
 // _PortableQualifiedName is the data-structure of this message
 type _PortableQualifiedName struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NamespaceUri PascalString
 	Name         PascalString
 }
+
+var _ PortableQualifiedName = (*_PortableQualifiedName)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PortableQualifiedName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_PortableQualifiedName) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PortableQualifiedName) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_PortableQualifiedName) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_PortableQualifiedName) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_PortableQualifiedName) GetName() PascalString {
 
 // NewPortableQualifiedName factory function for _PortableQualifiedName
 func NewPortableQualifiedName(namespaceUri PascalString, name PascalString) *_PortableQualifiedName {
-	_result := &_PortableQualifiedName{
-		NamespaceUri:               namespaceUri,
-		Name:                       name,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if namespaceUri == nil {
+		panic("namespaceUri of type PascalString for PortableQualifiedName must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if name == nil {
+		panic("name of type PascalString for PortableQualifiedName must not be nil")
+	}
+	_result := &_PortableQualifiedName{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NamespaceUri:                      namespaceUri,
+		Name:                              name,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_PortableQualifiedName) GetTypeName() string {
 }
 
 func (m *_PortableQualifiedName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (namespaceUri)
 	lengthInBits += m.NamespaceUri.GetLengthInBits(ctx)
@@ -137,59 +141,34 @@ func (m *_PortableQualifiedName) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PortableQualifiedNameParse(ctx context.Context, theBytes []byte, identifier string) (PortableQualifiedName, error) {
-	return PortableQualifiedNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func PortableQualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PortableQualifiedName, error) {
+func (m *_PortableQualifiedName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__portableQualifiedName PortableQualifiedName, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PortableQualifiedName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PortableQualifiedName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceUri)
-	if pullErr := readBuffer.PullContext("namespaceUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for namespaceUri")
+	namespaceUri, err := ReadSimpleField[PascalString](ctx, "namespaceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceUri' field"))
 	}
-	_namespaceUri, _namespaceUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _namespaceUriErr != nil {
-		return nil, errors.Wrap(_namespaceUriErr, "Error parsing 'namespaceUri' field of PortableQualifiedName")
-	}
-	namespaceUri := _namespaceUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("namespaceUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for namespaceUri")
-	}
+	m.NamespaceUri = namespaceUri
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of PortableQualifiedName")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
-	}
+	m.Name = name
 
 	if closeErr := readBuffer.CloseContext("PortableQualifiedName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PortableQualifiedName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_PortableQualifiedName{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NamespaceUri:               namespaceUri,
-		Name:                       name,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_PortableQualifiedName) Serialize() ([]byte, error) {
@@ -210,28 +189,12 @@ func (m *_PortableQualifiedName) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for PortableQualifiedName")
 		}
 
-		// Simple Field (namespaceUri)
-		if pushErr := writeBuffer.PushContext("namespaceUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for namespaceUri")
-		}
-		_namespaceUriErr := writeBuffer.WriteSerializable(ctx, m.GetNamespaceUri())
-		if popErr := writeBuffer.PopContext("namespaceUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for namespaceUri")
-		}
-		if _namespaceUriErr != nil {
-			return errors.Wrap(_namespaceUriErr, "Error serializing 'namespaceUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "namespaceUri", m.GetNamespaceUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'namespaceUri' field")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PortableQualifiedName"); popErr != nil {
@@ -239,12 +202,10 @@ func (m *_PortableQualifiedName) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_PortableQualifiedName) isPortableQualifiedName() bool {
-	return true
-}
+func (m *_PortableQualifiedName) IsPortableQualifiedName() {}
 
 func (m *_PortableQualifiedName) String() string {
 	if m == nil {

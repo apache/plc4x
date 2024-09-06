@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLightingCommand interface {
 	GetLightingCommand() BACnetLightingCommand
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLightingCommand
-}
-
-// BACnetConstructedDataLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingCommand.
-// This is useful for switch cases.
-type BACnetConstructedDataLightingCommandExactly interface {
-	BACnetConstructedDataLightingCommand
-	isBACnetConstructedDataLightingCommand() bool
+	// IsBACnetConstructedDataLightingCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLightingCommand()
 }
 
 // _BACnetConstructedDataLightingCommand is the data-structure of this message
 type _BACnetConstructedDataLightingCommand struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LightingCommand BACnetLightingCommand
 }
+
+var _ BACnetConstructedDataLightingCommand = (*_BACnetConstructedDataLightingCommand)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLightingCommand) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLightingCommand) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLightingCommand) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLightingCommand) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLightingCommand) GetActualValue() BACnetLightingC
 
 // NewBACnetConstructedDataLightingCommand factory function for _BACnetConstructedDataLightingCommand
 func NewBACnetConstructedDataLightingCommand(lightingCommand BACnetLightingCommand, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommand {
-	_result := &_BACnetConstructedDataLightingCommand{
-		LightingCommand:        lightingCommand,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if lightingCommand == nil {
+		panic("lightingCommand of type BACnetLightingCommand for BACnetConstructedDataLightingCommand must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLightingCommand{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LightingCommand:               lightingCommand,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLightingCommand) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lightingCommand)
 	lengthInBits += m.LightingCommand.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLightingCommand) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLightingCommandParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
-	return BACnetConstructedDataLightingCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
+func (m *_BACnetConstructedDataLightingCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLightingCommand BACnetConstructedDataLightingCommand, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLightingCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightingCommand)
-	if pullErr := readBuffer.PullContext("lightingCommand"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommand")
+	lightingCommand, err := ReadSimpleField[BACnetLightingCommand](ctx, "lightingCommand", ReadComplex[BACnetLightingCommand](BACnetLightingCommandParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingCommand' field"))
 	}
-	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParseWithBuffer(ctx, readBuffer)
-	if _lightingCommandErr != nil {
-		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field of BACnetConstructedDataLightingCommand")
-	}
-	lightingCommand := _lightingCommand.(BACnetLightingCommand)
-	if closeErr := readBuffer.CloseContext("lightingCommand"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightingCommand")
-	}
+	m.LightingCommand = lightingCommand
 
-	// Virtual field
-	_actualValue := lightingCommand
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetLightingCommand](ctx, "actualValue", (*BACnetLightingCommand)(nil), lightingCommand)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingCommand")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLightingCommand{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LightingCommand: lightingCommand,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLightingCommand) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingCommand")
 		}
 
-		// Simple Field (lightingCommand)
-		if pushErr := writeBuffer.PushContext("lightingCommand"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightingCommand")
-		}
-		_lightingCommandErr := writeBuffer.WriteSerializable(ctx, m.GetLightingCommand())
-		if popErr := writeBuffer.PopContext("lightingCommand"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightingCommand")
-		}
-		if _lightingCommandErr != nil {
-			return errors.Wrap(_lightingCommandErr, "Error serializing 'lightingCommand' field")
+		if err := WriteSimpleField[BACnetLightingCommand](ctx, "lightingCommand", m.GetLightingCommand(), WriteComplex[BACnetLightingCommand](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightingCommand' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLightingCommand) isBACnetConstructedDataLightingCommand() bool {
-	return true
-}
+func (m *_BACnetConstructedDataLightingCommand) IsBACnetConstructedDataLightingCommand() {}
 
 func (m *_BACnetConstructedDataLightingCommand) String() string {
 	if m == nil {

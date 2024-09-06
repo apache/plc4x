@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetDoorValueTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetDoorValue
-}
-
-// BACnetDoorValueTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDoorValueTagged.
-// This is useful for switch cases.
-type BACnetDoorValueTaggedExactly interface {
-	BACnetDoorValueTagged
-	isBACnetDoorValueTagged() bool
+	// IsBACnetDoorValueTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDoorValueTagged()
 }
 
 // _BACnetDoorValueTagged is the data-structure of this message
@@ -58,6 +55,8 @@ type _BACnetDoorValueTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetDoorValueTagged = (*_BACnetDoorValueTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,6 +78,9 @@ func (m *_BACnetDoorValueTagged) GetValue() BACnetDoorValue {
 
 // NewBACnetDoorValueTagged factory function for _BACnetDoorValueTagged
 func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tagNumber uint8, tagClass TagClass) *_BACnetDoorValueTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDoorValueTagged must not be nil")
+	}
 	return &_BACnetDoorValueTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -117,61 +119,56 @@ func BACnetDoorValueTaggedParse(ctx context.Context, theBytes []byte, tagNumber 
 	return BACnetDoorValueTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetDoorValueTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDoorValueTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDoorValueTagged, error) {
+		return BACnetDoorValueTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetDoorValueTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorValueTagged, error) {
+	v, err := (&_BACnetDoorValueTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetDoorValueTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetDoorValueTagged BACnetDoorValueTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetDoorValueTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDoorValueTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetDoorValueTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetDoorValue_LOCK)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetDoorValueTagged")
+	value, err := ReadManualField[BACnetDoorValue](ctx, "value", readBuffer, EnsureType[BACnetDoorValue](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetDoorValue_LOCK)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetDoorValue
-	if _value != nil {
-		value = _value.(BACnetDoorValue)
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("BACnetDoorValueTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDoorValueTagged")
 	}
 
-	// Create the instance
-	return &_BACnetDoorValueTagged{
-		TagNumber: tagNumber,
-		TagClass:  tagClass,
-		Header:    header,
-		Value:     value,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetDoorValueTagged) Serialize() ([]byte, error) {
@@ -191,22 +188,12 @@ func (m *_BACnetDoorValueTagged) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetDoorValueTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetDoorValue](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDoorValueTagged"); popErr != nil {
@@ -228,9 +215,7 @@ func (m *_BACnetDoorValueTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetDoorValueTagged) isBACnetDoorValueTagged() bool {
-	return true
-}
+func (m *_BACnetDoorValueTagged) IsBACnetDoorValueTagged() {}
 
 func (m *_BACnetDoorValueTagged) String() string {
 	if m == nil {

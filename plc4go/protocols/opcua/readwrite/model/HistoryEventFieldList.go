@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type HistoryEventFieldList interface {
 	GetNoOfEventFields() int32
 	// GetEventFields returns EventFields (property field)
 	GetEventFields() []Variant
-}
-
-// HistoryEventFieldListExactly can be used when we want exactly this type and not a type which fulfills HistoryEventFieldList.
-// This is useful for switch cases.
-type HistoryEventFieldListExactly interface {
-	HistoryEventFieldList
-	isHistoryEventFieldList() bool
+	// IsHistoryEventFieldList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryEventFieldList()
 }
 
 // _HistoryEventFieldList is the data-structure of this message
 type _HistoryEventFieldList struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NoOfEventFields int32
 	EventFields     []Variant
 }
+
+var _ HistoryEventFieldList = (*_HistoryEventFieldList)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_HistoryEventFieldList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_HistoryEventFieldList) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_HistoryEventFieldList) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_HistoryEventFieldList) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_HistoryEventFieldList) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_HistoryEventFieldList) GetEventFields() []Variant {
 // NewHistoryEventFieldList factory function for _HistoryEventFieldList
 func NewHistoryEventFieldList(noOfEventFields int32, eventFields []Variant) *_HistoryEventFieldList {
 	_result := &_HistoryEventFieldList{
-		NoOfEventFields:            noOfEventFields,
-		EventFields:                eventFields,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEventFields:                   noOfEventFields,
+		EventFields:                       eventFields,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_HistoryEventFieldList) GetTypeName() string {
 }
 
 func (m *_HistoryEventFieldList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (noOfEventFields)
 	lengthInBits += 32
@@ -144,67 +142,34 @@ func (m *_HistoryEventFieldList) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HistoryEventFieldListParse(ctx context.Context, theBytes []byte, identifier string) (HistoryEventFieldList, error) {
-	return HistoryEventFieldListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func HistoryEventFieldListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryEventFieldList, error) {
+func (m *_HistoryEventFieldList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyEventFieldList HistoryEventFieldList, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HistoryEventFieldList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HistoryEventFieldList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfEventFields)
-	_noOfEventFields, _noOfEventFieldsErr := readBuffer.ReadInt32("noOfEventFields", 32)
-	if _noOfEventFieldsErr != nil {
-		return nil, errors.Wrap(_noOfEventFieldsErr, "Error parsing 'noOfEventFields' field of HistoryEventFieldList")
+	noOfEventFields, err := ReadSimpleField(ctx, "noOfEventFields", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEventFields' field"))
 	}
-	noOfEventFields := _noOfEventFields
+	m.NoOfEventFields = noOfEventFields
 
-	// Array field (eventFields)
-	if pullErr := readBuffer.PullContext("eventFields", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventFields")
+	eventFields, err := ReadCountArrayField[Variant](ctx, "eventFields", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfEventFields))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventFields' field"))
 	}
-	// Count array
-	eventFields := make([]Variant, max(noOfEventFields, 0))
-	// This happens when the size is set conditional to 0
-	if len(eventFields) == 0 {
-		eventFields = nil
-	}
-	{
-		_numItems := uint16(max(noOfEventFields, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := VariantParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'eventFields' field of HistoryEventFieldList")
-			}
-			eventFields[_curItem] = _item.(Variant)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("eventFields", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventFields")
-	}
+	m.EventFields = eventFields
 
 	if closeErr := readBuffer.CloseContext("HistoryEventFieldList"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HistoryEventFieldList")
 	}
 
-	// Create a partially initialized instance
-	_child := &_HistoryEventFieldList{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NoOfEventFields:            noOfEventFields,
-		EventFields:                eventFields,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_HistoryEventFieldList) Serialize() ([]byte, error) {
@@ -225,28 +190,12 @@ func (m *_HistoryEventFieldList) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for HistoryEventFieldList")
 		}
 
-		// Simple Field (noOfEventFields)
-		noOfEventFields := int32(m.GetNoOfEventFields())
-		_noOfEventFieldsErr := writeBuffer.WriteInt32("noOfEventFields", 32, int32((noOfEventFields)))
-		if _noOfEventFieldsErr != nil {
-			return errors.Wrap(_noOfEventFieldsErr, "Error serializing 'noOfEventFields' field")
+		if err := WriteSimpleField[int32](ctx, "noOfEventFields", m.GetNoOfEventFields(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfEventFields' field")
 		}
 
-		// Array Field (eventFields)
-		if pushErr := writeBuffer.PushContext("eventFields", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventFields")
-		}
-		for _curItem, _element := range m.GetEventFields() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEventFields()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'eventFields' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("eventFields", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventFields")
+		if err := WriteComplexTypeArrayField(ctx, "eventFields", m.GetEventFields(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventFields' field")
 		}
 
 		if popErr := writeBuffer.PopContext("HistoryEventFieldList"); popErr != nil {
@@ -254,12 +203,10 @@ func (m *_HistoryEventFieldList) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_HistoryEventFieldList) isHistoryEventFieldList() bool {
-	return true
-}
+func (m *_HistoryEventFieldList) IsHistoryEventFieldList() {}
 
 func (m *_HistoryEventFieldList) String() string {
 	if m == nil {

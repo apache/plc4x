@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetApplicationTagBitString interface {
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadBitString
-}
-
-// BACnetApplicationTagBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagBitString.
-// This is useful for switch cases.
-type BACnetApplicationTagBitStringExactly interface {
-	BACnetApplicationTagBitString
-	isBACnetApplicationTagBitString() bool
+	// IsBACnetApplicationTagBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTagBitString()
 }
 
 // _BACnetApplicationTagBitString is the data-structure of this message
 type _BACnetApplicationTagBitString struct {
-	*_BACnetApplicationTag
+	BACnetApplicationTagContract
 	Payload BACnetTagPayloadBitString
 }
+
+var _ BACnetApplicationTagBitString = (*_BACnetApplicationTagBitString)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagBitString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetApplicationTagBitString struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetApplicationTagBitString) InitializeParent(parent BACnetApplicationTag, header BACnetTagHeader) {
-	m.Header = header
-}
-
-func (m *_BACnetApplicationTagBitString) GetParent() BACnetApplicationTag {
-	return m._BACnetApplicationTag
+func (m *_BACnetApplicationTagBitString) GetParent() BACnetApplicationTagContract {
+	return m.BACnetApplicationTagContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetApplicationTagBitString) GetPayload() BACnetTagPayloadBitString 
 
 // NewBACnetApplicationTagBitString factory function for _BACnetApplicationTagBitString
 func NewBACnetApplicationTagBitString(payload BACnetTagPayloadBitString, header BACnetTagHeader) *_BACnetApplicationTagBitString {
-	_result := &_BACnetApplicationTagBitString{
-		Payload:               payload,
-		_BACnetApplicationTag: NewBACnetApplicationTag(header),
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetApplicationTagBitString must not be nil")
 	}
-	_result._BACnetApplicationTag._BACnetApplicationTagChildRequirements = _result
+	_result := &_BACnetApplicationTagBitString{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetApplicationTagBitString) GetTypeName() string {
 }
 
 func (m *_BACnetApplicationTagBitString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetApplicationTagContract.(*_BACnetApplicationTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetApplicationTagBitString) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagBitStringParse(ctx context.Context, theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagBitString, error) {
-	return BACnetApplicationTagBitStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header)
-}
-
-func BACnetApplicationTagBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagBitString, error) {
+func (m *_BACnetApplicationTagBitString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag, header BACnetTagHeader) (__bACnetApplicationTagBitString BACnetApplicationTagBitString, err error) {
+	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBitString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagBitString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadBitString](ctx, "payload", ReadComplex[BACnetTagPayloadBitString](BACnetTagPayloadBitStringParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagBitString")
-	}
-	payload := _payload.(BACnetTagPayloadBitString)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
-	}
+	m.Payload = payload
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagBitString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagBitString")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetApplicationTagBitString{
-		_BACnetApplicationTag: &_BACnetApplicationTag{},
-		Payload:               payload,
-	}
-	_child._BACnetApplicationTag._BACnetApplicationTagChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetApplicationTagBitString) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetApplicationTagBitString) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetApplicationTagBitString")
 		}
 
-		// Simple Field (payload)
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		if err := WriteSimpleField[BACnetTagPayloadBitString](ctx, "payload", m.GetPayload(), WriteComplex[BACnetTagPayloadBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagBitString"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetApplicationTagBitString) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetApplicationTagContract.(*_BACnetApplicationTag).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetApplicationTagBitString) isBACnetApplicationTagBitString() bool {
-	return true
-}
+func (m *_BACnetApplicationTagBitString) IsBACnetApplicationTagBitString() {}
 
 func (m *_BACnetApplicationTagBitString) String() string {
 	if m == nil {

@@ -110,7 +110,7 @@ public class BACnetConfirmedServiceRequestVTClose extends BACnetConfirmedService
     List<BACnetApplicationTagUnsignedInteger> listOfRemoteVtSessionIdentifiers =
         readLengthArrayField(
             "listOfRemoteVtSessionIdentifiers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

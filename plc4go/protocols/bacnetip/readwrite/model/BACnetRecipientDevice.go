@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetRecipientDevice interface {
 	BACnetRecipient
 	// GetDeviceValue returns DeviceValue (property field)
 	GetDeviceValue() BACnetContextTagObjectIdentifier
-}
-
-// BACnetRecipientDeviceExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientDevice.
-// This is useful for switch cases.
-type BACnetRecipientDeviceExactly interface {
-	BACnetRecipientDevice
-	isBACnetRecipientDevice() bool
+	// IsBACnetRecipientDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientDevice()
 }
 
 // _BACnetRecipientDevice is the data-structure of this message
 type _BACnetRecipientDevice struct {
-	*_BACnetRecipient
+	BACnetRecipientContract
 	DeviceValue BACnetContextTagObjectIdentifier
 }
+
+var _ BACnetRecipientDevice = (*_BACnetRecipientDevice)(nil)
+var _ BACnetRecipientRequirements = (*_BACnetRecipientDevice)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetRecipientDevice struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetRecipientDevice) InitializeParent(parent BACnetRecipient, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetRecipientDevice) GetParent() BACnetRecipient {
-	return m._BACnetRecipient
+func (m *_BACnetRecipientDevice) GetParent() BACnetRecipientContract {
+	return m.BACnetRecipientContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetRecipientDevice) GetDeviceValue() BACnetContextTagObjectIdentifi
 
 // NewBACnetRecipientDevice factory function for _BACnetRecipientDevice
 func NewBACnetRecipientDevice(deviceValue BACnetContextTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetRecipientDevice {
-	_result := &_BACnetRecipientDevice{
-		DeviceValue:      deviceValue,
-		_BACnetRecipient: NewBACnetRecipient(peekedTagHeader),
+	if deviceValue == nil {
+		panic("deviceValue of type BACnetContextTagObjectIdentifier for BACnetRecipientDevice must not be nil")
 	}
-	_result._BACnetRecipient._BACnetRecipientChildRequirements = _result
+	_result := &_BACnetRecipientDevice{
+		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
+		DeviceValue:             deviceValue,
+	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetRecipientDevice) GetTypeName() string {
 }
 
 func (m *_BACnetRecipientDevice) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetRecipientContract.(*_BACnetRecipient).getLengthInBits(ctx))
 
 	// Simple field (deviceValue)
 	lengthInBits += m.DeviceValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetRecipientDevice) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRecipientDeviceParse(ctx context.Context, theBytes []byte) (BACnetRecipientDevice, error) {
-	return BACnetRecipientDeviceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetRecipientDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {
+func (m *_BACnetRecipientDevice) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetRecipient) (__bACnetRecipientDevice BACnetRecipientDevice, err error) {
+	m.BACnetRecipientContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRecipientDevice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRecipientDevice")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceValue)
-	if pullErr := readBuffer.PullContext("deviceValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceValue")
+	deviceValue, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "deviceValue", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceValue' field"))
 	}
-	_deviceValue, _deviceValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _deviceValueErr != nil {
-		return nil, errors.Wrap(_deviceValueErr, "Error parsing 'deviceValue' field of BACnetRecipientDevice")
-	}
-	deviceValue := _deviceValue.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("deviceValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceValue")
-	}
+	m.DeviceValue = deviceValue
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipientDevice"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRecipientDevice")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetRecipientDevice{
-		_BACnetRecipient: &_BACnetRecipient{},
-		DeviceValue:      deviceValue,
-	}
-	_child._BACnetRecipient._BACnetRecipientChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetRecipientDevice) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetRecipientDevice) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for BACnetRecipientDevice")
 		}
 
-		// Simple Field (deviceValue)
-		if pushErr := writeBuffer.PushContext("deviceValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceValue")
-		}
-		_deviceValueErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceValue())
-		if popErr := writeBuffer.PopContext("deviceValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceValue")
-		}
-		if _deviceValueErr != nil {
-			return errors.Wrap(_deviceValueErr, "Error serializing 'deviceValue' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "deviceValue", m.GetDeviceValue(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetRecipientDevice"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetRecipientDevice) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetRecipientContract.(*_BACnetRecipient).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetRecipientDevice) isBACnetRecipientDevice() bool {
-	return true
-}
+func (m *_BACnetRecipientDevice) IsBACnetRecipientDevice() {}
 
 func (m *_BACnetRecipientDevice) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogRecordLogDatumRealValue interface {
 	BACnetLogRecordLogDatum
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetContextTagReal
-}
-
-// BACnetLogRecordLogDatumRealValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumRealValue.
-// This is useful for switch cases.
-type BACnetLogRecordLogDatumRealValueExactly interface {
-	BACnetLogRecordLogDatumRealValue
-	isBACnetLogRecordLogDatumRealValue() bool
+	// IsBACnetLogRecordLogDatumRealValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumRealValue()
 }
 
 // _BACnetLogRecordLogDatumRealValue is the data-structure of this message
 type _BACnetLogRecordLogDatumRealValue struct {
-	*_BACnetLogRecordLogDatum
+	BACnetLogRecordLogDatumContract
 	RealValue BACnetContextTagReal
 }
+
+var _ BACnetLogRecordLogDatumRealValue = (*_BACnetLogRecordLogDatumRealValue)(nil)
+var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumRealValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetLogRecordLogDatumRealValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogRecordLogDatumRealValue) InitializeParent(parent BACnetLogRecordLogDatum, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetLogRecordLogDatumRealValue) GetParent() BACnetLogRecordLogDatum {
-	return m._BACnetLogRecordLogDatum
+func (m *_BACnetLogRecordLogDatumRealValue) GetParent() BACnetLogRecordLogDatumContract {
+	return m.BACnetLogRecordLogDatumContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetLogRecordLogDatumRealValue) GetRealValue() BACnetContextTagReal 
 
 // NewBACnetLogRecordLogDatumRealValue factory function for _BACnetLogRecordLogDatumRealValue
 func NewBACnetLogRecordLogDatumRealValue(realValue BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumRealValue {
-	_result := &_BACnetLogRecordLogDatumRealValue{
-		RealValue:                realValue,
-		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if realValue == nil {
+		panic("realValue of type BACnetContextTagReal for BACnetLogRecordLogDatumRealValue must not be nil")
 	}
-	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result
+	_result := &_BACnetLogRecordLogDatumRealValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		RealValue:                       realValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetLogRecordLogDatumRealValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogRecordLogDatumRealValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetLogRecordLogDatumRealValue) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogRecordLogDatumRealValueParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumRealValue, error) {
-	return BACnetLogRecordLogDatumRealValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetLogRecordLogDatumRealValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumRealValue, error) {
+func (m *_BACnetLogRecordLogDatumRealValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogRecordLogDatum, tagNumber uint8) (__bACnetLogRecordLogDatumRealValue BACnetLogRecordLogDatumRealValue, err error) {
+	m.BACnetLogRecordLogDatumContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumRealValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumRealValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (realValue)
-	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
+	realValue, err := ReadSimpleField[BACnetContextTagReal](ctx, "realValue", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realValue' field"))
 	}
-	_realValue, _realValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
-	if _realValueErr != nil {
-		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetLogRecordLogDatumRealValue")
-	}
-	realValue := _realValue.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for realValue")
-	}
+	m.RealValue = realValue
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumRealValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumRealValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogRecordLogDatumRealValue{
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
-			TagNumber: tagNumber,
-		},
-		RealValue: realValue,
-	}
-	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogRecordLogDatumRealValue) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetLogRecordLogDatumRealValue) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumRealValue")
 		}
 
-		// Simple Field (realValue)
-		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for realValue")
-		}
-		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
-		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for realValue")
-		}
-		if _realValueErr != nil {
-			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "realValue", m.GetRealValue(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'realValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumRealValue"); popErr != nil {
@@ -204,12 +174,10 @@ func (m *_BACnetLogRecordLogDatumRealValue) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogRecordLogDatumRealValue) isBACnetLogRecordLogDatumRealValue() bool {
-	return true
-}
+func (m *_BACnetLogRecordLogDatumRealValue) IsBACnetLogRecordLogDatumRealValue() {}
 
 func (m *_BACnetLogRecordLogDatumRealValue) String() string {
 	if m == nil {

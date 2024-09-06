@@ -36,18 +36,15 @@ type DecimalString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// DecimalStringExactly can be used when we want exactly this type and not a type which fulfills DecimalString.
-// This is useful for switch cases.
-type DecimalStringExactly interface {
-	DecimalString
-	isDecimalString() bool
+	// IsDecimalString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDecimalString()
 }
 
 // _DecimalString is the data-structure of this message
 type _DecimalString struct {
 }
+
+var _ DecimalString = (*_DecimalString)(nil)
 
 // NewDecimalString factory function for _DecimalString
 func NewDecimalString() *_DecimalString {
@@ -83,11 +80,23 @@ func DecimalStringParse(ctx context.Context, theBytes []byte) (DecimalString, er
 	return DecimalStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DecimalStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DecimalString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DecimalString, error) {
+		return DecimalStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DecimalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DecimalString, error) {
+	v, err := (&_DecimalString{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_DecimalString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__decimalString DecimalString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DecimalString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DecimalString")
 	}
@@ -98,8 +107,7 @@ func DecimalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(closeErr, "Error closing for DecimalString")
 	}
 
-	// Create the instance
-	return &_DecimalString{}, nil
+	return m, nil
 }
 
 func (m *_DecimalString) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_DecimalString) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_DecimalString) isDecimalString() bool {
-	return true
-}
+func (m *_DecimalString) IsDecimalString() {}
 
 func (m *_DecimalString) String() string {
 	if m == nil {

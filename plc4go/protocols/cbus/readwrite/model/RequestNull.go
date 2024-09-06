@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,19 +42,17 @@ type RequestNull interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
-}
-
-// RequestNullExactly can be used when we want exactly this type and not a type which fulfills RequestNull.
-// This is useful for switch cases.
-type RequestNullExactly interface {
-	RequestNull
-	isRequestNull() bool
+	// IsRequestNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestNull()
 }
 
 // _RequestNull is the data-structure of this message
 type _RequestNull struct {
-	*_Request
+	RequestContract
 }
+
+var _ RequestNull = (*_RequestNull)(nil)
+var _ RequestRequirements = (*_RequestNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,16 +64,8 @@ type _RequestNull struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestNull) InitializeParent(parent Request, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) {
-	m.PeekedByte = peekedByte
-	m.StartingCR = startingCR
-	m.ResetMode = resetMode
-	m.SecondPeek = secondPeek
-	m.Termination = termination
-}
-
-func (m *_RequestNull) GetParent() Request {
-	return m._Request
+func (m *_RequestNull) GetParent() RequestContract {
+	return m.RequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,9 +85,9 @@ func (m *_RequestNull) GetNullIndicator() uint32 {
 // NewRequestNull factory function for _RequestNull
 func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestNull {
 	_result := &_RequestNull{
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
-	_result._Request._RequestChildRequirements = _result
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 
@@ -115,7 +107,7 @@ func (m *_RequestNull) GetTypeName() string {
 }
 
 func (m *_RequestNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	// Const Field (nullIndicator)
 	lengthInBits += 32
@@ -127,42 +119,28 @@ func (m *_RequestNull) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestNullParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestNull, error) {
-	return RequestNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func RequestNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestNull, error) {
+func (m *_RequestNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestNull RequestNull, err error) {
+	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestNull")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (nullIndicator)
-	nullIndicator, _nullIndicatorErr := readBuffer.ReadUint32("nullIndicator", 32)
-	if _nullIndicatorErr != nil {
-		return nil, errors.Wrap(_nullIndicatorErr, "Error parsing 'nullIndicator' field of RequestNull")
+	nullIndicator, err := ReadConstField[uint32](ctx, "nullIndicator", ReadUnsignedInt(readBuffer, uint8(32)), RequestNull_NULLINDICATOR)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullIndicator' field"))
 	}
-	if nullIndicator != RequestNull_NULLINDICATOR {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestNull_NULLINDICATOR) + " but got " + fmt.Sprintf("%d", nullIndicator))
-	}
+	_ = nullIndicator
 
 	if closeErr := readBuffer.CloseContext("RequestNull"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestNull")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RequestNull{
-		_Request: &_Request{
-			CBusOptions: cBusOptions,
-		},
-	}
-	_child._Request._RequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RequestNull) Serialize() ([]byte, error) {
@@ -183,10 +161,8 @@ func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for RequestNull")
 		}
 
-		// Const Field (nullIndicator)
-		_nullIndicatorErr := writeBuffer.WriteUint32("nullIndicator", 32, uint32(0x6E756C6C))
-		if _nullIndicatorErr != nil {
-			return errors.Wrap(_nullIndicatorErr, "Error serializing 'nullIndicator' field")
+		if err := WriteConstField(ctx, "nullIndicator", RequestNull_NULLINDICATOR, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nullIndicator' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestNull"); popErr != nil {
@@ -194,12 +170,10 @@ func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.RequestContract.(*_Request).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RequestNull) isRequestNull() bool {
-	return true
-}
+func (m *_RequestNull) IsRequestNull() {}
 
 func (m *_RequestNull) String() string {
 	if m == nil {

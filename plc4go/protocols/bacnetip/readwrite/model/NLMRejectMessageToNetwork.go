@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type NLMRejectMessageToNetwork interface {
 	GetRejectReason() NLMRejectMessageToNetworkRejectReason
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
-}
-
-// NLMRejectMessageToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMRejectMessageToNetwork.
-// This is useful for switch cases.
-type NLMRejectMessageToNetworkExactly interface {
-	NLMRejectMessageToNetwork
-	isNLMRejectMessageToNetwork() bool
+	// IsNLMRejectMessageToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMRejectMessageToNetwork()
 }
 
 // _NLMRejectMessageToNetwork is the data-structure of this message
 type _NLMRejectMessageToNetwork struct {
-	*_NLM
+	NLMContract
 	RejectReason              NLMRejectMessageToNetworkRejectReason
 	DestinationNetworkAddress uint16
 }
+
+var _ NLMRejectMessageToNetwork = (*_NLMRejectMessageToNetwork)(nil)
+var _ NLMRequirements = (*_NLMRejectMessageToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_NLMRejectMessageToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMRejectMessageToNetwork) InitializeParent(parent NLM) {}
-
-func (m *_NLMRejectMessageToNetwork) GetParent() NLM {
-	return m._NLM
+func (m *_NLMRejectMessageToNetwork) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_NLMRejectMessageToNetwork) GetDestinationNetworkAddress() uint16 {
 // NewNLMRejectMessageToNetwork factory function for _NLMRejectMessageToNetwork
 func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16, apduLength uint16) *_NLMRejectMessageToNetwork {
 	_result := &_NLMRejectMessageToNetwork{
+		NLMContract:               NewNLM(apduLength),
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_NLMRejectMessageToNetwork) GetTypeName() string {
 }
 
 func (m *_NLMRejectMessageToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (rejectReason)
 	lengthInBits += 8
@@ -137,55 +135,34 @@ func (m *_NLMRejectMessageToNetwork) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMRejectMessageToNetworkParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMRejectMessageToNetwork, error) {
-	return NLMRejectMessageToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMRejectMessageToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRejectMessageToNetwork, error) {
+func (m *_NLMRejectMessageToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMRejectMessageToNetwork NLMRejectMessageToNetwork, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMRejectMessageToNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMRejectMessageToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (rejectReason)
-	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for rejectReason")
+	rejectReason, err := ReadEnumField[NLMRejectMessageToNetworkRejectReason](ctx, "rejectReason", "NLMRejectMessageToNetworkRejectReason", ReadEnum(NLMRejectMessageToNetworkRejectReasonByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rejectReason' field"))
 	}
-	_rejectReason, _rejectReasonErr := NLMRejectMessageToNetworkRejectReasonParseWithBuffer(ctx, readBuffer)
-	if _rejectReasonErr != nil {
-		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field of NLMRejectMessageToNetwork")
-	}
-	rejectReason := _rejectReason
-	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for rejectReason")
-	}
+	m.RejectReason = rejectReason
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMRejectMessageToNetwork")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
+	m.DestinationNetworkAddress = destinationNetworkAddress
 
 	if closeErr := readBuffer.CloseContext("NLMRejectMessageToNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMRejectMessageToNetwork")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMRejectMessageToNetwork{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		RejectReason:              rejectReason,
-		DestinationNetworkAddress: destinationNetworkAddress,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMRejectMessageToNetwork) Serialize() ([]byte, error) {
@@ -206,23 +183,12 @@ func (m *_NLMRejectMessageToNetwork) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for NLMRejectMessageToNetwork")
 		}
 
-		// Simple Field (rejectReason)
-		if pushErr := writeBuffer.PushContext("rejectReason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for rejectReason")
-		}
-		_rejectReasonErr := writeBuffer.WriteSerializable(ctx, m.GetRejectReason())
-		if popErr := writeBuffer.PopContext("rejectReason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for rejectReason")
-		}
-		if _rejectReasonErr != nil {
-			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
+		if err := WriteSimpleEnumField[NLMRejectMessageToNetworkRejectReason](ctx, "rejectReason", "NLMRejectMessageToNetworkRejectReason", m.GetRejectReason(), WriteEnum[NLMRejectMessageToNetworkRejectReason, uint8](NLMRejectMessageToNetworkRejectReason.GetValue, NLMRejectMessageToNetworkRejectReason.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'rejectReason' field")
 		}
 
-		// Simple Field (destinationNetworkAddress)
-		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-		if _destinationNetworkAddressErr != nil {
-			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMRejectMessageToNetwork"); popErr != nil {
@@ -230,12 +196,10 @@ func (m *_NLMRejectMessageToNetwork) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMRejectMessageToNetwork) isNLMRejectMessageToNetwork() bool {
-	return true
-}
+func (m *_NLMRejectMessageToNetwork) IsNLMRejectMessageToNetwork() {}
 
 func (m *_NLMRejectMessageToNetwork) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataHigherDeck interface {
 	GetHigherDeck() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
-}
-
-// BACnetConstructedDataHigherDeckExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataHigherDeck.
-// This is useful for switch cases.
-type BACnetConstructedDataHigherDeckExactly interface {
-	BACnetConstructedDataHigherDeck
-	isBACnetConstructedDataHigherDeck() bool
+	// IsBACnetConstructedDataHigherDeck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataHigherDeck()
 }
 
 // _BACnetConstructedDataHigherDeck is the data-structure of this message
 type _BACnetConstructedDataHigherDeck struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	HigherDeck BACnetApplicationTagObjectIdentifier
 }
+
+var _ BACnetConstructedDataHigherDeck = (*_BACnetConstructedDataHigherDeck)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataHigherDeck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataHigherDeck) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataHigherDeck) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataHigherDeck) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataHigherDeck) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataHigherDeck) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataHigherDeck factory function for _BACnetConstructedDataHigherDeck
 func NewBACnetConstructedDataHigherDeck(higherDeck BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHigherDeck {
-	_result := &_BACnetConstructedDataHigherDeck{
-		HigherDeck:             higherDeck,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if higherDeck == nil {
+		panic("higherDeck of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataHigherDeck must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataHigherDeck{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		HigherDeck:                    higherDeck,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataHigherDeck) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataHigherDeck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (higherDeck)
 	lengthInBits += m.HigherDeck.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataHigherDeck) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataHigherDeckParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataHigherDeck, error) {
-	return BACnetConstructedDataHigherDeckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataHigherDeckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataHigherDeck, error) {
+func (m *_BACnetConstructedDataHigherDeck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataHigherDeck BACnetConstructedDataHigherDeck, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataHigherDeck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataHigherDeck")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (higherDeck)
-	if pullErr := readBuffer.PullContext("higherDeck"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for higherDeck")
+	higherDeck, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "higherDeck", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'higherDeck' field"))
 	}
-	_higherDeck, _higherDeckErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _higherDeckErr != nil {
-		return nil, errors.Wrap(_higherDeckErr, "Error parsing 'higherDeck' field of BACnetConstructedDataHigherDeck")
-	}
-	higherDeck := _higherDeck.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("higherDeck"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for higherDeck")
-	}
+	m.HigherDeck = higherDeck
 
-	// Virtual field
-	_actualValue := higherDeck
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagObjectIdentifier](ctx, "actualValue", (*BACnetApplicationTagObjectIdentifier)(nil), higherDeck)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataHigherDeck"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataHigherDeck")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataHigherDeck{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		HigherDeck: higherDeck,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataHigherDeck) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataHigherDeck) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataHigherDeck")
 		}
 
-		// Simple Field (higherDeck)
-		if pushErr := writeBuffer.PushContext("higherDeck"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for higherDeck")
-		}
-		_higherDeckErr := writeBuffer.WriteSerializable(ctx, m.GetHigherDeck())
-		if popErr := writeBuffer.PopContext("higherDeck"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for higherDeck")
-		}
-		if _higherDeckErr != nil {
-			return errors.Wrap(_higherDeckErr, "Error serializing 'higherDeck' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "higherDeck", m.GetHigherDeck(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'higherDeck' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataHigherDeck) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataHigherDeck) isBACnetConstructedDataHigherDeck() bool {
-	return true
-}
+func (m *_BACnetConstructedDataHigherDeck) IsBACnetConstructedDataHigherDeck() {}
 
 func (m *_BACnetConstructedDataHigherDeck) String() string {
 	if m == nil {

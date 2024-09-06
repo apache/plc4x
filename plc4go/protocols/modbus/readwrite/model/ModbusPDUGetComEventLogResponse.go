@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type ModbusPDUGetComEventLogResponse interface {
 	GetMessageCount() uint16
 	// GetEvents returns Events (property field)
 	GetEvents() []byte
-}
-
-// ModbusPDUGetComEventLogResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUGetComEventLogResponse.
-// This is useful for switch cases.
-type ModbusPDUGetComEventLogResponseExactly interface {
-	ModbusPDUGetComEventLogResponse
-	isModbusPDUGetComEventLogResponse() bool
+	// IsModbusPDUGetComEventLogResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUGetComEventLogResponse()
 }
 
 // _ModbusPDUGetComEventLogResponse is the data-structure of this message
 type _ModbusPDUGetComEventLogResponse struct {
-	*_ModbusPDU
+	ModbusPDUContract
 	Status       uint16
 	EventCount   uint16
 	MessageCount uint16
 	Events       []byte
 }
+
+var _ ModbusPDUGetComEventLogResponse = (*_ModbusPDUGetComEventLogResponse)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUGetComEventLogResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,10 +85,8 @@ func (m *_ModbusPDUGetComEventLogResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUGetComEventLogResponse) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUGetComEventLogResponse) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUGetComEventLogResponse) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -120,13 +118,13 @@ func (m *_ModbusPDUGetComEventLogResponse) GetEvents() []byte {
 // NewModbusPDUGetComEventLogResponse factory function for _ModbusPDUGetComEventLogResponse
 func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *_ModbusPDUGetComEventLogResponse {
 	_result := &_ModbusPDUGetComEventLogResponse{
-		Status:       status,
-		EventCount:   eventCount,
-		MessageCount: messageCount,
-		Events:       events,
-		_ModbusPDU:   NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
+		Status:            status,
+		EventCount:        eventCount,
+		MessageCount:      messageCount,
+		Events:            events,
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -146,7 +144,7 @@ func (m *_ModbusPDUGetComEventLogResponse) GetTypeName() string {
 }
 
 func (m *_ModbusPDUGetComEventLogResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -172,69 +170,52 @@ func (m *_ModbusPDUGetComEventLogResponse) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUGetComEventLogResponse, error) {
-	return ModbusPDUGetComEventLogResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUGetComEventLogResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventLogResponse, error) {
+func (m *_ModbusPDUGetComEventLogResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUGetComEventLogResponse ModbusPDUGetComEventLogResponse, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventLogResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUGetComEventLogResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
+	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
+	}
 	_ = byteCount
-	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUGetComEventLogResponse")
-	}
 
-	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint16("status", 16)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ModbusPDUGetComEventLogResponse")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
+	m.Status = status
 
-	// Simple Field (eventCount)
-	_eventCount, _eventCountErr := readBuffer.ReadUint16("eventCount", 16)
-	if _eventCountErr != nil {
-		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field of ModbusPDUGetComEventLogResponse")
+	eventCount, err := ReadSimpleField(ctx, "eventCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventCount' field"))
 	}
-	eventCount := _eventCount
+	m.EventCount = eventCount
 
-	// Simple Field (messageCount)
-	_messageCount, _messageCountErr := readBuffer.ReadUint16("messageCount", 16)
-	if _messageCountErr != nil {
-		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field of ModbusPDUGetComEventLogResponse")
+	messageCount, err := ReadSimpleField(ctx, "messageCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageCount' field"))
 	}
-	messageCount := _messageCount
-	// Byte Array field (events)
-	numberOfBytesevents := int(uint16(byteCount) - uint16(uint16(6)))
-	events, _readArrayErr := readBuffer.ReadByteArray("events", numberOfBytesevents)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'events' field of ModbusPDUGetComEventLogResponse")
+	m.MessageCount = messageCount
+
+	events, err := readBuffer.ReadByteArray("events", int(int32(byteCount)-int32(int32(6))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'events' field"))
 	}
+	m.Events = events
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUGetComEventLogResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUGetComEventLogResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUGetComEventLogResponse{
-		_ModbusPDU:   &_ModbusPDU{},
-		Status:       status,
-		EventCount:   eventCount,
-		MessageCount: messageCount,
-		Events:       events,
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUGetComEventLogResponse) Serialize() ([]byte, error) {
@@ -254,38 +235,24 @@ func (m *_ModbusPDUGetComEventLogResponse) SerializeWithWriteBuffer(ctx context.
 		if pushErr := writeBuffer.PushContext("ModbusPDUGetComEventLogResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUGetComEventLogResponse")
 		}
-
-		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(uint8(len(m.GetEvents()))) + uint8(uint8(6)))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
-		if _byteCountErr != nil {
-			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
+		if err := WriteImplicitField(ctx, "byteCount", byteCount, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'byteCount' field")
 		}
 
-		// Simple Field (status)
-		status := uint16(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint16("status", 16, uint16((status)))
-		if _statusErr != nil {
-			return errors.Wrap(_statusErr, "Error serializing 'status' field")
+		if err := WriteSimpleField[uint16](ctx, "status", m.GetStatus(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
-		// Simple Field (eventCount)
-		eventCount := uint16(m.GetEventCount())
-		_eventCountErr := writeBuffer.WriteUint16("eventCount", 16, uint16((eventCount)))
-		if _eventCountErr != nil {
-			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
+		if err := WriteSimpleField[uint16](ctx, "eventCount", m.GetEventCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventCount' field")
 		}
 
-		// Simple Field (messageCount)
-		messageCount := uint16(m.GetMessageCount())
-		_messageCountErr := writeBuffer.WriteUint16("messageCount", 16, uint16((messageCount)))
-		if _messageCountErr != nil {
-			return errors.Wrap(_messageCountErr, "Error serializing 'messageCount' field")
+		if err := WriteSimpleField[uint16](ctx, "messageCount", m.GetMessageCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageCount' field")
 		}
 
-		// Array Field (events)
-		// Byte Array field (events)
-		if err := writeBuffer.WriteByteArray("events", m.GetEvents()); err != nil {
+		if err := WriteByteArrayField(ctx, "events", m.GetEvents(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'events' field")
 		}
 
@@ -294,12 +261,10 @@ func (m *_ModbusPDUGetComEventLogResponse) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUGetComEventLogResponse) isModbusPDUGetComEventLogResponse() bool {
-	return true
-}
+func (m *_ModbusPDUGetComEventLogResponse) IsModbusPDUGetComEventLogResponse() {}
 
 func (m *_ModbusPDUGetComEventLogResponse) String() string {
 	if m == nil {

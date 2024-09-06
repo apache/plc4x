@@ -37,19 +37,17 @@ type NullEipConnectionResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
-}
-
-// NullEipConnectionResponseExactly can be used when we want exactly this type and not a type which fulfills NullEipConnectionResponse.
-// This is useful for switch cases.
-type NullEipConnectionResponseExactly interface {
-	NullEipConnectionResponse
-	isNullEipConnectionResponse() bool
+	// IsNullEipConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullEipConnectionResponse()
 }
 
 // _NullEipConnectionResponse is the data-structure of this message
 type _NullEipConnectionResponse struct {
-	*_EipPacket
+	EipPacketContract
 }
+
+var _ NullEipConnectionResponse = (*_NullEipConnectionResponse)(nil)
+var _ EipPacketRequirements = (*_NullEipConnectionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,23 +71,16 @@ func (m *_NullEipConnectionResponse) GetPacketLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NullEipConnectionResponse) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_NullEipConnectionResponse) GetParent() EipPacket {
-	return m._EipPacket
+func (m *_NullEipConnectionResponse) GetParent() EipPacketContract {
+	return m.EipPacketContract
 }
 
 // NewNullEipConnectionResponse factory function for _NullEipConnectionResponse
 func NewNullEipConnectionResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullEipConnectionResponse {
 	_result := &_NullEipConnectionResponse{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	_result._EipPacket._EipPacketChildRequirements = _result
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 
@@ -109,7 +100,7 @@ func (m *_NullEipConnectionResponse) GetTypeName() string {
 }
 
 func (m *_NullEipConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -118,15 +109,11 @@ func (m *_NullEipConnectionResponse) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullEipConnectionResponseParse(ctx context.Context, theBytes []byte, response bool) (NullEipConnectionResponse, error) {
-	return NullEipConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func NullEipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullEipConnectionResponse, error) {
+func (m *_NullEipConnectionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__nullEipConnectionResponse NullEipConnectionResponse, err error) {
+	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NullEipConnectionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NullEipConnectionResponse")
 	}
@@ -137,12 +124,7 @@ func NullEipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(closeErr, "Error closing for NullEipConnectionResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NullEipConnectionResponse{
-		_EipPacket: &_EipPacket{},
-	}
-	_child._EipPacket._EipPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NullEipConnectionResponse) Serialize() ([]byte, error) {
@@ -168,12 +150,10 @@ func (m *_NullEipConnectionResponse) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.EipPacketContract.(*_EipPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NullEipConnectionResponse) isNullEipConnectionResponse() bool {
-	return true
-}
+func (m *_NullEipConnectionResponse) IsNullEipConnectionResponse() {}
 
 func (m *_NullEipConnectionResponse) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type BACnetConfirmedServiceRequestVTOpen interface {
 	GetVtClass() BACnetVTClassTagged
 	// GetLocalVtSessionIdentifier returns LocalVtSessionIdentifier (property field)
 	GetLocalVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConfirmedServiceRequestVTOpenExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTOpen.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestVTOpenExactly interface {
-	BACnetConfirmedServiceRequestVTOpen
-	isBACnetConfirmedServiceRequestVTOpen() bool
+	// IsBACnetConfirmedServiceRequestVTOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestVTOpen()
 }
 
 // _BACnetConfirmedServiceRequestVTOpen is the data-structure of this message
 type _BACnetConfirmedServiceRequestVTOpen struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	VtClass                  BACnetVTClassTagged
 	LocalVtSessionIdentifier BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConfirmedServiceRequestVTOpen = (*_BACnetConfirmedServiceRequestVTOpen)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTOpen)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +71,8 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetServiceChoice() BACnetConfirme
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestVTOpen) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestVTOpen) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,12 +95,18 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetLocalVtSessionIdentifier() BAC
 
 // NewBACnetConfirmedServiceRequestVTOpen factory function for _BACnetConfirmedServiceRequestVTOpen
 func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTOpen {
-	_result := &_BACnetConfirmedServiceRequestVTOpen{
-		VtClass:                        vtClass,
-		LocalVtSessionIdentifier:       localVtSessionIdentifier,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if vtClass == nil {
+		panic("vtClass of type BACnetVTClassTagged for BACnetConfirmedServiceRequestVTOpen must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if localVtSessionIdentifier == nil {
+		panic("localVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTOpen must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestVTOpen{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		VtClass:                               vtClass,
+		LocalVtSessionIdentifier:              localVtSessionIdentifier,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -123,7 +126,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (vtClass)
 	lengthInBits += m.VtClass.GetLengthInBits(ctx)
@@ -138,61 +141,34 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestVTOpenParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
-	return BACnetConfirmedServiceRequestVTOpenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestVTOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
+func (m *_BACnetConfirmedServiceRequestVTOpen) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestVTOpen BACnetConfirmedServiceRequestVTOpen, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTOpen"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestVTOpen")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (vtClass)
-	if pullErr := readBuffer.PullContext("vtClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vtClass")
+	vtClass, err := ReadSimpleField[BACnetVTClassTagged](ctx, "vtClass", ReadComplex[BACnetVTClassTagged](BACnetVTClassTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vtClass' field"))
 	}
-	_vtClass, _vtClassErr := BACnetVTClassTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _vtClassErr != nil {
-		return nil, errors.Wrap(_vtClassErr, "Error parsing 'vtClass' field of BACnetConfirmedServiceRequestVTOpen")
-	}
-	vtClass := _vtClass.(BACnetVTClassTagged)
-	if closeErr := readBuffer.CloseContext("vtClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vtClass")
-	}
+	m.VtClass = vtClass
 
-	// Simple Field (localVtSessionIdentifier)
-	if pullErr := readBuffer.PullContext("localVtSessionIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localVtSessionIdentifier")
+	localVtSessionIdentifier, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionIdentifier", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localVtSessionIdentifier' field"))
 	}
-	_localVtSessionIdentifier, _localVtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _localVtSessionIdentifierErr != nil {
-		return nil, errors.Wrap(_localVtSessionIdentifierErr, "Error parsing 'localVtSessionIdentifier' field of BACnetConfirmedServiceRequestVTOpen")
-	}
-	localVtSessionIdentifier := _localVtSessionIdentifier.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("localVtSessionIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localVtSessionIdentifier")
-	}
+	m.LocalVtSessionIdentifier = localVtSessionIdentifier
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestVTOpen"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestVTOpen")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestVTOpen{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		VtClass:                  vtClass,
-		LocalVtSessionIdentifier: localVtSessionIdentifier,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) Serialize() ([]byte, error) {
@@ -213,28 +189,12 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestVTOpen")
 		}
 
-		// Simple Field (vtClass)
-		if pushErr := writeBuffer.PushContext("vtClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vtClass")
-		}
-		_vtClassErr := writeBuffer.WriteSerializable(ctx, m.GetVtClass())
-		if popErr := writeBuffer.PopContext("vtClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vtClass")
-		}
-		if _vtClassErr != nil {
-			return errors.Wrap(_vtClassErr, "Error serializing 'vtClass' field")
+		if err := WriteSimpleField[BACnetVTClassTagged](ctx, "vtClass", m.GetVtClass(), WriteComplex[BACnetVTClassTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vtClass' field")
 		}
 
-		// Simple Field (localVtSessionIdentifier)
-		if pushErr := writeBuffer.PushContext("localVtSessionIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localVtSessionIdentifier")
-		}
-		_localVtSessionIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetLocalVtSessionIdentifier())
-		if popErr := writeBuffer.PopContext("localVtSessionIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localVtSessionIdentifier")
-		}
-		if _localVtSessionIdentifierErr != nil {
-			return errors.Wrap(_localVtSessionIdentifierErr, "Error serializing 'localVtSessionIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionIdentifier", m.GetLocalVtSessionIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'localVtSessionIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestVTOpen"); popErr != nil {
@@ -242,12 +202,10 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) isBACnetConfirmedServiceRequestVTOpen() bool {
-	return true
-}
+func (m *_BACnetConfirmedServiceRequestVTOpen) IsBACnetConfirmedServiceRequestVTOpen() {}
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) String() string {
 	if m == nil {

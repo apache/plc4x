@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type NLMICouldBeRouterToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 	// GetPerformanceIndex returns PerformanceIndex (property field)
 	GetPerformanceIndex() uint8
-}
-
-// NLMICouldBeRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMICouldBeRouterToNetwork.
-// This is useful for switch cases.
-type NLMICouldBeRouterToNetworkExactly interface {
-	NLMICouldBeRouterToNetwork
-	isNLMICouldBeRouterToNetwork() bool
+	// IsNLMICouldBeRouterToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMICouldBeRouterToNetwork()
 }
 
 // _NLMICouldBeRouterToNetwork is the data-structure of this message
 type _NLMICouldBeRouterToNetwork struct {
-	*_NLM
+	NLMContract
 	DestinationNetworkAddress uint16
 	PerformanceIndex          uint8
 }
+
+var _ NLMICouldBeRouterToNetwork = (*_NLMICouldBeRouterToNetwork)(nil)
+var _ NLMRequirements = (*_NLMICouldBeRouterToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_NLMICouldBeRouterToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMICouldBeRouterToNetwork) InitializeParent(parent NLM) {}
-
-func (m *_NLMICouldBeRouterToNetwork) GetParent() NLM {
-	return m._NLM
+func (m *_NLMICouldBeRouterToNetwork) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_NLMICouldBeRouterToNetwork) GetPerformanceIndex() uint8 {
 // NewNLMICouldBeRouterToNetwork factory function for _NLMICouldBeRouterToNetwork
 func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, apduLength uint16) *_NLMICouldBeRouterToNetwork {
 	_result := &_NLMICouldBeRouterToNetwork{
+		NLMContract:               NewNLM(apduLength),
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
-		_NLM:                      NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_NLMICouldBeRouterToNetwork) GetTypeName() string {
 }
 
 func (m *_NLMICouldBeRouterToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -137,49 +135,34 @@ func (m *_NLMICouldBeRouterToNetwork) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMICouldBeRouterToNetworkParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {
-	return NLMICouldBeRouterToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMICouldBeRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {
+func (m *_NLMICouldBeRouterToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMICouldBeRouterToNetwork NLMICouldBeRouterToNetwork, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMICouldBeRouterToNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMICouldBeRouterToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMICouldBeRouterToNetwork")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
+	m.DestinationNetworkAddress = destinationNetworkAddress
 
-	// Simple Field (performanceIndex)
-	_performanceIndex, _performanceIndexErr := readBuffer.ReadUint8("performanceIndex", 8)
-	if _performanceIndexErr != nil {
-		return nil, errors.Wrap(_performanceIndexErr, "Error parsing 'performanceIndex' field of NLMICouldBeRouterToNetwork")
+	performanceIndex, err := ReadSimpleField(ctx, "performanceIndex", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'performanceIndex' field"))
 	}
-	performanceIndex := _performanceIndex
+	m.PerformanceIndex = performanceIndex
 
 	if closeErr := readBuffer.CloseContext("NLMICouldBeRouterToNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMICouldBeRouterToNetwork")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMICouldBeRouterToNetwork{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		DestinationNetworkAddress: destinationNetworkAddress,
-		PerformanceIndex:          performanceIndex,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMICouldBeRouterToNetwork) Serialize() ([]byte, error) {
@@ -200,18 +183,12 @@ func (m *_NLMICouldBeRouterToNetwork) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for NLMICouldBeRouterToNetwork")
 		}
 
-		// Simple Field (destinationNetworkAddress)
-		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-		if _destinationNetworkAddressErr != nil {
-			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 		}
 
-		// Simple Field (performanceIndex)
-		performanceIndex := uint8(m.GetPerformanceIndex())
-		_performanceIndexErr := writeBuffer.WriteUint8("performanceIndex", 8, uint8((performanceIndex)))
-		if _performanceIndexErr != nil {
-			return errors.Wrap(_performanceIndexErr, "Error serializing 'performanceIndex' field")
+		if err := WriteSimpleField[uint8](ctx, "performanceIndex", m.GetPerformanceIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'performanceIndex' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMICouldBeRouterToNetwork"); popErr != nil {
@@ -219,12 +196,10 @@ func (m *_NLMICouldBeRouterToNetwork) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMICouldBeRouterToNetwork) isNLMICouldBeRouterToNetwork() bool {
-	return true
-}
+func (m *_NLMICouldBeRouterToNetwork) IsNLMICouldBeRouterToNetwork() {}
 
 func (m *_NLMICouldBeRouterToNetwork) String() string {
 	if m == nil {

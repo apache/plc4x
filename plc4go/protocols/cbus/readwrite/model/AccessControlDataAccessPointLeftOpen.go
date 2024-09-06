@@ -37,19 +37,17 @@ type AccessControlDataAccessPointLeftOpen interface {
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
-}
-
-// AccessControlDataAccessPointLeftOpenExactly can be used when we want exactly this type and not a type which fulfills AccessControlDataAccessPointLeftOpen.
-// This is useful for switch cases.
-type AccessControlDataAccessPointLeftOpenExactly interface {
-	AccessControlDataAccessPointLeftOpen
-	isAccessControlDataAccessPointLeftOpen() bool
+	// IsAccessControlDataAccessPointLeftOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataAccessPointLeftOpen()
 }
 
 // _AccessControlDataAccessPointLeftOpen is the data-structure of this message
 type _AccessControlDataAccessPointLeftOpen struct {
-	*_AccessControlData
+	AccessControlDataContract
 }
+
+var _ AccessControlDataAccessPointLeftOpen = (*_AccessControlDataAccessPointLeftOpen)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataAccessPointLeftOpen)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,22 +59,16 @@ type _AccessControlDataAccessPointLeftOpen struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AccessControlDataAccessPointLeftOpen) InitializeParent(parent AccessControlData, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.NetworkId = networkId
-	m.AccessPointId = accessPointId
-}
-
-func (m *_AccessControlDataAccessPointLeftOpen) GetParent() AccessControlData {
-	return m._AccessControlData
+func (m *_AccessControlDataAccessPointLeftOpen) GetParent() AccessControlDataContract {
+	return m.AccessControlDataContract
 }
 
 // NewAccessControlDataAccessPointLeftOpen factory function for _AccessControlDataAccessPointLeftOpen
 func NewAccessControlDataAccessPointLeftOpen(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataAccessPointLeftOpen {
 	_result := &_AccessControlDataAccessPointLeftOpen{
-		_AccessControlData: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
 	}
-	_result._AccessControlData._AccessControlDataChildRequirements = _result
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 
@@ -96,7 +88,7 @@ func (m *_AccessControlDataAccessPointLeftOpen) GetTypeName() string {
 }
 
 func (m *_AccessControlDataAccessPointLeftOpen) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +97,11 @@ func (m *_AccessControlDataAccessPointLeftOpen) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataAccessPointLeftOpenParse(ctx context.Context, theBytes []byte) (AccessControlDataAccessPointLeftOpen, error) {
-	return AccessControlDataAccessPointLeftOpenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AccessControlDataAccessPointLeftOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataAccessPointLeftOpen, error) {
+func (m *_AccessControlDataAccessPointLeftOpen) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData) (__accessControlDataAccessPointLeftOpen AccessControlDataAccessPointLeftOpen, err error) {
+	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlDataAccessPointLeftOpen"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlDataAccessPointLeftOpen")
 	}
@@ -124,12 +112,7 @@ func AccessControlDataAccessPointLeftOpenParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(closeErr, "Error closing for AccessControlDataAccessPointLeftOpen")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AccessControlDataAccessPointLeftOpen{
-		_AccessControlData: &_AccessControlData{},
-	}
-	_child._AccessControlData._AccessControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AccessControlDataAccessPointLeftOpen) Serialize() ([]byte, error) {
@@ -155,12 +138,10 @@ func (m *_AccessControlDataAccessPointLeftOpen) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AccessControlDataContract.(*_AccessControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AccessControlDataAccessPointLeftOpen) isAccessControlDataAccessPointLeftOpen() bool {
-	return true
-}
+func (m *_AccessControlDataAccessPointLeftOpen) IsAccessControlDataAccessPointLeftOpen() {}
 
 func (m *_AccessControlDataAccessPointLeftOpen) String() string {
 	if m == nil {

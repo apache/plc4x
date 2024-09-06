@@ -91,7 +91,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("ContentFilterElementResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfOperandStatusCodes)
     writeSimpleField(
@@ -159,8 +159,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfOperandStatusCodes =
         readSimpleField("noOfOperandStatusCodes", readSignedInt(readBuffer, 32));
@@ -168,7 +167,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     List<StatusCode> operandStatusCodes =
         readCountArrayField(
             "operandStatusCodes",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfOperandStatusCodes);
 
     int noOfOperandDiagnosticInfos =
@@ -177,8 +176,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     List<DiagnosticInfo> operandDiagnosticInfos =
         readCountArrayField(
             "operandDiagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfOperandDiagnosticInfos);
 
     readBuffer.closeContext("ContentFilterElementResult");

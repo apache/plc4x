@@ -128,8 +128,7 @@ public class S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
     List<AssociatedQueryValueType> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedQueryValueType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AssociatedQueryValueType.staticParse(readBuffer), readBuffer),
             itemsCount);
 
     readBuffer.closeContext("S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse");

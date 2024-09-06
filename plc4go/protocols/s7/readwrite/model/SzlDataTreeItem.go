@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,13 +48,8 @@ type SzlDataTreeItem interface {
 	GetAusbg() uint16
 	// GetAusbe returns Ausbe (property field)
 	GetAusbe() uint16
-}
-
-// SzlDataTreeItemExactly can be used when we want exactly this type and not a type which fulfills SzlDataTreeItem.
-// This is useful for switch cases.
-type SzlDataTreeItemExactly interface {
-	SzlDataTreeItem
-	isSzlDataTreeItem() bool
+	// IsSzlDataTreeItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSzlDataTreeItem()
 }
 
 // _SzlDataTreeItem is the data-structure of this message
@@ -63,6 +60,8 @@ type _SzlDataTreeItem struct {
 	Ausbg        uint16
 	Ausbe        uint16
 }
+
+var _ SzlDataTreeItem = (*_SzlDataTreeItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,63 +144,64 @@ func SzlDataTreeItemParse(ctx context.Context, theBytes []byte) (SzlDataTreeItem
 	return SzlDataTreeItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SzlDataTreeItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
+		return SzlDataTreeItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SzlDataTreeItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
+	v, err := (&_SzlDataTreeItem{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_SzlDataTreeItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__szlDataTreeItem SzlDataTreeItem, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SzlDataTreeItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SzlDataTreeItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (itemIndex)
-	_itemIndex, _itemIndexErr := readBuffer.ReadUint16("itemIndex", 16)
-	if _itemIndexErr != nil {
-		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field of SzlDataTreeItem")
+	itemIndex, err := ReadSimpleField(ctx, "itemIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemIndex' field"))
 	}
-	itemIndex := _itemIndex
-	// Byte Array field (mlfb)
-	numberOfBytesmlfb := int(uint16(20))
-	mlfb, _readArrayErr := readBuffer.ReadByteArray("mlfb", numberOfBytesmlfb)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'mlfb' field of SzlDataTreeItem")
-	}
+	m.ItemIndex = itemIndex
 
-	// Simple Field (moduleTypeId)
-	_moduleTypeId, _moduleTypeIdErr := readBuffer.ReadUint16("moduleTypeId", 16)
-	if _moduleTypeIdErr != nil {
-		return nil, errors.Wrap(_moduleTypeIdErr, "Error parsing 'moduleTypeId' field of SzlDataTreeItem")
+	mlfb, err := readBuffer.ReadByteArray("mlfb", int(int32(20)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mlfb' field"))
 	}
-	moduleTypeId := _moduleTypeId
+	m.Mlfb = mlfb
 
-	// Simple Field (ausbg)
-	_ausbg, _ausbgErr := readBuffer.ReadUint16("ausbg", 16)
-	if _ausbgErr != nil {
-		return nil, errors.Wrap(_ausbgErr, "Error parsing 'ausbg' field of SzlDataTreeItem")
+	moduleTypeId, err := ReadSimpleField(ctx, "moduleTypeId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moduleTypeId' field"))
 	}
-	ausbg := _ausbg
+	m.ModuleTypeId = moduleTypeId
 
-	// Simple Field (ausbe)
-	_ausbe, _ausbeErr := readBuffer.ReadUint16("ausbe", 16)
-	if _ausbeErr != nil {
-		return nil, errors.Wrap(_ausbeErr, "Error parsing 'ausbe' field of SzlDataTreeItem")
+	ausbg, err := ReadSimpleField(ctx, "ausbg", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ausbg' field"))
 	}
-	ausbe := _ausbe
+	m.Ausbg = ausbg
+
+	ausbe, err := ReadSimpleField(ctx, "ausbe", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ausbe' field"))
+	}
+	m.Ausbe = ausbe
 
 	if closeErr := readBuffer.CloseContext("SzlDataTreeItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SzlDataTreeItem")
 	}
 
-	// Create the instance
-	return &_SzlDataTreeItem{
-		ItemIndex:    itemIndex,
-		Mlfb:         mlfb,
-		ModuleTypeId: moduleTypeId,
-		Ausbg:        ausbg,
-		Ausbe:        ausbe,
-	}, nil
+	return m, nil
 }
 
 func (m *_SzlDataTreeItem) Serialize() ([]byte, error) {
@@ -221,38 +221,24 @@ func (m *_SzlDataTreeItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for SzlDataTreeItem")
 	}
 
-	// Simple Field (itemIndex)
-	itemIndex := uint16(m.GetItemIndex())
-	_itemIndexErr := writeBuffer.WriteUint16("itemIndex", 16, uint16((itemIndex)))
-	if _itemIndexErr != nil {
-		return errors.Wrap(_itemIndexErr, "Error serializing 'itemIndex' field")
+	if err := WriteSimpleField[uint16](ctx, "itemIndex", m.GetItemIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'itemIndex' field")
 	}
 
-	// Array Field (mlfb)
-	// Byte Array field (mlfb)
-	if err := writeBuffer.WriteByteArray("mlfb", m.GetMlfb()); err != nil {
+	if err := WriteByteArrayField(ctx, "mlfb", m.GetMlfb(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'mlfb' field")
 	}
 
-	// Simple Field (moduleTypeId)
-	moduleTypeId := uint16(m.GetModuleTypeId())
-	_moduleTypeIdErr := writeBuffer.WriteUint16("moduleTypeId", 16, uint16((moduleTypeId)))
-	if _moduleTypeIdErr != nil {
-		return errors.Wrap(_moduleTypeIdErr, "Error serializing 'moduleTypeId' field")
+	if err := WriteSimpleField[uint16](ctx, "moduleTypeId", m.GetModuleTypeId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'moduleTypeId' field")
 	}
 
-	// Simple Field (ausbg)
-	ausbg := uint16(m.GetAusbg())
-	_ausbgErr := writeBuffer.WriteUint16("ausbg", 16, uint16((ausbg)))
-	if _ausbgErr != nil {
-		return errors.Wrap(_ausbgErr, "Error serializing 'ausbg' field")
+	if err := WriteSimpleField[uint16](ctx, "ausbg", m.GetAusbg(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ausbg' field")
 	}
 
-	// Simple Field (ausbe)
-	ausbe := uint16(m.GetAusbe())
-	_ausbeErr := writeBuffer.WriteUint16("ausbe", 16, uint16((ausbe)))
-	if _ausbeErr != nil {
-		return errors.Wrap(_ausbeErr, "Error serializing 'ausbe' field")
+	if err := WriteSimpleField[uint16](ctx, "ausbe", m.GetAusbe(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ausbe' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SzlDataTreeItem"); popErr != nil {
@@ -261,9 +247,7 @@ func (m *_SzlDataTreeItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return nil
 }
 
-func (m *_SzlDataTreeItem) isSzlDataTreeItem() bool {
-	return true
-}
+func (m *_SzlDataTreeItem) IsSzlDataTreeItem() {}
 
 func (m *_SzlDataTreeItem) String() string {
 	if m == nil {

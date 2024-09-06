@@ -88,7 +88,7 @@ public class TPKTPacket implements Message {
     writeSimpleField(
         "payload",
         payload,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("TPKTPacket");
@@ -146,8 +146,7 @@ public class TPKTPacket implements Message {
     COTPPacket payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
-                () -> COTPPacket.staticParse(readBuffer, (int) ((len) - (4))), readBuffer),
+            readComplex(() -> COTPPacket.staticParse(readBuffer, (int) ((len) - (4))), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("TPKTPacket");

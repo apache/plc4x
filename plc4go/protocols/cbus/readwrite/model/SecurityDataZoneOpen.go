@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SecurityDataZoneOpen interface {
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
-}
-
-// SecurityDataZoneOpenExactly can be used when we want exactly this type and not a type which fulfills SecurityDataZoneOpen.
-// This is useful for switch cases.
-type SecurityDataZoneOpenExactly interface {
-	SecurityDataZoneOpen
-	isSecurityDataZoneOpen() bool
+	// IsSecurityDataZoneOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataZoneOpen()
 }
 
 // _SecurityDataZoneOpen is the data-structure of this message
 type _SecurityDataZoneOpen struct {
-	*_SecurityData
+	SecurityDataContract
 	ZoneNumber uint8
 }
+
+var _ SecurityDataZoneOpen = (*_SecurityDataZoneOpen)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataZoneOpen)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _SecurityDataZoneOpen struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataZoneOpen) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataZoneOpen) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataZoneOpen) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_SecurityDataZoneOpen) GetZoneNumber() uint8 {
 // NewSecurityDataZoneOpen factory function for _SecurityDataZoneOpen
 func NewSecurityDataZoneOpen(zoneNumber uint8, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneOpen {
 	_result := &_SecurityDataZoneOpen{
-		ZoneNumber:    zoneNumber,
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_SecurityDataZoneOpen) GetTypeName() string {
 }
 
 func (m *_SecurityDataZoneOpen) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (zoneNumber)
 	lengthInBits += 8
@@ -125,39 +120,28 @@ func (m *_SecurityDataZoneOpen) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataZoneOpenParse(ctx context.Context, theBytes []byte) (SecurityDataZoneOpen, error) {
-	return SecurityDataZoneOpenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataZoneOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneOpen, error) {
+func (m *_SecurityDataZoneOpen) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataZoneOpen SecurityDataZoneOpen, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataZoneOpen"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataZoneOpen")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneNumber)
-	_zoneNumber, _zoneNumberErr := readBuffer.ReadUint8("zoneNumber", 8)
-	if _zoneNumberErr != nil {
-		return nil, errors.Wrap(_zoneNumberErr, "Error parsing 'zoneNumber' field of SecurityDataZoneOpen")
+	zoneNumber, err := ReadSimpleField(ctx, "zoneNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneNumber' field"))
 	}
-	zoneNumber := _zoneNumber
+	m.ZoneNumber = zoneNumber
 
 	if closeErr := readBuffer.CloseContext("SecurityDataZoneOpen"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataZoneOpen")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataZoneOpen{
-		_SecurityData: &_SecurityData{},
-		ZoneNumber:    zoneNumber,
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataZoneOpen) Serialize() ([]byte, error) {
@@ -178,11 +162,8 @@ func (m *_SecurityDataZoneOpen) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataZoneOpen")
 		}
 
-		// Simple Field (zoneNumber)
-		zoneNumber := uint8(m.GetZoneNumber())
-		_zoneNumberErr := writeBuffer.WriteUint8("zoneNumber", 8, uint8((zoneNumber)))
-		if _zoneNumberErr != nil {
-			return errors.Wrap(_zoneNumberErr, "Error serializing 'zoneNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "zoneNumber", m.GetZoneNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityDataZoneOpen"); popErr != nil {
@@ -190,12 +171,10 @@ func (m *_SecurityDataZoneOpen) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataZoneOpen) isSecurityDataZoneOpen() bool {
-	return true
-}
+func (m *_SecurityDataZoneOpen) IsSecurityDataZoneOpen() {}
 
 func (m *_SecurityDataZoneOpen) String() string {
 	if m == nil {

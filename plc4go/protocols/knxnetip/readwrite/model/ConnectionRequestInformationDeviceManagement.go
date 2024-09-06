@@ -37,19 +37,17 @@ type ConnectionRequestInformationDeviceManagement interface {
 	utils.LengthAware
 	utils.Serializable
 	ConnectionRequestInformation
-}
-
-// ConnectionRequestInformationDeviceManagementExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequestInformationDeviceManagement.
-// This is useful for switch cases.
-type ConnectionRequestInformationDeviceManagementExactly interface {
-	ConnectionRequestInformationDeviceManagement
-	isConnectionRequestInformationDeviceManagement() bool
+	// IsConnectionRequestInformationDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionRequestInformationDeviceManagement()
 }
 
 // _ConnectionRequestInformationDeviceManagement is the data-structure of this message
 type _ConnectionRequestInformationDeviceManagement struct {
-	*_ConnectionRequestInformation
+	ConnectionRequestInformationContract
 }
+
+var _ ConnectionRequestInformationDeviceManagement = (*_ConnectionRequestInformationDeviceManagement)(nil)
+var _ ConnectionRequestInformationRequirements = (*_ConnectionRequestInformationDeviceManagement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,19 +63,16 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetConnectionType() uint
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConnectionRequestInformationDeviceManagement) InitializeParent(parent ConnectionRequestInformation) {
-}
-
-func (m *_ConnectionRequestInformationDeviceManagement) GetParent() ConnectionRequestInformation {
-	return m._ConnectionRequestInformation
+func (m *_ConnectionRequestInformationDeviceManagement) GetParent() ConnectionRequestInformationContract {
+	return m.ConnectionRequestInformationContract
 }
 
 // NewConnectionRequestInformationDeviceManagement factory function for _ConnectionRequestInformationDeviceManagement
 func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInformationDeviceManagement {
 	_result := &_ConnectionRequestInformationDeviceManagement{
-		_ConnectionRequestInformation: NewConnectionRequestInformation(),
+		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
 	}
-	_result._ConnectionRequestInformation._ConnectionRequestInformationChildRequirements = _result
+	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
 	return _result
 }
 
@@ -97,7 +92,7 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetTypeName() string {
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -106,15 +101,11 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionRequestInformationDeviceManagementParse(ctx context.Context, theBytes []byte) (ConnectionRequestInformationDeviceManagement, error) {
-	return ConnectionRequestInformationDeviceManagementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func ConnectionRequestInformationDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformationDeviceManagement, error) {
+func (m *_ConnectionRequestInformationDeviceManagement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ConnectionRequestInformation) (__connectionRequestInformationDeviceManagement ConnectionRequestInformationDeviceManagement, err error) {
+	m.ConnectionRequestInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationDeviceManagement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionRequestInformationDeviceManagement")
 	}
@@ -125,12 +116,7 @@ func ConnectionRequestInformationDeviceManagementParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectionRequestInformationDeviceManagement")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ConnectionRequestInformationDeviceManagement{
-		_ConnectionRequestInformation: &_ConnectionRequestInformation{},
-	}
-	_child._ConnectionRequestInformation._ConnectionRequestInformationChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) Serialize() ([]byte, error) {
@@ -156,11 +142,10 @@ func (m *_ConnectionRequestInformationDeviceManagement) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) isConnectionRequestInformationDeviceManagement() bool {
-	return true
+func (m *_ConnectionRequestInformationDeviceManagement) IsConnectionRequestInformationDeviceManagement() {
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) String() string {

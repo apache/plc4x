@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type NumericNodeId interface {
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() uint32
-}
-
-// NumericNodeIdExactly can be used when we want exactly this type and not a type which fulfills NumericNodeId.
-// This is useful for switch cases.
-type NumericNodeIdExactly interface {
-	NumericNodeId
-	isNumericNodeId() bool
+	// IsNumericNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNumericNodeId()
 }
 
 // _NumericNodeId is the data-structure of this message
@@ -54,6 +51,8 @@ type _NumericNodeId struct {
 	NamespaceIndex uint16
 	Identifier     uint32
 }
+
+var _ NumericNodeId = (*_NumericNodeId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,40 +112,46 @@ func NumericNodeIdParse(ctx context.Context, theBytes []byte) (NumericNodeId, er
 	return NumericNodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NumericNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NumericNodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NumericNodeId, error) {
+		return NumericNodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NumericNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NumericNodeId, error) {
+	v, err := (&_NumericNodeId{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_NumericNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__numericNodeId NumericNodeId, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NumericNodeId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NumericNodeId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := readBuffer.ReadUint16("namespaceIndex", 16)
-	if _namespaceIndexErr != nil {
-		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of NumericNodeId")
+	namespaceIndex, err := ReadSimpleField(ctx, "namespaceIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceIndex' field"))
 	}
-	namespaceIndex := _namespaceIndex
+	m.NamespaceIndex = namespaceIndex
 
-	// Simple Field (identifier)
-	_identifier, _identifierErr := readBuffer.ReadUint32("identifier", 32)
-	if _identifierErr != nil {
-		return nil, errors.Wrap(_identifierErr, "Error parsing 'identifier' field of NumericNodeId")
+	identifier, err := ReadSimpleField(ctx, "identifier", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
-	identifier := _identifier
+	m.Identifier = identifier
 
 	if closeErr := readBuffer.CloseContext("NumericNodeId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NumericNodeId")
 	}
 
-	// Create the instance
-	return &_NumericNodeId{
-		NamespaceIndex: namespaceIndex,
-		Identifier:     identifier,
-	}, nil
+	return m, nil
 }
 
 func (m *_NumericNodeId) Serialize() ([]byte, error) {
@@ -166,18 +171,12 @@ func (m *_NumericNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for NumericNodeId")
 	}
 
-	// Simple Field (namespaceIndex)
-	namespaceIndex := uint16(m.GetNamespaceIndex())
-	_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
-	if _namespaceIndexErr != nil {
-		return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
+	if err := WriteSimpleField[uint16](ctx, "namespaceIndex", m.GetNamespaceIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'namespaceIndex' field")
 	}
 
-	// Simple Field (identifier)
-	identifier := uint32(m.GetIdentifier())
-	_identifierErr := writeBuffer.WriteUint32("identifier", 32, uint32((identifier)))
-	if _identifierErr != nil {
-		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
+	if err := WriteSimpleField[uint32](ctx, "identifier", m.GetIdentifier(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'identifier' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NumericNodeId"); popErr != nil {
@@ -186,9 +185,7 @@ func (m *_NumericNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_NumericNodeId) isNumericNodeId() bool {
-	return true
-}
+func (m *_NumericNodeId) IsNumericNodeId() {}
 
 func (m *_NumericNodeId) String() string {
 	if m == nil {

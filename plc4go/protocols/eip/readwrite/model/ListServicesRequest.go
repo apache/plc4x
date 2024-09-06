@@ -37,19 +37,17 @@ type ListServicesRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
-}
-
-// ListServicesRequestExactly can be used when we want exactly this type and not a type which fulfills ListServicesRequest.
-// This is useful for switch cases.
-type ListServicesRequestExactly interface {
-	ListServicesRequest
-	isListServicesRequest() bool
+	// IsListServicesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsListServicesRequest()
 }
 
 // _ListServicesRequest is the data-structure of this message
 type _ListServicesRequest struct {
-	*_EipPacket
+	EipPacketContract
 }
+
+var _ ListServicesRequest = (*_ListServicesRequest)(nil)
+var _ EipPacketRequirements = (*_ListServicesRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,23 +71,16 @@ func (m *_ListServicesRequest) GetPacketLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ListServicesRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_ListServicesRequest) GetParent() EipPacket {
-	return m._EipPacket
+func (m *_ListServicesRequest) GetParent() EipPacketContract {
+	return m.EipPacketContract
 }
 
 // NewListServicesRequest factory function for _ListServicesRequest
 func NewListServicesRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_ListServicesRequest {
 	_result := &_ListServicesRequest{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	_result._EipPacket._EipPacketChildRequirements = _result
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 
@@ -109,7 +100,7 @@ func (m *_ListServicesRequest) GetTypeName() string {
 }
 
 func (m *_ListServicesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -118,15 +109,11 @@ func (m *_ListServicesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ListServicesRequestParse(ctx context.Context, theBytes []byte, response bool) (ListServicesRequest, error) {
-	return ListServicesRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ListServicesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ListServicesRequest, error) {
+func (m *_ListServicesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__listServicesRequest ListServicesRequest, err error) {
+	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ListServicesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ListServicesRequest")
 	}
@@ -137,12 +124,7 @@ func ListServicesRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for ListServicesRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ListServicesRequest{
-		_EipPacket: &_EipPacket{},
-	}
-	_child._EipPacket._EipPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ListServicesRequest) Serialize() ([]byte, error) {
@@ -168,12 +150,10 @@ func (m *_ListServicesRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.EipPacketContract.(*_EipPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ListServicesRequest) isListServicesRequest() bool {
-	return true
-}
+func (m *_ListServicesRequest) IsListServicesRequest() {}
 
 func (m *_ListServicesRequest) String() string {
 	if m == nil {

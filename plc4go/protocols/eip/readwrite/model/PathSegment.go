@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,44 +35,35 @@ import (
 
 // PathSegment is the corresponding interface of PathSegment
 type PathSegment interface {
+	PathSegmentContract
+	PathSegmentRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsPathSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPathSegment()
+}
+
+// PathSegmentContract provides a set of functions which can be overwritten by a sub struct
+type PathSegmentContract interface {
+	// IsPathSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPathSegment()
+}
+
+// PathSegmentRequirements provides a set of functions which need to be implemented by a sub struct
+type PathSegmentRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetPathSegment returns PathSegment (discriminator field)
 	GetPathSegment() uint8
 }
 
-// PathSegmentExactly can be used when we want exactly this type and not a type which fulfills PathSegment.
-// This is useful for switch cases.
-type PathSegmentExactly interface {
-	PathSegment
-	isPathSegment() bool
-}
-
 // _PathSegment is the data-structure of this message
 type _PathSegment struct {
-	_PathSegmentChildRequirements
+	_SubType PathSegment
 }
 
-type _PathSegmentChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPathSegment() uint8
-}
-
-type PathSegmentParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child PathSegment, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type PathSegmentChild interface {
-	utils.Serializable
-	InitializeParent(parent PathSegment)
-	GetParent() *PathSegment
-
-	GetTypeName() string
-	PathSegment
-}
+var _ PathSegmentContract = (*_PathSegment)(nil)
 
 // NewPathSegment factory function for _PathSegment
 func NewPathSegment() *_PathSegment {
@@ -92,7 +85,7 @@ func (m *_PathSegment) GetTypeName() string {
 	return "PathSegment"
 }
 
-func (m *_PathSegment) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_PathSegment) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (pathSegment)
 	lengthInBits += 3
@@ -101,64 +94,74 @@ func (m *_PathSegment) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_PathSegment) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func PathSegmentParse(ctx context.Context, theBytes []byte) (PathSegment, error) {
-	return PathSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func PathSegmentParse[T PathSegment](ctx context.Context, theBytes []byte) (T, error) {
+	return PathSegmentParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PathSegment, error) {
+func PathSegmentParseWithBufferProducer[T PathSegment]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := PathSegmentParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func PathSegmentParseWithBuffer[T PathSegment](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_PathSegment{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_PathSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__pathSegment PathSegment, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PathSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PathSegment")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (pathSegment) (Used as input to a switch field)
-	pathSegment, _pathSegmentErr := readBuffer.ReadUint8("pathSegment", 3)
-	if _pathSegmentErr != nil {
-		return nil, errors.Wrap(_pathSegmentErr, "Error parsing 'pathSegment' field of PathSegment")
+	pathSegment, err := ReadDiscriminatorField[uint8](ctx, "pathSegment", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pathSegment' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type PathSegmentChildSerializeRequirement interface {
-		PathSegment
-		InitializeParent(PathSegment)
-		GetParent() PathSegment
-	}
-	var _childTemp any
-	var _child PathSegmentChildSerializeRequirement
-	var typeSwitchError error
+	var _child PathSegment
 	switch {
 	case pathSegment == 0x00: // PortSegment
-		_childTemp, typeSwitchError = PortSegmentParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_PortSegment{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PortSegment for type-switch of PathSegment")
+		}
 	case pathSegment == 0x01: // LogicalSegment
-		_childTemp, typeSwitchError = LogicalSegmentParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_LogicalSegment{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LogicalSegment for type-switch of PathSegment")
+		}
 	case pathSegment == 0x04: // DataSegment
-		_childTemp, typeSwitchError = DataSegmentParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_DataSegment{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataSegment for type-switch of PathSegment")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [pathSegment=%v]", pathSegment)
+		return nil, errors.Errorf("Unmapped type for parameters [pathSegment=%v]", pathSegment)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of PathSegment")
-	}
-	_child = _childTemp.(PathSegmentChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("PathSegment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PathSegment")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_PathSegment) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child PathSegment, serializeChildFunction func() error) error {
+func (pm *_PathSegment) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child PathSegment, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -170,12 +173,8 @@ func (pm *_PathSegment) SerializeParent(ctx context.Context, writeBuffer utils.W
 		return errors.Wrap(pushErr, "Error pushing for PathSegment")
 	}
 
-	// Discriminator Field (pathSegment) (Used as input to a switch field)
-	pathSegment := uint8(child.GetPathSegment())
-	_pathSegmentErr := writeBuffer.WriteUint8("pathSegment", 3, uint8((pathSegment)))
-
-	if _pathSegmentErr != nil {
-		return errors.Wrap(_pathSegmentErr, "Error serializing 'pathSegment' field")
+	if err := WriteDiscriminatorField(ctx, "pathSegment", m.GetPathSegment(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'pathSegment' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -189,17 +188,4 @@ func (pm *_PathSegment) SerializeParent(ctx context.Context, writeBuffer utils.W
 	return nil
 }
 
-func (m *_PathSegment) isPathSegment() bool {
-	return true
-}
-
-func (m *_PathSegment) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_PathSegment) IsPathSegment() {}

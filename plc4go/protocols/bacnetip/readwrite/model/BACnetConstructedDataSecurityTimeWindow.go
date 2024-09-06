@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataSecurityTimeWindow interface {
 	GetSecurityTimeWindow() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataSecurityTimeWindowExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSecurityTimeWindow.
-// This is useful for switch cases.
-type BACnetConstructedDataSecurityTimeWindowExactly interface {
-	BACnetConstructedDataSecurityTimeWindow
-	isBACnetConstructedDataSecurityTimeWindow() bool
+	// IsBACnetConstructedDataSecurityTimeWindow is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSecurityTimeWindow()
 }
 
 // _BACnetConstructedDataSecurityTimeWindow is the data-structure of this message
 type _BACnetConstructedDataSecurityTimeWindow struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	SecurityTimeWindow BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataSecurityTimeWindow = (*_BACnetConstructedDataSecurityTimeWindow)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSecurityTimeWindow)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetActualValue() BACnetApplic
 
 // NewBACnetConstructedDataSecurityTimeWindow factory function for _BACnetConstructedDataSecurityTimeWindow
 func NewBACnetConstructedDataSecurityTimeWindow(securityTimeWindow BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
-	_result := &_BACnetConstructedDataSecurityTimeWindow{
-		SecurityTimeWindow:     securityTimeWindow,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if securityTimeWindow == nil {
+		panic("securityTimeWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityTimeWindow must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataSecurityTimeWindow{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SecurityTimeWindow:            securityTimeWindow,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (securityTimeWindow)
 	lengthInBits += m.SecurityTimeWindow.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataSecurityTimeWindowParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
-	return BACnetConstructedDataSecurityTimeWindowParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
+func (m *_BACnetConstructedDataSecurityTimeWindow) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataSecurityTimeWindow BACnetConstructedDataSecurityTimeWindow, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecurityTimeWindow"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSecurityTimeWindow")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securityTimeWindow)
-	if pullErr := readBuffer.PullContext("securityTimeWindow"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityTimeWindow")
+	securityTimeWindow, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityTimeWindow", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityTimeWindow' field"))
 	}
-	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _securityTimeWindowErr != nil {
-		return nil, errors.Wrap(_securityTimeWindowErr, "Error parsing 'securityTimeWindow' field of BACnetConstructedDataSecurityTimeWindow")
-	}
-	securityTimeWindow := _securityTimeWindow.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("securityTimeWindow"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityTimeWindow")
-	}
+	m.SecurityTimeWindow = securityTimeWindow
 
-	// Virtual field
-	_actualValue := securityTimeWindow
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), securityTimeWindow)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSecurityTimeWindow"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSecurityTimeWindow")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataSecurityTimeWindow{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		SecurityTimeWindow: securityTimeWindow,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSecurityTimeWindow")
 		}
 
-		// Simple Field (securityTimeWindow)
-		if pushErr := writeBuffer.PushContext("securityTimeWindow"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityTimeWindow")
-		}
-		_securityTimeWindowErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityTimeWindow())
-		if popErr := writeBuffer.PopContext("securityTimeWindow"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityTimeWindow")
-		}
-		if _securityTimeWindowErr != nil {
-			return errors.Wrap(_securityTimeWindowErr, "Error serializing 'securityTimeWindow' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityTimeWindow", m.GetSecurityTimeWindow(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityTimeWindow' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(ctx 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) isBACnetConstructedDataSecurityTimeWindow() bool {
-	return true
-}
+func (m *_BACnetConstructedDataSecurityTimeWindow) IsBACnetConstructedDataSecurityTimeWindow() {}
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) String() string {
 	if m == nil {

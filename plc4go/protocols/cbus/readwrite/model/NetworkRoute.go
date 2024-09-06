@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type NetworkRoute interface {
 	GetNetworkPCI() NetworkProtocolControlInformation
 	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []BridgeAddress
-}
-
-// NetworkRouteExactly can be used when we want exactly this type and not a type which fulfills NetworkRoute.
-// This is useful for switch cases.
-type NetworkRouteExactly interface {
-	NetworkRoute
-	isNetworkRoute() bool
+	// IsNetworkRoute is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNetworkRoute()
 }
 
 // _NetworkRoute is the data-structure of this message
@@ -54,6 +51,8 @@ type _NetworkRoute struct {
 	NetworkPCI                NetworkProtocolControlInformation
 	AdditionalBridgeAddresses []BridgeAddress
 }
+
+var _ NetworkRoute = (*_NetworkRoute)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,9 @@ func (m *_NetworkRoute) GetAdditionalBridgeAddresses() []BridgeAddress {
 
 // NewNetworkRoute factory function for _NetworkRoute
 func NewNetworkRoute(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) *_NetworkRoute {
+	if networkPCI == nil {
+		panic("networkPCI of type NetworkProtocolControlInformation for NetworkRoute must not be nil")
+	}
 	return &_NetworkRoute{NetworkPCI: networkPCI, AdditionalBridgeAddresses: additionalBridgeAddresses}
 }
 
@@ -120,66 +122,46 @@ func NetworkRouteParse(ctx context.Context, theBytes []byte) (NetworkRoute, erro
 	return NetworkRouteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NetworkRouteParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
+		return NetworkRouteParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
+	v, err := (&_NetworkRoute{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_NetworkRoute) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__networkRoute NetworkRoute, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NetworkRoute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NetworkRoute")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkPCI)
-	if pullErr := readBuffer.PullContext("networkPCI"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkPCI")
+	networkPCI, err := ReadSimpleField[NetworkProtocolControlInformation](ctx, "networkPCI", ReadComplex[NetworkProtocolControlInformation](NetworkProtocolControlInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPCI' field"))
 	}
-	_networkPCI, _networkPCIErr := NetworkProtocolControlInformationParseWithBuffer(ctx, readBuffer)
-	if _networkPCIErr != nil {
-		return nil, errors.Wrap(_networkPCIErr, "Error parsing 'networkPCI' field of NetworkRoute")
-	}
-	networkPCI := _networkPCI.(NetworkProtocolControlInformation)
-	if closeErr := readBuffer.CloseContext("networkPCI"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkPCI")
-	}
+	m.NetworkPCI = networkPCI
 
-	// Array field (additionalBridgeAddresses)
-	if pullErr := readBuffer.PullContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for additionalBridgeAddresses")
+	additionalBridgeAddresses, err := ReadCountArrayField[BridgeAddress](ctx, "additionalBridgeAddresses", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer), uint64(int32(networkPCI.GetStackDepth())-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalBridgeAddresses' field"))
 	}
-	// Count array
-	additionalBridgeAddresses := make([]BridgeAddress, max(uint16(networkPCI.GetStackDepth())-uint16(uint16(1)), 0))
-	// This happens when the size is set conditional to 0
-	if len(additionalBridgeAddresses) == 0 {
-		additionalBridgeAddresses = nil
-	}
-	{
-		_numItems := uint16(max(uint16(networkPCI.GetStackDepth())-uint16(uint16(1)), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := BridgeAddressParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field of NetworkRoute")
-			}
-			additionalBridgeAddresses[_curItem] = _item.(BridgeAddress)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for additionalBridgeAddresses")
-	}
+	m.AdditionalBridgeAddresses = additionalBridgeAddresses
 
 	if closeErr := readBuffer.CloseContext("NetworkRoute"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NetworkRoute")
 	}
 
-	// Create the instance
-	return &_NetworkRoute{
-		NetworkPCI:                networkPCI,
-		AdditionalBridgeAddresses: additionalBridgeAddresses,
-	}, nil
+	return m, nil
 }
 
 func (m *_NetworkRoute) Serialize() ([]byte, error) {
@@ -199,33 +181,12 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for NetworkRoute")
 	}
 
-	// Simple Field (networkPCI)
-	if pushErr := writeBuffer.PushContext("networkPCI"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkPCI")
-	}
-	_networkPCIErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkPCI())
-	if popErr := writeBuffer.PopContext("networkPCI"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkPCI")
-	}
-	if _networkPCIErr != nil {
-		return errors.Wrap(_networkPCIErr, "Error serializing 'networkPCI' field")
+	if err := WriteSimpleField[NetworkProtocolControlInformation](ctx, "networkPCI", m.GetNetworkPCI(), WriteComplex[NetworkProtocolControlInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkPCI' field")
 	}
 
-	// Array Field (additionalBridgeAddresses)
-	if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
-	}
-	for _curItem, _element := range m.GetAdditionalBridgeAddresses() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAdditionalBridgeAddresses()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for additionalBridgeAddresses")
+	if err := WriteComplexTypeArrayField(ctx, "additionalBridgeAddresses", m.GetAdditionalBridgeAddresses(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'additionalBridgeAddresses' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NetworkRoute"); popErr != nil {
@@ -234,9 +195,7 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_NetworkRoute) isNetworkRoute() bool {
-	return true
-}
+func (m *_NetworkRoute) IsNetworkRoute() {}
 
 func (m *_NetworkRoute) String() string {
 	if m == nil {

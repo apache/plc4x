@@ -37,19 +37,17 @@ type TelephonyDataClearDiversion interface {
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
-}
-
-// TelephonyDataClearDiversionExactly can be used when we want exactly this type and not a type which fulfills TelephonyDataClearDiversion.
-// This is useful for switch cases.
-type TelephonyDataClearDiversionExactly interface {
-	TelephonyDataClearDiversion
-	isTelephonyDataClearDiversion() bool
+	// IsTelephonyDataClearDiversion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataClearDiversion()
 }
 
 // _TelephonyDataClearDiversion is the data-structure of this message
 type _TelephonyDataClearDiversion struct {
-	*_TelephonyData
+	TelephonyDataContract
 }
+
+var _ TelephonyDataClearDiversion = (*_TelephonyDataClearDiversion)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataClearDiversion)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _TelephonyDataClearDiversion struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TelephonyDataClearDiversion) InitializeParent(parent TelephonyData, commandTypeContainer TelephonyCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_TelephonyDataClearDiversion) GetParent() TelephonyData {
-	return m._TelephonyData
+func (m *_TelephonyDataClearDiversion) GetParent() TelephonyDataContract {
+	return m.TelephonyDataContract
 }
 
 // NewTelephonyDataClearDiversion factory function for _TelephonyDataClearDiversion
 func NewTelephonyDataClearDiversion(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataClearDiversion {
 	_result := &_TelephonyDataClearDiversion{
-		_TelephonyData: NewTelephonyData(commandTypeContainer, argument),
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 	}
-	_result._TelephonyData._TelephonyDataChildRequirements = _result
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_TelephonyDataClearDiversion) GetTypeName() string {
 }
 
 func (m *_TelephonyDataClearDiversion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_TelephonyDataClearDiversion) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataClearDiversionParse(ctx context.Context, theBytes []byte) (TelephonyDataClearDiversion, error) {
-	return TelephonyDataClearDiversionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func TelephonyDataClearDiversionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {
+func (m *_TelephonyDataClearDiversion) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataClearDiversion TelephonyDataClearDiversion, err error) {
+	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataClearDiversion"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataClearDiversion")
 	}
@@ -123,12 +112,7 @@ func TelephonyDataClearDiversionParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataClearDiversion")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TelephonyDataClearDiversion{
-		_TelephonyData: &_TelephonyData{},
-	}
-	_child._TelephonyData._TelephonyDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TelephonyDataClearDiversion) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_TelephonyDataClearDiversion) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TelephonyDataContract.(*_TelephonyData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TelephonyDataClearDiversion) isTelephonyDataClearDiversion() bool {
-	return true
-}
+func (m *_TelephonyDataClearDiversion) IsTelephonyDataClearDiversion() {}
 
 func (m *_TelephonyDataClearDiversion) String() string {
 	if m == nil {

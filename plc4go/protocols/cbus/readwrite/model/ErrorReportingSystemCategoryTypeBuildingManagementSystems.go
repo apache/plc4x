@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ErrorReportingSystemCategoryTypeBuildingManagementSystems interface {
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForBuildingManagementSystems
-}
-
-// ErrorReportingSystemCategoryTypeBuildingManagementSystemsExactly can be used when we want exactly this type and not a type which fulfills ErrorReportingSystemCategoryTypeBuildingManagementSystems.
-// This is useful for switch cases.
-type ErrorReportingSystemCategoryTypeBuildingManagementSystemsExactly interface {
-	ErrorReportingSystemCategoryTypeBuildingManagementSystems
-	isErrorReportingSystemCategoryTypeBuildingManagementSystems() bool
+	// IsErrorReportingSystemCategoryTypeBuildingManagementSystems is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingSystemCategoryTypeBuildingManagementSystems()
 }
 
 // _ErrorReportingSystemCategoryTypeBuildingManagementSystems is the data-structure of this message
 type _ErrorReportingSystemCategoryTypeBuildingManagementSystems struct {
-	*_ErrorReportingSystemCategoryType
+	ErrorReportingSystemCategoryTypeContract
 	CategoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems
 }
+
+var _ ErrorReportingSystemCategoryTypeBuildingManagementSystems = (*_ErrorReportingSystemCategoryTypeBuildingManagementSystems)(nil)
+var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeBuildingManagementSystems)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,11 +68,8 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetErrorRep
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) InitializeParent(parent ErrorReportingSystemCategoryType) {
-}
-
-func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetParent() ErrorReportingSystemCategoryType {
-	return m._ErrorReportingSystemCategoryType
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetParent() ErrorReportingSystemCategoryTypeContract {
+	return m.ErrorReportingSystemCategoryTypeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,10 +89,10 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetCategory
 // NewErrorReportingSystemCategoryTypeBuildingManagementSystems factory function for _ErrorReportingSystemCategoryTypeBuildingManagementSystems
 func NewErrorReportingSystemCategoryTypeBuildingManagementSystems(categoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems) *_ErrorReportingSystemCategoryTypeBuildingManagementSystems {
 	_result := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
-		CategoryForType:                   categoryForType,
-		_ErrorReportingSystemCategoryType: NewErrorReportingSystemCategoryType(),
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
 	}
-	_result._ErrorReportingSystemCategoryType._ErrorReportingSystemCategoryTypeChildRequirements = _result
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
 	return _result
 }
 
@@ -115,7 +112,7 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetTypeName
 }
 
 func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).getLengthInBits(ctx))
 
 	// Simple field (categoryForType)
 	lengthInBits += 4
@@ -127,45 +124,28 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetLengthIn
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingSystemCategoryTypeBuildingManagementSystemsParse(ctx context.Context, theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeBuildingManagementSystems, error) {
-	return ErrorReportingSystemCategoryTypeBuildingManagementSystemsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
-}
-
-func ErrorReportingSystemCategoryTypeBuildingManagementSystemsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeBuildingManagementSystems, error) {
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ErrorReportingSystemCategoryType, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (__errorReportingSystemCategoryTypeBuildingManagementSystems ErrorReportingSystemCategoryTypeBuildingManagementSystems, err error) {
+	m.ErrorReportingSystemCategoryTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ErrorReportingSystemCategoryTypeBuildingManagementSystems")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (categoryForType)
-	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
+	categoryForType, err := ReadEnumField[ErrorReportingSystemCategoryTypeForBuildingManagementSystems](ctx, "categoryForType", "ErrorReportingSystemCategoryTypeForBuildingManagementSystems", ReadEnum(ErrorReportingSystemCategoryTypeForBuildingManagementSystemsByValue, ReadUnsignedByte(readBuffer, uint8(4))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'categoryForType' field"))
 	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(ctx, readBuffer)
-	if _categoryForTypeErr != nil {
-		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeBuildingManagementSystems")
-	}
-	categoryForType := _categoryForType
-	if closeErr := readBuffer.CloseContext("categoryForType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for categoryForType")
-	}
+	m.CategoryForType = categoryForType
 
 	if closeErr := readBuffer.CloseContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ErrorReportingSystemCategoryTypeBuildingManagementSystems")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
-		_ErrorReportingSystemCategoryType: &_ErrorReportingSystemCategoryType{},
-		CategoryForType:                   categoryForType,
-	}
-	_child._ErrorReportingSystemCategoryType._ErrorReportingSystemCategoryTypeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) Serialize() ([]byte, error) {
@@ -186,16 +166,8 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) SerializeWi
 			return errors.Wrap(pushErr, "Error pushing for ErrorReportingSystemCategoryTypeBuildingManagementSystems")
 		}
 
-		// Simple Field (categoryForType)
-		if pushErr := writeBuffer.PushContext("categoryForType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for categoryForType")
-		}
-		_categoryForTypeErr := writeBuffer.WriteSerializable(ctx, m.GetCategoryForType())
-		if popErr := writeBuffer.PopContext("categoryForType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for categoryForType")
-		}
-		if _categoryForTypeErr != nil {
-			return errors.Wrap(_categoryForTypeErr, "Error serializing 'categoryForType' field")
+		if err := WriteSimpleEnumField[ErrorReportingSystemCategoryTypeForBuildingManagementSystems](ctx, "categoryForType", "ErrorReportingSystemCategoryTypeForBuildingManagementSystems", m.GetCategoryForType(), WriteEnum[ErrorReportingSystemCategoryTypeForBuildingManagementSystems, uint8](ErrorReportingSystemCategoryTypeForBuildingManagementSystems.GetValue, ErrorReportingSystemCategoryTypeForBuildingManagementSystems.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+			return errors.Wrap(err, "Error serializing 'categoryForType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems"); popErr != nil {
@@ -203,11 +175,10 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) SerializeWi
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) isErrorReportingSystemCategoryTypeBuildingManagementSystems() bool {
-	return true
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) IsErrorReportingSystemCategoryTypeBuildingManagementSystems() {
 }
 
 func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) String() string {

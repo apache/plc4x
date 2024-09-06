@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetChannelValueInteger interface {
 	BACnetChannelValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
-}
-
-// BACnetChannelValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueInteger.
-// This is useful for switch cases.
-type BACnetChannelValueIntegerExactly interface {
-	BACnetChannelValueInteger
-	isBACnetChannelValueInteger() bool
+	// IsBACnetChannelValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueInteger()
 }
 
 // _BACnetChannelValueInteger is the data-structure of this message
 type _BACnetChannelValueInteger struct {
-	*_BACnetChannelValue
+	BACnetChannelValueContract
 	IntegerValue BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetChannelValueInteger = (*_BACnetChannelValueInteger)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueInteger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetChannelValueInteger struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetChannelValueInteger) InitializeParent(parent BACnetChannelValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetChannelValueInteger) GetParent() BACnetChannelValue {
-	return m._BACnetChannelValue
+func (m *_BACnetChannelValueInteger) GetParent() BACnetChannelValueContract {
+	return m.BACnetChannelValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetChannelValueInteger) GetIntegerValue() BACnetApplicationTagSigne
 
 // NewBACnetChannelValueInteger factory function for _BACnetChannelValueInteger
 func NewBACnetChannelValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueInteger {
-	_result := &_BACnetChannelValueInteger{
-		IntegerValue:        integerValue,
-		_BACnetChannelValue: NewBACnetChannelValue(peekedTagHeader),
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetChannelValueInteger must not be nil")
 	}
-	_result._BACnetChannelValue._BACnetChannelValueChildRequirements = _result
+	_result := &_BACnetChannelValueInteger{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		IntegerValue:               integerValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetChannelValueInteger) GetTypeName() string {
 }
 
 func (m *_BACnetChannelValueInteger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (integerValue)
 	lengthInBits += m.IntegerValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetChannelValueInteger) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueIntegerParse(ctx context.Context, theBytes []byte) (BACnetChannelValueInteger, error) {
-	return BACnetChannelValueIntegerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetChannelValueIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueInteger, error) {
+func (m *_BACnetChannelValueInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueInteger BACnetChannelValueInteger, err error) {
+	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueInteger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (integerValue)
-	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
+	integerValue, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "integerValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integerValue' field"))
 	}
-	_integerValue, _integerValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _integerValueErr != nil {
-		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetChannelValueInteger")
-	}
-	integerValue := _integerValue.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for integerValue")
-	}
+	m.IntegerValue = integerValue
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueInteger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueInteger")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetChannelValueInteger{
-		_BACnetChannelValue: &_BACnetChannelValue{},
-		IntegerValue:        integerValue,
-	}
-	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetChannelValueInteger) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetChannelValueInteger) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueInteger")
 		}
 
-		// Simple Field (integerValue)
-		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for integerValue")
-		}
-		_integerValueErr := writeBuffer.WriteSerializable(ctx, m.GetIntegerValue())
-		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for integerValue")
-		}
-		if _integerValueErr != nil {
-			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "integerValue", m.GetIntegerValue(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'integerValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueInteger"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetChannelValueInteger) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetChannelValueContract.(*_BACnetChannelValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetChannelValueInteger) isBACnetChannelValueInteger() bool {
-	return true
-}
+func (m *_BACnetChannelValueInteger) IsBACnetChannelValueInteger() {}
 
 func (m *_BACnetChannelValueInteger) String() string {
 	if m == nil {

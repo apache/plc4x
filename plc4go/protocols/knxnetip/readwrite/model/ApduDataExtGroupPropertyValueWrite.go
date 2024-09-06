@@ -37,19 +37,17 @@ type ApduDataExtGroupPropertyValueWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
-}
-
-// ApduDataExtGroupPropertyValueWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtGroupPropertyValueWrite.
-// This is useful for switch cases.
-type ApduDataExtGroupPropertyValueWriteExactly interface {
-	ApduDataExtGroupPropertyValueWrite
-	isApduDataExtGroupPropertyValueWrite() bool
+	// IsApduDataExtGroupPropertyValueWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtGroupPropertyValueWrite()
 }
 
 // _ApduDataExtGroupPropertyValueWrite is the data-structure of this message
 type _ApduDataExtGroupPropertyValueWrite struct {
-	*_ApduDataExt
+	ApduDataExtContract
 }
+
+var _ ApduDataExtGroupPropertyValueWrite = (*_ApduDataExtGroupPropertyValueWrite)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtGroupPropertyValueWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataExtGroupPropertyValueWrite) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtGroupPropertyValueWrite) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtGroupPropertyValueWrite) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtGroupPropertyValueWrite) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 // NewApduDataExtGroupPropertyValueWrite factory function for _ApduDataExtGroupPropertyValueWrite
 func NewApduDataExtGroupPropertyValueWrite(length uint8) *_ApduDataExtGroupPropertyValueWrite {
 	_result := &_ApduDataExtGroupPropertyValueWrite{
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataExtGroupPropertyValueWrite) GetTypeName() string {
 }
 
 func (m *_ApduDataExtGroupPropertyValueWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataExtGroupPropertyValueWrite) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtGroupPropertyValueWriteParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtGroupPropertyValueWrite, error) {
-	return ApduDataExtGroupPropertyValueWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtGroupPropertyValueWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtGroupPropertyValueWrite, error) {
+func (m *_ApduDataExtGroupPropertyValueWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtGroupPropertyValueWrite ApduDataExtGroupPropertyValueWrite, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtGroupPropertyValueWrite")
 	}
@@ -124,14 +116,7 @@ func ApduDataExtGroupPropertyValueWriteParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtGroupPropertyValueWrite")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtGroupPropertyValueWrite{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtGroupPropertyValueWrite) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataExtGroupPropertyValueWrite) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtGroupPropertyValueWrite) isApduDataExtGroupPropertyValueWrite() bool {
-	return true
-}
+func (m *_ApduDataExtGroupPropertyValueWrite) IsApduDataExtGroupPropertyValueWrite() {}
 
 func (m *_ApduDataExtGroupPropertyValueWrite) String() string {
 	if m == nil {

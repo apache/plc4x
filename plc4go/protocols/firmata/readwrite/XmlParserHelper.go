@@ -26,7 +26,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/apache/plc4x/plc4go/protocols/firmata/readwrite/model"
+	. "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,13 +47,13 @@ func (m FirmataXmlParserHelper) Parse(typeName string, xmlString string, parserA
 	switch typeName {
 	case "SysexCommand":
 		response := parserArguments[0] == "true"
-		return model.SysexCommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return SysexCommandParseWithBuffer[SysexCommand](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataMessage":
 		response := parserArguments[0] == "true"
-		return model.FirmataMessageParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return FirmataMessageParseWithBuffer[FirmataMessage](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataCommand":
 		response := parserArguments[0] == "true"
-		return model.FirmataCommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return FirmataCommandParseWithBuffer[FirmataCommand](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

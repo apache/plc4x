@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,13 +40,8 @@ type BACnetClosingTag interface {
 	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
-}
-
-// BACnetClosingTagExactly can be used when we want exactly this type and not a type which fulfills BACnetClosingTag.
-// This is useful for switch cases.
-type BACnetClosingTagExactly interface {
-	BACnetClosingTag
-	isBACnetClosingTag() bool
+	// IsBACnetClosingTag is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetClosingTag()
 }
 
 // _BACnetClosingTag is the data-structure of this message
@@ -54,6 +51,8 @@ type _BACnetClosingTag struct {
 	// Arguments.
 	TagNumberArgument uint8
 }
+
+var _ BACnetClosingTag = (*_BACnetClosingTag)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,6 +70,9 @@ func (m *_BACnetClosingTag) GetHeader() BACnetTagHeader {
 
 // NewBACnetClosingTag factory function for _BACnetClosingTag
 func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetClosingTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetClosingTag must not be nil")
+	}
 	return &_BACnetClosingTag{Header: header, TagNumberArgument: tagNumberArgument}
 }
 
@@ -106,54 +108,55 @@ func BACnetClosingTagParse(ctx context.Context, theBytes []byte, tagNumberArgume
 	return BACnetClosingTagParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumberArgument)
 }
 
+func BACnetClosingTagParseWithBufferProducer(tagNumberArgument uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClosingTag, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClosingTag, error) {
+		return BACnetClosingTagParseWithBuffer(ctx, readBuffer, tagNumberArgument)
+	}
+}
+
 func BACnetClosingTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetClosingTag, error) {
+	v, err := (&_BACnetClosingTag{TagNumberArgument: tagNumberArgument}).parse(ctx, readBuffer, tagNumberArgument)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetClosingTag) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (__bACnetClosingTag BACnetClosingTag, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetClosingTag")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetClosingTag")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetActualTagNumber()) == (tagNumberArgument))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"should be a context tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "should be a context tag"})
 	}
 
 	// Validation
 	if !(bool((header.GetLengthValueType()) == (7))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"closing tag should have a value of 7"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "closing tag should have a value of 7"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetClosingTag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetClosingTag")
 	}
 
-	// Create the instance
-	return &_BACnetClosingTag{
-		TagNumberArgument: tagNumberArgument,
-		Header:            header,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetClosingTag) Serialize() ([]byte, error) {
@@ -173,16 +176,8 @@ func (m *_BACnetClosingTag) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(pushErr, "Error pushing for BACnetClosingTag")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetClosingTag"); popErr != nil {
@@ -201,9 +196,7 @@ func (m *_BACnetClosingTag) GetTagNumberArgument() uint8 {
 //
 ////
 
-func (m *_BACnetClosingTag) isBACnetClosingTag() bool {
-	return true
-}
+func (m *_BACnetClosingTag) IsBACnetClosingTag() {}
 
 func (m *_BACnetClosingTag) String() string {
 	if m == nil {

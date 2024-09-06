@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDeployedProfileLocation interface {
 	GetDeployedProfileLocation() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataDeployedProfileLocationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeployedProfileLocation.
-// This is useful for switch cases.
-type BACnetConstructedDataDeployedProfileLocationExactly interface {
-	BACnetConstructedDataDeployedProfileLocation
-	isBACnetConstructedDataDeployedProfileLocation() bool
+	// IsBACnetConstructedDataDeployedProfileLocation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDeployedProfileLocation()
 }
 
 // _BACnetConstructedDataDeployedProfileLocation is the data-structure of this message
 type _BACnetConstructedDataDeployedProfileLocation struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DeployedProfileLocation BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataDeployedProfileLocation = (*_BACnetConstructedDataDeployedProfileLocation)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeployedProfileLocation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDeployedProfileLocation) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDeployedProfileLocation) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDeployedProfileLocation) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetActualValue() BACnetA
 
 // NewBACnetConstructedDataDeployedProfileLocation factory function for _BACnetConstructedDataDeployedProfileLocation
 func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeployedProfileLocation {
-	_result := &_BACnetConstructedDataDeployedProfileLocation{
-		DeployedProfileLocation: deployedProfileLocation,
-		_BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if deployedProfileLocation == nil {
+		panic("deployedProfileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeployedProfileLocation must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDeployedProfileLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DeployedProfileLocation:       deployedProfileLocation,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (deployedProfileLocation)
 	lengthInBits += m.DeployedProfileLocation.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDeployedProfileLocationParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
-	return BACnetConstructedDataDeployedProfileLocationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDeployedProfileLocationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
+func (m *_BACnetConstructedDataDeployedProfileLocation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDeployedProfileLocation BACnetConstructedDataDeployedProfileLocation, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeployedProfileLocation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDeployedProfileLocation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deployedProfileLocation)
-	if pullErr := readBuffer.PullContext("deployedProfileLocation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deployedProfileLocation")
+	deployedProfileLocation, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "deployedProfileLocation", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deployedProfileLocation' field"))
 	}
-	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _deployedProfileLocationErr != nil {
-		return nil, errors.Wrap(_deployedProfileLocationErr, "Error parsing 'deployedProfileLocation' field of BACnetConstructedDataDeployedProfileLocation")
-	}
-	deployedProfileLocation := _deployedProfileLocation.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("deployedProfileLocation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deployedProfileLocation")
-	}
+	m.DeployedProfileLocation = deployedProfileLocation
 
-	// Virtual field
-	_actualValue := deployedProfileLocation
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), deployedProfileLocation)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeployedProfileLocation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeployedProfileLocation")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDeployedProfileLocation{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DeployedProfileLocation: deployedProfileLocation,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeployedProfileLocation")
 		}
 
-		// Simple Field (deployedProfileLocation)
-		if pushErr := writeBuffer.PushContext("deployedProfileLocation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deployedProfileLocation")
-		}
-		_deployedProfileLocationErr := writeBuffer.WriteSerializable(ctx, m.GetDeployedProfileLocation())
-		if popErr := writeBuffer.PopContext("deployedProfileLocation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deployedProfileLocation")
-		}
-		if _deployedProfileLocationErr != nil {
-			return errors.Wrap(_deployedProfileLocationErr, "Error serializing 'deployedProfileLocation' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "deployedProfileLocation", m.GetDeployedProfileLocation(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deployedProfileLocation' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocation) isBACnetConstructedDataDeployedProfileLocation() bool {
-	return true
+func (m *_BACnetConstructedDataDeployedProfileLocation) IsBACnetConstructedDataDeployedProfileLocation() {
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) String() string {

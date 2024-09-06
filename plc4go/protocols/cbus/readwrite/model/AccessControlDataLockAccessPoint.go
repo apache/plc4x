@@ -37,19 +37,17 @@ type AccessControlDataLockAccessPoint interface {
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
-}
-
-// AccessControlDataLockAccessPointExactly can be used when we want exactly this type and not a type which fulfills AccessControlDataLockAccessPoint.
-// This is useful for switch cases.
-type AccessControlDataLockAccessPointExactly interface {
-	AccessControlDataLockAccessPoint
-	isAccessControlDataLockAccessPoint() bool
+	// IsAccessControlDataLockAccessPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataLockAccessPoint()
 }
 
 // _AccessControlDataLockAccessPoint is the data-structure of this message
 type _AccessControlDataLockAccessPoint struct {
-	*_AccessControlData
+	AccessControlDataContract
 }
+
+var _ AccessControlDataLockAccessPoint = (*_AccessControlDataLockAccessPoint)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataLockAccessPoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,22 +59,16 @@ type _AccessControlDataLockAccessPoint struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AccessControlDataLockAccessPoint) InitializeParent(parent AccessControlData, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.NetworkId = networkId
-	m.AccessPointId = accessPointId
-}
-
-func (m *_AccessControlDataLockAccessPoint) GetParent() AccessControlData {
-	return m._AccessControlData
+func (m *_AccessControlDataLockAccessPoint) GetParent() AccessControlDataContract {
+	return m.AccessControlDataContract
 }
 
 // NewAccessControlDataLockAccessPoint factory function for _AccessControlDataLockAccessPoint
 func NewAccessControlDataLockAccessPoint(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataLockAccessPoint {
 	_result := &_AccessControlDataLockAccessPoint{
-		_AccessControlData: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
 	}
-	_result._AccessControlData._AccessControlDataChildRequirements = _result
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 
@@ -96,7 +88,7 @@ func (m *_AccessControlDataLockAccessPoint) GetTypeName() string {
 }
 
 func (m *_AccessControlDataLockAccessPoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +97,11 @@ func (m *_AccessControlDataLockAccessPoint) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataLockAccessPointParse(ctx context.Context, theBytes []byte) (AccessControlDataLockAccessPoint, error) {
-	return AccessControlDataLockAccessPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AccessControlDataLockAccessPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {
+func (m *_AccessControlDataLockAccessPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData) (__accessControlDataLockAccessPoint AccessControlDataLockAccessPoint, err error) {
+	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlDataLockAccessPoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlDataLockAccessPoint")
 	}
@@ -124,12 +112,7 @@ func AccessControlDataLockAccessPointParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(closeErr, "Error closing for AccessControlDataLockAccessPoint")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AccessControlDataLockAccessPoint{
-		_AccessControlData: &_AccessControlData{},
-	}
-	_child._AccessControlData._AccessControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AccessControlDataLockAccessPoint) Serialize() ([]byte, error) {
@@ -155,12 +138,10 @@ func (m *_AccessControlDataLockAccessPoint) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AccessControlDataContract.(*_AccessControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AccessControlDataLockAccessPoint) isAccessControlDataLockAccessPoint() bool {
-	return true
-}
+func (m *_AccessControlDataLockAccessPoint) IsAccessControlDataLockAccessPoint() {}
 
 func (m *_AccessControlDataLockAccessPoint) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,13 +46,8 @@ type AlarmMessagePushType interface {
 	GetNumberOfObjects() uint8
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectPushType
-}
-
-// AlarmMessagePushTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessagePushType.
-// This is useful for switch cases.
-type AlarmMessagePushTypeExactly interface {
-	AlarmMessagePushType
-	isAlarmMessagePushType() bool
+	// IsAlarmMessagePushType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessagePushType()
 }
 
 // _AlarmMessagePushType is the data-structure of this message
@@ -60,6 +57,8 @@ type _AlarmMessagePushType struct {
 	NumberOfObjects uint8
 	MessageObjects  []AlarmMessageObjectPushType
 }
+
+var _ AlarmMessagePushType = (*_AlarmMessagePushType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,6 +88,9 @@ func (m *_AlarmMessagePushType) GetMessageObjects() []AlarmMessageObjectPushType
 
 // NewAlarmMessagePushType factory function for _AlarmMessagePushType
 func NewAlarmMessagePushType(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectPushType) *_AlarmMessagePushType {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for AlarmMessagePushType must not be nil")
+	}
 	return &_AlarmMessagePushType{TimeStamp: timeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
 }
 
@@ -140,82 +142,58 @@ func AlarmMessagePushTypeParse(ctx context.Context, theBytes []byte) (AlarmMessa
 	return AlarmMessagePushTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AlarmMessagePushTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
+		return AlarmMessagePushTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AlarmMessagePushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
+	v, err := (&_AlarmMessagePushType{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_AlarmMessagePushType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alarmMessagePushType AlarmMessagePushType, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AlarmMessagePushType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessagePushType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeStamp)
-	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
+	timeStamp, err := ReadSimpleField[DateAndTime](ctx, "timeStamp", ReadComplex[DateAndTime](DateAndTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeStamp' field"))
 	}
-	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _timeStampErr != nil {
-		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of AlarmMessagePushType")
-	}
-	timeStamp := _timeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
-	}
+	m.TimeStamp = timeStamp
 
-	// Simple Field (functionId)
-	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
-	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of AlarmMessagePushType")
+	functionId, err := ReadSimpleField(ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
-	functionId := _functionId
+	m.FunctionId = functionId
 
-	// Simple Field (numberOfObjects)
-	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
-	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of AlarmMessagePushType")
+	numberOfObjects, err := ReadSimpleField(ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}
-	numberOfObjects := _numberOfObjects
+	m.NumberOfObjects = numberOfObjects
 
-	// Array field (messageObjects)
-	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
+	messageObjects, err := ReadCountArrayField[AlarmMessageObjectPushType](ctx, "messageObjects", ReadComplex[AlarmMessageObjectPushType](AlarmMessageObjectPushTypeParseWithBuffer, readBuffer), uint64(numberOfObjects))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageObjects' field"))
 	}
-	// Count array
-	messageObjects := make([]AlarmMessageObjectPushType, max(numberOfObjects, 0))
-	// This happens when the size is set conditional to 0
-	if len(messageObjects) == 0 {
-		messageObjects = nil
-	}
-	{
-		_numItems := uint16(max(numberOfObjects, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AlarmMessageObjectPushTypeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessagePushType")
-			}
-			messageObjects[_curItem] = _item.(AlarmMessageObjectPushType)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
-	}
+	m.MessageObjects = messageObjects
 
 	if closeErr := readBuffer.CloseContext("AlarmMessagePushType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessagePushType")
 	}
 
-	// Create the instance
-	return &_AlarmMessagePushType{
-		TimeStamp:       timeStamp,
-		FunctionId:      functionId,
-		NumberOfObjects: numberOfObjects,
-		MessageObjects:  messageObjects,
-	}, nil
+	return m, nil
 }
 
 func (m *_AlarmMessagePushType) Serialize() ([]byte, error) {
@@ -235,47 +213,20 @@ func (m *_AlarmMessagePushType) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for AlarmMessagePushType")
 	}
 
-	// Simple Field (timeStamp)
-	if pushErr := writeBuffer.PushContext("timeStamp"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeStamp")
-	}
-	_timeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
-	if popErr := writeBuffer.PopContext("timeStamp"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeStamp")
-	}
-	if _timeStampErr != nil {
-		return errors.Wrap(_timeStampErr, "Error serializing 'timeStamp' field")
+	if err := WriteSimpleField[DateAndTime](ctx, "timeStamp", m.GetTimeStamp(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeStamp' field")
 	}
 
-	// Simple Field (functionId)
-	functionId := uint8(m.GetFunctionId())
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
-	if _functionIdErr != nil {
-		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+	if err := WriteSimpleField[uint8](ctx, "functionId", m.GetFunctionId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
-	// Simple Field (numberOfObjects)
-	numberOfObjects := uint8(m.GetNumberOfObjects())
-	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
-	if _numberOfObjectsErr != nil {
-		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
+	if err := WriteSimpleField[uint8](ctx, "numberOfObjects", m.GetNumberOfObjects(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberOfObjects' field")
 	}
 
-	// Array Field (messageObjects)
-	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for messageObjects")
-	}
-	for _curItem, _element := range m.GetMessageObjects() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for messageObjects")
+	if err := WriteComplexTypeArrayField(ctx, "messageObjects", m.GetMessageObjects(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageObjects' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessagePushType"); popErr != nil {
@@ -284,9 +235,7 @@ func (m *_AlarmMessagePushType) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-func (m *_AlarmMessagePushType) isAlarmMessagePushType() bool {
-	return true
-}
+func (m *_AlarmMessagePushType) IsAlarmMessagePushType() {}
 
 func (m *_AlarmMessagePushType) String() string {
 	if m == nil {

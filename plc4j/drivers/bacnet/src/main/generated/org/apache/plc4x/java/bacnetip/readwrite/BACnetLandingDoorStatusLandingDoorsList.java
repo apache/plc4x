@@ -75,13 +75,13 @@ public class BACnetLandingDoorStatusLandingDoorsList implements Message {
     writeBuffer.pushContext("BACnetLandingDoorStatusLandingDoorsList");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (landingDoors)
     writeComplexTypeArrayField("landingDoors", landingDoors, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingDoorStatusLandingDoorsList");
   }
@@ -122,13 +122,13 @@ public class BACnetLandingDoorStatusLandingDoorsList implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetLandingDoorStatusLandingDoorsListEntry> landingDoors =
         readTerminatedArrayField(
             "landingDoors",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLandingDoorStatusLandingDoorsListEntry.staticParse(readBuffer),
                 readBuffer),
             () ->
@@ -139,7 +139,7 @@ public class BACnetLandingDoorStatusLandingDoorsList implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetLandingDoorStatusLandingDoorsList");

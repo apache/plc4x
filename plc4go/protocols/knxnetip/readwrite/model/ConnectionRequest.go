@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,22 +47,20 @@ type ConnectionRequest interface {
 	GetHpaiDataEndpoint() HPAIDataEndpoint
 	// GetConnectionRequestInformation returns ConnectionRequestInformation (property field)
 	GetConnectionRequestInformation() ConnectionRequestInformation
-}
-
-// ConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequest.
-// This is useful for switch cases.
-type ConnectionRequestExactly interface {
-	ConnectionRequest
-	isConnectionRequest() bool
+	// IsConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionRequest()
 }
 
 // _ConnectionRequest is the data-structure of this message
 type _ConnectionRequest struct {
-	*_KnxNetIpMessage
+	KnxNetIpMessageContract
 	HpaiDiscoveryEndpoint        HPAIDiscoveryEndpoint
 	HpaiDataEndpoint             HPAIDataEndpoint
 	ConnectionRequestInformation ConnectionRequestInformation
 }
+
+var _ ConnectionRequest = (*_ConnectionRequest)(nil)
+var _ KnxNetIpMessageRequirements = (*_ConnectionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,10 +76,8 @@ func (m *_ConnectionRequest) GetMsgType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConnectionRequest) InitializeParent(parent KnxNetIpMessage) {}
-
-func (m *_ConnectionRequest) GetParent() KnxNetIpMessage {
-	return m._KnxNetIpMessage
+func (m *_ConnectionRequest) GetParent() KnxNetIpMessageContract {
+	return m.KnxNetIpMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,13 +104,22 @@ func (m *_ConnectionRequest) GetConnectionRequestInformation() ConnectionRequest
 
 // NewConnectionRequest factory function for _ConnectionRequest
 func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) *_ConnectionRequest {
+	if hpaiDiscoveryEndpoint == nil {
+		panic("hpaiDiscoveryEndpoint of type HPAIDiscoveryEndpoint for ConnectionRequest must not be nil")
+	}
+	if hpaiDataEndpoint == nil {
+		panic("hpaiDataEndpoint of type HPAIDataEndpoint for ConnectionRequest must not be nil")
+	}
+	if connectionRequestInformation == nil {
+		panic("connectionRequestInformation of type ConnectionRequestInformation for ConnectionRequest must not be nil")
+	}
 	_result := &_ConnectionRequest{
+		KnxNetIpMessageContract:      NewKnxNetIpMessage(),
 		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
 		HpaiDataEndpoint:             hpaiDataEndpoint,
 		ConnectionRequestInformation: connectionRequestInformation,
-		_KnxNetIpMessage:             NewKnxNetIpMessage(),
 	}
-	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 
@@ -131,7 +139,7 @@ func (m *_ConnectionRequest) GetTypeName() string {
 }
 
 func (m *_ConnectionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (hpaiDiscoveryEndpoint)
 	lengthInBits += m.HpaiDiscoveryEndpoint.GetLengthInBits(ctx)
@@ -149,73 +157,40 @@ func (m *_ConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionRequestParse(ctx context.Context, theBytes []byte) (ConnectionRequest, error) {
-	return ConnectionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func ConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
+func (m *_ConnectionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__connectionRequest ConnectionRequest, err error) {
+	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectionRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hpaiDiscoveryEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDiscoveryEndpoint")
+	hpaiDiscoveryEndpoint, err := ReadSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiDiscoveryEndpoint", ReadComplex[HPAIDiscoveryEndpoint](HPAIDiscoveryEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiDiscoveryEndpoint' field"))
 	}
-	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiDiscoveryEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field of ConnectionRequest")
-	}
-	hpaiDiscoveryEndpoint := _hpaiDiscoveryEndpoint.(HPAIDiscoveryEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiDiscoveryEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiDiscoveryEndpoint")
-	}
+	m.HpaiDiscoveryEndpoint = hpaiDiscoveryEndpoint
 
-	// Simple Field (hpaiDataEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
+	hpaiDataEndpoint, err := ReadSimpleField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", ReadComplex[HPAIDataEndpoint](HPAIDataEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiDataEndpoint' field"))
 	}
-	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiDataEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field of ConnectionRequest")
-	}
-	hpaiDataEndpoint := _hpaiDataEndpoint.(HPAIDataEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiDataEndpoint")
-	}
+	m.HpaiDataEndpoint = hpaiDataEndpoint
 
-	// Simple Field (connectionRequestInformation)
-	if pullErr := readBuffer.PullContext("connectionRequestInformation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for connectionRequestInformation")
+	connectionRequestInformation, err := ReadSimpleField[ConnectionRequestInformation](ctx, "connectionRequestInformation", ReadComplex[ConnectionRequestInformation](ConnectionRequestInformationParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionRequestInformation' field"))
 	}
-	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParseWithBuffer(ctx, readBuffer)
-	if _connectionRequestInformationErr != nil {
-		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field of ConnectionRequest")
-	}
-	connectionRequestInformation := _connectionRequestInformation.(ConnectionRequestInformation)
-	if closeErr := readBuffer.CloseContext("connectionRequestInformation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for connectionRequestInformation")
-	}
+	m.ConnectionRequestInformation = connectionRequestInformation
 
 	if closeErr := readBuffer.CloseContext("ConnectionRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectionRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ConnectionRequest{
-		_KnxNetIpMessage:             &_KnxNetIpMessage{},
-		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
-		HpaiDataEndpoint:             hpaiDataEndpoint,
-		ConnectionRequestInformation: connectionRequestInformation,
-	}
-	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ConnectionRequest) Serialize() ([]byte, error) {
@@ -236,40 +211,16 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ConnectionRequest")
 		}
 
-		// Simple Field (hpaiDiscoveryEndpoint)
-		if pushErr := writeBuffer.PushContext("hpaiDiscoveryEndpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hpaiDiscoveryEndpoint")
-		}
-		_hpaiDiscoveryEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiDiscoveryEndpoint())
-		if popErr := writeBuffer.PopContext("hpaiDiscoveryEndpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hpaiDiscoveryEndpoint")
-		}
-		if _hpaiDiscoveryEndpointErr != nil {
-			return errors.Wrap(_hpaiDiscoveryEndpointErr, "Error serializing 'hpaiDiscoveryEndpoint' field")
+		if err := WriteSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiDiscoveryEndpoint", m.GetHpaiDiscoveryEndpoint(), WriteComplex[HPAIDiscoveryEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiDiscoveryEndpoint' field")
 		}
 
-		// Simple Field (hpaiDataEndpoint)
-		if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
-		}
-		_hpaiDataEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiDataEndpoint())
-		if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
-		}
-		if _hpaiDataEndpointErr != nil {
-			return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
+		if err := WriteSimpleField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", m.GetHpaiDataEndpoint(), WriteComplex[HPAIDataEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
-		// Simple Field (connectionRequestInformation)
-		if pushErr := writeBuffer.PushContext("connectionRequestInformation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for connectionRequestInformation")
-		}
-		_connectionRequestInformationErr := writeBuffer.WriteSerializable(ctx, m.GetConnectionRequestInformation())
-		if popErr := writeBuffer.PopContext("connectionRequestInformation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for connectionRequestInformation")
-		}
-		if _connectionRequestInformationErr != nil {
-			return errors.Wrap(_connectionRequestInformationErr, "Error serializing 'connectionRequestInformation' field")
+		if err := WriteSimpleField[ConnectionRequestInformation](ctx, "connectionRequestInformation", m.GetConnectionRequestInformation(), WriteComplex[ConnectionRequestInformation](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionRequestInformation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionRequest"); popErr != nil {
@@ -277,12 +228,10 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ConnectionRequest) isConnectionRequest() bool {
-	return true
-}
+func (m *_ConnectionRequest) IsConnectionRequest() {}
 
 func (m *_ConnectionRequest) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultExtendedParametersEntryDate interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
-}
-
-// BACnetFaultParameterFaultExtendedParametersEntryDateExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryDate.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultExtendedParametersEntryDateExactly interface {
-	BACnetFaultParameterFaultExtendedParametersEntryDate
-	isBACnetFaultParameterFaultExtendedParametersEntryDate() bool
+	// IsBACnetFaultParameterFaultExtendedParametersEntryDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryDate()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryDate is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryDate struct {
-	*_BACnetFaultParameterFaultExtendedParametersEntry
+	BACnetFaultParameterFaultExtendedParametersEntryContract
 	DateValue BACnetApplicationTagDate
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryDate = (*_BACnetFaultParameterFaultExtendedParametersEntryDate)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryDate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryDate struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetParent() BACnetFaultParameterFaultExtendedParametersEntry {
-	return m._BACnetFaultParameterFaultExtendedParametersEntry
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetParent() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetDateValue() B
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryDate factory function for _BACnetFaultParameterFaultExtendedParametersEntryDate
 func NewBACnetFaultParameterFaultExtendedParametersEntryDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryDate {
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDate{
-		DateValue: dateValue,
-		_BACnetFaultParameterFaultExtendedParametersEntry: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetFaultParameterFaultExtendedParametersEntryDate must not be nil")
 	}
-	_result._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDate{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		DateValue: dateValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetTypeName() st
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (dateValue)
 	lengthInBits += m.DateValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetLengthInBytes
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryDateParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryDate BACnetFaultParameterFaultExtendedParametersEntryDate, err error) {
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dateValue)
-	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
+	dateValue, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "dateValue", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateValue' field"))
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetFaultParameterFaultExtendedParametersEntryDate")
-	}
-	dateValue := _dateValue.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateValue")
-	}
+	m.DateValue = dateValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryDate")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultExtendedParametersEntryDate{
-		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
-		DateValue: dateValue,
-	}
-	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) SerializeWithWri
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryDate")
 		}
 
-		// Simple Field (dateValue)
-		if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dateValue")
-		}
-		_dateValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateValue())
-		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dateValue")
-		}
-		if _dateValueErr != nil {
-			return errors.Wrap(_dateValueErr, "Error serializing 'dateValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "dateValue", m.GetDateValue(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dateValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryDate"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) SerializeWithWri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) isBACnetFaultParameterFaultExtendedParametersEntryDate() bool {
-	return true
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) IsBACnetFaultParameterFaultExtendedParametersEntryDate() {
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) String() string {

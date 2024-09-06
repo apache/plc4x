@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesEventType interface {
 	BACnetPropertyStates
 	// GetEventType returns EventType (property field)
 	GetEventType() BACnetEventTypeTagged
-}
-
-// BACnetPropertyStatesEventTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEventType.
-// This is useful for switch cases.
-type BACnetPropertyStatesEventTypeExactly interface {
-	BACnetPropertyStatesEventType
-	isBACnetPropertyStatesEventType() bool
+	// IsBACnetPropertyStatesEventType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesEventType()
 }
 
 // _BACnetPropertyStatesEventType is the data-structure of this message
 type _BACnetPropertyStatesEventType struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	EventType BACnetEventTypeTagged
 }
+
+var _ BACnetPropertyStatesEventType = (*_BACnetPropertyStatesEventType)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEventType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesEventType struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesEventType) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesEventType) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesEventType) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesEventType) GetEventType() BACnetEventTypeTagged {
 
 // NewBACnetPropertyStatesEventType factory function for _BACnetPropertyStatesEventType
 func NewBACnetPropertyStatesEventType(eventType BACnetEventTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEventType {
-	_result := &_BACnetPropertyStatesEventType{
-		EventType:             eventType,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if eventType == nil {
+		panic("eventType of type BACnetEventTypeTagged for BACnetPropertyStatesEventType must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesEventType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EventType:                    eventType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesEventType) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesEventType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (eventType)
 	lengthInBits += m.EventType.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesEventType) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesEventTypeParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
-	return BACnetPropertyStatesEventTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesEventTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
+func (m *_BACnetPropertyStatesEventType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesEventType BACnetPropertyStatesEventType, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEventType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesEventType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eventType)
-	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventType")
+	eventType, err := ReadSimpleField[BACnetEventTypeTagged](ctx, "eventType", ReadComplex[BACnetEventTypeTagged](BACnetEventTypeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventType' field"))
 	}
-	_eventType, _eventTypeErr := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _eventTypeErr != nil {
-		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetPropertyStatesEventType")
-	}
-	eventType := _eventType.(BACnetEventTypeTagged)
-	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventType")
-	}
+	m.EventType = eventType
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEventType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesEventType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesEventType{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		EventType:             eventType,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesEventType) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesEventType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEventType")
 		}
 
-		// Simple Field (eventType)
-		if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventType")
-		}
-		_eventTypeErr := writeBuffer.WriteSerializable(ctx, m.GetEventType())
-		if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventType")
-		}
-		if _eventTypeErr != nil {
-			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
+		if err := WriteSimpleField[BACnetEventTypeTagged](ctx, "eventType", m.GetEventType(), WriteComplex[BACnetEventTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEventType"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesEventType) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesEventType) isBACnetPropertyStatesEventType() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesEventType) IsBACnetPropertyStatesEventType() {}
 
 func (m *_BACnetPropertyStatesEventType) String() string {
 	if m == nil {

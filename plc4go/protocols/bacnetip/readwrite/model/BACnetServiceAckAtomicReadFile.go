@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type BACnetServiceAckAtomicReadFile interface {
 	GetEndOfFile() BACnetApplicationTagBoolean
 	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() BACnetServiceAckAtomicReadFileStreamOrRecord
-}
-
-// BACnetServiceAckAtomicReadFileExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFile.
-// This is useful for switch cases.
-type BACnetServiceAckAtomicReadFileExactly interface {
-	BACnetServiceAckAtomicReadFile
-	isBACnetServiceAckAtomicReadFile() bool
+	// IsBACnetServiceAckAtomicReadFile is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAtomicReadFile()
 }
 
 // _BACnetServiceAckAtomicReadFile is the data-structure of this message
 type _BACnetServiceAckAtomicReadFile struct {
-	*_BACnetServiceAck
+	BACnetServiceAckContract
 	EndOfFile    BACnetApplicationTagBoolean
 	AccessMethod BACnetServiceAckAtomicReadFileStreamOrRecord
 }
+
+var _ BACnetServiceAckAtomicReadFile = (*_BACnetServiceAckAtomicReadFile)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicReadFile)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_BACnetServiceAckAtomicReadFile) GetServiceChoice() BACnetConfirmedServ
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetServiceAckAtomicReadFile) InitializeParent(parent BACnetServiceAck) {}
-
-func (m *_BACnetServiceAckAtomicReadFile) GetParent() BACnetServiceAck {
-	return m._BACnetServiceAck
+func (m *_BACnetServiceAckAtomicReadFile) GetParent() BACnetServiceAckContract {
+	return m.BACnetServiceAckContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_BACnetServiceAckAtomicReadFile) GetAccessMethod() BACnetServiceAckAtom
 
 // NewBACnetServiceAckAtomicReadFile factory function for _BACnetServiceAckAtomicReadFile
 func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord, serviceAckLength uint32) *_BACnetServiceAckAtomicReadFile {
-	_result := &_BACnetServiceAckAtomicReadFile{
-		EndOfFile:         endOfFile,
-		AccessMethod:      accessMethod,
-		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
+	if endOfFile == nil {
+		panic("endOfFile of type BACnetApplicationTagBoolean for BACnetServiceAckAtomicReadFile must not be nil")
 	}
-	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
+	if accessMethod == nil {
+		panic("accessMethod of type BACnetServiceAckAtomicReadFileStreamOrRecord for BACnetServiceAckAtomicReadFile must not be nil")
+	}
+	_result := &_BACnetServiceAckAtomicReadFile{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		EndOfFile:                endOfFile,
+		AccessMethod:             accessMethod,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_BACnetServiceAckAtomicReadFile) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (endOfFile)
 	lengthInBits += m.EndOfFile.GetLengthInBits(ctx)
@@ -137,61 +141,34 @@ func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckAtomicReadFileParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckAtomicReadFile, error) {
-	return BACnetServiceAckAtomicReadFileParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
-}
-
-func BACnetServiceAckAtomicReadFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicReadFile, error) {
+func (m *_BACnetServiceAckAtomicReadFile) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckAtomicReadFile BACnetServiceAckAtomicReadFile, err error) {
+	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckAtomicReadFile")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (endOfFile)
-	if pullErr := readBuffer.PullContext("endOfFile"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endOfFile")
+	endOfFile, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "endOfFile", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endOfFile' field"))
 	}
-	_endOfFile, _endOfFileErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _endOfFileErr != nil {
-		return nil, errors.Wrap(_endOfFileErr, "Error parsing 'endOfFile' field of BACnetServiceAckAtomicReadFile")
-	}
-	endOfFile := _endOfFile.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("endOfFile"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endOfFile")
-	}
+	m.EndOfFile = endOfFile
 
-	// Simple Field (accessMethod)
-	if pullErr := readBuffer.PullContext("accessMethod"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessMethod")
+	accessMethod, err := ReadSimpleField[BACnetServiceAckAtomicReadFileStreamOrRecord](ctx, "accessMethod", ReadComplex[BACnetServiceAckAtomicReadFileStreamOrRecord](BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessMethod' field"))
 	}
-	_accessMethod, _accessMethodErr := BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer(ctx, readBuffer)
-	if _accessMethodErr != nil {
-		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetServiceAckAtomicReadFile")
-	}
-	accessMethod := _accessMethod.(BACnetServiceAckAtomicReadFileStreamOrRecord)
-	if closeErr := readBuffer.CloseContext("accessMethod"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessMethod")
-	}
+	m.AccessMethod = accessMethod
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAtomicReadFile"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckAtomicReadFile")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetServiceAckAtomicReadFile{
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
-		EndOfFile:    endOfFile,
-		AccessMethod: accessMethod,
-	}
-	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetServiceAckAtomicReadFile) Serialize() ([]byte, error) {
@@ -212,28 +189,12 @@ func (m *_BACnetServiceAckAtomicReadFile) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicReadFile")
 		}
 
-		// Simple Field (endOfFile)
-		if pushErr := writeBuffer.PushContext("endOfFile"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endOfFile")
-		}
-		_endOfFileErr := writeBuffer.WriteSerializable(ctx, m.GetEndOfFile())
-		if popErr := writeBuffer.PopContext("endOfFile"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endOfFile")
-		}
-		if _endOfFileErr != nil {
-			return errors.Wrap(_endOfFileErr, "Error serializing 'endOfFile' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "endOfFile", m.GetEndOfFile(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endOfFile' field")
 		}
 
-		// Simple Field (accessMethod)
-		if pushErr := writeBuffer.PushContext("accessMethod"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessMethod")
-		}
-		_accessMethodErr := writeBuffer.WriteSerializable(ctx, m.GetAccessMethod())
-		if popErr := writeBuffer.PopContext("accessMethod"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessMethod")
-		}
-		if _accessMethodErr != nil {
-			return errors.Wrap(_accessMethodErr, "Error serializing 'accessMethod' field")
+		if err := WriteSimpleField[BACnetServiceAckAtomicReadFileStreamOrRecord](ctx, "accessMethod", m.GetAccessMethod(), WriteComplex[BACnetServiceAckAtomicReadFileStreamOrRecord](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessMethod' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicReadFile"); popErr != nil {
@@ -241,12 +202,10 @@ func (m *_BACnetServiceAckAtomicReadFile) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetServiceAckContract.(*_BACnetServiceAck).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetServiceAckAtomicReadFile) isBACnetServiceAckAtomicReadFile() bool {
-	return true
-}
+func (m *_BACnetServiceAckAtomicReadFile) IsBACnetServiceAckAtomicReadFile() {}
 
 func (m *_BACnetServiceAckAtomicReadFile) String() string {
 	if m == nil {

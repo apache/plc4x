@@ -135,7 +135,7 @@ public class PnIoCm_RealIdentificationApi implements Message {
     List<PnIoCm_RealIdentificationApi_Slot> slots =
         readCountArrayField(
             "slots",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> PnIoCm_RealIdentificationApi_Slot.staticParse(readBuffer), readBuffer),
             numSlots,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

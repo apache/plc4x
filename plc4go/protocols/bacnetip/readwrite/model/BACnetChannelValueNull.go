@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetChannelValueNull interface {
 	BACnetChannelValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-}
-
-// BACnetChannelValueNullExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueNull.
-// This is useful for switch cases.
-type BACnetChannelValueNullExactly interface {
-	BACnetChannelValueNull
-	isBACnetChannelValueNull() bool
+	// IsBACnetChannelValueNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueNull()
 }
 
 // _BACnetChannelValueNull is the data-structure of this message
 type _BACnetChannelValueNull struct {
-	*_BACnetChannelValue
+	BACnetChannelValueContract
 	NullValue BACnetApplicationTagNull
 }
+
+var _ BACnetChannelValueNull = (*_BACnetChannelValueNull)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetChannelValueNull struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetChannelValueNull) InitializeParent(parent BACnetChannelValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetChannelValueNull) GetParent() BACnetChannelValue {
-	return m._BACnetChannelValue
+func (m *_BACnetChannelValueNull) GetParent() BACnetChannelValueContract {
+	return m.BACnetChannelValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetChannelValueNull) GetNullValue() BACnetApplicationTagNull {
 
 // NewBACnetChannelValueNull factory function for _BACnetChannelValueNull
 func NewBACnetChannelValueNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueNull {
-	_result := &_BACnetChannelValueNull{
-		NullValue:           nullValue,
-		_BACnetChannelValue: NewBACnetChannelValue(peekedTagHeader),
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetChannelValueNull must not be nil")
 	}
-	_result._BACnetChannelValue._BACnetChannelValueChildRequirements = _result
+	_result := &_BACnetChannelValueNull{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		NullValue:                  nullValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetChannelValueNull) GetTypeName() string {
 }
 
 func (m *_BACnetChannelValueNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (nullValue)
 	lengthInBits += m.NullValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetChannelValueNull) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueNullParse(ctx context.Context, theBytes []byte) (BACnetChannelValueNull, error) {
-	return BACnetChannelValueNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetChannelValueNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueNull, error) {
+func (m *_BACnetChannelValueNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueNull BACnetChannelValueNull, err error) {
+	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueNull")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nullValue)
-	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
+	nullValue, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "nullValue", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullValue' field"))
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetChannelValueNull")
-	}
-	nullValue := _nullValue.(BACnetApplicationTagNull)
-	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
-	}
+	m.NullValue = nullValue
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueNull"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueNull")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetChannelValueNull{
-		_BACnetChannelValue: &_BACnetChannelValue{},
-		NullValue:           nullValue,
-	}
-	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetChannelValueNull) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetChannelValueNull) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueNull")
 		}
 
-		// Simple Field (nullValue)
-		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nullValue")
-		}
-		_nullValueErr := writeBuffer.WriteSerializable(ctx, m.GetNullValue())
-		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nullValue")
-		}
-		if _nullValueErr != nil {
-			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagNull](ctx, "nullValue", m.GetNullValue(), WriteComplex[BACnetApplicationTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nullValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueNull"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetChannelValueNull) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetChannelValueContract.(*_BACnetChannelValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetChannelValueNull) isBACnetChannelValueNull() bool {
-	return true
-}
+func (m *_BACnetChannelValueNull) IsBACnetChannelValueNull() {}
 
 func (m *_BACnetChannelValueNull) String() string {
 	if m == nil {

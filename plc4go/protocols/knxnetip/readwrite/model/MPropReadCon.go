@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type MPropReadCon interface {
 	GetStartIndex() uint16
 	// GetData returns Data (property field)
 	GetData() uint16
-}
-
-// MPropReadConExactly can be used when we want exactly this type and not a type which fulfills MPropReadCon.
-// This is useful for switch cases.
-type MPropReadConExactly interface {
-	MPropReadCon
-	isMPropReadCon() bool
+	// IsMPropReadCon is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMPropReadCon()
 }
 
 // _MPropReadCon is the data-structure of this message
 type _MPropReadCon struct {
-	*_CEMI
+	CEMIContract
 	InterfaceObjectType uint16
 	ObjectInstance      uint8
 	PropertyId          uint8
@@ -68,6 +65,9 @@ type _MPropReadCon struct {
 	StartIndex          uint16
 	Data                uint16
 }
+
+var _ MPropReadCon = (*_MPropReadCon)(nil)
+var _ CEMIRequirements = (*_MPropReadCon)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,10 +83,8 @@ func (m *_MPropReadCon) GetMessageCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MPropReadCon) InitializeParent(parent CEMI) {}
-
-func (m *_MPropReadCon) GetParent() CEMI {
-	return m._CEMI
+func (m *_MPropReadCon) GetParent() CEMIContract {
+	return m.CEMIContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -126,15 +124,15 @@ func (m *_MPropReadCon) GetData() uint16 {
 // NewMPropReadCon factory function for _MPropReadCon
 func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16, size uint16) *_MPropReadCon {
 	_result := &_MPropReadCon{
+		CEMIContract:        NewCEMI(size),
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
 		Data:                data,
-		_CEMI:               NewCEMI(size),
 	}
-	_result._CEMI._CEMIChildRequirements = _result
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 
@@ -154,7 +152,7 @@ func (m *_MPropReadCon) GetTypeName() string {
 }
 
 func (m *_MPropReadCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -181,81 +179,58 @@ func (m *_MPropReadCon) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MPropReadConParse(ctx context.Context, theBytes []byte, size uint16) (MPropReadCon, error) {
-	return MPropReadConParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
-}
-
-func MPropReadConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, error) {
+func (m *_MPropReadCon) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mPropReadCon MPropReadCon, err error) {
+	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MPropReadCon"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MPropReadCon")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (interfaceObjectType)
-	_interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)
-	if _interfaceObjectTypeErr != nil {
-		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field of MPropReadCon")
+	interfaceObjectType, err := ReadSimpleField(ctx, "interfaceObjectType", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceObjectType' field"))
 	}
-	interfaceObjectType := _interfaceObjectType
+	m.InterfaceObjectType = interfaceObjectType
 
-	// Simple Field (objectInstance)
-	_objectInstance, _objectInstanceErr := readBuffer.ReadUint8("objectInstance", 8)
-	if _objectInstanceErr != nil {
-		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field of MPropReadCon")
+	objectInstance, err := ReadSimpleField(ctx, "objectInstance", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectInstance' field"))
 	}
-	objectInstance := _objectInstance
+	m.ObjectInstance = objectInstance
 
-	// Simple Field (propertyId)
-	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
-	if _propertyIdErr != nil {
-		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of MPropReadCon")
+	propertyId, err := ReadSimpleField(ctx, "propertyId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyId' field"))
 	}
-	propertyId := _propertyId
+	m.PropertyId = propertyId
 
-	// Simple Field (numberOfElements)
-	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint8("numberOfElements", 4)
-	if _numberOfElementsErr != nil {
-		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field of MPropReadCon")
+	numberOfElements, err := ReadSimpleField(ctx, "numberOfElements", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfElements' field"))
 	}
-	numberOfElements := _numberOfElements
+	m.NumberOfElements = numberOfElements
 
-	// Simple Field (startIndex)
-	_startIndex, _startIndexErr := readBuffer.ReadUint16("startIndex", 12)
-	if _startIndexErr != nil {
-		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field of MPropReadCon")
+	startIndex, err := ReadSimpleField(ctx, "startIndex", ReadUnsignedShort(readBuffer, uint8(12)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startIndex' field"))
 	}
-	startIndex := _startIndex
+	m.StartIndex = startIndex
 
-	// Simple Field (data)
-	_data, _dataErr := readBuffer.ReadUint16("data", 16)
-	if _dataErr != nil {
-		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MPropReadCon")
+	data, err := ReadSimpleField(ctx, "data", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	data := _data
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("MPropReadCon"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MPropReadCon")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MPropReadCon{
-		_CEMI: &_CEMI{
-			Size: size,
-		},
-		InterfaceObjectType: interfaceObjectType,
-		ObjectInstance:      objectInstance,
-		PropertyId:          propertyId,
-		NumberOfElements:    numberOfElements,
-		StartIndex:          startIndex,
-		Data:                data,
-	}
-	_child._CEMI._CEMIChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MPropReadCon) Serialize() ([]byte, error) {
@@ -276,46 +251,28 @@ func (m *_MPropReadCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for MPropReadCon")
 		}
 
-		// Simple Field (interfaceObjectType)
-		interfaceObjectType := uint16(m.GetInterfaceObjectType())
-		_interfaceObjectTypeErr := writeBuffer.WriteUint16("interfaceObjectType", 16, uint16((interfaceObjectType)))
-		if _interfaceObjectTypeErr != nil {
-			return errors.Wrap(_interfaceObjectTypeErr, "Error serializing 'interfaceObjectType' field")
+		if err := WriteSimpleField[uint16](ctx, "interfaceObjectType", m.GetInterfaceObjectType(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'interfaceObjectType' field")
 		}
 
-		// Simple Field (objectInstance)
-		objectInstance := uint8(m.GetObjectInstance())
-		_objectInstanceErr := writeBuffer.WriteUint8("objectInstance", 8, uint8((objectInstance)))
-		if _objectInstanceErr != nil {
-			return errors.Wrap(_objectInstanceErr, "Error serializing 'objectInstance' field")
+		if err := WriteSimpleField[uint8](ctx, "objectInstance", m.GetObjectInstance(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectInstance' field")
 		}
 
-		// Simple Field (propertyId)
-		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
-		if _propertyIdErr != nil {
-			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
+		if err := WriteSimpleField[uint8](ctx, "propertyId", m.GetPropertyId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyId' field")
 		}
 
-		// Simple Field (numberOfElements)
-		numberOfElements := uint8(m.GetNumberOfElements())
-		_numberOfElementsErr := writeBuffer.WriteUint8("numberOfElements", 4, uint8((numberOfElements)))
-		if _numberOfElementsErr != nil {
-			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
+		if err := WriteSimpleField[uint8](ctx, "numberOfElements", m.GetNumberOfElements(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfElements' field")
 		}
 
-		// Simple Field (startIndex)
-		startIndex := uint16(m.GetStartIndex())
-		_startIndexErr := writeBuffer.WriteUint16("startIndex", 12, uint16((startIndex)))
-		if _startIndexErr != nil {
-			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
+		if err := WriteSimpleField[uint16](ctx, "startIndex", m.GetStartIndex(), WriteUnsignedShort(writeBuffer, 12)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startIndex' field")
 		}
 
-		// Simple Field (data)
-		data := uint16(m.GetData())
-		_dataErr := writeBuffer.WriteUint16("data", 16, uint16((data)))
-		if _dataErr != nil {
-			return errors.Wrap(_dataErr, "Error serializing 'data' field")
+		if err := WriteSimpleField[uint16](ctx, "data", m.GetData(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MPropReadCon"); popErr != nil {
@@ -323,12 +280,10 @@ func (m *_MPropReadCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIContract.(*_CEMI).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MPropReadCon) isMPropReadCon() bool {
-	return true
-}
+func (m *_MPropReadCon) IsMPropReadCon() {}
 
 func (m *_MPropReadCon) String() string {
 	if m == nil {

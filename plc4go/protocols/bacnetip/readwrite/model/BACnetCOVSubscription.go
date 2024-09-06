@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,13 +48,8 @@ type BACnetCOVSubscription interface {
 	GetTimeRemaining() BACnetContextTagUnsignedInteger
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetContextTagReal
-}
-
-// BACnetCOVSubscriptionExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVSubscription.
-// This is useful for switch cases.
-type BACnetCOVSubscriptionExactly interface {
-	BACnetCOVSubscription
-	isBACnetCOVSubscription() bool
+	// IsBACnetCOVSubscription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCOVSubscription()
 }
 
 // _BACnetCOVSubscription is the data-structure of this message
@@ -64,6 +60,8 @@ type _BACnetCOVSubscription struct {
 	TimeRemaining               BACnetContextTagUnsignedInteger
 	CovIncrement                BACnetContextTagReal
 }
+
+var _ BACnetCOVSubscription = (*_BACnetCOVSubscription)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,6 +95,18 @@ func (m *_BACnetCOVSubscription) GetCovIncrement() BACnetContextTagReal {
 
 // NewBACnetCOVSubscription factory function for _BACnetCOVSubscription
 func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, covIncrement BACnetContextTagReal) *_BACnetCOVSubscription {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVSubscription must not be nil")
+	}
+	if monitoredPropertyReference == nil {
+		panic("monitoredPropertyReference of type BACnetObjectPropertyReferenceEnclosed for BACnetCOVSubscription must not be nil")
+	}
+	if issueConfirmedNotifications == nil {
+		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVSubscription must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVSubscription must not be nil")
+	}
 	return &_BACnetCOVSubscription{Recipient: recipient, MonitoredPropertyReference: monitoredPropertyReference, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, CovIncrement: covIncrement}
 }
 
@@ -146,103 +156,68 @@ func BACnetCOVSubscriptionParse(ctx context.Context, theBytes []byte) (BACnetCOV
 	return BACnetCOVSubscriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCOVSubscriptionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {
+		return BACnetCOVSubscriptionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCOVSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {
+	v, err := (&_BACnetCOVSubscription{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetCOVSubscription) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCOVSubscription BACnetCOVSubscription, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCOVSubscription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCOVSubscription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recipient)
-	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
+	recipient, err := ReadSimpleField[BACnetRecipientProcessEnclosed](ctx, "recipient", ReadComplex[BACnetRecipientProcessEnclosed](BACnetRecipientProcessEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recipient' field"))
 	}
-	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetCOVSubscription")
-	}
-	recipient := _recipient.(BACnetRecipientProcessEnclosed)
-	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for recipient")
-	}
+	m.Recipient = recipient
 
-	// Simple Field (monitoredPropertyReference)
-	if pullErr := readBuffer.PullContext("monitoredPropertyReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoredPropertyReference")
+	monitoredPropertyReference, err := ReadSimpleField[BACnetObjectPropertyReferenceEnclosed](ctx, "monitoredPropertyReference", ReadComplex[BACnetObjectPropertyReferenceEnclosed](BACnetObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredPropertyReference' field"))
 	}
-	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _monitoredPropertyReferenceErr != nil {
-		return nil, errors.Wrap(_monitoredPropertyReferenceErr, "Error parsing 'monitoredPropertyReference' field of BACnetCOVSubscription")
-	}
-	monitoredPropertyReference := _monitoredPropertyReference.(BACnetObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("monitoredPropertyReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoredPropertyReference")
-	}
+	m.MonitoredPropertyReference = monitoredPropertyReference
 
-	// Simple Field (issueConfirmedNotifications)
-	if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
+	issueConfirmedNotifications, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issueConfirmedNotifications' field"))
 	}
-	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _issueConfirmedNotificationsErr != nil {
-		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field of BACnetCOVSubscription")
-	}
-	issueConfirmedNotifications := _issueConfirmedNotifications.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
-	}
+	m.IssueConfirmedNotifications = issueConfirmedNotifications
 
-	// Simple Field (timeRemaining)
-	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
+	timeRemaining, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeRemaining", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeRemaining' field"))
 	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeRemainingErr != nil {
-		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetCOVSubscription")
-	}
-	timeRemaining := _timeRemaining.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeRemaining")
-	}
+	m.TimeRemaining = timeRemaining
 
-	// Optional Field (covIncrement) (Can be skipped, if a given expression evaluates to false)
-	var covIncrement BACnetContextTagReal = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(4), BACnetDataType_REAL)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field of BACnetCOVSubscription")
-		default:
-			covIncrement = _val.(BACnetContextTagReal)
-			if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for covIncrement")
-			}
-		}
+	var covIncrement BACnetContextTagReal
+	_covIncrement, err := ReadOptionalField[BACnetContextTagReal](ctx, "covIncrement", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covIncrement' field"))
+	}
+	if _covIncrement != nil {
+		covIncrement = *_covIncrement
+		m.CovIncrement = covIncrement
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCOVSubscription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetCOVSubscription")
 	}
 
-	// Create the instance
-	return &_BACnetCOVSubscription{
-		Recipient:                   recipient,
-		MonitoredPropertyReference:  monitoredPropertyReference,
-		IssueConfirmedNotifications: issueConfirmedNotifications,
-		TimeRemaining:               timeRemaining,
-		CovIncrement:                covIncrement,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetCOVSubscription) Serialize() ([]byte, error) {
@@ -262,68 +237,24 @@ func (m *_BACnetCOVSubscription) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetCOVSubscription")
 	}
 
-	// Simple Field (recipient)
-	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for recipient")
-	}
-	_recipientErr := writeBuffer.WriteSerializable(ctx, m.GetRecipient())
-	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for recipient")
-	}
-	if _recipientErr != nil {
-		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
+	if err := WriteSimpleField[BACnetRecipientProcessEnclosed](ctx, "recipient", m.GetRecipient(), WriteComplex[BACnetRecipientProcessEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'recipient' field")
 	}
 
-	// Simple Field (monitoredPropertyReference)
-	if pushErr := writeBuffer.PushContext("monitoredPropertyReference"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for monitoredPropertyReference")
-	}
-	_monitoredPropertyReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredPropertyReference())
-	if popErr := writeBuffer.PopContext("monitoredPropertyReference"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for monitoredPropertyReference")
-	}
-	if _monitoredPropertyReferenceErr != nil {
-		return errors.Wrap(_monitoredPropertyReferenceErr, "Error serializing 'monitoredPropertyReference' field")
+	if err := WriteSimpleField[BACnetObjectPropertyReferenceEnclosed](ctx, "monitoredPropertyReference", m.GetMonitoredPropertyReference(), WriteComplex[BACnetObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitoredPropertyReference' field")
 	}
 
-	// Simple Field (issueConfirmedNotifications)
-	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
-	}
-	_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, m.GetIssueConfirmedNotifications())
-	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
-	}
-	if _issueConfirmedNotificationsErr != nil {
-		return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", m.GetIssueConfirmedNotifications(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 	}
 
-	// Simple Field (timeRemaining)
-	if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeRemaining")
-	}
-	_timeRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeRemaining())
-	if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeRemaining")
-	}
-	if _timeRemainingErr != nil {
-		return errors.Wrap(_timeRemainingErr, "Error serializing 'timeRemaining' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeRemaining", m.GetTimeRemaining(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeRemaining' field")
 	}
 
-	// Optional Field (covIncrement) (Can be skipped, if the value is null)
-	var covIncrement BACnetContextTagReal = nil
-	if m.GetCovIncrement() != nil {
-		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covIncrement")
-		}
-		covIncrement = m.GetCovIncrement()
-		_covIncrementErr := writeBuffer.WriteSerializable(ctx, covIncrement)
-		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covIncrement")
-		}
-		if _covIncrementErr != nil {
-			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'covIncrement' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCOVSubscription"); popErr != nil {
@@ -332,9 +263,7 @@ func (m *_BACnetCOVSubscription) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-func (m *_BACnetCOVSubscription) isBACnetCOVSubscription() bool {
-	return true
-}
+func (m *_BACnetCOVSubscription) IsBACnetCOVSubscription() {}
 
 func (m *_BACnetCOVSubscription) String() string {
 	if m == nil {

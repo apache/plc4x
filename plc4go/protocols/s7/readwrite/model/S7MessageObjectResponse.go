@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,23 +43,21 @@ type S7MessageObjectResponse interface {
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
-}
-
-// S7MessageObjectResponseExactly can be used when we want exactly this type and not a type which fulfills S7MessageObjectResponse.
-// This is useful for switch cases.
-type S7MessageObjectResponseExactly interface {
-	S7MessageObjectResponse
-	isS7MessageObjectResponse() bool
+	// IsS7MessageObjectResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7MessageObjectResponse()
 }
 
 // _S7MessageObjectResponse is the data-structure of this message
 type _S7MessageObjectResponse struct {
-	*_S7DataAlarmMessage
+	S7DataAlarmMessageContract
 	ReturnCode    DataTransportErrorCode
 	TransportSize DataTransportSize
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ S7MessageObjectResponse = (*_S7MessageObjectResponse)(nil)
+var _ S7DataAlarmMessageRequirements = (*_S7MessageObjectResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,10 +73,8 @@ func (m *_S7MessageObjectResponse) GetCpuFunctionType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7MessageObjectResponse) InitializeParent(parent S7DataAlarmMessage) {}
-
-func (m *_S7MessageObjectResponse) GetParent() S7DataAlarmMessage {
-	return m._S7DataAlarmMessage
+func (m *_S7MessageObjectResponse) GetParent() S7DataAlarmMessageContract {
+	return m.S7DataAlarmMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,11 +98,11 @@ func (m *_S7MessageObjectResponse) GetTransportSize() DataTransportSize {
 // NewS7MessageObjectResponse factory function for _S7MessageObjectResponse
 func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7MessageObjectResponse {
 	_result := &_S7MessageObjectResponse{
-		ReturnCode:          returnCode,
-		TransportSize:       transportSize,
-		_S7DataAlarmMessage: NewS7DataAlarmMessage(),
+		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
+		ReturnCode:                 returnCode,
+		TransportSize:              transportSize,
 	}
-	_result._S7DataAlarmMessage._S7DataAlarmMessageChildRequirements = _result
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
 	return _result
 }
 
@@ -124,7 +122,7 @@ func (m *_S7MessageObjectResponse) GetTypeName() string {
 }
 
 func (m *_S7MessageObjectResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage).getLengthInBits(ctx))
 
 	// Simple field (returnCode)
 	lengthInBits += 8
@@ -142,77 +140,40 @@ func (m *_S7MessageObjectResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7MessageObjectResponseParse(ctx context.Context, theBytes []byte, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
-	return S7MessageObjectResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
-}
-
-func S7MessageObjectResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
+func (m *_S7MessageObjectResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7DataAlarmMessage, cpuFunctionType uint8) (__s7MessageObjectResponse S7MessageObjectResponse, err error) {
+	m.S7DataAlarmMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7MessageObjectResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7MessageObjectResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (returnCode)
-	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
+	returnCode, err := ReadEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", ReadEnum(DataTransportErrorCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnCode' field"))
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
-	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7MessageObjectResponse")
-	}
-	returnCode := _returnCode
-	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
-	}
+	m.ReturnCode = returnCode
 
-	// Simple Field (transportSize)
-	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
+	transportSize, err := ReadEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", ReadEnum(DataTransportSizeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
-	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7MessageObjectResponse")
-	}
-	transportSize := _transportSize
-	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
-	}
+	m.TransportSize = transportSize
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7MessageObjectResponse")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
 	if closeErr := readBuffer.CloseContext("S7MessageObjectResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7MessageObjectResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7MessageObjectResponse{
-		_S7DataAlarmMessage: &_S7DataAlarmMessage{},
-		ReturnCode:          returnCode,
-		TransportSize:       transportSize,
-		reservedField0:      reservedField0,
-	}
-	_child._S7DataAlarmMessage._S7DataAlarmMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7MessageObjectResponse) Serialize() ([]byte, error) {
@@ -233,44 +194,16 @@ func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for S7MessageObjectResponse")
 		}
 
-		// Simple Field (returnCode)
-		if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for returnCode")
-		}
-		_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
-		if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for returnCode")
-		}
-		if _returnCodeErr != nil {
-			return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
+		if err := WriteSimpleEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", m.GetReturnCode(), WriteEnum[DataTransportErrorCode, uint8](DataTransportErrorCode.GetValue, DataTransportErrorCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'returnCode' field")
 		}
 
-		// Simple Field (transportSize)
-		if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportSize")
-		}
-		_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
-		if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportSize")
-		}
-		if _transportSizeErr != nil {
-			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+		if err := WriteSimpleEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", m.GetTransportSize(), WriteEnum[DataTransportSize, uint8](DataTransportSize.GetValue, DataTransportSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportSize' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
 		if popErr := writeBuffer.PopContext("S7MessageObjectResponse"); popErr != nil {
@@ -278,12 +211,10 @@ func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7MessageObjectResponse) isS7MessageObjectResponse() bool {
-	return true
-}
+func (m *_S7MessageObjectResponse) IsS7MessageObjectResponse() {}
 
 func (m *_S7MessageObjectResponse) String() string {
 	if m == nil {

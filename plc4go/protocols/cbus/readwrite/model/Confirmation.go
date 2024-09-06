@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,13 +46,8 @@ type Confirmation interface {
 	GetConfirmationType() ConfirmationType
 	// GetIsSuccess returns IsSuccess (virtual field)
 	GetIsSuccess() bool
-}
-
-// ConfirmationExactly can be used when we want exactly this type and not a type which fulfills Confirmation.
-// This is useful for switch cases.
-type ConfirmationExactly interface {
-	Confirmation
-	isConfirmation() bool
+	// IsConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConfirmation()
 }
 
 // _Confirmation is the data-structure of this message
@@ -60,6 +56,8 @@ type _Confirmation struct {
 	SecondAlpha      Alpha
 	ConfirmationType ConfirmationType
 }
+
+var _ Confirmation = (*_Confirmation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,7 +88,7 @@ func (m *_Confirmation) GetConfirmationType() ConfirmationType {
 func (m *_Confirmation) GetIsSuccess() bool {
 	ctx := context.Background()
 	_ = ctx
-	secondAlpha := m.SecondAlpha
+	secondAlpha := m.GetSecondAlpha()
 	_ = secondAlpha
 	return bool(bool((m.GetConfirmationType()) == (ConfirmationType_CONFIRMATION_SUCCESSFUL)))
 }
@@ -102,6 +100,9 @@ func (m *_Confirmation) GetIsSuccess() bool {
 
 // NewConfirmation factory function for _Confirmation
 func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType ConfirmationType) *_Confirmation {
+	if alpha == nil {
+		panic("alpha of type Alpha for Confirmation must not be nil")
+	}
 	return &_Confirmation{Alpha: alpha, SecondAlpha: secondAlpha, ConfirmationType: confirmationType}
 }
 
@@ -147,80 +148,62 @@ func ConfirmationParse(ctx context.Context, theBytes []byte) (Confirmation, erro
 	return ConfirmationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConfirmationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
+		return ConfirmationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
+	v, err := (&_Confirmation{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_Confirmation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__confirmation Confirmation, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Confirmation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Confirmation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (alpha)
-	if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alpha")
+	alpha, err := ReadSimpleField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alpha' field"))
 	}
-	_alpha, _alphaErr := AlphaParseWithBuffer(ctx, readBuffer)
-	if _alphaErr != nil {
-		return nil, errors.Wrap(_alphaErr, "Error parsing 'alpha' field of Confirmation")
+	m.Alpha = alpha
+
+	var secondAlpha Alpha
+	_secondAlpha, err := ReadOptionalField[Alpha](ctx, "secondAlpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondAlpha' field"))
 	}
-	alpha := _alpha.(Alpha)
-	if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alpha")
+	if _secondAlpha != nil {
+		secondAlpha = *_secondAlpha
+		m.SecondAlpha = secondAlpha
 	}
 
-	// Optional Field (secondAlpha) (Can be skipped, if a given expression evaluates to false)
-	var secondAlpha Alpha = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("secondAlpha"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for secondAlpha")
-		}
-		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'secondAlpha' field of Confirmation")
-		default:
-			secondAlpha = _val.(Alpha)
-			if closeErr := readBuffer.CloseContext("secondAlpha"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for secondAlpha")
-			}
-		}
+	confirmationType, err := ReadEnumField[ConfirmationType](ctx, "confirmationType", "ConfirmationType", ReadEnum(ConfirmationTypeByValue, ReadByte(readBuffer, 8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmationType' field"))
 	}
+	m.ConfirmationType = confirmationType
 
-	// Simple Field (confirmationType)
-	if pullErr := readBuffer.PullContext("confirmationType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for confirmationType")
+	isSuccess, err := ReadVirtualField[bool](ctx, "isSuccess", (*bool)(nil), bool((confirmationType) == (ConfirmationType_CONFIRMATION_SUCCESSFUL)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSuccess' field"))
 	}
-	_confirmationType, _confirmationTypeErr := ConfirmationTypeParseWithBuffer(ctx, readBuffer)
-	if _confirmationTypeErr != nil {
-		return nil, errors.Wrap(_confirmationTypeErr, "Error parsing 'confirmationType' field of Confirmation")
-	}
-	confirmationType := _confirmationType
-	if closeErr := readBuffer.CloseContext("confirmationType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for confirmationType")
-	}
-
-	// Virtual field
-	_isSuccess := bool((confirmationType) == (ConfirmationType_CONFIRMATION_SUCCESSFUL))
-	isSuccess := bool(_isSuccess)
 	_ = isSuccess
 
 	if closeErr := readBuffer.CloseContext("Confirmation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Confirmation")
 	}
 
-	// Create the instance
-	return &_Confirmation{
-		Alpha:            alpha,
-		SecondAlpha:      secondAlpha,
-		ConfirmationType: confirmationType,
-	}, nil
+	return m, nil
 }
 
 func (m *_Confirmation) Serialize() ([]byte, error) {
@@ -240,44 +223,16 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for Confirmation")
 	}
 
-	// Simple Field (alpha)
-	if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for alpha")
-	}
-	_alphaErr := writeBuffer.WriteSerializable(ctx, m.GetAlpha())
-	if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for alpha")
-	}
-	if _alphaErr != nil {
-		return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
+	if err := WriteSimpleField[Alpha](ctx, "alpha", m.GetAlpha(), WriteComplex[Alpha](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'alpha' field")
 	}
 
-	// Optional Field (secondAlpha) (Can be skipped, if the value is null)
-	var secondAlpha Alpha = nil
-	if m.GetSecondAlpha() != nil {
-		if pushErr := writeBuffer.PushContext("secondAlpha"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for secondAlpha")
-		}
-		secondAlpha = m.GetSecondAlpha()
-		_secondAlphaErr := writeBuffer.WriteSerializable(ctx, secondAlpha)
-		if popErr := writeBuffer.PopContext("secondAlpha"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for secondAlpha")
-		}
-		if _secondAlphaErr != nil {
-			return errors.Wrap(_secondAlphaErr, "Error serializing 'secondAlpha' field")
-		}
+	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", GetRef(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'secondAlpha' field")
 	}
 
-	// Simple Field (confirmationType)
-	if pushErr := writeBuffer.PushContext("confirmationType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for confirmationType")
-	}
-	_confirmationTypeErr := writeBuffer.WriteSerializable(ctx, m.GetConfirmationType())
-	if popErr := writeBuffer.PopContext("confirmationType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for confirmationType")
-	}
-	if _confirmationTypeErr != nil {
-		return errors.Wrap(_confirmationTypeErr, "Error serializing 'confirmationType' field")
+	if err := WriteSimpleEnumField[ConfirmationType](ctx, "confirmationType", "ConfirmationType", m.GetConfirmationType(), WriteEnum[ConfirmationType, byte](ConfirmationType.GetValue, ConfirmationType.PLC4XEnumName, WriteByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'confirmationType' field")
 	}
 	// Virtual field
 	isSuccess := m.GetIsSuccess()
@@ -292,9 +247,7 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_Confirmation) isConfirmation() bool {
-	return true
-}
+func (m *_Confirmation) IsConfirmation() {}
 
 func (m *_Confirmation) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataNumberOfStates interface {
 	GetNumberOfState() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataNumberOfStatesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNumberOfStates.
-// This is useful for switch cases.
-type BACnetConstructedDataNumberOfStatesExactly interface {
-	BACnetConstructedDataNumberOfStates
-	isBACnetConstructedDataNumberOfStates() bool
+	// IsBACnetConstructedDataNumberOfStates is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNumberOfStates()
 }
 
 // _BACnetConstructedDataNumberOfStates is the data-structure of this message
 type _BACnetConstructedDataNumberOfStates struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NumberOfState BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataNumberOfStates = (*_BACnetConstructedDataNumberOfStates)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfStates)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataNumberOfStates) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataNumberOfStates) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataNumberOfStates) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataNumberOfStates) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataNumberOfStates) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataNumberOfStates factory function for _BACnetConstructedDataNumberOfStates
 func NewBACnetConstructedDataNumberOfStates(numberOfState BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfStates {
-	_result := &_BACnetConstructedDataNumberOfStates{
-		NumberOfState:          numberOfState,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if numberOfState == nil {
+		panic("numberOfState of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfStates must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataNumberOfStates{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfState:                 numberOfState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataNumberOfStates) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNumberOfStates) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (numberOfState)
 	lengthInBits += m.NumberOfState.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataNumberOfStates) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataNumberOfStatesParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfStates, error) {
-	return BACnetConstructedDataNumberOfStatesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataNumberOfStatesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfStates, error) {
+func (m *_BACnetConstructedDataNumberOfStates) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNumberOfStates BACnetConstructedDataNumberOfStates, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfStates"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNumberOfStates")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfState)
-	if pullErr := readBuffer.PullContext("numberOfState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for numberOfState")
+	numberOfState, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfState", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfState' field"))
 	}
-	_numberOfState, _numberOfStateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _numberOfStateErr != nil {
-		return nil, errors.Wrap(_numberOfStateErr, "Error parsing 'numberOfState' field of BACnetConstructedDataNumberOfStates")
-	}
-	numberOfState := _numberOfState.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("numberOfState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for numberOfState")
-	}
+	m.NumberOfState = numberOfState
 
-	// Virtual field
-	_actualValue := numberOfState
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), numberOfState)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNumberOfStates"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNumberOfStates")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataNumberOfStates{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NumberOfState: numberOfState,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataNumberOfStates) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataNumberOfStates) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNumberOfStates")
 		}
 
-		// Simple Field (numberOfState)
-		if pushErr := writeBuffer.PushContext("numberOfState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for numberOfState")
-		}
-		_numberOfStateErr := writeBuffer.WriteSerializable(ctx, m.GetNumberOfState())
-		if popErr := writeBuffer.PopContext("numberOfState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for numberOfState")
-		}
-		if _numberOfStateErr != nil {
-			return errors.Wrap(_numberOfStateErr, "Error serializing 'numberOfState' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfState", m.GetNumberOfState(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfState' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataNumberOfStates) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataNumberOfStates) isBACnetConstructedDataNumberOfStates() bool {
-	return true
-}
+func (m *_BACnetConstructedDataNumberOfStates) IsBACnetConstructedDataNumberOfStates() {}
 
 func (m *_BACnetConstructedDataNumberOfStates) String() string {
 	if m == nil {

@@ -113,7 +113,7 @@ public class DIBSuppSvcFamilies implements Message {
     List<ServiceId> serviceIds =
         readLengthArrayField(
             "serviceIds",
-            new DataReaderComplexDefault<>(() -> ServiceId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ServiceId.staticParse(readBuffer), readBuffer),
             (structureLength) - (2));
 
     readBuffer.closeContext("DIBSuppSvcFamilies");

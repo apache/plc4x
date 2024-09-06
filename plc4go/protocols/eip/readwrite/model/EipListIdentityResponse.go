@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type EipListIdentityResponse interface {
 	EipPacket
 	// GetItems returns Items (property field)
 	GetItems() []CommandSpecificDataItem
-}
-
-// EipListIdentityResponseExactly can be used when we want exactly this type and not a type which fulfills EipListIdentityResponse.
-// This is useful for switch cases.
-type EipListIdentityResponseExactly interface {
-	EipListIdentityResponse
-	isEipListIdentityResponse() bool
+	// IsEipListIdentityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEipListIdentityResponse()
 }
 
 // _EipListIdentityResponse is the data-structure of this message
 type _EipListIdentityResponse struct {
-	*_EipPacket
+	EipPacketContract
 	Items []CommandSpecificDataItem
 }
+
+var _ EipListIdentityResponse = (*_EipListIdentityResponse)(nil)
+var _ EipPacketRequirements = (*_EipListIdentityResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,15 +76,8 @@ func (m *_EipListIdentityResponse) GetPacketLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EipListIdentityResponse) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_EipListIdentityResponse) GetParent() EipPacket {
-	return m._EipPacket
+func (m *_EipListIdentityResponse) GetParent() EipPacketContract {
+	return m.EipPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,10 +97,10 @@ func (m *_EipListIdentityResponse) GetItems() []CommandSpecificDataItem {
 // NewEipListIdentityResponse factory function for _EipListIdentityResponse
 func NewEipListIdentityResponse(items []CommandSpecificDataItem, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipListIdentityResponse {
 	_result := &_EipListIdentityResponse{
-		Items:      items,
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		Items:             items,
 	}
-	_result._EipPacket._EipPacketChildRequirements = _result
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 
@@ -127,7 +120,7 @@ func (m *_EipListIdentityResponse) GetTypeName() string {
 }
 
 func (m *_EipListIdentityResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	// Implicit Field (itemCount)
 	lengthInBits += 16
@@ -149,66 +142,34 @@ func (m *_EipListIdentityResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipListIdentityResponseParse(ctx context.Context, theBytes []byte, response bool) (EipListIdentityResponse, error) {
-	return EipListIdentityResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func EipListIdentityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipListIdentityResponse, error) {
+func (m *_EipListIdentityResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__eipListIdentityResponse EipListIdentityResponse, err error) {
+	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EipListIdentityResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EipListIdentityResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (itemCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemCount, _itemCountErr := readBuffer.ReadUint16("itemCount", 16)
+	itemCount, err := ReadImplicitField[uint16](ctx, "itemCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemCount' field"))
+	}
 	_ = itemCount
-	if _itemCountErr != nil {
-		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field of EipListIdentityResponse")
-	}
 
-	// Array field (items)
-	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for items")
+	items, err := ReadCountArrayField[CommandSpecificDataItem](ctx, "items", ReadComplex[CommandSpecificDataItem](CommandSpecificDataItemParseWithBuffer, readBuffer), uint64(itemCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
-	// Count array
-	items := make([]CommandSpecificDataItem, max(itemCount, 0))
-	// This happens when the size is set conditional to 0
-	if len(items) == 0 {
-		items = nil
-	}
-	{
-		_numItems := uint16(max(itemCount, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := CommandSpecificDataItemParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field of EipListIdentityResponse")
-			}
-			items[_curItem] = _item.(CommandSpecificDataItem)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for items")
-	}
+	m.Items = items
 
 	if closeErr := readBuffer.CloseContext("EipListIdentityResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EipListIdentityResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_EipListIdentityResponse{
-		_EipPacket: &_EipPacket{},
-		Items:      items,
-	}
-	_child._EipPacket._EipPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_EipListIdentityResponse) Serialize() ([]byte, error) {
@@ -228,29 +189,13 @@ func (m *_EipListIdentityResponse) SerializeWithWriteBuffer(ctx context.Context,
 		if pushErr := writeBuffer.PushContext("EipListIdentityResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for EipListIdentityResponse")
 		}
-
-		// Implicit Field (itemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemCount := uint16(uint16(len(m.GetItems())))
-		_itemCountErr := writeBuffer.WriteUint16("itemCount", 16, uint16((itemCount)))
-		if _itemCountErr != nil {
-			return errors.Wrap(_itemCountErr, "Error serializing 'itemCount' field")
+		if err := WriteImplicitField(ctx, "itemCount", itemCount, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemCount' field")
 		}
 
-		// Array Field (items)
-		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for items")
-		}
-		for _curItem, _element := range m.GetItems() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'items' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for items")
+		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'items' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EipListIdentityResponse"); popErr != nil {
@@ -258,12 +203,10 @@ func (m *_EipListIdentityResponse) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.EipPacketContract.(*_EipPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_EipListIdentityResponse) isEipListIdentityResponse() bool {
-	return true
-}
+func (m *_EipListIdentityResponse) IsEipListIdentityResponse() {}
 
 func (m *_EipListIdentityResponse) String() string {
 	if m == nil {

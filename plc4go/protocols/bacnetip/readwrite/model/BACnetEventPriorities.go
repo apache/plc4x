@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,13 +48,8 @@ type BACnetEventPriorities interface {
 	GetToNormal() BACnetApplicationTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetEventPrioritiesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventPriorities.
-// This is useful for switch cases.
-type BACnetEventPrioritiesExactly interface {
-	BACnetEventPriorities
-	isBACnetEventPriorities() bool
+	// IsBACnetEventPriorities is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventPriorities()
 }
 
 // _BACnetEventPriorities is the data-structure of this message
@@ -66,6 +63,8 @@ type _BACnetEventPriorities struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetEventPriorities = (*_BACnetEventPriorities)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,6 +98,21 @@ func (m *_BACnetEventPriorities) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetEventPriorities factory function for _BACnetEventPriorities
 func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventPriorities {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventPriorities must not be nil")
+	}
+	if toOffnormal == nil {
+		panic("toOffnormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if toFault == nil {
+		panic("toFault of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if toNormal == nil {
+		panic("toNormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventPriorities must not be nil")
+	}
 	return &_BACnetEventPriorities{OpeningTag: openingTag, ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -146,95 +160,64 @@ func BACnetEventPrioritiesParse(ctx context.Context, theBytes []byte, tagNumber 
 	return BACnetEventPrioritiesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetEventPrioritiesParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventPriorities, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventPriorities, error) {
+		return BACnetEventPrioritiesParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetEventPrioritiesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {
+	v, err := (&_BACnetEventPriorities{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetEventPriorities) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventPriorities BACnetEventPriorities, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventPriorities"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventPriorities")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventPriorities")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (toOffnormal)
-	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for toOffnormal")
+	toOffnormal, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toOffnormal", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toOffnormal' field"))
 	}
-	_toOffnormal, _toOffnormalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _toOffnormalErr != nil {
-		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field of BACnetEventPriorities")
-	}
-	toOffnormal := _toOffnormal.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("toOffnormal"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for toOffnormal")
-	}
+	m.ToOffnormal = toOffnormal
 
-	// Simple Field (toFault)
-	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for toFault")
+	toFault, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toFault", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toFault' field"))
 	}
-	_toFault, _toFaultErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _toFaultErr != nil {
-		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field of BACnetEventPriorities")
-	}
-	toFault := _toFault.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("toFault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for toFault")
-	}
+	m.ToFault = toFault
 
-	// Simple Field (toNormal)
-	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for toNormal")
+	toNormal, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toNormal", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toNormal' field"))
 	}
-	_toNormal, _toNormalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _toNormalErr != nil {
-		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field of BACnetEventPriorities")
-	}
-	toNormal := _toNormal.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("toNormal"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for toNormal")
-	}
+	m.ToNormal = toNormal
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventPriorities")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetEventPriorities"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventPriorities")
 	}
 
-	// Create the instance
-	return &_BACnetEventPriorities{
-		TagNumber:   tagNumber,
-		OpeningTag:  openingTag,
-		ToOffnormal: toOffnormal,
-		ToFault:     toFault,
-		ToNormal:    toNormal,
-		ClosingTag:  closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetEventPriorities) Serialize() ([]byte, error) {
@@ -254,64 +237,24 @@ func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventPriorities")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (toOffnormal)
-	if pushErr := writeBuffer.PushContext("toOffnormal"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toOffnormal")
-	}
-	_toOffnormalErr := writeBuffer.WriteSerializable(ctx, m.GetToOffnormal())
-	if popErr := writeBuffer.PopContext("toOffnormal"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toOffnormal")
-	}
-	if _toOffnormalErr != nil {
-		return errors.Wrap(_toOffnormalErr, "Error serializing 'toOffnormal' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toOffnormal", m.GetToOffnormal(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toOffnormal' field")
 	}
 
-	// Simple Field (toFault)
-	if pushErr := writeBuffer.PushContext("toFault"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toFault")
-	}
-	_toFaultErr := writeBuffer.WriteSerializable(ctx, m.GetToFault())
-	if popErr := writeBuffer.PopContext("toFault"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toFault")
-	}
-	if _toFaultErr != nil {
-		return errors.Wrap(_toFaultErr, "Error serializing 'toFault' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toFault", m.GetToFault(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toFault' field")
 	}
 
-	// Simple Field (toNormal)
-	if pushErr := writeBuffer.PushContext("toNormal"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toNormal")
-	}
-	_toNormalErr := writeBuffer.WriteSerializable(ctx, m.GetToNormal())
-	if popErr := writeBuffer.PopContext("toNormal"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toNormal")
-	}
-	if _toNormalErr != nil {
-		return errors.Wrap(_toNormalErr, "Error serializing 'toNormal' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toNormal", m.GetToNormal(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toNormal' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventPriorities"); popErr != nil {
@@ -330,9 +273,7 @@ func (m *_BACnetEventPriorities) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetEventPriorities) isBACnetEventPriorities() bool {
-	return true
-}
+func (m *_BACnetEventPriorities) IsBACnetEventPriorities() {}
 
 func (m *_BACnetEventPriorities) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataIPDHCPEnable interface {
 	GetIpDhcpEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataIPDHCPEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDHCPEnable.
-// This is useful for switch cases.
-type BACnetConstructedDataIPDHCPEnableExactly interface {
-	BACnetConstructedDataIPDHCPEnable
-	isBACnetConstructedDataIPDHCPEnable() bool
+	// IsBACnetConstructedDataIPDHCPEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPDHCPEnable()
 }
 
 // _BACnetConstructedDataIPDHCPEnable is the data-structure of this message
 type _BACnetConstructedDataIPDHCPEnable struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	IpDhcpEnable BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataIPDHCPEnable = (*_BACnetConstructedDataIPDHCPEnable)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPEnable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataIPDHCPEnable) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataIPDHCPEnable) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataIPDHCPEnable) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataIPDHCPEnable factory function for _BACnetConstructedDataIPDHCPEnable
 func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPEnable {
-	_result := &_BACnetConstructedDataIPDHCPEnable{
-		IpDhcpEnable:           ipDhcpEnable,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if ipDhcpEnable == nil {
+		panic("ipDhcpEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataIPDHCPEnable must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataIPDHCPEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpDhcpEnable:                  ipDhcpEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIPDHCPEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipDhcpEnable)
 	lengthInBits += m.IpDhcpEnable.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataIPDHCPEnableParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPEnable, error) {
-	return BACnetConstructedDataIPDHCPEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataIPDHCPEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPEnable, error) {
+func (m *_BACnetConstructedDataIPDHCPEnable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPDHCPEnable BACnetConstructedDataIPDHCPEnable, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDHCPEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPDHCPEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipDhcpEnable)
-	if pullErr := readBuffer.PullContext("ipDhcpEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipDhcpEnable")
+	ipDhcpEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "ipDhcpEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDhcpEnable' field"))
 	}
-	_ipDhcpEnable, _ipDhcpEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipDhcpEnableErr != nil {
-		return nil, errors.Wrap(_ipDhcpEnableErr, "Error parsing 'ipDhcpEnable' field of BACnetConstructedDataIPDHCPEnable")
-	}
-	ipDhcpEnable := _ipDhcpEnable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("ipDhcpEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipDhcpEnable")
-	}
+	m.IpDhcpEnable = ipDhcpEnable
 
-	// Virtual field
-	_actualValue := ipDhcpEnable
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), ipDhcpEnable)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDHCPEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPDHCPEnable")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataIPDHCPEnable{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		IpDhcpEnable: ipDhcpEnable,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataIPDHCPEnable) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataIPDHCPEnable) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPDHCPEnable")
 		}
 
-		// Simple Field (ipDhcpEnable)
-		if pushErr := writeBuffer.PushContext("ipDhcpEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipDhcpEnable")
-		}
-		_ipDhcpEnableErr := writeBuffer.WriteSerializable(ctx, m.GetIpDhcpEnable())
-		if popErr := writeBuffer.PopContext("ipDhcpEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipDhcpEnable")
-		}
-		if _ipDhcpEnableErr != nil {
-			return errors.Wrap(_ipDhcpEnableErr, "Error serializing 'ipDhcpEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "ipDhcpEnable", m.GetIpDhcpEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipDhcpEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataIPDHCPEnable) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataIPDHCPEnable) isBACnetConstructedDataIPDHCPEnable() bool {
-	return true
-}
+func (m *_BACnetConstructedDataIPDHCPEnable) IsBACnetConstructedDataIPDHCPEnable() {}
 
 func (m *_BACnetConstructedDataIPDHCPEnable) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesLiftCarDoorCommand interface {
 	BACnetPropertyStates
 	// GetLiftCarDoorCommand returns LiftCarDoorCommand (property field)
 	GetLiftCarDoorCommand() BACnetLiftCarDoorCommandTagged
-}
-
-// BACnetPropertyStatesLiftCarDoorCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftCarDoorCommand.
-// This is useful for switch cases.
-type BACnetPropertyStatesLiftCarDoorCommandExactly interface {
-	BACnetPropertyStatesLiftCarDoorCommand
-	isBACnetPropertyStatesLiftCarDoorCommand() bool
+	// IsBACnetPropertyStatesLiftCarDoorCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLiftCarDoorCommand()
 }
 
 // _BACnetPropertyStatesLiftCarDoorCommand is the data-structure of this message
 type _BACnetPropertyStatesLiftCarDoorCommand struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	LiftCarDoorCommand BACnetLiftCarDoorCommandTagged
 }
+
+var _ BACnetPropertyStatesLiftCarDoorCommand = (*_BACnetPropertyStatesLiftCarDoorCommand)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftCarDoorCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesLiftCarDoorCommand struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommand) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetLiftCarDoorCommand() BACnet
 
 // NewBACnetPropertyStatesLiftCarDoorCommand factory function for _BACnetPropertyStatesLiftCarDoorCommand
 func NewBACnetPropertyStatesLiftCarDoorCommand(liftCarDoorCommand BACnetLiftCarDoorCommandTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftCarDoorCommand {
-	_result := &_BACnetPropertyStatesLiftCarDoorCommand{
-		LiftCarDoorCommand:    liftCarDoorCommand,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if liftCarDoorCommand == nil {
+		panic("liftCarDoorCommand of type BACnetLiftCarDoorCommandTagged for BACnetPropertyStatesLiftCarDoorCommand must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesLiftCarDoorCommand{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftCarDoorCommand:           liftCarDoorCommand,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (liftCarDoorCommand)
 	lengthInBits += m.LiftCarDoorCommand.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLiftCarDoorCommandParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDoorCommand, error) {
-	return BACnetPropertyStatesLiftCarDoorCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesLiftCarDoorCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDoorCommand, error) {
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLiftCarDoorCommand BACnetPropertyStatesLiftCarDoorCommand, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDoorCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftCarDoorCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftCarDoorCommand)
-	if pullErr := readBuffer.PullContext("liftCarDoorCommand"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDoorCommand")
+	liftCarDoorCommand, err := ReadSimpleField[BACnetLiftCarDoorCommandTagged](ctx, "liftCarDoorCommand", ReadComplex[BACnetLiftCarDoorCommandTagged](BACnetLiftCarDoorCommandTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftCarDoorCommand' field"))
 	}
-	_liftCarDoorCommand, _liftCarDoorCommandErr := BACnetLiftCarDoorCommandTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftCarDoorCommandErr != nil {
-		return nil, errors.Wrap(_liftCarDoorCommandErr, "Error parsing 'liftCarDoorCommand' field of BACnetPropertyStatesLiftCarDoorCommand")
-	}
-	liftCarDoorCommand := _liftCarDoorCommand.(BACnetLiftCarDoorCommandTagged)
-	if closeErr := readBuffer.CloseContext("liftCarDoorCommand"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftCarDoorCommand")
-	}
+	m.LiftCarDoorCommand = liftCarDoorCommand
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarDoorCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftCarDoorCommand")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesLiftCarDoorCommand{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		LiftCarDoorCommand:    liftCarDoorCommand,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesLiftCarDoorCommand) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarDoorCommand")
 		}
 
-		// Simple Field (liftCarDoorCommand)
-		if pushErr := writeBuffer.PushContext("liftCarDoorCommand"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftCarDoorCommand")
-		}
-		_liftCarDoorCommandErr := writeBuffer.WriteSerializable(ctx, m.GetLiftCarDoorCommand())
-		if popErr := writeBuffer.PopContext("liftCarDoorCommand"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftCarDoorCommand")
-		}
-		if _liftCarDoorCommandErr != nil {
-			return errors.Wrap(_liftCarDoorCommandErr, "Error serializing 'liftCarDoorCommand' field")
+		if err := WriteSimpleField[BACnetLiftCarDoorCommandTagged](ctx, "liftCarDoorCommand", m.GetLiftCarDoorCommand(), WriteComplex[BACnetLiftCarDoorCommandTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftCarDoorCommand' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarDoorCommand"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommand) isBACnetPropertyStatesLiftCarDoorCommand() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) IsBACnetPropertyStatesLiftCarDoorCommand() {}
 
 func (m *_BACnetPropertyStatesLiftCarDoorCommand) String() string {
 	if m == nil {

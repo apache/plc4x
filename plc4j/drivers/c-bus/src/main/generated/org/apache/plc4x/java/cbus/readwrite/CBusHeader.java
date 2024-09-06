@@ -81,8 +81,7 @@ public class CBusHeader implements Message {
         "priorityClass",
         "PriorityClass",
         priorityClass,
-        new DataWriterEnumDefault<>(
-            PriorityClass::getValue, PriorityClass::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(PriorityClass::getValue, PriorityClass::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (dp)
     writeSimpleField("dp", dp, writeBoolean(writeBuffer));
@@ -95,7 +94,7 @@ public class CBusHeader implements Message {
         "destinationAddressType",
         "DestinationAddressType",
         destinationAddressType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DestinationAddressType::getValue,
             DestinationAddressType::name,
             writeUnsignedByte(writeBuffer, 3)));
@@ -138,8 +137,7 @@ public class CBusHeader implements Message {
         readEnumField(
             "priorityClass",
             "PriorityClass",
-            new DataReaderEnumDefault<>(
-                PriorityClass::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(PriorityClass::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     boolean dp = readSimpleField("dp", readBoolean(readBuffer));
 
@@ -149,8 +147,7 @@ public class CBusHeader implements Message {
         readEnumField(
             "destinationAddressType",
             "DestinationAddressType",
-            new DataReaderEnumDefault<>(
-                DestinationAddressType::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(DestinationAddressType::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     readBuffer.closeContext("CBusHeader");
     // Create the instance

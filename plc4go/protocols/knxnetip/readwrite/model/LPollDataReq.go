@@ -37,19 +37,17 @@ type LPollDataReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
-}
-
-// LPollDataReqExactly can be used when we want exactly this type and not a type which fulfills LPollDataReq.
-// This is useful for switch cases.
-type LPollDataReqExactly interface {
-	LPollDataReq
-	isLPollDataReq() bool
+	// IsLPollDataReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLPollDataReq()
 }
 
 // _LPollDataReq is the data-structure of this message
 type _LPollDataReq struct {
-	*_CEMI
+	CEMIContract
 }
+
+var _ LPollDataReq = (*_LPollDataReq)(nil)
+var _ CEMIRequirements = (*_LPollDataReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_LPollDataReq) GetMessageCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_LPollDataReq) InitializeParent(parent CEMI) {}
-
-func (m *_LPollDataReq) GetParent() CEMI {
-	return m._CEMI
+func (m *_LPollDataReq) GetParent() CEMIContract {
+	return m.CEMIContract
 }
 
 // NewLPollDataReq factory function for _LPollDataReq
 func NewLPollDataReq(size uint16) *_LPollDataReq {
 	_result := &_LPollDataReq{
-		_CEMI: NewCEMI(size),
+		CEMIContract: NewCEMI(size),
 	}
-	_result._CEMI._CEMIChildRequirements = _result
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_LPollDataReq) GetTypeName() string {
 }
 
 func (m *_LPollDataReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_LPollDataReq) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LPollDataReqParse(ctx context.Context, theBytes []byte, size uint16) (LPollDataReq, error) {
-	return LPollDataReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
-}
-
-func LPollDataReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LPollDataReq, error) {
+func (m *_LPollDataReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lPollDataReq LPollDataReq, err error) {
+	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LPollDataReq"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LPollDataReq")
 	}
@@ -124,14 +116,7 @@ func LPollDataReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for LPollDataReq")
 	}
 
-	// Create a partially initialized instance
-	_child := &_LPollDataReq{
-		_CEMI: &_CEMI{
-			Size: size,
-		},
-	}
-	_child._CEMI._CEMIChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_LPollDataReq) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_LPollDataReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIContract.(*_CEMI).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_LPollDataReq) isLPollDataReq() bool {
-	return true
-}
+func (m *_LPollDataReq) IsLPollDataReq() {}
 
 func (m *_LPollDataReq) String() string {
 	if m == nil {

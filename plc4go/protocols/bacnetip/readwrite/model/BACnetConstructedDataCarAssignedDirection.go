@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataCarAssignedDirection interface {
 	GetAssignedDirection() BACnetLiftCarDirectionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarDirectionTagged
-}
-
-// BACnetConstructedDataCarAssignedDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarAssignedDirection.
-// This is useful for switch cases.
-type BACnetConstructedDataCarAssignedDirectionExactly interface {
-	BACnetConstructedDataCarAssignedDirection
-	isBACnetConstructedDataCarAssignedDirection() bool
+	// IsBACnetConstructedDataCarAssignedDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarAssignedDirection()
 }
 
 // _BACnetConstructedDataCarAssignedDirection is the data-structure of this message
 type _BACnetConstructedDataCarAssignedDirection struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AssignedDirection BACnetLiftCarDirectionTagged
 }
+
+var _ BACnetConstructedDataCarAssignedDirection = (*_BACnetConstructedDataCarAssignedDirection)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarAssignedDirection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCarAssignedDirection) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCarAssignedDirection) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCarAssignedDirection) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetActualValue() BACnetLift
 
 // NewBACnetConstructedDataCarAssignedDirection factory function for _BACnetConstructedDataCarAssignedDirection
 func NewBACnetConstructedDataCarAssignedDirection(assignedDirection BACnetLiftCarDirectionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarAssignedDirection {
-	_result := &_BACnetConstructedDataCarAssignedDirection{
-		AssignedDirection:      assignedDirection,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if assignedDirection == nil {
+		panic("assignedDirection of type BACnetLiftCarDirectionTagged for BACnetConstructedDataCarAssignedDirection must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataCarAssignedDirection{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AssignedDirection:             assignedDirection,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (assignedDirection)
 	lengthInBits += m.AssignedDirection.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCarAssignedDirectionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
-	return BACnetConstructedDataCarAssignedDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCarAssignedDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
+func (m *_BACnetConstructedDataCarAssignedDirection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCarAssignedDirection BACnetConstructedDataCarAssignedDirection, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarAssignedDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCarAssignedDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (assignedDirection)
-	if pullErr := readBuffer.PullContext("assignedDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for assignedDirection")
+	assignedDirection, err := ReadSimpleField[BACnetLiftCarDirectionTagged](ctx, "assignedDirection", ReadComplex[BACnetLiftCarDirectionTagged](BACnetLiftCarDirectionTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedDirection' field"))
 	}
-	_assignedDirection, _assignedDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _assignedDirectionErr != nil {
-		return nil, errors.Wrap(_assignedDirectionErr, "Error parsing 'assignedDirection' field of BACnetConstructedDataCarAssignedDirection")
-	}
-	assignedDirection := _assignedDirection.(BACnetLiftCarDirectionTagged)
-	if closeErr := readBuffer.CloseContext("assignedDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for assignedDirection")
-	}
+	m.AssignedDirection = assignedDirection
 
-	// Virtual field
-	_actualValue := assignedDirection
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetLiftCarDirectionTagged](ctx, "actualValue", (*BACnetLiftCarDirectionTagged)(nil), assignedDirection)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarAssignedDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarAssignedDirection")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCarAssignedDirection{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AssignedDirection: assignedDirection,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCarAssignedDirection) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarAssignedDirection")
 		}
 
-		// Simple Field (assignedDirection)
-		if pushErr := writeBuffer.PushContext("assignedDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for assignedDirection")
-		}
-		_assignedDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetAssignedDirection())
-		if popErr := writeBuffer.PopContext("assignedDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for assignedDirection")
-		}
-		if _assignedDirectionErr != nil {
-			return errors.Wrap(_assignedDirectionErr, "Error serializing 'assignedDirection' field")
+		if err := WriteSimpleField[BACnetLiftCarDirectionTagged](ctx, "assignedDirection", m.GetAssignedDirection(), WriteComplex[BACnetLiftCarDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'assignedDirection' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirection) isBACnetConstructedDataCarAssignedDirection() bool {
-	return true
-}
+func (m *_BACnetConstructedDataCarAssignedDirection) IsBACnetConstructedDataCarAssignedDirection() {}
 
 func (m *_BACnetConstructedDataCarAssignedDirection) String() string {
 	if m == nil {

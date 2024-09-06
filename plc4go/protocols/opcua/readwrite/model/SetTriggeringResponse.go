@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -55,18 +57,13 @@ type SetTriggeringResponse interface {
 	GetNoOfRemoveDiagnosticInfos() int32
 	// GetRemoveDiagnosticInfos returns RemoveDiagnosticInfos (property field)
 	GetRemoveDiagnosticInfos() []DiagnosticInfo
-}
-
-// SetTriggeringResponseExactly can be used when we want exactly this type and not a type which fulfills SetTriggeringResponse.
-// This is useful for switch cases.
-type SetTriggeringResponseExactly interface {
-	SetTriggeringResponse
-	isSetTriggeringResponse() bool
+	// IsSetTriggeringResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetTriggeringResponse()
 }
 
 // _SetTriggeringResponse is the data-structure of this message
 type _SetTriggeringResponse struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader            ExtensionObjectDefinition
 	NoOfAddResults            int32
 	AddResults                []StatusCode
@@ -77,6 +74,9 @@ type _SetTriggeringResponse struct {
 	NoOfRemoveDiagnosticInfos int32
 	RemoveDiagnosticInfos     []DiagnosticInfo
 }
+
+var _ SetTriggeringResponse = (*_SetTriggeringResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SetTriggeringResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,10 +92,8 @@ func (m *_SetTriggeringResponse) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SetTriggeringResponse) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_SetTriggeringResponse) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_SetTriggeringResponse) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -146,19 +144,22 @@ func (m *_SetTriggeringResponse) GetRemoveDiagnosticInfos() []DiagnosticInfo {
 
 // NewSetTriggeringResponse factory function for _SetTriggeringResponse
 func NewSetTriggeringResponse(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) *_SetTriggeringResponse {
-	_result := &_SetTriggeringResponse{
-		ResponseHeader:             responseHeader,
-		NoOfAddResults:             noOfAddResults,
-		AddResults:                 addResults,
-		NoOfAddDiagnosticInfos:     noOfAddDiagnosticInfos,
-		AddDiagnosticInfos:         addDiagnosticInfos,
-		NoOfRemoveResults:          noOfRemoveResults,
-		RemoveResults:              removeResults,
-		NoOfRemoveDiagnosticInfos:  noOfRemoveDiagnosticInfos,
-		RemoveDiagnosticInfos:      removeDiagnosticInfos,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetTriggeringResponse must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_SetTriggeringResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfAddResults:                    noOfAddResults,
+		AddResults:                        addResults,
+		NoOfAddDiagnosticInfos:            noOfAddDiagnosticInfos,
+		AddDiagnosticInfos:                addDiagnosticInfos,
+		NoOfRemoveResults:                 noOfRemoveResults,
+		RemoveResults:                     removeResults,
+		NoOfRemoveDiagnosticInfos:         noOfRemoveDiagnosticInfos,
+		RemoveDiagnosticInfos:             removeDiagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -178,7 +179,7 @@ func (m *_SetTriggeringResponse) GetTypeName() string {
 }
 
 func (m *_SetTriggeringResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -242,189 +243,76 @@ func (m *_SetTriggeringResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SetTriggeringResponseParse(ctx context.Context, theBytes []byte, identifier string) (SetTriggeringResponse, error) {
-	return SetTriggeringResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetTriggeringResponse, error) {
+func (m *_SetTriggeringResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setTriggeringResponse SetTriggeringResponse, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetTriggeringResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetTriggeringResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of SetTriggeringResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
-	// Simple Field (noOfAddResults)
-	_noOfAddResults, _noOfAddResultsErr := readBuffer.ReadInt32("noOfAddResults", 32)
-	if _noOfAddResultsErr != nil {
-		return nil, errors.Wrap(_noOfAddResultsErr, "Error parsing 'noOfAddResults' field of SetTriggeringResponse")
+	noOfAddResults, err := ReadSimpleField(ctx, "noOfAddResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAddResults' field"))
 	}
-	noOfAddResults := _noOfAddResults
+	m.NoOfAddResults = noOfAddResults
 
-	// Array field (addResults)
-	if pullErr := readBuffer.PullContext("addResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addResults")
+	addResults, err := ReadCountArrayField[StatusCode](ctx, "addResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfAddResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addResults' field"))
 	}
-	// Count array
-	addResults := make([]StatusCode, max(noOfAddResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(addResults) == 0 {
-		addResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfAddResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'addResults' field of SetTriggeringResponse")
-			}
-			addResults[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("addResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addResults")
-	}
+	m.AddResults = addResults
 
-	// Simple Field (noOfAddDiagnosticInfos)
-	_noOfAddDiagnosticInfos, _noOfAddDiagnosticInfosErr := readBuffer.ReadInt32("noOfAddDiagnosticInfos", 32)
-	if _noOfAddDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfAddDiagnosticInfosErr, "Error parsing 'noOfAddDiagnosticInfos' field of SetTriggeringResponse")
+	noOfAddDiagnosticInfos, err := ReadSimpleField(ctx, "noOfAddDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAddDiagnosticInfos' field"))
 	}
-	noOfAddDiagnosticInfos := _noOfAddDiagnosticInfos
+	m.NoOfAddDiagnosticInfos = noOfAddDiagnosticInfos
 
-	// Array field (addDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("addDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addDiagnosticInfos")
+	addDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "addDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfAddDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addDiagnosticInfos' field"))
 	}
-	// Count array
-	addDiagnosticInfos := make([]DiagnosticInfo, max(noOfAddDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(addDiagnosticInfos) == 0 {
-		addDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfAddDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'addDiagnosticInfos' field of SetTriggeringResponse")
-			}
-			addDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("addDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addDiagnosticInfos")
-	}
+	m.AddDiagnosticInfos = addDiagnosticInfos
 
-	// Simple Field (noOfRemoveResults)
-	_noOfRemoveResults, _noOfRemoveResultsErr := readBuffer.ReadInt32("noOfRemoveResults", 32)
-	if _noOfRemoveResultsErr != nil {
-		return nil, errors.Wrap(_noOfRemoveResultsErr, "Error parsing 'noOfRemoveResults' field of SetTriggeringResponse")
+	noOfRemoveResults, err := ReadSimpleField(ctx, "noOfRemoveResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRemoveResults' field"))
 	}
-	noOfRemoveResults := _noOfRemoveResults
+	m.NoOfRemoveResults = noOfRemoveResults
 
-	// Array field (removeResults)
-	if pullErr := readBuffer.PullContext("removeResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for removeResults")
+	removeResults, err := ReadCountArrayField[StatusCode](ctx, "removeResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfRemoveResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'removeResults' field"))
 	}
-	// Count array
-	removeResults := make([]StatusCode, max(noOfRemoveResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(removeResults) == 0 {
-		removeResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfRemoveResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'removeResults' field of SetTriggeringResponse")
-			}
-			removeResults[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("removeResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for removeResults")
-	}
+	m.RemoveResults = removeResults
 
-	// Simple Field (noOfRemoveDiagnosticInfos)
-	_noOfRemoveDiagnosticInfos, _noOfRemoveDiagnosticInfosErr := readBuffer.ReadInt32("noOfRemoveDiagnosticInfos", 32)
-	if _noOfRemoveDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfRemoveDiagnosticInfosErr, "Error parsing 'noOfRemoveDiagnosticInfos' field of SetTriggeringResponse")
+	noOfRemoveDiagnosticInfos, err := ReadSimpleField(ctx, "noOfRemoveDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRemoveDiagnosticInfos' field"))
 	}
-	noOfRemoveDiagnosticInfos := _noOfRemoveDiagnosticInfos
+	m.NoOfRemoveDiagnosticInfos = noOfRemoveDiagnosticInfos
 
-	// Array field (removeDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("removeDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for removeDiagnosticInfos")
+	removeDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "removeDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfRemoveDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'removeDiagnosticInfos' field"))
 	}
-	// Count array
-	removeDiagnosticInfos := make([]DiagnosticInfo, max(noOfRemoveDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(removeDiagnosticInfos) == 0 {
-		removeDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfRemoveDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'removeDiagnosticInfos' field of SetTriggeringResponse")
-			}
-			removeDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("removeDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for removeDiagnosticInfos")
-	}
+	m.RemoveDiagnosticInfos = removeDiagnosticInfos
 
 	if closeErr := readBuffer.CloseContext("SetTriggeringResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SetTriggeringResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SetTriggeringResponse{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-		NoOfAddResults:             noOfAddResults,
-		AddResults:                 addResults,
-		NoOfAddDiagnosticInfos:     noOfAddDiagnosticInfos,
-		AddDiagnosticInfos:         addDiagnosticInfos,
-		NoOfRemoveResults:          noOfRemoveResults,
-		RemoveResults:              removeResults,
-		NoOfRemoveDiagnosticInfos:  noOfRemoveDiagnosticInfos,
-		RemoveDiagnosticInfos:      removeDiagnosticInfos,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SetTriggeringResponse) Serialize() ([]byte, error) {
@@ -445,112 +333,40 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SetTriggeringResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfAddResults)
-		noOfAddResults := int32(m.GetNoOfAddResults())
-		_noOfAddResultsErr := writeBuffer.WriteInt32("noOfAddResults", 32, int32((noOfAddResults)))
-		if _noOfAddResultsErr != nil {
-			return errors.Wrap(_noOfAddResultsErr, "Error serializing 'noOfAddResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfAddResults", m.GetNoOfAddResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfAddResults' field")
 		}
 
-		// Array Field (addResults)
-		if pushErr := writeBuffer.PushContext("addResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addResults")
-		}
-		for _curItem, _element := range m.GetAddResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAddResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'addResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("addResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addResults")
+		if err := WriteComplexTypeArrayField(ctx, "addResults", m.GetAddResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'addResults' field")
 		}
 
-		// Simple Field (noOfAddDiagnosticInfos)
-		noOfAddDiagnosticInfos := int32(m.GetNoOfAddDiagnosticInfos())
-		_noOfAddDiagnosticInfosErr := writeBuffer.WriteInt32("noOfAddDiagnosticInfos", 32, int32((noOfAddDiagnosticInfos)))
-		if _noOfAddDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfAddDiagnosticInfosErr, "Error serializing 'noOfAddDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfAddDiagnosticInfos", m.GetNoOfAddDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfAddDiagnosticInfos' field")
 		}
 
-		// Array Field (addDiagnosticInfos)
-		if pushErr := writeBuffer.PushContext("addDiagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addDiagnosticInfos")
-		}
-		for _curItem, _element := range m.GetAddDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAddDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'addDiagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("addDiagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addDiagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "addDiagnosticInfos", m.GetAddDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'addDiagnosticInfos' field")
 		}
 
-		// Simple Field (noOfRemoveResults)
-		noOfRemoveResults := int32(m.GetNoOfRemoveResults())
-		_noOfRemoveResultsErr := writeBuffer.WriteInt32("noOfRemoveResults", 32, int32((noOfRemoveResults)))
-		if _noOfRemoveResultsErr != nil {
-			return errors.Wrap(_noOfRemoveResultsErr, "Error serializing 'noOfRemoveResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfRemoveResults", m.GetNoOfRemoveResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfRemoveResults' field")
 		}
 
-		// Array Field (removeResults)
-		if pushErr := writeBuffer.PushContext("removeResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for removeResults")
-		}
-		for _curItem, _element := range m.GetRemoveResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRemoveResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'removeResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("removeResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for removeResults")
+		if err := WriteComplexTypeArrayField(ctx, "removeResults", m.GetRemoveResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'removeResults' field")
 		}
 
-		// Simple Field (noOfRemoveDiagnosticInfos)
-		noOfRemoveDiagnosticInfos := int32(m.GetNoOfRemoveDiagnosticInfos())
-		_noOfRemoveDiagnosticInfosErr := writeBuffer.WriteInt32("noOfRemoveDiagnosticInfos", 32, int32((noOfRemoveDiagnosticInfos)))
-		if _noOfRemoveDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfRemoveDiagnosticInfosErr, "Error serializing 'noOfRemoveDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfRemoveDiagnosticInfos", m.GetNoOfRemoveDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfRemoveDiagnosticInfos' field")
 		}
 
-		// Array Field (removeDiagnosticInfos)
-		if pushErr := writeBuffer.PushContext("removeDiagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for removeDiagnosticInfos")
-		}
-		for _curItem, _element := range m.GetRemoveDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRemoveDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'removeDiagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("removeDiagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for removeDiagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "removeDiagnosticInfos", m.GetRemoveDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'removeDiagnosticInfos' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SetTriggeringResponse"); popErr != nil {
@@ -558,12 +374,10 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SetTriggeringResponse) isSetTriggeringResponse() bool {
-	return true
-}
+func (m *_SetTriggeringResponse) IsSetTriggeringResponse() {}
 
 func (m *_SetTriggeringResponse) String() string {
 	if m == nil {

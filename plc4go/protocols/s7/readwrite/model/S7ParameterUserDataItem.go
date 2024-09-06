@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,44 +35,35 @@ import (
 
 // S7ParameterUserDataItem is the corresponding interface of S7ParameterUserDataItem
 type S7ParameterUserDataItem interface {
+	S7ParameterUserDataItemContract
+	S7ParameterUserDataItemRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7ParameterUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterUserDataItem()
+}
+
+// S7ParameterUserDataItemContract provides a set of functions which can be overwritten by a sub struct
+type S7ParameterUserDataItemContract interface {
+	// IsS7ParameterUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterUserDataItem()
+}
+
+// S7ParameterUserDataItemRequirements provides a set of functions which need to be implemented by a sub struct
+type S7ParameterUserDataItemRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint8
 }
 
-// S7ParameterUserDataItemExactly can be used when we want exactly this type and not a type which fulfills S7ParameterUserDataItem.
-// This is useful for switch cases.
-type S7ParameterUserDataItemExactly interface {
-	S7ParameterUserDataItem
-	isS7ParameterUserDataItem() bool
-}
-
 // _S7ParameterUserDataItem is the data-structure of this message
 type _S7ParameterUserDataItem struct {
-	_S7ParameterUserDataItemChildRequirements
+	_SubType S7ParameterUserDataItem
 }
 
-type _S7ParameterUserDataItemChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetItemType() uint8
-}
-
-type S7ParameterUserDataItemParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7ParameterUserDataItem, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type S7ParameterUserDataItemChild interface {
-	utils.Serializable
-	InitializeParent(parent S7ParameterUserDataItem)
-	GetParent() *S7ParameterUserDataItem
-
-	GetTypeName() string
-	S7ParameterUserDataItem
-}
+var _ S7ParameterUserDataItemContract = (*_S7ParameterUserDataItem)(nil)
 
 // NewS7ParameterUserDataItem factory function for _S7ParameterUserDataItem
 func NewS7ParameterUserDataItem() *_S7ParameterUserDataItem {
@@ -92,7 +85,7 @@ func (m *_S7ParameterUserDataItem) GetTypeName() string {
 	return "S7ParameterUserDataItem"
 }
 
-func (m *_S7ParameterUserDataItem) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_S7ParameterUserDataItem) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8
@@ -101,60 +94,66 @@ func (m *_S7ParameterUserDataItem) GetParentLengthInBits(ctx context.Context) ui
 }
 
 func (m *_S7ParameterUserDataItem) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterUserDataItemParse(ctx context.Context, theBytes []byte) (S7ParameterUserDataItem, error) {
-	return S7ParameterUserDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func S7ParameterUserDataItemParse[T S7ParameterUserDataItem](ctx context.Context, theBytes []byte) (T, error) {
+	return S7ParameterUserDataItemParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func S7ParameterUserDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterUserDataItem, error) {
+func S7ParameterUserDataItemParseWithBufferProducer[T S7ParameterUserDataItem]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := S7ParameterUserDataItemParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func S7ParameterUserDataItemParseWithBuffer[T S7ParameterUserDataItem](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_S7ParameterUserDataItem{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_S7ParameterUserDataItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__s7ParameterUserDataItem S7ParameterUserDataItem, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterUserDataItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType, _itemTypeErr := readBuffer.ReadUint8("itemType", 8)
-	if _itemTypeErr != nil {
-		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field of S7ParameterUserDataItem")
+	itemType, err := ReadDiscriminatorField[uint8](ctx, "itemType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type S7ParameterUserDataItemChildSerializeRequirement interface {
-		S7ParameterUserDataItem
-		InitializeParent(S7ParameterUserDataItem)
-		GetParent() S7ParameterUserDataItem
-	}
-	var _childTemp any
-	var _child S7ParameterUserDataItemChildSerializeRequirement
-	var typeSwitchError error
+	var _child S7ParameterUserDataItem
 	switch {
 	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
-		_childTemp, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_S7ParameterUserDataItemCPUFunctions{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterUserDataItemCPUFunctions for type-switch of S7ParameterUserDataItem")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [itemType=%v]", itemType)
+		return nil, errors.Errorf("Unmapped type for parameters [itemType=%v]", itemType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7ParameterUserDataItem")
-	}
-	_child = _childTemp.(S7ParameterUserDataItemChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7ParameterUserDataItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterUserDataItem")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_S7ParameterUserDataItem) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7ParameterUserDataItem, serializeChildFunction func() error) error {
+func (pm *_S7ParameterUserDataItem) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7ParameterUserDataItem, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -166,12 +165,8 @@ func (pm *_S7ParameterUserDataItem) SerializeParent(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for S7ParameterUserDataItem")
 	}
 
-	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType := uint8(child.GetItemType())
-	_itemTypeErr := writeBuffer.WriteUint8("itemType", 8, uint8((itemType)))
-
-	if _itemTypeErr != nil {
-		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")
+	if err := WriteDiscriminatorField(ctx, "itemType", m.GetItemType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'itemType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -185,17 +180,4 @@ func (pm *_S7ParameterUserDataItem) SerializeParent(ctx context.Context, writeBu
 	return nil
 }
 
-func (m *_S7ParameterUserDataItem) isS7ParameterUserDataItem() bool {
-	return true
-}
-
-func (m *_S7ParameterUserDataItem) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_S7ParameterUserDataItem) IsS7ParameterUserDataItem() {}

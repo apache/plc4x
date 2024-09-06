@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -77,18 +79,13 @@ type IdentifyReplyCommandExtendedDiagnosticSummary interface {
 	GetMicroPowerReset() bool
 	// GetNetworkVoltageInVolts returns NetworkVoltageInVolts (virtual field)
 	GetNetworkVoltageInVolts() float32
-}
-
-// IdentifyReplyCommandExtendedDiagnosticSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandExtendedDiagnosticSummary.
-// This is useful for switch cases.
-type IdentifyReplyCommandExtendedDiagnosticSummaryExactly interface {
-	IdentifyReplyCommandExtendedDiagnosticSummary
-	isIdentifyReplyCommandExtendedDiagnosticSummary() bool
+	// IsIdentifyReplyCommandExtendedDiagnosticSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandExtendedDiagnosticSummary()
 }
 
 // _IdentifyReplyCommandExtendedDiagnosticSummary is the data-structure of this message
 type _IdentifyReplyCommandExtendedDiagnosticSummary struct {
-	*_IdentifyReplyCommand
+	IdentifyReplyCommandContract
 	LowApplication         ApplicationIdContainer
 	HighApplication        ApplicationIdContainer
 	Area                   byte
@@ -114,6 +111,9 @@ type _IdentifyReplyCommandExtendedDiagnosticSummary struct {
 	reservedField2 *uint8
 }
 
+var _ IdentifyReplyCommandExtendedDiagnosticSummary = (*_IdentifyReplyCommandExtendedDiagnosticSummary)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandExtendedDiagnosticSummary)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -128,11 +128,8 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetAttribute() Attribut
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) InitializeParent(parent IdentifyReplyCommand) {
-}
-
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetParent() IdentifyReplyCommand {
-	return m._IdentifyReplyCommand
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetParent() IdentifyReplyCommandContract {
+	return m.IdentifyReplyCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -239,28 +236,28 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetNetworkVoltageInVolt
 // NewIdentifyReplyCommandExtendedDiagnosticSummary factory function for _IdentifyReplyCommandExtendedDiagnosticSummary
 func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, unitInLearnMode bool, networkVoltageLow bool, networkVoltageMarginal bool, enableChecksumAlarm bool, outputUnit bool, installationMMIError bool, EEWriteError bool, EEChecksumError bool, EEDataError bool, microReset bool, commsTxError bool, internalStackOverflow bool, microPowerReset bool, numBytes uint8) *_IdentifyReplyCommandExtendedDiagnosticSummary {
 	_result := &_IdentifyReplyCommandExtendedDiagnosticSummary{
-		LowApplication:         lowApplication,
-		HighApplication:        highApplication,
-		Area:                   area,
-		Crc:                    crc,
-		SerialNumber:           serialNumber,
-		NetworkVoltage:         networkVoltage,
-		UnitInLearnMode:        unitInLearnMode,
-		NetworkVoltageLow:      networkVoltageLow,
-		NetworkVoltageMarginal: networkVoltageMarginal,
-		EnableChecksumAlarm:    enableChecksumAlarm,
-		OutputUnit:             outputUnit,
-		InstallationMMIError:   installationMMIError,
-		EEWriteError:           EEWriteError,
-		EEChecksumError:        EEChecksumError,
-		EEDataError:            EEDataError,
-		MicroReset:             microReset,
-		CommsTxError:           commsTxError,
-		InternalStackOverflow:  internalStackOverflow,
-		MicroPowerReset:        microPowerReset,
-		_IdentifyReplyCommand:  NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		LowApplication:               lowApplication,
+		HighApplication:              highApplication,
+		Area:                         area,
+		Crc:                          crc,
+		SerialNumber:                 serialNumber,
+		NetworkVoltage:               networkVoltage,
+		UnitInLearnMode:              unitInLearnMode,
+		NetworkVoltageLow:            networkVoltageLow,
+		NetworkVoltageMarginal:       networkVoltageMarginal,
+		EnableChecksumAlarm:          enableChecksumAlarm,
+		OutputUnit:                   outputUnit,
+		InstallationMMIError:         installationMMIError,
+		EEWriteError:                 EEWriteError,
+		EEChecksumError:              EEChecksumError,
+		EEDataError:                  EEDataError,
+		MicroReset:                   microReset,
+		CommsTxError:                 commsTxError,
+		InternalStackOverflow:        internalStackOverflow,
+		MicroPowerReset:              microPowerReset,
 	}
-	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 
@@ -280,7 +277,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Simple field (lowApplication)
 	lengthInBits += 8
@@ -357,256 +354,160 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes(ctx co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandExtendedDiagnosticSummaryParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
-	return IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
-}
-
-func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandExtendedDiagnosticSummary IdentifyReplyCommandExtendedDiagnosticSummary, err error) {
+	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandExtendedDiagnosticSummary")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lowApplication)
-	if pullErr := readBuffer.PullContext("lowApplication"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lowApplication")
+	lowApplication, err := ReadEnumField[ApplicationIdContainer](ctx, "lowApplication", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowApplication' field"))
 	}
-	_lowApplication, _lowApplicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _lowApplicationErr != nil {
-		return nil, errors.Wrap(_lowApplicationErr, "Error parsing 'lowApplication' field of IdentifyReplyCommandExtendedDiagnosticSummary")
-	}
-	lowApplication := _lowApplication
-	if closeErr := readBuffer.CloseContext("lowApplication"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lowApplication")
-	}
+	m.LowApplication = lowApplication
 
-	// Simple Field (highApplication)
-	if pullErr := readBuffer.PullContext("highApplication"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for highApplication")
+	highApplication, err := ReadEnumField[ApplicationIdContainer](ctx, "highApplication", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highApplication' field"))
 	}
-	_highApplication, _highApplicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _highApplicationErr != nil {
-		return nil, errors.Wrap(_highApplicationErr, "Error parsing 'highApplication' field of IdentifyReplyCommandExtendedDiagnosticSummary")
-	}
-	highApplication := _highApplication
-	if closeErr := readBuffer.CloseContext("highApplication"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for highApplication")
-	}
+	m.HighApplication = highApplication
 
-	// Simple Field (area)
-	_area, _areaErr := readBuffer.ReadByte("area")
-	if _areaErr != nil {
-		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	area, err := ReadSimpleField(ctx, "area", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'area' field"))
 	}
-	area := _area
+	m.Area = area
 
-	// Simple Field (crc)
-	_crc, _crcErr := readBuffer.ReadUint16("crc", 16)
-	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	crc, err := ReadSimpleField(ctx, "crc", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
 	}
-	crc := _crc
+	m.Crc = crc
 
-	// Simple Field (serialNumber)
-	_serialNumber, _serialNumberErr := readBuffer.ReadUint32("serialNumber", 32)
-	if _serialNumberErr != nil {
-		return nil, errors.Wrap(_serialNumberErr, "Error parsing 'serialNumber' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	serialNumber, err := ReadSimpleField(ctx, "serialNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serialNumber' field"))
 	}
-	serialNumber := _serialNumber
+	m.SerialNumber = serialNumber
 
-	// Simple Field (networkVoltage)
-	_networkVoltage, _networkVoltageErr := readBuffer.ReadByte("networkVoltage")
-	if _networkVoltageErr != nil {
-		return nil, errors.Wrap(_networkVoltageErr, "Error parsing 'networkVoltage' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	networkVoltage, err := ReadSimpleField(ctx, "networkVoltage", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltage' field"))
 	}
-	networkVoltage := _networkVoltage
+	m.NetworkVoltage = networkVoltage
 
-	// Virtual field
-	_networkVoltageInVolts := float32(networkVoltage) / float32(float32(6.375))
-	networkVoltageInVolts := float32(_networkVoltageInVolts)
+	networkVoltageInVolts, err := ReadVirtualField[float32](ctx, "networkVoltageInVolts", (*float32)(nil), float32(networkVoltage)/float32(float32(6.375)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltageInVolts' field"))
+	}
 	_ = networkVoltageInVolts
 
-	// Simple Field (unitInLearnMode)
-	_unitInLearnMode, _unitInLearnModeErr := readBuffer.ReadBit("unitInLearnMode")
-	if _unitInLearnModeErr != nil {
-		return nil, errors.Wrap(_unitInLearnModeErr, "Error parsing 'unitInLearnMode' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	unitInLearnMode, err := ReadSimpleField(ctx, "unitInLearnMode", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitInLearnMode' field"))
 	}
-	unitInLearnMode := _unitInLearnMode
+	m.UnitInLearnMode = unitInLearnMode
 
-	// Simple Field (networkVoltageLow)
-	_networkVoltageLow, _networkVoltageLowErr := readBuffer.ReadBit("networkVoltageLow")
-	if _networkVoltageLowErr != nil {
-		return nil, errors.Wrap(_networkVoltageLowErr, "Error parsing 'networkVoltageLow' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	networkVoltageLow, err := ReadSimpleField(ctx, "networkVoltageLow", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltageLow' field"))
 	}
-	networkVoltageLow := _networkVoltageLow
+	m.NetworkVoltageLow = networkVoltageLow
 
-	// Simple Field (networkVoltageMarginal)
-	_networkVoltageMarginal, _networkVoltageMarginalErr := readBuffer.ReadBit("networkVoltageMarginal")
-	if _networkVoltageMarginalErr != nil {
-		return nil, errors.Wrap(_networkVoltageMarginalErr, "Error parsing 'networkVoltageMarginal' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	networkVoltageMarginal, err := ReadSimpleField(ctx, "networkVoltageMarginal", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltageMarginal' field"))
 	}
-	networkVoltageMarginal := _networkVoltageMarginal
+	m.NetworkVoltageMarginal = networkVoltageMarginal
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 1)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of IdentifyReplyCommandExtendedDiagnosticSummary")
-		}
-		if reserved != uint8(0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	var reservedField1 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 1)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of IdentifyReplyCommandExtendedDiagnosticSummary")
-		}
-		if reserved != uint8(0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField1 = reservedField1
 
-	var reservedField2 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 1)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of IdentifyReplyCommandExtendedDiagnosticSummary")
-		}
-		if reserved != uint8(0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField2 = &reserved
-		}
+	reservedField2, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField2 = reservedField2
 
-	// Simple Field (enableChecksumAlarm)
-	_enableChecksumAlarm, _enableChecksumAlarmErr := readBuffer.ReadBit("enableChecksumAlarm")
-	if _enableChecksumAlarmErr != nil {
-		return nil, errors.Wrap(_enableChecksumAlarmErr, "Error parsing 'enableChecksumAlarm' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	enableChecksumAlarm, err := ReadSimpleField(ctx, "enableChecksumAlarm", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enableChecksumAlarm' field"))
 	}
-	enableChecksumAlarm := _enableChecksumAlarm
+	m.EnableChecksumAlarm = enableChecksumAlarm
 
-	// Simple Field (outputUnit)
-	_outputUnit, _outputUnitErr := readBuffer.ReadBit("outputUnit")
-	if _outputUnitErr != nil {
-		return nil, errors.Wrap(_outputUnitErr, "Error parsing 'outputUnit' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	outputUnit, err := ReadSimpleField(ctx, "outputUnit", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'outputUnit' field"))
 	}
-	outputUnit := _outputUnit
+	m.OutputUnit = outputUnit
 
-	// Simple Field (installationMMIError)
-	_installationMMIError, _installationMMIErrorErr := readBuffer.ReadBit("installationMMIError")
-	if _installationMMIErrorErr != nil {
-		return nil, errors.Wrap(_installationMMIErrorErr, "Error parsing 'installationMMIError' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	installationMMIError, err := ReadSimpleField(ctx, "installationMMIError", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'installationMMIError' field"))
 	}
-	installationMMIError := _installationMMIError
+	m.InstallationMMIError = installationMMIError
 
-	// Simple Field (EEWriteError)
-	_EEWriteError, _EEWriteErrorErr := readBuffer.ReadBit("EEWriteError")
-	if _EEWriteErrorErr != nil {
-		return nil, errors.Wrap(_EEWriteErrorErr, "Error parsing 'EEWriteError' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	EEWriteError, err := ReadSimpleField(ctx, "EEWriteError", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'EEWriteError' field"))
 	}
-	EEWriteError := _EEWriteError
+	m.EEWriteError = EEWriteError
 
-	// Simple Field (EEChecksumError)
-	_EEChecksumError, _EEChecksumErrorErr := readBuffer.ReadBit("EEChecksumError")
-	if _EEChecksumErrorErr != nil {
-		return nil, errors.Wrap(_EEChecksumErrorErr, "Error parsing 'EEChecksumError' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	EEChecksumError, err := ReadSimpleField(ctx, "EEChecksumError", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'EEChecksumError' field"))
 	}
-	EEChecksumError := _EEChecksumError
+	m.EEChecksumError = EEChecksumError
 
-	// Simple Field (EEDataError)
-	_EEDataError, _EEDataErrorErr := readBuffer.ReadBit("EEDataError")
-	if _EEDataErrorErr != nil {
-		return nil, errors.Wrap(_EEDataErrorErr, "Error parsing 'EEDataError' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	EEDataError, err := ReadSimpleField(ctx, "EEDataError", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'EEDataError' field"))
 	}
-	EEDataError := _EEDataError
+	m.EEDataError = EEDataError
 
-	// Simple Field (microReset)
-	_microReset, _microResetErr := readBuffer.ReadBit("microReset")
-	if _microResetErr != nil {
-		return nil, errors.Wrap(_microResetErr, "Error parsing 'microReset' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	microReset, err := ReadSimpleField(ctx, "microReset", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'microReset' field"))
 	}
-	microReset := _microReset
+	m.MicroReset = microReset
 
-	// Simple Field (commsTxError)
-	_commsTxError, _commsTxErrorErr := readBuffer.ReadBit("commsTxError")
-	if _commsTxErrorErr != nil {
-		return nil, errors.Wrap(_commsTxErrorErr, "Error parsing 'commsTxError' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	commsTxError, err := ReadSimpleField(ctx, "commsTxError", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commsTxError' field"))
 	}
-	commsTxError := _commsTxError
+	m.CommsTxError = commsTxError
 
-	// Simple Field (internalStackOverflow)
-	_internalStackOverflow, _internalStackOverflowErr := readBuffer.ReadBit("internalStackOverflow")
-	if _internalStackOverflowErr != nil {
-		return nil, errors.Wrap(_internalStackOverflowErr, "Error parsing 'internalStackOverflow' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	internalStackOverflow, err := ReadSimpleField(ctx, "internalStackOverflow", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'internalStackOverflow' field"))
 	}
-	internalStackOverflow := _internalStackOverflow
+	m.InternalStackOverflow = internalStackOverflow
 
-	// Simple Field (microPowerReset)
-	_microPowerReset, _microPowerResetErr := readBuffer.ReadBit("microPowerReset")
-	if _microPowerResetErr != nil {
-		return nil, errors.Wrap(_microPowerResetErr, "Error parsing 'microPowerReset' field of IdentifyReplyCommandExtendedDiagnosticSummary")
+	microPowerReset, err := ReadSimpleField(ctx, "microPowerReset", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'microPowerReset' field"))
 	}
-	microPowerReset := _microPowerReset
+	m.MicroPowerReset = microPowerReset
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandExtendedDiagnosticSummary"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandExtendedDiagnosticSummary")
 	}
 
-	// Create a partially initialized instance
-	_child := &_IdentifyReplyCommandExtendedDiagnosticSummary{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
-		LowApplication:         lowApplication,
-		HighApplication:        highApplication,
-		Area:                   area,
-		Crc:                    crc,
-		SerialNumber:           serialNumber,
-		NetworkVoltage:         networkVoltage,
-		UnitInLearnMode:        unitInLearnMode,
-		NetworkVoltageLow:      networkVoltageLow,
-		NetworkVoltageMarginal: networkVoltageMarginal,
-		EnableChecksumAlarm:    enableChecksumAlarm,
-		OutputUnit:             outputUnit,
-		InstallationMMIError:   installationMMIError,
-		EEWriteError:           EEWriteError,
-		EEChecksumError:        EEChecksumError,
-		EEDataError:            EEDataError,
-		MicroReset:             microReset,
-		CommsTxError:           commsTxError,
-		InternalStackOverflow:  internalStackOverflow,
-		MicroPowerReset:        microPowerReset,
-		reservedField0:         reservedField0,
-		reservedField1:         reservedField1,
-		reservedField2:         reservedField2,
-	}
-	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize() ([]byte, error) {
@@ -627,56 +528,28 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandExtendedDiagnosticSummary")
 		}
 
-		// Simple Field (lowApplication)
-		if pushErr := writeBuffer.PushContext("lowApplication"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lowApplication")
-		}
-		_lowApplicationErr := writeBuffer.WriteSerializable(ctx, m.GetLowApplication())
-		if popErr := writeBuffer.PopContext("lowApplication"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lowApplication")
-		}
-		if _lowApplicationErr != nil {
-			return errors.Wrap(_lowApplicationErr, "Error serializing 'lowApplication' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "lowApplication", "ApplicationIdContainer", m.GetLowApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'lowApplication' field")
 		}
 
-		// Simple Field (highApplication)
-		if pushErr := writeBuffer.PushContext("highApplication"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for highApplication")
-		}
-		_highApplicationErr := writeBuffer.WriteSerializable(ctx, m.GetHighApplication())
-		if popErr := writeBuffer.PopContext("highApplication"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for highApplication")
-		}
-		if _highApplicationErr != nil {
-			return errors.Wrap(_highApplicationErr, "Error serializing 'highApplication' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "highApplication", "ApplicationIdContainer", m.GetHighApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'highApplication' field")
 		}
 
-		// Simple Field (area)
-		area := byte(m.GetArea())
-		_areaErr := writeBuffer.WriteByte("area", (area))
-		if _areaErr != nil {
-			return errors.Wrap(_areaErr, "Error serializing 'area' field")
+		if err := WriteSimpleField[byte](ctx, "area", m.GetArea(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'area' field")
 		}
 
-		// Simple Field (crc)
-		crc := uint16(m.GetCrc())
-		_crcErr := writeBuffer.WriteUint16("crc", 16, uint16((crc)))
-		if _crcErr != nil {
-			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
+		if err := WriteSimpleField[uint16](ctx, "crc", m.GetCrc(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'crc' field")
 		}
 
-		// Simple Field (serialNumber)
-		serialNumber := uint32(m.GetSerialNumber())
-		_serialNumberErr := writeBuffer.WriteUint32("serialNumber", 32, uint32((serialNumber)))
-		if _serialNumberErr != nil {
-			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
+		if err := WriteSimpleField[uint32](ctx, "serialNumber", m.GetSerialNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serialNumber' field")
 		}
 
-		// Simple Field (networkVoltage)
-		networkVoltage := byte(m.GetNetworkVoltage())
-		_networkVoltageErr := writeBuffer.WriteByte("networkVoltage", (networkVoltage))
-		if _networkVoltageErr != nil {
-			return errors.Wrap(_networkVoltageErr, "Error serializing 'networkVoltage' field")
+		if err := WriteSimpleField[byte](ctx, "networkVoltage", m.GetNetworkVoltage(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkVoltage' field")
 		}
 		// Virtual field
 		networkVoltageInVolts := m.GetNetworkVoltageInVolts()
@@ -685,143 +558,68 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(_networkVoltageInVoltsErr, "Error serializing 'networkVoltageInVolts' field")
 		}
 
-		// Simple Field (unitInLearnMode)
-		unitInLearnMode := bool(m.GetUnitInLearnMode())
-		_unitInLearnModeErr := writeBuffer.WriteBit("unitInLearnMode", (unitInLearnMode))
-		if _unitInLearnModeErr != nil {
-			return errors.Wrap(_unitInLearnModeErr, "Error serializing 'unitInLearnMode' field")
+		if err := WriteSimpleField[bool](ctx, "unitInLearnMode", m.GetUnitInLearnMode(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitInLearnMode' field")
 		}
 
-		// Simple Field (networkVoltageLow)
-		networkVoltageLow := bool(m.GetNetworkVoltageLow())
-		_networkVoltageLowErr := writeBuffer.WriteBit("networkVoltageLow", (networkVoltageLow))
-		if _networkVoltageLowErr != nil {
-			return errors.Wrap(_networkVoltageLowErr, "Error serializing 'networkVoltageLow' field")
+		if err := WriteSimpleField[bool](ctx, "networkVoltageLow", m.GetNetworkVoltageLow(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkVoltageLow' field")
 		}
 
-		// Simple Field (networkVoltageMarginal)
-		networkVoltageMarginal := bool(m.GetNetworkVoltageMarginal())
-		_networkVoltageMarginalErr := writeBuffer.WriteBit("networkVoltageMarginal", (networkVoltageMarginal))
-		if _networkVoltageMarginalErr != nil {
-			return errors.Wrap(_networkVoltageMarginalErr, "Error serializing 'networkVoltageMarginal' field")
+		if err := WriteSimpleField[bool](ctx, "networkVoltageMarginal", m.GetNetworkVoltageMarginal(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkVoltageMarginal' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0)
-			if m.reservedField2 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField2
-			}
-			_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 3")
 		}
 
-		// Simple Field (enableChecksumAlarm)
-		enableChecksumAlarm := bool(m.GetEnableChecksumAlarm())
-		_enableChecksumAlarmErr := writeBuffer.WriteBit("enableChecksumAlarm", (enableChecksumAlarm))
-		if _enableChecksumAlarmErr != nil {
-			return errors.Wrap(_enableChecksumAlarmErr, "Error serializing 'enableChecksumAlarm' field")
+		if err := WriteSimpleField[bool](ctx, "enableChecksumAlarm", m.GetEnableChecksumAlarm(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enableChecksumAlarm' field")
 		}
 
-		// Simple Field (outputUnit)
-		outputUnit := bool(m.GetOutputUnit())
-		_outputUnitErr := writeBuffer.WriteBit("outputUnit", (outputUnit))
-		if _outputUnitErr != nil {
-			return errors.Wrap(_outputUnitErr, "Error serializing 'outputUnit' field")
+		if err := WriteSimpleField[bool](ctx, "outputUnit", m.GetOutputUnit(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'outputUnit' field")
 		}
 
-		// Simple Field (installationMMIError)
-		installationMMIError := bool(m.GetInstallationMMIError())
-		_installationMMIErrorErr := writeBuffer.WriteBit("installationMMIError", (installationMMIError))
-		if _installationMMIErrorErr != nil {
-			return errors.Wrap(_installationMMIErrorErr, "Error serializing 'installationMMIError' field")
+		if err := WriteSimpleField[bool](ctx, "installationMMIError", m.GetInstallationMMIError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'installationMMIError' field")
 		}
 
-		// Simple Field (EEWriteError)
-		EEWriteError := bool(m.GetEEWriteError())
-		_EEWriteErrorErr := writeBuffer.WriteBit("EEWriteError", (EEWriteError))
-		if _EEWriteErrorErr != nil {
-			return errors.Wrap(_EEWriteErrorErr, "Error serializing 'EEWriteError' field")
+		if err := WriteSimpleField[bool](ctx, "EEWriteError", m.GetEEWriteError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'EEWriteError' field")
 		}
 
-		// Simple Field (EEChecksumError)
-		EEChecksumError := bool(m.GetEEChecksumError())
-		_EEChecksumErrorErr := writeBuffer.WriteBit("EEChecksumError", (EEChecksumError))
-		if _EEChecksumErrorErr != nil {
-			return errors.Wrap(_EEChecksumErrorErr, "Error serializing 'EEChecksumError' field")
+		if err := WriteSimpleField[bool](ctx, "EEChecksumError", m.GetEEChecksumError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'EEChecksumError' field")
 		}
 
-		// Simple Field (EEDataError)
-		EEDataError := bool(m.GetEEDataError())
-		_EEDataErrorErr := writeBuffer.WriteBit("EEDataError", (EEDataError))
-		if _EEDataErrorErr != nil {
-			return errors.Wrap(_EEDataErrorErr, "Error serializing 'EEDataError' field")
+		if err := WriteSimpleField[bool](ctx, "EEDataError", m.GetEEDataError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'EEDataError' field")
 		}
 
-		// Simple Field (microReset)
-		microReset := bool(m.GetMicroReset())
-		_microResetErr := writeBuffer.WriteBit("microReset", (microReset))
-		if _microResetErr != nil {
-			return errors.Wrap(_microResetErr, "Error serializing 'microReset' field")
+		if err := WriteSimpleField[bool](ctx, "microReset", m.GetMicroReset(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'microReset' field")
 		}
 
-		// Simple Field (commsTxError)
-		commsTxError := bool(m.GetCommsTxError())
-		_commsTxErrorErr := writeBuffer.WriteBit("commsTxError", (commsTxError))
-		if _commsTxErrorErr != nil {
-			return errors.Wrap(_commsTxErrorErr, "Error serializing 'commsTxError' field")
+		if err := WriteSimpleField[bool](ctx, "commsTxError", m.GetCommsTxError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'commsTxError' field")
 		}
 
-		// Simple Field (internalStackOverflow)
-		internalStackOverflow := bool(m.GetInternalStackOverflow())
-		_internalStackOverflowErr := writeBuffer.WriteBit("internalStackOverflow", (internalStackOverflow))
-		if _internalStackOverflowErr != nil {
-			return errors.Wrap(_internalStackOverflowErr, "Error serializing 'internalStackOverflow' field")
+		if err := WriteSimpleField[bool](ctx, "internalStackOverflow", m.GetInternalStackOverflow(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'internalStackOverflow' field")
 		}
 
-		// Simple Field (microPowerReset)
-		microPowerReset := bool(m.GetMicroPowerReset())
-		_microPowerResetErr := writeBuffer.WriteBit("microPowerReset", (microPowerReset))
-		if _microPowerResetErr != nil {
-			return errors.Wrap(_microPowerResetErr, "Error serializing 'microPowerReset' field")
+		if err := WriteSimpleField[bool](ctx, "microPowerReset", m.GetMicroPowerReset(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'microPowerReset' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandExtendedDiagnosticSummary"); popErr != nil {
@@ -829,11 +627,10 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) isIdentifyReplyCommandExtendedDiagnosticSummary() bool {
-	return true
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) IsIdentifyReplyCommandExtendedDiagnosticSummary() {
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) String() string {

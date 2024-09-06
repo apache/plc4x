@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type AirConditioningDataSetHvacSetbackLimit interface {
 	GetLimit() HVACTemperature
 	// GetHvacModeAndFlags returns HvacModeAndFlags (property field)
 	GetHvacModeAndFlags() HVACModeAndFlags
-}
-
-// AirConditioningDataSetHvacSetbackLimitExactly can be used when we want exactly this type and not a type which fulfills AirConditioningDataSetHvacSetbackLimit.
-// This is useful for switch cases.
-type AirConditioningDataSetHvacSetbackLimitExactly interface {
-	AirConditioningDataSetHvacSetbackLimit
-	isAirConditioningDataSetHvacSetbackLimit() bool
+	// IsAirConditioningDataSetHvacSetbackLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataSetHvacSetbackLimit()
 }
 
 // _AirConditioningDataSetHvacSetbackLimit is the data-structure of this message
 type _AirConditioningDataSetHvacSetbackLimit struct {
-	*_AirConditioningData
+	AirConditioningDataContract
 	ZoneGroup        byte
 	ZoneList         HVACZoneList
 	Limit            HVACTemperature
 	HvacModeAndFlags HVACModeAndFlags
 }
+
+var _ AirConditioningDataSetHvacSetbackLimit = (*_AirConditioningDataSetHvacSetbackLimit)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataSetHvacSetbackLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,12 +73,8 @@ type _AirConditioningDataSetHvacSetbackLimit struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AirConditioningDataSetHvacSetbackLimit) InitializeParent(parent AirConditioningData, commandTypeContainer AirConditioningCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_AirConditioningDataSetHvacSetbackLimit) GetParent() AirConditioningData {
-	return m._AirConditioningData
+func (m *_AirConditioningDataSetHvacSetbackLimit) GetParent() AirConditioningDataContract {
+	return m.AirConditioningDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,14 +105,23 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) GetHvacModeAndFlags() HVACMode
 
 // NewAirConditioningDataSetHvacSetbackLimit factory function for _AirConditioningDataSetHvacSetbackLimit
 func NewAirConditioningDataSetHvacSetbackLimit(zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetHvacSetbackLimit {
-	_result := &_AirConditioningDataSetHvacSetbackLimit{
-		ZoneGroup:            zoneGroup,
-		ZoneList:             zoneList,
-		Limit:                limit,
-		HvacModeAndFlags:     hvacModeAndFlags,
-		_AirConditioningData: NewAirConditioningData(commandTypeContainer),
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetHvacSetbackLimit must not be nil")
 	}
-	_result._AirConditioningData._AirConditioningDataChildRequirements = _result
+	if limit == nil {
+		panic("limit of type HVACTemperature for AirConditioningDataSetHvacSetbackLimit must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetHvacSetbackLimit must not be nil")
+	}
+	_result := &_AirConditioningDataSetHvacSetbackLimit{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Limit:                       limit,
+		HvacModeAndFlags:            hvacModeAndFlags,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 
@@ -136,7 +141,7 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) GetTypeName() string {
 }
 
 func (m *_AirConditioningDataSetHvacSetbackLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -157,81 +162,46 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataSetHvacSetbackLimitParse(ctx context.Context, theBytes []byte) (AirConditioningDataSetHvacSetbackLimit, error) {
-	return AirConditioningDataSetHvacSetbackLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AirConditioningDataSetHvacSetbackLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetHvacSetbackLimit, error) {
+func (m *_AirConditioningDataSetHvacSetbackLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataSetHvacSetbackLimit AirConditioningDataSetHvacSetbackLimit, err error) {
+	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetHvacSetbackLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataSetHvacSetbackLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataSetHvacSetbackLimit")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
-	zoneGroup := _zoneGroup
+	m.ZoneGroup = zoneGroup
 
-	// Simple Field (zoneList)
-	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
+	zoneList, err := ReadSimpleField[HVACZoneList](ctx, "zoneList", ReadComplex[HVACZoneList](HVACZoneListParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneList' field"))
 	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
-	if _zoneListErr != nil {
-		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataSetHvacSetbackLimit")
-	}
-	zoneList := _zoneList.(HVACZoneList)
-	if closeErr := readBuffer.CloseContext("zoneList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneList")
-	}
+	m.ZoneList = zoneList
 
-	// Simple Field (limit)
-	if pullErr := readBuffer.PullContext("limit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for limit")
+	limit, err := ReadSimpleField[HVACTemperature](ctx, "limit", ReadComplex[HVACTemperature](HVACTemperatureParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'limit' field"))
 	}
-	_limit, _limitErr := HVACTemperatureParseWithBuffer(ctx, readBuffer)
-	if _limitErr != nil {
-		return nil, errors.Wrap(_limitErr, "Error parsing 'limit' field of AirConditioningDataSetHvacSetbackLimit")
-	}
-	limit := _limit.(HVACTemperature)
-	if closeErr := readBuffer.CloseContext("limit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for limit")
-	}
+	m.Limit = limit
 
-	// Simple Field (hvacModeAndFlags)
-	if pullErr := readBuffer.PullContext("hvacModeAndFlags"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hvacModeAndFlags")
+	hvacModeAndFlags, err := ReadSimpleField[HVACModeAndFlags](ctx, "hvacModeAndFlags", ReadComplex[HVACModeAndFlags](HVACModeAndFlagsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hvacModeAndFlags' field"))
 	}
-	_hvacModeAndFlags, _hvacModeAndFlagsErr := HVACModeAndFlagsParseWithBuffer(ctx, readBuffer)
-	if _hvacModeAndFlagsErr != nil {
-		return nil, errors.Wrap(_hvacModeAndFlagsErr, "Error parsing 'hvacModeAndFlags' field of AirConditioningDataSetHvacSetbackLimit")
-	}
-	hvacModeAndFlags := _hvacModeAndFlags.(HVACModeAndFlags)
-	if closeErr := readBuffer.CloseContext("hvacModeAndFlags"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hvacModeAndFlags")
-	}
+	m.HvacModeAndFlags = hvacModeAndFlags
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataSetHvacSetbackLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AirConditioningDataSetHvacSetbackLimit")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AirConditioningDataSetHvacSetbackLimit{
-		_AirConditioningData: &_AirConditioningData{},
-		ZoneGroup:            zoneGroup,
-		ZoneList:             zoneList,
-		Limit:                limit,
-		HvacModeAndFlags:     hvacModeAndFlags,
-	}
-	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AirConditioningDataSetHvacSetbackLimit) Serialize() ([]byte, error) {
@@ -252,47 +222,20 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataSetHvacSetbackLimit")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
-		// Simple Field (zoneList)
-		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneList")
-		}
-		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
-		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneList")
-		}
-		if _zoneListErr != nil {
-			return errors.Wrap(_zoneListErr, "Error serializing 'zoneList' field")
+		if err := WriteSimpleField[HVACZoneList](ctx, "zoneList", m.GetZoneList(), WriteComplex[HVACZoneList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneList' field")
 		}
 
-		// Simple Field (limit)
-		if pushErr := writeBuffer.PushContext("limit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for limit")
-		}
-		_limitErr := writeBuffer.WriteSerializable(ctx, m.GetLimit())
-		if popErr := writeBuffer.PopContext("limit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for limit")
-		}
-		if _limitErr != nil {
-			return errors.Wrap(_limitErr, "Error serializing 'limit' field")
+		if err := WriteSimpleField[HVACTemperature](ctx, "limit", m.GetLimit(), WriteComplex[HVACTemperature](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'limit' field")
 		}
 
-		// Simple Field (hvacModeAndFlags)
-		if pushErr := writeBuffer.PushContext("hvacModeAndFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hvacModeAndFlags")
-		}
-		_hvacModeAndFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetHvacModeAndFlags())
-		if popErr := writeBuffer.PopContext("hvacModeAndFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hvacModeAndFlags")
-		}
-		if _hvacModeAndFlagsErr != nil {
-			return errors.Wrap(_hvacModeAndFlagsErr, "Error serializing 'hvacModeAndFlags' field")
+		if err := WriteSimpleField[HVACModeAndFlags](ctx, "hvacModeAndFlags", m.GetHvacModeAndFlags(), WriteComplex[HVACModeAndFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hvacModeAndFlags' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataSetHvacSetbackLimit"); popErr != nil {
@@ -300,12 +243,10 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AirConditioningDataContract.(*_AirConditioningData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AirConditioningDataSetHvacSetbackLimit) isAirConditioningDataSetHvacSetbackLimit() bool {
-	return true
-}
+func (m *_AirConditioningDataSetHvacSetbackLimit) IsAirConditioningDataSetHvacSetbackLimit() {}
 
 func (m *_AirConditioningDataSetHvacSetbackLimit) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned interface {
 	BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedExactly interface {
-	BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
-	isBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() bool
+	// IsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned()
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned struct {
-	*_BACnetFaultParameterFaultOutOfRangeMinNormalValue
+	BACnetFaultParameterFaultOutOfRangeMinNormalValueContract
 	UnsignedValue BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned)(nil)
+var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) InitializeParent(parent BACnetFaultParameterFaultOutOfRangeMinNormalValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetParent() BACnetFaultParameterFaultOutOfRangeMinNormalValue {
-	return m._BACnetFaultParameterFaultOutOfRangeMinNormalValue
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetParent() BACnetFaultParameterFaultOutOfRangeMinNormalValueContract {
+	return m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetUnsigned
 
 // NewBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned factory function for _BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
 func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned {
-	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned{
-		UnsignedValue: unsignedValue,
-		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned must not be nil")
 	}
-	_result._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned{
+		BACnetFaultParameterFaultOutOfRangeMinNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		UnsignedValue: unsignedValue,
+	}
+	_result.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetTypeName
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue).getLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
 	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetLengthIn
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, error) {
-	return BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, error) {
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultOutOfRangeMinNormalValue, tagNumber uint8) (__bACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, err error) {
+	m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unsignedValue)
-	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
+	unsignedValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unsignedValue' field"))
 	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _unsignedValueErr != nil {
-		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned")
-	}
-	unsignedValue := _unsignedValue.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
-	}
+	m.UnsignedValue = unsignedValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned{
-		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{
-			TagNumber: tagNumber,
-		},
-		UnsignedValue: unsignedValue,
-	}
-	_child._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) SerializeWi
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned")
 		}
 
-		// Simple Field (unsignedValue)
-		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
-		}
-		_unsignedValueErr := writeBuffer.WriteSerializable(ctx, m.GetUnsignedValue())
-		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unsignedValue")
-		}
-		if _unsignedValueErr != nil {
-			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", m.GetUnsignedValue(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unsignedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned"); popErr != nil {
@@ -204,11 +174,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) SerializeWi
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) isBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() bool {
-	return true
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) IsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() {
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) String() string {

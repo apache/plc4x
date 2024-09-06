@@ -37,19 +37,17 @@ type ConnectionTransportDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// ConnectionTransportDataTypeExactly can be used when we want exactly this type and not a type which fulfills ConnectionTransportDataType.
-// This is useful for switch cases.
-type ConnectionTransportDataTypeExactly interface {
-	ConnectionTransportDataType
-	isConnectionTransportDataType() bool
+	// IsConnectionTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionTransportDataType()
 }
 
 // _ConnectionTransportDataType is the data-structure of this message
 type _ConnectionTransportDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ ConnectionTransportDataType = (*_ConnectionTransportDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ConnectionTransportDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ConnectionTransportDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConnectionTransportDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_ConnectionTransportDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_ConnectionTransportDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewConnectionTransportDataType factory function for _ConnectionTransportDataType
 func NewConnectionTransportDataType() *_ConnectionTransportDataType {
 	_result := &_ConnectionTransportDataType{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ConnectionTransportDataType) GetTypeName() string {
 }
 
 func (m *_ConnectionTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ConnectionTransportDataType) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionTransportDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (ConnectionTransportDataType, error) {
-	return ConnectionTransportDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func ConnectionTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ConnectionTransportDataType, error) {
+func (m *_ConnectionTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__connectionTransportDataType ConnectionTransportDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectionTransportDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionTransportDataType")
 	}
@@ -124,12 +116,7 @@ func ConnectionTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectionTransportDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ConnectionTransportDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ConnectionTransportDataType) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_ConnectionTransportDataType) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ConnectionTransportDataType) isConnectionTransportDataType() bool {
-	return true
-}
+func (m *_ConnectionTransportDataType) IsConnectionTransportDataType() {}
 
 func (m *_ConnectionTransportDataType) String() string {
 	if m == nil {

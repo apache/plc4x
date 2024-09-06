@@ -74,7 +74,7 @@ public abstract class SecurityData implements Message {
         "commandTypeContainer",
         "SecurityCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SecurityCommandTypeContainer::getValue,
             SecurityCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -130,8 +130,7 @@ public abstract class SecurityData implements Message {
         readEnumField(
             "commandTypeContainer",
             "SecurityCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                SecurityCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SecurityCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     SecurityCommandType commandType =
         readVirtualField(
             "commandType", SecurityCommandType.class, commandTypeContainer.getCommandType());

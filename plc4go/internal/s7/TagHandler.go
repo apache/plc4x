@@ -39,7 +39,7 @@ import (
 type TagType uint8
 
 //go:generate stringer -type TagType
-//go:generate go run ../../tools/plc4xlicenser/gen.go -type=TagType
+//go:generate plc4xLicencer -type=TagType
 const (
 	S7Tag       TagType = 0x00
 	S7StringTag TagType = 0x01
@@ -267,7 +267,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		s7Address, err := readWriteModel.S7AddressAnyParse(ctxForModel, addressData)
+		s7Address, err := readWriteModel.S7AddressParse[readWriteModel.S7AddressAny](ctxForModel, addressData)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}

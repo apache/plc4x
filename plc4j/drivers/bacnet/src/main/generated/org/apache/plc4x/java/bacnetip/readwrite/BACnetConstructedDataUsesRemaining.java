@@ -82,7 +82,7 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataUsesRemaining");
 
     // Simple Field (usesRemaining)
-    writeSimpleField("usesRemaining", usesRemaining, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("usesRemaining", usesRemaining, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
     BACnetApplicationTagSignedInteger usesRemaining =
         readSimpleField(
             "usesRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

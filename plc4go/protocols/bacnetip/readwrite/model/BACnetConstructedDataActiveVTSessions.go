@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataActiveVTSessions interface {
 	BACnetConstructedData
 	// GetActiveVTSession returns ActiveVTSession (property field)
 	GetActiveVTSession() []BACnetVTSession
-}
-
-// BACnetConstructedDataActiveVTSessionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveVTSessions.
-// This is useful for switch cases.
-type BACnetConstructedDataActiveVTSessionsExactly interface {
-	BACnetConstructedDataActiveVTSessions
-	isBACnetConstructedDataActiveVTSessions() bool
+	// IsBACnetConstructedDataActiveVTSessions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataActiveVTSessions()
 }
 
 // _BACnetConstructedDataActiveVTSessions is the data-structure of this message
 type _BACnetConstructedDataActiveVTSessions struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ActiveVTSession []BACnetVTSession
 }
+
+var _ BACnetConstructedDataActiveVTSessions = (*_BACnetConstructedDataActiveVTSessions)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveVTSessions)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataActiveVTSessions) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataActiveVTSessions) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataActiveVTSessions) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetActiveVTSession() []BACnetVT
 // NewBACnetConstructedDataActiveVTSessions factory function for _BACnetConstructedDataActiveVTSessions
 func NewBACnetConstructedDataActiveVTSessions(activeVTSession []BACnetVTSession, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
 	_result := &_BACnetConstructedDataActiveVTSessions{
-		ActiveVTSession:        activeVTSession,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveVTSession:               activeVTSession,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataActiveVTSessions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.ActiveVTSession) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataActiveVTSessionsParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveVTSessions, error) {
-	return BACnetConstructedDataActiveVTSessionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataActiveVTSessionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveVTSessions, error) {
+func (m *_BACnetConstructedDataActiveVTSessions) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataActiveVTSessions BACnetConstructedDataActiveVTSessions, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveVTSessions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataActiveVTSessions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (activeVTSession)
-	if pullErr := readBuffer.PullContext("activeVTSession", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for activeVTSession")
+	activeVTSession, err := ReadTerminatedArrayField[BACnetVTSession](ctx, "activeVTSession", ReadComplex[BACnetVTSession](BACnetVTSessionParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activeVTSession' field"))
 	}
-	// Terminated array
-	var activeVTSession []BACnetVTSession
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetVTSessionParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'activeVTSession' field of BACnetConstructedDataActiveVTSessions")
-			}
-			activeVTSession = append(activeVTSession, _item.(BACnetVTSession))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("activeVTSession", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for activeVTSession")
-	}
+	m.ActiveVTSession = activeVTSession
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveVTSessions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActiveVTSessions")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataActiveVTSessions{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ActiveVTSession: activeVTSession,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataActiveVTSessions) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataActiveVTSessions) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActiveVTSessions")
 		}
 
-		// Array Field (activeVTSession)
-		if pushErr := writeBuffer.PushContext("activeVTSession", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for activeVTSession")
-		}
-		for _curItem, _element := range m.GetActiveVTSession() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetActiveVTSession()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'activeVTSession' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("activeVTSession", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for activeVTSession")
+		if err := WriteComplexTypeArrayField(ctx, "activeVTSession", m.GetActiveVTSession(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'activeVTSession' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveVTSessions"); popErr != nil {
@@ -228,12 +183,10 @@ func (m *_BACnetConstructedDataActiveVTSessions) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataActiveVTSessions) isBACnetConstructedDataActiveVTSessions() bool {
-	return true
-}
+func (m *_BACnetConstructedDataActiveVTSessions) IsBACnetConstructedDataActiveVTSessions() {}
 
 func (m *_BACnetConstructedDataActiveVTSessions) String() string {
 	if m == nil {

@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -37,44 +40,35 @@ const DF1Symbol_MESSAGESTART uint8 = 0x10
 
 // DF1Symbol is the corresponding interface of DF1Symbol
 type DF1Symbol interface {
+	DF1SymbolContract
+	DF1SymbolRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsDF1Symbol is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1Symbol()
+}
+
+// DF1SymbolContract provides a set of functions which can be overwritten by a sub struct
+type DF1SymbolContract interface {
+	// IsDF1Symbol is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1Symbol()
+}
+
+// DF1SymbolRequirements provides a set of functions which need to be implemented by a sub struct
+type DF1SymbolRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetSymbolType returns SymbolType (discriminator field)
 	GetSymbolType() uint8
 }
 
-// DF1SymbolExactly can be used when we want exactly this type and not a type which fulfills DF1Symbol.
-// This is useful for switch cases.
-type DF1SymbolExactly interface {
-	DF1Symbol
-	isDF1Symbol() bool
-}
-
 // _DF1Symbol is the data-structure of this message
 type _DF1Symbol struct {
-	_DF1SymbolChildRequirements
+	_SubType DF1Symbol
 }
 
-type _DF1SymbolChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetSymbolType() uint8
-}
-
-type DF1SymbolParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type DF1SymbolChild interface {
-	utils.Serializable
-	InitializeParent(parent DF1Symbol)
-	GetParent() *DF1Symbol
-
-	GetTypeName() string
-	DF1Symbol
-}
+var _ DF1SymbolContract = (*_DF1Symbol)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +104,7 @@ func (m *_DF1Symbol) GetTypeName() string {
 	return "DF1Symbol"
 }
 
-func (m *_DF1Symbol) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1Symbol) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (messageStart)
@@ -122,73 +116,80 @@ func (m *_DF1Symbol) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_DF1Symbol) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func DF1SymbolParse(ctx context.Context, theBytes []byte) (DF1Symbol, error) {
-	return DF1SymbolParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func DF1SymbolParse[T DF1Symbol](ctx context.Context, theBytes []byte) (T, error) {
+	return DF1SymbolParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1Symbol, error) {
+func DF1SymbolParseWithBufferProducer[T DF1Symbol]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := DF1SymbolParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func DF1SymbolParseWithBuffer[T DF1Symbol](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_DF1Symbol{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_DF1Symbol) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dF1Symbol DF1Symbol, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1Symbol"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1Symbol")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (messageStart)
-	messageStart, _messageStartErr := readBuffer.ReadUint8("messageStart", 8)
-	if _messageStartErr != nil {
-		return nil, errors.Wrap(_messageStartErr, "Error parsing 'messageStart' field of DF1Symbol")
+	messageStart, err := ReadConstField[uint8](ctx, "messageStart", ReadUnsignedByte(readBuffer, uint8(8)), DF1Symbol_MESSAGESTART, codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageStart' field"))
 	}
-	if messageStart != DF1Symbol_MESSAGESTART {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", DF1Symbol_MESSAGESTART) + " but got " + fmt.Sprintf("%d", messageStart))
-	}
+	_ = messageStart
 
-	// Discriminator Field (symbolType) (Used as input to a switch field)
-	symbolType, _symbolTypeErr := readBuffer.ReadUint8("symbolType", 8)
-	if _symbolTypeErr != nil {
-		return nil, errors.Wrap(_symbolTypeErr, "Error parsing 'symbolType' field of DF1Symbol")
+	symbolType, err := ReadDiscriminatorField[uint8](ctx, "symbolType", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbolType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type DF1SymbolChildSerializeRequirement interface {
-		DF1Symbol
-		InitializeParent(DF1Symbol)
-		GetParent() DF1Symbol
-	}
-	var _childTemp any
-	var _child DF1SymbolChildSerializeRequirement
-	var typeSwitchError error
+	var _child DF1Symbol
 	switch {
 	case symbolType == 0x02: // DF1SymbolMessageFrame
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_DF1SymbolMessageFrame{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrame for type-switch of DF1Symbol")
+		}
 	case symbolType == 0x06: // DF1SymbolMessageFrameACK
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameACKParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_DF1SymbolMessageFrameACK{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrameACK for type-switch of DF1Symbol")
+		}
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameNAKParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_DF1SymbolMessageFrameNAK{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrameNAK for type-switch of DF1Symbol")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [symbolType=%v]", symbolType)
+		return nil, errors.Errorf("Unmapped type for parameters [symbolType=%v]", symbolType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1Symbol")
-	}
-	_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("DF1Symbol"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DF1Symbol")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_DF1Symbol) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error {
+func (pm *_DF1Symbol) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -200,18 +201,12 @@ func (pm *_DF1Symbol) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for DF1Symbol")
 	}
 
-	// Const Field (messageStart)
-	_messageStartErr := writeBuffer.WriteUint8("messageStart", 8, uint8(0x10))
-	if _messageStartErr != nil {
-		return errors.Wrap(_messageStartErr, "Error serializing 'messageStart' field")
+	if err := WriteConstField(ctx, "messageStart", DF1Symbol_MESSAGESTART, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageStart' field")
 	}
 
-	// Discriminator Field (symbolType) (Used as input to a switch field)
-	symbolType := uint8(child.GetSymbolType())
-	_symbolTypeErr := writeBuffer.WriteUint8("symbolType", 8, uint8((symbolType)))
-
-	if _symbolTypeErr != nil {
-		return errors.Wrap(_symbolTypeErr, "Error serializing 'symbolType' field")
+	if err := WriteDiscriminatorField(ctx, "symbolType", m.GetSymbolType(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'symbolType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -225,17 +220,4 @@ func (pm *_DF1Symbol) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	return nil
 }
 
-func (m *_DF1Symbol) isDF1Symbol() bool {
-	return true
-}
-
-func (m *_DF1Symbol) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_DF1Symbol) IsDF1Symbol() {}

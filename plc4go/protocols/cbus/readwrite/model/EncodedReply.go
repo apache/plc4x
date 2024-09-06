@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,25 +35,40 @@ import (
 
 // EncodedReply is the corresponding interface of EncodedReply
 type EncodedReply interface {
+	EncodedReplyContract
+	EncodedReplyRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEncodedReply()
+}
+
+// EncodedReplyContract provides a set of functions which can be overwritten by a sub struct
+type EncodedReplyContract interface {
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetIsMonitoredSAL returns IsMonitoredSAL (virtual field)
 	GetIsMonitoredSAL() bool
+	// GetCBusOptions() returns a parser argument
+	GetCBusOptions() CBusOptions
+	// GetRequestContext() returns a parser argument
+	GetRequestContext() RequestContext
+	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEncodedReply()
 }
 
-// EncodedReplyExactly can be used when we want exactly this type and not a type which fulfills EncodedReply.
-// This is useful for switch cases.
-type EncodedReplyExactly interface {
-	EncodedReply
-	isEncodedReply() bool
+// EncodedReplyRequirements provides a set of functions which need to be implemented by a sub struct
+type EncodedReplyRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetIsMonitoredSAL returns IsMonitoredSAL (discriminator field)
+	GetIsMonitoredSAL() bool
 }
 
 // _EncodedReply is the data-structure of this message
 type _EncodedReply struct {
-	_EncodedReplyChildRequirements
+	_SubType   EncodedReply
 	PeekedByte byte
 
 	// Arguments.
@@ -59,25 +76,7 @@ type _EncodedReply struct {
 	RequestContext RequestContext
 }
 
-type _EncodedReplyChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsMonitoredSAL() bool
-}
-
-type EncodedReplyParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child EncodedReply, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type EncodedReplyChild interface {
-	utils.Serializable
-	InitializeParent(parent EncodedReply, peekedByte byte)
-	GetParent() *EncodedReply
-
-	GetTypeName() string
-	EncodedReply
-}
+var _ EncodedReplyContract = (*_EncodedReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,10 +96,11 @@ func (m *_EncodedReply) GetPeekedByte() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_EncodedReply) GetIsMonitoredSAL() bool {
+func (pm *_EncodedReply) GetIsMonitoredSAL() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
-	return bool(bool((bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x05))) || bool(bool((m.GetPeekedByte()) == (0x00)))) || bool(bool((m.GetPeekedByte()&0xF8) == (0x00))))) && bool(!(m.RequestContext.GetSendIdentifyRequestBefore())))
+	return bool(bool((bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x05))) || bool(bool((m.GetPeekedByte()) == (0x00)))) || bool(bool((m.GetPeekedByte()&0xF8) == (0x00))))) && bool(!(m.GetRequestContext().GetSendIdentifyRequestBefore())))
 }
 
 ///////////////////////
@@ -128,7 +128,7 @@ func (m *_EncodedReply) GetTypeName() string {
 	return "EncodedReply"
 }
 
-func (m *_EncodedReply) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_EncodedReply) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -137,70 +137,77 @@ func (m *_EncodedReply) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_EncodedReply) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func EncodedReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
-	return EncodedReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+func EncodedReplyParse[T EncodedReply](ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
+	return EncodedReplyParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
+func EncodedReplyParseWithBufferProducer[T EncodedReply](cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := EncodedReplyParseWithBuffer[T](ctx, readBuffer, cBusOptions, requestContext)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func EncodedReplyParseWithBuffer[T EncodedReply](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
+	v, err := (&_EncodedReply{CBusOptions: cBusOptions, RequestContext: requestContext}).parse(ctx, readBuffer, cBusOptions, requestContext)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_EncodedReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (__encodedReply EncodedReply, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EncodedReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EncodedReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedByte)
-	currentPos = positionAware.GetPos()
-	peekedByte, _err := readBuffer.ReadByte("peekedByte")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of EncodedReply")
+	peekedByte, err := ReadPeekField[byte](ctx, "peekedByte", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedByte' field"))
 	}
+	m.PeekedByte = peekedByte
 
-	readBuffer.Reset(currentPos)
-
-	// Virtual field
-	_isMonitoredSAL := bool((bool(bool(bool((peekedByte&0x3F) == (0x05))) || bool(bool((peekedByte) == (0x00)))) || bool(bool((peekedByte&0xF8) == (0x00))))) && bool(!(requestContext.GetSendIdentifyRequestBefore()))
-	isMonitoredSAL := bool(_isMonitoredSAL)
+	isMonitoredSAL, err := ReadVirtualField[bool](ctx, "isMonitoredSAL", (*bool)(nil), bool((bool(bool(bool((peekedByte&0x3F) == (0x05))) || bool(bool((peekedByte) == (0x00)))) || bool(bool((peekedByte&0xF8) == (0x00))))) && bool(!(requestContext.GetSendIdentifyRequestBefore())))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isMonitoredSAL' field"))
+	}
 	_ = isMonitoredSAL
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type EncodedReplyChildSerializeRequirement interface {
-		EncodedReply
-		InitializeParent(EncodedReply, byte)
-		GetParent() EncodedReply
-	}
-	var _childTemp any
-	var _child EncodedReplyChildSerializeRequirement
-	var typeSwitchError error
+	var _child EncodedReply
 	switch {
 	case isMonitoredSAL == bool(true): // MonitoredSALReply
-		_childTemp, typeSwitchError = MonitoredSALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+		if _child, err = (&_MonitoredSALReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALReply for type-switch of EncodedReply")
+		}
 	case 0 == 0: // EncodedReplyCALReply
-		_childTemp, typeSwitchError = EncodedReplyCALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+		if _child, err = (&_EncodedReplyCALReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EncodedReplyCALReply for type-switch of EncodedReply")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [isMonitoredSAL=%v]", isMonitoredSAL)
+		return nil, errors.Errorf("Unmapped type for parameters [isMonitoredSAL=%v]", isMonitoredSAL)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of EncodedReply")
-	}
-	_child = _childTemp.(EncodedReplyChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("EncodedReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EncodedReply")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedByte)
 	return _child, nil
 }
 
-func (pm *_EncodedReply) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child EncodedReply, serializeChildFunction func() error) error {
+func (pm *_EncodedReply) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child EncodedReply, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -242,17 +249,4 @@ func (m *_EncodedReply) GetRequestContext() RequestContext {
 //
 ////
 
-func (m *_EncodedReply) isEncodedReply() bool {
-	return true
-}
-
-func (m *_EncodedReply) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_EncodedReply) IsEncodedReply() {}

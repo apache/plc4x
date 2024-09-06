@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type COTPPacketDisconnectRequest interface {
 	GetSourceReference() uint16
 	// GetProtocolClass returns ProtocolClass (property field)
 	GetProtocolClass() COTPProtocolClass
-}
-
-// COTPPacketDisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills COTPPacketDisconnectRequest.
-// This is useful for switch cases.
-type COTPPacketDisconnectRequestExactly interface {
-	COTPPacketDisconnectRequest
-	isCOTPPacketDisconnectRequest() bool
+	// IsCOTPPacketDisconnectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacketDisconnectRequest()
 }
 
 // _COTPPacketDisconnectRequest is the data-structure of this message
 type _COTPPacketDisconnectRequest struct {
-	*_COTPPacket
+	COTPPacketContract
 	DestinationReference uint16
 	SourceReference      uint16
 	ProtocolClass        COTPProtocolClass
 }
+
+var _ COTPPacketDisconnectRequest = (*_COTPPacketDisconnectRequest)(nil)
+var _ COTPPacketRequirements = (*_COTPPacketDisconnectRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,13 +74,8 @@ func (m *_COTPPacketDisconnectRequest) GetTpduCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_COTPPacketDisconnectRequest) InitializeParent(parent COTPPacket, parameters []COTPParameter, payload S7Message) {
-	m.Parameters = parameters
-	m.Payload = payload
-}
-
-func (m *_COTPPacketDisconnectRequest) GetParent() COTPPacket {
-	return m._COTPPacket
+func (m *_COTPPacketDisconnectRequest) GetParent() COTPPacketContract {
+	return m.COTPPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -108,12 +103,12 @@ func (m *_COTPPacketDisconnectRequest) GetProtocolClass() COTPProtocolClass {
 // NewCOTPPacketDisconnectRequest factory function for _COTPPacketDisconnectRequest
 func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketDisconnectRequest {
 	_result := &_COTPPacketDisconnectRequest{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
-		_COTPPacket:          NewCOTPPacket(parameters, payload, cotpLen),
 	}
-	_result._COTPPacket._COTPPacketChildRequirements = _result
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
 
@@ -133,7 +128,7 @@ func (m *_COTPPacketDisconnectRequest) GetTypeName() string {
 }
 
 func (m *_COTPPacketDisconnectRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -151,63 +146,40 @@ func (m *_COTPPacketDisconnectRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPPacketDisconnectRequestParse(ctx context.Context, theBytes []byte, cotpLen uint16) (COTPPacketDisconnectRequest, error) {
-	return COTPPacketDisconnectRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
-}
-
-func COTPPacketDisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketDisconnectRequest, error) {
+func (m *_COTPPacketDisconnectRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketDisconnectRequest COTPPacketDisconnectRequest, err error) {
+	m.COTPPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPPacketDisconnectRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPPacketDisconnectRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationReference)
-	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
-	if _destinationReferenceErr != nil {
-		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field of COTPPacketDisconnectRequest")
+	destinationReference, err := ReadSimpleField(ctx, "destinationReference", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationReference' field"))
 	}
-	destinationReference := _destinationReference
+	m.DestinationReference = destinationReference
 
-	// Simple Field (sourceReference)
-	_sourceReference, _sourceReferenceErr := readBuffer.ReadUint16("sourceReference", 16)
-	if _sourceReferenceErr != nil {
-		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field of COTPPacketDisconnectRequest")
+	sourceReference, err := ReadSimpleField(ctx, "sourceReference", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceReference' field"))
 	}
-	sourceReference := _sourceReference
+	m.SourceReference = sourceReference
 
-	// Simple Field (protocolClass)
-	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolClass")
+	protocolClass, err := ReadEnumField[COTPProtocolClass](ctx, "protocolClass", "COTPProtocolClass", ReadEnum(COTPProtocolClassByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolClass' field"))
 	}
-	_protocolClass, _protocolClassErr := COTPProtocolClassParseWithBuffer(ctx, readBuffer)
-	if _protocolClassErr != nil {
-		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field of COTPPacketDisconnectRequest")
-	}
-	protocolClass := _protocolClass
-	if closeErr := readBuffer.CloseContext("protocolClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolClass")
-	}
+	m.ProtocolClass = protocolClass
 
 	if closeErr := readBuffer.CloseContext("COTPPacketDisconnectRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPPacketDisconnectRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_COTPPacketDisconnectRequest{
-		_COTPPacket: &_COTPPacket{
-			CotpLen: cotpLen,
-		},
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
-		ProtocolClass:        protocolClass,
-	}
-	_child._COTPPacket._COTPPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_COTPPacketDisconnectRequest) Serialize() ([]byte, error) {
@@ -228,30 +200,16 @@ func (m *_COTPPacketDisconnectRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for COTPPacketDisconnectRequest")
 		}
 
-		// Simple Field (destinationReference)
-		destinationReference := uint16(m.GetDestinationReference())
-		_destinationReferenceErr := writeBuffer.WriteUint16("destinationReference", 16, uint16((destinationReference)))
-		if _destinationReferenceErr != nil {
-			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationReference", m.GetDestinationReference(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationReference' field")
 		}
 
-		// Simple Field (sourceReference)
-		sourceReference := uint16(m.GetSourceReference())
-		_sourceReferenceErr := writeBuffer.WriteUint16("sourceReference", 16, uint16((sourceReference)))
-		if _sourceReferenceErr != nil {
-			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
+		if err := WriteSimpleField[uint16](ctx, "sourceReference", m.GetSourceReference(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceReference' field")
 		}
 
-		// Simple Field (protocolClass)
-		if pushErr := writeBuffer.PushContext("protocolClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolClass")
-		}
-		_protocolClassErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolClass())
-		if popErr := writeBuffer.PopContext("protocolClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolClass")
-		}
-		if _protocolClassErr != nil {
-			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
+		if err := WriteSimpleEnumField[COTPProtocolClass](ctx, "protocolClass", "COTPProtocolClass", m.GetProtocolClass(), WriteEnum[COTPProtocolClass, uint8](COTPProtocolClass.GetValue, COTPProtocolClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketDisconnectRequest"); popErr != nil {
@@ -259,12 +217,10 @@ func (m *_COTPPacketDisconnectRequest) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.COTPPacketContract.(*_COTPPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_COTPPacketDisconnectRequest) isCOTPPacketDisconnectRequest() bool {
-	return true
-}
+func (m *_COTPPacketDisconnectRequest) IsCOTPPacketDisconnectRequest() {}
 
 func (m *_COTPPacketDisconnectRequest) String() string {
 	if m == nil {

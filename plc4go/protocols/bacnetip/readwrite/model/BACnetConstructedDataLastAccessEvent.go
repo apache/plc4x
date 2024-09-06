@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLastAccessEvent interface {
 	GetLastAccessEvent() BACnetAccessEventTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessEventTagged
-}
-
-// BACnetConstructedDataLastAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastAccessEvent.
-// This is useful for switch cases.
-type BACnetConstructedDataLastAccessEventExactly interface {
-	BACnetConstructedDataLastAccessEvent
-	isBACnetConstructedDataLastAccessEvent() bool
+	// IsBACnetConstructedDataLastAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastAccessEvent()
 }
 
 // _BACnetConstructedDataLastAccessEvent is the data-structure of this message
 type _BACnetConstructedDataLastAccessEvent struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LastAccessEvent BACnetAccessEventTagged
 }
+
+var _ BACnetConstructedDataLastAccessEvent = (*_BACnetConstructedDataLastAccessEvent)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastAccessEvent)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLastAccessEvent) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLastAccessEvent) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLastAccessEvent) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLastAccessEvent) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLastAccessEvent) GetActualValue() BACnetAccessEve
 
 // NewBACnetConstructedDataLastAccessEvent factory function for _BACnetConstructedDataLastAccessEvent
 func NewBACnetConstructedDataLastAccessEvent(lastAccessEvent BACnetAccessEventTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessEvent {
-	_result := &_BACnetConstructedDataLastAccessEvent{
-		LastAccessEvent:        lastAccessEvent,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if lastAccessEvent == nil {
+		panic("lastAccessEvent of type BACnetAccessEventTagged for BACnetConstructedDataLastAccessEvent must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLastAccessEvent{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastAccessEvent:               lastAccessEvent,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLastAccessEvent) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLastAccessEvent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lastAccessEvent)
 	lengthInBits += m.LastAccessEvent.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLastAccessEvent) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLastAccessEventParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastAccessEvent, error) {
-	return BACnetConstructedDataLastAccessEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLastAccessEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastAccessEvent, error) {
+func (m *_BACnetConstructedDataLastAccessEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLastAccessEvent BACnetConstructedDataLastAccessEvent, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastAccessEvent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastAccessEvent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastAccessEvent)
-	if pullErr := readBuffer.PullContext("lastAccessEvent"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastAccessEvent")
+	lastAccessEvent, err := ReadSimpleField[BACnetAccessEventTagged](ctx, "lastAccessEvent", ReadComplex[BACnetAccessEventTagged](BACnetAccessEventTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastAccessEvent' field"))
 	}
-	_lastAccessEvent, _lastAccessEventErr := BACnetAccessEventTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _lastAccessEventErr != nil {
-		return nil, errors.Wrap(_lastAccessEventErr, "Error parsing 'lastAccessEvent' field of BACnetConstructedDataLastAccessEvent")
-	}
-	lastAccessEvent := _lastAccessEvent.(BACnetAccessEventTagged)
-	if closeErr := readBuffer.CloseContext("lastAccessEvent"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastAccessEvent")
-	}
+	m.LastAccessEvent = lastAccessEvent
 
-	// Virtual field
-	_actualValue := lastAccessEvent
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetAccessEventTagged](ctx, "actualValue", (*BACnetAccessEventTagged)(nil), lastAccessEvent)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastAccessEvent"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastAccessEvent")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLastAccessEvent{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LastAccessEvent: lastAccessEvent,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLastAccessEvent) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLastAccessEvent) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastAccessEvent")
 		}
 
-		// Simple Field (lastAccessEvent)
-		if pushErr := writeBuffer.PushContext("lastAccessEvent"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastAccessEvent")
-		}
-		_lastAccessEventErr := writeBuffer.WriteSerializable(ctx, m.GetLastAccessEvent())
-		if popErr := writeBuffer.PopContext("lastAccessEvent"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastAccessEvent")
-		}
-		if _lastAccessEventErr != nil {
-			return errors.Wrap(_lastAccessEventErr, "Error serializing 'lastAccessEvent' field")
+		if err := WriteSimpleField[BACnetAccessEventTagged](ctx, "lastAccessEvent", m.GetLastAccessEvent(), WriteComplex[BACnetAccessEventTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastAccessEvent' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataLastAccessEvent) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLastAccessEvent) isBACnetConstructedDataLastAccessEvent() bool {
-	return true
-}
+func (m *_BACnetConstructedDataLastAccessEvent) IsBACnetConstructedDataLastAccessEvent() {}
 
 func (m *_BACnetConstructedDataLastAccessEvent) String() string {
 	if m == nil {

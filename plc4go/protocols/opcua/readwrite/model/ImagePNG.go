@@ -36,18 +36,15 @@ type ImagePNG interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// ImagePNGExactly can be used when we want exactly this type and not a type which fulfills ImagePNG.
-// This is useful for switch cases.
-type ImagePNGExactly interface {
-	ImagePNG
-	isImagePNG() bool
+	// IsImagePNG is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsImagePNG()
 }
 
 // _ImagePNG is the data-structure of this message
 type _ImagePNG struct {
 }
+
+var _ ImagePNG = (*_ImagePNG)(nil)
 
 // NewImagePNG factory function for _ImagePNG
 func NewImagePNG() *_ImagePNG {
@@ -83,11 +80,23 @@ func ImagePNGParse(ctx context.Context, theBytes []byte) (ImagePNG, error) {
 	return ImagePNGParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ImagePNGParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ImagePNG, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ImagePNG, error) {
+		return ImagePNGParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ImagePNGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImagePNG, error) {
+	v, err := (&_ImagePNG{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ImagePNG) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__imagePNG ImagePNG, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ImagePNG"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ImagePNG")
 	}
@@ -98,8 +107,7 @@ func ImagePNGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 		return nil, errors.Wrap(closeErr, "Error closing for ImagePNG")
 	}
 
-	// Create the instance
-	return &_ImagePNG{}, nil
+	return m, nil
 }
 
 func (m *_ImagePNG) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_ImagePNG) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-func (m *_ImagePNG) isImagePNG() bool {
-	return true
-}
+func (m *_ImagePNG) IsImagePNG() {}
 
 func (m *_ImagePNG) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,21 +47,19 @@ type TelephonyDataRecallLastNumber interface {
 	GetIsNumberOfLastOutgoingCall() bool
 	// GetIsNumberOfLastIncomingCall returns IsNumberOfLastIncomingCall (virtual field)
 	GetIsNumberOfLastIncomingCall() bool
-}
-
-// TelephonyDataRecallLastNumberExactly can be used when we want exactly this type and not a type which fulfills TelephonyDataRecallLastNumber.
-// This is useful for switch cases.
-type TelephonyDataRecallLastNumberExactly interface {
-	TelephonyDataRecallLastNumber
-	isTelephonyDataRecallLastNumber() bool
+	// IsTelephonyDataRecallLastNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataRecallLastNumber()
 }
 
 // _TelephonyDataRecallLastNumber is the data-structure of this message
 type _TelephonyDataRecallLastNumber struct {
-	*_TelephonyData
+	TelephonyDataContract
 	RecallLastNumberType byte
 	Number               string
 }
+
+var _ TelephonyDataRecallLastNumber = (*_TelephonyDataRecallLastNumber)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataRecallLastNumber)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,13 +71,8 @@ type _TelephonyDataRecallLastNumber struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TelephonyDataRecallLastNumber) InitializeParent(parent TelephonyData, commandTypeContainer TelephonyCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_TelephonyDataRecallLastNumber) GetParent() TelephonyData {
-	return m._TelephonyData
+func (m *_TelephonyDataRecallLastNumber) GetParent() TelephonyDataContract {
+	return m.TelephonyDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,11 +117,11 @@ func (m *_TelephonyDataRecallLastNumber) GetIsNumberOfLastIncomingCall() bool {
 // NewTelephonyDataRecallLastNumber factory function for _TelephonyDataRecallLastNumber
 func NewTelephonyDataRecallLastNumber(recallLastNumberType byte, number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataRecallLastNumber {
 	_result := &_TelephonyDataRecallLastNumber{
-		RecallLastNumberType: recallLastNumberType,
-		Number:               number,
-		_TelephonyData:       NewTelephonyData(commandTypeContainer, argument),
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		RecallLastNumberType:  recallLastNumberType,
+		Number:                number,
 	}
-	_result._TelephonyData._TelephonyDataChildRequirements = _result
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 
@@ -146,7 +141,7 @@ func (m *_TelephonyDataRecallLastNumber) GetTypeName() string {
 }
 
 func (m *_TelephonyDataRecallLastNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	// Simple field (recallLastNumberType)
 	lengthInBits += 8
@@ -165,57 +160,46 @@ func (m *_TelephonyDataRecallLastNumber) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataRecallLastNumberParse(ctx context.Context, theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
-	return TelephonyDataRecallLastNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func TelephonyDataRecallLastNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
+func (m *_TelephonyDataRecallLastNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData, commandTypeContainer TelephonyCommandTypeContainer) (__telephonyDataRecallLastNumber TelephonyDataRecallLastNumber, err error) {
+	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataRecallLastNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataRecallLastNumber")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recallLastNumberType)
-	_recallLastNumberType, _recallLastNumberTypeErr := readBuffer.ReadByte("recallLastNumberType")
-	if _recallLastNumberTypeErr != nil {
-		return nil, errors.Wrap(_recallLastNumberTypeErr, "Error parsing 'recallLastNumberType' field of TelephonyDataRecallLastNumber")
+	recallLastNumberType, err := ReadSimpleField(ctx, "recallLastNumberType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recallLastNumberType' field"))
 	}
-	recallLastNumberType := _recallLastNumberType
+	m.RecallLastNumberType = recallLastNumberType
 
-	// Virtual field
-	_isNumberOfLastOutgoingCall := bool((recallLastNumberType) == (0x01))
-	isNumberOfLastOutgoingCall := bool(_isNumberOfLastOutgoingCall)
+	isNumberOfLastOutgoingCall, err := ReadVirtualField[bool](ctx, "isNumberOfLastOutgoingCall", (*bool)(nil), bool((recallLastNumberType) == (0x01)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNumberOfLastOutgoingCall' field"))
+	}
 	_ = isNumberOfLastOutgoingCall
 
-	// Virtual field
-	_isNumberOfLastIncomingCall := bool((recallLastNumberType) == (0x02))
-	isNumberOfLastIncomingCall := bool(_isNumberOfLastIncomingCall)
+	isNumberOfLastIncomingCall, err := ReadVirtualField[bool](ctx, "isNumberOfLastIncomingCall", (*bool)(nil), bool((recallLastNumberType) == (0x02)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNumberOfLastIncomingCall' field"))
+	}
 	_ = isNumberOfLastIncomingCall
 
-	// Simple Field (number)
-	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), "UTF-8")
-	if _numberErr != nil {
-		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataRecallLastNumber")
+	number, err := ReadSimpleField(ctx, "number", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(2))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'number' field"))
 	}
-	number := _number
+	m.Number = number
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataRecallLastNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataRecallLastNumber")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TelephonyDataRecallLastNumber{
-		_TelephonyData:       &_TelephonyData{},
-		RecallLastNumberType: recallLastNumberType,
-		Number:               number,
-	}
-	_child._TelephonyData._TelephonyDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TelephonyDataRecallLastNumber) Serialize() ([]byte, error) {
@@ -236,11 +220,8 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for TelephonyDataRecallLastNumber")
 		}
 
-		// Simple Field (recallLastNumberType)
-		recallLastNumberType := byte(m.GetRecallLastNumberType())
-		_recallLastNumberTypeErr := writeBuffer.WriteByte("recallLastNumberType", (recallLastNumberType))
-		if _recallLastNumberTypeErr != nil {
-			return errors.Wrap(_recallLastNumberTypeErr, "Error serializing 'recallLastNumberType' field")
+		if err := WriteSimpleField[byte](ctx, "recallLastNumberType", m.GetRecallLastNumberType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'recallLastNumberType' field")
 		}
 		// Virtual field
 		isNumberOfLastOutgoingCall := m.GetIsNumberOfLastOutgoingCall()
@@ -255,11 +236,8 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(_isNumberOfLastIncomingCallErr, "Error serializing 'isNumberOfLastIncomingCall' field")
 		}
 
-		// Simple Field (number)
-		number := string(m.GetNumber())
-		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), "UTF-8", (number))
-		if _numberErr != nil {
-			return errors.Wrap(_numberErr, "Error serializing 'number' field")
+		if err := WriteSimpleField[string](ctx, "number", m.GetNumber(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(2))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'number' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TelephonyDataRecallLastNumber"); popErr != nil {
@@ -267,12 +245,10 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TelephonyDataContract.(*_TelephonyData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TelephonyDataRecallLastNumber) isTelephonyDataRecallLastNumber() bool {
-	return true
-}
+func (m *_TelephonyDataRecallLastNumber) IsTelephonyDataRecallLastNumber() {}
 
 func (m *_TelephonyDataRecallLastNumber) String() string {
 	if m == nil {

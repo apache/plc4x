@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataEgressTime interface {
 	GetEgressTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataEgressTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEgressTime.
-// This is useful for switch cases.
-type BACnetConstructedDataEgressTimeExactly interface {
-	BACnetConstructedDataEgressTime
-	isBACnetConstructedDataEgressTime() bool
+	// IsBACnetConstructedDataEgressTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEgressTime()
 }
 
 // _BACnetConstructedDataEgressTime is the data-structure of this message
 type _BACnetConstructedDataEgressTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	EgressTime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataEgressTime = (*_BACnetConstructedDataEgressTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataEgressTime) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataEgressTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataEgressTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataEgressTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataEgressTime) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataEgressTime factory function for _BACnetConstructedDataEgressTime
 func NewBACnetConstructedDataEgressTime(egressTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressTime {
-	_result := &_BACnetConstructedDataEgressTime{
-		EgressTime:             egressTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if egressTime == nil {
+		panic("egressTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataEgressTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataEgressTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EgressTime:                    egressTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataEgressTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEgressTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (egressTime)
 	lengthInBits += m.EgressTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataEgressTime) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataEgressTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressTime, error) {
-	return BACnetConstructedDataEgressTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataEgressTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressTime, error) {
+func (m *_BACnetConstructedDataEgressTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEgressTime BACnetConstructedDataEgressTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEgressTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEgressTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (egressTime)
-	if pullErr := readBuffer.PullContext("egressTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for egressTime")
+	egressTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "egressTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'egressTime' field"))
 	}
-	_egressTime, _egressTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _egressTimeErr != nil {
-		return nil, errors.Wrap(_egressTimeErr, "Error parsing 'egressTime' field of BACnetConstructedDataEgressTime")
-	}
-	egressTime := _egressTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("egressTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for egressTime")
-	}
+	m.EgressTime = egressTime
 
-	// Virtual field
-	_actualValue := egressTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), egressTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEgressTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEgressTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataEgressTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		EgressTime: egressTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataEgressTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataEgressTime) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEgressTime")
 		}
 
-		// Simple Field (egressTime)
-		if pushErr := writeBuffer.PushContext("egressTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for egressTime")
-		}
-		_egressTimeErr := writeBuffer.WriteSerializable(ctx, m.GetEgressTime())
-		if popErr := writeBuffer.PopContext("egressTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for egressTime")
-		}
-		if _egressTimeErr != nil {
-			return errors.Wrap(_egressTimeErr, "Error serializing 'egressTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "egressTime", m.GetEgressTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'egressTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataEgressTime) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataEgressTime) isBACnetConstructedDataEgressTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataEgressTime) IsBACnetConstructedDataEgressTime() {}
 
 func (m *_BACnetConstructedDataEgressTime) String() string {
 	if m == nil {

@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,20 +43,18 @@ type SearchRequest interface {
 	KnxNetIpMessage
 	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint (property field)
 	GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint
-}
-
-// SearchRequestExactly can be used when we want exactly this type and not a type which fulfills SearchRequest.
-// This is useful for switch cases.
-type SearchRequestExactly interface {
-	SearchRequest
-	isSearchRequest() bool
+	// IsSearchRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSearchRequest()
 }
 
 // _SearchRequest is the data-structure of this message
 type _SearchRequest struct {
-	*_KnxNetIpMessage
+	KnxNetIpMessageContract
 	HpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint
 }
+
+var _ SearchRequest = (*_SearchRequest)(nil)
+var _ KnxNetIpMessageRequirements = (*_SearchRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,10 +70,8 @@ func (m *_SearchRequest) GetMsgType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SearchRequest) InitializeParent(parent KnxNetIpMessage) {}
-
-func (m *_SearchRequest) GetParent() KnxNetIpMessage {
-	return m._KnxNetIpMessage
+func (m *_SearchRequest) GetParent() KnxNetIpMessageContract {
+	return m.KnxNetIpMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,11 +90,14 @@ func (m *_SearchRequest) GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint {
 
 // NewSearchRequest factory function for _SearchRequest
 func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequest {
-	_result := &_SearchRequest{
-		HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
-		_KnxNetIpMessage:       NewKnxNetIpMessage(),
+	if hpaiIDiscoveryEndpoint == nil {
+		panic("hpaiIDiscoveryEndpoint of type HPAIDiscoveryEndpoint for SearchRequest must not be nil")
 	}
-	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result
+	_result := &_SearchRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 
@@ -115,7 +117,7 @@ func (m *_SearchRequest) GetTypeName() string {
 }
 
 func (m *_SearchRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (hpaiIDiscoveryEndpoint)
 	lengthInBits += m.HpaiIDiscoveryEndpoint.GetLengthInBits(ctx)
@@ -127,45 +129,28 @@ func (m *_SearchRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SearchRequestParse(ctx context.Context, theBytes []byte) (SearchRequest, error) {
-	return SearchRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func SearchRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SearchRequest, error) {
+func (m *_SearchRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__searchRequest SearchRequest, err error) {
+	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SearchRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SearchRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hpaiIDiscoveryEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiIDiscoveryEndpoint")
+	hpaiIDiscoveryEndpoint, err := ReadSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiIDiscoveryEndpoint", ReadComplex[HPAIDiscoveryEndpoint](HPAIDiscoveryEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiIDiscoveryEndpoint' field"))
 	}
-	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiIDiscoveryEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field of SearchRequest")
-	}
-	hpaiIDiscoveryEndpoint := _hpaiIDiscoveryEndpoint.(HPAIDiscoveryEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiIDiscoveryEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiIDiscoveryEndpoint")
-	}
+	m.HpaiIDiscoveryEndpoint = hpaiIDiscoveryEndpoint
 
 	if closeErr := readBuffer.CloseContext("SearchRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SearchRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SearchRequest{
-		_KnxNetIpMessage:       &_KnxNetIpMessage{},
-		HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
-	}
-	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SearchRequest) Serialize() ([]byte, error) {
@@ -186,16 +171,8 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for SearchRequest")
 		}
 
-		// Simple Field (hpaiIDiscoveryEndpoint)
-		if pushErr := writeBuffer.PushContext("hpaiIDiscoveryEndpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hpaiIDiscoveryEndpoint")
-		}
-		_hpaiIDiscoveryEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiIDiscoveryEndpoint())
-		if popErr := writeBuffer.PopContext("hpaiIDiscoveryEndpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hpaiIDiscoveryEndpoint")
-		}
-		if _hpaiIDiscoveryEndpointErr != nil {
-			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
+		if err := WriteSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiIDiscoveryEndpoint", m.GetHpaiIDiscoveryEndpoint(), WriteComplex[HPAIDiscoveryEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SearchRequest"); popErr != nil {
@@ -203,12 +180,10 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SearchRequest) isSearchRequest() bool {
-	return true
-}
+func (m *_SearchRequest) IsSearchRequest() {}
 
 func (m *_SearchRequest) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetContextTagUnsignedInteger interface {
 	GetPayload() BACnetTagPayloadUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
-}
-
-// BACnetContextTagUnsignedIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagUnsignedInteger.
-// This is useful for switch cases.
-type BACnetContextTagUnsignedIntegerExactly interface {
-	BACnetContextTagUnsignedInteger
-	isBACnetContextTagUnsignedInteger() bool
+	// IsBACnetContextTagUnsignedInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagUnsignedInteger()
 }
 
 // _BACnetContextTagUnsignedInteger is the data-structure of this message
 type _BACnetContextTagUnsignedInteger struct {
-	*_BACnetContextTag
+	BACnetContextTagContract
 	Payload BACnetTagPayloadUnsignedInteger
 }
+
+var _ BACnetContextTagUnsignedInteger = (*_BACnetContextTagUnsignedInteger)(nil)
+var _ BACnetContextTagRequirements = (*_BACnetContextTagUnsignedInteger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,12 +70,8 @@ func (m *_BACnetContextTagUnsignedInteger) GetDataType() BACnetDataType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetContextTagUnsignedInteger) InitializeParent(parent BACnetContextTag, header BACnetTagHeader) {
-	m.Header = header
-}
-
-func (m *_BACnetContextTagUnsignedInteger) GetParent() BACnetContextTag {
-	return m._BACnetContextTag
+func (m *_BACnetContextTagUnsignedInteger) GetParent() BACnetContextTagContract {
+	return m.BACnetContextTagContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,11 +105,14 @@ func (m *_BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
 
 // NewBACnetContextTagUnsignedInteger factory function for _BACnetContextTagUnsignedInteger
 func NewBACnetContextTagUnsignedInteger(payload BACnetTagPayloadUnsignedInteger, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
-	_result := &_BACnetContextTagUnsignedInteger{
-		Payload:           payload,
-		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetContextTagUnsignedInteger must not be nil")
 	}
-	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result
+	_result := &_BACnetContextTagUnsignedInteger{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
 
@@ -133,7 +132,7 @@ func (m *_BACnetContextTagUnsignedInteger) GetTypeName() string {
 }
 
 func (m *_BACnetContextTagUnsignedInteger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -147,52 +146,34 @@ func (m *_BACnetContextTagUnsignedInteger) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetContextTagUnsignedIntegerParse(ctx context.Context, theBytes []byte, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnsignedInteger, error) {
-	return BACnetContextTagUnsignedIntegerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
-}
-
-func BACnetContextTagUnsignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnsignedInteger, error) {
+func (m *_BACnetContextTagUnsignedInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetContextTag, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (__bACnetContextTagUnsignedInteger BACnetContextTagUnsignedInteger, err error) {
+	m.BACnetContextTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnsignedInteger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagUnsignedInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadUnsignedInteger](ctx, "payload", ReadComplex[BACnetTagPayloadUnsignedInteger](BACnetTagPayloadUnsignedIntegerParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
-	_payload, _payloadErr := BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagUnsignedInteger")
-	}
-	payload := _payload.(BACnetTagPayloadUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
-	}
+	m.Payload = payload
 
-	// Virtual field
-	_actualValue := payload.GetActualValue()
-	actualValue := uint64(_actualValue)
+	actualValue, err := ReadVirtualField[uint64](ctx, "actualValue", (*uint64)(nil), payload.GetActualValue())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagUnsignedInteger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTagUnsignedInteger")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetContextTagUnsignedInteger{
-		_BACnetContextTag: &_BACnetContextTag{
-			TagNumberArgument: tagNumberArgument,
-		},
-		Payload: payload,
-	}
-	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetContextTagUnsignedInteger) Serialize() ([]byte, error) {
@@ -213,16 +194,8 @@ func (m *_BACnetContextTagUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetContextTagUnsignedInteger")
 		}
 
-		// Simple Field (payload)
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		if err := WriteSimpleField[BACnetTagPayloadUnsignedInteger](ctx, "payload", m.GetPayload(), WriteComplex[BACnetTagPayloadUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -236,12 +209,10 @@ func (m *_BACnetContextTagUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetContextTagContract.(*_BACnetContextTag).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetContextTagUnsignedInteger) isBACnetContextTagUnsignedInteger() bool {
-	return true
-}
+func (m *_BACnetContextTagUnsignedInteger) IsBACnetContextTagUnsignedInteger() {}
 
 func (m *_BACnetContextTagUnsignedInteger) String() string {
 	if m == nil {

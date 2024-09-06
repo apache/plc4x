@@ -377,8 +377,8 @@ class ${type.name}:
             for val in values.get_list():
                 <#if elementTypeReference.isByteBased()>
                 <@emitImport import="from typing import List" />
-                value: list[byte] = val.get_raw()
-                    write_buffer.write_byte_array("", value)
+                value: ${helper.getLanguageTypeNameForField(arrayField)} = val.get_raw()
+                write_buffer.write_byte_array("", value)
                 <#else>
                 value: ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} = val.get_${helper.camelCaseToSnakeCase(helper.getLanguageTypeNameForTypeReference(elementTypeReference)?cap_first)}()
                 ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)}

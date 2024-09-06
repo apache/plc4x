@@ -25,6 +25,7 @@ import (
 
 type ReadBuffer interface {
 	PositionAware
+	ByteOrderAware
 	// Reset sets the position to the supplied byte position
 	Reset(pos uint16)
 	// HasMore returns true if there are bitLength bits available
@@ -46,7 +47,7 @@ type ReadBuffer interface {
 	ReadFloat32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (float32, error)
 	ReadFloat64(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (float64, error)
 	ReadBigFloat(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (*big.Float, error)
-	ReadString(logicalName string, bitLength uint32, encoding string, readerArgs ...WithReaderArgs) (string, error)
+	ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error)
 	// CloseContext signals that we expect the end of the context with the supplied logical name
 	CloseContext(logicalName string, readerArgs ...WithReaderArgs) error
 }

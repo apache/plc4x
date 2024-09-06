@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLastCredentialRemovedTime interface {
 	GetLastCredentialRemovedTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-}
-
-// BACnetConstructedDataLastCredentialRemovedTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastCredentialRemovedTime.
-// This is useful for switch cases.
-type BACnetConstructedDataLastCredentialRemovedTimeExactly interface {
-	BACnetConstructedDataLastCredentialRemovedTime
-	isBACnetConstructedDataLastCredentialRemovedTime() bool
+	// IsBACnetConstructedDataLastCredentialRemovedTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastCredentialRemovedTime()
 }
 
 // _BACnetConstructedDataLastCredentialRemovedTime is the data-structure of this message
 type _BACnetConstructedDataLastCredentialRemovedTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LastCredentialRemovedTime BACnetDateTime
 }
+
+var _ BACnetConstructedDataLastCredentialRemovedTime = (*_BACnetConstructedDataLastCredentialRemovedTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCredentialRemovedTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetPropertyIdentifierA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLastCredentialRemovedTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetActualValue() BACne
 
 // NewBACnetConstructedDataLastCredentialRemovedTime factory function for _BACnetConstructedDataLastCredentialRemovedTime
 func NewBACnetConstructedDataLastCredentialRemovedTime(lastCredentialRemovedTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialRemovedTime {
-	_result := &_BACnetConstructedDataLastCredentialRemovedTime{
-		LastCredentialRemovedTime: lastCredentialRemovedTime,
-		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if lastCredentialRemovedTime == nil {
+		panic("lastCredentialRemovedTime of type BACnetDateTime for BACnetConstructedDataLastCredentialRemovedTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLastCredentialRemovedTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastCredentialRemovedTime:     lastCredentialRemovedTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lastCredentialRemovedTime)
 	lengthInBits += m.LastCredentialRemovedTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLastCredentialRemovedTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemovedTime, error) {
-	return BACnetConstructedDataLastCredentialRemovedTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLastCredentialRemovedTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemovedTime, error) {
+func (m *_BACnetConstructedDataLastCredentialRemovedTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLastCredentialRemovedTime BACnetConstructedDataLastCredentialRemovedTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialRemovedTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastCredentialRemovedTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastCredentialRemovedTime)
-	if pullErr := readBuffer.PullContext("lastCredentialRemovedTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialRemovedTime")
+	lastCredentialRemovedTime, err := ReadSimpleField[BACnetDateTime](ctx, "lastCredentialRemovedTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastCredentialRemovedTime' field"))
 	}
-	_lastCredentialRemovedTime, _lastCredentialRemovedTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _lastCredentialRemovedTimeErr != nil {
-		return nil, errors.Wrap(_lastCredentialRemovedTimeErr, "Error parsing 'lastCredentialRemovedTime' field of BACnetConstructedDataLastCredentialRemovedTime")
-	}
-	lastCredentialRemovedTime := _lastCredentialRemovedTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("lastCredentialRemovedTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastCredentialRemovedTime")
-	}
+	m.LastCredentialRemovedTime = lastCredentialRemovedTime
 
-	// Virtual field
-	_actualValue := lastCredentialRemovedTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), lastCredentialRemovedTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCredentialRemovedTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCredentialRemovedTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLastCredentialRemovedTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LastCredentialRemovedTime: lastCredentialRemovedTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemovedTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastCredentialRemovedTime")
 		}
 
-		// Simple Field (lastCredentialRemovedTime)
-		if pushErr := writeBuffer.PushContext("lastCredentialRemovedTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastCredentialRemovedTime")
-		}
-		_lastCredentialRemovedTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLastCredentialRemovedTime())
-		if popErr := writeBuffer.PopContext("lastCredentialRemovedTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastCredentialRemovedTime")
-		}
-		if _lastCredentialRemovedTimeErr != nil {
-			return errors.Wrap(_lastCredentialRemovedTimeErr, "Error serializing 'lastCredentialRemovedTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "lastCredentialRemovedTime", m.GetLastCredentialRemovedTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastCredentialRemovedTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemovedTime) isBACnetConstructedDataLastCredentialRemovedTime() bool {
-	return true
+func (m *_BACnetConstructedDataLastCredentialRemovedTime) IsBACnetConstructedDataLastCredentialRemovedTime() {
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemovedTime) String() string {

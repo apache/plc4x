@@ -77,8 +77,7 @@ public class CALDataAcknowledge extends CALData implements Message {
         "paramNo",
         "Parameter",
         paramNo,
-        new DataWriterEnumDefault<>(
-            Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (code)
     writeSimpleField("code", code, writeUnsignedShort(writeBuffer, 8));
@@ -116,7 +115,7 @@ public class CALDataAcknowledge extends CALData implements Message {
         readEnumField(
             "paramNo",
             "Parameter",
-            new DataReaderEnumDefault<>(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short code = readSimpleField("code", readUnsignedShort(readBuffer, 8));
 

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetPropertyValues interface {
 	GetData() []BACnetPropertyValue
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-}
-
-// BACnetPropertyValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyValues.
-// This is useful for switch cases.
-type BACnetPropertyValuesExactly interface {
-	BACnetPropertyValues
-	isBACnetPropertyValues() bool
+	// IsBACnetPropertyValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyValues()
 }
 
 // _BACnetPropertyValues is the data-structure of this message
@@ -61,6 +58,8 @@ type _BACnetPropertyValues struct {
 	TagNumber          uint8
 	ObjectTypeArgument BACnetObjectType
 }
+
+var _ BACnetPropertyValues = (*_BACnetPropertyValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -86,6 +85,12 @@ func (m *_BACnetPropertyValues) GetInnerClosingTag() BACnetClosingTag {
 
 // NewBACnetPropertyValues factory function for _BACnetPropertyValues
 func NewBACnetPropertyValues(innerOpeningTag BACnetOpeningTag, data []BACnetPropertyValue, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetPropertyValues {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetPropertyValues must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetPropertyValues must not be nil")
+	}
 	return &_BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
 }
 
@@ -131,74 +136,52 @@ func BACnetPropertyValuesParse(ctx context.Context, theBytes []byte, tagNumber u
 	return BACnetPropertyValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument)
 }
 
+func BACnetPropertyValuesParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyValues, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyValues, error) {
+		return BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument)
+	}
+}
+
 func BACnetPropertyValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetPropertyValues, error) {
+	v, err := (&_BACnetPropertyValues{TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetPropertyValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetPropertyValues BACnetPropertyValues, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (innerOpeningTag)
-	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
+	innerOpeningTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerOpeningTag' field"))
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetPropertyValues")
-	}
-	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
-	}
+	m.InnerOpeningTag = innerOpeningTag
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
+	data, err := ReadTerminatedArrayField[BACnetPropertyValue](ctx, "data", ReadComplex[BACnetPropertyValue](BACnetPropertyValueParseWithBufferProducer((BACnetObjectType)(objectTypeArgument)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Terminated array
-	var data []BACnetPropertyValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPropertyValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetPropertyValues")
-			}
-			data = append(data, _item.(BACnetPropertyValue))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
-	}
+	m.Data = data
 
-	// Simple Field (innerClosingTag)
-	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
+	innerClosingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "innerClosingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerClosingTag' field"))
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetPropertyValues")
-	}
-	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for innerClosingTag")
-	}
+	m.InnerClosingTag = innerClosingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyValues"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyValues")
 	}
 
-	// Create the instance
-	return &_BACnetPropertyValues{
-		TagNumber:          tagNumber,
-		ObjectTypeArgument: objectTypeArgument,
-		InnerOpeningTag:    innerOpeningTag,
-		Data:               data,
-		InnerClosingTag:    innerClosingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyValues) Serialize() ([]byte, error) {
@@ -218,45 +201,16 @@ func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetPropertyValues")
 	}
 
-	// Simple Field (innerOpeningTag)
-	if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
-	}
-	_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
-	if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for innerOpeningTag")
-	}
-	if _innerOpeningTagErr != nil {
-		return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", m.GetInnerOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerOpeningTag' field")
 	}
 
-	// Array Field (data)
-	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for data")
-	}
-	for _curItem, _element := range m.GetData() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetData()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'data' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for data")
+	if err := WriteComplexTypeArrayField(ctx, "data", m.GetData(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
-	// Simple Field (innerClosingTag)
-	if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
-	}
-	_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
-	if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for innerClosingTag")
-	}
-	if _innerClosingTagErr != nil {
-		return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "innerClosingTag", m.GetInnerClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerClosingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyValues"); popErr != nil {
@@ -278,9 +232,7 @@ func (m *_BACnetPropertyValues) GetObjectTypeArgument() BACnetObjectType {
 //
 ////
 
-func (m *_BACnetPropertyValues) isBACnetPropertyValues() bool {
-	return true
-}
+func (m *_BACnetPropertyValues) IsBACnetPropertyValues() {}
 
 func (m *_BACnetPropertyValues) String() string {
 	if m == nil {

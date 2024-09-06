@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type AdsDiscoveryBlockVersion interface {
 	AdsDiscoveryBlock
 	// GetVersionData returns VersionData (property field)
 	GetVersionData() []byte
-}
-
-// AdsDiscoveryBlockVersionExactly can be used when we want exactly this type and not a type which fulfills AdsDiscoveryBlockVersion.
-// This is useful for switch cases.
-type AdsDiscoveryBlockVersionExactly interface {
-	AdsDiscoveryBlockVersion
-	isAdsDiscoveryBlockVersion() bool
+	// IsAdsDiscoveryBlockVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockVersion()
 }
 
 // _AdsDiscoveryBlockVersion is the data-structure of this message
 type _AdsDiscoveryBlockVersion struct {
-	*_AdsDiscoveryBlock
+	AdsDiscoveryBlockContract
 	VersionData []byte
 }
+
+var _ AdsDiscoveryBlockVersion = (*_AdsDiscoveryBlockVersion)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockVersion)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_AdsDiscoveryBlockVersion) GetBlockType() AdsDiscoveryBlockType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsDiscoveryBlockVersion) InitializeParent(parent AdsDiscoveryBlock) {}
-
-func (m *_AdsDiscoveryBlockVersion) GetParent() AdsDiscoveryBlock {
-	return m._AdsDiscoveryBlock
+func (m *_AdsDiscoveryBlockVersion) GetParent() AdsDiscoveryBlockContract {
+	return m.AdsDiscoveryBlockContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_AdsDiscoveryBlockVersion) GetVersionData() []byte {
 // NewAdsDiscoveryBlockVersion factory function for _AdsDiscoveryBlockVersion
 func NewAdsDiscoveryBlockVersion(versionData []byte) *_AdsDiscoveryBlockVersion {
 	_result := &_AdsDiscoveryBlockVersion{
-		VersionData:        versionData,
-		_AdsDiscoveryBlock: NewAdsDiscoveryBlock(),
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		VersionData:               versionData,
 	}
-	_result._AdsDiscoveryBlock._AdsDiscoveryBlockChildRequirements = _result
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_AdsDiscoveryBlockVersion) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Implicit Field (versionDataLen)
 	lengthInBits += 16
@@ -131,45 +129,34 @@ func (m *_AdsDiscoveryBlockVersion) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockVersionParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockVersion, error) {
-	return AdsDiscoveryBlockVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsDiscoveryBlockVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockVersion, error) {
+func (m *_AdsDiscoveryBlockVersion) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockVersion AdsDiscoveryBlockVersion, err error) {
+	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockVersion"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockVersion")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (versionDataLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	versionDataLen, _versionDataLenErr := readBuffer.ReadUint16("versionDataLen", 16)
+	versionDataLen, err := ReadImplicitField[uint16](ctx, "versionDataLen", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'versionDataLen' field"))
+	}
 	_ = versionDataLen
-	if _versionDataLenErr != nil {
-		return nil, errors.Wrap(_versionDataLenErr, "Error parsing 'versionDataLen' field of AdsDiscoveryBlockVersion")
+
+	versionData, err := readBuffer.ReadByteArray("versionData", int(versionDataLen))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'versionData' field"))
 	}
-	// Byte Array field (versionData)
-	numberOfBytesversionData := int(versionDataLen)
-	versionData, _readArrayErr := readBuffer.ReadByteArray("versionData", numberOfBytesversionData)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'versionData' field of AdsDiscoveryBlockVersion")
-	}
+	m.VersionData = versionData
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDiscoveryBlockVersion")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsDiscoveryBlockVersion{
-		_AdsDiscoveryBlock: &_AdsDiscoveryBlock{},
-		VersionData:        versionData,
-	}
-	_child._AdsDiscoveryBlock._AdsDiscoveryBlockChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsDiscoveryBlockVersion) Serialize() ([]byte, error) {
@@ -189,17 +176,12 @@ func (m *_AdsDiscoveryBlockVersion) SerializeWithWriteBuffer(ctx context.Context
 		if pushErr := writeBuffer.PushContext("AdsDiscoveryBlockVersion"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockVersion")
 		}
-
-		// Implicit Field (versionDataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		versionDataLen := uint16(uint16(len(m.GetVersionData())))
-		_versionDataLenErr := writeBuffer.WriteUint16("versionDataLen", 16, uint16((versionDataLen)))
-		if _versionDataLenErr != nil {
-			return errors.Wrap(_versionDataLenErr, "Error serializing 'versionDataLen' field")
+		if err := WriteImplicitField(ctx, "versionDataLen", versionDataLen, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'versionDataLen' field")
 		}
 
-		// Array Field (versionData)
-		// Byte Array field (versionData)
-		if err := writeBuffer.WriteByteArray("versionData", m.GetVersionData()); err != nil {
+		if err := WriteByteArrayField(ctx, "versionData", m.GetVersionData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'versionData' field")
 		}
 
@@ -208,12 +190,10 @@ func (m *_AdsDiscoveryBlockVersion) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsDiscoveryBlockVersion) isAdsDiscoveryBlockVersion() bool {
-	return true
-}
+func (m *_AdsDiscoveryBlockVersion) IsAdsDiscoveryBlockVersion() {}
 
 func (m *_AdsDiscoveryBlockVersion) String() string {
 	if m == nil {

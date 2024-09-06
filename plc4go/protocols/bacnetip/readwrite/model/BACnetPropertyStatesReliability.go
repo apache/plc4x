@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesReliability interface {
 	BACnetPropertyStates
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
-}
-
-// BACnetPropertyStatesReliabilityExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesReliability.
-// This is useful for switch cases.
-type BACnetPropertyStatesReliabilityExactly interface {
-	BACnetPropertyStatesReliability
-	isBACnetPropertyStatesReliability() bool
+	// IsBACnetPropertyStatesReliability is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesReliability()
 }
 
 // _BACnetPropertyStatesReliability is the data-structure of this message
 type _BACnetPropertyStatesReliability struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	Reliability BACnetReliabilityTagged
 }
+
+var _ BACnetPropertyStatesReliability = (*_BACnetPropertyStatesReliability)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesReliability)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesReliability struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesReliability) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesReliability) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesReliability) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesReliability) GetReliability() BACnetReliabilityTag
 
 // NewBACnetPropertyStatesReliability factory function for _BACnetPropertyStatesReliability
 func NewBACnetPropertyStatesReliability(reliability BACnetReliabilityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesReliability {
-	_result := &_BACnetPropertyStatesReliability{
-		Reliability:           reliability,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if reliability == nil {
+		panic("reliability of type BACnetReliabilityTagged for BACnetPropertyStatesReliability must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesReliability{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Reliability:                  reliability,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesReliability) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesReliability) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (reliability)
 	lengthInBits += m.Reliability.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesReliability) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesReliabilityParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesReliability, error) {
-	return BACnetPropertyStatesReliabilityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesReliabilityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesReliability, error) {
+func (m *_BACnetPropertyStatesReliability) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesReliability BACnetPropertyStatesReliability, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesReliability"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesReliability")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reliability)
-	if pullErr := readBuffer.PullContext("reliability"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reliability")
+	reliability, err := ReadSimpleField[BACnetReliabilityTagged](ctx, "reliability", ReadComplex[BACnetReliabilityTagged](BACnetReliabilityTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reliability' field"))
 	}
-	_reliability, _reliabilityErr := BACnetReliabilityTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _reliabilityErr != nil {
-		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field of BACnetPropertyStatesReliability")
-	}
-	reliability := _reliability.(BACnetReliabilityTagged)
-	if closeErr := readBuffer.CloseContext("reliability"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reliability")
-	}
+	m.Reliability = reliability
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesReliability"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesReliability")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesReliability{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		Reliability:           reliability,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesReliability) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesReliability) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesReliability")
 		}
 
-		// Simple Field (reliability)
-		if pushErr := writeBuffer.PushContext("reliability"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reliability")
-		}
-		_reliabilityErr := writeBuffer.WriteSerializable(ctx, m.GetReliability())
-		if popErr := writeBuffer.PopContext("reliability"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reliability")
-		}
-		if _reliabilityErr != nil {
-			return errors.Wrap(_reliabilityErr, "Error serializing 'reliability' field")
+		if err := WriteSimpleField[BACnetReliabilityTagged](ctx, "reliability", m.GetReliability(), WriteComplex[BACnetReliabilityTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reliability' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesReliability"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesReliability) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesReliability) isBACnetPropertyStatesReliability() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesReliability) IsBACnetPropertyStatesReliability() {}
 
 func (m *_BACnetPropertyStatesReliability) String() string {
 	if m == nil {

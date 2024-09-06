@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetTimeStampSequence interface {
 	BACnetTimeStamp
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() BACnetContextTagUnsignedInteger
-}
-
-// BACnetTimeStampSequenceExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStampSequence.
-// This is useful for switch cases.
-type BACnetTimeStampSequenceExactly interface {
-	BACnetTimeStampSequence
-	isBACnetTimeStampSequence() bool
+	// IsBACnetTimeStampSequence is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimeStampSequence()
 }
 
 // _BACnetTimeStampSequence is the data-structure of this message
 type _BACnetTimeStampSequence struct {
-	*_BACnetTimeStamp
+	BACnetTimeStampContract
 	SequenceNumber BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetTimeStampSequence = (*_BACnetTimeStampSequence)(nil)
+var _ BACnetTimeStampRequirements = (*_BACnetTimeStampSequence)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetTimeStampSequence struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetTimeStampSequence) InitializeParent(parent BACnetTimeStamp, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetTimeStampSequence) GetParent() BACnetTimeStamp {
-	return m._BACnetTimeStamp
+func (m *_BACnetTimeStampSequence) GetParent() BACnetTimeStampContract {
+	return m.BACnetTimeStampContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetTimeStampSequence) GetSequenceNumber() BACnetContextTagUnsignedI
 
 // NewBACnetTimeStampSequence factory function for _BACnetTimeStampSequence
 func NewBACnetTimeStampSequence(sequenceNumber BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetTimeStampSequence {
-	_result := &_BACnetTimeStampSequence{
-		SequenceNumber:   sequenceNumber,
-		_BACnetTimeStamp: NewBACnetTimeStamp(peekedTagHeader),
+	if sequenceNumber == nil {
+		panic("sequenceNumber of type BACnetContextTagUnsignedInteger for BACnetTimeStampSequence must not be nil")
 	}
-	_result._BACnetTimeStamp._BACnetTimeStampChildRequirements = _result
+	_result := &_BACnetTimeStampSequence{
+		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
+		SequenceNumber:          sequenceNumber,
+	}
+	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetTimeStampSequence) GetTypeName() string {
 }
 
 func (m *_BACnetTimeStampSequence) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetTimeStampContract.(*_BACnetTimeStamp).getLengthInBits(ctx))
 
 	// Simple field (sequenceNumber)
 	lengthInBits += m.SequenceNumber.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetTimeStampSequence) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimeStampSequenceParse(ctx context.Context, theBytes []byte) (BACnetTimeStampSequence, error) {
-	return BACnetTimeStampSequenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetTimeStampSequenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampSequence, error) {
+func (m *_BACnetTimeStampSequence) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetTimeStamp) (__bACnetTimeStampSequence BACnetTimeStampSequence, err error) {
+	m.BACnetTimeStampContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimeStampSequence"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimeStampSequence")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sequenceNumber)
-	if pullErr := readBuffer.PullContext("sequenceNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sequenceNumber")
+	sequenceNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "sequenceNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of BACnetTimeStampSequence")
-	}
-	sequenceNumber := _sequenceNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("sequenceNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sequenceNumber")
-	}
+	m.SequenceNumber = sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("BACnetTimeStampSequence"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimeStampSequence")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetTimeStampSequence{
-		_BACnetTimeStamp: &_BACnetTimeStamp{},
-		SequenceNumber:   sequenceNumber,
-	}
-	_child._BACnetTimeStamp._BACnetTimeStampChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetTimeStampSequence) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetTimeStampSequence) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimeStampSequence")
 		}
 
-		// Simple Field (sequenceNumber)
-		if pushErr := writeBuffer.PushContext("sequenceNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sequenceNumber")
-		}
-		_sequenceNumberErr := writeBuffer.WriteSerializable(ctx, m.GetSequenceNumber())
-		if popErr := writeBuffer.PopContext("sequenceNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sequenceNumber")
-		}
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimeStampSequence"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetTimeStampSequence) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetTimeStampContract.(*_BACnetTimeStamp).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetTimeStampSequence) isBACnetTimeStampSequence() bool {
-	return true
-}
+func (m *_BACnetTimeStampSequence) IsBACnetTimeStampSequence() {}
 
 func (m *_BACnetTimeStampSequence) String() string {
 	if m == nil {

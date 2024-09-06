@@ -132,8 +132,7 @@ public class BACnetTagHeader implements Message {
         "tagClass",
         "TagClass",
         tagClass,
-        new DataWriterEnumDefault<>(
-            TagClass::getValue, TagClass::name, writeUnsignedByte(writeBuffer, 1)));
+        writeEnum(TagClass::getValue, TagClass::name, writeUnsignedByte(writeBuffer, 1)));
 
     // Simple Field (lengthValueType)
     writeSimpleField("lengthValueType", lengthValueType, writeUnsignedByte(writeBuffer, 3));
@@ -252,7 +251,7 @@ public class BACnetTagHeader implements Message {
         readEnumField(
             "tagClass",
             "TagClass",
-            new DataReaderEnumDefault<>(TagClass::enumForValue, readUnsignedByte(readBuffer, 1)));
+            readEnum(TagClass::enumForValue, readUnsignedByte(readBuffer, 1)));
 
     byte lengthValueType = readSimpleField("lengthValueType", readUnsignedByte(readBuffer, 3));
 

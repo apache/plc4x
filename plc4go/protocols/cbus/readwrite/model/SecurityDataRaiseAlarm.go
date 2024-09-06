@@ -37,19 +37,17 @@ type SecurityDataRaiseAlarm interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataRaiseAlarmExactly can be used when we want exactly this type and not a type which fulfills SecurityDataRaiseAlarm.
-// This is useful for switch cases.
-type SecurityDataRaiseAlarmExactly interface {
-	SecurityDataRaiseAlarm
-	isSecurityDataRaiseAlarm() bool
+	// IsSecurityDataRaiseAlarm is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataRaiseAlarm()
 }
 
 // _SecurityDataRaiseAlarm is the data-structure of this message
 type _SecurityDataRaiseAlarm struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataRaiseAlarm = (*_SecurityDataRaiseAlarm)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataRaiseAlarm)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataRaiseAlarm struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataRaiseAlarm) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataRaiseAlarm) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataRaiseAlarm) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataRaiseAlarm factory function for _SecurityDataRaiseAlarm
 func NewSecurityDataRaiseAlarm(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataRaiseAlarm {
 	_result := &_SecurityDataRaiseAlarm{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataRaiseAlarm) GetTypeName() string {
 }
 
 func (m *_SecurityDataRaiseAlarm) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataRaiseAlarm) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataRaiseAlarmParse(ctx context.Context, theBytes []byte) (SecurityDataRaiseAlarm, error) {
-	return SecurityDataRaiseAlarmParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataRaiseAlarmParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataRaiseAlarm, error) {
+func (m *_SecurityDataRaiseAlarm) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataRaiseAlarm SecurityDataRaiseAlarm, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataRaiseAlarm"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataRaiseAlarm")
 	}
@@ -123,12 +112,7 @@ func SecurityDataRaiseAlarmParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataRaiseAlarm")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataRaiseAlarm{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataRaiseAlarm) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataRaiseAlarm) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataRaiseAlarm) isSecurityDataRaiseAlarm() bool {
-	return true
-}
+func (m *_SecurityDataRaiseAlarm) IsSecurityDataRaiseAlarm() {}
 
 func (m *_SecurityDataRaiseAlarm) String() string {
 	if m == nil {

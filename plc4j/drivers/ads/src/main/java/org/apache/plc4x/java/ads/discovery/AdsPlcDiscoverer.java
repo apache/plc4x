@@ -183,7 +183,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                             }
 
                             try {
-                                Thread.sleep(3000);
+                                Thread.sleep(100);
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
@@ -205,6 +205,8 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
             public void run() {
                 PlcDiscoveryResponse response =
                     new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, new ArrayList<>(values));
+                timer.cancel();
+                timer.purge();
                 future.complete(response);
             }
         }, 5000L);

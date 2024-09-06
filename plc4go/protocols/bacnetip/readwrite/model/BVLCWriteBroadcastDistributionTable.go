@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,23 +43,21 @@ type BVLCWriteBroadcastDistributionTable interface {
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCBroadcastDistributionTableEntry
-}
-
-// BVLCWriteBroadcastDistributionTableExactly can be used when we want exactly this type and not a type which fulfills BVLCWriteBroadcastDistributionTable.
-// This is useful for switch cases.
-type BVLCWriteBroadcastDistributionTableExactly interface {
-	BVLCWriteBroadcastDistributionTable
-	isBVLCWriteBroadcastDistributionTable() bool
+	// IsBVLCWriteBroadcastDistributionTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCWriteBroadcastDistributionTable()
 }
 
 // _BVLCWriteBroadcastDistributionTable is the data-structure of this message
 type _BVLCWriteBroadcastDistributionTable struct {
-	*_BVLC
+	BVLCContract
 	Table []BVLCBroadcastDistributionTableEntry
 
 	// Arguments.
 	BvlcPayloadLength uint16
 }
+
+var _ BVLCWriteBroadcastDistributionTable = (*_BVLCWriteBroadcastDistributionTable)(nil)
+var _ BVLCRequirements = (*_BVLCWriteBroadcastDistributionTable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +73,8 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetBvlcFunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BVLCWriteBroadcastDistributionTable) InitializeParent(parent BVLC) {}
-
-func (m *_BVLCWriteBroadcastDistributionTable) GetParent() BVLC {
-	return m._BVLC
+func (m *_BVLCWriteBroadcastDistributionTable) GetParent() BVLCContract {
+	return m.BVLCContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +94,10 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetTable() []BVLCBroadcastDistrib
 // NewBVLCWriteBroadcastDistributionTable factory function for _BVLCWriteBroadcastDistributionTable
 func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCWriteBroadcastDistributionTable {
 	_result := &_BVLCWriteBroadcastDistributionTable{
-		Table: table,
-		_BVLC: NewBVLC(),
+		BVLCContract: NewBVLC(),
+		Table:        table,
 	}
-	_result._BVLC._BVLCChildRequirements = _result
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 
@@ -118,7 +117,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetTypeName() string {
 }
 
 func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Table) > 0 {
@@ -134,53 +133,28 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCWriteBroadcastDistributionTableParse(ctx context.Context, theBytes []byte, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
-	return BVLCWriteBroadcastDistributionTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
-}
-
-func BVLCWriteBroadcastDistributionTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
+func (m *_BVLCWriteBroadcastDistributionTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCWriteBroadcastDistributionTable BVLCWriteBroadcastDistributionTable, err error) {
+	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCWriteBroadcastDistributionTable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (table)
-	if pullErr := readBuffer.PullContext("table", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for table")
+	table, err := ReadLengthArrayField[BVLCBroadcastDistributionTableEntry](ctx, "table", ReadComplex[BVLCBroadcastDistributionTableEntry](BVLCBroadcastDistributionTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'table' field"))
 	}
-	// Length array
-	var table []BVLCBroadcastDistributionTableEntry
-	{
-		_tableLength := bvlcPayloadLength
-		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
-		for positionAware.GetPos() < _tableEndPos {
-			_item, _err := BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'table' field of BVLCWriteBroadcastDistributionTable")
-			}
-			table = append(table, _item.(BVLCBroadcastDistributionTableEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("table", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for table")
-	}
+	m.Table = table
 
 	if closeErr := readBuffer.CloseContext("BVLCWriteBroadcastDistributionTable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCWriteBroadcastDistributionTable")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BVLCWriteBroadcastDistributionTable{
-		_BVLC: &_BVLC{},
-		Table: table,
-	}
-	_child._BVLC._BVLCChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BVLCWriteBroadcastDistributionTable) Serialize() ([]byte, error) {
@@ -201,21 +175,8 @@ func (m *_BVLCWriteBroadcastDistributionTable) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BVLCWriteBroadcastDistributionTable")
 		}
 
-		// Array Field (table)
-		if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for table")
-		}
-		for _curItem, _element := range m.GetTable() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTable()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'table' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for table")
+		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'table' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCWriteBroadcastDistributionTable"); popErr != nil {
@@ -223,7 +184,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -236,9 +197,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetBvlcPayloadLength() uint16 {
 //
 ////
 
-func (m *_BVLCWriteBroadcastDistributionTable) isBVLCWriteBroadcastDistributionTable() bool {
-	return true
-}
+func (m *_BVLCWriteBroadcastDistributionTable) IsBVLCWriteBroadcastDistributionTable() {}
 
 func (m *_BVLCWriteBroadcastDistributionTable) String() string {
 	if m == nil {

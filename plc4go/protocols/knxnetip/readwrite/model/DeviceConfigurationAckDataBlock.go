@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type DeviceConfigurationAckDataBlock interface {
 	GetSequenceCounter() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
-}
-
-// DeviceConfigurationAckDataBlockExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationAckDataBlock.
-// This is useful for switch cases.
-type DeviceConfigurationAckDataBlockExactly interface {
-	DeviceConfigurationAckDataBlock
-	isDeviceConfigurationAckDataBlock() bool
+	// IsDeviceConfigurationAckDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceConfigurationAckDataBlock()
 }
 
 // _DeviceConfigurationAckDataBlock is the data-structure of this message
@@ -57,6 +54,8 @@ type _DeviceConfigurationAckDataBlock struct {
 	SequenceCounter        uint8
 	Status                 Status
 }
+
+var _ DeviceConfigurationAckDataBlock = (*_DeviceConfigurationAckDataBlock)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -126,61 +125,58 @@ func DeviceConfigurationAckDataBlockParse(ctx context.Context, theBytes []byte) 
 	return DeviceConfigurationAckDataBlockParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DeviceConfigurationAckDataBlockParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
+		return DeviceConfigurationAckDataBlockParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DeviceConfigurationAckDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
+	v, err := (&_DeviceConfigurationAckDataBlock{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_DeviceConfigurationAckDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAckDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeviceConfigurationAckDataBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
+	}
 	_ = structureLength
-	if _structureLengthErr != nil {
-		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of DeviceConfigurationAckDataBlock")
-	}
 
-	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
-	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of DeviceConfigurationAckDataBlock")
+	communicationChannelId, err := ReadSimpleField(ctx, "communicationChannelId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'communicationChannelId' field"))
 	}
-	communicationChannelId := _communicationChannelId
+	m.CommunicationChannelId = communicationChannelId
 
-	// Simple Field (sequenceCounter)
-	_sequenceCounter, _sequenceCounterErr := readBuffer.ReadUint8("sequenceCounter", 8)
-	if _sequenceCounterErr != nil {
-		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field of DeviceConfigurationAckDataBlock")
+	sequenceCounter, err := ReadSimpleField(ctx, "sequenceCounter", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceCounter' field"))
 	}
-	sequenceCounter := _sequenceCounter
+	m.SequenceCounter = sequenceCounter
 
-	// Simple Field (status)
-	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for status")
+	status, err := ReadEnumField[Status](ctx, "status", "Status", ReadEnum(StatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	_status, _statusErr := StatusParseWithBuffer(ctx, readBuffer)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DeviceConfigurationAckDataBlock")
-	}
-	status := _status
-	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for status")
-	}
+	m.Status = status
 
 	if closeErr := readBuffer.CloseContext("DeviceConfigurationAckDataBlock"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeviceConfigurationAckDataBlock")
 	}
 
-	// Create the instance
-	return &_DeviceConfigurationAckDataBlock{
-		CommunicationChannelId: communicationChannelId,
-		SequenceCounter:        sequenceCounter,
-		Status:                 status,
-	}, nil
+	return m, nil
 }
 
 func (m *_DeviceConfigurationAckDataBlock) Serialize() ([]byte, error) {
@@ -199,38 +195,21 @@ func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(ctx context.
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationAckDataBlock"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationAckDataBlock")
 	}
-
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
-	if _structureLengthErr != nil {
-		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
+	if err := WriteImplicitField(ctx, "structureLength", structureLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (communicationChannelId)
-	communicationChannelId := uint8(m.GetCommunicationChannelId())
-	_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
-	if _communicationChannelIdErr != nil {
-		return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
+	if err := WriteSimpleField[uint8](ctx, "communicationChannelId", m.GetCommunicationChannelId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'communicationChannelId' field")
 	}
 
-	// Simple Field (sequenceCounter)
-	sequenceCounter := uint8(m.GetSequenceCounter())
-	_sequenceCounterErr := writeBuffer.WriteUint8("sequenceCounter", 8, uint8((sequenceCounter)))
-	if _sequenceCounterErr != nil {
-		return errors.Wrap(_sequenceCounterErr, "Error serializing 'sequenceCounter' field")
+	if err := WriteSimpleField[uint8](ctx, "sequenceCounter", m.GetSequenceCounter(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sequenceCounter' field")
 	}
 
-	// Simple Field (status)
-	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for status")
-	}
-	_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
-	if popErr := writeBuffer.PopContext("status"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for status")
-	}
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleEnumField[Status](ctx, "status", "Status", m.GetStatus(), WriteEnum[Status, uint8](Status.GetValue, Status.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceConfigurationAckDataBlock"); popErr != nil {
@@ -239,9 +218,7 @@ func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(ctx context.
 	return nil
 }
 
-func (m *_DeviceConfigurationAckDataBlock) isDeviceConfigurationAckDataBlock() bool {
-	return true
-}
+func (m *_DeviceConfigurationAckDataBlock) IsDeviceConfigurationAckDataBlock() {}
 
 func (m *_DeviceConfigurationAckDataBlock) String() string {
 	if m == nil {

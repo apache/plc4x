@@ -98,21 +98,20 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("AxisInformation");
 
     // Simple Field (engineeringUnits)
-    writeSimpleField(
-        "engineeringUnits", engineeringUnits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("engineeringUnits", engineeringUnits, writeComplex(writeBuffer));
 
     // Simple Field (eURange)
-    writeSimpleField("eURange", eURange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eURange", eURange, writeComplex(writeBuffer));
 
     // Simple Field (title)
-    writeSimpleField("title", title, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("title", title, writeComplex(writeBuffer));
 
     // Simple Field (axisScaleType)
     writeSimpleEnumField(
         "axisScaleType",
         "AxisScaleEnumeration",
         axisScaleType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AxisScaleEnumeration::getValue,
             AxisScaleEnumeration::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -169,29 +168,26 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     ExtensionObjectDefinition engineeringUnits =
         readSimpleField(
             "engineeringUnits",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("889")),
                 readBuffer));
 
     ExtensionObjectDefinition eURange =
         readSimpleField(
             "eURange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("886")),
                 readBuffer));
 
     LocalizedText title =
         readSimpleField(
-            "title",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "title", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     AxisScaleEnumeration axisScaleType =
         readEnumField(
             "axisScaleType",
             "AxisScaleEnumeration",
-            new DataReaderEnumDefault<>(
-                AxisScaleEnumeration::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(AxisScaleEnumeration::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfAxisSteps = readSimpleField("noOfAxisSteps", readSignedInt(readBuffer, 32));
 

@@ -60,7 +60,7 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
     writeBuffer.pushContext("BACnetShedLevelPercent");
 
     // Simple Field (percent)
-    writeSimpleField("percent", percent, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("percent", percent, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetShedLevelPercent");
   }
@@ -91,7 +91,7 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
     BACnetContextTagUnsignedInteger percent =
         readSimpleField(
             "percent",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

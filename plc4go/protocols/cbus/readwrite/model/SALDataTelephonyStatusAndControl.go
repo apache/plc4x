@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SALDataTelephonyStatusAndControl interface {
 	SALData
 	// GetTelephonyData returns TelephonyData (property field)
 	GetTelephonyData() TelephonyData
-}
-
-// SALDataTelephonyStatusAndControlExactly can be used when we want exactly this type and not a type which fulfills SALDataTelephonyStatusAndControl.
-// This is useful for switch cases.
-type SALDataTelephonyStatusAndControlExactly interface {
-	SALDataTelephonyStatusAndControl
-	isSALDataTelephonyStatusAndControl() bool
+	// IsSALDataTelephonyStatusAndControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataTelephonyStatusAndControl()
 }
 
 // _SALDataTelephonyStatusAndControl is the data-structure of this message
 type _SALDataTelephonyStatusAndControl struct {
-	*_SALData
+	SALDataContract
 	TelephonyData TelephonyData
 }
+
+var _ SALDataTelephonyStatusAndControl = (*_SALDataTelephonyStatusAndControl)(nil)
+var _ SALDataRequirements = (*_SALDataTelephonyStatusAndControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_SALDataTelephonyStatusAndControl) GetApplicationId() ApplicationId {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataTelephonyStatusAndControl) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataTelephonyStatusAndControl) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataTelephonyStatusAndControl) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_SALDataTelephonyStatusAndControl) GetTelephonyData() TelephonyData {
 
 // NewSALDataTelephonyStatusAndControl factory function for _SALDataTelephonyStatusAndControl
 func NewSALDataTelephonyStatusAndControl(telephonyData TelephonyData, salData SALData) *_SALDataTelephonyStatusAndControl {
-	_result := &_SALDataTelephonyStatusAndControl{
-		TelephonyData: telephonyData,
-		_SALData:      NewSALData(salData),
+	if telephonyData == nil {
+		panic("telephonyData of type TelephonyData for SALDataTelephonyStatusAndControl must not be nil")
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result := &_SALDataTelephonyStatusAndControl{
+		SALDataContract: NewSALData(salData),
+		TelephonyData:   telephonyData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_SALDataTelephonyStatusAndControl) GetTypeName() string {
 }
 
 func (m *_SALDataTelephonyStatusAndControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (telephonyData)
 	lengthInBits += m.TelephonyData.GetLengthInBits(ctx)
@@ -128,45 +127,28 @@ func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataTelephonyStatusAndControlParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
-	return SALDataTelephonyStatusAndControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataTelephonyStatusAndControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
+func (m *_SALDataTelephonyStatusAndControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataTelephonyStatusAndControl SALDataTelephonyStatusAndControl, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataTelephonyStatusAndControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataTelephonyStatusAndControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (telephonyData)
-	if pullErr := readBuffer.PullContext("telephonyData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for telephonyData")
+	telephonyData, err := ReadSimpleField[TelephonyData](ctx, "telephonyData", ReadComplex[TelephonyData](TelephonyDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'telephonyData' field"))
 	}
-	_telephonyData, _telephonyDataErr := TelephonyDataParseWithBuffer(ctx, readBuffer)
-	if _telephonyDataErr != nil {
-		return nil, errors.Wrap(_telephonyDataErr, "Error parsing 'telephonyData' field of SALDataTelephonyStatusAndControl")
-	}
-	telephonyData := _telephonyData.(TelephonyData)
-	if closeErr := readBuffer.CloseContext("telephonyData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for telephonyData")
-	}
+	m.TelephonyData = telephonyData
 
 	if closeErr := readBuffer.CloseContext("SALDataTelephonyStatusAndControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataTelephonyStatusAndControl")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataTelephonyStatusAndControl{
-		_SALData:      &_SALData{},
-		TelephonyData: telephonyData,
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataTelephonyStatusAndControl) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for SALDataTelephonyStatusAndControl")
 		}
 
-		// Simple Field (telephonyData)
-		if pushErr := writeBuffer.PushContext("telephonyData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for telephonyData")
-		}
-		_telephonyDataErr := writeBuffer.WriteSerializable(ctx, m.GetTelephonyData())
-		if popErr := writeBuffer.PopContext("telephonyData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for telephonyData")
-		}
-		if _telephonyDataErr != nil {
-			return errors.Wrap(_telephonyDataErr, "Error serializing 'telephonyData' field")
+		if err := WriteSimpleField[TelephonyData](ctx, "telephonyData", m.GetTelephonyData(), WriteComplex[TelephonyData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'telephonyData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataTelephonyStatusAndControl"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataTelephonyStatusAndControl) isSALDataTelephonyStatusAndControl() bool {
-	return true
-}
+func (m *_SALDataTelephonyStatusAndControl) IsSALDataTelephonyStatusAndControl() {}
 
 func (m *_SALDataTelephonyStatusAndControl) String() string {
 	if m == nil {

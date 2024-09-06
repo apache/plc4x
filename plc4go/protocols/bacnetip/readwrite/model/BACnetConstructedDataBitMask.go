@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataBitMask interface {
 	GetBitString() BACnetApplicationTagBitString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBitString
-}
-
-// BACnetConstructedDataBitMaskExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitMask.
-// This is useful for switch cases.
-type BACnetConstructedDataBitMaskExactly interface {
-	BACnetConstructedDataBitMask
-	isBACnetConstructedDataBitMask() bool
+	// IsBACnetConstructedDataBitMask is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBitMask()
 }
 
 // _BACnetConstructedDataBitMask is the data-structure of this message
 type _BACnetConstructedDataBitMask struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	BitString BACnetApplicationTagBitString
 }
+
+var _ BACnetConstructedDataBitMask = (*_BACnetConstructedDataBitMask)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitMask)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataBitMask) GetPropertyIdentifierArgument() BACnetPr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataBitMask) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataBitMask) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataBitMask) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataBitMask) GetActualValue() BACnetApplicationTagBit
 
 // NewBACnetConstructedDataBitMask factory function for _BACnetConstructedDataBitMask
 func NewBACnetConstructedDataBitMask(bitString BACnetApplicationTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitMask {
-	_result := &_BACnetConstructedDataBitMask{
-		BitString:              bitString,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if bitString == nil {
+		panic("bitString of type BACnetApplicationTagBitString for BACnetConstructedDataBitMask must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataBitMask{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BitString:                     bitString,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataBitMask) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBitMask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (bitString)
 	lengthInBits += m.BitString.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataBitMask) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataBitMaskParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitMask, error) {
-	return BACnetConstructedDataBitMaskParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataBitMaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitMask, error) {
+func (m *_BACnetConstructedDataBitMask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBitMask BACnetConstructedDataBitMask, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitMask"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBitMask")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bitString)
-	if pullErr := readBuffer.PullContext("bitString"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitString")
+	bitString, err := ReadSimpleField[BACnetApplicationTagBitString](ctx, "bitString", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBitString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitString' field"))
 	}
-	_bitString, _bitStringErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _bitStringErr != nil {
-		return nil, errors.Wrap(_bitStringErr, "Error parsing 'bitString' field of BACnetConstructedDataBitMask")
-	}
-	bitString := _bitString.(BACnetApplicationTagBitString)
-	if closeErr := readBuffer.CloseContext("bitString"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitString")
-	}
+	m.BitString = bitString
 
-	// Virtual field
-	_actualValue := bitString
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBitString](ctx, "actualValue", (*BACnetApplicationTagBitString)(nil), bitString)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBitMask"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBitMask")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataBitMask{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		BitString: bitString,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataBitMask) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataBitMask) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBitMask")
 		}
 
-		// Simple Field (bitString)
-		if pushErr := writeBuffer.PushContext("bitString"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bitString")
-		}
-		_bitStringErr := writeBuffer.WriteSerializable(ctx, m.GetBitString())
-		if popErr := writeBuffer.PopContext("bitString"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bitString")
-		}
-		if _bitStringErr != nil {
-			return errors.Wrap(_bitStringErr, "Error serializing 'bitString' field")
+		if err := WriteSimpleField[BACnetApplicationTagBitString](ctx, "bitString", m.GetBitString(), WriteComplex[BACnetApplicationTagBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitString' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataBitMask) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataBitMask) isBACnetConstructedDataBitMask() bool {
-	return true
-}
+func (m *_BACnetConstructedDataBitMask) IsBACnetConstructedDataBitMask() {}
 
 func (m *_BACnetConstructedDataBitMask) String() string {
 	if m == nil {

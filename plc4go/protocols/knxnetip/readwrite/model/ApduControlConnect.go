@@ -37,19 +37,17 @@ type ApduControlConnect interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduControl
-}
-
-// ApduControlConnectExactly can be used when we want exactly this type and not a type which fulfills ApduControlConnect.
-// This is useful for switch cases.
-type ApduControlConnectExactly interface {
-	ApduControlConnect
-	isApduControlConnect() bool
+	// IsApduControlConnect is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduControlConnect()
 }
 
 // _ApduControlConnect is the data-structure of this message
 type _ApduControlConnect struct {
-	*_ApduControl
+	ApduControlContract
 }
+
+var _ ApduControlConnect = (*_ApduControlConnect)(nil)
+var _ ApduControlRequirements = (*_ApduControlConnect)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduControlConnect) GetControlType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduControlConnect) InitializeParent(parent ApduControl) {}
-
-func (m *_ApduControlConnect) GetParent() ApduControl {
-	return m._ApduControl
+func (m *_ApduControlConnect) GetParent() ApduControlContract {
+	return m.ApduControlContract
 }
 
 // NewApduControlConnect factory function for _ApduControlConnect
 func NewApduControlConnect() *_ApduControlConnect {
 	_result := &_ApduControlConnect{
-		_ApduControl: NewApduControl(),
+		ApduControlContract: NewApduControl(),
 	}
-	_result._ApduControl._ApduControlChildRequirements = _result
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduControlConnect) GetTypeName() string {
 }
 
 func (m *_ApduControlConnect) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduControlConnect) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduControlConnectParse(ctx context.Context, theBytes []byte) (ApduControlConnect, error) {
-	return ApduControlConnectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func ApduControlConnectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlConnect, error) {
+func (m *_ApduControlConnect) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduControl) (__apduControlConnect ApduControlConnect, err error) {
+	m.ApduControlContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduControlConnect"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduControlConnect")
 	}
@@ -124,12 +116,7 @@ func ApduControlConnectParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(closeErr, "Error closing for ApduControlConnect")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduControlConnect{
-		_ApduControl: &_ApduControl{},
-	}
-	_child._ApduControl._ApduControlChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduControlConnect) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_ApduControlConnect) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduControlContract.(*_ApduControl).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduControlConnect) isApduControlConnect() bool {
-	return true
-}
+func (m *_ApduControlConnect) IsApduControlConnect() {}
 
 func (m *_ApduControlConnect) String() string {
 	if m == nil {

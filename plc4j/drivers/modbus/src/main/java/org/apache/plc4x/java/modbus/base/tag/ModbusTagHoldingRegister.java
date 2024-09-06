@@ -35,7 +35,7 @@ public class ModbusTagHoldingRegister extends ModbusTag {
 
     protected static final int REGISTER_MAXADDRESS = 65535;
 
-    protected ModbusTagHoldingRegister(int address, Integer quantity, ModbusDataType dataType, Map<String, String> config) {
+    public ModbusTagHoldingRegister(int address, Integer quantity, ModbusDataType dataType, Map<String, String> config) {
         super(address, quantity, dataType, config);
     }
 

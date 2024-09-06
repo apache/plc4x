@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,23 +47,21 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 	GetRequest() BACnetLifeSafetyOperationTagged
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
-}
-
-// BACnetConfirmedServiceRequestLifeSafetyOperationExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestLifeSafetyOperation.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestLifeSafetyOperationExactly interface {
-	BACnetConfirmedServiceRequestLifeSafetyOperation
-	isBACnetConfirmedServiceRequestLifeSafetyOperation() bool
+	// IsBACnetConfirmedServiceRequestLifeSafetyOperation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestLifeSafetyOperation()
 }
 
 // _BACnetConfirmedServiceRequestLifeSafetyOperation is the data-structure of this message
 type _BACnetConfirmedServiceRequestLifeSafetyOperation struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	RequestingProcessIdentifier BACnetContextTagUnsignedInteger
 	RequestingSource            BACnetContextTagCharacterString
 	Request                     BACnetLifeSafetyOperationTagged
 	ObjectIdentifier            BACnetContextTagObjectIdentifier
 }
+
+var _ BACnetConfirmedServiceRequestLifeSafetyOperation = (*_BACnetConfirmedServiceRequestLifeSafetyOperation)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestLifeSafetyOperation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +77,8 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetServiceChoice() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,14 +109,23 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetObjectIdentifier(
 
 // NewBACnetConfirmedServiceRequestLifeSafetyOperation factory function for _BACnetConfirmedServiceRequestLifeSafetyOperation
 func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged, objectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestLifeSafetyOperation {
-	_result := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
-		RequestingProcessIdentifier:    requestingProcessIdentifier,
-		RequestingSource:               requestingSource,
-		Request:                        request,
-		ObjectIdentifier:               objectIdentifier,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if requestingProcessIdentifier == nil {
+		panic("requestingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if requestingSource == nil {
+		panic("requestingSource of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
+	}
+	if request == nil {
+		panic("request of type BACnetLifeSafetyOperationTagged for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		RequestingProcessIdentifier:           requestingProcessIdentifier,
+		RequestingSource:                      requestingSource,
+		Request:                               request,
+		ObjectIdentifier:                      objectIdentifier,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -140,7 +145,7 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetTypeName() string
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (requestingProcessIdentifier)
 	lengthInBits += m.RequestingProcessIdentifier.GetLengthInBits(ctx)
@@ -163,98 +168,50 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBytes(ctx
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestLifeSafetyOperationParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
-	return BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestLifeSafetyOperation BACnetConfirmedServiceRequestLifeSafetyOperation, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestLifeSafetyOperation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestingProcessIdentifier)
-	if pullErr := readBuffer.PullContext("requestingProcessIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestingProcessIdentifier")
+	requestingProcessIdentifier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "requestingProcessIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestingProcessIdentifier' field"))
 	}
-	_requestingProcessIdentifier, _requestingProcessIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _requestingProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_requestingProcessIdentifierErr, "Error parsing 'requestingProcessIdentifier' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
-	}
-	requestingProcessIdentifier := _requestingProcessIdentifier.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("requestingProcessIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestingProcessIdentifier")
-	}
+	m.RequestingProcessIdentifier = requestingProcessIdentifier
 
-	// Simple Field (requestingSource)
-	if pullErr := readBuffer.PullContext("requestingSource"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestingSource")
+	requestingSource, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "requestingSource", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestingSource' field"))
 	}
-	_requestingSource, _requestingSourceErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
-	if _requestingSourceErr != nil {
-		return nil, errors.Wrap(_requestingSourceErr, "Error parsing 'requestingSource' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
-	}
-	requestingSource := _requestingSource.(BACnetContextTagCharacterString)
-	if closeErr := readBuffer.CloseContext("requestingSource"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestingSource")
-	}
+	m.RequestingSource = requestingSource
 
-	// Simple Field (request)
-	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for request")
+	request, err := ReadSimpleField[BACnetLifeSafetyOperationTagged](ctx, "request", ReadComplex[BACnetLifeSafetyOperationTagged](BACnetLifeSafetyOperationTaggedParseWithBufferProducer((uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'request' field"))
 	}
-	_request, _requestErr := BACnetLifeSafetyOperationTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _requestErr != nil {
-		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
-	}
-	request := _request.(BACnetLifeSafetyOperationTagged)
-	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for request")
-	}
+	m.Request = request
 
-	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var objectIdentifier BACnetContextTagObjectIdentifier = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
-		default:
-			objectIdentifier = _val.(BACnetContextTagObjectIdentifier)
-			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
-			}
-		}
+	var objectIdentifier BACnetContextTagObjectIdentifier
+	_objectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
+	}
+	if _objectIdentifier != nil {
+		objectIdentifier = *_objectIdentifier
+		m.ObjectIdentifier = objectIdentifier
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestLifeSafetyOperation")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		RequestingProcessIdentifier: requestingProcessIdentifier,
-		RequestingSource:            requestingSource,
-		Request:                     request,
-		ObjectIdentifier:            objectIdentifier,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize() ([]byte, error) {
@@ -275,56 +232,20 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestLifeSafetyOperation")
 		}
 
-		// Simple Field (requestingProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("requestingProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestingProcessIdentifier")
-		}
-		_requestingProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetRequestingProcessIdentifier())
-		if popErr := writeBuffer.PopContext("requestingProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestingProcessIdentifier")
-		}
-		if _requestingProcessIdentifierErr != nil {
-			return errors.Wrap(_requestingProcessIdentifierErr, "Error serializing 'requestingProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "requestingProcessIdentifier", m.GetRequestingProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestingProcessIdentifier' field")
 		}
 
-		// Simple Field (requestingSource)
-		if pushErr := writeBuffer.PushContext("requestingSource"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestingSource")
-		}
-		_requestingSourceErr := writeBuffer.WriteSerializable(ctx, m.GetRequestingSource())
-		if popErr := writeBuffer.PopContext("requestingSource"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestingSource")
-		}
-		if _requestingSourceErr != nil {
-			return errors.Wrap(_requestingSourceErr, "Error serializing 'requestingSource' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "requestingSource", m.GetRequestingSource(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestingSource' field")
 		}
 
-		// Simple Field (request)
-		if pushErr := writeBuffer.PushContext("request"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for request")
-		}
-		_requestErr := writeBuffer.WriteSerializable(ctx, m.GetRequest())
-		if popErr := writeBuffer.PopContext("request"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for request")
-		}
-		if _requestErr != nil {
-			return errors.Wrap(_requestErr, "Error serializing 'request' field")
+		if err := WriteSimpleField[BACnetLifeSafetyOperationTagged](ctx, "request", m.GetRequest(), WriteComplex[BACnetLifeSafetyOperationTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 
-		// Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-		var objectIdentifier BACnetContextTagObjectIdentifier = nil
-		if m.GetObjectIdentifier() != nil {
-			if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-			}
-			objectIdentifier = m.GetObjectIdentifier()
-			_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, objectIdentifier)
-			if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for objectIdentifier")
-			}
-			if _objectIdentifierErr != nil {
-				return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); popErr != nil {
@@ -332,11 +253,10 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) isBACnetConfirmedServiceRequestLifeSafetyOperation() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) IsBACnetConfirmedServiceRequestLifeSafetyOperation() {
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) String() string {

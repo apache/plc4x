@@ -95,7 +95,7 @@ public class APDUAbort extends APDU implements Message {
     writeSimpleField("originalInvokeId", originalInvokeId, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (abortReason)
-    writeSimpleField("abortReason", abortReason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("abortReason", abortReason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("APDUAbort");
   }
@@ -142,7 +142,7 @@ public class APDUAbort extends APDU implements Message {
     BACnetAbortReasonTagged abortReason =
         readSimpleField(
             "abortReason",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAbortReasonTagged.staticParse(readBuffer, (long) (1L)), readBuffer));
 
     readBuffer.closeContext("APDUAbort");

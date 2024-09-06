@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type NetworkProtocolControlInformation interface {
 	GetStackCounter() uint8
 	// GetStackDepth returns StackDepth (property field)
 	GetStackDepth() uint8
-}
-
-// NetworkProtocolControlInformationExactly can be used when we want exactly this type and not a type which fulfills NetworkProtocolControlInformation.
-// This is useful for switch cases.
-type NetworkProtocolControlInformationExactly interface {
-	NetworkProtocolControlInformation
-	isNetworkProtocolControlInformation() bool
+	// IsNetworkProtocolControlInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNetworkProtocolControlInformation()
 }
 
 // _NetworkProtocolControlInformation is the data-structure of this message
@@ -56,6 +53,8 @@ type _NetworkProtocolControlInformation struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ NetworkProtocolControlInformation = (*_NetworkProtocolControlInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -118,58 +117,52 @@ func NetworkProtocolControlInformationParse(ctx context.Context, theBytes []byte
 	return NetworkProtocolControlInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NetworkProtocolControlInformationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
+		return NetworkProtocolControlInformationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
+	v, err := (&_NetworkProtocolControlInformation{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_NetworkProtocolControlInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__networkProtocolControlInformation NetworkProtocolControlInformation, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NetworkProtocolControlInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NetworkProtocolControlInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 2)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NetworkProtocolControlInformation")
-		}
-		if reserved != uint8(0x0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (stackCounter)
-	_stackCounter, _stackCounterErr := readBuffer.ReadUint8("stackCounter", 3)
-	if _stackCounterErr != nil {
-		return nil, errors.Wrap(_stackCounterErr, "Error parsing 'stackCounter' field of NetworkProtocolControlInformation")
+	stackCounter, err := ReadSimpleField(ctx, "stackCounter", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stackCounter' field"))
 	}
-	stackCounter := _stackCounter
+	m.StackCounter = stackCounter
 
-	// Simple Field (stackDepth)
-	_stackDepth, _stackDepthErr := readBuffer.ReadUint8("stackDepth", 3)
-	if _stackDepthErr != nil {
-		return nil, errors.Wrap(_stackDepthErr, "Error parsing 'stackDepth' field of NetworkProtocolControlInformation")
+	stackDepth, err := ReadSimpleField(ctx, "stackDepth", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stackDepth' field"))
 	}
-	stackDepth := _stackDepth
+	m.StackDepth = stackDepth
 
 	if closeErr := readBuffer.CloseContext("NetworkProtocolControlInformation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NetworkProtocolControlInformation")
 	}
 
-	// Create the instance
-	return &_NetworkProtocolControlInformation{
-		StackCounter:   stackCounter,
-		StackDepth:     stackDepth,
-		reservedField0: reservedField0,
-	}, nil
+	return m, nil
 }
 
 func (m *_NetworkProtocolControlInformation) Serialize() ([]byte, error) {
@@ -189,34 +182,16 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 		return errors.Wrap(pushErr, "Error pushing for NetworkProtocolControlInformation")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0x0)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x0),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (stackCounter)
-	stackCounter := uint8(m.GetStackCounter())
-	_stackCounterErr := writeBuffer.WriteUint8("stackCounter", 3, uint8((stackCounter)))
-	if _stackCounterErr != nil {
-		return errors.Wrap(_stackCounterErr, "Error serializing 'stackCounter' field")
+	if err := WriteSimpleField[uint8](ctx, "stackCounter", m.GetStackCounter(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'stackCounter' field")
 	}
 
-	// Simple Field (stackDepth)
-	stackDepth := uint8(m.GetStackDepth())
-	_stackDepthErr := writeBuffer.WriteUint8("stackDepth", 3, uint8((stackDepth)))
-	if _stackDepthErr != nil {
-		return errors.Wrap(_stackDepthErr, "Error serializing 'stackDepth' field")
+	if err := WriteSimpleField[uint8](ctx, "stackDepth", m.GetStackDepth(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'stackDepth' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NetworkProtocolControlInformation"); popErr != nil {
@@ -225,9 +200,7 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 	return nil
 }
 
-func (m *_NetworkProtocolControlInformation) isNetworkProtocolControlInformation() bool {
-	return true
-}
+func (m *_NetworkProtocolControlInformation) IsNetworkProtocolControlInformation() {}
 
 func (m *_NetworkProtocolControlInformation) String() string {
 	if m == nil {

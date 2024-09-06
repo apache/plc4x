@@ -127,7 +127,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
     List<Variant> eventFields =
         readCountArrayField(
             "eventFields",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Variant.staticParse(readBuffer), readBuffer),
             noOfEventFields);
 
     readBuffer.closeContext("EventFieldList");

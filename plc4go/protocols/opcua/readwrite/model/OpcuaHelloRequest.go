@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type OpcuaHelloRequest interface {
 	GetLimits() OpcuaProtocolLimits
 	// GetEndpoint returns Endpoint (property field)
 	GetEndpoint() PascalString
-}
-
-// OpcuaHelloRequestExactly can be used when we want exactly this type and not a type which fulfills OpcuaHelloRequest.
-// This is useful for switch cases.
-type OpcuaHelloRequestExactly interface {
-	OpcuaHelloRequest
-	isOpcuaHelloRequest() bool
+	// IsOpcuaHelloRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaHelloRequest()
 }
 
 // _OpcuaHelloRequest is the data-structure of this message
 type _OpcuaHelloRequest struct {
-	*_MessagePDU
+	MessagePDUContract
 	Version  uint32
 	Limits   OpcuaProtocolLimits
 	Endpoint PascalString
 }
+
+var _ OpcuaHelloRequest = (*_OpcuaHelloRequest)(nil)
+var _ MessagePDURequirements = (*_OpcuaHelloRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,12 +78,8 @@ func (m *_OpcuaHelloRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaHelloRequest) InitializeParent(parent MessagePDU, chunk ChunkType) {
-	m.Chunk = chunk
-}
-
-func (m *_OpcuaHelloRequest) GetParent() MessagePDU {
-	return m._MessagePDU
+func (m *_OpcuaHelloRequest) GetParent() MessagePDUContract {
+	return m.MessagePDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,13 +106,19 @@ func (m *_OpcuaHelloRequest) GetEndpoint() PascalString {
 
 // NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
 func NewOpcuaHelloRequest(version uint32, limits OpcuaProtocolLimits, endpoint PascalString, chunk ChunkType) *_OpcuaHelloRequest {
-	_result := &_OpcuaHelloRequest{
-		Version:     version,
-		Limits:      limits,
-		Endpoint:    endpoint,
-		_MessagePDU: NewMessagePDU(chunk),
+	if limits == nil {
+		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
 	}
-	_result._MessagePDU._MessagePDUChildRequirements = _result
+	if endpoint == nil {
+		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
+	}
+	_result := &_OpcuaHelloRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Version:            version,
+		Limits:             limits,
+		Endpoint:           endpoint,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 
@@ -136,7 +138,7 @@ func (m *_OpcuaHelloRequest) GetTypeName() string {
 }
 
 func (m *_OpcuaHelloRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 32
@@ -154,67 +156,40 @@ func (m *_OpcuaHelloRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpcuaHelloRequestParse(ctx context.Context, theBytes []byte, response bool) (OpcuaHelloRequest, error) {
-	return OpcuaHelloRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func OpcuaHelloRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaHelloRequest, error) {
+func (m *_OpcuaHelloRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaHelloRequest OpcuaHelloRequest, err error) {
+	m.MessagePDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaHelloRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaHelloRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint32("version", 32)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of OpcuaHelloRequest")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
+	m.Version = version
 
-	// Simple Field (limits)
-	if pullErr := readBuffer.PullContext("limits"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for limits")
+	limits, err := ReadSimpleField[OpcuaProtocolLimits](ctx, "limits", ReadComplex[OpcuaProtocolLimits](OpcuaProtocolLimitsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'limits' field"))
 	}
-	_limits, _limitsErr := OpcuaProtocolLimitsParseWithBuffer(ctx, readBuffer)
-	if _limitsErr != nil {
-		return nil, errors.Wrap(_limitsErr, "Error parsing 'limits' field of OpcuaHelloRequest")
-	}
-	limits := _limits.(OpcuaProtocolLimits)
-	if closeErr := readBuffer.CloseContext("limits"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for limits")
-	}
+	m.Limits = limits
 
-	// Simple Field (endpoint)
-	if pullErr := readBuffer.PullContext("endpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpoint")
+	endpoint, err := ReadSimpleField[PascalString](ctx, "endpoint", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpoint' field"))
 	}
-	_endpoint, _endpointErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointErr != nil {
-		return nil, errors.Wrap(_endpointErr, "Error parsing 'endpoint' field of OpcuaHelloRequest")
-	}
-	endpoint := _endpoint.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpoint")
-	}
+	m.Endpoint = endpoint
 
 	if closeErr := readBuffer.CloseContext("OpcuaHelloRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaHelloRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_OpcuaHelloRequest{
-		_MessagePDU: &_MessagePDU{},
-		Version:     version,
-		Limits:      limits,
-		Endpoint:    endpoint,
-	}
-	_child._MessagePDU._MessagePDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_OpcuaHelloRequest) Serialize() ([]byte, error) {
@@ -235,35 +210,16 @@ func (m *_OpcuaHelloRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for OpcuaHelloRequest")
 		}
 
-		// Simple Field (version)
-		version := uint32(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint32("version", 32, uint32((version)))
-		if _versionErr != nil {
-			return errors.Wrap(_versionErr, "Error serializing 'version' field")
+		if err := WriteSimpleField[uint32](ctx, "version", m.GetVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 
-		// Simple Field (limits)
-		if pushErr := writeBuffer.PushContext("limits"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for limits")
-		}
-		_limitsErr := writeBuffer.WriteSerializable(ctx, m.GetLimits())
-		if popErr := writeBuffer.PopContext("limits"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for limits")
-		}
-		if _limitsErr != nil {
-			return errors.Wrap(_limitsErr, "Error serializing 'limits' field")
+		if err := WriteSimpleField[OpcuaProtocolLimits](ctx, "limits", m.GetLimits(), WriteComplex[OpcuaProtocolLimits](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'limits' field")
 		}
 
-		// Simple Field (endpoint)
-		if pushErr := writeBuffer.PushContext("endpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpoint")
-		}
-		_endpointErr := writeBuffer.WriteSerializable(ctx, m.GetEndpoint())
-		if popErr := writeBuffer.PopContext("endpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpoint")
-		}
-		if _endpointErr != nil {
-			return errors.Wrap(_endpointErr, "Error serializing 'endpoint' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpoint", m.GetEndpoint(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaHelloRequest"); popErr != nil {
@@ -271,12 +227,10 @@ func (m *_OpcuaHelloRequest) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MessagePDUContract.(*_MessagePDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_OpcuaHelloRequest) isOpcuaHelloRequest() bool {
-	return true
-}
+func (m *_OpcuaHelloRequest) IsOpcuaHelloRequest() {}
 
 func (m *_OpcuaHelloRequest) String() string {
 	if m == nil {

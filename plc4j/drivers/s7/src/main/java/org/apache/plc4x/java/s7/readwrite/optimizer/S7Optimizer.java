@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.s7.readwrite.optimizer;
 
-import io.vavr.control.Either;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -40,6 +39,8 @@ import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.spi.values.PlcNull;
+import org.apache.plc4x.java.spi.values.PlcRawByteArray;
 import org.apache.plc4x.java.spi.values.PlcValueAdapter;
 
 import java.util.ArrayList;
@@ -168,14 +169,14 @@ public class S7Optimizer extends BaseOptimizer {
         return processedRequests;
     }
 
-    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, Either<PlcReadResponse, Exception>> readResponses) {
+    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses) {
         Map<String, ResponseItem<PlcValue>> tagValues = new HashMap<>();
-        for (Map.Entry<PlcReadRequest, Either<PlcReadResponse, Exception>> requestsEntries : readResponses.entrySet()) {
+        for (Map.Entry<PlcReadRequest, SubResponse<PlcReadResponse>> requestsEntries : readResponses.entrySet()) {
             PlcReadRequest curRequest = requestsEntries.getKey();
-            Either<PlcReadResponse, Exception> readResponse = requestsEntries.getValue();
+            SubResponse<PlcReadResponse> readResponse = requestsEntries.getValue();
             for (String tagName : curRequest.getTagNames()) {
-                if (readResponse.isLeft()) {
-                    PlcReadResponse subReadResponse = readResponse.getLeft();
+                if (readResponse.isSuccess()) {
+                    PlcReadResponse subReadResponse = readResponse.getResponse();
                     PlcResponseCode responseCode = subReadResponse.getResponseCode(tagName);
                     PlcValue value = subReadResponse.getAsPlcValue().getValue(tagName);
 
@@ -184,19 +185,51 @@ public class S7Optimizer extends BaseOptimizer {
                     S7Tag globalS7Tag = (S7Tag) readRequest.getTag(tagName);
                     S7Tag currentS7Tag = (S7Tag) curRequest.getTag(tagName);
                     if(currentS7Tag.getNumberOfElements() != globalS7Tag.getNumberOfElements()) {
-                        List<PlcValue> existingItems;
-                        if(tagValues.containsKey(tagName)) {
-                            ResponseItem<PlcValue> existingTagItem = tagValues.get(tagName);
-                            existingItems = (List<PlcValue>) existingTagItem.getValue().getList();
+                        if(responseCode == PlcResponseCode.OK) {
+                            // We have to merge byte-array data differently.
+                            if (globalS7Tag.getDataType() == TransportSize.BYTE) {
+                                PlcRawByteArray existingItem;
+                                if (tagValues.containsKey(tagName)) {
+                                    ResponseItem<PlcValue> existingTagItem = tagValues.get(tagName);
+                                    // If a previous response was invalid, we'll discard this part of it too.
+                                    if(existingTagItem.getCode() != PlcResponseCode.OK) {
+                                        continue;
+                                    }
+                                    existingItem = (PlcRawByteArray) existingTagItem.getValue();
+                                } else {
+                                    existingItem = new PlcRawByteArray(new byte[globalS7Tag.getNumberOfElements()]);
+                                    tagValues.put(tagName, new ResponseItem<>(responseCode, existingItem));
+                                }
+                                byte[] currentItemByteArray = value.getRaw();
+                                int elementOffset = (currentS7Tag.getByteOffset() - globalS7Tag.getByteOffset()) / globalS7Tag.getDataType().getSizeInBytes();
+                                byte[] existingByteArray = existingItem.getRaw();
+                                System.arraycopy(currentItemByteArray, 0, existingByteArray, elementOffset, currentItemByteArray.length);
+                            }
+                            // Merge typical list-type responses.
+                            else {
+                                List<PlcValue> existingItems;
+                                if (tagValues.containsKey(tagName)) {
+                                    ResponseItem<PlcValue> existingTagItem = tagValues.get(tagName);
+                                    // If a previous response was invalid, we'll discard this part of it too.
+                                    if(existingTagItem.getCode() != PlcResponseCode.OK) {
+                                        continue;
+                                    }
+                                    existingItems = (List<PlcValue>) existingTagItem.getValue().getList();
+                                } else {
+                                    existingItems = new ArrayList<>(Arrays.asList(new PlcValue[globalS7Tag.getNumberOfElements()]));
+                                    PlcListModifiable mergedValue = new PlcListModifiable(existingItems);
+                                    tagValues.put(tagName, new ResponseItem<>(responseCode, mergedValue));
+                                }
+                                List<? extends PlcValue> currentItems = value.getList();
+                                int elementOffset = (currentS7Tag.getByteOffset() - globalS7Tag.getByteOffset()) / globalS7Tag.getDataType().getSizeInBytes();
+                                for (int i = 0; i < currentS7Tag.getNumberOfElements(); i++) {
+                                    existingItems.set(i + elementOffset, currentItems.get(i));
+                                }
+                            }
                         } else {
-                            existingItems = new ArrayList<>(Arrays.asList(new PlcValue[globalS7Tag.getNumberOfElements()]));
-                            PlcListModifiable mergedValue = new PlcListModifiable(existingItems);
-                            tagValues.put(tagName, new ResponseItem<>(responseCode, mergedValue));
-                        }
-                        List<? extends PlcValue> currentItems = value.getList();
-                        int elementOffset = (currentS7Tag.getByteOffset() - globalS7Tag.getByteOffset()) / globalS7Tag.getDataType().getSizeInBytes();
-                        for(int i = 0; i < currentS7Tag.getNumberOfElements(); i++) {
-                            existingItems.set(i + elementOffset, currentItems.get(i));
+                            // Even if a previous part was ok, if at least one part is invalid, we'll
+                            // treat all parts equally broken.
+                            tagValues.put(tagName, new ResponseItem<>(responseCode, new PlcNull()));
                         }
                     } else {
                         tagValues.put(tagName, new ResponseItem<>(responseCode, value));

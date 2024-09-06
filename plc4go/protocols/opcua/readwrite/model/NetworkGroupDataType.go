@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type NetworkGroupDataType interface {
 	GetNoOfNetworkPaths() int32
 	// GetNetworkPaths returns NetworkPaths (property field)
 	GetNetworkPaths() []ExtensionObjectDefinition
-}
-
-// NetworkGroupDataTypeExactly can be used when we want exactly this type and not a type which fulfills NetworkGroupDataType.
-// This is useful for switch cases.
-type NetworkGroupDataTypeExactly interface {
-	NetworkGroupDataType
-	isNetworkGroupDataType() bool
+	// IsNetworkGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNetworkGroupDataType()
 }
 
 // _NetworkGroupDataType is the data-structure of this message
 type _NetworkGroupDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ServerUri        PascalString
 	NoOfNetworkPaths int32
 	NetworkPaths     []ExtensionObjectDefinition
 }
+
+var _ NetworkGroupDataType = (*_NetworkGroupDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_NetworkGroupDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_NetworkGroupDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NetworkGroupDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_NetworkGroupDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_NetworkGroupDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_NetworkGroupDataType) GetNetworkPaths() []ExtensionObjectDefinition {
 
 // NewNetworkGroupDataType factory function for _NetworkGroupDataType
 func NewNetworkGroupDataType(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) *_NetworkGroupDataType {
-	_result := &_NetworkGroupDataType{
-		ServerUri:                  serverUri,
-		NoOfNetworkPaths:           noOfNetworkPaths,
-		NetworkPaths:               networkPaths,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if serverUri == nil {
+		panic("serverUri of type PascalString for NetworkGroupDataType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_NetworkGroupDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ServerUri:                         serverUri,
+		NoOfNetworkPaths:                  noOfNetworkPaths,
+		NetworkPaths:                      networkPaths,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_NetworkGroupDataType) GetTypeName() string {
 }
 
 func (m *_NetworkGroupDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (serverUri)
 	lengthInBits += m.ServerUri.GetLengthInBits(ctx)
@@ -155,81 +156,40 @@ func (m *_NetworkGroupDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NetworkGroupDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (NetworkGroupDataType, error) {
-	return NetworkGroupDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func NetworkGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NetworkGroupDataType, error) {
+func (m *_NetworkGroupDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__networkGroupDataType NetworkGroupDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NetworkGroupDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NetworkGroupDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (serverUri)
-	if pullErr := readBuffer.PullContext("serverUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverUri")
+	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUri' field"))
 	}
-	_serverUri, _serverUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _serverUriErr != nil {
-		return nil, errors.Wrap(_serverUriErr, "Error parsing 'serverUri' field of NetworkGroupDataType")
-	}
-	serverUri := _serverUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("serverUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverUri")
-	}
+	m.ServerUri = serverUri
 
-	// Simple Field (noOfNetworkPaths)
-	_noOfNetworkPaths, _noOfNetworkPathsErr := readBuffer.ReadInt32("noOfNetworkPaths", 32)
-	if _noOfNetworkPathsErr != nil {
-		return nil, errors.Wrap(_noOfNetworkPathsErr, "Error parsing 'noOfNetworkPaths' field of NetworkGroupDataType")
+	noOfNetworkPaths, err := ReadSimpleField(ctx, "noOfNetworkPaths", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNetworkPaths' field"))
 	}
-	noOfNetworkPaths := _noOfNetworkPaths
+	m.NoOfNetworkPaths = noOfNetworkPaths
 
-	// Array field (networkPaths)
-	if pullErr := readBuffer.PullContext("networkPaths", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkPaths")
+	networkPaths, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "networkPaths", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("11945")), readBuffer), uint64(noOfNetworkPaths))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPaths' field"))
 	}
-	// Count array
-	networkPaths := make([]ExtensionObjectDefinition, max(noOfNetworkPaths, 0))
-	// This happens when the size is set conditional to 0
-	if len(networkPaths) == 0 {
-		networkPaths = nil
-	}
-	{
-		_numItems := uint16(max(noOfNetworkPaths, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "11945")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'networkPaths' field of NetworkGroupDataType")
-			}
-			networkPaths[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("networkPaths", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkPaths")
-	}
+	m.NetworkPaths = networkPaths
 
 	if closeErr := readBuffer.CloseContext("NetworkGroupDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NetworkGroupDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NetworkGroupDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ServerUri:                  serverUri,
-		NoOfNetworkPaths:           noOfNetworkPaths,
-		NetworkPaths:               networkPaths,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NetworkGroupDataType) Serialize() ([]byte, error) {
@@ -250,40 +210,16 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for NetworkGroupDataType")
 		}
 
-		// Simple Field (serverUri)
-		if pushErr := writeBuffer.PushContext("serverUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUri")
-		}
-		_serverUriErr := writeBuffer.WriteSerializable(ctx, m.GetServerUri())
-		if popErr := writeBuffer.PopContext("serverUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUri")
-		}
-		if _serverUriErr != nil {
-			return errors.Wrap(_serverUriErr, "Error serializing 'serverUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 
-		// Simple Field (noOfNetworkPaths)
-		noOfNetworkPaths := int32(m.GetNoOfNetworkPaths())
-		_noOfNetworkPathsErr := writeBuffer.WriteInt32("noOfNetworkPaths", 32, int32((noOfNetworkPaths)))
-		if _noOfNetworkPathsErr != nil {
-			return errors.Wrap(_noOfNetworkPathsErr, "Error serializing 'noOfNetworkPaths' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNetworkPaths", m.GetNoOfNetworkPaths(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNetworkPaths' field")
 		}
 
-		// Array Field (networkPaths)
-		if pushErr := writeBuffer.PushContext("networkPaths", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkPaths")
-		}
-		for _curItem, _element := range m.GetNetworkPaths() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNetworkPaths()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'networkPaths' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("networkPaths", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkPaths")
+		if err := WriteComplexTypeArrayField(ctx, "networkPaths", m.GetNetworkPaths(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkPaths' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NetworkGroupDataType"); popErr != nil {
@@ -291,12 +227,10 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NetworkGroupDataType) isNetworkGroupDataType() bool {
-	return true
-}
+func (m *_NetworkGroupDataType) IsNetworkGroupDataType() {}
 
 func (m *_NetworkGroupDataType) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetLandingDoorStatusLandingDoorsList interface {
 	GetLandingDoors() []BACnetLandingDoorStatusLandingDoorsListEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetLandingDoorStatusLandingDoorsListExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingDoorStatusLandingDoorsList.
-// This is useful for switch cases.
-type BACnetLandingDoorStatusLandingDoorsListExactly interface {
-	BACnetLandingDoorStatusLandingDoorsList
-	isBACnetLandingDoorStatusLandingDoorsList() bool
+	// IsBACnetLandingDoorStatusLandingDoorsList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingDoorStatusLandingDoorsList()
 }
 
 // _BACnetLandingDoorStatusLandingDoorsList is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetLandingDoorStatusLandingDoorsList struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetLandingDoorStatusLandingDoorsList = (*_BACnetLandingDoorStatusLandingDoorsList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,12 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) GetClosingTag() BACnetClosing
 
 // NewBACnetLandingDoorStatusLandingDoorsList factory function for _BACnetLandingDoorStatusLandingDoorsList
 func NewBACnetLandingDoorStatusLandingDoorsList(openingTag BACnetOpeningTag, landingDoors []BACnetLandingDoorStatusLandingDoorsListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLandingDoorStatusLandingDoorsList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLandingDoorStatusLandingDoorsList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLandingDoorStatusLandingDoorsList must not be nil")
+	}
 	return &_BACnetLandingDoorStatusLandingDoorsList{OpeningTag: openingTag, LandingDoors: landingDoors, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -130,73 +135,52 @@ func BACnetLandingDoorStatusLandingDoorsListParse(ctx context.Context, theBytes 
 	return BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetLandingDoorStatusLandingDoorsListParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatusLandingDoorsList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatusLandingDoorsList, error) {
+		return BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLandingDoorStatusLandingDoorsList, error) {
+	v, err := (&_BACnetLandingDoorStatusLandingDoorsList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetLandingDoorStatusLandingDoorsList BACnetLandingDoorStatusLandingDoorsList, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLandingDoorStatusLandingDoorsList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingDoorStatusLandingDoorsList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetLandingDoorStatusLandingDoorsList")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (landingDoors)
-	if pullErr := readBuffer.PullContext("landingDoors", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for landingDoors")
+	landingDoors, err := ReadTerminatedArrayField[BACnetLandingDoorStatusLandingDoorsListEntry](ctx, "landingDoors", ReadComplex[BACnetLandingDoorStatusLandingDoorsListEntry](BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingDoors' field"))
 	}
-	// Terminated array
-	var landingDoors []BACnetLandingDoorStatusLandingDoorsListEntry
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'landingDoors' field of BACnetLandingDoorStatusLandingDoorsList")
-			}
-			landingDoors = append(landingDoors, _item.(BACnetLandingDoorStatusLandingDoorsListEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("landingDoors", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for landingDoors")
-	}
+	m.LandingDoors = landingDoors
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetLandingDoorStatusLandingDoorsList")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingDoorStatusLandingDoorsList"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingDoorStatusLandingDoorsList")
 	}
 
-	// Create the instance
-	return &_BACnetLandingDoorStatusLandingDoorsList{
-		TagNumber:    tagNumber,
-		OpeningTag:   openingTag,
-		LandingDoors: landingDoors,
-		ClosingTag:   closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsList) Serialize() ([]byte, error) {
@@ -216,45 +200,16 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) SerializeWithWriteBuffer(ctx 
 		return errors.Wrap(pushErr, "Error pushing for BACnetLandingDoorStatusLandingDoorsList")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (landingDoors)
-	if pushErr := writeBuffer.PushContext("landingDoors", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for landingDoors")
-	}
-	for _curItem, _element := range m.GetLandingDoors() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLandingDoors()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'landingDoors' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("landingDoors", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for landingDoors")
+	if err := WriteComplexTypeArrayField(ctx, "landingDoors", m.GetLandingDoors(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'landingDoors' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLandingDoorStatusLandingDoorsList"); popErr != nil {
@@ -273,9 +228,7 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetLandingDoorStatusLandingDoorsList) isBACnetLandingDoorStatusLandingDoorsList() bool {
-	return true
-}
+func (m *_BACnetLandingDoorStatusLandingDoorsList) IsBACnetLandingDoorStatusLandingDoorsList() {}
 
 func (m *_BACnetLandingDoorStatusLandingDoorsList) String() string {
 	if m == nil {

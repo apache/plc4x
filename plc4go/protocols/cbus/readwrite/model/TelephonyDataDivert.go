@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type TelephonyDataDivert interface {
 	TelephonyData
 	// GetNumber returns Number (property field)
 	GetNumber() string
-}
-
-// TelephonyDataDivertExactly can be used when we want exactly this type and not a type which fulfills TelephonyDataDivert.
-// This is useful for switch cases.
-type TelephonyDataDivertExactly interface {
-	TelephonyDataDivert
-	isTelephonyDataDivert() bool
+	// IsTelephonyDataDivert is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataDivert()
 }
 
 // _TelephonyDataDivert is the data-structure of this message
 type _TelephonyDataDivert struct {
-	*_TelephonyData
+	TelephonyDataContract
 	Number string
 }
+
+var _ TelephonyDataDivert = (*_TelephonyDataDivert)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataDivert)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _TelephonyDataDivert struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TelephonyDataDivert) InitializeParent(parent TelephonyData, commandTypeContainer TelephonyCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_TelephonyDataDivert) GetParent() TelephonyData {
-	return m._TelephonyData
+func (m *_TelephonyDataDivert) GetParent() TelephonyDataContract {
+	return m.TelephonyDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_TelephonyDataDivert) GetNumber() string {
 // NewTelephonyDataDivert factory function for _TelephonyDataDivert
 func NewTelephonyDataDivert(number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataDivert {
 	_result := &_TelephonyDataDivert{
-		Number:         number,
-		_TelephonyData: NewTelephonyData(commandTypeContainer, argument),
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Number:                number,
 	}
-	_result._TelephonyData._TelephonyDataChildRequirements = _result
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_TelephonyDataDivert) GetTypeName() string {
 }
 
 func (m *_TelephonyDataDivert) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	// Simple field (number)
 	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
@@ -125,39 +120,28 @@ func (m *_TelephonyDataDivert) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataDivertParse(ctx context.Context, theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
-	return TelephonyDataDivertParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func TelephonyDataDivertParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
+func (m *_TelephonyDataDivert) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData, commandTypeContainer TelephonyCommandTypeContainer) (__telephonyDataDivert TelephonyDataDivert, err error) {
+	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataDivert"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataDivert")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (number)
-	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), "UTF-8")
-	if _numberErr != nil {
-		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataDivert")
+	number, err := ReadSimpleField(ctx, "number", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'number' field"))
 	}
-	number := _number
+	m.Number = number
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataDivert"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataDivert")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TelephonyDataDivert{
-		_TelephonyData: &_TelephonyData{},
-		Number:         number,
-	}
-	_child._TelephonyData._TelephonyDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TelephonyDataDivert) Serialize() ([]byte, error) {
@@ -178,11 +162,8 @@ func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for TelephonyDataDivert")
 		}
 
-		// Simple Field (number)
-		number := string(m.GetNumber())
-		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), "UTF-8", (number))
-		if _numberErr != nil {
-			return errors.Wrap(_numberErr, "Error serializing 'number' field")
+		if err := WriteSimpleField[string](ctx, "number", m.GetNumber(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'number' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TelephonyDataDivert"); popErr != nil {
@@ -190,12 +171,10 @@ func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TelephonyDataContract.(*_TelephonyData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TelephonyDataDivert) isTelephonyDataDivert() bool {
-	return true
-}
+func (m *_TelephonyDataDivert) IsTelephonyDataDivert() {}
 
 func (m *_TelephonyDataDivert) String() string {
 	if m == nil {

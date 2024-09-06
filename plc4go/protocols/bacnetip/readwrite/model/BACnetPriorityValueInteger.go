@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPriorityValueInteger interface {
 	BACnetPriorityValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
-}
-
-// BACnetPriorityValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueInteger.
-// This is useful for switch cases.
-type BACnetPriorityValueIntegerExactly interface {
-	BACnetPriorityValueInteger
-	isBACnetPriorityValueInteger() bool
+	// IsBACnetPriorityValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueInteger()
 }
 
 // _BACnetPriorityValueInteger is the data-structure of this message
 type _BACnetPriorityValueInteger struct {
-	*_BACnetPriorityValue
+	BACnetPriorityValueContract
 	IntegerValue BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetPriorityValueInteger = (*_BACnetPriorityValueInteger)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueInteger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPriorityValueInteger struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPriorityValueInteger) InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPriorityValueInteger) GetParent() BACnetPriorityValue {
-	return m._BACnetPriorityValue
+func (m *_BACnetPriorityValueInteger) GetParent() BACnetPriorityValueContract {
+	return m.BACnetPriorityValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPriorityValueInteger) GetIntegerValue() BACnetApplicationTagSign
 
 // NewBACnetPriorityValueInteger factory function for _BACnetPriorityValueInteger
 func NewBACnetPriorityValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
-	_result := &_BACnetPriorityValueInteger{
-		IntegerValue:         integerValue,
-		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetPriorityValueInteger must not be nil")
 	}
-	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result
+	_result := &_BACnetPriorityValueInteger{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		IntegerValue:                integerValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPriorityValueInteger) GetTypeName() string {
 }
 
 func (m *_BACnetPriorityValueInteger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (integerValue)
 	lengthInBits += m.IntegerValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetPriorityValueInteger) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueIntegerParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueInteger, error) {
-	return BACnetPriorityValueIntegerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetPriorityValueIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueInteger, error) {
+func (m *_BACnetPriorityValueInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueInteger BACnetPriorityValueInteger, err error) {
+	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueInteger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (integerValue)
-	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
+	integerValue, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "integerValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integerValue' field"))
 	}
-	_integerValue, _integerValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _integerValueErr != nil {
-		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetPriorityValueInteger")
-	}
-	integerValue := _integerValue.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for integerValue")
-	}
+	m.IntegerValue = integerValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueInteger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueInteger")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPriorityValueInteger{
-		_BACnetPriorityValue: &_BACnetPriorityValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		IntegerValue: integerValue,
-	}
-	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPriorityValueInteger) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetPriorityValueInteger) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueInteger")
 		}
 
-		// Simple Field (integerValue)
-		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for integerValue")
-		}
-		_integerValueErr := writeBuffer.WriteSerializable(ctx, m.GetIntegerValue())
-		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for integerValue")
-		}
-		if _integerValueErr != nil {
-			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "integerValue", m.GetIntegerValue(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'integerValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueInteger"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetPriorityValueInteger) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPriorityValueContract.(*_BACnetPriorityValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPriorityValueInteger) isBACnetPriorityValueInteger() bool {
-	return true
-}
+func (m *_BACnetPriorityValueInteger) IsBACnetPriorityValueInteger() {}
 
 func (m *_BACnetPriorityValueInteger) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type LDataExtended interface {
 	GetDestinationAddress() []byte
 	// GetApdu returns Apdu (property field)
 	GetApdu() Apdu
-}
-
-// LDataExtendedExactly can be used when we want exactly this type and not a type which fulfills LDataExtended.
-// This is useful for switch cases.
-type LDataExtendedExactly interface {
-	LDataExtended
-	isLDataExtended() bool
+	// IsLDataExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataExtended()
 }
 
 // _LDataExtended is the data-structure of this message
 type _LDataExtended struct {
-	*_LDataFrame
+	LDataFrameContract
 	GroupAddress        bool
 	HopCount            uint8
 	ExtendedFrameFormat uint8
@@ -68,6 +65,9 @@ type _LDataExtended struct {
 	DestinationAddress  []byte
 	Apdu                Apdu
 }
+
+var _ LDataExtended = (*_LDataExtended)(nil)
+var _ LDataFrameRequirements = (*_LDataExtended)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +87,8 @@ func (m *_LDataExtended) GetPolling() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_LDataExtended) InitializeParent(parent LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-	m.FrameType = frameType
-	m.NotRepeated = notRepeated
-	m.Priority = priority
-	m.AcknowledgeRequested = acknowledgeRequested
-	m.ErrorFlag = errorFlag
-}
-
-func (m *_LDataExtended) GetParent() LDataFrame {
-	return m._LDataFrame
+func (m *_LDataExtended) GetParent() LDataFrameContract {
+	return m.LDataFrameContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -135,16 +127,22 @@ func (m *_LDataExtended) GetApdu() Apdu {
 
 // NewLDataExtended factory function for _LDataExtended
 func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataExtended {
+	if sourceAddress == nil {
+		panic("sourceAddress of type KnxAddress for LDataExtended must not be nil")
+	}
+	if apdu == nil {
+		panic("apdu of type Apdu for LDataExtended must not be nil")
+	}
 	_result := &_LDataExtended{
+		LDataFrameContract:  NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 		GroupAddress:        groupAddress,
 		HopCount:            hopCount,
 		ExtendedFrameFormat: extendedFrameFormat,
 		SourceAddress:       sourceAddress,
 		DestinationAddress:  destinationAddress,
 		Apdu:                apdu,
-		_LDataFrame:         NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	_result._LDataFrame._LDataFrameChildRequirements = _result
+	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
 	return _result
 }
 
@@ -164,7 +162,7 @@ func (m *_LDataExtended) GetTypeName() string {
 }
 
 func (m *_LDataExtended) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.LDataFrameContract.(*_LDataFrame).getLengthInBits(ctx))
 
 	// Simple field (groupAddress)
 	lengthInBits += 1
@@ -196,97 +194,64 @@ func (m *_LDataExtended) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LDataExtendedParse(ctx context.Context, theBytes []byte) (LDataExtended, error) {
-	return LDataExtendedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataExtended, error) {
+func (m *_LDataExtended) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LDataFrame) (__lDataExtended LDataExtended, err error) {
+	m.LDataFrameContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LDataExtended")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (groupAddress)
-	_groupAddress, _groupAddressErr := readBuffer.ReadBit("groupAddress")
-	if _groupAddressErr != nil {
-		return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field of LDataExtended")
+	groupAddress, err := ReadSimpleField(ctx, "groupAddress", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupAddress' field"))
 	}
-	groupAddress := _groupAddress
+	m.GroupAddress = groupAddress
 
-	// Simple Field (hopCount)
-	_hopCount, _hopCountErr := readBuffer.ReadUint8("hopCount", 3)
-	if _hopCountErr != nil {
-		return nil, errors.Wrap(_hopCountErr, "Error parsing 'hopCount' field of LDataExtended")
+	hopCount, err := ReadSimpleField(ctx, "hopCount", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hopCount' field"))
 	}
-	hopCount := _hopCount
+	m.HopCount = hopCount
 
-	// Simple Field (extendedFrameFormat)
-	_extendedFrameFormat, _extendedFrameFormatErr := readBuffer.ReadUint8("extendedFrameFormat", 4)
-	if _extendedFrameFormatErr != nil {
-		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field of LDataExtended")
+	extendedFrameFormat, err := ReadSimpleField(ctx, "extendedFrameFormat", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedFrameFormat' field"))
 	}
-	extendedFrameFormat := _extendedFrameFormat
+	m.ExtendedFrameFormat = extendedFrameFormat
 
-	// Simple Field (sourceAddress)
-	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
+	sourceAddress, err := ReadSimpleField[KnxAddress](ctx, "sourceAddress", ReadComplex[KnxAddress](KnxAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
-	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(ctx, readBuffer)
-	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LDataExtended")
-	}
-	sourceAddress := _sourceAddress.(KnxAddress)
-	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
-	}
-	// Byte Array field (destinationAddress)
-	numberOfBytesdestinationAddress := int(uint16(2))
-	destinationAddress, _readArrayErr := readBuffer.ReadByteArray("destinationAddress", numberOfBytesdestinationAddress)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'destinationAddress' field of LDataExtended")
-	}
+	m.SourceAddress = sourceAddress
 
-	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := readBuffer.ReadUint8("dataLength", 8)
+	destinationAddress, err := readBuffer.ReadByteArray("destinationAddress", int(int32(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
+	}
+	m.DestinationAddress = destinationAddress
+
+	dataLength, err := ReadImplicitField[uint8](ctx, "dataLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLength' field"))
+	}
 	_ = dataLength
-	if _dataLengthErr != nil {
-		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of LDataExtended")
-	}
 
-	// Simple Field (apdu)
-	if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for apdu")
+	apdu, err := ReadSimpleField[Apdu](ctx, "apdu", ReadComplex[Apdu](ApduParseWithBufferProducer[Apdu]((uint8)(dataLength)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apdu' field"))
 	}
-	_apdu, _apduErr := ApduParseWithBuffer(ctx, readBuffer, uint8(dataLength))
-	if _apduErr != nil {
-		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field of LDataExtended")
-	}
-	apdu := _apdu.(Apdu)
-	if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for apdu")
-	}
+	m.Apdu = apdu
 
 	if closeErr := readBuffer.CloseContext("LDataExtended"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LDataExtended")
 	}
 
-	// Create a partially initialized instance
-	_child := &_LDataExtended{
-		_LDataFrame:         &_LDataFrame{},
-		GroupAddress:        groupAddress,
-		HopCount:            hopCount,
-		ExtendedFrameFormat: extendedFrameFormat,
-		SourceAddress:       sourceAddress,
-		DestinationAddress:  destinationAddress,
-		Apdu:                apdu,
-	}
-	_child._LDataFrame._LDataFrameChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_LDataExtended) Serialize() ([]byte, error) {
@@ -307,62 +272,32 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for LDataExtended")
 		}
 
-		// Simple Field (groupAddress)
-		groupAddress := bool(m.GetGroupAddress())
-		_groupAddressErr := writeBuffer.WriteBit("groupAddress", (groupAddress))
-		if _groupAddressErr != nil {
-			return errors.Wrap(_groupAddressErr, "Error serializing 'groupAddress' field")
+		if err := WriteSimpleField[bool](ctx, "groupAddress", m.GetGroupAddress(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupAddress' field")
 		}
 
-		// Simple Field (hopCount)
-		hopCount := uint8(m.GetHopCount())
-		_hopCountErr := writeBuffer.WriteUint8("hopCount", 3, uint8((hopCount)))
-		if _hopCountErr != nil {
-			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
+		if err := WriteSimpleField[uint8](ctx, "hopCount", m.GetHopCount(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hopCount' field")
 		}
 
-		// Simple Field (extendedFrameFormat)
-		extendedFrameFormat := uint8(m.GetExtendedFrameFormat())
-		_extendedFrameFormatErr := writeBuffer.WriteUint8("extendedFrameFormat", 4, uint8((extendedFrameFormat)))
-		if _extendedFrameFormatErr != nil {
-			return errors.Wrap(_extendedFrameFormatErr, "Error serializing 'extendedFrameFormat' field")
+		if err := WriteSimpleField[uint8](ctx, "extendedFrameFormat", m.GetExtendedFrameFormat(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedFrameFormat' field")
 		}
 
-		// Simple Field (sourceAddress)
-		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
-		}
-		_sourceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetSourceAddress())
-		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceAddress")
-		}
-		if _sourceAddressErr != nil {
-			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
+		if err := WriteSimpleField[KnxAddress](ctx, "sourceAddress", m.GetSourceAddress(), WriteComplex[KnxAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceAddress' field")
 		}
 
-		// Array Field (destinationAddress)
-		// Byte Array field (destinationAddress)
-		if err := writeBuffer.WriteByteArray("destinationAddress", m.GetDestinationAddress()); err != nil {
+		if err := WriteByteArrayField(ctx, "destinationAddress", m.GetDestinationAddress(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 		}
-
-		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLength := uint8(uint8(m.GetApdu().GetLengthInBytes(ctx)) - uint8(uint8(1)))
-		_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
-		if _dataLengthErr != nil {
-			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
+		if err := WriteImplicitField(ctx, "dataLength", dataLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataLength' field")
 		}
 
-		// Simple Field (apdu)
-		if pushErr := writeBuffer.PushContext("apdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for apdu")
-		}
-		_apduErr := writeBuffer.WriteSerializable(ctx, m.GetApdu())
-		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for apdu")
-		}
-		if _apduErr != nil {
-			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
+		if err := WriteSimpleField[Apdu](ctx, "apdu", m.GetApdu(), WriteComplex[Apdu](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'apdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LDataExtended"); popErr != nil {
@@ -370,12 +305,10 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.LDataFrameContract.(*_LDataFrame).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_LDataExtended) isLDataExtended() bool {
-	return true
-}
+func (m *_LDataExtended) IsLDataExtended() {}
 
 func (m *_LDataExtended) String() string {
 	if m == nil {

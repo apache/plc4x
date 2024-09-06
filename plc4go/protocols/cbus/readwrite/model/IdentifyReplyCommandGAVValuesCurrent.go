@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type IdentifyReplyCommandGAVValuesCurrent interface {
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
-}
-
-// IdentifyReplyCommandGAVValuesCurrentExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandGAVValuesCurrent.
-// This is useful for switch cases.
-type IdentifyReplyCommandGAVValuesCurrentExactly interface {
-	IdentifyReplyCommandGAVValuesCurrent
-	isIdentifyReplyCommandGAVValuesCurrent() bool
+	// IsIdentifyReplyCommandGAVValuesCurrent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandGAVValuesCurrent()
 }
 
 // _IdentifyReplyCommandGAVValuesCurrent is the data-structure of this message
 type _IdentifyReplyCommandGAVValuesCurrent struct {
-	*_IdentifyReplyCommand
+	IdentifyReplyCommandContract
 	Values []byte
 }
+
+var _ IdentifyReplyCommandGAVValuesCurrent = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_IdentifyReplyCommandGAVValuesCurrent) InitializeParent(parent IdentifyReplyCommand) {}
-
-func (m *_IdentifyReplyCommandGAVValuesCurrent) GetParent() IdentifyReplyCommand {
-	return m._IdentifyReplyCommand
+func (m *_IdentifyReplyCommandGAVValuesCurrent) GetParent() IdentifyReplyCommandContract {
+	return m.IdentifyReplyCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetValues() []byte {
 // NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
 func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
 	_result := &_IdentifyReplyCommandGAVValuesCurrent{
-		Values:                values,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		Values:                       values,
 	}
-	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandGAVValuesCurrent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Values) > 0 {
@@ -128,40 +126,28 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandGAVValuesCurrentParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVValuesCurrent, error) {
-	return IdentifyReplyCommandGAVValuesCurrentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
-}
-
-func IdentifyReplyCommandGAVValuesCurrentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVValuesCurrent, error) {
+func (m *_IdentifyReplyCommandGAVValuesCurrent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandGAVValuesCurrent IdentifyReplyCommandGAVValuesCurrent, err error) {
+	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandGAVValuesCurrent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandGAVValuesCurrent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (values)
-	numberOfBytesvalues := int(numBytes)
-	values, _readArrayErr := readBuffer.ReadByteArray("values", numberOfBytesvalues)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'values' field of IdentifyReplyCommandGAVValuesCurrent")
+
+	values, err := readBuffer.ReadByteArray("values", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'values' field"))
 	}
+	m.Values = values
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandGAVValuesCurrent"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandGAVValuesCurrent")
 	}
 
-	// Create a partially initialized instance
-	_child := &_IdentifyReplyCommandGAVValuesCurrent{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
-		Values: values,
-	}
-	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_IdentifyReplyCommandGAVValuesCurrent) Serialize() ([]byte, error) {
@@ -182,9 +168,7 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandGAVValuesCurrent")
 		}
 
-		// Array Field (values)
-		// Byte Array field (values)
-		if err := writeBuffer.WriteByteArray("values", m.GetValues()); err != nil {
+		if err := WriteByteArrayField(ctx, "values", m.GetValues(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 
@@ -193,12 +177,10 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_IdentifyReplyCommandGAVValuesCurrent) isIdentifyReplyCommandGAVValuesCurrent() bool {
-	return true
-}
+func (m *_IdentifyReplyCommandGAVValuesCurrent) IsIdentifyReplyCommandGAVValuesCurrent() {}
 
 func (m *_IdentifyReplyCommandGAVValuesCurrent) String() string {
 	if m == nil {

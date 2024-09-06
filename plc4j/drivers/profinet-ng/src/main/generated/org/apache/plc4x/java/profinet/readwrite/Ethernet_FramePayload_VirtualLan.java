@@ -85,7 +85,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
         "priority",
         "VirtualLanPriority",
         priority,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             VirtualLanPriority::getValue,
             VirtualLanPriority::name,
             writeUnsignedByte(writeBuffer, 3)));
@@ -97,7 +97,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
     writeSimpleField("id", id, writeUnsignedShort(writeBuffer, 12));
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Ethernet_FramePayload_VirtualLan");
   }
@@ -138,8 +138,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
         readEnumField(
             "priority",
             "VirtualLanPriority",
-            new DataReaderEnumDefault<>(
-                VirtualLanPriority::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(VirtualLanPriority::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     boolean ineligible = readSimpleField("ineligible", readBoolean(readBuffer));
 
@@ -148,8 +147,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
     Ethernet_FramePayload payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
-                () -> Ethernet_FramePayload.staticParse(readBuffer), readBuffer));
+            readComplex(() -> Ethernet_FramePayload.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Ethernet_FramePayload_VirtualLan");
     // Create the instance

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -37,44 +39,35 @@ const S7DataAlarmMessage_NUMBERMESSAGEOBJ uint8 = 0x01
 
 // S7DataAlarmMessage is the corresponding interface of S7DataAlarmMessage
 type S7DataAlarmMessage interface {
+	S7DataAlarmMessageContract
+	S7DataAlarmMessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7DataAlarmMessage()
+}
+
+// S7DataAlarmMessageContract provides a set of functions which can be overwritten by a sub struct
+type S7DataAlarmMessageContract interface {
+	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7DataAlarmMessage()
+}
+
+// S7DataAlarmMessageRequirements provides a set of functions which need to be implemented by a sub struct
+type S7DataAlarmMessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
 }
 
-// S7DataAlarmMessageExactly can be used when we want exactly this type and not a type which fulfills S7DataAlarmMessage.
-// This is useful for switch cases.
-type S7DataAlarmMessageExactly interface {
-	S7DataAlarmMessage
-	isS7DataAlarmMessage() bool
-}
-
 // _S7DataAlarmMessage is the data-structure of this message
 type _S7DataAlarmMessage struct {
-	_S7DataAlarmMessageChildRequirements
+	_SubType S7DataAlarmMessage
 }
 
-type _S7DataAlarmMessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCpuFunctionType() uint8
-}
-
-type S7DataAlarmMessageParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7DataAlarmMessage, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type S7DataAlarmMessageChild interface {
-	utils.Serializable
-	InitializeParent(parent S7DataAlarmMessage)
-	GetParent() *S7DataAlarmMessage
-
-	GetTypeName() string
-	S7DataAlarmMessage
-}
+var _ S7DataAlarmMessageContract = (*_S7DataAlarmMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,7 +107,7 @@ func (m *_S7DataAlarmMessage) GetTypeName() string {
 	return "S7DataAlarmMessage"
 }
 
-func (m *_S7DataAlarmMessage) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_S7DataAlarmMessage) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (functionId)
@@ -127,74 +120,77 @@ func (m *_S7DataAlarmMessage) GetParentLengthInBits(ctx context.Context) uint16 
 }
 
 func (m *_S7DataAlarmMessage) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func S7DataAlarmMessageParse(ctx context.Context, theBytes []byte, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
-	return S7DataAlarmMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
+func S7DataAlarmMessageParse[T S7DataAlarmMessage](ctx context.Context, theBytes []byte, cpuFunctionType uint8) (T, error) {
+	return S7DataAlarmMessageParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
 }
 
-func S7DataAlarmMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
+func S7DataAlarmMessageParseWithBufferProducer[T S7DataAlarmMessage](cpuFunctionType uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := S7DataAlarmMessageParseWithBuffer[T](ctx, readBuffer, cpuFunctionType)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func S7DataAlarmMessageParseWithBuffer[T S7DataAlarmMessage](ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (T, error) {
+	v, err := (&_S7DataAlarmMessage{}).parse(ctx, readBuffer, cpuFunctionType)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_S7DataAlarmMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (__s7DataAlarmMessage S7DataAlarmMessage, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7DataAlarmMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7DataAlarmMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (functionId)
-	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
-	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7DataAlarmMessage")
+	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)), S7DataAlarmMessage_FUNCTIONID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
-	if functionId != S7DataAlarmMessage_FUNCTIONID {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7DataAlarmMessage_FUNCTIONID) + " but got " + fmt.Sprintf("%d", functionId))
-	}
+	_ = functionId
 
-	// Const Field (numberMessageObj)
-	numberMessageObj, _numberMessageObjErr := readBuffer.ReadUint8("numberMessageObj", 8)
-	if _numberMessageObjErr != nil {
-		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field of S7DataAlarmMessage")
+	numberMessageObj, err := ReadConstField[uint8](ctx, "numberMessageObj", ReadUnsignedByte(readBuffer, uint8(8)), S7DataAlarmMessage_NUMBERMESSAGEOBJ)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberMessageObj' field"))
 	}
-	if numberMessageObj != S7DataAlarmMessage_NUMBERMESSAGEOBJ {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7DataAlarmMessage_NUMBERMESSAGEOBJ) + " but got " + fmt.Sprintf("%d", numberMessageObj))
-	}
+	_ = numberMessageObj
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type S7DataAlarmMessageChildSerializeRequirement interface {
-		S7DataAlarmMessage
-		InitializeParent(S7DataAlarmMessage)
-		GetParent() S7DataAlarmMessage
-	}
-	var _childTemp any
-	var _child S7DataAlarmMessageChildSerializeRequirement
-	var typeSwitchError error
+	var _child S7DataAlarmMessage
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		_childTemp, typeSwitchError = S7MessageObjectRequestParseWithBuffer(ctx, readBuffer, cpuFunctionType)
+		if _child, err = (&_S7MessageObjectRequest{}).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageObjectRequest for type-switch of S7DataAlarmMessage")
+		}
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		_childTemp, typeSwitchError = S7MessageObjectResponseParseWithBuffer(ctx, readBuffer, cpuFunctionType)
+		if _child, err = (&_S7MessageObjectResponse{}).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageObjectResponse for type-switch of S7DataAlarmMessage")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v]", cpuFunctionType)
+		return nil, errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v]", cpuFunctionType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7DataAlarmMessage")
-	}
-	_child = _childTemp.(S7DataAlarmMessageChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7DataAlarmMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7DataAlarmMessage")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_S7DataAlarmMessage) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7DataAlarmMessage, serializeChildFunction func() error) error {
+func (pm *_S7DataAlarmMessage) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7DataAlarmMessage, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -206,16 +202,12 @@ func (pm *_S7DataAlarmMessage) SerializeParent(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for S7DataAlarmMessage")
 	}
 
-	// Const Field (functionId)
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8(0x00))
-	if _functionIdErr != nil {
-		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+	if err := WriteConstField(ctx, "functionId", S7DataAlarmMessage_FUNCTIONID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
-	// Const Field (numberMessageObj)
-	_numberMessageObjErr := writeBuffer.WriteUint8("numberMessageObj", 8, uint8(0x01))
-	if _numberMessageObjErr != nil {
-		return errors.Wrap(_numberMessageObjErr, "Error serializing 'numberMessageObj' field")
+	if err := WriteConstField(ctx, "numberMessageObj", S7DataAlarmMessage_NUMBERMESSAGEOBJ, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberMessageObj' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -229,17 +221,4 @@ func (pm *_S7DataAlarmMessage) SerializeParent(ctx context.Context, writeBuffer 
 	return nil
 }
 
-func (m *_S7DataAlarmMessage) isS7DataAlarmMessage() bool {
-	return true
-}
-
-func (m *_S7DataAlarmMessage) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_S7DataAlarmMessage) IsS7DataAlarmMessage() {}

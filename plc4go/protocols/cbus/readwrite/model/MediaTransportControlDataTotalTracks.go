@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type MediaTransportControlDataTotalTracks interface {
 	GetTotalTracksMLSB() byte
 	// GetTotalTracksLSB returns TotalTracksLSB (property field)
 	GetTotalTracksLSB() byte
-}
-
-// MediaTransportControlDataTotalTracksExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataTotalTracks.
-// This is useful for switch cases.
-type MediaTransportControlDataTotalTracksExactly interface {
-	MediaTransportControlDataTotalTracks
-	isMediaTransportControlDataTotalTracks() bool
+	// IsMediaTransportControlDataTotalTracks is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataTotalTracks()
 }
 
 // _MediaTransportControlDataTotalTracks is the data-structure of this message
 type _MediaTransportControlDataTotalTracks struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	TotalTracksMSB  byte
 	TotalTracksMMSB byte
 	TotalTracksMLSB byte
 	TotalTracksLSB  byte
 }
+
+var _ MediaTransportControlDataTotalTracks = (*_MediaTransportControlDataTotalTracks)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataTotalTracks)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,13 +73,8 @@ type _MediaTransportControlDataTotalTracks struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataTotalTracks) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataTotalTracks) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataTotalTracks) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,13 +106,13 @@ func (m *_MediaTransportControlDataTotalTracks) GetTotalTracksLSB() byte {
 // NewMediaTransportControlDataTotalTracks factory function for _MediaTransportControlDataTotalTracks
 func NewMediaTransportControlDataTotalTracks(totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataTotalTracks {
 	_result := &_MediaTransportControlDataTotalTracks{
-		TotalTracksMSB:             totalTracksMSB,
-		TotalTracksMMSB:            totalTracksMMSB,
-		TotalTracksMLSB:            totalTracksMLSB,
-		TotalTracksLSB:             totalTracksLSB,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TotalTracksMSB:                    totalTracksMSB,
+		TotalTracksMMSB:                   totalTracksMMSB,
+		TotalTracksMLSB:                   totalTracksMLSB,
+		TotalTracksLSB:                    totalTracksLSB,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -137,7 +132,7 @@ func (m *_MediaTransportControlDataTotalTracks) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataTotalTracks) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (totalTracksMSB)
 	lengthInBits += 8
@@ -158,63 +153,46 @@ func (m *_MediaTransportControlDataTotalTracks) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataTotalTracksParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataTotalTracks, error) {
-	return MediaTransportControlDataTotalTracksParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MediaTransportControlDataTotalTracksParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataTotalTracks, error) {
+func (m *_MediaTransportControlDataTotalTracks) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataTotalTracks MediaTransportControlDataTotalTracks, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataTotalTracks"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataTotalTracks")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (totalTracksMSB)
-	_totalTracksMSB, _totalTracksMSBErr := readBuffer.ReadByte("totalTracksMSB")
-	if _totalTracksMSBErr != nil {
-		return nil, errors.Wrap(_totalTracksMSBErr, "Error parsing 'totalTracksMSB' field of MediaTransportControlDataTotalTracks")
+	totalTracksMSB, err := ReadSimpleField(ctx, "totalTracksMSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalTracksMSB' field"))
 	}
-	totalTracksMSB := _totalTracksMSB
+	m.TotalTracksMSB = totalTracksMSB
 
-	// Simple Field (totalTracksMMSB)
-	_totalTracksMMSB, _totalTracksMMSBErr := readBuffer.ReadByte("totalTracksMMSB")
-	if _totalTracksMMSBErr != nil {
-		return nil, errors.Wrap(_totalTracksMMSBErr, "Error parsing 'totalTracksMMSB' field of MediaTransportControlDataTotalTracks")
+	totalTracksMMSB, err := ReadSimpleField(ctx, "totalTracksMMSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalTracksMMSB' field"))
 	}
-	totalTracksMMSB := _totalTracksMMSB
+	m.TotalTracksMMSB = totalTracksMMSB
 
-	// Simple Field (totalTracksMLSB)
-	_totalTracksMLSB, _totalTracksMLSBErr := readBuffer.ReadByte("totalTracksMLSB")
-	if _totalTracksMLSBErr != nil {
-		return nil, errors.Wrap(_totalTracksMLSBErr, "Error parsing 'totalTracksMLSB' field of MediaTransportControlDataTotalTracks")
+	totalTracksMLSB, err := ReadSimpleField(ctx, "totalTracksMLSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalTracksMLSB' field"))
 	}
-	totalTracksMLSB := _totalTracksMLSB
+	m.TotalTracksMLSB = totalTracksMLSB
 
-	// Simple Field (totalTracksLSB)
-	_totalTracksLSB, _totalTracksLSBErr := readBuffer.ReadByte("totalTracksLSB")
-	if _totalTracksLSBErr != nil {
-		return nil, errors.Wrap(_totalTracksLSBErr, "Error parsing 'totalTracksLSB' field of MediaTransportControlDataTotalTracks")
+	totalTracksLSB, err := ReadSimpleField(ctx, "totalTracksLSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalTracksLSB' field"))
 	}
-	totalTracksLSB := _totalTracksLSB
+	m.TotalTracksLSB = totalTracksLSB
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataTotalTracks"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataTotalTracks")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataTotalTracks{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		TotalTracksMSB:             totalTracksMSB,
-		TotalTracksMMSB:            totalTracksMMSB,
-		TotalTracksMLSB:            totalTracksMLSB,
-		TotalTracksLSB:             totalTracksLSB,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataTotalTracks) Serialize() ([]byte, error) {
@@ -235,32 +213,20 @@ func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataTotalTracks")
 		}
 
-		// Simple Field (totalTracksMSB)
-		totalTracksMSB := byte(m.GetTotalTracksMSB())
-		_totalTracksMSBErr := writeBuffer.WriteByte("totalTracksMSB", (totalTracksMSB))
-		if _totalTracksMSBErr != nil {
-			return errors.Wrap(_totalTracksMSBErr, "Error serializing 'totalTracksMSB' field")
+		if err := WriteSimpleField[byte](ctx, "totalTracksMSB", m.GetTotalTracksMSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalTracksMSB' field")
 		}
 
-		// Simple Field (totalTracksMMSB)
-		totalTracksMMSB := byte(m.GetTotalTracksMMSB())
-		_totalTracksMMSBErr := writeBuffer.WriteByte("totalTracksMMSB", (totalTracksMMSB))
-		if _totalTracksMMSBErr != nil {
-			return errors.Wrap(_totalTracksMMSBErr, "Error serializing 'totalTracksMMSB' field")
+		if err := WriteSimpleField[byte](ctx, "totalTracksMMSB", m.GetTotalTracksMMSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalTracksMMSB' field")
 		}
 
-		// Simple Field (totalTracksMLSB)
-		totalTracksMLSB := byte(m.GetTotalTracksMLSB())
-		_totalTracksMLSBErr := writeBuffer.WriteByte("totalTracksMLSB", (totalTracksMLSB))
-		if _totalTracksMLSBErr != nil {
-			return errors.Wrap(_totalTracksMLSBErr, "Error serializing 'totalTracksMLSB' field")
+		if err := WriteSimpleField[byte](ctx, "totalTracksMLSB", m.GetTotalTracksMLSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalTracksMLSB' field")
 		}
 
-		// Simple Field (totalTracksLSB)
-		totalTracksLSB := byte(m.GetTotalTracksLSB())
-		_totalTracksLSBErr := writeBuffer.WriteByte("totalTracksLSB", (totalTracksLSB))
-		if _totalTracksLSBErr != nil {
-			return errors.Wrap(_totalTracksLSBErr, "Error serializing 'totalTracksLSB' field")
+		if err := WriteSimpleField[byte](ctx, "totalTracksLSB", m.GetTotalTracksLSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalTracksLSB' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataTotalTracks"); popErr != nil {
@@ -268,12 +234,10 @@ func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataTotalTracks) isMediaTransportControlDataTotalTracks() bool {
-	return true
-}
+func (m *_MediaTransportControlDataTotalTracks) IsMediaTransportControlDataTotalTracks() {}
 
 func (m *_MediaTransportControlDataTotalTracks) String() string {
 	if m == nil {

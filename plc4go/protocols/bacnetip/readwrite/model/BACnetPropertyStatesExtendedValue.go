@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesExtendedValue interface {
 	BACnetPropertyStates
 	// GetExtendedValue returns ExtendedValue (property field)
 	GetExtendedValue() BACnetContextTagUnsignedInteger
-}
-
-// BACnetPropertyStatesExtendedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesExtendedValue.
-// This is useful for switch cases.
-type BACnetPropertyStatesExtendedValueExactly interface {
-	BACnetPropertyStatesExtendedValue
-	isBACnetPropertyStatesExtendedValue() bool
+	// IsBACnetPropertyStatesExtendedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesExtendedValue()
 }
 
 // _BACnetPropertyStatesExtendedValue is the data-structure of this message
 type _BACnetPropertyStatesExtendedValue struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	ExtendedValue BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetPropertyStatesExtendedValue = (*_BACnetPropertyStatesExtendedValue)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesExtendedValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesExtendedValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesExtendedValue) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesExtendedValue) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesExtendedValue) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesExtendedValue) GetExtendedValue() BACnetContextTag
 
 // NewBACnetPropertyStatesExtendedValue factory function for _BACnetPropertyStatesExtendedValue
 func NewBACnetPropertyStatesExtendedValue(extendedValue BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesExtendedValue {
-	_result := &_BACnetPropertyStatesExtendedValue{
-		ExtendedValue:         extendedValue,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if extendedValue == nil {
+		panic("extendedValue of type BACnetContextTagUnsignedInteger for BACnetPropertyStatesExtendedValue must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesExtendedValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ExtendedValue:                extendedValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesExtendedValue) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesExtendedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (extendedValue)
 	lengthInBits += m.ExtendedValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesExtendedValue) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesExtendedValueParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {
-	return BACnetPropertyStatesExtendedValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesExtendedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {
+func (m *_BACnetPropertyStatesExtendedValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesExtendedValue BACnetPropertyStatesExtendedValue, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesExtendedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesExtendedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (extendedValue)
-	if pullErr := readBuffer.PullContext("extendedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for extendedValue")
+	extendedValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedValue' field"))
 	}
-	_extendedValue, _extendedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _extendedValueErr != nil {
-		return nil, errors.Wrap(_extendedValueErr, "Error parsing 'extendedValue' field of BACnetPropertyStatesExtendedValue")
-	}
-	extendedValue := _extendedValue.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("extendedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for extendedValue")
-	}
+	m.ExtendedValue = extendedValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesExtendedValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesExtendedValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesExtendedValue{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		ExtendedValue:         extendedValue,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesExtendedValue) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesExtendedValue) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesExtendedValue")
 		}
 
-		// Simple Field (extendedValue)
-		if pushErr := writeBuffer.PushContext("extendedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for extendedValue")
-		}
-		_extendedValueErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedValue())
-		if popErr := writeBuffer.PopContext("extendedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for extendedValue")
-		}
-		if _extendedValueErr != nil {
-			return errors.Wrap(_extendedValueErr, "Error serializing 'extendedValue' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedValue", m.GetExtendedValue(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesExtendedValue"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesExtendedValue) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesExtendedValue) isBACnetPropertyStatesExtendedValue() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesExtendedValue) IsBACnetPropertyStatesExtendedValue() {}
 
 func (m *_BACnetPropertyStatesExtendedValue) String() string {
 	if m == nil {

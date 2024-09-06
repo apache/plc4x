@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetAddressBinding interface {
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetDeviceAddress returns DeviceAddress (property field)
 	GetDeviceAddress() BACnetAddress
-}
-
-// BACnetAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetAddressBinding.
-// This is useful for switch cases.
-type BACnetAddressBindingExactly interface {
-	BACnetAddressBinding
-	isBACnetAddressBinding() bool
+	// IsBACnetAddressBinding is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAddressBinding()
 }
 
 // _BACnetAddressBinding is the data-structure of this message
@@ -54,6 +51,8 @@ type _BACnetAddressBinding struct {
 	DeviceIdentifier BACnetApplicationTagObjectIdentifier
 	DeviceAddress    BACnetAddress
 }
+
+var _ BACnetAddressBinding = (*_BACnetAddressBinding)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,12 @@ func (m *_BACnetAddressBinding) GetDeviceAddress() BACnetAddress {
 
 // NewBACnetAddressBinding factory function for _BACnetAddressBinding
 func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) *_BACnetAddressBinding {
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetAddressBinding must not be nil")
+	}
+	if deviceAddress == nil {
+		panic("deviceAddress of type BACnetAddress for BACnetAddressBinding must not be nil")
+	}
 	return &_BACnetAddressBinding{DeviceIdentifier: deviceIdentifier, DeviceAddress: deviceAddress}
 }
 
@@ -113,52 +118,46 @@ func BACnetAddressBindingParse(ctx context.Context, theBytes []byte) (BACnetAddr
 	return BACnetAddressBindingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAddressBindingParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
+		return BACnetAddressBindingParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
+	v, err := (&_BACnetAddressBinding{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetAddressBinding) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAddressBinding BACnetAddressBinding, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAddressBinding"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAddressBinding")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceIdentifier)
-	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
+	deviceIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceIdentifier' field"))
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _deviceIdentifierErr != nil {
-		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetAddressBinding")
-	}
-	deviceIdentifier := _deviceIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
-	}
+	m.DeviceIdentifier = deviceIdentifier
 
-	// Simple Field (deviceAddress)
-	if pullErr := readBuffer.PullContext("deviceAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceAddress")
+	deviceAddress, err := ReadSimpleField[BACnetAddress](ctx, "deviceAddress", ReadComplex[BACnetAddress](BACnetAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceAddress' field"))
 	}
-	_deviceAddress, _deviceAddressErr := BACnetAddressParseWithBuffer(ctx, readBuffer)
-	if _deviceAddressErr != nil {
-		return nil, errors.Wrap(_deviceAddressErr, "Error parsing 'deviceAddress' field of BACnetAddressBinding")
-	}
-	deviceAddress := _deviceAddress.(BACnetAddress)
-	if closeErr := readBuffer.CloseContext("deviceAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceAddress")
-	}
+	m.DeviceAddress = deviceAddress
 
 	if closeErr := readBuffer.CloseContext("BACnetAddressBinding"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAddressBinding")
 	}
 
-	// Create the instance
-	return &_BACnetAddressBinding{
-		DeviceIdentifier: deviceIdentifier,
-		DeviceAddress:    deviceAddress,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetAddressBinding) Serialize() ([]byte, error) {
@@ -178,28 +177,12 @@ func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetAddressBinding")
 	}
 
-	// Simple Field (deviceIdentifier)
-	if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-	}
-	_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
-	if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-	}
-	if _deviceIdentifierErr != nil {
-		return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
+	if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", m.GetDeviceIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 	}
 
-	// Simple Field (deviceAddress)
-	if pushErr := writeBuffer.PushContext("deviceAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for deviceAddress")
-	}
-	_deviceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceAddress())
-	if popErr := writeBuffer.PopContext("deviceAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for deviceAddress")
-	}
-	if _deviceAddressErr != nil {
-		return errors.Wrap(_deviceAddressErr, "Error serializing 'deviceAddress' field")
+	if err := WriteSimpleField[BACnetAddress](ctx, "deviceAddress", m.GetDeviceAddress(), WriteComplex[BACnetAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceAddress' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAddressBinding"); popErr != nil {
@@ -208,9 +191,7 @@ func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-func (m *_BACnetAddressBinding) isBACnetAddressBinding() bool {
-	return true
-}
+func (m *_BACnetAddressBinding) IsBACnetAddressBinding() {}
 
 func (m *_BACnetAddressBinding) String() string {
 	if m == nil {

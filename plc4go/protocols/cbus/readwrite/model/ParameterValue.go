@@ -33,47 +33,40 @@ import (
 
 // ParameterValue is the corresponding interface of ParameterValue
 type ParameterValue interface {
+	ParameterValueContract
+	ParameterValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValue()
+}
+
+// ParameterValueContract provides a set of functions which can be overwritten by a sub struct
+type ParameterValueContract interface {
+	// GetNumBytes() returns a parser argument
+	GetNumBytes() uint8
+	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValue()
+}
+
+// ParameterValueRequirements provides a set of functions which need to be implemented by a sub struct
+type ParameterValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() ParameterType
 }
 
-// ParameterValueExactly can be used when we want exactly this type and not a type which fulfills ParameterValue.
-// This is useful for switch cases.
-type ParameterValueExactly interface {
-	ParameterValue
-	isParameterValue() bool
-}
-
 // _ParameterValue is the data-structure of this message
 type _ParameterValue struct {
-	_ParameterValueChildRequirements
+	_SubType ParameterValue
 
 	// Arguments.
 	NumBytes uint8
 }
 
-type _ParameterValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetParameterType() ParameterType
-}
-
-type ParameterValueParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ParameterValue, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type ParameterValueChild interface {
-	utils.Serializable
-	InitializeParent(parent ParameterValue)
-	GetParent() *ParameterValue
-
-	GetTypeName() string
-	ParameterValue
-}
+var _ ParameterValueContract = (*_ParameterValue)(nil)
 
 // NewParameterValue factory function for _ParameterValue
 func NewParameterValue(numBytes uint8) *_ParameterValue {
@@ -95,25 +88,43 @@ func (m *_ParameterValue) GetTypeName() string {
 	return "ParameterValue"
 }
 
-func (m *_ParameterValue) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_ParameterValue) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
 func (m *_ParameterValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueParse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
-	return ParameterValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+func ParameterValueParse[T ParameterValue](ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (T, error) {
+	return ParameterValueParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
-func ParameterValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
+func ParameterValueParseWithBufferProducer[T ParameterValue](parameterType ParameterType, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := ParameterValueParseWithBuffer[T](ctx, readBuffer, parameterType, numBytes)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func ParameterValueParseWithBuffer[T ParameterValue](ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (T, error) {
+	v, err := (&_ParameterValue{NumBytes: numBytes}).parse(ctx, readBuffer, parameterType, numBytes)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_ParameterValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (__parameterValue ParameterValue, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterValue")
 	}
@@ -121,55 +132,64 @@ func ParameterValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type ParameterValueChildSerializeRequirement interface {
-		ParameterValue
-		InitializeParent(ParameterValue)
-		GetParent() ParameterValue
-	}
-	var _childTemp any
-	var _child ParameterValueChildSerializeRequirement
-	var typeSwitchError error
+	var _child ParameterValue
 	switch {
 	case parameterType == ParameterType_APPLICATION_ADDRESS_1: // ParameterValueApplicationAddress1
-		_childTemp, typeSwitchError = ParameterValueApplicationAddress1ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueApplicationAddress1{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueApplicationAddress1 for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_APPLICATION_ADDRESS_2: // ParameterValueApplicationAddress2
-		_childTemp, typeSwitchError = ParameterValueApplicationAddress2ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueApplicationAddress2{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueApplicationAddress2 for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1: // ParameterValueInterfaceOptions1
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueInterfaceOptions1{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions1 for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_BAUD_RATE_SELECTOR: // ParameterValueBaudRateSelector
-		_childTemp, typeSwitchError = ParameterValueBaudRateSelectorParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueBaudRateSelector{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueBaudRateSelector for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_2: // ParameterValueInterfaceOptions2
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions2ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueInterfaceOptions2{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions2 for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS: // ParameterValueInterfaceOptions1PowerUpSettings
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueInterfaceOptions1PowerUpSettings{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions1PowerUpSettings for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_3: // ParameterValueInterfaceOptions3
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions3ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueInterfaceOptions3{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions3 for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_CUSTOM_MANUFACTURER: // ParameterValueCustomManufacturer
-		_childTemp, typeSwitchError = ParameterValueCustomManufacturerParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueCustomManufacturer{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueCustomManufacturer for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_SERIAL_NUMBER: // ParameterValueSerialNumber
-		_childTemp, typeSwitchError = ParameterValueSerialNumberParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueSerialNumber{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueSerialNumber for type-switch of ParameterValue")
+		}
 	case parameterType == ParameterType_CUSTOM_TYPE: // ParameterValueCustomTypes
-		_childTemp, typeSwitchError = ParameterValueCustomTypesParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueCustomTypes{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueCustomTypes for type-switch of ParameterValue")
+		}
 	case 0 == 0: // ParameterValueRaw
-		_childTemp, typeSwitchError = ParameterValueRawParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+		if _child, err = (&_ParameterValueRaw{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueRaw for type-switch of ParameterValue")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v]", parameterType)
+		return nil, errors.Errorf("Unmapped type for parameters [parameterType=%v]", parameterType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ParameterValue")
-	}
-	_child = _childTemp.(ParameterValueChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ParameterValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterValue")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_ParameterValue) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ParameterValue, serializeChildFunction func() error) error {
+func (pm *_ParameterValue) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ParameterValue, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -202,17 +222,4 @@ func (m *_ParameterValue) GetNumBytes() uint8 {
 //
 ////
 
-func (m *_ParameterValue) isParameterValue() bool {
-	return true
-}
-
-func (m *_ParameterValue) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_ParameterValue) IsParameterValue() {}

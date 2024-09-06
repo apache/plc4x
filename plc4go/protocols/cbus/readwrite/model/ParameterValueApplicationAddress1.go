@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ParameterValueApplicationAddress1 interface {
 	GetValue() ApplicationAddress1
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// ParameterValueApplicationAddress1Exactly can be used when we want exactly this type and not a type which fulfills ParameterValueApplicationAddress1.
-// This is useful for switch cases.
-type ParameterValueApplicationAddress1Exactly interface {
-	ParameterValueApplicationAddress1
-	isParameterValueApplicationAddress1() bool
+	// IsParameterValueApplicationAddress1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueApplicationAddress1()
 }
 
 // _ParameterValueApplicationAddress1 is the data-structure of this message
 type _ParameterValueApplicationAddress1 struct {
-	*_ParameterValue
+	ParameterValueContract
 	Value ApplicationAddress1
 	Data  []byte
 }
+
+var _ ParameterValueApplicationAddress1 = (*_ParameterValueApplicationAddress1)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueApplicationAddress1)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_ParameterValueApplicationAddress1) GetParameterType() ParameterType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ParameterValueApplicationAddress1) InitializeParent(parent ParameterValue) {}
-
-func (m *_ParameterValueApplicationAddress1) GetParent() ParameterValue {
-	return m._ParameterValue
+func (m *_ParameterValueApplicationAddress1) GetParent() ParameterValueContract {
+	return m.ParameterValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,15 @@ func (m *_ParameterValueApplicationAddress1) GetData() []byte {
 
 // NewParameterValueApplicationAddress1 factory function for _ParameterValueApplicationAddress1
 func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte, numBytes uint8) *_ParameterValueApplicationAddress1 {
-	_result := &_ParameterValueApplicationAddress1{
-		Value:           value,
-		Data:            data,
-		_ParameterValue: NewParameterValue(numBytes),
+	if value == nil {
+		panic("value of type ApplicationAddress1 for ParameterValueApplicationAddress1 must not be nil")
 	}
-	_result._ParameterValue._ParameterValueChildRequirements = _result
+	_result := &_ParameterValueApplicationAddress1{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 
@@ -122,7 +123,7 @@ func (m *_ParameterValueApplicationAddress1) GetTypeName() string {
 }
 
 func (m *_ParameterValueApplicationAddress1) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)
@@ -139,15 +140,11 @@ func (m *_ParameterValueApplicationAddress1) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueApplicationAddress1Parse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
-	return ParameterValueApplicationAddress1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
-}
-
-func ParameterValueApplicationAddress1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
+func (m *_ParameterValueApplicationAddress1) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueApplicationAddress1 ParameterValueApplicationAddress1, err error) {
+	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterValueApplicationAddress1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterValueApplicationAddress1")
 	}
@@ -156,42 +153,26 @@ func ParameterValueApplicationAddress1ParseWithBuffer(ctx context.Context, readB
 
 	// Validation
 	if !(bool((numBytes) >= (1))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"ApplicationAddress1 has exactly one byte"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "ApplicationAddress1 has exactly one byte"})
 	}
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
+	value, err := ReadSimpleField[ApplicationAddress1](ctx, "value", ReadComplex[ApplicationAddress1](ApplicationAddress1ParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	_value, _valueErr := ApplicationAddress1ParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueApplicationAddress1")
+	m.Value = value
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	value := _value.(ApplicationAddress1)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
-	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(numBytes) - uint16(uint16(1)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueApplicationAddress1")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("ParameterValueApplicationAddress1"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterValueApplicationAddress1")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ParameterValueApplicationAddress1{
-		_ParameterValue: &_ParameterValue{
-			NumBytes: numBytes,
-		},
-		Value: value,
-		Data:  data,
-	}
-	_child._ParameterValue._ParameterValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ParameterValueApplicationAddress1) Serialize() ([]byte, error) {
@@ -212,21 +193,11 @@ func (m *_ParameterValueApplicationAddress1) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueApplicationAddress1")
 		}
 
-		// Simple Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[ApplicationAddress1](ctx, "value", m.GetValue(), WriteComplex[ApplicationAddress1](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -235,12 +206,10 @@ func (m *_ParameterValueApplicationAddress1) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ParameterValueContract.(*_ParameterValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ParameterValueApplicationAddress1) isParameterValueApplicationAddress1() bool {
-	return true
-}
+func (m *_ParameterValueApplicationAddress1) IsParameterValueApplicationAddress1() {}
 
 func (m *_ParameterValueApplicationAddress1) String() string {
 	if m == nil {

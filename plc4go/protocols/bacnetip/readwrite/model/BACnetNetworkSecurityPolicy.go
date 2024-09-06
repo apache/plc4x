@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetNetworkSecurityPolicy interface {
 	GetPortId() BACnetContextTagUnsignedInteger
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityPolicyTagged
-}
-
-// BACnetNetworkSecurityPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkSecurityPolicy.
-// This is useful for switch cases.
-type BACnetNetworkSecurityPolicyExactly interface {
-	BACnetNetworkSecurityPolicy
-	isBACnetNetworkSecurityPolicy() bool
+	// IsBACnetNetworkSecurityPolicy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNetworkSecurityPolicy()
 }
 
 // _BACnetNetworkSecurityPolicy is the data-structure of this message
@@ -54,6 +51,8 @@ type _BACnetNetworkSecurityPolicy struct {
 	PortId        BACnetContextTagUnsignedInteger
 	SecurityLevel BACnetSecurityPolicyTagged
 }
+
+var _ BACnetNetworkSecurityPolicy = (*_BACnetNetworkSecurityPolicy)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,12 @@ func (m *_BACnetNetworkSecurityPolicy) GetSecurityLevel() BACnetSecurityPolicyTa
 
 // NewBACnetNetworkSecurityPolicy factory function for _BACnetNetworkSecurityPolicy
 func NewBACnetNetworkSecurityPolicy(portId BACnetContextTagUnsignedInteger, securityLevel BACnetSecurityPolicyTagged) *_BACnetNetworkSecurityPolicy {
+	if portId == nil {
+		panic("portId of type BACnetContextTagUnsignedInteger for BACnetNetworkSecurityPolicy must not be nil")
+	}
+	if securityLevel == nil {
+		panic("securityLevel of type BACnetSecurityPolicyTagged for BACnetNetworkSecurityPolicy must not be nil")
+	}
 	return &_BACnetNetworkSecurityPolicy{PortId: portId, SecurityLevel: securityLevel}
 }
 
@@ -113,52 +118,46 @@ func BACnetNetworkSecurityPolicyParse(ctx context.Context, theBytes []byte) (BAC
 	return BACnetNetworkSecurityPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetNetworkSecurityPolicyParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkSecurityPolicy, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkSecurityPolicy, error) {
+		return BACnetNetworkSecurityPolicyParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetNetworkSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkSecurityPolicy, error) {
+	v, err := (&_BACnetNetworkSecurityPolicy{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetNetworkSecurityPolicy) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetNetworkSecurityPolicy BACnetNetworkSecurityPolicy, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNetworkSecurityPolicy"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNetworkSecurityPolicy")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (portId)
-	if pullErr := readBuffer.PullContext("portId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for portId")
+	portId, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "portId", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portId' field"))
 	}
-	_portId, _portIdErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _portIdErr != nil {
-		return nil, errors.Wrap(_portIdErr, "Error parsing 'portId' field of BACnetNetworkSecurityPolicy")
-	}
-	portId := _portId.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("portId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for portId")
-	}
+	m.PortId = portId
 
-	// Simple Field (securityLevel)
-	if pullErr := readBuffer.PullContext("securityLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityLevel")
+	securityLevel, err := ReadSimpleField[BACnetSecurityPolicyTagged](ctx, "securityLevel", ReadComplex[BACnetSecurityPolicyTagged](BACnetSecurityPolicyTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityLevel' field"))
 	}
-	_securityLevel, _securityLevelErr := BACnetSecurityPolicyTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _securityLevelErr != nil {
-		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of BACnetNetworkSecurityPolicy")
-	}
-	securityLevel := _securityLevel.(BACnetSecurityPolicyTagged)
-	if closeErr := readBuffer.CloseContext("securityLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityLevel")
-	}
+	m.SecurityLevel = securityLevel
 
 	if closeErr := readBuffer.CloseContext("BACnetNetworkSecurityPolicy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNetworkSecurityPolicy")
 	}
 
-	// Create the instance
-	return &_BACnetNetworkSecurityPolicy{
-		PortId:        portId,
-		SecurityLevel: securityLevel,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetNetworkSecurityPolicy) Serialize() ([]byte, error) {
@@ -178,28 +177,12 @@ func (m *_BACnetNetworkSecurityPolicy) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetNetworkSecurityPolicy")
 	}
 
-	// Simple Field (portId)
-	if pushErr := writeBuffer.PushContext("portId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for portId")
-	}
-	_portIdErr := writeBuffer.WriteSerializable(ctx, m.GetPortId())
-	if popErr := writeBuffer.PopContext("portId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for portId")
-	}
-	if _portIdErr != nil {
-		return errors.Wrap(_portIdErr, "Error serializing 'portId' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "portId", m.GetPortId(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'portId' field")
 	}
 
-	// Simple Field (securityLevel)
-	if pushErr := writeBuffer.PushContext("securityLevel"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for securityLevel")
-	}
-	_securityLevelErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityLevel())
-	if popErr := writeBuffer.PopContext("securityLevel"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for securityLevel")
-	}
-	if _securityLevelErr != nil {
-		return errors.Wrap(_securityLevelErr, "Error serializing 'securityLevel' field")
+	if err := WriteSimpleField[BACnetSecurityPolicyTagged](ctx, "securityLevel", m.GetSecurityLevel(), WriteComplex[BACnetSecurityPolicyTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'securityLevel' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNetworkSecurityPolicy"); popErr != nil {
@@ -208,9 +191,7 @@ func (m *_BACnetNetworkSecurityPolicy) SerializeWithWriteBuffer(ctx context.Cont
 	return nil
 }
 
-func (m *_BACnetNetworkSecurityPolicy) isBACnetNetworkSecurityPolicy() bool {
-	return true
-}
+func (m *_BACnetNetworkSecurityPolicy) IsBACnetNetworkSecurityPolicy() {}
 
 func (m *_BACnetNetworkSecurityPolicy) String() string {
 	if m == nil {

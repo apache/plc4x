@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLightingOutputTrackingValue interface {
 	GetTrackingValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataLightingOutputTrackingValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingOutputTrackingValue.
-// This is useful for switch cases.
-type BACnetConstructedDataLightingOutputTrackingValueExactly interface {
-	BACnetConstructedDataLightingOutputTrackingValue
-	isBACnetConstructedDataLightingOutputTrackingValue() bool
+	// IsBACnetConstructedDataLightingOutputTrackingValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLightingOutputTrackingValue()
 }
 
 // _BACnetConstructedDataLightingOutputTrackingValue is the data-structure of this message
 type _BACnetConstructedDataLightingOutputTrackingValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	TrackingValue BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataLightingOutputTrackingValue = (*_BACnetConstructedDataLightingOutputTrackingValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputTrackingValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetPropertyIdentifie
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetActualValue() BAC
 
 // NewBACnetConstructedDataLightingOutputTrackingValue factory function for _BACnetConstructedDataLightingOutputTrackingValue
 func NewBACnetConstructedDataLightingOutputTrackingValue(trackingValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputTrackingValue {
-	_result := &_BACnetConstructedDataLightingOutputTrackingValue{
-		TrackingValue:          trackingValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if trackingValue == nil {
+		panic("trackingValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputTrackingValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLightingOutputTrackingValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TrackingValue:                 trackingValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetTypeName() string
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (trackingValue)
 	lengthInBits += m.TrackingValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBytes(ctx
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLightingOutputTrackingValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
-	return BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLightingOutputTrackingValue BACnetConstructedDataLightingOutputTrackingValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputTrackingValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLightingOutputTrackingValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (trackingValue)
-	if pullErr := readBuffer.PullContext("trackingValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for trackingValue")
+	trackingValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "trackingValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackingValue' field"))
 	}
-	_trackingValue, _trackingValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _trackingValueErr != nil {
-		return nil, errors.Wrap(_trackingValueErr, "Error parsing 'trackingValue' field of BACnetConstructedDataLightingOutputTrackingValue")
-	}
-	trackingValue := _trackingValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("trackingValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for trackingValue")
-	}
+	m.TrackingValue = trackingValue
 
-	// Virtual field
-	_actualValue := trackingValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), trackingValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingOutputTrackingValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingOutputTrackingValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLightingOutputTrackingValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		TrackingValue: trackingValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingOutputTrackingValue")
 		}
 
-		// Simple Field (trackingValue)
-		if pushErr := writeBuffer.PushContext("trackingValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for trackingValue")
-		}
-		_trackingValueErr := writeBuffer.WriteSerializable(ctx, m.GetTrackingValue())
-		if popErr := writeBuffer.PopContext("trackingValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for trackingValue")
-		}
-		if _trackingValueErr != nil {
-			return errors.Wrap(_trackingValueErr, "Error serializing 'trackingValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "trackingValue", m.GetTrackingValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackingValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) isBACnetConstructedDataLightingOutputTrackingValue() bool {
-	return true
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) IsBACnetConstructedDataLightingOutputTrackingValue() {
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) String() string {

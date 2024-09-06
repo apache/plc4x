@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type TelephonyDataLineOffHook interface {
 	GetReason() LineOffHookReason
 	// GetNumber returns Number (property field)
 	GetNumber() string
-}
-
-// TelephonyDataLineOffHookExactly can be used when we want exactly this type and not a type which fulfills TelephonyDataLineOffHook.
-// This is useful for switch cases.
-type TelephonyDataLineOffHookExactly interface {
-	TelephonyDataLineOffHook
-	isTelephonyDataLineOffHook() bool
+	// IsTelephonyDataLineOffHook is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataLineOffHook()
 }
 
 // _TelephonyDataLineOffHook is the data-structure of this message
 type _TelephonyDataLineOffHook struct {
-	*_TelephonyData
+	TelephonyDataContract
 	Reason LineOffHookReason
 	Number string
 }
+
+var _ TelephonyDataLineOffHook = (*_TelephonyDataLineOffHook)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataLineOffHook)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,13 +67,8 @@ type _TelephonyDataLineOffHook struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TelephonyDataLineOffHook) InitializeParent(parent TelephonyData, commandTypeContainer TelephonyCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_TelephonyDataLineOffHook) GetParent() TelephonyData {
-	return m._TelephonyData
+func (m *_TelephonyDataLineOffHook) GetParent() TelephonyDataContract {
+	return m.TelephonyDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,11 +92,11 @@ func (m *_TelephonyDataLineOffHook) GetNumber() string {
 // NewTelephonyDataLineOffHook factory function for _TelephonyDataLineOffHook
 func NewTelephonyDataLineOffHook(reason LineOffHookReason, number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataLineOffHook {
 	_result := &_TelephonyDataLineOffHook{
-		Reason:         reason,
-		Number:         number,
-		_TelephonyData: NewTelephonyData(commandTypeContainer, argument),
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Reason:                reason,
+		Number:                number,
 	}
-	_result._TelephonyData._TelephonyDataChildRequirements = _result
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 
@@ -121,7 +116,7 @@ func (m *_TelephonyDataLineOffHook) GetTypeName() string {
 }
 
 func (m *_TelephonyDataLineOffHook) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	// Simple field (reason)
 	lengthInBits += 8
@@ -136,53 +131,34 @@ func (m *_TelephonyDataLineOffHook) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataLineOffHookParse(ctx context.Context, theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
-	return TelephonyDataLineOffHookParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func TelephonyDataLineOffHookParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
+func (m *_TelephonyDataLineOffHook) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData, commandTypeContainer TelephonyCommandTypeContainer) (__telephonyDataLineOffHook TelephonyDataLineOffHook, err error) {
+	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataLineOffHook"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataLineOffHook")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reason)
-	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reason")
+	reason, err := ReadEnumField[LineOffHookReason](ctx, "reason", "LineOffHookReason", ReadEnum(LineOffHookReasonByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reason' field"))
 	}
-	_reason, _reasonErr := LineOffHookReasonParseWithBuffer(ctx, readBuffer)
-	if _reasonErr != nil {
-		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of TelephonyDataLineOffHook")
-	}
-	reason := _reason
-	if closeErr := readBuffer.CloseContext("reason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reason")
-	}
+	m.Reason = reason
 
-	// Simple Field (number)
-	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), "UTF-8")
-	if _numberErr != nil {
-		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataLineOffHook")
+	number, err := ReadSimpleField(ctx, "number", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(2))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'number' field"))
 	}
-	number := _number
+	m.Number = number
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataLineOffHook"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataLineOffHook")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TelephonyDataLineOffHook{
-		_TelephonyData: &_TelephonyData{},
-		Reason:         reason,
-		Number:         number,
-	}
-	_child._TelephonyData._TelephonyDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TelephonyDataLineOffHook) Serialize() ([]byte, error) {
@@ -203,23 +179,12 @@ func (m *_TelephonyDataLineOffHook) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for TelephonyDataLineOffHook")
 		}
 
-		// Simple Field (reason)
-		if pushErr := writeBuffer.PushContext("reason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reason")
-		}
-		_reasonErr := writeBuffer.WriteSerializable(ctx, m.GetReason())
-		if popErr := writeBuffer.PopContext("reason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reason")
-		}
-		if _reasonErr != nil {
-			return errors.Wrap(_reasonErr, "Error serializing 'reason' field")
+		if err := WriteSimpleEnumField[LineOffHookReason](ctx, "reason", "LineOffHookReason", m.GetReason(), WriteEnum[LineOffHookReason, uint8](LineOffHookReason.GetValue, LineOffHookReason.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'reason' field")
 		}
 
-		// Simple Field (number)
-		number := string(m.GetNumber())
-		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), "UTF-8", (number))
-		if _numberErr != nil {
-			return errors.Wrap(_numberErr, "Error serializing 'number' field")
+		if err := WriteSimpleField[string](ctx, "number", m.GetNumber(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(2))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'number' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TelephonyDataLineOffHook"); popErr != nil {
@@ -227,12 +192,10 @@ func (m *_TelephonyDataLineOffHook) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TelephonyDataContract.(*_TelephonyData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TelephonyDataLineOffHook) isTelephonyDataLineOffHook() bool {
-	return true
-}
+func (m *_TelephonyDataLineOffHook) IsTelephonyDataLineOffHook() {}
 
 func (m *_TelephonyDataLineOffHook) String() string {
 	if m == nil {

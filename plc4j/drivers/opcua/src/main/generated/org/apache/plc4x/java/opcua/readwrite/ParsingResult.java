@@ -91,7 +91,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("ParsingResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfDataStatusCodes)
     writeSimpleField("noOfDataStatusCodes", noOfDataStatusCodes, writeSignedInt(writeBuffer, 32));
@@ -158,15 +158,14 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfDataStatusCodes = readSimpleField("noOfDataStatusCodes", readSignedInt(readBuffer, 32));
 
     List<StatusCode> dataStatusCodes =
         readCountArrayField(
             "dataStatusCodes",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfDataStatusCodes);
 
     int noOfDataDiagnosticInfos =
@@ -175,8 +174,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     List<DiagnosticInfo> dataDiagnosticInfos =
         readCountArrayField(
             "dataDiagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDataDiagnosticInfos);
 
     readBuffer.closeContext("ParsingResult");

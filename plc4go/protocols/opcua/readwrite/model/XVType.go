@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type XVType interface {
 	GetX() float64
 	// GetValue returns Value (property field)
 	GetValue() float32
-}
-
-// XVTypeExactly can be used when we want exactly this type and not a type which fulfills XVType.
-// This is useful for switch cases.
-type XVTypeExactly interface {
-	XVType
-	isXVType() bool
+	// IsXVType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsXVType()
 }
 
 // _XVType is the data-structure of this message
 type _XVType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	X     float64
 	Value float32
 }
+
+var _ XVType = (*_XVType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_XVType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_XVType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_XVType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_XVType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_XVType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_XVType) GetValue() float32 {
 // NewXVType factory function for _XVType
 func NewXVType(x float64, value float32) *_XVType {
 	_result := &_XVType{
-		X:                          x,
-		Value:                      value,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		X:                                 x,
+		Value:                             value,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_XVType) GetTypeName() string {
 }
 
 func (m *_XVType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (x)
 	lengthInBits += 64
@@ -137,47 +135,34 @@ func (m *_XVType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func XVTypeParse(ctx context.Context, theBytes []byte, identifier string) (XVType, error) {
-	return XVTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func XVTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (XVType, error) {
+func (m *_XVType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__xVType XVType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("XVType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for XVType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (x)
-	_x, _xErr := readBuffer.ReadFloat64("x", 64)
-	if _xErr != nil {
-		return nil, errors.Wrap(_xErr, "Error parsing 'x' field of XVType")
+	x, err := ReadSimpleField(ctx, "x", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'x' field"))
 	}
-	x := _x
+	m.X = x
 
-	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadFloat32("value", 32)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of XVType")
+	value, err := ReadSimpleField(ctx, "value", ReadFloat(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("XVType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for XVType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_XVType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		X:                          x,
-		Value:                      value,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_XVType) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_XVType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 			return errors.Wrap(pushErr, "Error pushing for XVType")
 		}
 
-		// Simple Field (x)
-		x := float64(m.GetX())
-		_xErr := writeBuffer.WriteFloat64("x", 64, (x))
-		if _xErr != nil {
-			return errors.Wrap(_xErr, "Error serializing 'x' field")
+		if err := WriteSimpleField[float64](ctx, "x", m.GetX(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'x' field")
 		}
 
-		// Simple Field (value)
-		value := float32(m.GetValue())
-		_valueErr := writeBuffer.WriteFloat32("value", 32, (value))
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[float32](ctx, "value", m.GetValue(), WriteFloat(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("XVType"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_XVType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_XVType) isXVType() bool {
-	return true
-}
+func (m *_XVType) IsXVType() {}
 
 func (m *_XVType) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,18 +55,13 @@ type MeasurementDataChannelMeasurementData interface {
 	GetRawValue() uint16
 	// GetValue returns Value (virtual field)
 	GetValue() float64
-}
-
-// MeasurementDataChannelMeasurementDataExactly can be used when we want exactly this type and not a type which fulfills MeasurementDataChannelMeasurementData.
-// This is useful for switch cases.
-type MeasurementDataChannelMeasurementDataExactly interface {
-	MeasurementDataChannelMeasurementData
-	isMeasurementDataChannelMeasurementData() bool
+	// IsMeasurementDataChannelMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeasurementDataChannelMeasurementData()
 }
 
 // _MeasurementDataChannelMeasurementData is the data-structure of this message
 type _MeasurementDataChannelMeasurementData struct {
-	*_MeasurementData
+	MeasurementDataContract
 	DeviceId   uint8
 	Channel    uint8
 	Units      MeasurementUnits
@@ -72,6 +69,9 @@ type _MeasurementDataChannelMeasurementData struct {
 	Msb        uint8
 	Lsb        uint8
 }
+
+var _ MeasurementDataChannelMeasurementData = (*_MeasurementDataChannelMeasurementData)(nil)
+var _ MeasurementDataRequirements = (*_MeasurementDataChannelMeasurementData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,12 +83,8 @@ type _MeasurementDataChannelMeasurementData struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MeasurementDataChannelMeasurementData) InitializeParent(parent MeasurementData, commandTypeContainer MeasurementCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_MeasurementDataChannelMeasurementData) GetParent() MeasurementData {
-	return m._MeasurementData
+func (m *_MeasurementDataChannelMeasurementData) GetParent() MeasurementDataContract {
+	return m.MeasurementDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -149,15 +145,15 @@ func (m *_MeasurementDataChannelMeasurementData) GetValue() float64 {
 // NewMeasurementDataChannelMeasurementData factory function for _MeasurementDataChannelMeasurementData
 func NewMeasurementDataChannelMeasurementData(deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8, commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementDataChannelMeasurementData {
 	_result := &_MeasurementDataChannelMeasurementData{
-		DeviceId:         deviceId,
-		Channel:          channel,
-		Units:            units,
-		Multiplier:       multiplier,
-		Msb:              msb,
-		Lsb:              lsb,
-		_MeasurementData: NewMeasurementData(commandTypeContainer),
+		MeasurementDataContract: NewMeasurementData(commandTypeContainer),
+		DeviceId:                deviceId,
+		Channel:                 channel,
+		Units:                   units,
+		Multiplier:              multiplier,
+		Msb:                     msb,
+		Lsb:                     lsb,
 	}
-	_result._MeasurementData._MeasurementDataChildRequirements = _result
+	_result.MeasurementDataContract.(*_MeasurementData)._SubType = _result
 	return _result
 }
 
@@ -177,7 +173,7 @@ func (m *_MeasurementDataChannelMeasurementData) GetTypeName() string {
 }
 
 func (m *_MeasurementDataChannelMeasurementData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MeasurementDataContract.(*_MeasurementData).getLengthInBits(ctx))
 
 	// Simple field (deviceId)
 	lengthInBits += 8
@@ -208,95 +204,70 @@ func (m *_MeasurementDataChannelMeasurementData) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeasurementDataChannelMeasurementDataParse(ctx context.Context, theBytes []byte) (MeasurementDataChannelMeasurementData, error) {
-	return MeasurementDataChannelMeasurementDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
+func (m *_MeasurementDataChannelMeasurementData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeasurementData) (__measurementDataChannelMeasurementData MeasurementDataChannelMeasurementData, err error) {
+	m.MeasurementDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeasurementDataChannelMeasurementData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeasurementDataChannelMeasurementData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceId)
-	_deviceId, _deviceIdErr := readBuffer.ReadUint8("deviceId", 8)
-	if _deviceIdErr != nil {
-		return nil, errors.Wrap(_deviceIdErr, "Error parsing 'deviceId' field of MeasurementDataChannelMeasurementData")
+	deviceId, err := ReadSimpleField(ctx, "deviceId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceId' field"))
 	}
-	deviceId := _deviceId
+	m.DeviceId = deviceId
 
-	// Simple Field (channel)
-	_channel, _channelErr := readBuffer.ReadUint8("channel", 8)
-	if _channelErr != nil {
-		return nil, errors.Wrap(_channelErr, "Error parsing 'channel' field of MeasurementDataChannelMeasurementData")
+	channel, err := ReadSimpleField(ctx, "channel", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channel' field"))
 	}
-	channel := _channel
+	m.Channel = channel
 
-	// Simple Field (units)
-	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for units")
+	units, err := ReadEnumField[MeasurementUnits](ctx, "units", "MeasurementUnits", ReadEnum(MeasurementUnitsByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'units' field"))
 	}
-	_units, _unitsErr := MeasurementUnitsParseWithBuffer(ctx, readBuffer)
-	if _unitsErr != nil {
-		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of MeasurementDataChannelMeasurementData")
-	}
-	units := _units
-	if closeErr := readBuffer.CloseContext("units"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for units")
-	}
+	m.Units = units
 
-	// Simple Field (multiplier)
-	_multiplier, _multiplierErr := readBuffer.ReadInt8("multiplier", 8)
-	if _multiplierErr != nil {
-		return nil, errors.Wrap(_multiplierErr, "Error parsing 'multiplier' field of MeasurementDataChannelMeasurementData")
+	multiplier, err := ReadSimpleField(ctx, "multiplier", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'multiplier' field"))
 	}
-	multiplier := _multiplier
+	m.Multiplier = multiplier
 
-	// Simple Field (msb)
-	_msb, _msbErr := readBuffer.ReadUint8("msb", 8)
-	if _msbErr != nil {
-		return nil, errors.Wrap(_msbErr, "Error parsing 'msb' field of MeasurementDataChannelMeasurementData")
+	msb, err := ReadSimpleField(ctx, "msb", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msb' field"))
 	}
-	msb := _msb
+	m.Msb = msb
 
-	// Simple Field (lsb)
-	_lsb, _lsbErr := readBuffer.ReadUint8("lsb", 8)
-	if _lsbErr != nil {
-		return nil, errors.Wrap(_lsbErr, "Error parsing 'lsb' field of MeasurementDataChannelMeasurementData")
+	lsb, err := ReadSimpleField(ctx, "lsb", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lsb' field"))
 	}
-	lsb := _lsb
+	m.Lsb = lsb
 
-	// Virtual field
-	_rawValue := msb<<uint16(8) | lsb
-	rawValue := uint16(_rawValue)
+	rawValue, err := ReadVirtualField[uint16](ctx, "rawValue", (*uint16)(nil), msb<<uint16(8)|lsb)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawValue' field"))
+	}
 	_ = rawValue
 
-	// Virtual field
-	_value := float64(float64(rawValue)*float64(multiplier)) * float64(float64(10))
-	value := float64(_value)
+	value, err := ReadVirtualField[float64](ctx, "value", (*float64)(nil), float64(float64(rawValue)*float64(multiplier))*float64(float64(10)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
+	}
 	_ = value
 
 	if closeErr := readBuffer.CloseContext("MeasurementDataChannelMeasurementData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MeasurementDataChannelMeasurementData")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MeasurementDataChannelMeasurementData{
-		_MeasurementData: &_MeasurementData{},
-		DeviceId:         deviceId,
-		Channel:          channel,
-		Units:            units,
-		Multiplier:       multiplier,
-		Msb:              msb,
-		Lsb:              lsb,
-	}
-	_child._MeasurementData._MeasurementDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MeasurementDataChannelMeasurementData) Serialize() ([]byte, error) {
@@ -317,51 +288,28 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for MeasurementDataChannelMeasurementData")
 		}
 
-		// Simple Field (deviceId)
-		deviceId := uint8(m.GetDeviceId())
-		_deviceIdErr := writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
-		if _deviceIdErr != nil {
-			return errors.Wrap(_deviceIdErr, "Error serializing 'deviceId' field")
+		if err := WriteSimpleField[uint8](ctx, "deviceId", m.GetDeviceId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceId' field")
 		}
 
-		// Simple Field (channel)
-		channel := uint8(m.GetChannel())
-		_channelErr := writeBuffer.WriteUint8("channel", 8, uint8((channel)))
-		if _channelErr != nil {
-			return errors.Wrap(_channelErr, "Error serializing 'channel' field")
+		if err := WriteSimpleField[uint8](ctx, "channel", m.GetChannel(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'channel' field")
 		}
 
-		// Simple Field (units)
-		if pushErr := writeBuffer.PushContext("units"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for units")
-		}
-		_unitsErr := writeBuffer.WriteSerializable(ctx, m.GetUnits())
-		if popErr := writeBuffer.PopContext("units"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for units")
-		}
-		if _unitsErr != nil {
-			return errors.Wrap(_unitsErr, "Error serializing 'units' field")
+		if err := WriteSimpleEnumField[MeasurementUnits](ctx, "units", "MeasurementUnits", m.GetUnits(), WriteEnum[MeasurementUnits, uint8](MeasurementUnits.GetValue, MeasurementUnits.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'units' field")
 		}
 
-		// Simple Field (multiplier)
-		multiplier := int8(m.GetMultiplier())
-		_multiplierErr := writeBuffer.WriteInt8("multiplier", 8, int8((multiplier)))
-		if _multiplierErr != nil {
-			return errors.Wrap(_multiplierErr, "Error serializing 'multiplier' field")
+		if err := WriteSimpleField[int8](ctx, "multiplier", m.GetMultiplier(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'multiplier' field")
 		}
 
-		// Simple Field (msb)
-		msb := uint8(m.GetMsb())
-		_msbErr := writeBuffer.WriteUint8("msb", 8, uint8((msb)))
-		if _msbErr != nil {
-			return errors.Wrap(_msbErr, "Error serializing 'msb' field")
+		if err := WriteSimpleField[uint8](ctx, "msb", m.GetMsb(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'msb' field")
 		}
 
-		// Simple Field (lsb)
-		lsb := uint8(m.GetLsb())
-		_lsbErr := writeBuffer.WriteUint8("lsb", 8, uint8((lsb)))
-		if _lsbErr != nil {
-			return errors.Wrap(_lsbErr, "Error serializing 'lsb' field")
+		if err := WriteSimpleField[uint8](ctx, "lsb", m.GetLsb(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lsb' field")
 		}
 		// Virtual field
 		rawValue := m.GetRawValue()
@@ -381,12 +329,10 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MeasurementDataContract.(*_MeasurementData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MeasurementDataChannelMeasurementData) isMeasurementDataChannelMeasurementData() bool {
-	return true
-}
+func (m *_MeasurementDataChannelMeasurementData) IsMeasurementDataChannelMeasurementData() {}
 
 func (m *_MeasurementDataChannelMeasurementData) String() string {
 	if m == nil {

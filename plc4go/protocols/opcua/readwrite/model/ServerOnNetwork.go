@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type ServerOnNetwork interface {
 	GetNoOfServerCapabilities() int32
 	// GetServerCapabilities returns ServerCapabilities (property field)
 	GetServerCapabilities() []PascalString
-}
-
-// ServerOnNetworkExactly can be used when we want exactly this type and not a type which fulfills ServerOnNetwork.
-// This is useful for switch cases.
-type ServerOnNetworkExactly interface {
-	ServerOnNetwork
-	isServerOnNetwork() bool
+	// IsServerOnNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServerOnNetwork()
 }
 
 // _ServerOnNetwork is the data-structure of this message
 type _ServerOnNetwork struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RecordId               uint32
 	ServerName             PascalString
 	DiscoveryUrl           PascalString
 	NoOfServerCapabilities int32
 	ServerCapabilities     []PascalString
 }
+
+var _ ServerOnNetwork = (*_ServerOnNetwork)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ServerOnNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_ServerOnNetwork) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServerOnNetwork) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_ServerOnNetwork) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_ServerOnNetwork) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,21 @@ func (m *_ServerOnNetwork) GetServerCapabilities() []PascalString {
 
 // NewServerOnNetwork factory function for _ServerOnNetwork
 func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
-	_result := &_ServerOnNetwork{
-		RecordId:                   recordId,
-		ServerName:                 serverName,
-		DiscoveryUrl:               discoveryUrl,
-		NoOfServerCapabilities:     noOfServerCapabilities,
-		ServerCapabilities:         serverCapabilities,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if serverName == nil {
+		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if discoveryUrl == nil {
+		panic("discoveryUrl of type PascalString for ServerOnNetwork must not be nil")
+	}
+	_result := &_ServerOnNetwork{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RecordId:                          recordId,
+		ServerName:                        serverName,
+		DiscoveryUrl:                      discoveryUrl,
+		NoOfServerCapabilities:            noOfServerCapabilities,
+		ServerCapabilities:                serverCapabilities,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +150,7 @@ func (m *_ServerOnNetwork) GetTypeName() string {
 }
 
 func (m *_ServerOnNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (recordId)
 	lengthInBits += 32
@@ -177,103 +181,52 @@ func (m *_ServerOnNetwork) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ServerOnNetworkParse(ctx context.Context, theBytes []byte, identifier string) (ServerOnNetwork, error) {
-	return ServerOnNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func ServerOnNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ServerOnNetwork, error) {
+func (m *_ServerOnNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serverOnNetwork ServerOnNetwork, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ServerOnNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ServerOnNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recordId)
-	_recordId, _recordIdErr := readBuffer.ReadUint32("recordId", 32)
-	if _recordIdErr != nil {
-		return nil, errors.Wrap(_recordIdErr, "Error parsing 'recordId' field of ServerOnNetwork")
+	recordId, err := ReadSimpleField(ctx, "recordId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordId' field"))
 	}
-	recordId := _recordId
+	m.RecordId = recordId
 
-	// Simple Field (serverName)
-	if pullErr := readBuffer.PullContext("serverName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverName")
+	serverName, err := ReadSimpleField[PascalString](ctx, "serverName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverName' field"))
 	}
-	_serverName, _serverNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _serverNameErr != nil {
-		return nil, errors.Wrap(_serverNameErr, "Error parsing 'serverName' field of ServerOnNetwork")
-	}
-	serverName := _serverName.(PascalString)
-	if closeErr := readBuffer.CloseContext("serverName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverName")
-	}
+	m.ServerName = serverName
 
-	// Simple Field (discoveryUrl)
-	if pullErr := readBuffer.PullContext("discoveryUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for discoveryUrl")
+	discoveryUrl, err := ReadSimpleField[PascalString](ctx, "discoveryUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryUrl' field"))
 	}
-	_discoveryUrl, _discoveryUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _discoveryUrlErr != nil {
-		return nil, errors.Wrap(_discoveryUrlErr, "Error parsing 'discoveryUrl' field of ServerOnNetwork")
-	}
-	discoveryUrl := _discoveryUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("discoveryUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for discoveryUrl")
-	}
+	m.DiscoveryUrl = discoveryUrl
 
-	// Simple Field (noOfServerCapabilities)
-	_noOfServerCapabilities, _noOfServerCapabilitiesErr := readBuffer.ReadInt32("noOfServerCapabilities", 32)
-	if _noOfServerCapabilitiesErr != nil {
-		return nil, errors.Wrap(_noOfServerCapabilitiesErr, "Error parsing 'noOfServerCapabilities' field of ServerOnNetwork")
+	noOfServerCapabilities, err := ReadSimpleField(ctx, "noOfServerCapabilities", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerCapabilities' field"))
 	}
-	noOfServerCapabilities := _noOfServerCapabilities
+	m.NoOfServerCapabilities = noOfServerCapabilities
 
-	// Array field (serverCapabilities)
-	if pullErr := readBuffer.PullContext("serverCapabilities", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverCapabilities")
+	serverCapabilities, err := ReadCountArrayField[PascalString](ctx, "serverCapabilities", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilities))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCapabilities' field"))
 	}
-	// Count array
-	serverCapabilities := make([]PascalString, max(noOfServerCapabilities, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverCapabilities) == 0 {
-		serverCapabilities = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerCapabilities, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverCapabilities' field of ServerOnNetwork")
-			}
-			serverCapabilities[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("serverCapabilities", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverCapabilities")
-	}
+	m.ServerCapabilities = serverCapabilities
 
 	if closeErr := readBuffer.CloseContext("ServerOnNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ServerOnNetwork")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ServerOnNetwork{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RecordId:                   recordId,
-		ServerName:                 serverName,
-		DiscoveryUrl:               discoveryUrl,
-		NoOfServerCapabilities:     noOfServerCapabilities,
-		ServerCapabilities:         serverCapabilities,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ServerOnNetwork) Serialize() ([]byte, error) {
@@ -294,59 +247,24 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for ServerOnNetwork")
 		}
 
-		// Simple Field (recordId)
-		recordId := uint32(m.GetRecordId())
-		_recordIdErr := writeBuffer.WriteUint32("recordId", 32, uint32((recordId)))
-		if _recordIdErr != nil {
-			return errors.Wrap(_recordIdErr, "Error serializing 'recordId' field")
+		if err := WriteSimpleField[uint32](ctx, "recordId", m.GetRecordId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'recordId' field")
 		}
 
-		// Simple Field (serverName)
-		if pushErr := writeBuffer.PushContext("serverName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverName")
-		}
-		_serverNameErr := writeBuffer.WriteSerializable(ctx, m.GetServerName())
-		if popErr := writeBuffer.PopContext("serverName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverName")
-		}
-		if _serverNameErr != nil {
-			return errors.Wrap(_serverNameErr, "Error serializing 'serverName' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverName", m.GetServerName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverName' field")
 		}
 
-		// Simple Field (discoveryUrl)
-		if pushErr := writeBuffer.PushContext("discoveryUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for discoveryUrl")
-		}
-		_discoveryUrlErr := writeBuffer.WriteSerializable(ctx, m.GetDiscoveryUrl())
-		if popErr := writeBuffer.PopContext("discoveryUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for discoveryUrl")
-		}
-		if _discoveryUrlErr != nil {
-			return errors.Wrap(_discoveryUrlErr, "Error serializing 'discoveryUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "discoveryUrl", m.GetDiscoveryUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'discoveryUrl' field")
 		}
 
-		// Simple Field (noOfServerCapabilities)
-		noOfServerCapabilities := int32(m.GetNoOfServerCapabilities())
-		_noOfServerCapabilitiesErr := writeBuffer.WriteInt32("noOfServerCapabilities", 32, int32((noOfServerCapabilities)))
-		if _noOfServerCapabilitiesErr != nil {
-			return errors.Wrap(_noOfServerCapabilitiesErr, "Error serializing 'noOfServerCapabilities' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerCapabilities", m.GetNoOfServerCapabilities(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerCapabilities' field")
 		}
 
-		// Array Field (serverCapabilities)
-		if pushErr := writeBuffer.PushContext("serverCapabilities", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverCapabilities")
-		}
-		for _curItem, _element := range m.GetServerCapabilities() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerCapabilities()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverCapabilities' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverCapabilities", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverCapabilities")
+		if err := WriteComplexTypeArrayField(ctx, "serverCapabilities", m.GetServerCapabilities(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverCapabilities' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ServerOnNetwork"); popErr != nil {
@@ -354,12 +272,10 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ServerOnNetwork) isServerOnNetwork() bool {
-	return true
-}
+func (m *_ServerOnNetwork) IsServerOnNetwork() {}
 
 func (m *_ServerOnNetwork) String() string {
 	if m == nil {

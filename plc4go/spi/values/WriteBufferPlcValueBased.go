@@ -21,6 +21,7 @@ package values
 
 import (
 	"context"
+	"encoding/binary"
 	"math/big"
 
 	"github.com/pkg/errors"
@@ -61,11 +62,20 @@ type plcListContext struct {
 	list        []apiValues.PlcValue
 }
 
+var _ utils.WriteBuffer = (*writeBufferPlcValueBased)(nil)
+
 //
 // Internal section
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
+
+func (*writeBufferPlcValueBased) GetByteOrder() binary.ByteOrder {
+	return binary.BigEndian
+}
+
+func (*writeBufferPlcValueBased) SetByteOrder(_ binary.ByteOrder) {
+}
 
 func (p *writeBufferPlcValueBased) PushContext(logicalName string, writerArgs ...utils.WithWriterArgs) error {
 	renderedAsList := p.IsToBeRenderedAsList(utils.UpcastWriterArgs(writerArgs...)...)
@@ -168,7 +178,7 @@ func (p *writeBufferPlcValueBased) WriteBigFloat(logicalName string, bitLength u
 	return p.appendValue(logicalName, NewPlcRawByteArray(encode))
 }
 
-func (p *writeBufferPlcValueBased) WriteString(logicalName string, bitLength uint32, _ string, value string, _ ...utils.WithWriterArgs) error {
+func (p *writeBufferPlcValueBased) WriteString(logicalName string, bitLength uint32, value string, _ ...utils.WithWriterArgs) error {
 	p.move(uint(bitLength))
 	return p.appendValue(logicalName, NewPlcSTRING(value))
 }

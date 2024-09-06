@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -55,13 +57,8 @@ type AlarmMessageObjectQueryType interface {
 	GetTimeGoing() DateAndTime
 	// GetValueGoing returns ValueGoing (property field)
 	GetValueGoing() AssociatedValueType
-}
-
-// AlarmMessageObjectQueryTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageObjectQueryType.
-// This is useful for switch cases.
-type AlarmMessageObjectQueryTypeExactly interface {
-	AlarmMessageObjectQueryType
-	isAlarmMessageObjectQueryType() bool
+	// IsAlarmMessageObjectQueryType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessageObjectQueryType()
 }
 
 // _AlarmMessageObjectQueryType is the data-structure of this message
@@ -77,6 +74,8 @@ type _AlarmMessageObjectQueryType struct {
 	// Reserved Fields
 	reservedField0 *uint16
 }
+
+var _ AlarmMessageObjectQueryType = (*_AlarmMessageObjectQueryType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -135,6 +134,27 @@ func (m *_AlarmMessageObjectQueryType) GetVariableSpec() uint8 {
 
 // NewAlarmMessageObjectQueryType factory function for _AlarmMessageObjectQueryType
 func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState State, ackStateGoing State, ackStateComing State, timeComing DateAndTime, valueComing AssociatedValueType, timeGoing DateAndTime, valueGoing AssociatedValueType) *_AlarmMessageObjectQueryType {
+	if eventState == nil {
+		panic("eventState of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if timeComing == nil {
+		panic("timeComing of type DateAndTime for AlarmMessageObjectQueryType must not be nil")
+	}
+	if valueComing == nil {
+		panic("valueComing of type AssociatedValueType for AlarmMessageObjectQueryType must not be nil")
+	}
+	if timeGoing == nil {
+		panic("timeGoing of type DateAndTime for AlarmMessageObjectQueryType must not be nil")
+	}
+	if valueGoing == nil {
+		panic("valueGoing of type AssociatedValueType for AlarmMessageObjectQueryType must not be nil")
+	}
 	return &_AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}
 }
 
@@ -197,157 +217,94 @@ func AlarmMessageObjectQueryTypeParse(ctx context.Context, theBytes []byte) (Ala
 	return AlarmMessageObjectQueryTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AlarmMessageObjectQueryTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {
+		return AlarmMessageObjectQueryTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AlarmMessageObjectQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {
+	v, err := (&_AlarmMessageObjectQueryType{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_AlarmMessageObjectQueryType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alarmMessageObjectQueryType AlarmMessageObjectQueryType, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectQueryType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageObjectQueryType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lengthDataset)
-	_lengthDataset, _lengthDatasetErr := readBuffer.ReadUint8("lengthDataset", 8)
-	if _lengthDatasetErr != nil {
-		return nil, errors.Wrap(_lengthDatasetErr, "Error parsing 'lengthDataset' field of AlarmMessageObjectQueryType")
+	lengthDataset, err := ReadSimpleField(ctx, "lengthDataset", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lengthDataset' field"))
 	}
-	lengthDataset := _lengthDataset
+	m.LengthDataset = lengthDataset
 
-	var reservedField0 *uint16
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AlarmMessageObjectQueryType")
-		}
-		if reserved != uint16(0x0000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Const Field (variableSpec)
-	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
-	if _variableSpecErr != nil {
-		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field of AlarmMessageObjectQueryType")
+	variableSpec, err := ReadConstField[uint8](ctx, "variableSpec", ReadUnsignedByte(readBuffer, uint8(8)), AlarmMessageObjectQueryType_VARIABLESPEC)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'variableSpec' field"))
 	}
-	if variableSpec != AlarmMessageObjectQueryType_VARIABLESPEC {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageObjectQueryType_VARIABLESPEC) + " but got " + fmt.Sprintf("%d", variableSpec))
-	}
+	_ = variableSpec
 
-	// Simple Field (eventState)
-	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
+	eventState, err := ReadSimpleField[State](ctx, "eventState", ReadComplex[State](StateParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventState' field"))
 	}
-	_eventState, _eventStateErr := StateParseWithBuffer(ctx, readBuffer)
-	if _eventStateErr != nil {
-		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of AlarmMessageObjectQueryType")
-	}
-	eventState := _eventState.(State)
-	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventState")
-	}
+	m.EventState = eventState
 
-	// Simple Field (ackStateGoing)
-	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ackStateGoing")
+	ackStateGoing, err := ReadSimpleField[State](ctx, "ackStateGoing", ReadComplex[State](StateParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ackStateGoing' field"))
 	}
-	_ackStateGoing, _ackStateGoingErr := StateParseWithBuffer(ctx, readBuffer)
-	if _ackStateGoingErr != nil {
-		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field of AlarmMessageObjectQueryType")
-	}
-	ackStateGoing := _ackStateGoing.(State)
-	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ackStateGoing")
-	}
+	m.AckStateGoing = ackStateGoing
 
-	// Simple Field (ackStateComing)
-	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ackStateComing")
+	ackStateComing, err := ReadSimpleField[State](ctx, "ackStateComing", ReadComplex[State](StateParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ackStateComing' field"))
 	}
-	_ackStateComing, _ackStateComingErr := StateParseWithBuffer(ctx, readBuffer)
-	if _ackStateComingErr != nil {
-		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field of AlarmMessageObjectQueryType")
-	}
-	ackStateComing := _ackStateComing.(State)
-	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ackStateComing")
-	}
+	m.AckStateComing = ackStateComing
 
-	// Simple Field (timeComing)
-	if pullErr := readBuffer.PullContext("timeComing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeComing")
+	timeComing, err := ReadSimpleField[DateAndTime](ctx, "timeComing", ReadComplex[DateAndTime](DateAndTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeComing' field"))
 	}
-	_timeComing, _timeComingErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _timeComingErr != nil {
-		return nil, errors.Wrap(_timeComingErr, "Error parsing 'timeComing' field of AlarmMessageObjectQueryType")
-	}
-	timeComing := _timeComing.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("timeComing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeComing")
-	}
+	m.TimeComing = timeComing
 
-	// Simple Field (valueComing)
-	if pullErr := readBuffer.PullContext("valueComing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valueComing")
+	valueComing, err := ReadSimpleField[AssociatedValueType](ctx, "valueComing", ReadComplex[AssociatedValueType](AssociatedValueTypeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueComing' field"))
 	}
-	_valueComing, _valueComingErr := AssociatedValueTypeParseWithBuffer(ctx, readBuffer)
-	if _valueComingErr != nil {
-		return nil, errors.Wrap(_valueComingErr, "Error parsing 'valueComing' field of AlarmMessageObjectQueryType")
-	}
-	valueComing := _valueComing.(AssociatedValueType)
-	if closeErr := readBuffer.CloseContext("valueComing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valueComing")
-	}
+	m.ValueComing = valueComing
 
-	// Simple Field (timeGoing)
-	if pullErr := readBuffer.PullContext("timeGoing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeGoing")
+	timeGoing, err := ReadSimpleField[DateAndTime](ctx, "timeGoing", ReadComplex[DateAndTime](DateAndTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeGoing' field"))
 	}
-	_timeGoing, _timeGoingErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _timeGoingErr != nil {
-		return nil, errors.Wrap(_timeGoingErr, "Error parsing 'timeGoing' field of AlarmMessageObjectQueryType")
-	}
-	timeGoing := _timeGoing.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("timeGoing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeGoing")
-	}
+	m.TimeGoing = timeGoing
 
-	// Simple Field (valueGoing)
-	if pullErr := readBuffer.PullContext("valueGoing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valueGoing")
+	valueGoing, err := ReadSimpleField[AssociatedValueType](ctx, "valueGoing", ReadComplex[AssociatedValueType](AssociatedValueTypeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueGoing' field"))
 	}
-	_valueGoing, _valueGoingErr := AssociatedValueTypeParseWithBuffer(ctx, readBuffer)
-	if _valueGoingErr != nil {
-		return nil, errors.Wrap(_valueGoingErr, "Error parsing 'valueGoing' field of AlarmMessageObjectQueryType")
-	}
-	valueGoing := _valueGoing.(AssociatedValueType)
-	if closeErr := readBuffer.CloseContext("valueGoing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valueGoing")
-	}
+	m.ValueGoing = valueGoing
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageObjectQueryType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessageObjectQueryType")
 	}
 
-	// Create the instance
-	return &_AlarmMessageObjectQueryType{
-		LengthDataset:  lengthDataset,
-		EventState:     eventState,
-		AckStateGoing:  ackStateGoing,
-		AckStateComing: ackStateComing,
-		TimeComing:     timeComing,
-		ValueComing:    valueComing,
-		TimeGoing:      timeGoing,
-		ValueGoing:     valueGoing,
-		reservedField0: reservedField0,
-	}, nil
+	return m, nil
 }
 
 func (m *_AlarmMessageObjectQueryType) Serialize() ([]byte, error) {
@@ -367,117 +324,44 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for AlarmMessageObjectQueryType")
 	}
 
-	// Simple Field (lengthDataset)
-	lengthDataset := uint8(m.GetLengthDataset())
-	_lengthDatasetErr := writeBuffer.WriteUint8("lengthDataset", 8, uint8((lengthDataset)))
-	if _lengthDatasetErr != nil {
-		return errors.Wrap(_lengthDatasetErr, "Error serializing 'lengthDataset' field")
+	if err := WriteSimpleField[uint8](ctx, "lengthDataset", m.GetLengthDataset(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lengthDataset' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint16 = uint16(0x0000)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0000),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0000), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Const Field (variableSpec)
-	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
-	if _variableSpecErr != nil {
-		return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
+	if err := WriteConstField(ctx, "variableSpec", AlarmMessageObjectQueryType_VARIABLESPEC, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'variableSpec' field")
 	}
 
-	// Simple Field (eventState)
-	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventState")
-	}
-	_eventStateErr := writeBuffer.WriteSerializable(ctx, m.GetEventState())
-	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventState")
-	}
-	if _eventStateErr != nil {
-		return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
+	if err := WriteSimpleField[State](ctx, "eventState", m.GetEventState(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventState' field")
 	}
 
-	// Simple Field (ackStateGoing)
-	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
-	}
-	_ackStateGoingErr := writeBuffer.WriteSerializable(ctx, m.GetAckStateGoing())
-	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ackStateGoing")
-	}
-	if _ackStateGoingErr != nil {
-		return errors.Wrap(_ackStateGoingErr, "Error serializing 'ackStateGoing' field")
+	if err := WriteSimpleField[State](ctx, "ackStateGoing", m.GetAckStateGoing(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackStateGoing' field")
 	}
 
-	// Simple Field (ackStateComing)
-	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
-	}
-	_ackStateComingErr := writeBuffer.WriteSerializable(ctx, m.GetAckStateComing())
-	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ackStateComing")
-	}
-	if _ackStateComingErr != nil {
-		return errors.Wrap(_ackStateComingErr, "Error serializing 'ackStateComing' field")
+	if err := WriteSimpleField[State](ctx, "ackStateComing", m.GetAckStateComing(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackStateComing' field")
 	}
 
-	// Simple Field (timeComing)
-	if pushErr := writeBuffer.PushContext("timeComing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeComing")
-	}
-	_timeComingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeComing())
-	if popErr := writeBuffer.PopContext("timeComing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeComing")
-	}
-	if _timeComingErr != nil {
-		return errors.Wrap(_timeComingErr, "Error serializing 'timeComing' field")
+	if err := WriteSimpleField[DateAndTime](ctx, "timeComing", m.GetTimeComing(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeComing' field")
 	}
 
-	// Simple Field (valueComing)
-	if pushErr := writeBuffer.PushContext("valueComing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for valueComing")
-	}
-	_valueComingErr := writeBuffer.WriteSerializable(ctx, m.GetValueComing())
-	if popErr := writeBuffer.PopContext("valueComing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for valueComing")
-	}
-	if _valueComingErr != nil {
-		return errors.Wrap(_valueComingErr, "Error serializing 'valueComing' field")
+	if err := WriteSimpleField[AssociatedValueType](ctx, "valueComing", m.GetValueComing(), WriteComplex[AssociatedValueType](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueComing' field")
 	}
 
-	// Simple Field (timeGoing)
-	if pushErr := writeBuffer.PushContext("timeGoing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeGoing")
-	}
-	_timeGoingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeGoing())
-	if popErr := writeBuffer.PopContext("timeGoing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeGoing")
-	}
-	if _timeGoingErr != nil {
-		return errors.Wrap(_timeGoingErr, "Error serializing 'timeGoing' field")
+	if err := WriteSimpleField[DateAndTime](ctx, "timeGoing", m.GetTimeGoing(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeGoing' field")
 	}
 
-	// Simple Field (valueGoing)
-	if pushErr := writeBuffer.PushContext("valueGoing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for valueGoing")
-	}
-	_valueGoingErr := writeBuffer.WriteSerializable(ctx, m.GetValueGoing())
-	if popErr := writeBuffer.PopContext("valueGoing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for valueGoing")
-	}
-	if _valueGoingErr != nil {
-		return errors.Wrap(_valueGoingErr, "Error serializing 'valueGoing' field")
+	if err := WriteSimpleField[AssociatedValueType](ctx, "valueGoing", m.GetValueGoing(), WriteComplex[AssociatedValueType](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueGoing' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageObjectQueryType"); popErr != nil {
@@ -486,9 +370,7 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 	return nil
 }
 
-func (m *_AlarmMessageObjectQueryType) isAlarmMessageObjectQueryType() bool {
-	return true
-}
+func (m *_AlarmMessageObjectQueryType) IsAlarmMessageObjectQueryType() {}
 
 func (m *_AlarmMessageObjectQueryType) String() string {
 	if m == nil {

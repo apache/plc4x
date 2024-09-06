@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type AccessControlDataValidAccessRequest interface {
 	GetAccessControlDirection() AccessControlDirection
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// AccessControlDataValidAccessRequestExactly can be used when we want exactly this type and not a type which fulfills AccessControlDataValidAccessRequest.
-// This is useful for switch cases.
-type AccessControlDataValidAccessRequestExactly interface {
-	AccessControlDataValidAccessRequest
-	isAccessControlDataValidAccessRequest() bool
+	// IsAccessControlDataValidAccessRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataValidAccessRequest()
 }
 
 // _AccessControlDataValidAccessRequest is the data-structure of this message
 type _AccessControlDataValidAccessRequest struct {
-	*_AccessControlData
+	AccessControlDataContract
 	AccessControlDirection AccessControlDirection
 	Data                   []byte
 }
+
+var _ AccessControlDataValidAccessRequest = (*_AccessControlDataValidAccessRequest)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataValidAccessRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,14 +67,8 @@ type _AccessControlDataValidAccessRequest struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AccessControlDataValidAccessRequest) InitializeParent(parent AccessControlData, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.NetworkId = networkId
-	m.AccessPointId = accessPointId
-}
-
-func (m *_AccessControlDataValidAccessRequest) GetParent() AccessControlData {
-	return m._AccessControlData
+func (m *_AccessControlDataValidAccessRequest) GetParent() AccessControlDataContract {
+	return m.AccessControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +92,11 @@ func (m *_AccessControlDataValidAccessRequest) GetData() []byte {
 // NewAccessControlDataValidAccessRequest factory function for _AccessControlDataValidAccessRequest
 func NewAccessControlDataValidAccessRequest(accessControlDirection AccessControlDirection, data []byte, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataValidAccessRequest {
 	_result := &_AccessControlDataValidAccessRequest{
-		AccessControlDirection: accessControlDirection,
-		Data:                   data,
-		_AccessControlData:     NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDirection:    accessControlDirection,
+		Data:                      data,
 	}
-	_result._AccessControlData._AccessControlDataChildRequirements = _result
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_AccessControlDataValidAccessRequest) GetTypeName() string {
 }
 
 func (m *_AccessControlDataValidAccessRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	// Simple field (accessControlDirection)
 	lengthInBits += 8
@@ -139,52 +133,34 @@ func (m *_AccessControlDataValidAccessRequest) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataValidAccessRequestParse(ctx context.Context, theBytes []byte, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
-	return AccessControlDataValidAccessRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func AccessControlDataValidAccessRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
+func (m *_AccessControlDataValidAccessRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData, commandTypeContainer AccessControlCommandTypeContainer) (__accessControlDataValidAccessRequest AccessControlDataValidAccessRequest, err error) {
+	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlDataValidAccessRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlDataValidAccessRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessControlDirection)
-	if pullErr := readBuffer.PullContext("accessControlDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessControlDirection")
+	accessControlDirection, err := ReadEnumField[AccessControlDirection](ctx, "accessControlDirection", "AccessControlDirection", ReadEnum(AccessControlDirectionByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessControlDirection' field"))
 	}
-	_accessControlDirection, _accessControlDirectionErr := AccessControlDirectionParseWithBuffer(ctx, readBuffer)
-	if _accessControlDirectionErr != nil {
-		return nil, errors.Wrap(_accessControlDirectionErr, "Error parsing 'accessControlDirection' field of AccessControlDataValidAccessRequest")
+	m.AccessControlDirection = accessControlDirection
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(commandTypeContainer.NumBytes())-int32(int32(3))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	accessControlDirection := _accessControlDirection
-	if closeErr := readBuffer.CloseContext("accessControlDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessControlDirection")
-	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(3)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AccessControlDataValidAccessRequest")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("AccessControlDataValidAccessRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AccessControlDataValidAccessRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AccessControlDataValidAccessRequest{
-		_AccessControlData:     &_AccessControlData{},
-		AccessControlDirection: accessControlDirection,
-		Data:                   data,
-	}
-	_child._AccessControlData._AccessControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AccessControlDataValidAccessRequest) Serialize() ([]byte, error) {
@@ -205,21 +181,11 @@ func (m *_AccessControlDataValidAccessRequest) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for AccessControlDataValidAccessRequest")
 		}
 
-		// Simple Field (accessControlDirection)
-		if pushErr := writeBuffer.PushContext("accessControlDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessControlDirection")
-		}
-		_accessControlDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetAccessControlDirection())
-		if popErr := writeBuffer.PopContext("accessControlDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessControlDirection")
-		}
-		if _accessControlDirectionErr != nil {
-			return errors.Wrap(_accessControlDirectionErr, "Error serializing 'accessControlDirection' field")
+		if err := WriteSimpleEnumField[AccessControlDirection](ctx, "accessControlDirection", "AccessControlDirection", m.GetAccessControlDirection(), WriteEnum[AccessControlDirection, uint8](AccessControlDirection.GetValue, AccessControlDirection.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessControlDirection' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -228,12 +194,10 @@ func (m *_AccessControlDataValidAccessRequest) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AccessControlDataContract.(*_AccessControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AccessControlDataValidAccessRequest) isAccessControlDataValidAccessRequest() bool {
-	return true
-}
+func (m *_AccessControlDataValidAccessRequest) IsAccessControlDataValidAccessRequest() {}
 
 func (m *_AccessControlDataValidAccessRequest) String() string {
 	if m == nil {

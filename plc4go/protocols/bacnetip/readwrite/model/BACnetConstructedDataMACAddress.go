@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataMACAddress interface {
 	GetMacAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-}
-
-// BACnetConstructedDataMACAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMACAddress.
-// This is useful for switch cases.
-type BACnetConstructedDataMACAddressExactly interface {
-	BACnetConstructedDataMACAddress
-	isBACnetConstructedDataMACAddress() bool
+	// IsBACnetConstructedDataMACAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMACAddress()
 }
 
 // _BACnetConstructedDataMACAddress is the data-structure of this message
 type _BACnetConstructedDataMACAddress struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MacAddress BACnetApplicationTagOctetString
 }
+
+var _ BACnetConstructedDataMACAddress = (*_BACnetConstructedDataMACAddress)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMACAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataMACAddress) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMACAddress) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMACAddress) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMACAddress) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataMACAddress) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataMACAddress factory function for _BACnetConstructedDataMACAddress
 func NewBACnetConstructedDataMACAddress(macAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMACAddress {
-	_result := &_BACnetConstructedDataMACAddress{
-		MacAddress:             macAddress,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if macAddress == nil {
+		panic("macAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataMACAddress must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataMACAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MacAddress:                    macAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataMACAddress) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMACAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (macAddress)
 	lengthInBits += m.MacAddress.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataMACAddress) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMACAddressParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMACAddress, error) {
-	return BACnetConstructedDataMACAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMACAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMACAddress, error) {
+func (m *_BACnetConstructedDataMACAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMACAddress BACnetConstructedDataMACAddress, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMACAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMACAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (macAddress)
-	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
+	macAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'macAddress' field"))
 	}
-	_macAddress, _macAddressErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _macAddressErr != nil {
-		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetConstructedDataMACAddress")
-	}
-	macAddress := _macAddress.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for macAddress")
-	}
+	m.MacAddress = macAddress
 
-	// Virtual field
-	_actualValue := macAddress
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagOctetString](ctx, "actualValue", (*BACnetApplicationTagOctetString)(nil), macAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMACAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMACAddress")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMACAddress{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MacAddress: macAddress,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMACAddress) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataMACAddress) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMACAddress")
 		}
 
-		// Simple Field (macAddress)
-		if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for macAddress")
-		}
-		_macAddressErr := writeBuffer.WriteSerializable(ctx, m.GetMacAddress())
-		if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for macAddress")
-		}
-		if _macAddressErr != nil {
-			return errors.Wrap(_macAddressErr, "Error serializing 'macAddress' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", m.GetMacAddress(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'macAddress' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataMACAddress) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMACAddress) isBACnetConstructedDataMACAddress() bool {
-	return true
-}
+func (m *_BACnetConstructedDataMACAddress) IsBACnetConstructedDataMACAddress() {}
 
 func (m *_BACnetConstructedDataMACAddress) String() string {
 	if m == nil {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,24 +49,22 @@ type BACnetConfirmedServiceRequestAtomicWriteFile interface {
 	GetFileData() BACnetApplicationTagOctetString
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetConfirmedServiceRequestAtomicWriteFileExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicWriteFile.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestAtomicWriteFileExactly interface {
-	BACnetConfirmedServiceRequestAtomicWriteFile
-	isBACnetConfirmedServiceRequestAtomicWriteFile() bool
+	// IsBACnetConfirmedServiceRequestAtomicWriteFile is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAtomicWriteFile()
 }
 
 // _BACnetConfirmedServiceRequestAtomicWriteFile is the data-structure of this message
 type _BACnetConfirmedServiceRequestAtomicWriteFile struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	DeviceIdentifier  BACnetApplicationTagObjectIdentifier
 	OpeningTag        BACnetOpeningTag
 	FileStartPosition BACnetApplicationTagSignedInteger
 	FileData          BACnetApplicationTagOctetString
 	ClosingTag        BACnetClosingTag
 }
+
+var _ BACnetConfirmedServiceRequestAtomicWriteFile = (*_BACnetConfirmedServiceRequestAtomicWriteFile)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAtomicWriteFile)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +80,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetServiceChoice() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -120,15 +116,24 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetClosingTag() BACnetCl
 
 // NewBACnetConfirmedServiceRequestAtomicWriteFile factory function for _BACnetConfirmedServiceRequestAtomicWriteFile
 func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString, closingTag BACnetClosingTag, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicWriteFile {
-	_result := &_BACnetConfirmedServiceRequestAtomicWriteFile{
-		DeviceIdentifier:               deviceIdentifier,
-		OpeningTag:                     openingTag,
-		FileStartPosition:              fileStartPosition,
-		FileData:                       fileData,
-		ClosingTag:                     closingTag,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
+	}
+	if fileData == nil {
+		panic("fileData of type BACnetApplicationTagOctetString for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAtomicWriteFile{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		DeviceIdentifier:                      deviceIdentifier,
+		OpeningTag:                            openingTag,
+		FileStartPosition:                     fileStartPosition,
+		FileData:                              fileData,
+		ClosingTag:                            closingTag,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -148,7 +153,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
@@ -176,121 +181,60 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicWriteFileParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicWriteFile, error) {
-	return BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicWriteFile, error) {
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestAtomicWriteFile BACnetConfirmedServiceRequestAtomicWriteFile, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicWriteFile"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAtomicWriteFile")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceIdentifier)
-	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
+	deviceIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceIdentifier' field"))
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _deviceIdentifierErr != nil {
-		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetConfirmedServiceRequestAtomicWriteFile")
+	m.DeviceIdentifier = deviceIdentifier
+
+	var openingTag BACnetOpeningTag
+	_openingTag, err := ReadOptionalField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(0))), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	deviceIdentifier := _deviceIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
+	if _openingTag != nil {
+		openingTag = *_openingTag
+		m.OpeningTag = openingTag
 	}
 
-	// Optional Field (openingTag) (Can be skipped, if a given expression evaluates to false)
-	var openingTag BACnetOpeningTag = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
-		}
-		_val, _err := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(0))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestAtomicWriteFile")
-		default:
-			openingTag = _val.(BACnetOpeningTag)
-			if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-			}
-		}
+	fileStartPosition, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartPosition", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileStartPosition' field"))
 	}
+	m.FileStartPosition = fileStartPosition
 
-	// Simple Field (fileStartPosition)
-	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
+	fileData, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "fileData", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileData' field"))
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileStartPositionErr != nil {
-		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetConfirmedServiceRequestAtomicWriteFile")
-	}
-	fileStartPosition := _fileStartPosition.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileStartPosition")
-	}
+	m.FileData = fileData
 
-	// Simple Field (fileData)
-	if pullErr := readBuffer.PullContext("fileData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileData")
+	var closingTag BACnetClosingTag
+	_closingTag, err := ReadOptionalField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(0))), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_fileData, _fileDataErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileDataErr != nil {
-		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field of BACnetConfirmedServiceRequestAtomicWriteFile")
-	}
-	fileData := _fileData.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("fileData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileData")
-	}
-
-	// Optional Field (closingTag) (Can be skipped, if a given expression evaluates to false)
-	var closingTag BACnetClosingTag = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
-		}
-		_val, _err := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(0))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestAtomicWriteFile")
-		default:
-			closingTag = _val.(BACnetClosingTag)
-			if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-			}
-		}
+	if _closingTag != nil {
+		closingTag = *_closingTag
+		m.ClosingTag = closingTag
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicWriteFile"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestAtomicWriteFile")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestAtomicWriteFile{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		DeviceIdentifier:  deviceIdentifier,
-		OpeningTag:        openingTag,
-		FileStartPosition: fileStartPosition,
-		FileData:          fileData,
-		ClosingTag:        closingTag,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) Serialize() ([]byte, error) {
@@ -311,72 +255,24 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicWriteFile")
 		}
 
-		// Simple Field (deviceIdentifier)
-		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-		}
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
-		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-		}
-		if _deviceIdentifierErr != nil {
-			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", m.GetDeviceIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 		}
 
-		// Optional Field (openingTag) (Can be skipped, if the value is null)
-		var openingTag BACnetOpeningTag = nil
-		if m.GetOpeningTag() != nil {
-			if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for openingTag")
-			}
-			openingTag = m.GetOpeningTag()
-			_openingTagErr := writeBuffer.WriteSerializable(ctx, openingTag)
-			if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for openingTag")
-			}
-			if _openingTagErr != nil {
-				return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
-			}
+		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", GetRef(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (fileStartPosition)
-		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
-		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
-		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartPosition")
-		}
-		if _fileStartPositionErr != nil {
-			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartPosition", m.GetFileStartPosition(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartPosition' field")
 		}
 
-		// Simple Field (fileData)
-		if pushErr := writeBuffer.PushContext("fileData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileData")
-		}
-		_fileDataErr := writeBuffer.WriteSerializable(ctx, m.GetFileData())
-		if popErr := writeBuffer.PopContext("fileData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileData")
-		}
-		if _fileDataErr != nil {
-			return errors.Wrap(_fileDataErr, "Error serializing 'fileData' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "fileData", m.GetFileData(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileData' field")
 		}
 
-		// Optional Field (closingTag) (Can be skipped, if the value is null)
-		var closingTag BACnetClosingTag = nil
-		if m.GetClosingTag() != nil {
-			if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for closingTag")
-			}
-			closingTag = m.GetClosingTag()
-			_closingTagErr := writeBuffer.WriteSerializable(ctx, closingTag)
-			if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for closingTag")
-			}
-			if _closingTagErr != nil {
-				return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
-			}
+		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", GetRef(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicWriteFile"); popErr != nil {
@@ -384,11 +280,10 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) isBACnetConfirmedServiceRequestAtomicWriteFile() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) IsBACnetConfirmedServiceRequestAtomicWriteFile() {
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) String() string {

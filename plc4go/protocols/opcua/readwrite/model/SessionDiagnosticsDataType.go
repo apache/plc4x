@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -125,18 +127,13 @@ type SessionDiagnosticsDataType interface {
 	GetRegisterNodesCount() ExtensionObjectDefinition
 	// GetUnregisterNodesCount returns UnregisterNodesCount (property field)
 	GetUnregisterNodesCount() ExtensionObjectDefinition
-}
-
-// SessionDiagnosticsDataTypeExactly can be used when we want exactly this type and not a type which fulfills SessionDiagnosticsDataType.
-// This is useful for switch cases.
-type SessionDiagnosticsDataTypeExactly interface {
-	SessionDiagnosticsDataType
-	isSessionDiagnosticsDataType() bool
+	// IsSessionDiagnosticsDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSessionDiagnosticsDataType()
 }
 
 // _SessionDiagnosticsDataType is the data-structure of this message
 type _SessionDiagnosticsDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	SessionId                          NodeId
 	SessionName                        PascalString
 	ClientDescription                  ExtensionObjectDefinition
@@ -183,6 +180,9 @@ type _SessionDiagnosticsDataType struct {
 	UnregisterNodesCount               ExtensionObjectDefinition
 }
 
+var _ SessionDiagnosticsDataType = (*_SessionDiagnosticsDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SessionDiagnosticsDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -197,10 +197,8 @@ func (m *_SessionDiagnosticsDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SessionDiagnosticsDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_SessionDiagnosticsDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_SessionDiagnosticsDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -391,7 +389,110 @@ func (m *_SessionDiagnosticsDataType) GetUnregisterNodesCount() ExtensionObjectD
 
 // NewSessionDiagnosticsDataType factory function for _SessionDiagnosticsDataType
 func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ExtensionObjectDefinition, unauthorizedRequestCount uint32, readCount ExtensionObjectDefinition, historyReadCount ExtensionObjectDefinition, writeCount ExtensionObjectDefinition, historyUpdateCount ExtensionObjectDefinition, callCount ExtensionObjectDefinition, createMonitoredItemsCount ExtensionObjectDefinition, modifyMonitoredItemsCount ExtensionObjectDefinition, setMonitoringModeCount ExtensionObjectDefinition, setTriggeringCount ExtensionObjectDefinition, deleteMonitoredItemsCount ExtensionObjectDefinition, createSubscriptionCount ExtensionObjectDefinition, modifySubscriptionCount ExtensionObjectDefinition, setPublishingModeCount ExtensionObjectDefinition, publishCount ExtensionObjectDefinition, republishCount ExtensionObjectDefinition, transferSubscriptionsCount ExtensionObjectDefinition, deleteSubscriptionsCount ExtensionObjectDefinition, addNodesCount ExtensionObjectDefinition, addReferencesCount ExtensionObjectDefinition, deleteNodesCount ExtensionObjectDefinition, deleteReferencesCount ExtensionObjectDefinition, browseCount ExtensionObjectDefinition, browseNextCount ExtensionObjectDefinition, translateBrowsePathsToNodeIdsCount ExtensionObjectDefinition, queryFirstCount ExtensionObjectDefinition, queryNextCount ExtensionObjectDefinition, registerNodesCount ExtensionObjectDefinition, unregisterNodesCount ExtensionObjectDefinition) *_SessionDiagnosticsDataType {
+	if sessionId == nil {
+		panic("sessionId of type NodeId for SessionDiagnosticsDataType must not be nil")
+	}
+	if sessionName == nil {
+		panic("sessionName of type PascalString for SessionDiagnosticsDataType must not be nil")
+	}
+	if clientDescription == nil {
+		panic("clientDescription of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if serverUri == nil {
+		panic("serverUri of type PascalString for SessionDiagnosticsDataType must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for SessionDiagnosticsDataType must not be nil")
+	}
+	if totalRequestCount == nil {
+		panic("totalRequestCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if readCount == nil {
+		panic("readCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if historyReadCount == nil {
+		panic("historyReadCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if writeCount == nil {
+		panic("writeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if historyUpdateCount == nil {
+		panic("historyUpdateCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if callCount == nil {
+		panic("callCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if createMonitoredItemsCount == nil {
+		panic("createMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if modifyMonitoredItemsCount == nil {
+		panic("modifyMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if setMonitoringModeCount == nil {
+		panic("setMonitoringModeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if setTriggeringCount == nil {
+		panic("setTriggeringCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if deleteMonitoredItemsCount == nil {
+		panic("deleteMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if createSubscriptionCount == nil {
+		panic("createSubscriptionCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if modifySubscriptionCount == nil {
+		panic("modifySubscriptionCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if setPublishingModeCount == nil {
+		panic("setPublishingModeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if publishCount == nil {
+		panic("publishCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if republishCount == nil {
+		panic("republishCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if transferSubscriptionsCount == nil {
+		panic("transferSubscriptionsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if deleteSubscriptionsCount == nil {
+		panic("deleteSubscriptionsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if addNodesCount == nil {
+		panic("addNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if addReferencesCount == nil {
+		panic("addReferencesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if deleteNodesCount == nil {
+		panic("deleteNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if deleteReferencesCount == nil {
+		panic("deleteReferencesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if browseCount == nil {
+		panic("browseCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if browseNextCount == nil {
+		panic("browseNextCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if translateBrowsePathsToNodeIdsCount == nil {
+		panic("translateBrowsePathsToNodeIdsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if queryFirstCount == nil {
+		panic("queryFirstCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if queryNextCount == nil {
+		panic("queryNextCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if registerNodesCount == nil {
+		panic("registerNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if unregisterNodesCount == nil {
+		panic("unregisterNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
 	_result := &_SessionDiagnosticsDataType{
+		ExtensionObjectDefinitionContract:  NewExtensionObjectDefinition(),
 		SessionId:                          sessionId,
 		SessionName:                        sessionName,
 		ClientDescription:                  clientDescription,
@@ -436,9 +537,8 @@ func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, c
 		QueryNextCount:                     queryNextCount,
 		RegisterNodesCount:                 registerNodesCount,
 		UnregisterNodesCount:               unregisterNodesCount,
-		_ExtensionObjectDefinition:         NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -458,7 +558,7 @@ func (m *_SessionDiagnosticsDataType) GetTypeName() string {
 }
 
 func (m *_SessionDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (sessionId)
 	lengthInBits += m.SessionId.GetLengthInBits(ctx)
@@ -606,607 +706,286 @@ func (m *_SessionDiagnosticsDataType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SessionDiagnosticsDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (SessionDiagnosticsDataType, error) {
-	return SessionDiagnosticsDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func SessionDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SessionDiagnosticsDataType, error) {
+func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__sessionDiagnosticsDataType SessionDiagnosticsDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SessionDiagnosticsDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SessionDiagnosticsDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sessionId)
-	if pullErr := readBuffer.PullContext("sessionId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sessionId")
+	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionId' field"))
 	}
-	_sessionId, _sessionIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sessionIdErr != nil {
-		return nil, errors.Wrap(_sessionIdErr, "Error parsing 'sessionId' field of SessionDiagnosticsDataType")
-	}
-	sessionId := _sessionId.(NodeId)
-	if closeErr := readBuffer.CloseContext("sessionId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sessionId")
-	}
+	m.SessionId = sessionId
 
-	// Simple Field (sessionName)
-	if pullErr := readBuffer.PullContext("sessionName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sessionName")
+	sessionName, err := ReadSimpleField[PascalString](ctx, "sessionName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionName' field"))
 	}
-	_sessionName, _sessionNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _sessionNameErr != nil {
-		return nil, errors.Wrap(_sessionNameErr, "Error parsing 'sessionName' field of SessionDiagnosticsDataType")
-	}
-	sessionName := _sessionName.(PascalString)
-	if closeErr := readBuffer.CloseContext("sessionName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sessionName")
-	}
+	m.SessionName = sessionName
 
-	// Simple Field (clientDescription)
-	if pullErr := readBuffer.PullContext("clientDescription"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for clientDescription")
+	clientDescription, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "clientDescription", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("310")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientDescription' field"))
 	}
-	_clientDescription, _clientDescriptionErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("310"))
-	if _clientDescriptionErr != nil {
-		return nil, errors.Wrap(_clientDescriptionErr, "Error parsing 'clientDescription' field of SessionDiagnosticsDataType")
-	}
-	clientDescription := _clientDescription.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("clientDescription"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for clientDescription")
-	}
+	m.ClientDescription = clientDescription
 
-	// Simple Field (serverUri)
-	if pullErr := readBuffer.PullContext("serverUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverUri")
+	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUri' field"))
 	}
-	_serverUri, _serverUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _serverUriErr != nil {
-		return nil, errors.Wrap(_serverUriErr, "Error parsing 'serverUri' field of SessionDiagnosticsDataType")
-	}
-	serverUri := _serverUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("serverUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverUri")
-	}
+	m.ServerUri = serverUri
 
-	// Simple Field (endpointUrl)
-	if pullErr := readBuffer.PullContext("endpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrl")
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
-	_endpointUrl, _endpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointUrlErr != nil {
-		return nil, errors.Wrap(_endpointUrlErr, "Error parsing 'endpointUrl' field of SessionDiagnosticsDataType")
-	}
-	endpointUrl := _endpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrl")
-	}
+	m.EndpointUrl = endpointUrl
 
-	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
-	if _noOfLocaleIdsErr != nil {
-		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of SessionDiagnosticsDataType")
+	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	noOfLocaleIds := _noOfLocaleIds
+	m.NoOfLocaleIds = noOfLocaleIds
 
-	// Array field (localeIds)
-	if pullErr := readBuffer.PullContext("localeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
+	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeIds' field"))
 	}
-	// Count array
-	localeIds := make([]PascalString, max(noOfLocaleIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(localeIds) == 0 {
-		localeIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfLocaleIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'localeIds' field of SessionDiagnosticsDataType")
-			}
-			localeIds[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("localeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localeIds")
-	}
+	m.LocaleIds = localeIds
 
-	// Simple Field (actualSessionTimeout)
-	_actualSessionTimeout, _actualSessionTimeoutErr := readBuffer.ReadFloat64("actualSessionTimeout", 64)
-	if _actualSessionTimeoutErr != nil {
-		return nil, errors.Wrap(_actualSessionTimeoutErr, "Error parsing 'actualSessionTimeout' field of SessionDiagnosticsDataType")
+	actualSessionTimeout, err := ReadSimpleField(ctx, "actualSessionTimeout", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualSessionTimeout' field"))
 	}
-	actualSessionTimeout := _actualSessionTimeout
+	m.ActualSessionTimeout = actualSessionTimeout
 
-	// Simple Field (maxResponseMessageSize)
-	_maxResponseMessageSize, _maxResponseMessageSizeErr := readBuffer.ReadUint32("maxResponseMessageSize", 32)
-	if _maxResponseMessageSizeErr != nil {
-		return nil, errors.Wrap(_maxResponseMessageSizeErr, "Error parsing 'maxResponseMessageSize' field of SessionDiagnosticsDataType")
+	maxResponseMessageSize, err := ReadSimpleField(ctx, "maxResponseMessageSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxResponseMessageSize' field"))
 	}
-	maxResponseMessageSize := _maxResponseMessageSize
+	m.MaxResponseMessageSize = maxResponseMessageSize
 
-	// Simple Field (clientConnectionTime)
-	_clientConnectionTime, _clientConnectionTimeErr := readBuffer.ReadInt64("clientConnectionTime", 64)
-	if _clientConnectionTimeErr != nil {
-		return nil, errors.Wrap(_clientConnectionTimeErr, "Error parsing 'clientConnectionTime' field of SessionDiagnosticsDataType")
+	clientConnectionTime, err := ReadSimpleField(ctx, "clientConnectionTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientConnectionTime' field"))
 	}
-	clientConnectionTime := _clientConnectionTime
+	m.ClientConnectionTime = clientConnectionTime
 
-	// Simple Field (clientLastContactTime)
-	_clientLastContactTime, _clientLastContactTimeErr := readBuffer.ReadInt64("clientLastContactTime", 64)
-	if _clientLastContactTimeErr != nil {
-		return nil, errors.Wrap(_clientLastContactTimeErr, "Error parsing 'clientLastContactTime' field of SessionDiagnosticsDataType")
+	clientLastContactTime, err := ReadSimpleField(ctx, "clientLastContactTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientLastContactTime' field"))
 	}
-	clientLastContactTime := _clientLastContactTime
+	m.ClientLastContactTime = clientLastContactTime
 
-	// Simple Field (currentSubscriptionsCount)
-	_currentSubscriptionsCount, _currentSubscriptionsCountErr := readBuffer.ReadUint32("currentSubscriptionsCount", 32)
-	if _currentSubscriptionsCountErr != nil {
-		return nil, errors.Wrap(_currentSubscriptionsCountErr, "Error parsing 'currentSubscriptionsCount' field of SessionDiagnosticsDataType")
+	currentSubscriptionsCount, err := ReadSimpleField(ctx, "currentSubscriptionsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSubscriptionsCount' field"))
 	}
-	currentSubscriptionsCount := _currentSubscriptionsCount
+	m.CurrentSubscriptionsCount = currentSubscriptionsCount
 
-	// Simple Field (currentMonitoredItemsCount)
-	_currentMonitoredItemsCount, _currentMonitoredItemsCountErr := readBuffer.ReadUint32("currentMonitoredItemsCount", 32)
-	if _currentMonitoredItemsCountErr != nil {
-		return nil, errors.Wrap(_currentMonitoredItemsCountErr, "Error parsing 'currentMonitoredItemsCount' field of SessionDiagnosticsDataType")
+	currentMonitoredItemsCount, err := ReadSimpleField(ctx, "currentMonitoredItemsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentMonitoredItemsCount' field"))
 	}
-	currentMonitoredItemsCount := _currentMonitoredItemsCount
+	m.CurrentMonitoredItemsCount = currentMonitoredItemsCount
 
-	// Simple Field (currentPublishRequestsInQueue)
-	_currentPublishRequestsInQueue, _currentPublishRequestsInQueueErr := readBuffer.ReadUint32("currentPublishRequestsInQueue", 32)
-	if _currentPublishRequestsInQueueErr != nil {
-		return nil, errors.Wrap(_currentPublishRequestsInQueueErr, "Error parsing 'currentPublishRequestsInQueue' field of SessionDiagnosticsDataType")
+	currentPublishRequestsInQueue, err := ReadSimpleField(ctx, "currentPublishRequestsInQueue", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentPublishRequestsInQueue' field"))
 	}
-	currentPublishRequestsInQueue := _currentPublishRequestsInQueue
+	m.CurrentPublishRequestsInQueue = currentPublishRequestsInQueue
 
-	// Simple Field (totalRequestCount)
-	if pullErr := readBuffer.PullContext("totalRequestCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for totalRequestCount")
+	totalRequestCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "totalRequestCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalRequestCount' field"))
 	}
-	_totalRequestCount, _totalRequestCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _totalRequestCountErr != nil {
-		return nil, errors.Wrap(_totalRequestCountErr, "Error parsing 'totalRequestCount' field of SessionDiagnosticsDataType")
-	}
-	totalRequestCount := _totalRequestCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("totalRequestCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for totalRequestCount")
-	}
+	m.TotalRequestCount = totalRequestCount
 
-	// Simple Field (unauthorizedRequestCount)
-	_unauthorizedRequestCount, _unauthorizedRequestCountErr := readBuffer.ReadUint32("unauthorizedRequestCount", 32)
-	if _unauthorizedRequestCountErr != nil {
-		return nil, errors.Wrap(_unauthorizedRequestCountErr, "Error parsing 'unauthorizedRequestCount' field of SessionDiagnosticsDataType")
+	unauthorizedRequestCount, err := ReadSimpleField(ctx, "unauthorizedRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unauthorizedRequestCount' field"))
 	}
-	unauthorizedRequestCount := _unauthorizedRequestCount
+	m.UnauthorizedRequestCount = unauthorizedRequestCount
 
-	// Simple Field (readCount)
-	if pullErr := readBuffer.PullContext("readCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for readCount")
+	readCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "readCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readCount' field"))
 	}
-	_readCount, _readCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _readCountErr != nil {
-		return nil, errors.Wrap(_readCountErr, "Error parsing 'readCount' field of SessionDiagnosticsDataType")
-	}
-	readCount := _readCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("readCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for readCount")
-	}
+	m.ReadCount = readCount
 
-	// Simple Field (historyReadCount)
-	if pullErr := readBuffer.PullContext("historyReadCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for historyReadCount")
+	historyReadCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "historyReadCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyReadCount' field"))
 	}
-	_historyReadCount, _historyReadCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _historyReadCountErr != nil {
-		return nil, errors.Wrap(_historyReadCountErr, "Error parsing 'historyReadCount' field of SessionDiagnosticsDataType")
-	}
-	historyReadCount := _historyReadCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("historyReadCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for historyReadCount")
-	}
+	m.HistoryReadCount = historyReadCount
 
-	// Simple Field (writeCount)
-	if pullErr := readBuffer.PullContext("writeCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for writeCount")
+	writeCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "writeCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeCount' field"))
 	}
-	_writeCount, _writeCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _writeCountErr != nil {
-		return nil, errors.Wrap(_writeCountErr, "Error parsing 'writeCount' field of SessionDiagnosticsDataType")
-	}
-	writeCount := _writeCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("writeCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for writeCount")
-	}
+	m.WriteCount = writeCount
 
-	// Simple Field (historyUpdateCount)
-	if pullErr := readBuffer.PullContext("historyUpdateCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for historyUpdateCount")
+	historyUpdateCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "historyUpdateCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyUpdateCount' field"))
 	}
-	_historyUpdateCount, _historyUpdateCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _historyUpdateCountErr != nil {
-		return nil, errors.Wrap(_historyUpdateCountErr, "Error parsing 'historyUpdateCount' field of SessionDiagnosticsDataType")
-	}
-	historyUpdateCount := _historyUpdateCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("historyUpdateCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for historyUpdateCount")
-	}
+	m.HistoryUpdateCount = historyUpdateCount
 
-	// Simple Field (callCount)
-	if pullErr := readBuffer.PullContext("callCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for callCount")
+	callCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "callCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'callCount' field"))
 	}
-	_callCount, _callCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _callCountErr != nil {
-		return nil, errors.Wrap(_callCountErr, "Error parsing 'callCount' field of SessionDiagnosticsDataType")
-	}
-	callCount := _callCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("callCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for callCount")
-	}
+	m.CallCount = callCount
 
-	// Simple Field (createMonitoredItemsCount)
-	if pullErr := readBuffer.PullContext("createMonitoredItemsCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for createMonitoredItemsCount")
+	createMonitoredItemsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "createMonitoredItemsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createMonitoredItemsCount' field"))
 	}
-	_createMonitoredItemsCount, _createMonitoredItemsCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _createMonitoredItemsCountErr != nil {
-		return nil, errors.Wrap(_createMonitoredItemsCountErr, "Error parsing 'createMonitoredItemsCount' field of SessionDiagnosticsDataType")
-	}
-	createMonitoredItemsCount := _createMonitoredItemsCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("createMonitoredItemsCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for createMonitoredItemsCount")
-	}
+	m.CreateMonitoredItemsCount = createMonitoredItemsCount
 
-	// Simple Field (modifyMonitoredItemsCount)
-	if pullErr := readBuffer.PullContext("modifyMonitoredItemsCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for modifyMonitoredItemsCount")
+	modifyMonitoredItemsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "modifyMonitoredItemsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modifyMonitoredItemsCount' field"))
 	}
-	_modifyMonitoredItemsCount, _modifyMonitoredItemsCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _modifyMonitoredItemsCountErr != nil {
-		return nil, errors.Wrap(_modifyMonitoredItemsCountErr, "Error parsing 'modifyMonitoredItemsCount' field of SessionDiagnosticsDataType")
-	}
-	modifyMonitoredItemsCount := _modifyMonitoredItemsCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("modifyMonitoredItemsCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for modifyMonitoredItemsCount")
-	}
+	m.ModifyMonitoredItemsCount = modifyMonitoredItemsCount
 
-	// Simple Field (setMonitoringModeCount)
-	if pullErr := readBuffer.PullContext("setMonitoringModeCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for setMonitoringModeCount")
+	setMonitoringModeCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "setMonitoringModeCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setMonitoringModeCount' field"))
 	}
-	_setMonitoringModeCount, _setMonitoringModeCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _setMonitoringModeCountErr != nil {
-		return nil, errors.Wrap(_setMonitoringModeCountErr, "Error parsing 'setMonitoringModeCount' field of SessionDiagnosticsDataType")
-	}
-	setMonitoringModeCount := _setMonitoringModeCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("setMonitoringModeCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for setMonitoringModeCount")
-	}
+	m.SetMonitoringModeCount = setMonitoringModeCount
 
-	// Simple Field (setTriggeringCount)
-	if pullErr := readBuffer.PullContext("setTriggeringCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for setTriggeringCount")
+	setTriggeringCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "setTriggeringCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setTriggeringCount' field"))
 	}
-	_setTriggeringCount, _setTriggeringCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _setTriggeringCountErr != nil {
-		return nil, errors.Wrap(_setTriggeringCountErr, "Error parsing 'setTriggeringCount' field of SessionDiagnosticsDataType")
-	}
-	setTriggeringCount := _setTriggeringCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("setTriggeringCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for setTriggeringCount")
-	}
+	m.SetTriggeringCount = setTriggeringCount
 
-	// Simple Field (deleteMonitoredItemsCount)
-	if pullErr := readBuffer.PullContext("deleteMonitoredItemsCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deleteMonitoredItemsCount")
+	deleteMonitoredItemsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "deleteMonitoredItemsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteMonitoredItemsCount' field"))
 	}
-	_deleteMonitoredItemsCount, _deleteMonitoredItemsCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _deleteMonitoredItemsCountErr != nil {
-		return nil, errors.Wrap(_deleteMonitoredItemsCountErr, "Error parsing 'deleteMonitoredItemsCount' field of SessionDiagnosticsDataType")
-	}
-	deleteMonitoredItemsCount := _deleteMonitoredItemsCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("deleteMonitoredItemsCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deleteMonitoredItemsCount")
-	}
+	m.DeleteMonitoredItemsCount = deleteMonitoredItemsCount
 
-	// Simple Field (createSubscriptionCount)
-	if pullErr := readBuffer.PullContext("createSubscriptionCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for createSubscriptionCount")
+	createSubscriptionCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "createSubscriptionCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createSubscriptionCount' field"))
 	}
-	_createSubscriptionCount, _createSubscriptionCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _createSubscriptionCountErr != nil {
-		return nil, errors.Wrap(_createSubscriptionCountErr, "Error parsing 'createSubscriptionCount' field of SessionDiagnosticsDataType")
-	}
-	createSubscriptionCount := _createSubscriptionCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("createSubscriptionCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for createSubscriptionCount")
-	}
+	m.CreateSubscriptionCount = createSubscriptionCount
 
-	// Simple Field (modifySubscriptionCount)
-	if pullErr := readBuffer.PullContext("modifySubscriptionCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for modifySubscriptionCount")
+	modifySubscriptionCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "modifySubscriptionCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modifySubscriptionCount' field"))
 	}
-	_modifySubscriptionCount, _modifySubscriptionCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _modifySubscriptionCountErr != nil {
-		return nil, errors.Wrap(_modifySubscriptionCountErr, "Error parsing 'modifySubscriptionCount' field of SessionDiagnosticsDataType")
-	}
-	modifySubscriptionCount := _modifySubscriptionCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("modifySubscriptionCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for modifySubscriptionCount")
-	}
+	m.ModifySubscriptionCount = modifySubscriptionCount
 
-	// Simple Field (setPublishingModeCount)
-	if pullErr := readBuffer.PullContext("setPublishingModeCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for setPublishingModeCount")
+	setPublishingModeCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "setPublishingModeCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setPublishingModeCount' field"))
 	}
-	_setPublishingModeCount, _setPublishingModeCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _setPublishingModeCountErr != nil {
-		return nil, errors.Wrap(_setPublishingModeCountErr, "Error parsing 'setPublishingModeCount' field of SessionDiagnosticsDataType")
-	}
-	setPublishingModeCount := _setPublishingModeCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("setPublishingModeCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for setPublishingModeCount")
-	}
+	m.SetPublishingModeCount = setPublishingModeCount
 
-	// Simple Field (publishCount)
-	if pullErr := readBuffer.PullContext("publishCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for publishCount")
+	publishCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "publishCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishCount' field"))
 	}
-	_publishCount, _publishCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _publishCountErr != nil {
-		return nil, errors.Wrap(_publishCountErr, "Error parsing 'publishCount' field of SessionDiagnosticsDataType")
-	}
-	publishCount := _publishCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("publishCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for publishCount")
-	}
+	m.PublishCount = publishCount
 
-	// Simple Field (republishCount)
-	if pullErr := readBuffer.PullContext("republishCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for republishCount")
+	republishCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "republishCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishCount' field"))
 	}
-	_republishCount, _republishCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _republishCountErr != nil {
-		return nil, errors.Wrap(_republishCountErr, "Error parsing 'republishCount' field of SessionDiagnosticsDataType")
-	}
-	republishCount := _republishCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("republishCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for republishCount")
-	}
+	m.RepublishCount = republishCount
 
-	// Simple Field (transferSubscriptionsCount)
-	if pullErr := readBuffer.PullContext("transferSubscriptionsCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transferSubscriptionsCount")
+	transferSubscriptionsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "transferSubscriptionsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferSubscriptionsCount' field"))
 	}
-	_transferSubscriptionsCount, _transferSubscriptionsCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _transferSubscriptionsCountErr != nil {
-		return nil, errors.Wrap(_transferSubscriptionsCountErr, "Error parsing 'transferSubscriptionsCount' field of SessionDiagnosticsDataType")
-	}
-	transferSubscriptionsCount := _transferSubscriptionsCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("transferSubscriptionsCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transferSubscriptionsCount")
-	}
+	m.TransferSubscriptionsCount = transferSubscriptionsCount
 
-	// Simple Field (deleteSubscriptionsCount)
-	if pullErr := readBuffer.PullContext("deleteSubscriptionsCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deleteSubscriptionsCount")
+	deleteSubscriptionsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "deleteSubscriptionsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteSubscriptionsCount' field"))
 	}
-	_deleteSubscriptionsCount, _deleteSubscriptionsCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _deleteSubscriptionsCountErr != nil {
-		return nil, errors.Wrap(_deleteSubscriptionsCountErr, "Error parsing 'deleteSubscriptionsCount' field of SessionDiagnosticsDataType")
-	}
-	deleteSubscriptionsCount := _deleteSubscriptionsCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("deleteSubscriptionsCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deleteSubscriptionsCount")
-	}
+	m.DeleteSubscriptionsCount = deleteSubscriptionsCount
 
-	// Simple Field (addNodesCount)
-	if pullErr := readBuffer.PullContext("addNodesCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addNodesCount")
+	addNodesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "addNodesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addNodesCount' field"))
 	}
-	_addNodesCount, _addNodesCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _addNodesCountErr != nil {
-		return nil, errors.Wrap(_addNodesCountErr, "Error parsing 'addNodesCount' field of SessionDiagnosticsDataType")
-	}
-	addNodesCount := _addNodesCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("addNodesCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addNodesCount")
-	}
+	m.AddNodesCount = addNodesCount
 
-	// Simple Field (addReferencesCount)
-	if pullErr := readBuffer.PullContext("addReferencesCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addReferencesCount")
+	addReferencesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "addReferencesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addReferencesCount' field"))
 	}
-	_addReferencesCount, _addReferencesCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _addReferencesCountErr != nil {
-		return nil, errors.Wrap(_addReferencesCountErr, "Error parsing 'addReferencesCount' field of SessionDiagnosticsDataType")
-	}
-	addReferencesCount := _addReferencesCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("addReferencesCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addReferencesCount")
-	}
+	m.AddReferencesCount = addReferencesCount
 
-	// Simple Field (deleteNodesCount)
-	if pullErr := readBuffer.PullContext("deleteNodesCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deleteNodesCount")
+	deleteNodesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "deleteNodesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteNodesCount' field"))
 	}
-	_deleteNodesCount, _deleteNodesCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _deleteNodesCountErr != nil {
-		return nil, errors.Wrap(_deleteNodesCountErr, "Error parsing 'deleteNodesCount' field of SessionDiagnosticsDataType")
-	}
-	deleteNodesCount := _deleteNodesCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("deleteNodesCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deleteNodesCount")
-	}
+	m.DeleteNodesCount = deleteNodesCount
 
-	// Simple Field (deleteReferencesCount)
-	if pullErr := readBuffer.PullContext("deleteReferencesCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deleteReferencesCount")
+	deleteReferencesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "deleteReferencesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteReferencesCount' field"))
 	}
-	_deleteReferencesCount, _deleteReferencesCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _deleteReferencesCountErr != nil {
-		return nil, errors.Wrap(_deleteReferencesCountErr, "Error parsing 'deleteReferencesCount' field of SessionDiagnosticsDataType")
-	}
-	deleteReferencesCount := _deleteReferencesCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("deleteReferencesCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deleteReferencesCount")
-	}
+	m.DeleteReferencesCount = deleteReferencesCount
 
-	// Simple Field (browseCount)
-	if pullErr := readBuffer.PullContext("browseCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for browseCount")
+	browseCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "browseCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseCount' field"))
 	}
-	_browseCount, _browseCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _browseCountErr != nil {
-		return nil, errors.Wrap(_browseCountErr, "Error parsing 'browseCount' field of SessionDiagnosticsDataType")
-	}
-	browseCount := _browseCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("browseCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for browseCount")
-	}
+	m.BrowseCount = browseCount
 
-	// Simple Field (browseNextCount)
-	if pullErr := readBuffer.PullContext("browseNextCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for browseNextCount")
+	browseNextCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "browseNextCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseNextCount' field"))
 	}
-	_browseNextCount, _browseNextCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _browseNextCountErr != nil {
-		return nil, errors.Wrap(_browseNextCountErr, "Error parsing 'browseNextCount' field of SessionDiagnosticsDataType")
-	}
-	browseNextCount := _browseNextCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("browseNextCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for browseNextCount")
-	}
+	m.BrowseNextCount = browseNextCount
 
-	// Simple Field (translateBrowsePathsToNodeIdsCount)
-	if pullErr := readBuffer.PullContext("translateBrowsePathsToNodeIdsCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for translateBrowsePathsToNodeIdsCount")
+	translateBrowsePathsToNodeIdsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "translateBrowsePathsToNodeIdsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'translateBrowsePathsToNodeIdsCount' field"))
 	}
-	_translateBrowsePathsToNodeIdsCount, _translateBrowsePathsToNodeIdsCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _translateBrowsePathsToNodeIdsCountErr != nil {
-		return nil, errors.Wrap(_translateBrowsePathsToNodeIdsCountErr, "Error parsing 'translateBrowsePathsToNodeIdsCount' field of SessionDiagnosticsDataType")
-	}
-	translateBrowsePathsToNodeIdsCount := _translateBrowsePathsToNodeIdsCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("translateBrowsePathsToNodeIdsCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for translateBrowsePathsToNodeIdsCount")
-	}
+	m.TranslateBrowsePathsToNodeIdsCount = translateBrowsePathsToNodeIdsCount
 
-	// Simple Field (queryFirstCount)
-	if pullErr := readBuffer.PullContext("queryFirstCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for queryFirstCount")
+	queryFirstCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "queryFirstCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryFirstCount' field"))
 	}
-	_queryFirstCount, _queryFirstCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _queryFirstCountErr != nil {
-		return nil, errors.Wrap(_queryFirstCountErr, "Error parsing 'queryFirstCount' field of SessionDiagnosticsDataType")
-	}
-	queryFirstCount := _queryFirstCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("queryFirstCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for queryFirstCount")
-	}
+	m.QueryFirstCount = queryFirstCount
 
-	// Simple Field (queryNextCount)
-	if pullErr := readBuffer.PullContext("queryNextCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for queryNextCount")
+	queryNextCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "queryNextCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryNextCount' field"))
 	}
-	_queryNextCount, _queryNextCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _queryNextCountErr != nil {
-		return nil, errors.Wrap(_queryNextCountErr, "Error parsing 'queryNextCount' field of SessionDiagnosticsDataType")
-	}
-	queryNextCount := _queryNextCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("queryNextCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for queryNextCount")
-	}
+	m.QueryNextCount = queryNextCount
 
-	// Simple Field (registerNodesCount)
-	if pullErr := readBuffer.PullContext("registerNodesCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for registerNodesCount")
+	registerNodesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "registerNodesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'registerNodesCount' field"))
 	}
-	_registerNodesCount, _registerNodesCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _registerNodesCountErr != nil {
-		return nil, errors.Wrap(_registerNodesCountErr, "Error parsing 'registerNodesCount' field of SessionDiagnosticsDataType")
-	}
-	registerNodesCount := _registerNodesCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("registerNodesCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for registerNodesCount")
-	}
+	m.RegisterNodesCount = registerNodesCount
 
-	// Simple Field (unregisterNodesCount)
-	if pullErr := readBuffer.PullContext("unregisterNodesCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unregisterNodesCount")
+	unregisterNodesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "unregisterNodesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unregisterNodesCount' field"))
 	}
-	_unregisterNodesCount, _unregisterNodesCountErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("873"))
-	if _unregisterNodesCountErr != nil {
-		return nil, errors.Wrap(_unregisterNodesCountErr, "Error parsing 'unregisterNodesCount' field of SessionDiagnosticsDataType")
-	}
-	unregisterNodesCount := _unregisterNodesCount.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("unregisterNodesCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unregisterNodesCount")
-	}
+	m.UnregisterNodesCount = unregisterNodesCount
 
 	if closeErr := readBuffer.CloseContext("SessionDiagnosticsDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SessionDiagnosticsDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SessionDiagnosticsDataType{
-		_ExtensionObjectDefinition:         &_ExtensionObjectDefinition{},
-		SessionId:                          sessionId,
-		SessionName:                        sessionName,
-		ClientDescription:                  clientDescription,
-		ServerUri:                          serverUri,
-		EndpointUrl:                        endpointUrl,
-		NoOfLocaleIds:                      noOfLocaleIds,
-		LocaleIds:                          localeIds,
-		ActualSessionTimeout:               actualSessionTimeout,
-		MaxResponseMessageSize:             maxResponseMessageSize,
-		ClientConnectionTime:               clientConnectionTime,
-		ClientLastContactTime:              clientLastContactTime,
-		CurrentSubscriptionsCount:          currentSubscriptionsCount,
-		CurrentMonitoredItemsCount:         currentMonitoredItemsCount,
-		CurrentPublishRequestsInQueue:      currentPublishRequestsInQueue,
-		TotalRequestCount:                  totalRequestCount,
-		UnauthorizedRequestCount:           unauthorizedRequestCount,
-		ReadCount:                          readCount,
-		HistoryReadCount:                   historyReadCount,
-		WriteCount:                         writeCount,
-		HistoryUpdateCount:                 historyUpdateCount,
-		CallCount:                          callCount,
-		CreateMonitoredItemsCount:          createMonitoredItemsCount,
-		ModifyMonitoredItemsCount:          modifyMonitoredItemsCount,
-		SetMonitoringModeCount:             setMonitoringModeCount,
-		SetTriggeringCount:                 setTriggeringCount,
-		DeleteMonitoredItemsCount:          deleteMonitoredItemsCount,
-		CreateSubscriptionCount:            createSubscriptionCount,
-		ModifySubscriptionCount:            modifySubscriptionCount,
-		SetPublishingModeCount:             setPublishingModeCount,
-		PublishCount:                       publishCount,
-		RepublishCount:                     republishCount,
-		TransferSubscriptionsCount:         transferSubscriptionsCount,
-		DeleteSubscriptionsCount:           deleteSubscriptionsCount,
-		AddNodesCount:                      addNodesCount,
-		AddReferencesCount:                 addReferencesCount,
-		DeleteNodesCount:                   deleteNodesCount,
-		DeleteReferencesCount:              deleteReferencesCount,
-		BrowseCount:                        browseCount,
-		BrowseNextCount:                    browseNextCount,
-		TranslateBrowsePathsToNodeIdsCount: translateBrowsePathsToNodeIdsCount,
-		QueryFirstCount:                    queryFirstCount,
-		QueryNextCount:                     queryNextCount,
-		RegisterNodesCount:                 registerNodesCount,
-		UnregisterNodesCount:               unregisterNodesCount,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SessionDiagnosticsDataType) Serialize() ([]byte, error) {
@@ -1227,492 +1006,180 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for SessionDiagnosticsDataType")
 		}
 
-		// Simple Field (sessionId)
-		if pushErr := writeBuffer.PushContext("sessionId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sessionId")
-		}
-		_sessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetSessionId())
-		if popErr := writeBuffer.PopContext("sessionId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sessionId")
-		}
-		if _sessionIdErr != nil {
-			return errors.Wrap(_sessionIdErr, "Error serializing 'sessionId' field")
+		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sessionId' field")
 		}
 
-		// Simple Field (sessionName)
-		if pushErr := writeBuffer.PushContext("sessionName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sessionName")
-		}
-		_sessionNameErr := writeBuffer.WriteSerializable(ctx, m.GetSessionName())
-		if popErr := writeBuffer.PopContext("sessionName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sessionName")
-		}
-		if _sessionNameErr != nil {
-			return errors.Wrap(_sessionNameErr, "Error serializing 'sessionName' field")
+		if err := WriteSimpleField[PascalString](ctx, "sessionName", m.GetSessionName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sessionName' field")
 		}
 
-		// Simple Field (clientDescription)
-		if pushErr := writeBuffer.PushContext("clientDescription"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientDescription")
-		}
-		_clientDescriptionErr := writeBuffer.WriteSerializable(ctx, m.GetClientDescription())
-		if popErr := writeBuffer.PopContext("clientDescription"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientDescription")
-		}
-		if _clientDescriptionErr != nil {
-			return errors.Wrap(_clientDescriptionErr, "Error serializing 'clientDescription' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "clientDescription", m.GetClientDescription(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientDescription' field")
 		}
 
-		// Simple Field (serverUri)
-		if pushErr := writeBuffer.PushContext("serverUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUri")
-		}
-		_serverUriErr := writeBuffer.WriteSerializable(ctx, m.GetServerUri())
-		if popErr := writeBuffer.PopContext("serverUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUri")
-		}
-		if _serverUriErr != nil {
-			return errors.Wrap(_serverUriErr, "Error serializing 'serverUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (noOfLocaleIds)
-		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
-		if _noOfLocaleIdsErr != nil {
-			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
-		// Array Field (localeIds)
-		if pushErr := writeBuffer.PushContext("localeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localeIds")
-		}
-		for _curItem, _element := range m.GetLocaleIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLocaleIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'localeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("localeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localeIds")
+		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
 
-		// Simple Field (actualSessionTimeout)
-		actualSessionTimeout := float64(m.GetActualSessionTimeout())
-		_actualSessionTimeoutErr := writeBuffer.WriteFloat64("actualSessionTimeout", 64, (actualSessionTimeout))
-		if _actualSessionTimeoutErr != nil {
-			return errors.Wrap(_actualSessionTimeoutErr, "Error serializing 'actualSessionTimeout' field")
+		if err := WriteSimpleField[float64](ctx, "actualSessionTimeout", m.GetActualSessionTimeout(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'actualSessionTimeout' field")
 		}
 
-		// Simple Field (maxResponseMessageSize)
-		maxResponseMessageSize := uint32(m.GetMaxResponseMessageSize())
-		_maxResponseMessageSizeErr := writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
-		if _maxResponseMessageSizeErr != nil {
-			return errors.Wrap(_maxResponseMessageSizeErr, "Error serializing 'maxResponseMessageSize' field")
+		if err := WriteSimpleField[uint32](ctx, "maxResponseMessageSize", m.GetMaxResponseMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxResponseMessageSize' field")
 		}
 
-		// Simple Field (clientConnectionTime)
-		clientConnectionTime := int64(m.GetClientConnectionTime())
-		_clientConnectionTimeErr := writeBuffer.WriteInt64("clientConnectionTime", 64, int64((clientConnectionTime)))
-		if _clientConnectionTimeErr != nil {
-			return errors.Wrap(_clientConnectionTimeErr, "Error serializing 'clientConnectionTime' field")
+		if err := WriteSimpleField[int64](ctx, "clientConnectionTime", m.GetClientConnectionTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientConnectionTime' field")
 		}
 
-		// Simple Field (clientLastContactTime)
-		clientLastContactTime := int64(m.GetClientLastContactTime())
-		_clientLastContactTimeErr := writeBuffer.WriteInt64("clientLastContactTime", 64, int64((clientLastContactTime)))
-		if _clientLastContactTimeErr != nil {
-			return errors.Wrap(_clientLastContactTimeErr, "Error serializing 'clientLastContactTime' field")
+		if err := WriteSimpleField[int64](ctx, "clientLastContactTime", m.GetClientLastContactTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientLastContactTime' field")
 		}
 
-		// Simple Field (currentSubscriptionsCount)
-		currentSubscriptionsCount := uint32(m.GetCurrentSubscriptionsCount())
-		_currentSubscriptionsCountErr := writeBuffer.WriteUint32("currentSubscriptionsCount", 32, uint32((currentSubscriptionsCount)))
-		if _currentSubscriptionsCountErr != nil {
-			return errors.Wrap(_currentSubscriptionsCountErr, "Error serializing 'currentSubscriptionsCount' field")
+		if err := WriteSimpleField[uint32](ctx, "currentSubscriptionsCount", m.GetCurrentSubscriptionsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentSubscriptionsCount' field")
 		}
 
-		// Simple Field (currentMonitoredItemsCount)
-		currentMonitoredItemsCount := uint32(m.GetCurrentMonitoredItemsCount())
-		_currentMonitoredItemsCountErr := writeBuffer.WriteUint32("currentMonitoredItemsCount", 32, uint32((currentMonitoredItemsCount)))
-		if _currentMonitoredItemsCountErr != nil {
-			return errors.Wrap(_currentMonitoredItemsCountErr, "Error serializing 'currentMonitoredItemsCount' field")
+		if err := WriteSimpleField[uint32](ctx, "currentMonitoredItemsCount", m.GetCurrentMonitoredItemsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentMonitoredItemsCount' field")
 		}
 
-		// Simple Field (currentPublishRequestsInQueue)
-		currentPublishRequestsInQueue := uint32(m.GetCurrentPublishRequestsInQueue())
-		_currentPublishRequestsInQueueErr := writeBuffer.WriteUint32("currentPublishRequestsInQueue", 32, uint32((currentPublishRequestsInQueue)))
-		if _currentPublishRequestsInQueueErr != nil {
-			return errors.Wrap(_currentPublishRequestsInQueueErr, "Error serializing 'currentPublishRequestsInQueue' field")
+		if err := WriteSimpleField[uint32](ctx, "currentPublishRequestsInQueue", m.GetCurrentPublishRequestsInQueue(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentPublishRequestsInQueue' field")
 		}
 
-		// Simple Field (totalRequestCount)
-		if pushErr := writeBuffer.PushContext("totalRequestCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for totalRequestCount")
-		}
-		_totalRequestCountErr := writeBuffer.WriteSerializable(ctx, m.GetTotalRequestCount())
-		if popErr := writeBuffer.PopContext("totalRequestCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for totalRequestCount")
-		}
-		if _totalRequestCountErr != nil {
-			return errors.Wrap(_totalRequestCountErr, "Error serializing 'totalRequestCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "totalRequestCount", m.GetTotalRequestCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalRequestCount' field")
 		}
 
-		// Simple Field (unauthorizedRequestCount)
-		unauthorizedRequestCount := uint32(m.GetUnauthorizedRequestCount())
-		_unauthorizedRequestCountErr := writeBuffer.WriteUint32("unauthorizedRequestCount", 32, uint32((unauthorizedRequestCount)))
-		if _unauthorizedRequestCountErr != nil {
-			return errors.Wrap(_unauthorizedRequestCountErr, "Error serializing 'unauthorizedRequestCount' field")
+		if err := WriteSimpleField[uint32](ctx, "unauthorizedRequestCount", m.GetUnauthorizedRequestCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unauthorizedRequestCount' field")
 		}
 
-		// Simple Field (readCount)
-		if pushErr := writeBuffer.PushContext("readCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for readCount")
-		}
-		_readCountErr := writeBuffer.WriteSerializable(ctx, m.GetReadCount())
-		if popErr := writeBuffer.PopContext("readCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for readCount")
-		}
-		if _readCountErr != nil {
-			return errors.Wrap(_readCountErr, "Error serializing 'readCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "readCount", m.GetReadCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'readCount' field")
 		}
 
-		// Simple Field (historyReadCount)
-		if pushErr := writeBuffer.PushContext("historyReadCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for historyReadCount")
-		}
-		_historyReadCountErr := writeBuffer.WriteSerializable(ctx, m.GetHistoryReadCount())
-		if popErr := writeBuffer.PopContext("historyReadCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for historyReadCount")
-		}
-		if _historyReadCountErr != nil {
-			return errors.Wrap(_historyReadCountErr, "Error serializing 'historyReadCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "historyReadCount", m.GetHistoryReadCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'historyReadCount' field")
 		}
 
-		// Simple Field (writeCount)
-		if pushErr := writeBuffer.PushContext("writeCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writeCount")
-		}
-		_writeCountErr := writeBuffer.WriteSerializable(ctx, m.GetWriteCount())
-		if popErr := writeBuffer.PopContext("writeCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writeCount")
-		}
-		if _writeCountErr != nil {
-			return errors.Wrap(_writeCountErr, "Error serializing 'writeCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "writeCount", m.GetWriteCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeCount' field")
 		}
 
-		// Simple Field (historyUpdateCount)
-		if pushErr := writeBuffer.PushContext("historyUpdateCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for historyUpdateCount")
-		}
-		_historyUpdateCountErr := writeBuffer.WriteSerializable(ctx, m.GetHistoryUpdateCount())
-		if popErr := writeBuffer.PopContext("historyUpdateCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for historyUpdateCount")
-		}
-		if _historyUpdateCountErr != nil {
-			return errors.Wrap(_historyUpdateCountErr, "Error serializing 'historyUpdateCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "historyUpdateCount", m.GetHistoryUpdateCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'historyUpdateCount' field")
 		}
 
-		// Simple Field (callCount)
-		if pushErr := writeBuffer.PushContext("callCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for callCount")
-		}
-		_callCountErr := writeBuffer.WriteSerializable(ctx, m.GetCallCount())
-		if popErr := writeBuffer.PopContext("callCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for callCount")
-		}
-		if _callCountErr != nil {
-			return errors.Wrap(_callCountErr, "Error serializing 'callCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "callCount", m.GetCallCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'callCount' field")
 		}
 
-		// Simple Field (createMonitoredItemsCount)
-		if pushErr := writeBuffer.PushContext("createMonitoredItemsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for createMonitoredItemsCount")
-		}
-		_createMonitoredItemsCountErr := writeBuffer.WriteSerializable(ctx, m.GetCreateMonitoredItemsCount())
-		if popErr := writeBuffer.PopContext("createMonitoredItemsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for createMonitoredItemsCount")
-		}
-		if _createMonitoredItemsCountErr != nil {
-			return errors.Wrap(_createMonitoredItemsCountErr, "Error serializing 'createMonitoredItemsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "createMonitoredItemsCount", m.GetCreateMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'createMonitoredItemsCount' field")
 		}
 
-		// Simple Field (modifyMonitoredItemsCount)
-		if pushErr := writeBuffer.PushContext("modifyMonitoredItemsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for modifyMonitoredItemsCount")
-		}
-		_modifyMonitoredItemsCountErr := writeBuffer.WriteSerializable(ctx, m.GetModifyMonitoredItemsCount())
-		if popErr := writeBuffer.PopContext("modifyMonitoredItemsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for modifyMonitoredItemsCount")
-		}
-		if _modifyMonitoredItemsCountErr != nil {
-			return errors.Wrap(_modifyMonitoredItemsCountErr, "Error serializing 'modifyMonitoredItemsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "modifyMonitoredItemsCount", m.GetModifyMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'modifyMonitoredItemsCount' field")
 		}
 
-		// Simple Field (setMonitoringModeCount)
-		if pushErr := writeBuffer.PushContext("setMonitoringModeCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setMonitoringModeCount")
-		}
-		_setMonitoringModeCountErr := writeBuffer.WriteSerializable(ctx, m.GetSetMonitoringModeCount())
-		if popErr := writeBuffer.PopContext("setMonitoringModeCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setMonitoringModeCount")
-		}
-		if _setMonitoringModeCountErr != nil {
-			return errors.Wrap(_setMonitoringModeCountErr, "Error serializing 'setMonitoringModeCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setMonitoringModeCount", m.GetSetMonitoringModeCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setMonitoringModeCount' field")
 		}
 
-		// Simple Field (setTriggeringCount)
-		if pushErr := writeBuffer.PushContext("setTriggeringCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setTriggeringCount")
-		}
-		_setTriggeringCountErr := writeBuffer.WriteSerializable(ctx, m.GetSetTriggeringCount())
-		if popErr := writeBuffer.PopContext("setTriggeringCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setTriggeringCount")
-		}
-		if _setTriggeringCountErr != nil {
-			return errors.Wrap(_setTriggeringCountErr, "Error serializing 'setTriggeringCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setTriggeringCount", m.GetSetTriggeringCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setTriggeringCount' field")
 		}
 
-		// Simple Field (deleteMonitoredItemsCount)
-		if pushErr := writeBuffer.PushContext("deleteMonitoredItemsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deleteMonitoredItemsCount")
-		}
-		_deleteMonitoredItemsCountErr := writeBuffer.WriteSerializable(ctx, m.GetDeleteMonitoredItemsCount())
-		if popErr := writeBuffer.PopContext("deleteMonitoredItemsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deleteMonitoredItemsCount")
-		}
-		if _deleteMonitoredItemsCountErr != nil {
-			return errors.Wrap(_deleteMonitoredItemsCountErr, "Error serializing 'deleteMonitoredItemsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteMonitoredItemsCount", m.GetDeleteMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteMonitoredItemsCount' field")
 		}
 
-		// Simple Field (createSubscriptionCount)
-		if pushErr := writeBuffer.PushContext("createSubscriptionCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for createSubscriptionCount")
-		}
-		_createSubscriptionCountErr := writeBuffer.WriteSerializable(ctx, m.GetCreateSubscriptionCount())
-		if popErr := writeBuffer.PopContext("createSubscriptionCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for createSubscriptionCount")
-		}
-		if _createSubscriptionCountErr != nil {
-			return errors.Wrap(_createSubscriptionCountErr, "Error serializing 'createSubscriptionCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "createSubscriptionCount", m.GetCreateSubscriptionCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'createSubscriptionCount' field")
 		}
 
-		// Simple Field (modifySubscriptionCount)
-		if pushErr := writeBuffer.PushContext("modifySubscriptionCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for modifySubscriptionCount")
-		}
-		_modifySubscriptionCountErr := writeBuffer.WriteSerializable(ctx, m.GetModifySubscriptionCount())
-		if popErr := writeBuffer.PopContext("modifySubscriptionCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for modifySubscriptionCount")
-		}
-		if _modifySubscriptionCountErr != nil {
-			return errors.Wrap(_modifySubscriptionCountErr, "Error serializing 'modifySubscriptionCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "modifySubscriptionCount", m.GetModifySubscriptionCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'modifySubscriptionCount' field")
 		}
 
-		// Simple Field (setPublishingModeCount)
-		if pushErr := writeBuffer.PushContext("setPublishingModeCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setPublishingModeCount")
-		}
-		_setPublishingModeCountErr := writeBuffer.WriteSerializable(ctx, m.GetSetPublishingModeCount())
-		if popErr := writeBuffer.PopContext("setPublishingModeCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setPublishingModeCount")
-		}
-		if _setPublishingModeCountErr != nil {
-			return errors.Wrap(_setPublishingModeCountErr, "Error serializing 'setPublishingModeCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setPublishingModeCount", m.GetSetPublishingModeCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setPublishingModeCount' field")
 		}
 
-		// Simple Field (publishCount)
-		if pushErr := writeBuffer.PushContext("publishCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for publishCount")
-		}
-		_publishCountErr := writeBuffer.WriteSerializable(ctx, m.GetPublishCount())
-		if popErr := writeBuffer.PopContext("publishCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for publishCount")
-		}
-		if _publishCountErr != nil {
-			return errors.Wrap(_publishCountErr, "Error serializing 'publishCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "publishCount", m.GetPublishCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'publishCount' field")
 		}
 
-		// Simple Field (republishCount)
-		if pushErr := writeBuffer.PushContext("republishCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for republishCount")
-		}
-		_republishCountErr := writeBuffer.WriteSerializable(ctx, m.GetRepublishCount())
-		if popErr := writeBuffer.PopContext("republishCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for republishCount")
-		}
-		if _republishCountErr != nil {
-			return errors.Wrap(_republishCountErr, "Error serializing 'republishCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "republishCount", m.GetRepublishCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'republishCount' field")
 		}
 
-		// Simple Field (transferSubscriptionsCount)
-		if pushErr := writeBuffer.PushContext("transferSubscriptionsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transferSubscriptionsCount")
-		}
-		_transferSubscriptionsCountErr := writeBuffer.WriteSerializable(ctx, m.GetTransferSubscriptionsCount())
-		if popErr := writeBuffer.PopContext("transferSubscriptionsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transferSubscriptionsCount")
-		}
-		if _transferSubscriptionsCountErr != nil {
-			return errors.Wrap(_transferSubscriptionsCountErr, "Error serializing 'transferSubscriptionsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "transferSubscriptionsCount", m.GetTransferSubscriptionsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transferSubscriptionsCount' field")
 		}
 
-		// Simple Field (deleteSubscriptionsCount)
-		if pushErr := writeBuffer.PushContext("deleteSubscriptionsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deleteSubscriptionsCount")
-		}
-		_deleteSubscriptionsCountErr := writeBuffer.WriteSerializable(ctx, m.GetDeleteSubscriptionsCount())
-		if popErr := writeBuffer.PopContext("deleteSubscriptionsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deleteSubscriptionsCount")
-		}
-		if _deleteSubscriptionsCountErr != nil {
-			return errors.Wrap(_deleteSubscriptionsCountErr, "Error serializing 'deleteSubscriptionsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteSubscriptionsCount", m.GetDeleteSubscriptionsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteSubscriptionsCount' field")
 		}
 
-		// Simple Field (addNodesCount)
-		if pushErr := writeBuffer.PushContext("addNodesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addNodesCount")
-		}
-		_addNodesCountErr := writeBuffer.WriteSerializable(ctx, m.GetAddNodesCount())
-		if popErr := writeBuffer.PopContext("addNodesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addNodesCount")
-		}
-		if _addNodesCountErr != nil {
-			return errors.Wrap(_addNodesCountErr, "Error serializing 'addNodesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "addNodesCount", m.GetAddNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'addNodesCount' field")
 		}
 
-		// Simple Field (addReferencesCount)
-		if pushErr := writeBuffer.PushContext("addReferencesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addReferencesCount")
-		}
-		_addReferencesCountErr := writeBuffer.WriteSerializable(ctx, m.GetAddReferencesCount())
-		if popErr := writeBuffer.PopContext("addReferencesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addReferencesCount")
-		}
-		if _addReferencesCountErr != nil {
-			return errors.Wrap(_addReferencesCountErr, "Error serializing 'addReferencesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "addReferencesCount", m.GetAddReferencesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'addReferencesCount' field")
 		}
 
-		// Simple Field (deleteNodesCount)
-		if pushErr := writeBuffer.PushContext("deleteNodesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deleteNodesCount")
-		}
-		_deleteNodesCountErr := writeBuffer.WriteSerializable(ctx, m.GetDeleteNodesCount())
-		if popErr := writeBuffer.PopContext("deleteNodesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deleteNodesCount")
-		}
-		if _deleteNodesCountErr != nil {
-			return errors.Wrap(_deleteNodesCountErr, "Error serializing 'deleteNodesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteNodesCount", m.GetDeleteNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteNodesCount' field")
 		}
 
-		// Simple Field (deleteReferencesCount)
-		if pushErr := writeBuffer.PushContext("deleteReferencesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deleteReferencesCount")
-		}
-		_deleteReferencesCountErr := writeBuffer.WriteSerializable(ctx, m.GetDeleteReferencesCount())
-		if popErr := writeBuffer.PopContext("deleteReferencesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deleteReferencesCount")
-		}
-		if _deleteReferencesCountErr != nil {
-			return errors.Wrap(_deleteReferencesCountErr, "Error serializing 'deleteReferencesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteReferencesCount", m.GetDeleteReferencesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteReferencesCount' field")
 		}
 
-		// Simple Field (browseCount)
-		if pushErr := writeBuffer.PushContext("browseCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for browseCount")
-		}
-		_browseCountErr := writeBuffer.WriteSerializable(ctx, m.GetBrowseCount())
-		if popErr := writeBuffer.PopContext("browseCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for browseCount")
-		}
-		if _browseCountErr != nil {
-			return errors.Wrap(_browseCountErr, "Error serializing 'browseCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "browseCount", m.GetBrowseCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'browseCount' field")
 		}
 
-		// Simple Field (browseNextCount)
-		if pushErr := writeBuffer.PushContext("browseNextCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for browseNextCount")
-		}
-		_browseNextCountErr := writeBuffer.WriteSerializable(ctx, m.GetBrowseNextCount())
-		if popErr := writeBuffer.PopContext("browseNextCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for browseNextCount")
-		}
-		if _browseNextCountErr != nil {
-			return errors.Wrap(_browseNextCountErr, "Error serializing 'browseNextCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "browseNextCount", m.GetBrowseNextCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'browseNextCount' field")
 		}
 
-		// Simple Field (translateBrowsePathsToNodeIdsCount)
-		if pushErr := writeBuffer.PushContext("translateBrowsePathsToNodeIdsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for translateBrowsePathsToNodeIdsCount")
-		}
-		_translateBrowsePathsToNodeIdsCountErr := writeBuffer.WriteSerializable(ctx, m.GetTranslateBrowsePathsToNodeIdsCount())
-		if popErr := writeBuffer.PopContext("translateBrowsePathsToNodeIdsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for translateBrowsePathsToNodeIdsCount")
-		}
-		if _translateBrowsePathsToNodeIdsCountErr != nil {
-			return errors.Wrap(_translateBrowsePathsToNodeIdsCountErr, "Error serializing 'translateBrowsePathsToNodeIdsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "translateBrowsePathsToNodeIdsCount", m.GetTranslateBrowsePathsToNodeIdsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'translateBrowsePathsToNodeIdsCount' field")
 		}
 
-		// Simple Field (queryFirstCount)
-		if pushErr := writeBuffer.PushContext("queryFirstCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for queryFirstCount")
-		}
-		_queryFirstCountErr := writeBuffer.WriteSerializable(ctx, m.GetQueryFirstCount())
-		if popErr := writeBuffer.PopContext("queryFirstCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for queryFirstCount")
-		}
-		if _queryFirstCountErr != nil {
-			return errors.Wrap(_queryFirstCountErr, "Error serializing 'queryFirstCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "queryFirstCount", m.GetQueryFirstCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'queryFirstCount' field")
 		}
 
-		// Simple Field (queryNextCount)
-		if pushErr := writeBuffer.PushContext("queryNextCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for queryNextCount")
-		}
-		_queryNextCountErr := writeBuffer.WriteSerializable(ctx, m.GetQueryNextCount())
-		if popErr := writeBuffer.PopContext("queryNextCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for queryNextCount")
-		}
-		if _queryNextCountErr != nil {
-			return errors.Wrap(_queryNextCountErr, "Error serializing 'queryNextCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "queryNextCount", m.GetQueryNextCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'queryNextCount' field")
 		}
 
-		// Simple Field (registerNodesCount)
-		if pushErr := writeBuffer.PushContext("registerNodesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for registerNodesCount")
-		}
-		_registerNodesCountErr := writeBuffer.WriteSerializable(ctx, m.GetRegisterNodesCount())
-		if popErr := writeBuffer.PopContext("registerNodesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for registerNodesCount")
-		}
-		if _registerNodesCountErr != nil {
-			return errors.Wrap(_registerNodesCountErr, "Error serializing 'registerNodesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "registerNodesCount", m.GetRegisterNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'registerNodesCount' field")
 		}
 
-		// Simple Field (unregisterNodesCount)
-		if pushErr := writeBuffer.PushContext("unregisterNodesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unregisterNodesCount")
-		}
-		_unregisterNodesCountErr := writeBuffer.WriteSerializable(ctx, m.GetUnregisterNodesCount())
-		if popErr := writeBuffer.PopContext("unregisterNodesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unregisterNodesCount")
-		}
-		if _unregisterNodesCountErr != nil {
-			return errors.Wrap(_unregisterNodesCountErr, "Error serializing 'unregisterNodesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "unregisterNodesCount", m.GetUnregisterNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unregisterNodesCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SessionDiagnosticsDataType"); popErr != nil {
@@ -1720,12 +1187,10 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SessionDiagnosticsDataType) isSessionDiagnosticsDataType() bool {
-	return true
-}
+func (m *_SessionDiagnosticsDataType) IsSessionDiagnosticsDataType() {}
 
 func (m *_SessionDiagnosticsDataType) String() string {
 	if m == nil {

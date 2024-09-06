@@ -40,7 +40,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=AlphaGenerator
+//go:generate plc4xGenerator -type=AlphaGenerator
 type AlphaGenerator struct {
 	currentAlpha byte `hasLocker:"lock"`
 	lock         sync.Mutex
@@ -58,7 +58,7 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 	return result
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Connection
+//go:generate plc4xGenerator -type=Connection
 type Connection struct {
 	_default.DefaultConnection
 	alphaGenerator AlphaGenerator `stringer:"true"`
@@ -352,11 +352,11 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 		func(message spi.Message) bool {
 			c.log.Trace().Msg("Checking message")
 			switch message := message.(type) {
-			case readWriteModel.CBusMessageToClientExactly:
+			case readWriteModel.CBusMessageToClient:
 				switch reply := message.GetReply().(type) {
-				case readWriteModel.ReplyOrConfirmationReplyExactly:
+				case readWriteModel.ReplyOrConfirmationReply:
 					switch reply.GetReply().(type) {
-					case readWriteModel.PowerUpReplyExactly:
+					case readWriteModel.PowerUpReply:
 						c.log.Debug().Msg("Received a PUN reply")
 						return true
 					default:
@@ -367,9 +367,9 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 					c.log.Trace().Type("reply", reply).Msg("not relevant")
 					return false
 				}
-			case readWriteModel.CBusMessageToServerExactly:
+			case readWriteModel.CBusMessageToServer:
 				switch request := message.GetRequest().(type) {
-				case readWriteModel.RequestResetExactly:
+				case readWriteModel.RequestReset:
 					c.log.Debug().Msg("Received a Reset reply")
 					return true
 				default:
@@ -384,14 +384,14 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 		func(message spi.Message) error {
 			c.log.Trace().Msg("Handling message")
 			switch message.(type) {
-			case readWriteModel.CBusMessageToClientExactly:
+			case readWriteModel.CBusMessageToClient:
 				// This is the powerup notification
 				select {
 				case receivedResetEchoChan <- false:
 					c.log.Trace().Msg("notified reset chan from message to client")
 				default:
 				}
-			case readWriteModel.CBusMessageToServerExactly:
+			case readWriteModel.CBusMessageToServer:
 				// This is the echo
 				select {
 				case receivedResetEchoChan <- true:
@@ -505,15 +505,15 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 	directCommandAckErrorChan := make(chan error, 1)
 	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
 		switch message := message.(type) {
-		case readWriteModel.CBusMessageToClientExactly:
+		case readWriteModel.CBusMessageToClient:
 			switch reply := message.GetReply().(type) {
-			case readWriteModel.ReplyOrConfirmationReplyExactly:
+			case readWriteModel.ReplyOrConfirmationReply:
 				switch reply := reply.GetReply().(type) {
-				case readWriteModel.ReplyEncodedReplyExactly:
+				case readWriteModel.ReplyEncodedReply:
 					switch encodedReply := reply.GetEncodedReply().(type) {
-					case readWriteModel.EncodedReplyCALReplyExactly:
+					case readWriteModel.EncodedReplyCALReply:
 						switch data := encodedReply.GetCalReply().GetCalData().(type) {
-						case readWriteModel.CALDataAcknowledgeExactly:
+						case readWriteModel.CALDataAcknowledge:
 							if data.GetParamNo() == paramNo {
 								return true
 							}
@@ -525,15 +525,15 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 		return false
 	}, func(message spi.Message) error {
 		switch message := message.(type) {
-		case readWriteModel.CBusMessageToClientExactly:
+		case readWriteModel.CBusMessageToClient:
 			switch reply := message.GetReply().(type) {
-			case readWriteModel.ReplyOrConfirmationReplyExactly:
+			case readWriteModel.ReplyOrConfirmationReply:
 				switch reply := reply.GetReply().(type) {
-				case readWriteModel.ReplyEncodedReplyExactly:
+				case readWriteModel.ReplyEncodedReply:
 					switch encodedReply := reply.GetEncodedReply().(type) {
-					case readWriteModel.EncodedReplyCALReplyExactly:
+					case readWriteModel.EncodedReplyCALReply:
 						switch data := encodedReply.GetCalReply().GetCalData().(type) {
-						case readWriteModel.CALDataAcknowledgeExactly:
+						case readWriteModel.CALDataAcknowledge:
 							if data.GetParamNo() == paramNo {
 								select {
 								case directCommandAckChan <- true:

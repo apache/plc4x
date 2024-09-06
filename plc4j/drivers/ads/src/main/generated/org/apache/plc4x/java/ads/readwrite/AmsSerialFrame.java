@@ -113,7 +113,7 @@ public class AmsSerialFrame implements Message {
     writeSimpleField("length", length, writeSignedByte(writeBuffer, 8));
 
     // Simple Field (userdata)
-    writeSimpleField("userdata", userdata, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userdata", userdata, writeComplex(writeBuffer));
 
     // Simple Field (crc)
     writeSimpleField("crc", crc, writeUnsignedInt(writeBuffer, 16));
@@ -173,8 +173,7 @@ public class AmsSerialFrame implements Message {
 
     AmsPacket userdata =
         readSimpleField(
-            "userdata",
-            new DataReaderComplexDefault<>(() -> AmsPacket.staticParse(readBuffer), readBuffer));
+            "userdata", readComplex(() -> AmsPacket.staticParse(readBuffer), readBuffer));
 
     int crc = readSimpleField("crc", readUnsignedInt(readBuffer, 16));
 

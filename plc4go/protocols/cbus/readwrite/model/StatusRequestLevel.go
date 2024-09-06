@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,24 +43,22 @@ type StatusRequestLevel interface {
 	GetApplication() ApplicationIdContainer
 	// GetStartingGroupAddressLabel returns StartingGroupAddressLabel (property field)
 	GetStartingGroupAddressLabel() byte
-}
-
-// StatusRequestLevelExactly can be used when we want exactly this type and not a type which fulfills StatusRequestLevel.
-// This is useful for switch cases.
-type StatusRequestLevelExactly interface {
-	StatusRequestLevel
-	isStatusRequestLevel() bool
+	// IsStatusRequestLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusRequestLevel()
 }
 
 // _StatusRequestLevel is the data-structure of this message
 type _StatusRequestLevel struct {
-	*_StatusRequest
+	StatusRequestContract
 	Application               ApplicationIdContainer
 	StartingGroupAddressLabel byte
 	// Reserved Fields
 	reservedField0 *byte
 	reservedField1 *byte
 }
+
+var _ StatusRequestLevel = (*_StatusRequestLevel)(nil)
+var _ StatusRequestRequirements = (*_StatusRequestLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,12 +70,8 @@ type _StatusRequestLevel struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_StatusRequestLevel) InitializeParent(parent StatusRequest, statusType byte) {
-	m.StatusType = statusType
-}
-
-func (m *_StatusRequestLevel) GetParent() StatusRequest {
-	return m._StatusRequest
+func (m *_StatusRequestLevel) GetParent() StatusRequestContract {
+	return m.StatusRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,11 +95,11 @@ func (m *_StatusRequestLevel) GetStartingGroupAddressLabel() byte {
 // NewStatusRequestLevel factory function for _StatusRequestLevel
 func NewStatusRequestLevel(application ApplicationIdContainer, startingGroupAddressLabel byte, statusType byte) *_StatusRequestLevel {
 	_result := &_StatusRequestLevel{
+		StatusRequestContract:     NewStatusRequest(statusType),
 		Application:               application,
 		StartingGroupAddressLabel: startingGroupAddressLabel,
-		_StatusRequest:            NewStatusRequest(statusType),
 	}
-	_result._StatusRequest._StatusRequestChildRequirements = _result
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
 	return _result
 }
 
@@ -123,7 +119,7 @@ func (m *_StatusRequestLevel) GetTypeName() string {
 }
 
 func (m *_StatusRequestLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.StatusRequestContract.(*_StatusRequest).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -144,94 +140,51 @@ func (m *_StatusRequestLevel) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func StatusRequestLevelParse(ctx context.Context, theBytes []byte) (StatusRequestLevel, error) {
-	return StatusRequestLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func StatusRequestLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestLevel, error) {
+func (m *_StatusRequestLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_StatusRequest) (__statusRequestLevel StatusRequestLevel, err error) {
+	m.StatusRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StatusRequestLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StatusRequestLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestLevel")
-		}
-		if reserved != byte(0x73) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0x73),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x73))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	var reservedField1 *byte
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadByte("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestLevel")
-		}
-		if reserved != byte(0x07) {
-			log.Info().Fields(map[string]any{
-				"expected value": byte(0x07),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x07))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField1 = reservedField1
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestLevel")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
-	}
+	m.Application = application
 
-	// Simple Field (startingGroupAddressLabel)
-	_startingGroupAddressLabel, _startingGroupAddressLabelErr := readBuffer.ReadByte("startingGroupAddressLabel")
-	if _startingGroupAddressLabelErr != nil {
-		return nil, errors.Wrap(_startingGroupAddressLabelErr, "Error parsing 'startingGroupAddressLabel' field of StatusRequestLevel")
+	startingGroupAddressLabel, err := ReadSimpleField(ctx, "startingGroupAddressLabel", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingGroupAddressLabel' field"))
 	}
-	startingGroupAddressLabel := _startingGroupAddressLabel
+	m.StartingGroupAddressLabel = startingGroupAddressLabel
 
 	// Validation
 	if !(bool(bool(bool(bool(bool(bool(bool(bool((startingGroupAddressLabel) == (0x00))) || bool(bool((startingGroupAddressLabel) == (0x20)))) || bool(bool((startingGroupAddressLabel) == (0x40)))) || bool(bool((startingGroupAddressLabel) == (0x60)))) || bool(bool((startingGroupAddressLabel) == (0x80)))) || bool(bool((startingGroupAddressLabel) == (0xA0)))) || bool(bool((startingGroupAddressLabel) == (0xC0)))) || bool(bool((startingGroupAddressLabel) == (0xE0)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"invalid label"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "invalid label"})
 	}
 
 	if closeErr := readBuffer.CloseContext("StatusRequestLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StatusRequestLevel")
 	}
 
-	// Create a partially initialized instance
-	_child := &_StatusRequestLevel{
-		_StatusRequest:            &_StatusRequest{},
-		Application:               application,
-		StartingGroupAddressLabel: startingGroupAddressLabel,
-		reservedField0:            reservedField0,
-		reservedField1:            reservedField1,
-	}
-	_child._StatusRequest._StatusRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_StatusRequestLevel) Serialize() ([]byte, error) {
@@ -252,55 +205,20 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for StatusRequestLevel")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0x73)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0x73),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x73), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0x07)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0x07),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x07), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (application)
-		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for application")
-		}
-		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
-		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for application")
-		}
-		if _applicationErr != nil {
-			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		// Simple Field (startingGroupAddressLabel)
-		startingGroupAddressLabel := byte(m.GetStartingGroupAddressLabel())
-		_startingGroupAddressLabelErr := writeBuffer.WriteByte("startingGroupAddressLabel", (startingGroupAddressLabel))
-		if _startingGroupAddressLabelErr != nil {
-			return errors.Wrap(_startingGroupAddressLabelErr, "Error serializing 'startingGroupAddressLabel' field")
+		if err := WriteSimpleField[byte](ctx, "startingGroupAddressLabel", m.GetStartingGroupAddressLabel(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startingGroupAddressLabel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("StatusRequestLevel"); popErr != nil {
@@ -308,12 +226,10 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.StatusRequestContract.(*_StatusRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_StatusRequestLevel) isStatusRequestLevel() bool {
-	return true
-}
+func (m *_StatusRequestLevel) IsStatusRequestLevel() {}
 
 func (m *_StatusRequestLevel) String() string {
 	if m == nil {

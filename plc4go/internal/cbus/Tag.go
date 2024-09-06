@@ -33,7 +33,7 @@ import (
 )
 
 //go:generate stringer -type StatusRequestType
-//go:generate go run ../../tools/plc4xlicenser/gen.go -type=StatusRequestType
+//go:generate plc4xLicencer -type=StatusRequestType
 type StatusRequestType uint8
 
 const (
@@ -694,7 +694,7 @@ func (s salTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return err
 	}
 
-	if err := writeBuffer.WriteString("salCommand", uint32(len(s.salCommand)*8), "UTF-8", s.salCommand); err != nil {
+	if err := writeBuffer.WriteString("salCommand", uint32(len(s.salCommand)*8), s.salCommand); err != nil {
 		return err
 	}
 

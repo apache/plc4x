@@ -33,44 +33,35 @@ import (
 
 // ComObjectTable is the corresponding interface of ComObjectTable
 type ComObjectTable interface {
+	ComObjectTableContract
+	ComObjectTableRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsComObjectTable()
+}
+
+// ComObjectTableContract provides a set of functions which can be overwritten by a sub struct
+type ComObjectTableContract interface {
+	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsComObjectTable()
+}
+
+// ComObjectTableRequirements provides a set of functions which need to be implemented by a sub struct
+type ComObjectTableRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetFirmwareType returns FirmwareType (discriminator field)
 	GetFirmwareType() FirmwareType
 }
 
-// ComObjectTableExactly can be used when we want exactly this type and not a type which fulfills ComObjectTable.
-// This is useful for switch cases.
-type ComObjectTableExactly interface {
-	ComObjectTable
-	isComObjectTable() bool
-}
-
 // _ComObjectTable is the data-structure of this message
 type _ComObjectTable struct {
-	_ComObjectTableChildRequirements
+	_SubType ComObjectTable
 }
 
-type _ComObjectTableChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetFirmwareType() FirmwareType
-}
-
-type ComObjectTableParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ComObjectTable, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type ComObjectTableChild interface {
-	utils.Serializable
-	InitializeParent(parent ComObjectTable)
-	GetParent() *ComObjectTable
-
-	GetTypeName() string
-	ComObjectTable
-}
+var _ ComObjectTableContract = (*_ComObjectTable)(nil)
 
 // NewComObjectTable factory function for _ComObjectTable
 func NewComObjectTable() *_ComObjectTable {
@@ -92,25 +83,43 @@ func (m *_ComObjectTable) GetTypeName() string {
 	return "ComObjectTable"
 }
 
-func (m *_ComObjectTable) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_ComObjectTable) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
 func (m *_ComObjectTable) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func ComObjectTableParse(ctx context.Context, theBytes []byte, firmwareType FirmwareType) (ComObjectTable, error) {
-	return ComObjectTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
+func ComObjectTableParse[T ComObjectTable](ctx context.Context, theBytes []byte, firmwareType FirmwareType) (T, error) {
+	return ComObjectTableParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
-func ComObjectTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTable, error) {
+func ComObjectTableParseWithBufferProducer[T ComObjectTable](firmwareType FirmwareType) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := ComObjectTableParseWithBuffer[T](ctx, readBuffer, firmwareType)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func ComObjectTableParseWithBuffer[T ComObjectTable](ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (T, error) {
+	v, err := (&_ComObjectTable{}).parse(ctx, readBuffer, firmwareType)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_ComObjectTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (__comObjectTable ComObjectTable, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ComObjectTable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ComObjectTable")
 	}
@@ -118,39 +127,32 @@ func ComObjectTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type ComObjectTableChildSerializeRequirement interface {
-		ComObjectTable
-		InitializeParent(ComObjectTable)
-		GetParent() ComObjectTable
-	}
-	var _childTemp any
-	var _child ComObjectTableChildSerializeRequirement
-	var typeSwitchError error
+	var _child ComObjectTable
 	switch {
 	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
-		_childTemp, typeSwitchError = ComObjectTableRealisationType1ParseWithBuffer(ctx, readBuffer, firmwareType)
+		if _child, err = (&_ComObjectTableRealisationType1{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType1 for type-switch of ComObjectTable")
+		}
 	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
-		_childTemp, typeSwitchError = ComObjectTableRealisationType2ParseWithBuffer(ctx, readBuffer, firmwareType)
+		if _child, err = (&_ComObjectTableRealisationType2{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType2 for type-switch of ComObjectTable")
+		}
 	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
-		_childTemp, typeSwitchError = ComObjectTableRealisationType6ParseWithBuffer(ctx, readBuffer, firmwareType)
+		if _child, err = (&_ComObjectTableRealisationType6{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType6 for type-switch of ComObjectTable")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [firmwareType=%v]", firmwareType)
+		return nil, errors.Errorf("Unmapped type for parameters [firmwareType=%v]", firmwareType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ComObjectTable")
-	}
-	_child = _childTemp.(ComObjectTableChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ComObjectTable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ComObjectTable")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_ComObjectTable) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ComObjectTable, serializeChildFunction func() error) error {
+func (pm *_ComObjectTable) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ComObjectTable, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -173,17 +175,4 @@ func (pm *_ComObjectTable) SerializeParent(ctx context.Context, writeBuffer util
 	return nil
 }
 
-func (m *_ComObjectTable) isComObjectTable() bool {
-	return true
-}
-
-func (m *_ComObjectTable) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_ComObjectTable) IsComObjectTable() {}

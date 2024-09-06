@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type AirConditioningDataZoneHumidityPlantStatus interface {
 	GetHumidityStatus() HVACHumidityStatusFlags
 	// GetHumidityErrorCode returns HumidityErrorCode (property field)
 	GetHumidityErrorCode() HVACHumidityError
-}
-
-// AirConditioningDataZoneHumidityPlantStatusExactly can be used when we want exactly this type and not a type which fulfills AirConditioningDataZoneHumidityPlantStatus.
-// This is useful for switch cases.
-type AirConditioningDataZoneHumidityPlantStatusExactly interface {
-	AirConditioningDataZoneHumidityPlantStatus
-	isAirConditioningDataZoneHumidityPlantStatus() bool
+	// IsAirConditioningDataZoneHumidityPlantStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataZoneHumidityPlantStatus()
 }
 
 // _AirConditioningDataZoneHumidityPlantStatus is the data-structure of this message
 type _AirConditioningDataZoneHumidityPlantStatus struct {
-	*_AirConditioningData
+	AirConditioningDataContract
 	ZoneGroup         byte
 	ZoneList          HVACZoneList
 	HumidityType      HVACHumidityType
 	HumidityStatus    HVACHumidityStatusFlags
 	HumidityErrorCode HVACHumidityError
 }
+
+var _ AirConditioningDataZoneHumidityPlantStatus = (*_AirConditioningDataZoneHumidityPlantStatus)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataZoneHumidityPlantStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,12 +76,8 @@ type _AirConditioningDataZoneHumidityPlantStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AirConditioningDataZoneHumidityPlantStatus) InitializeParent(parent AirConditioningData, commandTypeContainer AirConditioningCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_AirConditioningDataZoneHumidityPlantStatus) GetParent() AirConditioningData {
-	return m._AirConditioningData
+func (m *_AirConditioningDataZoneHumidityPlantStatus) GetParent() AirConditioningDataContract {
+	return m.AirConditioningDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,15 +112,21 @@ func (m *_AirConditioningDataZoneHumidityPlantStatus) GetHumidityErrorCode() HVA
 
 // NewAirConditioningDataZoneHumidityPlantStatus factory function for _AirConditioningDataZoneHumidityPlantStatus
 func NewAirConditioningDataZoneHumidityPlantStatus(zoneGroup byte, zoneList HVACZoneList, humidityType HVACHumidityType, humidityStatus HVACHumidityStatusFlags, humidityErrorCode HVACHumidityError, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataZoneHumidityPlantStatus {
-	_result := &_AirConditioningDataZoneHumidityPlantStatus{
-		ZoneGroup:            zoneGroup,
-		ZoneList:             zoneList,
-		HumidityType:         humidityType,
-		HumidityStatus:       humidityStatus,
-		HumidityErrorCode:    humidityErrorCode,
-		_AirConditioningData: NewAirConditioningData(commandTypeContainer),
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHumidityPlantStatus must not be nil")
 	}
-	_result._AirConditioningData._AirConditioningDataChildRequirements = _result
+	if humidityStatus == nil {
+		panic("humidityStatus of type HVACHumidityStatusFlags for AirConditioningDataZoneHumidityPlantStatus must not be nil")
+	}
+	_result := &_AirConditioningDataZoneHumidityPlantStatus{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		HumidityType:                humidityType,
+		HumidityStatus:              humidityStatus,
+		HumidityErrorCode:           humidityErrorCode,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 
@@ -144,7 +146,7 @@ func (m *_AirConditioningDataZoneHumidityPlantStatus) GetTypeName() string {
 }
 
 func (m *_AirConditioningDataZoneHumidityPlantStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -168,95 +170,52 @@ func (m *_AirConditioningDataZoneHumidityPlantStatus) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataZoneHumidityPlantStatusParse(ctx context.Context, theBytes []byte) (AirConditioningDataZoneHumidityPlantStatus, error) {
-	return AirConditioningDataZoneHumidityPlantStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AirConditioningDataZoneHumidityPlantStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataZoneHumidityPlantStatus, error) {
+func (m *_AirConditioningDataZoneHumidityPlantStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataZoneHumidityPlantStatus AirConditioningDataZoneHumidityPlantStatus, err error) {
+	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataZoneHumidityPlantStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataZoneHumidityPlantStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataZoneHumidityPlantStatus")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
-	zoneGroup := _zoneGroup
+	m.ZoneGroup = zoneGroup
 
-	// Simple Field (zoneList)
-	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
+	zoneList, err := ReadSimpleField[HVACZoneList](ctx, "zoneList", ReadComplex[HVACZoneList](HVACZoneListParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneList' field"))
 	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
-	if _zoneListErr != nil {
-		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataZoneHumidityPlantStatus")
-	}
-	zoneList := _zoneList.(HVACZoneList)
-	if closeErr := readBuffer.CloseContext("zoneList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneList")
-	}
+	m.ZoneList = zoneList
 
-	// Simple Field (humidityType)
-	if pullErr := readBuffer.PullContext("humidityType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for humidityType")
+	humidityType, err := ReadEnumField[HVACHumidityType](ctx, "humidityType", "HVACHumidityType", ReadEnum(HVACHumidityTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityType' field"))
 	}
-	_humidityType, _humidityTypeErr := HVACHumidityTypeParseWithBuffer(ctx, readBuffer)
-	if _humidityTypeErr != nil {
-		return nil, errors.Wrap(_humidityTypeErr, "Error parsing 'humidityType' field of AirConditioningDataZoneHumidityPlantStatus")
-	}
-	humidityType := _humidityType
-	if closeErr := readBuffer.CloseContext("humidityType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for humidityType")
-	}
+	m.HumidityType = humidityType
 
-	// Simple Field (humidityStatus)
-	if pullErr := readBuffer.PullContext("humidityStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for humidityStatus")
+	humidityStatus, err := ReadSimpleField[HVACHumidityStatusFlags](ctx, "humidityStatus", ReadComplex[HVACHumidityStatusFlags](HVACHumidityStatusFlagsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityStatus' field"))
 	}
-	_humidityStatus, _humidityStatusErr := HVACHumidityStatusFlagsParseWithBuffer(ctx, readBuffer)
-	if _humidityStatusErr != nil {
-		return nil, errors.Wrap(_humidityStatusErr, "Error parsing 'humidityStatus' field of AirConditioningDataZoneHumidityPlantStatus")
-	}
-	humidityStatus := _humidityStatus.(HVACHumidityStatusFlags)
-	if closeErr := readBuffer.CloseContext("humidityStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for humidityStatus")
-	}
+	m.HumidityStatus = humidityStatus
 
-	// Simple Field (humidityErrorCode)
-	if pullErr := readBuffer.PullContext("humidityErrorCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for humidityErrorCode")
+	humidityErrorCode, err := ReadEnumField[HVACHumidityError](ctx, "humidityErrorCode", "HVACHumidityError", ReadEnum(HVACHumidityErrorByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityErrorCode' field"))
 	}
-	_humidityErrorCode, _humidityErrorCodeErr := HVACHumidityErrorParseWithBuffer(ctx, readBuffer)
-	if _humidityErrorCodeErr != nil {
-		return nil, errors.Wrap(_humidityErrorCodeErr, "Error parsing 'humidityErrorCode' field of AirConditioningDataZoneHumidityPlantStatus")
-	}
-	humidityErrorCode := _humidityErrorCode
-	if closeErr := readBuffer.CloseContext("humidityErrorCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for humidityErrorCode")
-	}
+	m.HumidityErrorCode = humidityErrorCode
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataZoneHumidityPlantStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AirConditioningDataZoneHumidityPlantStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AirConditioningDataZoneHumidityPlantStatus{
-		_AirConditioningData: &_AirConditioningData{},
-		ZoneGroup:            zoneGroup,
-		ZoneList:             zoneList,
-		HumidityType:         humidityType,
-		HumidityStatus:       humidityStatus,
-		HumidityErrorCode:    humidityErrorCode,
-	}
-	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AirConditioningDataZoneHumidityPlantStatus) Serialize() ([]byte, error) {
@@ -277,59 +236,24 @@ func (m *_AirConditioningDataZoneHumidityPlantStatus) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataZoneHumidityPlantStatus")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
-		// Simple Field (zoneList)
-		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneList")
-		}
-		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
-		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneList")
-		}
-		if _zoneListErr != nil {
-			return errors.Wrap(_zoneListErr, "Error serializing 'zoneList' field")
+		if err := WriteSimpleField[HVACZoneList](ctx, "zoneList", m.GetZoneList(), WriteComplex[HVACZoneList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneList' field")
 		}
 
-		// Simple Field (humidityType)
-		if pushErr := writeBuffer.PushContext("humidityType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for humidityType")
-		}
-		_humidityTypeErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityType())
-		if popErr := writeBuffer.PopContext("humidityType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for humidityType")
-		}
-		if _humidityTypeErr != nil {
-			return errors.Wrap(_humidityTypeErr, "Error serializing 'humidityType' field")
+		if err := WriteSimpleEnumField[HVACHumidityType](ctx, "humidityType", "HVACHumidityType", m.GetHumidityType(), WriteEnum[HVACHumidityType, uint8](HVACHumidityType.GetValue, HVACHumidityType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'humidityType' field")
 		}
 
-		// Simple Field (humidityStatus)
-		if pushErr := writeBuffer.PushContext("humidityStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for humidityStatus")
-		}
-		_humidityStatusErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityStatus())
-		if popErr := writeBuffer.PopContext("humidityStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for humidityStatus")
-		}
-		if _humidityStatusErr != nil {
-			return errors.Wrap(_humidityStatusErr, "Error serializing 'humidityStatus' field")
+		if err := WriteSimpleField[HVACHumidityStatusFlags](ctx, "humidityStatus", m.GetHumidityStatus(), WriteComplex[HVACHumidityStatusFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'humidityStatus' field")
 		}
 
-		// Simple Field (humidityErrorCode)
-		if pushErr := writeBuffer.PushContext("humidityErrorCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for humidityErrorCode")
-		}
-		_humidityErrorCodeErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityErrorCode())
-		if popErr := writeBuffer.PopContext("humidityErrorCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for humidityErrorCode")
-		}
-		if _humidityErrorCodeErr != nil {
-			return errors.Wrap(_humidityErrorCodeErr, "Error serializing 'humidityErrorCode' field")
+		if err := WriteSimpleEnumField[HVACHumidityError](ctx, "humidityErrorCode", "HVACHumidityError", m.GetHumidityErrorCode(), WriteEnum[HVACHumidityError, uint8](HVACHumidityError.GetValue, HVACHumidityError.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'humidityErrorCode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataZoneHumidityPlantStatus"); popErr != nil {
@@ -337,11 +261,10 @@ func (m *_AirConditioningDataZoneHumidityPlantStatus) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AirConditioningDataContract.(*_AirConditioningData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AirConditioningDataZoneHumidityPlantStatus) isAirConditioningDataZoneHumidityPlantStatus() bool {
-	return true
+func (m *_AirConditioningDataZoneHumidityPlantStatus) IsAirConditioningDataZoneHumidityPlantStatus() {
 }
 
 func (m *_AirConditioningDataZoneHumidityPlantStatus) String() string {

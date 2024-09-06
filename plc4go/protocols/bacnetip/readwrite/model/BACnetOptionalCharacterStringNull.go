@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetOptionalCharacterStringNull interface {
 	BACnetOptionalCharacterString
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-}
-
-// BACnetOptionalCharacterStringNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalCharacterStringNull.
-// This is useful for switch cases.
-type BACnetOptionalCharacterStringNullExactly interface {
-	BACnetOptionalCharacterStringNull
-	isBACnetOptionalCharacterStringNull() bool
+	// IsBACnetOptionalCharacterStringNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalCharacterStringNull()
 }
 
 // _BACnetOptionalCharacterStringNull is the data-structure of this message
 type _BACnetOptionalCharacterStringNull struct {
-	*_BACnetOptionalCharacterString
+	BACnetOptionalCharacterStringContract
 	NullValue BACnetApplicationTagNull
 }
+
+var _ BACnetOptionalCharacterStringNull = (*_BACnetOptionalCharacterStringNull)(nil)
+var _ BACnetOptionalCharacterStringRequirements = (*_BACnetOptionalCharacterStringNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetOptionalCharacterStringNull struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetOptionalCharacterStringNull) InitializeParent(parent BACnetOptionalCharacterString, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetOptionalCharacterStringNull) GetParent() BACnetOptionalCharacterString {
-	return m._BACnetOptionalCharacterString
+func (m *_BACnetOptionalCharacterStringNull) GetParent() BACnetOptionalCharacterStringContract {
+	return m.BACnetOptionalCharacterStringContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetOptionalCharacterStringNull) GetNullValue() BACnetApplicationTag
 
 // NewBACnetOptionalCharacterStringNull factory function for _BACnetOptionalCharacterStringNull
 func NewBACnetOptionalCharacterStringNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalCharacterStringNull {
-	_result := &_BACnetOptionalCharacterStringNull{
-		NullValue:                      nullValue,
-		_BACnetOptionalCharacterString: NewBACnetOptionalCharacterString(peekedTagHeader),
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalCharacterStringNull must not be nil")
 	}
-	_result._BACnetOptionalCharacterString._BACnetOptionalCharacterStringChildRequirements = _result
+	_result := &_BACnetOptionalCharacterStringNull{
+		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
+		NullValue:                             nullValue,
+	}
+	_result.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetOptionalCharacterStringNull) GetTypeName() string {
 }
 
 func (m *_BACnetOptionalCharacterStringNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString).getLengthInBits(ctx))
 
 	// Simple field (nullValue)
 	lengthInBits += m.NullValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetOptionalCharacterStringNull) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalCharacterStringNullParse(ctx context.Context, theBytes []byte) (BACnetOptionalCharacterStringNull, error) {
-	return BACnetOptionalCharacterStringNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetOptionalCharacterStringNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringNull, error) {
+func (m *_BACnetOptionalCharacterStringNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetOptionalCharacterString) (__bACnetOptionalCharacterStringNull BACnetOptionalCharacterStringNull, err error) {
+	m.BACnetOptionalCharacterStringContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterStringNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalCharacterStringNull")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nullValue)
-	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
+	nullValue, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "nullValue", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullValue' field"))
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetOptionalCharacterStringNull")
-	}
-	nullValue := _nullValue.(BACnetApplicationTagNull)
-	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
-	}
+	m.NullValue = nullValue
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalCharacterStringNull"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalCharacterStringNull")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetOptionalCharacterStringNull{
-		_BACnetOptionalCharacterString: &_BACnetOptionalCharacterString{},
-		NullValue:                      nullValue,
-	}
-	_child._BACnetOptionalCharacterString._BACnetOptionalCharacterStringChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetOptionalCharacterStringNull) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetOptionalCharacterStringNull) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalCharacterStringNull")
 		}
 
-		// Simple Field (nullValue)
-		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nullValue")
-		}
-		_nullValueErr := writeBuffer.WriteSerializable(ctx, m.GetNullValue())
-		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nullValue")
-		}
-		if _nullValueErr != nil {
-			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagNull](ctx, "nullValue", m.GetNullValue(), WriteComplex[BACnetApplicationTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nullValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalCharacterStringNull"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetOptionalCharacterStringNull) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetOptionalCharacterStringNull) isBACnetOptionalCharacterStringNull() bool {
-	return true
-}
+func (m *_BACnetOptionalCharacterStringNull) IsBACnetOptionalCharacterStringNull() {}
 
 func (m *_BACnetOptionalCharacterStringNull) String() string {
 	if m == nil {

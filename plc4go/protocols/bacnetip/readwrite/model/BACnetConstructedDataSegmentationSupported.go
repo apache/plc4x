@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataSegmentationSupported interface {
 	GetSegmentationSupported() BACnetSegmentationTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSegmentationTagged
-}
-
-// BACnetConstructedDataSegmentationSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSegmentationSupported.
-// This is useful for switch cases.
-type BACnetConstructedDataSegmentationSupportedExactly interface {
-	BACnetConstructedDataSegmentationSupported
-	isBACnetConstructedDataSegmentationSupported() bool
+	// IsBACnetConstructedDataSegmentationSupported is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSegmentationSupported()
 }
 
 // _BACnetConstructedDataSegmentationSupported is the data-structure of this message
 type _BACnetConstructedDataSegmentationSupported struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	SegmentationSupported BACnetSegmentationTagged
 }
+
+var _ BACnetConstructedDataSegmentationSupported = (*_BACnetConstructedDataSegmentationSupported)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSegmentationSupported)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataSegmentationSupported) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataSegmentationSupported) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataSegmentationSupported) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataSegmentationSupported) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataSegmentationSupported) GetActualValue() BACnetSeg
 
 // NewBACnetConstructedDataSegmentationSupported factory function for _BACnetConstructedDataSegmentationSupported
 func NewBACnetConstructedDataSegmentationSupported(segmentationSupported BACnetSegmentationTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSegmentationSupported {
-	_result := &_BACnetConstructedDataSegmentationSupported{
-		SegmentationSupported:  segmentationSupported,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if segmentationSupported == nil {
+		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetConstructedDataSegmentationSupported must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataSegmentationSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SegmentationSupported:         segmentationSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataSegmentationSupported) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataSegmentationSupported) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (segmentationSupported)
 	lengthInBits += m.SegmentationSupported.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataSegmentationSupported) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataSegmentationSupportedParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSegmentationSupported, error) {
-	return BACnetConstructedDataSegmentationSupportedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataSegmentationSupportedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSegmentationSupported, error) {
+func (m *_BACnetConstructedDataSegmentationSupported) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataSegmentationSupported BACnetConstructedDataSegmentationSupported, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSegmentationSupported"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSegmentationSupported")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (segmentationSupported)
-	if pullErr := readBuffer.PullContext("segmentationSupported"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for segmentationSupported")
+	segmentationSupported, err := ReadSimpleField[BACnetSegmentationTagged](ctx, "segmentationSupported", ReadComplex[BACnetSegmentationTagged](BACnetSegmentationTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentationSupported' field"))
 	}
-	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _segmentationSupportedErr != nil {
-		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field of BACnetConstructedDataSegmentationSupported")
-	}
-	segmentationSupported := _segmentationSupported.(BACnetSegmentationTagged)
-	if closeErr := readBuffer.CloseContext("segmentationSupported"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for segmentationSupported")
-	}
+	m.SegmentationSupported = segmentationSupported
 
-	// Virtual field
-	_actualValue := segmentationSupported
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetSegmentationTagged](ctx, "actualValue", (*BACnetSegmentationTagged)(nil), segmentationSupported)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSegmentationSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSegmentationSupported")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataSegmentationSupported{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		SegmentationSupported: segmentationSupported,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataSegmentationSupported) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataSegmentationSupported) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSegmentationSupported")
 		}
 
-		// Simple Field (segmentationSupported)
-		if pushErr := writeBuffer.PushContext("segmentationSupported"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for segmentationSupported")
-		}
-		_segmentationSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentationSupported())
-		if popErr := writeBuffer.PopContext("segmentationSupported"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for segmentationSupported")
-		}
-		if _segmentationSupportedErr != nil {
-			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
+		if err := WriteSimpleField[BACnetSegmentationTagged](ctx, "segmentationSupported", m.GetSegmentationSupported(), WriteComplex[BACnetSegmentationTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentationSupported' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataSegmentationSupported) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataSegmentationSupported) isBACnetConstructedDataSegmentationSupported() bool {
-	return true
+func (m *_BACnetConstructedDataSegmentationSupported) IsBACnetConstructedDataSegmentationSupported() {
 }
 
 func (m *_BACnetConstructedDataSegmentationSupported) String() string {

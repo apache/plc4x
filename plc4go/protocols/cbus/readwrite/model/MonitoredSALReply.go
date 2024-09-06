@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type MonitoredSALReply interface {
 	EncodedReply
 	// GetMonitoredSAL returns MonitoredSAL (property field)
 	GetMonitoredSAL() MonitoredSAL
-}
-
-// MonitoredSALReplyExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALReply.
-// This is useful for switch cases.
-type MonitoredSALReplyExactly interface {
-	MonitoredSALReply
-	isMonitoredSALReply() bool
+	// IsMonitoredSALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredSALReply()
 }
 
 // _MonitoredSALReply is the data-structure of this message
 type _MonitoredSALReply struct {
-	*_EncodedReply
+	EncodedReplyContract
 	MonitoredSAL MonitoredSAL
 }
+
+var _ MonitoredSALReply = (*_MonitoredSALReply)(nil)
+var _ EncodedReplyRequirements = (*_MonitoredSALReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _MonitoredSALReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALReply) InitializeParent(parent EncodedReply, peekedByte byte) {
-	m.PeekedByte = peekedByte
-}
-
-func (m *_MonitoredSALReply) GetParent() EncodedReply {
-	return m._EncodedReply
+func (m *_MonitoredSALReply) GetParent() EncodedReplyContract {
+	return m.EncodedReplyContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_MonitoredSALReply) GetMonitoredSAL() MonitoredSAL {
 
 // NewMonitoredSALReply factory function for _MonitoredSALReply
 func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
-	_result := &_MonitoredSALReply{
-		MonitoredSAL:  monitoredSAL,
-		_EncodedReply: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+	if monitoredSAL == nil {
+		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
 	}
-	_result._EncodedReply._EncodedReplyChildRequirements = _result
+	_result := &_MonitoredSALReply{
+		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		MonitoredSAL:         monitoredSAL,
+	}
+	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_MonitoredSALReply) GetTypeName() string {
 }
 
 func (m *_MonitoredSALReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
 
 	// Simple field (monitoredSAL)
 	lengthInBits += m.MonitoredSAL.GetLengthInBits(ctx)
@@ -124,48 +123,28 @@ func (m *_MonitoredSALReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MonitoredSALReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
-	return MonitoredSALReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
-}
-
-func MonitoredSALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
+func (m *_MonitoredSALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EncodedReply, cBusOptions CBusOptions, requestContext RequestContext) (__monitoredSALReply MonitoredSALReply, err error) {
+	m.EncodedReplyContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSALReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (monitoredSAL)
-	if pullErr := readBuffer.PullContext("monitoredSAL"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoredSAL")
+	monitoredSAL, err := ReadSimpleField[MonitoredSAL](ctx, "monitoredSAL", ReadComplex[MonitoredSAL](MonitoredSALParseWithBufferProducer[MonitoredSAL]((CBusOptions)(cBusOptions)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredSAL' field"))
 	}
-	_monitoredSAL, _monitoredSALErr := MonitoredSALParseWithBuffer(ctx, readBuffer, cBusOptions)
-	if _monitoredSALErr != nil {
-		return nil, errors.Wrap(_monitoredSALErr, "Error parsing 'monitoredSAL' field of MonitoredSALReply")
-	}
-	monitoredSAL := _monitoredSAL.(MonitoredSAL)
-	if closeErr := readBuffer.CloseContext("monitoredSAL"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoredSAL")
-	}
+	m.MonitoredSAL = monitoredSAL
 
 	if closeErr := readBuffer.CloseContext("MonitoredSALReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSALReply")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MonitoredSALReply{
-		_EncodedReply: &_EncodedReply{
-			CBusOptions:    cBusOptions,
-			RequestContext: requestContext,
-		},
-		MonitoredSAL: monitoredSAL,
-	}
-	_child._EncodedReply._EncodedReplyChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MonitoredSALReply) Serialize() ([]byte, error) {
@@ -186,16 +165,8 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for MonitoredSALReply")
 		}
 
-		// Simple Field (monitoredSAL)
-		if pushErr := writeBuffer.PushContext("monitoredSAL"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoredSAL")
-		}
-		_monitoredSALErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredSAL())
-		if popErr := writeBuffer.PopContext("monitoredSAL"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoredSAL")
-		}
-		if _monitoredSALErr != nil {
-			return errors.Wrap(_monitoredSALErr, "Error serializing 'monitoredSAL' field")
+		if err := WriteSimpleField[MonitoredSAL](ctx, "monitoredSAL", m.GetMonitoredSAL(), WriteComplex[MonitoredSAL](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredSAL' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredSALReply"); popErr != nil {
@@ -203,12 +174,10 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.EncodedReplyContract.(*_EncodedReply).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MonitoredSALReply) isMonitoredSALReply() bool {
-	return true
-}
+func (m *_MonitoredSALReply) IsMonitoredSALReply() {}
 
 func (m *_MonitoredSALReply) String() string {
 	if m == nil {

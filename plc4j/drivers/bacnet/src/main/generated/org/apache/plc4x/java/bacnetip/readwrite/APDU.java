@@ -60,8 +60,7 @@ public abstract class APDU implements Message {
         "apduType",
         "ApduType",
         getApduType(),
-        new DataWriterEnumDefault<>(
-            ApduType::getValue, ApduType::name, writeUnsignedByte(writeBuffer, 4)));
+        writeEnum(ApduType::getValue, ApduType::name, writeUnsignedByte(writeBuffer, 4)));
 
     // Switch field (Serialize the sub-type)
     serializeAPDUChild(writeBuffer);
@@ -97,7 +96,7 @@ public abstract class APDU implements Message {
         readDiscriminatorEnumField(
             "apduType",
             "ApduType",
-            new DataReaderEnumDefault<>(ApduType::enumForValue, readUnsignedByte(readBuffer, 4)));
+            readEnum(ApduType::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     APDUBuilder builder = null;

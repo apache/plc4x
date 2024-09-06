@@ -60,7 +60,7 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
     writeBuffer.pushContext("BACnetPropertyStatesTimerState");
 
     // Simple Field (timerState)
-    writeSimpleField("timerState", timerState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timerState", timerState, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesTimerState");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
     BACnetTimerStateTagged timerState =
         readSimpleField(
             "timerState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerStateTagged.staticParse(
                         readBuffer,

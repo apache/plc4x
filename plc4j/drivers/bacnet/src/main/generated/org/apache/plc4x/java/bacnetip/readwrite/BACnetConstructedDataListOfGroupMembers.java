@@ -119,8 +119,7 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
     List<BACnetReadAccessSpecification> listOfGroupMembers =
         readTerminatedArrayField(
             "listOfGroupMembers",
-            new DataReaderComplexDefault<>(
-                () -> BACnetReadAccessSpecification.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetReadAccessSpecification.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

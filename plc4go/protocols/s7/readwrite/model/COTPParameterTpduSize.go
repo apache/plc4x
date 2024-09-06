@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type COTPParameterTpduSize interface {
 	COTPParameter
 	// GetTpduSize returns TpduSize (property field)
 	GetTpduSize() COTPTpduSize
-}
-
-// COTPParameterTpduSizeExactly can be used when we want exactly this type and not a type which fulfills COTPParameterTpduSize.
-// This is useful for switch cases.
-type COTPParameterTpduSizeExactly interface {
-	COTPParameterTpduSize
-	isCOTPParameterTpduSize() bool
+	// IsCOTPParameterTpduSize is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPParameterTpduSize()
 }
 
 // _COTPParameterTpduSize is the data-structure of this message
 type _COTPParameterTpduSize struct {
-	*_COTPParameter
+	COTPParameterContract
 	TpduSize COTPTpduSize
 }
+
+var _ COTPParameterTpduSize = (*_COTPParameterTpduSize)(nil)
+var _ COTPParameterRequirements = (*_COTPParameterTpduSize)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_COTPParameterTpduSize) GetParameterType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_COTPParameterTpduSize) InitializeParent(parent COTPParameter) {}
-
-func (m *_COTPParameterTpduSize) GetParent() COTPParameter {
-	return m._COTPParameter
+func (m *_COTPParameterTpduSize) GetParent() COTPParameterContract {
+	return m.COTPParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_COTPParameterTpduSize) GetTpduSize() COTPTpduSize {
 // NewCOTPParameterTpduSize factory function for _COTPParameterTpduSize
 func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameterTpduSize {
 	_result := &_COTPParameterTpduSize{
-		TpduSize:       tpduSize,
-		_COTPParameter: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(rest),
+		TpduSize:              tpduSize,
 	}
-	_result._COTPParameter._COTPParameterChildRequirements = _result
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_COTPParameterTpduSize) GetTypeName() string {
 }
 
 func (m *_COTPParameterTpduSize) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Simple field (tpduSize)
 	lengthInBits += 8
@@ -126,47 +124,28 @@ func (m *_COTPParameterTpduSize) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPParameterTpduSizeParse(ctx context.Context, theBytes []byte, rest uint8) (COTPParameterTpduSize, error) {
-	return COTPParameterTpduSizeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
-}
-
-func COTPParameterTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterTpduSize, error) {
+func (m *_COTPParameterTpduSize) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPParameter, rest uint8) (__cOTPParameterTpduSize COTPParameterTpduSize, err error) {
+	m.COTPParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPParameterTpduSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterTpduSize")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tpduSize)
-	if pullErr := readBuffer.PullContext("tpduSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tpduSize")
+	tpduSize, err := ReadEnumField[COTPTpduSize](ctx, "tpduSize", "COTPTpduSize", ReadEnum(COTPTpduSizeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tpduSize' field"))
 	}
-	_tpduSize, _tpduSizeErr := COTPTpduSizeParseWithBuffer(ctx, readBuffer)
-	if _tpduSizeErr != nil {
-		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field of COTPParameterTpduSize")
-	}
-	tpduSize := _tpduSize
-	if closeErr := readBuffer.CloseContext("tpduSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tpduSize")
-	}
+	m.TpduSize = tpduSize
 
 	if closeErr := readBuffer.CloseContext("COTPParameterTpduSize"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterTpduSize")
 	}
 
-	// Create a partially initialized instance
-	_child := &_COTPParameterTpduSize{
-		_COTPParameter: &_COTPParameter{
-			Rest: rest,
-		},
-		TpduSize: tpduSize,
-	}
-	_child._COTPParameter._COTPParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_COTPParameterTpduSize) Serialize() ([]byte, error) {
@@ -187,16 +166,8 @@ func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for COTPParameterTpduSize")
 		}
 
-		// Simple Field (tpduSize)
-		if pushErr := writeBuffer.PushContext("tpduSize"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tpduSize")
-		}
-		_tpduSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTpduSize())
-		if popErr := writeBuffer.PopContext("tpduSize"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tpduSize")
-		}
-		if _tpduSizeErr != nil {
-			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
+		if err := WriteSimpleEnumField[COTPTpduSize](ctx, "tpduSize", "COTPTpduSize", m.GetTpduSize(), WriteEnum[COTPTpduSize, uint8](COTPTpduSize.GetValue, COTPTpduSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'tpduSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterTpduSize"); popErr != nil {
@@ -204,12 +175,10 @@ func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.COTPParameterContract.(*_COTPParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_COTPParameterTpduSize) isCOTPParameterTpduSize() bool {
-	return true
-}
+func (m *_COTPParameterTpduSize) IsCOTPParameterTpduSize() {}
 
 func (m *_COTPParameterTpduSize) String() string {
 	if m == nil {

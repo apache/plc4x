@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -34,27 +35,38 @@ import (
 
 // COTPPacket is the corresponding interface of COTPPacket
 type COTPPacket interface {
+	COTPPacketContract
+	COTPPacketRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetTpduCode returns TpduCode (discriminator field)
-	GetTpduCode() uint8
+	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacket()
+}
+
+// COTPPacketContract provides a set of functions which can be overwritten by a sub struct
+type COTPPacketContract interface {
 	// GetParameters returns Parameters (property field)
 	GetParameters() []COTPParameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Message
+	// GetCotpLen() returns a parser argument
+	GetCotpLen() uint16
+	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacket()
 }
 
-// COTPPacketExactly can be used when we want exactly this type and not a type which fulfills COTPPacket.
-// This is useful for switch cases.
-type COTPPacketExactly interface {
-	COTPPacket
-	isCOTPPacket() bool
+// COTPPacketRequirements provides a set of functions which need to be implemented by a sub struct
+type COTPPacketRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetTpduCode returns TpduCode (discriminator field)
+	GetTpduCode() uint8
 }
 
 // _COTPPacket is the data-structure of this message
 type _COTPPacket struct {
-	_COTPPacketChildRequirements
+	_SubType   COTPPacket
 	Parameters []COTPParameter
 	Payload    S7Message
 
@@ -62,25 +74,7 @@ type _COTPPacket struct {
 	CotpLen uint16
 }
 
-type _COTPPacketChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetTpduCode() uint8
-}
-
-type COTPPacketParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child COTPPacket, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type COTPPacketChild interface {
-	utils.Serializable
-	InitializeParent(parent COTPPacket, parameters []COTPParameter, payload S7Message)
-	GetParent() *COTPPacket
-
-	GetTypeName() string
-	COTPPacket
-}
+var _ COTPPacketContract = (*_COTPPacket)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,7 +114,7 @@ func (m *_COTPPacket) GetTypeName() string {
 	return "COTPPacket"
 }
 
-func (m *_COTPPacket) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -144,18 +138,36 @@ func (m *_COTPPacket) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_COTPPacket) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func COTPPacketParse(ctx context.Context, theBytes []byte, cotpLen uint16) (COTPPacket, error) {
-	return COTPPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
+func COTPPacketParse[T COTPPacket](ctx context.Context, theBytes []byte, cotpLen uint16) (T, error) {
+	return COTPPacketParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
-func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, error) {
+func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := COTPPacketParseWithBuffer[T](ctx, readBuffer, cotpLen)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (T, error) {
+	v, err := (&_COTPPacket{CotpLen: cotpLen}).parse(ctx, readBuffer, cotpLen)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (__cOTPPacket COTPPacket, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPPacket")
 	}
@@ -164,102 +176,72 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	var startPos = positionAware.GetPos()
 	_ = startPos
 
-	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
-	_ = headerLength
-	if _headerLengthErr != nil {
-		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field of COTPPacket")
+	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
+	_ = headerLength
 
-	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode, _tpduCodeErr := readBuffer.ReadUint8("tpduCode", 8)
-	if _tpduCodeErr != nil {
-		return nil, errors.Wrap(_tpduCodeErr, "Error parsing 'tpduCode' field of COTPPacket")
+	tpduCode, err := ReadDiscriminatorField[uint8](ctx, "tpduCode", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tpduCode' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type COTPPacketChildSerializeRequirement interface {
-		COTPPacket
-		InitializeParent(COTPPacket, []COTPParameter, S7Message)
-		GetParent() COTPPacket
-	}
-	var _childTemp any
-	var _child COTPPacketChildSerializeRequirement
-	var typeSwitchError error
+	var _child COTPPacket
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		_childTemp, typeSwitchError = COTPPacketDataParseWithBuffer(ctx, readBuffer, cotpLen)
+		if _child, err = (&_COTPPacketData{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketData for type-switch of COTPPacket")
+		}
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		_childTemp, typeSwitchError = COTPPacketConnectionRequestParseWithBuffer(ctx, readBuffer, cotpLen)
+		if _child, err = (&_COTPPacketConnectionRequest{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionRequest for type-switch of COTPPacket")
+		}
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		_childTemp, typeSwitchError = COTPPacketConnectionResponseParseWithBuffer(ctx, readBuffer, cotpLen)
+		if _child, err = (&_COTPPacketConnectionResponse{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionResponse for type-switch of COTPPacket")
+		}
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		_childTemp, typeSwitchError = COTPPacketDisconnectRequestParseWithBuffer(ctx, readBuffer, cotpLen)
+		if _child, err = (&_COTPPacketDisconnectRequest{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectRequest for type-switch of COTPPacket")
+		}
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		_childTemp, typeSwitchError = COTPPacketDisconnectResponseParseWithBuffer(ctx, readBuffer, cotpLen)
+		if _child, err = (&_COTPPacketDisconnectResponse{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectResponse for type-switch of COTPPacket")
+		}
 	case tpduCode == 0x70: // COTPPacketTpduError
-		_childTemp, typeSwitchError = COTPPacketTpduErrorParseWithBuffer(ctx, readBuffer, cotpLen)
+		if _child, err = (&_COTPPacketTpduError{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketTpduError for type-switch of COTPPacket")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [tpduCode=%v]", tpduCode)
-	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of COTPPacket")
-	}
-	_child = _childTemp.(COTPPacketChildSerializeRequirement)
-
-	// Array field (parameters)
-	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
-	}
-	// Length array
-	var parameters []COTPParameter
-	{
-		_parametersLength := uint16((uint16(headerLength) + uint16(uint16(1)))) - uint16((positionAware.GetPos() - startPos))
-		_parametersEndPos := positionAware.GetPos() + uint16(_parametersLength)
-		for positionAware.GetPos() < _parametersEndPos {
-			_item, _err := COTPParameterParseWithBuffer(ctx, readBuffer, uint8((uint8(headerLength)+uint8(uint8(1))))-uint8((positionAware.GetPos()-startPos)))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of COTPPacket")
-			}
-			parameters = append(parameters, _item.(COTPParameter))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameters")
+		return nil, errors.Errorf("Unmapped type for parameters [tpduCode=%v]", tpduCode)
 	}
 
-	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-	var payload S7Message = nil
-	if bool((positionAware.GetPos() - startPos) < (cotpLen)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for payload")
-		}
-		_val, _err := S7MessageParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'payload' field of COTPPacket")
-		default:
-			payload = _val.(S7Message)
-			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for payload")
-			}
-		}
+	parameters, err := ReadLengthArrayField[COTPParameter](ctx, "parameters", ReadComplex[COTPParameter](COTPParameterParseWithBufferProducer[COTPParameter]((uint8)(uint8((uint8(headerLength)+uint8(uint8(1))))-uint8((positionAware.GetPos()-startPos)))), readBuffer), int(int32((int32(headerLength)+int32(int32(1))))-int32((positionAware.GetPos()-startPos))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
+	}
+	m.Parameters = parameters
+
+	var payload S7Message
+	_payload, err := ReadOptionalField[S7Message](ctx, "payload", ReadComplex[S7Message](S7MessageParseWithBuffer, readBuffer), bool((positionAware.GetPos()-startPos) < (cotpLen)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
+	}
+	if _payload != nil {
+		payload = *_payload
+		m.Payload = payload
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPPacket"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPPacket")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, parameters, payload)
 	return _child, nil
 }
 
-func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child COTPPacket, serializeChildFunction func() error) error {
+func (pm *_COTPPacket) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child COTPPacket, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -270,20 +252,13 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("COTPPacket"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for COTPPacket")
 	}
-
-	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8((uint8((utils.InlineIf((bool((m.GetPayload()) != (nil))), func() any { return uint8((m.GetPayload()).GetLengthInBytes(ctx)) }, func() any { return uint8(uint8(0)) }).(uint8))) + uint8(uint8(1)))))
-	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, uint8((headerLength)))
-	if _headerLengthErr != nil {
-		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
+	if err := WriteImplicitField(ctx, "headerLength", headerLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'headerLength' field")
 	}
 
-	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode := uint8(child.GetTpduCode())
-	_tpduCodeErr := writeBuffer.WriteUint8("tpduCode", 8, uint8((tpduCode)))
-
-	if _tpduCodeErr != nil {
-		return errors.Wrap(_tpduCodeErr, "Error serializing 'tpduCode' field")
+	if err := WriteDiscriminatorField(ctx, "tpduCode", m.GetTpduCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'tpduCode' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -291,37 +266,12 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Array Field (parameters)
-	if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for parameters")
-	}
-	for _curItem, _element := range m.GetParameters() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetParameters()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for parameters")
+	if err := WriteComplexTypeArrayField(ctx, "parameters", m.GetParameters(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'parameters' field")
 	}
 
-	// Optional Field (payload) (Can be skipped, if the value is null)
-	var payload S7Message = nil
-	if m.GetPayload() != nil {
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		payload = m.GetPayload()
-		_payloadErr := writeBuffer.WriteSerializable(ctx, payload)
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
-		}
+	if err := WriteOptionalField[S7Message](ctx, "payload", GetRef(m.GetPayload()), WriteComplex[S7Message](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 
 	if popErr := writeBuffer.PopContext("COTPPacket"); popErr != nil {
@@ -340,17 +290,4 @@ func (m *_COTPPacket) GetCotpLen() uint16 {
 //
 ////
 
-func (m *_COTPPacket) isCOTPPacket() bool {
-	return true
-}
-
-func (m *_COTPPacket) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_COTPPacket) IsCOTPPacket() {}

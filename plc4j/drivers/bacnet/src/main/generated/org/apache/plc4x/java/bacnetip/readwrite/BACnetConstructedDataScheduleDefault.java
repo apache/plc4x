@@ -82,8 +82,7 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataScheduleDefault");
 
     // Simple Field (scheduleDefault)
-    writeSimpleField(
-        "scheduleDefault", scheduleDefault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("scheduleDefault", scheduleDefault, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetConstructedDataElement actualValue = getActualValue();
@@ -125,7 +124,7 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
     BACnetConstructedDataElement scheduleDefault =
         readSimpleField(
             "scheduleDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedDataElement.staticParse(
                         readBuffer,

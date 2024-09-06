@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type WriteRequest interface {
 	GetNoOfNodesToWrite() int32
 	// GetNodesToWrite returns NodesToWrite (property field)
 	GetNodesToWrite() []ExtensionObjectDefinition
-}
-
-// WriteRequestExactly can be used when we want exactly this type and not a type which fulfills WriteRequest.
-// This is useful for switch cases.
-type WriteRequestExactly interface {
-	WriteRequest
-	isWriteRequest() bool
+	// IsWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsWriteRequest()
 }
 
 // _WriteRequest is the data-structure of this message
 type _WriteRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader    ExtensionObjectDefinition
 	NoOfNodesToWrite int32
 	NodesToWrite     []ExtensionObjectDefinition
 }
+
+var _ WriteRequest = (*_WriteRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_WriteRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_WriteRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_WriteRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_WriteRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_WriteRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_WriteRequest) GetNodesToWrite() []ExtensionObjectDefinition {
 
 // NewWriteRequest factory function for _WriteRequest
 func NewWriteRequest(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) *_WriteRequest {
-	_result := &_WriteRequest{
-		RequestHeader:              requestHeader,
-		NoOfNodesToWrite:           noOfNodesToWrite,
-		NodesToWrite:               nodesToWrite,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for WriteRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_WriteRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToWrite:                  noOfNodesToWrite,
+		NodesToWrite:                      nodesToWrite,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_WriteRequest) GetTypeName() string {
 }
 
 func (m *_WriteRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -155,81 +156,40 @@ func (m *_WriteRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func WriteRequestParse(ctx context.Context, theBytes []byte, identifier string) (WriteRequest, error) {
-	return WriteRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func WriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (WriteRequest, error) {
+func (m *_WriteRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__writeRequest WriteRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("WriteRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for WriteRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of WriteRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (noOfNodesToWrite)
-	_noOfNodesToWrite, _noOfNodesToWriteErr := readBuffer.ReadInt32("noOfNodesToWrite", 32)
-	if _noOfNodesToWriteErr != nil {
-		return nil, errors.Wrap(_noOfNodesToWriteErr, "Error parsing 'noOfNodesToWrite' field of WriteRequest")
+	noOfNodesToWrite, err := ReadSimpleField(ctx, "noOfNodesToWrite", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToWrite' field"))
 	}
-	noOfNodesToWrite := _noOfNodesToWrite
+	m.NoOfNodesToWrite = noOfNodesToWrite
 
-	// Array field (nodesToWrite)
-	if pullErr := readBuffer.PullContext("nodesToWrite", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodesToWrite")
+	nodesToWrite, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToWrite", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("670")), readBuffer), uint64(noOfNodesToWrite))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToWrite' field"))
 	}
-	// Count array
-	nodesToWrite := make([]ExtensionObjectDefinition, max(noOfNodesToWrite, 0))
-	// This happens when the size is set conditional to 0
-	if len(nodesToWrite) == 0 {
-		nodesToWrite = nil
-	}
-	{
-		_numItems := uint16(max(noOfNodesToWrite, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "670")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'nodesToWrite' field of WriteRequest")
-			}
-			nodesToWrite[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("nodesToWrite", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodesToWrite")
-	}
+	m.NodesToWrite = nodesToWrite
 
 	if closeErr := readBuffer.CloseContext("WriteRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for WriteRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_WriteRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		NoOfNodesToWrite:           noOfNodesToWrite,
-		NodesToWrite:               nodesToWrite,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_WriteRequest) Serialize() ([]byte, error) {
@@ -250,40 +210,16 @@ func (m *_WriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for WriteRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfNodesToWrite)
-		noOfNodesToWrite := int32(m.GetNoOfNodesToWrite())
-		_noOfNodesToWriteErr := writeBuffer.WriteInt32("noOfNodesToWrite", 32, int32((noOfNodesToWrite)))
-		if _noOfNodesToWriteErr != nil {
-			return errors.Wrap(_noOfNodesToWriteErr, "Error serializing 'noOfNodesToWrite' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNodesToWrite", m.GetNoOfNodesToWrite(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNodesToWrite' field")
 		}
 
-		// Array Field (nodesToWrite)
-		if pushErr := writeBuffer.PushContext("nodesToWrite", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodesToWrite")
-		}
-		for _curItem, _element := range m.GetNodesToWrite() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNodesToWrite()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'nodesToWrite' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("nodesToWrite", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodesToWrite")
+		if err := WriteComplexTypeArrayField(ctx, "nodesToWrite", m.GetNodesToWrite(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodesToWrite' field")
 		}
 
 		if popErr := writeBuffer.PopContext("WriteRequest"); popErr != nil {
@@ -291,12 +227,10 @@ func (m *_WriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_WriteRequest) isWriteRequest() bool {
-	return true
-}
+func (m *_WriteRequest) IsWriteRequest() {}
 
 func (m *_WriteRequest) String() string {
 	if m == nil {

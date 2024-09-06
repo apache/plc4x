@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLocation interface {
 	GetLocation() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataLocationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocation.
-// This is useful for switch cases.
-type BACnetConstructedDataLocationExactly interface {
-	BACnetConstructedDataLocation
-	isBACnetConstructedDataLocation() bool
+	// IsBACnetConstructedDataLocation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLocation()
 }
 
 // _BACnetConstructedDataLocation is the data-structure of this message
 type _BACnetConstructedDataLocation struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Location BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataLocation = (*_BACnetConstructedDataLocation)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLocation) GetPropertyIdentifierArgument() BACnetP
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLocation) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLocation) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLocation) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLocation) GetActualValue() BACnetApplicationTagCh
 
 // NewBACnetConstructedDataLocation factory function for _BACnetConstructedDataLocation
 func NewBACnetConstructedDataLocation(location BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocation {
-	_result := &_BACnetConstructedDataLocation{
-		Location:               location,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if location == nil {
+		panic("location of type BACnetApplicationTagCharacterString for BACnetConstructedDataLocation must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Location:                      location,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLocation) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLocation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (location)
 	lengthInBits += m.Location.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLocation) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLocationParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocation, error) {
-	return BACnetConstructedDataLocationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLocationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocation, error) {
+func (m *_BACnetConstructedDataLocation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLocation BACnetConstructedDataLocation, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLocation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (location)
-	if pullErr := readBuffer.PullContext("location"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for location")
+	location, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "location", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'location' field"))
 	}
-	_location, _locationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _locationErr != nil {
-		return nil, errors.Wrap(_locationErr, "Error parsing 'location' field of BACnetConstructedDataLocation")
-	}
-	location := _location.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("location"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for location")
-	}
+	m.Location = location
 
-	// Virtual field
-	_actualValue := location
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), location)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLocation")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLocation{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Location: location,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLocation) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLocation) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocation")
 		}
 
-		// Simple Field (location)
-		if pushErr := writeBuffer.PushContext("location"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for location")
-		}
-		_locationErr := writeBuffer.WriteSerializable(ctx, m.GetLocation())
-		if popErr := writeBuffer.PopContext("location"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for location")
-		}
-		if _locationErr != nil {
-			return errors.Wrap(_locationErr, "Error serializing 'location' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "location", m.GetLocation(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'location' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataLocation) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLocation) isBACnetConstructedDataLocation() bool {
-	return true
-}
+func (m *_BACnetConstructedDataLocation) IsBACnetConstructedDataLocation() {}
 
 func (m *_BACnetConstructedDataLocation) String() string {
 	if m == nil {

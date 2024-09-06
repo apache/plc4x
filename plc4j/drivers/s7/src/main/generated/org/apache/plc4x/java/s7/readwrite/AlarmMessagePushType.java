@@ -77,7 +77,7 @@ public class AlarmMessagePushType implements Message {
     writeBuffer.pushContext("AlarmMessagePushType");
 
     // Simple Field (timeStamp)
-    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeStamp", timeStamp, writeComplex(writeBuffer));
 
     // Simple Field (functionId)
     writeSimpleField("functionId", functionId, writeUnsignedShort(writeBuffer, 8));
@@ -130,8 +130,7 @@ public class AlarmMessagePushType implements Message {
 
     DateAndTime timeStamp =
         readSimpleField(
-            "timeStamp",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeStamp", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));
 
@@ -140,8 +139,7 @@ public class AlarmMessagePushType implements Message {
     List<AlarmMessageObjectPushType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageObjectPushType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageObjectPushType.staticParse(readBuffer), readBuffer),
             numberOfObjects);
 
     readBuffer.closeContext("AlarmMessagePushType");

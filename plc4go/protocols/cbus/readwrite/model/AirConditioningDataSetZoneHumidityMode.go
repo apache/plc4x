@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,18 +53,13 @@ type AirConditioningDataSetZoneHumidityMode interface {
 	GetRawLevel() HVACRawLevels
 	// GetAuxLevel returns AuxLevel (property field)
 	GetAuxLevel() HVACAuxiliaryLevel
-}
-
-// AirConditioningDataSetZoneHumidityModeExactly can be used when we want exactly this type and not a type which fulfills AirConditioningDataSetZoneHumidityMode.
-// This is useful for switch cases.
-type AirConditioningDataSetZoneHumidityModeExactly interface {
-	AirConditioningDataSetZoneHumidityMode
-	isAirConditioningDataSetZoneHumidityMode() bool
+	// IsAirConditioningDataSetZoneHumidityMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataSetZoneHumidityMode()
 }
 
 // _AirConditioningDataSetZoneHumidityMode is the data-structure of this message
 type _AirConditioningDataSetZoneHumidityMode struct {
-	*_AirConditioningData
+	AirConditioningDataContract
 	ZoneGroup            byte
 	ZoneList             HVACZoneList
 	HumidityModeAndFlags HVACHumidityModeAndFlags
@@ -72,6 +68,9 @@ type _AirConditioningDataSetZoneHumidityMode struct {
 	RawLevel             HVACRawLevels
 	AuxLevel             HVACAuxiliaryLevel
 }
+
+var _ AirConditioningDataSetZoneHumidityMode = (*_AirConditioningDataSetZoneHumidityMode)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataSetZoneHumidityMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,12 +82,8 @@ type _AirConditioningDataSetZoneHumidityMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AirConditioningDataSetZoneHumidityMode) InitializeParent(parent AirConditioningData, commandTypeContainer AirConditioningCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_AirConditioningDataSetZoneHumidityMode) GetParent() AirConditioningData {
-	return m._AirConditioningData
+func (m *_AirConditioningDataSetZoneHumidityMode) GetParent() AirConditioningDataContract {
+	return m.AirConditioningDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,17 +126,23 @@ func (m *_AirConditioningDataSetZoneHumidityMode) GetAuxLevel() HVACAuxiliaryLev
 
 // NewAirConditioningDataSetZoneHumidityMode factory function for _AirConditioningDataSetZoneHumidityMode
 func NewAirConditioningDataSetZoneHumidityMode(zoneGroup byte, zoneList HVACZoneList, humidityModeAndFlags HVACHumidityModeAndFlags, humidityType HVACHumidityType, level HVACHumidity, rawLevel HVACRawLevels, auxLevel HVACAuxiliaryLevel, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetZoneHumidityMode {
-	_result := &_AirConditioningDataSetZoneHumidityMode{
-		ZoneGroup:            zoneGroup,
-		ZoneList:             zoneList,
-		HumidityModeAndFlags: humidityModeAndFlags,
-		HumidityType:         humidityType,
-		Level:                level,
-		RawLevel:             rawLevel,
-		AuxLevel:             auxLevel,
-		_AirConditioningData: NewAirConditioningData(commandTypeContainer),
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetZoneHumidityMode must not be nil")
 	}
-	_result._AirConditioningData._AirConditioningDataChildRequirements = _result
+	if humidityModeAndFlags == nil {
+		panic("humidityModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetZoneHumidityMode must not be nil")
+	}
+	_result := &_AirConditioningDataSetZoneHumidityMode{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		HumidityModeAndFlags:        humidityModeAndFlags,
+		HumidityType:                humidityType,
+		Level:                       level,
+		RawLevel:                    rawLevel,
+		AuxLevel:                    auxLevel,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 
@@ -161,7 +162,7 @@ func (m *_AirConditioningDataSetZoneHumidityMode) GetTypeName() string {
 }
 
 func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -197,150 +198,76 @@ func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataSetZoneHumidityModeParse(ctx context.Context, theBytes []byte) (AirConditioningDataSetZoneHumidityMode, error) {
-	return AirConditioningDataSetZoneHumidityModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AirConditioningDataSetZoneHumidityModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneHumidityMode, error) {
+func (m *_AirConditioningDataSetZoneHumidityMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataSetZoneHumidityMode AirConditioningDataSetZoneHumidityMode, err error) {
+	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneHumidityMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataSetZoneHumidityMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataSetZoneHumidityMode")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
-	zoneGroup := _zoneGroup
+	m.ZoneGroup = zoneGroup
 
-	// Simple Field (zoneList)
-	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
+	zoneList, err := ReadSimpleField[HVACZoneList](ctx, "zoneList", ReadComplex[HVACZoneList](HVACZoneListParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneList' field"))
 	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
-	if _zoneListErr != nil {
-		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataSetZoneHumidityMode")
-	}
-	zoneList := _zoneList.(HVACZoneList)
-	if closeErr := readBuffer.CloseContext("zoneList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneList")
-	}
+	m.ZoneList = zoneList
 
-	// Simple Field (humidityModeAndFlags)
-	if pullErr := readBuffer.PullContext("humidityModeAndFlags"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for humidityModeAndFlags")
+	humidityModeAndFlags, err := ReadSimpleField[HVACHumidityModeAndFlags](ctx, "humidityModeAndFlags", ReadComplex[HVACHumidityModeAndFlags](HVACHumidityModeAndFlagsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityModeAndFlags' field"))
 	}
-	_humidityModeAndFlags, _humidityModeAndFlagsErr := HVACHumidityModeAndFlagsParseWithBuffer(ctx, readBuffer)
-	if _humidityModeAndFlagsErr != nil {
-		return nil, errors.Wrap(_humidityModeAndFlagsErr, "Error parsing 'humidityModeAndFlags' field of AirConditioningDataSetZoneHumidityMode")
-	}
-	humidityModeAndFlags := _humidityModeAndFlags.(HVACHumidityModeAndFlags)
-	if closeErr := readBuffer.CloseContext("humidityModeAndFlags"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for humidityModeAndFlags")
-	}
+	m.HumidityModeAndFlags = humidityModeAndFlags
 
-	// Simple Field (humidityType)
-	if pullErr := readBuffer.PullContext("humidityType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for humidityType")
+	humidityType, err := ReadEnumField[HVACHumidityType](ctx, "humidityType", "HVACHumidityType", ReadEnum(HVACHumidityTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityType' field"))
 	}
-	_humidityType, _humidityTypeErr := HVACHumidityTypeParseWithBuffer(ctx, readBuffer)
-	if _humidityTypeErr != nil {
-		return nil, errors.Wrap(_humidityTypeErr, "Error parsing 'humidityType' field of AirConditioningDataSetZoneHumidityMode")
+	m.HumidityType = humidityType
+
+	var level HVACHumidity
+	_level, err := ReadOptionalField[HVACHumidity](ctx, "level", ReadComplex[HVACHumidity](HVACHumidityParseWithBuffer, readBuffer), humidityModeAndFlags.GetIsLevelHumidity())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
-	humidityType := _humidityType
-	if closeErr := readBuffer.CloseContext("humidityType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for humidityType")
+	if _level != nil {
+		level = *_level
+		m.Level = level
 	}
 
-	// Optional Field (level) (Can be skipped, if a given expression evaluates to false)
-	var level HVACHumidity = nil
-	if humidityModeAndFlags.GetIsLevelHumidity() {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for level")
-		}
-		_val, _err := HVACHumidityParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'level' field of AirConditioningDataSetZoneHumidityMode")
-		default:
-			level = _val.(HVACHumidity)
-			if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for level")
-			}
-		}
+	var rawLevel HVACRawLevels
+	_rawLevel, err := ReadOptionalField[HVACRawLevels](ctx, "rawLevel", ReadComplex[HVACRawLevels](HVACRawLevelsParseWithBuffer, readBuffer), humidityModeAndFlags.GetIsLevelRaw())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawLevel' field"))
+	}
+	if _rawLevel != nil {
+		rawLevel = *_rawLevel
+		m.RawLevel = rawLevel
 	}
 
-	// Optional Field (rawLevel) (Can be skipped, if a given expression evaluates to false)
-	var rawLevel HVACRawLevels = nil
-	if humidityModeAndFlags.GetIsLevelRaw() {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("rawLevel"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for rawLevel")
-		}
-		_val, _err := HVACRawLevelsParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'rawLevel' field of AirConditioningDataSetZoneHumidityMode")
-		default:
-			rawLevel = _val.(HVACRawLevels)
-			if closeErr := readBuffer.CloseContext("rawLevel"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for rawLevel")
-			}
-		}
+	var auxLevel HVACAuxiliaryLevel
+	_auxLevel, err := ReadOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", ReadComplex[HVACAuxiliaryLevel](HVACAuxiliaryLevelParseWithBuffer, readBuffer), humidityModeAndFlags.GetIsAuxLevelUsed())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'auxLevel' field"))
 	}
-
-	// Optional Field (auxLevel) (Can be skipped, if a given expression evaluates to false)
-	var auxLevel HVACAuxiliaryLevel = nil
-	if humidityModeAndFlags.GetIsAuxLevelUsed() {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("auxLevel"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for auxLevel")
-		}
-		_val, _err := HVACAuxiliaryLevelParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'auxLevel' field of AirConditioningDataSetZoneHumidityMode")
-		default:
-			auxLevel = _val.(HVACAuxiliaryLevel)
-			if closeErr := readBuffer.CloseContext("auxLevel"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for auxLevel")
-			}
-		}
+	if _auxLevel != nil {
+		auxLevel = *_auxLevel
+		m.AuxLevel = auxLevel
 	}
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataSetZoneHumidityMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AirConditioningDataSetZoneHumidityMode")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AirConditioningDataSetZoneHumidityMode{
-		_AirConditioningData: &_AirConditioningData{},
-		ZoneGroup:            zoneGroup,
-		ZoneList:             zoneList,
-		HumidityModeAndFlags: humidityModeAndFlags,
-		HumidityType:         humidityType,
-		Level:                level,
-		RawLevel:             rawLevel,
-		AuxLevel:             auxLevel,
-	}
-	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AirConditioningDataSetZoneHumidityMode) Serialize() ([]byte, error) {
@@ -361,95 +288,32 @@ func (m *_AirConditioningDataSetZoneHumidityMode) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataSetZoneHumidityMode")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
-		// Simple Field (zoneList)
-		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneList")
-		}
-		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
-		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneList")
-		}
-		if _zoneListErr != nil {
-			return errors.Wrap(_zoneListErr, "Error serializing 'zoneList' field")
+		if err := WriteSimpleField[HVACZoneList](ctx, "zoneList", m.GetZoneList(), WriteComplex[HVACZoneList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneList' field")
 		}
 
-		// Simple Field (humidityModeAndFlags)
-		if pushErr := writeBuffer.PushContext("humidityModeAndFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for humidityModeAndFlags")
-		}
-		_humidityModeAndFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityModeAndFlags())
-		if popErr := writeBuffer.PopContext("humidityModeAndFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for humidityModeAndFlags")
-		}
-		if _humidityModeAndFlagsErr != nil {
-			return errors.Wrap(_humidityModeAndFlagsErr, "Error serializing 'humidityModeAndFlags' field")
+		if err := WriteSimpleField[HVACHumidityModeAndFlags](ctx, "humidityModeAndFlags", m.GetHumidityModeAndFlags(), WriteComplex[HVACHumidityModeAndFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'humidityModeAndFlags' field")
 		}
 
-		// Simple Field (humidityType)
-		if pushErr := writeBuffer.PushContext("humidityType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for humidityType")
-		}
-		_humidityTypeErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityType())
-		if popErr := writeBuffer.PopContext("humidityType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for humidityType")
-		}
-		if _humidityTypeErr != nil {
-			return errors.Wrap(_humidityTypeErr, "Error serializing 'humidityType' field")
+		if err := WriteSimpleEnumField[HVACHumidityType](ctx, "humidityType", "HVACHumidityType", m.GetHumidityType(), WriteEnum[HVACHumidityType, uint8](HVACHumidityType.GetValue, HVACHumidityType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'humidityType' field")
 		}
 
-		// Optional Field (level) (Can be skipped, if the value is null)
-		var level HVACHumidity = nil
-		if m.GetLevel() != nil {
-			if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for level")
-			}
-			level = m.GetLevel()
-			_levelErr := writeBuffer.WriteSerializable(ctx, level)
-			if popErr := writeBuffer.PopContext("level"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for level")
-			}
-			if _levelErr != nil {
-				return errors.Wrap(_levelErr, "Error serializing 'level' field")
-			}
+		if err := WriteOptionalField[HVACHumidity](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACHumidity](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		// Optional Field (rawLevel) (Can be skipped, if the value is null)
-		var rawLevel HVACRawLevels = nil
-		if m.GetRawLevel() != nil {
-			if pushErr := writeBuffer.PushContext("rawLevel"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for rawLevel")
-			}
-			rawLevel = m.GetRawLevel()
-			_rawLevelErr := writeBuffer.WriteSerializable(ctx, rawLevel)
-			if popErr := writeBuffer.PopContext("rawLevel"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for rawLevel")
-			}
-			if _rawLevelErr != nil {
-				return errors.Wrap(_rawLevelErr, "Error serializing 'rawLevel' field")
-			}
+		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", GetRef(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'rawLevel' field")
 		}
 
-		// Optional Field (auxLevel) (Can be skipped, if the value is null)
-		var auxLevel HVACAuxiliaryLevel = nil
-		if m.GetAuxLevel() != nil {
-			if pushErr := writeBuffer.PushContext("auxLevel"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for auxLevel")
-			}
-			auxLevel = m.GetAuxLevel()
-			_auxLevelErr := writeBuffer.WriteSerializable(ctx, auxLevel)
-			if popErr := writeBuffer.PopContext("auxLevel"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for auxLevel")
-			}
-			if _auxLevelErr != nil {
-				return errors.Wrap(_auxLevelErr, "Error serializing 'auxLevel' field")
-			}
+		if err := WriteOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", GetRef(m.GetAuxLevel()), WriteComplex[HVACAuxiliaryLevel](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'auxLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataSetZoneHumidityMode"); popErr != nil {
@@ -457,12 +321,10 @@ func (m *_AirConditioningDataSetZoneHumidityMode) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AirConditioningDataContract.(*_AirConditioningData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AirConditioningDataSetZoneHumidityMode) isAirConditioningDataSetZoneHumidityMode() bool {
-	return true
-}
+func (m *_AirConditioningDataSetZoneHumidityMode) IsAirConditioningDataSetZoneHumidityMode() {}
 
 func (m *_AirConditioningDataSetZoneHumidityMode) String() string {
 	if m == nil {

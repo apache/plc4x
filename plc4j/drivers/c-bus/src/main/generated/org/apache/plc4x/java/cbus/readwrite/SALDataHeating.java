@@ -61,7 +61,7 @@ public class SALDataHeating extends SALData implements Message {
     writeBuffer.pushContext("SALDataHeating");
 
     // Simple Field (heatingData)
-    writeSimpleField("heatingData", heatingData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("heatingData", heatingData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataHeating");
   }
@@ -91,8 +91,7 @@ public class SALDataHeating extends SALData implements Message {
 
     LightingData heatingData =
         readSimpleField(
-            "heatingData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            "heatingData", readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataHeating");
     // Create the instance

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,23 +41,21 @@ type BACnetServiceAckReadPropertyConditional interface {
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
-}
-
-// BACnetServiceAckReadPropertyConditionalExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadPropertyConditional.
-// This is useful for switch cases.
-type BACnetServiceAckReadPropertyConditionalExactly interface {
-	BACnetServiceAckReadPropertyConditional
-	isBACnetServiceAckReadPropertyConditional() bool
+	// IsBACnetServiceAckReadPropertyConditional is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckReadPropertyConditional()
 }
 
 // _BACnetServiceAckReadPropertyConditional is the data-structure of this message
 type _BACnetServiceAckReadPropertyConditional struct {
-	*_BACnetServiceAck
+	BACnetServiceAckContract
 	BytesOfRemovedService []byte
 
 	// Arguments.
 	ServiceAckPayloadLength uint32
 }
+
+var _ BACnetServiceAckReadPropertyConditional = (*_BACnetServiceAckReadPropertyConditional)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadPropertyConditional)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetServiceChoice() BACnetConf
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetServiceAckReadPropertyConditional) InitializeParent(parent BACnetServiceAck) {}
-
-func (m *_BACnetServiceAckReadPropertyConditional) GetParent() BACnetServiceAck {
-	return m._BACnetServiceAck
+func (m *_BACnetServiceAckReadPropertyConditional) GetParent() BACnetServiceAckContract {
+	return m.BACnetServiceAckContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,10 +92,10 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetBytesOfRemovedService() []
 // NewBACnetServiceAckReadPropertyConditional factory function for _BACnetServiceAckReadPropertyConditional
 func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyConditional {
 	_result := &_BACnetServiceAckReadPropertyConditional{
-		BytesOfRemovedService: bytesOfRemovedService,
-		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		BytesOfRemovedService:    bytesOfRemovedService,
 	}
-	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 
@@ -117,7 +115,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
@@ -131,40 +129,28 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckReadPropertyConditionalParse(ctx context.Context, theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
-	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
-}
-
-func BACnetServiceAckReadPropertyConditionalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
+func (m *_BACnetServiceAckReadPropertyConditional) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckPayloadLength uint32, serviceAckLength uint32) (__bACnetServiceAckReadPropertyConditional BACnetServiceAckReadPropertyConditional, err error) {
+	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyConditional"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckReadPropertyConditional")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (bytesOfRemovedService)
-	numberOfBytesbytesOfRemovedService := int(serviceAckPayloadLength)
-	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field of BACnetServiceAckReadPropertyConditional")
+
+	bytesOfRemovedService, err := readBuffer.ReadByteArray("bytesOfRemovedService", int(serviceAckPayloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bytesOfRemovedService' field"))
 	}
+	m.BytesOfRemovedService = bytesOfRemovedService
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadPropertyConditional"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckReadPropertyConditional")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetServiceAckReadPropertyConditional{
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
-		BytesOfRemovedService: bytesOfRemovedService,
-	}
-	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetServiceAckReadPropertyConditional) Serialize() ([]byte, error) {
@@ -185,9 +171,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckReadPropertyConditional")
 		}
 
-		// Array Field (bytesOfRemovedService)
-		// Byte Array field (bytesOfRemovedService)
-		if err := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService()); err != nil {
+		if err := WriteByteArrayField(ctx, "bytesOfRemovedService", m.GetBytesOfRemovedService(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'bytesOfRemovedService' field")
 		}
 
@@ -196,7 +180,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) SerializeWithWriteBuffer(ctx 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetServiceAckContract.(*_BACnetServiceAck).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -209,9 +193,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetServiceAckPayloadLength() 
 //
 ////
 
-func (m *_BACnetServiceAckReadPropertyConditional) isBACnetServiceAckReadPropertyConditional() bool {
-	return true
-}
+func (m *_BACnetServiceAckReadPropertyConditional) IsBACnetServiceAckReadPropertyConditional() {}
 
 func (m *_BACnetServiceAckReadPropertyConditional) String() string {
 	if m == nil {

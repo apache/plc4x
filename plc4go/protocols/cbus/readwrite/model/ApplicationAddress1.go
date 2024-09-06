@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,19 +42,16 @@ type ApplicationAddress1 interface {
 	GetAddress() byte
 	// GetIsWildcard returns IsWildcard (virtual field)
 	GetIsWildcard() bool
-}
-
-// ApplicationAddress1Exactly can be used when we want exactly this type and not a type which fulfills ApplicationAddress1.
-// This is useful for switch cases.
-type ApplicationAddress1Exactly interface {
-	ApplicationAddress1
-	isApplicationAddress1() bool
+	// IsApplicationAddress1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApplicationAddress1()
 }
 
 // _ApplicationAddress1 is the data-structure of this message
 type _ApplicationAddress1 struct {
 	Address byte
 }
+
+var _ ApplicationAddress1 = (*_ApplicationAddress1)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,37 +121,46 @@ func ApplicationAddress1Parse(ctx context.Context, theBytes []byte) (Application
 	return ApplicationAddress1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ApplicationAddress1ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress1, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress1, error) {
+		return ApplicationAddress1ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ApplicationAddress1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress1, error) {
+	v, err := (&_ApplicationAddress1{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ApplicationAddress1) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__applicationAddress1 ApplicationAddress1, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApplicationAddress1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApplicationAddress1")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadByte("address")
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ApplicationAddress1")
+	address, err := ReadSimpleField(ctx, "address", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
+	m.Address = address
 
-	// Virtual field
-	_isWildcard := bool((address) == (0xFF))
-	isWildcard := bool(_isWildcard)
+	isWildcard, err := ReadVirtualField[bool](ctx, "isWildcard", (*bool)(nil), bool((address) == (0xFF)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isWildcard' field"))
+	}
 	_ = isWildcard
 
 	if closeErr := readBuffer.CloseContext("ApplicationAddress1"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApplicationAddress1")
 	}
 
-	// Create the instance
-	return &_ApplicationAddress1{
-		Address: address,
-	}, nil
+	return m, nil
 }
 
 func (m *_ApplicationAddress1) Serialize() ([]byte, error) {
@@ -172,11 +180,8 @@ func (m *_ApplicationAddress1) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for ApplicationAddress1")
 	}
 
-	// Simple Field (address)
-	address := byte(m.GetAddress())
-	_addressErr := writeBuffer.WriteByte("address", (address))
-	if _addressErr != nil {
-		return errors.Wrap(_addressErr, "Error serializing 'address' field")
+	if err := WriteSimpleField[byte](ctx, "address", m.GetAddress(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'address' field")
 	}
 	// Virtual field
 	isWildcard := m.GetIsWildcard()
@@ -191,9 +196,7 @@ func (m *_ApplicationAddress1) SerializeWithWriteBuffer(ctx context.Context, wri
 	return nil
 }
 
-func (m *_ApplicationAddress1) isApplicationAddress1() bool {
-	return true
-}
+func (m *_ApplicationAddress1) IsApplicationAddress1() {}
 
 func (m *_ApplicationAddress1) String() string {
 	if m == nil {

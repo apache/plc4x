@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAdjustValue interface {
 	GetAdjustValue() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-}
-
-// BACnetConstructedDataAdjustValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAdjustValue.
-// This is useful for switch cases.
-type BACnetConstructedDataAdjustValueExactly interface {
-	BACnetConstructedDataAdjustValue
-	isBACnetConstructedDataAdjustValue() bool
+	// IsBACnetConstructedDataAdjustValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAdjustValue()
 }
 
 // _BACnetConstructedDataAdjustValue is the data-structure of this message
 type _BACnetConstructedDataAdjustValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AdjustValue BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetConstructedDataAdjustValue = (*_BACnetConstructedDataAdjustValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAdjustValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAdjustValue) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAdjustValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAdjustValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAdjustValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAdjustValue) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataAdjustValue factory function for _BACnetConstructedDataAdjustValue
 func NewBACnetConstructedDataAdjustValue(adjustValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAdjustValue {
-	_result := &_BACnetConstructedDataAdjustValue{
-		AdjustValue:            adjustValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if adjustValue == nil {
+		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAdjustValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAdjustValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AdjustValue:                   adjustValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAdjustValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAdjustValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (adjustValue)
 	lengthInBits += m.AdjustValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAdjustValue) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAdjustValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAdjustValue, error) {
-	return BACnetConstructedDataAdjustValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAdjustValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAdjustValue, error) {
+func (m *_BACnetConstructedDataAdjustValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAdjustValue BACnetConstructedDataAdjustValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAdjustValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAdjustValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (adjustValue)
-	if pullErr := readBuffer.PullContext("adjustValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for adjustValue")
+	adjustValue, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "adjustValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adjustValue' field"))
 	}
-	_adjustValue, _adjustValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _adjustValueErr != nil {
-		return nil, errors.Wrap(_adjustValueErr, "Error parsing 'adjustValue' field of BACnetConstructedDataAdjustValue")
-	}
-	adjustValue := _adjustValue.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("adjustValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for adjustValue")
-	}
+	m.AdjustValue = adjustValue
 
-	// Virtual field
-	_actualValue := adjustValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagSignedInteger](ctx, "actualValue", (*BACnetApplicationTagSignedInteger)(nil), adjustValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAdjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAdjustValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAdjustValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AdjustValue: adjustValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAdjustValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAdjustValue) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAdjustValue")
 		}
 
-		// Simple Field (adjustValue)
-		if pushErr := writeBuffer.PushContext("adjustValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for adjustValue")
-		}
-		_adjustValueErr := writeBuffer.WriteSerializable(ctx, m.GetAdjustValue())
-		if popErr := writeBuffer.PopContext("adjustValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for adjustValue")
-		}
-		if _adjustValueErr != nil {
-			return errors.Wrap(_adjustValueErr, "Error serializing 'adjustValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "adjustValue", m.GetAdjustValue(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'adjustValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAdjustValue) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAdjustValue) isBACnetConstructedDataAdjustValue() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAdjustValue) IsBACnetConstructedDataAdjustValue() {}
 
 func (m *_BACnetConstructedDataAdjustValue) String() string {
 	if m == nil {

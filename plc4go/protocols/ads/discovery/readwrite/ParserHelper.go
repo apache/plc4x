@@ -24,7 +24,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
+	. "github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -36,15 +36,15 @@ type AdsDiscoveryParserHelper struct {
 func (m AdsDiscoveryParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "AdsDiscovery":
-		return model.AdsDiscoveryParseWithBuffer(context.Background(), io)
+		return AdsDiscoveryParseWithBuffer(context.Background(), io)
 	case "AdsDiscoveryBlock":
-		return model.AdsDiscoveryBlockParseWithBuffer(context.Background(), io)
+		return AdsDiscoveryBlockParseWithBuffer[AdsDiscoveryBlock](context.Background(), io)
 	case "AdsDiscoveryConstants":
-		return model.AdsDiscoveryConstantsParseWithBuffer(context.Background(), io)
+		return AdsDiscoveryConstantsParseWithBuffer(context.Background(), io)
 	case "AmsNetId":
-		return model.AmsNetIdParseWithBuffer(context.Background(), io)
+		return AmsNetIdParseWithBuffer(context.Background(), io)
 	case "AmsString":
-		return model.AmsStringParseWithBuffer(context.Background(), io)
+		return AmsStringParseWithBuffer(context.Background(), io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

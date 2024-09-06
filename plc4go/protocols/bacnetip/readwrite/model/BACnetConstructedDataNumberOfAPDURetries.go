@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataNumberOfAPDURetries interface {
 	GetNumberOfApduRetries() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataNumberOfAPDURetriesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNumberOfAPDURetries.
-// This is useful for switch cases.
-type BACnetConstructedDataNumberOfAPDURetriesExactly interface {
-	BACnetConstructedDataNumberOfAPDURetries
-	isBACnetConstructedDataNumberOfAPDURetries() bool
+	// IsBACnetConstructedDataNumberOfAPDURetries is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNumberOfAPDURetries()
 }
 
 // _BACnetConstructedDataNumberOfAPDURetries is the data-structure of this message
 type _BACnetConstructedDataNumberOfAPDURetries struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NumberOfApduRetries BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataNumberOfAPDURetries = (*_BACnetConstructedDataNumberOfAPDURetries)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfAPDURetries)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataNumberOfAPDURetries) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataNumberOfAPDURetries) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataNumberOfAPDURetries) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataNumberOfAPDURetries factory function for _BACnetConstructedDataNumberOfAPDURetries
 func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAPDURetries {
-	_result := &_BACnetConstructedDataNumberOfAPDURetries{
-		NumberOfApduRetries:    numberOfApduRetries,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if numberOfApduRetries == nil {
+		panic("numberOfApduRetries of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAPDURetries must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataNumberOfAPDURetries{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfApduRetries:           numberOfApduRetries,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (numberOfApduRetries)
 	lengthInBits += m.NumberOfApduRetries.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataNumberOfAPDURetriesParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAPDURetries, error) {
-	return BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAPDURetries, error) {
+func (m *_BACnetConstructedDataNumberOfAPDURetries) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNumberOfAPDURetries BACnetConstructedDataNumberOfAPDURetries, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfAPDURetries"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNumberOfAPDURetries")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfApduRetries)
-	if pullErr := readBuffer.PullContext("numberOfApduRetries"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for numberOfApduRetries")
+	numberOfApduRetries, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfApduRetries", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfApduRetries' field"))
 	}
-	_numberOfApduRetries, _numberOfApduRetriesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _numberOfApduRetriesErr != nil {
-		return nil, errors.Wrap(_numberOfApduRetriesErr, "Error parsing 'numberOfApduRetries' field of BACnetConstructedDataNumberOfAPDURetries")
-	}
-	numberOfApduRetries := _numberOfApduRetries.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("numberOfApduRetries"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for numberOfApduRetries")
-	}
+	m.NumberOfApduRetries = numberOfApduRetries
 
-	// Virtual field
-	_actualValue := numberOfApduRetries
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), numberOfApduRetries)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNumberOfAPDURetries"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNumberOfAPDURetries")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataNumberOfAPDURetries{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NumberOfApduRetries: numberOfApduRetries,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNumberOfAPDURetries")
 		}
 
-		// Simple Field (numberOfApduRetries)
-		if pushErr := writeBuffer.PushContext("numberOfApduRetries"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for numberOfApduRetries")
-		}
-		_numberOfApduRetriesErr := writeBuffer.WriteSerializable(ctx, m.GetNumberOfApduRetries())
-		if popErr := writeBuffer.PopContext("numberOfApduRetries"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for numberOfApduRetries")
-		}
-		if _numberOfApduRetriesErr != nil {
-			return errors.Wrap(_numberOfApduRetriesErr, "Error serializing 'numberOfApduRetries' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfApduRetries", m.GetNumberOfApduRetries(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfApduRetries' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetries) isBACnetConstructedDataNumberOfAPDURetries() bool {
-	return true
-}
+func (m *_BACnetConstructedDataNumberOfAPDURetries) IsBACnetConstructedDataNumberOfAPDURetries() {}
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) String() string {
 	if m == nil {

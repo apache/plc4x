@@ -121,7 +121,7 @@ public abstract class OpenProtocolMessage implements Message {
         "mid",
         "Mid",
         getMid(),
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
     // Optional Field (midRevision) (Can be skipped, if the value is null)
@@ -249,7 +249,7 @@ public abstract class OpenProtocolMessage implements Message {
         readDiscriminatorEnumField(
             "mid",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
     Integer midRevision =

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,20 +47,18 @@ type MediaTransportControlDataRepeatOnOff interface {
 	GetIsRepeatCurrent() bool
 	// GetIsRepeatTracks returns IsRepeatTracks (virtual field)
 	GetIsRepeatTracks() bool
-}
-
-// MediaTransportControlDataRepeatOnOffExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataRepeatOnOff.
-// This is useful for switch cases.
-type MediaTransportControlDataRepeatOnOffExactly interface {
-	MediaTransportControlDataRepeatOnOff
-	isMediaTransportControlDataRepeatOnOff() bool
+	// IsMediaTransportControlDataRepeatOnOff is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataRepeatOnOff()
 }
 
 // _MediaTransportControlDataRepeatOnOff is the data-structure of this message
 type _MediaTransportControlDataRepeatOnOff struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	RepeatType byte
 }
+
+var _ MediaTransportControlDataRepeatOnOff = (*_MediaTransportControlDataRepeatOnOff)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataRepeatOnOff)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,13 +70,8 @@ type _MediaTransportControlDataRepeatOnOff struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataRepeatOnOff) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataRepeatOnOff) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataRepeatOnOff) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -123,10 +118,10 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetIsRepeatTracks() bool {
 // NewMediaTransportControlDataRepeatOnOff factory function for _MediaTransportControlDataRepeatOnOff
 func NewMediaTransportControlDataRepeatOnOff(repeatType byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataRepeatOnOff {
 	_result := &_MediaTransportControlDataRepeatOnOff{
-		RepeatType:                 repeatType,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		RepeatType:                        repeatType,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -146,7 +141,7 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (repeatType)
 	lengthInBits += 8
@@ -164,54 +159,46 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataRepeatOnOffParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataRepeatOnOff, error) {
-	return MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRepeatOnOff, error) {
+func (m *_MediaTransportControlDataRepeatOnOff) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataRepeatOnOff MediaTransportControlDataRepeatOnOff, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataRepeatOnOff"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataRepeatOnOff")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (repeatType)
-	_repeatType, _repeatTypeErr := readBuffer.ReadByte("repeatType")
-	if _repeatTypeErr != nil {
-		return nil, errors.Wrap(_repeatTypeErr, "Error parsing 'repeatType' field of MediaTransportControlDataRepeatOnOff")
+	repeatType, err := ReadSimpleField(ctx, "repeatType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'repeatType' field"))
 	}
-	repeatType := _repeatType
+	m.RepeatType = repeatType
 
-	// Virtual field
-	_isOff := bool((repeatType) == (0x00))
-	isOff := bool(_isOff)
+	isOff, err := ReadVirtualField[bool](ctx, "isOff", (*bool)(nil), bool((repeatType) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOff' field"))
+	}
 	_ = isOff
 
-	// Virtual field
-	_isRepeatCurrent := bool(bool((repeatType) > (0x00))) && bool(bool((repeatType) <= (0xFE)))
-	isRepeatCurrent := bool(_isRepeatCurrent)
+	isRepeatCurrent, err := ReadVirtualField[bool](ctx, "isRepeatCurrent", (*bool)(nil), bool(bool((repeatType) > (0x00))) && bool(bool((repeatType) <= (0xFE))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isRepeatCurrent' field"))
+	}
 	_ = isRepeatCurrent
 
-	// Virtual field
-	_isRepeatTracks := bool((repeatType) >= (0xFE))
-	isRepeatTracks := bool(_isRepeatTracks)
+	isRepeatTracks, err := ReadVirtualField[bool](ctx, "isRepeatTracks", (*bool)(nil), bool((repeatType) >= (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isRepeatTracks' field"))
+	}
 	_ = isRepeatTracks
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataRepeatOnOff"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataRepeatOnOff")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataRepeatOnOff{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		RepeatType:                 repeatType,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataRepeatOnOff) Serialize() ([]byte, error) {
@@ -232,11 +219,8 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataRepeatOnOff")
 		}
 
-		// Simple Field (repeatType)
-		repeatType := byte(m.GetRepeatType())
-		_repeatTypeErr := writeBuffer.WriteByte("repeatType", (repeatType))
-		if _repeatTypeErr != nil {
-			return errors.Wrap(_repeatTypeErr, "Error serializing 'repeatType' field")
+		if err := WriteSimpleField[byte](ctx, "repeatType", m.GetRepeatType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'repeatType' field")
 		}
 		// Virtual field
 		isOff := m.GetIsOff()
@@ -262,12 +246,10 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataRepeatOnOff) isMediaTransportControlDataRepeatOnOff() bool {
-	return true
-}
+func (m *_MediaTransportControlDataRepeatOnOff) IsMediaTransportControlDataRepeatOnOff() {}
 
 func (m *_MediaTransportControlDataRepeatOnOff) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SALDataAirConditioning interface {
 	SALData
 	// GetAirConditioningData returns AirConditioningData (property field)
 	GetAirConditioningData() AirConditioningData
-}
-
-// SALDataAirConditioningExactly can be used when we want exactly this type and not a type which fulfills SALDataAirConditioning.
-// This is useful for switch cases.
-type SALDataAirConditioningExactly interface {
-	SALDataAirConditioning
-	isSALDataAirConditioning() bool
+	// IsSALDataAirConditioning is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataAirConditioning()
 }
 
 // _SALDataAirConditioning is the data-structure of this message
 type _SALDataAirConditioning struct {
-	*_SALData
+	SALDataContract
 	AirConditioningData AirConditioningData
 }
+
+var _ SALDataAirConditioning = (*_SALDataAirConditioning)(nil)
+var _ SALDataRequirements = (*_SALDataAirConditioning)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_SALDataAirConditioning) GetApplicationId() ApplicationId {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataAirConditioning) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataAirConditioning) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataAirConditioning) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_SALDataAirConditioning) GetAirConditioningData() AirConditioningData {
 
 // NewSALDataAirConditioning factory function for _SALDataAirConditioning
 func NewSALDataAirConditioning(airConditioningData AirConditioningData, salData SALData) *_SALDataAirConditioning {
-	_result := &_SALDataAirConditioning{
-		AirConditioningData: airConditioningData,
-		_SALData:            NewSALData(salData),
+	if airConditioningData == nil {
+		panic("airConditioningData of type AirConditioningData for SALDataAirConditioning must not be nil")
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result := &_SALDataAirConditioning{
+		SALDataContract:     NewSALData(salData),
+		AirConditioningData: airConditioningData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_SALDataAirConditioning) GetTypeName() string {
 }
 
 func (m *_SALDataAirConditioning) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (airConditioningData)
 	lengthInBits += m.AirConditioningData.GetLengthInBits(ctx)
@@ -128,45 +127,28 @@ func (m *_SALDataAirConditioning) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataAirConditioningParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataAirConditioning, error) {
-	return SALDataAirConditioningParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataAirConditioningParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAirConditioning, error) {
+func (m *_SALDataAirConditioning) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataAirConditioning SALDataAirConditioning, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataAirConditioning"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataAirConditioning")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (airConditioningData)
-	if pullErr := readBuffer.PullContext("airConditioningData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for airConditioningData")
+	airConditioningData, err := ReadSimpleField[AirConditioningData](ctx, "airConditioningData", ReadComplex[AirConditioningData](AirConditioningDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'airConditioningData' field"))
 	}
-	_airConditioningData, _airConditioningDataErr := AirConditioningDataParseWithBuffer(ctx, readBuffer)
-	if _airConditioningDataErr != nil {
-		return nil, errors.Wrap(_airConditioningDataErr, "Error parsing 'airConditioningData' field of SALDataAirConditioning")
-	}
-	airConditioningData := _airConditioningData.(AirConditioningData)
-	if closeErr := readBuffer.CloseContext("airConditioningData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for airConditioningData")
-	}
+	m.AirConditioningData = airConditioningData
 
 	if closeErr := readBuffer.CloseContext("SALDataAirConditioning"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataAirConditioning")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataAirConditioning{
-		_SALData:            &_SALData{},
-		AirConditioningData: airConditioningData,
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataAirConditioning) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for SALDataAirConditioning")
 		}
 
-		// Simple Field (airConditioningData)
-		if pushErr := writeBuffer.PushContext("airConditioningData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for airConditioningData")
-		}
-		_airConditioningDataErr := writeBuffer.WriteSerializable(ctx, m.GetAirConditioningData())
-		if popErr := writeBuffer.PopContext("airConditioningData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for airConditioningData")
-		}
-		if _airConditioningDataErr != nil {
-			return errors.Wrap(_airConditioningDataErr, "Error serializing 'airConditioningData' field")
+		if err := WriteSimpleField[AirConditioningData](ctx, "airConditioningData", m.GetAirConditioningData(), WriteComplex[AirConditioningData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'airConditioningData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataAirConditioning"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataAirConditioning) isSALDataAirConditioning() bool {
-	return true
-}
+func (m *_SALDataAirConditioning) IsSALDataAirConditioning() {}
 
 func (m *_SALDataAirConditioning) String() string {
 	if m == nil {

@@ -67,7 +67,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
     writeBuffer.pushContext("DF1CommandRequestMessage");
 
     // Simple Field (command)
-    writeSimpleField("command", command, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("command", command, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DF1CommandRequestMessage");
   }
@@ -97,9 +97,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
 
     DF1RequestCommand command =
         readSimpleField(
-            "command",
-            new DataReaderComplexDefault<>(
-                () -> DF1RequestCommand.staticParse(readBuffer), readBuffer));
+            "command", readComplex(() -> DF1RequestCommand.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("DF1CommandRequestMessage");
     // Create the instance

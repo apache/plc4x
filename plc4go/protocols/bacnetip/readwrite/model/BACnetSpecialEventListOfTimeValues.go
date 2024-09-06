@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetSpecialEventListOfTimeValues interface {
 	GetListOfTimeValues() []BACnetTimeValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetSpecialEventListOfTimeValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventListOfTimeValues.
-// This is useful for switch cases.
-type BACnetSpecialEventListOfTimeValuesExactly interface {
-	BACnetSpecialEventListOfTimeValues
-	isBACnetSpecialEventListOfTimeValues() bool
+	// IsBACnetSpecialEventListOfTimeValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSpecialEventListOfTimeValues()
 }
 
 // _BACnetSpecialEventListOfTimeValues is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetSpecialEventListOfTimeValues struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetSpecialEventListOfTimeValues = (*_BACnetSpecialEventListOfTimeValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,12 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetSpecialEventListOfTimeValues factory function for _BACnetSpecialEventListOfTimeValues
 func NewBACnetSpecialEventListOfTimeValues(openingTag BACnetOpeningTag, listOfTimeValues []BACnetTimeValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSpecialEventListOfTimeValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetSpecialEventListOfTimeValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetSpecialEventListOfTimeValues must not be nil")
+	}
 	return &_BACnetSpecialEventListOfTimeValues{OpeningTag: openingTag, ListOfTimeValues: listOfTimeValues, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -130,73 +135,52 @@ func BACnetSpecialEventListOfTimeValuesParse(ctx context.Context, theBytes []byt
 	return BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetSpecialEventListOfTimeValuesParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventListOfTimeValues, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventListOfTimeValues, error) {
+		return BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetSpecialEventListOfTimeValues, error) {
+	v, err := (&_BACnetSpecialEventListOfTimeValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetSpecialEventListOfTimeValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetSpecialEventListOfTimeValues BACnetSpecialEventListOfTimeValues, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventListOfTimeValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSpecialEventListOfTimeValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetSpecialEventListOfTimeValues")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (listOfTimeValues)
-	if pullErr := readBuffer.PullContext("listOfTimeValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfTimeValues")
+	listOfTimeValues, err := ReadTerminatedArrayField[BACnetTimeValue](ctx, "listOfTimeValues", ReadComplex[BACnetTimeValue](BACnetTimeValueParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfTimeValues' field"))
 	}
-	// Terminated array
-	var listOfTimeValues []BACnetTimeValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimeValueParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfTimeValues' field of BACnetSpecialEventListOfTimeValues")
-			}
-			listOfTimeValues = append(listOfTimeValues, _item.(BACnetTimeValue))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfTimeValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfTimeValues")
-	}
+	m.ListOfTimeValues = listOfTimeValues
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetSpecialEventListOfTimeValues")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEventListOfTimeValues"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetSpecialEventListOfTimeValues")
 	}
 
-	// Create the instance
-	return &_BACnetSpecialEventListOfTimeValues{
-		TagNumber:        tagNumber,
-		OpeningTag:       openingTag,
-		ListOfTimeValues: listOfTimeValues,
-		ClosingTag:       closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetSpecialEventListOfTimeValues) Serialize() ([]byte, error) {
@@ -216,45 +200,16 @@ func (m *_BACnetSpecialEventListOfTimeValues) SerializeWithWriteBuffer(ctx conte
 		return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEventListOfTimeValues")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfTimeValues)
-	if pushErr := writeBuffer.PushContext("listOfTimeValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfTimeValues")
-	}
-	for _curItem, _element := range m.GetListOfTimeValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfTimeValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfTimeValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfTimeValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfTimeValues")
+	if err := WriteComplexTypeArrayField(ctx, "listOfTimeValues", m.GetListOfTimeValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfTimeValues' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetSpecialEventListOfTimeValues"); popErr != nil {
@@ -273,9 +228,7 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetSpecialEventListOfTimeValues) isBACnetSpecialEventListOfTimeValues() bool {
-	return true
-}
+func (m *_BACnetSpecialEventListOfTimeValues) IsBACnetSpecialEventListOfTimeValues() {}
 
 func (m *_BACnetSpecialEventListOfTimeValues) String() string {
 	if m == nil {

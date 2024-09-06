@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type DoubleComplexNumberType interface {
 	GetReal() float64
 	// GetImaginary returns Imaginary (property field)
 	GetImaginary() float64
-}
-
-// DoubleComplexNumberTypeExactly can be used when we want exactly this type and not a type which fulfills DoubleComplexNumberType.
-// This is useful for switch cases.
-type DoubleComplexNumberTypeExactly interface {
-	DoubleComplexNumberType
-	isDoubleComplexNumberType() bool
+	// IsDoubleComplexNumberType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDoubleComplexNumberType()
 }
 
 // _DoubleComplexNumberType is the data-structure of this message
 type _DoubleComplexNumberType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	Real      float64
 	Imaginary float64
 }
+
+var _ DoubleComplexNumberType = (*_DoubleComplexNumberType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DoubleComplexNumberType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_DoubleComplexNumberType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DoubleComplexNumberType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_DoubleComplexNumberType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_DoubleComplexNumberType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_DoubleComplexNumberType) GetImaginary() float64 {
 // NewDoubleComplexNumberType factory function for _DoubleComplexNumberType
 func NewDoubleComplexNumberType(real float64, imaginary float64) *_DoubleComplexNumberType {
 	_result := &_DoubleComplexNumberType{
-		Real:                       real,
-		Imaginary:                  imaginary,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Real:                              real,
+		Imaginary:                         imaginary,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_DoubleComplexNumberType) GetTypeName() string {
 }
 
 func (m *_DoubleComplexNumberType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (real)
 	lengthInBits += 64
@@ -137,47 +135,34 @@ func (m *_DoubleComplexNumberType) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DoubleComplexNumberTypeParse(ctx context.Context, theBytes []byte, identifier string) (DoubleComplexNumberType, error) {
-	return DoubleComplexNumberTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func DoubleComplexNumberTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DoubleComplexNumberType, error) {
+func (m *_DoubleComplexNumberType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__doubleComplexNumberType DoubleComplexNumberType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DoubleComplexNumberType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DoubleComplexNumberType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (real)
-	_real, _realErr := readBuffer.ReadFloat64("real", 64)
-	if _realErr != nil {
-		return nil, errors.Wrap(_realErr, "Error parsing 'real' field of DoubleComplexNumberType")
+	real, err := ReadSimpleField(ctx, "real", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'real' field"))
 	}
-	real := _real
+	m.Real = real
 
-	// Simple Field (imaginary)
-	_imaginary, _imaginaryErr := readBuffer.ReadFloat64("imaginary", 64)
-	if _imaginaryErr != nil {
-		return nil, errors.Wrap(_imaginaryErr, "Error parsing 'imaginary' field of DoubleComplexNumberType")
+	imaginary, err := ReadSimpleField(ctx, "imaginary", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'imaginary' field"))
 	}
-	imaginary := _imaginary
+	m.Imaginary = imaginary
 
 	if closeErr := readBuffer.CloseContext("DoubleComplexNumberType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DoubleComplexNumberType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DoubleComplexNumberType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		Real:                       real,
-		Imaginary:                  imaginary,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DoubleComplexNumberType) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_DoubleComplexNumberType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for DoubleComplexNumberType")
 		}
 
-		// Simple Field (real)
-		real := float64(m.GetReal())
-		_realErr := writeBuffer.WriteFloat64("real", 64, (real))
-		if _realErr != nil {
-			return errors.Wrap(_realErr, "Error serializing 'real' field")
+		if err := WriteSimpleField[float64](ctx, "real", m.GetReal(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'real' field")
 		}
 
-		// Simple Field (imaginary)
-		imaginary := float64(m.GetImaginary())
-		_imaginaryErr := writeBuffer.WriteFloat64("imaginary", 64, (imaginary))
-		if _imaginaryErr != nil {
-			return errors.Wrap(_imaginaryErr, "Error serializing 'imaginary' field")
+		if err := WriteSimpleField[float64](ctx, "imaginary", m.GetImaginary(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'imaginary' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DoubleComplexNumberType"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_DoubleComplexNumberType) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DoubleComplexNumberType) isDoubleComplexNumberType() bool {
-	return true
-}
+func (m *_DoubleComplexNumberType) IsDoubleComplexNumberType() {}
 
 func (m *_DoubleComplexNumberType) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type AddReferencesRequest interface {
 	GetNoOfReferencesToAdd() int32
 	// GetReferencesToAdd returns ReferencesToAdd (property field)
 	GetReferencesToAdd() []ExtensionObjectDefinition
-}
-
-// AddReferencesRequestExactly can be used when we want exactly this type and not a type which fulfills AddReferencesRequest.
-// This is useful for switch cases.
-type AddReferencesRequestExactly interface {
-	AddReferencesRequest
-	isAddReferencesRequest() bool
+	// IsAddReferencesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAddReferencesRequest()
 }
 
 // _AddReferencesRequest is the data-structure of this message
 type _AddReferencesRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader       ExtensionObjectDefinition
 	NoOfReferencesToAdd int32
 	ReferencesToAdd     []ExtensionObjectDefinition
 }
+
+var _ AddReferencesRequest = (*_AddReferencesRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_AddReferencesRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AddReferencesRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_AddReferencesRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_AddReferencesRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_AddReferencesRequest) GetReferencesToAdd() []ExtensionObjectDefinition
 
 // NewAddReferencesRequest factory function for _AddReferencesRequest
 func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
-	_result := &_AddReferencesRequest{
-		RequestHeader:              requestHeader,
-		NoOfReferencesToAdd:        noOfReferencesToAdd,
-		ReferencesToAdd:            referencesToAdd,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_AddReferencesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfReferencesToAdd:               noOfReferencesToAdd,
+		ReferencesToAdd:                   referencesToAdd,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_AddReferencesRequest) GetTypeName() string {
 }
 
 func (m *_AddReferencesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -155,81 +156,40 @@ func (m *_AddReferencesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AddReferencesRequestParse(ctx context.Context, theBytes []byte, identifier string) (AddReferencesRequest, error) {
-	return AddReferencesRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func AddReferencesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddReferencesRequest, error) {
+func (m *_AddReferencesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addReferencesRequest AddReferencesRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AddReferencesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AddReferencesRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of AddReferencesRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (noOfReferencesToAdd)
-	_noOfReferencesToAdd, _noOfReferencesToAddErr := readBuffer.ReadInt32("noOfReferencesToAdd", 32)
-	if _noOfReferencesToAddErr != nil {
-		return nil, errors.Wrap(_noOfReferencesToAddErr, "Error parsing 'noOfReferencesToAdd' field of AddReferencesRequest")
+	noOfReferencesToAdd, err := ReadSimpleField(ctx, "noOfReferencesToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencesToAdd' field"))
 	}
-	noOfReferencesToAdd := _noOfReferencesToAdd
+	m.NoOfReferencesToAdd = noOfReferencesToAdd
 
-	// Array field (referencesToAdd)
-	if pullErr := readBuffer.PullContext("referencesToAdd", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referencesToAdd")
+	referencesToAdd, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "referencesToAdd", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("381")), readBuffer), uint64(noOfReferencesToAdd))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencesToAdd' field"))
 	}
-	// Count array
-	referencesToAdd := make([]ExtensionObjectDefinition, max(noOfReferencesToAdd, 0))
-	// This happens when the size is set conditional to 0
-	if len(referencesToAdd) == 0 {
-		referencesToAdd = nil
-	}
-	{
-		_numItems := uint16(max(noOfReferencesToAdd, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "381")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'referencesToAdd' field of AddReferencesRequest")
-			}
-			referencesToAdd[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("referencesToAdd", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referencesToAdd")
-	}
+	m.ReferencesToAdd = referencesToAdd
 
 	if closeErr := readBuffer.CloseContext("AddReferencesRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AddReferencesRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AddReferencesRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		NoOfReferencesToAdd:        noOfReferencesToAdd,
-		ReferencesToAdd:            referencesToAdd,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AddReferencesRequest) Serialize() ([]byte, error) {
@@ -250,40 +210,16 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for AddReferencesRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfReferencesToAdd)
-		noOfReferencesToAdd := int32(m.GetNoOfReferencesToAdd())
-		_noOfReferencesToAddErr := writeBuffer.WriteInt32("noOfReferencesToAdd", 32, int32((noOfReferencesToAdd)))
-		if _noOfReferencesToAddErr != nil {
-			return errors.Wrap(_noOfReferencesToAddErr, "Error serializing 'noOfReferencesToAdd' field")
+		if err := WriteSimpleField[int32](ctx, "noOfReferencesToAdd", m.GetNoOfReferencesToAdd(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfReferencesToAdd' field")
 		}
 
-		// Array Field (referencesToAdd)
-		if pushErr := writeBuffer.PushContext("referencesToAdd", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referencesToAdd")
-		}
-		for _curItem, _element := range m.GetReferencesToAdd() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReferencesToAdd()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'referencesToAdd' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("referencesToAdd", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referencesToAdd")
+		if err := WriteComplexTypeArrayField(ctx, "referencesToAdd", m.GetReferencesToAdd(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'referencesToAdd' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AddReferencesRequest"); popErr != nil {
@@ -291,12 +227,10 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AddReferencesRequest) isAddReferencesRequest() bool {
-	return true
-}
+func (m *_AddReferencesRequest) IsAddReferencesRequest() {}
 
 func (m *_AddReferencesRequest) String() string {
 	if m == nil {

@@ -71,9 +71,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
 
     // Simple Field (referencedPropertyIncrement)
     writeSimpleField(
-        "referencedPropertyIncrement",
-        referencedPropertyIncrement,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "referencedPropertyIncrement", referencedPropertyIncrement, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
@@ -107,7 +105,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
     BACnetContextTagReal referencedPropertyIncrement =
         readSimpleField(
             "referencedPropertyIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

@@ -62,8 +62,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("NetworkAddressDataType");
 
     // Simple Field (networkInterface)
-    writeSimpleField(
-        "networkInterface", networkInterface, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkInterface", networkInterface, writeComplex(writeBuffer));
 
     writeBuffer.popContext("NetworkAddressDataType");
   }
@@ -94,7 +93,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     PascalString networkInterface =
         readSimpleField(
             "networkInterface",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("NetworkAddressDataType");
     // Create the instance

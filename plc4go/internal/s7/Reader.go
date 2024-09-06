@@ -96,7 +96,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		request := s7MessageRequest
 		// Create a new Request with correct tpuId (is not known before)
-		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.Parameter, request.Payload)
+		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.GetParameter(), request.GetPayload())
 
 		// Assemble the finished paket
 		m.log.Trace().Msg("Assemble paket")
@@ -116,11 +116,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			// Send the  over the wire
 			m.log.Trace().Msg("Send ")
 			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
 				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 				if !ok {
 					return false
 				}

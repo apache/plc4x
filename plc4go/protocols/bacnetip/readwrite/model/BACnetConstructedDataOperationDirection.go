@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataOperationDirection interface {
 	GetOperationDirection() BACnetEscalatorOperationDirectionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEscalatorOperationDirectionTagged
-}
-
-// BACnetConstructedDataOperationDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOperationDirection.
-// This is useful for switch cases.
-type BACnetConstructedDataOperationDirectionExactly interface {
-	BACnetConstructedDataOperationDirection
-	isBACnetConstructedDataOperationDirection() bool
+	// IsBACnetConstructedDataOperationDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataOperationDirection()
 }
 
 // _BACnetConstructedDataOperationDirection is the data-structure of this message
 type _BACnetConstructedDataOperationDirection struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	OperationDirection BACnetEscalatorOperationDirectionTagged
 }
+
+var _ BACnetConstructedDataOperationDirection = (*_BACnetConstructedDataOperationDirection)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOperationDirection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataOperationDirection) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataOperationDirection) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataOperationDirection) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataOperationDirection) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataOperationDirection) GetActualValue() BACnetEscala
 
 // NewBACnetConstructedDataOperationDirection factory function for _BACnetConstructedDataOperationDirection
 func NewBACnetConstructedDataOperationDirection(operationDirection BACnetEscalatorOperationDirectionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationDirection {
-	_result := &_BACnetConstructedDataOperationDirection{
-		OperationDirection:     operationDirection,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if operationDirection == nil {
+		panic("operationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetConstructedDataOperationDirection must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataOperationDirection{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OperationDirection:            operationDirection,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataOperationDirection) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataOperationDirection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (operationDirection)
 	lengthInBits += m.OperationDirection.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataOperationDirection) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataOperationDirectionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOperationDirection, error) {
-	return BACnetConstructedDataOperationDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataOperationDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOperationDirection, error) {
+func (m *_BACnetConstructedDataOperationDirection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataOperationDirection BACnetConstructedDataOperationDirection, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOperationDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOperationDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (operationDirection)
-	if pullErr := readBuffer.PullContext("operationDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for operationDirection")
+	operationDirection, err := ReadSimpleField[BACnetEscalatorOperationDirectionTagged](ctx, "operationDirection", ReadComplex[BACnetEscalatorOperationDirectionTagged](BACnetEscalatorOperationDirectionTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operationDirection' field"))
 	}
-	_operationDirection, _operationDirectionErr := BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _operationDirectionErr != nil {
-		return nil, errors.Wrap(_operationDirectionErr, "Error parsing 'operationDirection' field of BACnetConstructedDataOperationDirection")
-	}
-	operationDirection := _operationDirection.(BACnetEscalatorOperationDirectionTagged)
-	if closeErr := readBuffer.CloseContext("operationDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for operationDirection")
-	}
+	m.OperationDirection = operationDirection
 
-	// Virtual field
-	_actualValue := operationDirection
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetEscalatorOperationDirectionTagged](ctx, "actualValue", (*BACnetEscalatorOperationDirectionTagged)(nil), operationDirection)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOperationDirection")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataOperationDirection{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		OperationDirection: operationDirection,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataOperationDirection) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataOperationDirection) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOperationDirection")
 		}
 
-		// Simple Field (operationDirection)
-		if pushErr := writeBuffer.PushContext("operationDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for operationDirection")
-		}
-		_operationDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetOperationDirection())
-		if popErr := writeBuffer.PopContext("operationDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for operationDirection")
-		}
-		if _operationDirectionErr != nil {
-			return errors.Wrap(_operationDirectionErr, "Error serializing 'operationDirection' field")
+		if err := WriteSimpleField[BACnetEscalatorOperationDirectionTagged](ctx, "operationDirection", m.GetOperationDirection(), WriteComplex[BACnetEscalatorOperationDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'operationDirection' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataOperationDirection) SerializeWithWriteBuffer(ctx 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataOperationDirection) isBACnetConstructedDataOperationDirection() bool {
-	return true
-}
+func (m *_BACnetConstructedDataOperationDirection) IsBACnetConstructedDataOperationDirection() {}
 
 func (m *_BACnetConstructedDataOperationDirection) String() string {
 	if m == nil {

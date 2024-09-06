@@ -37,19 +37,17 @@ type S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
-}
-
-// S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest.
-// This is useful for switch cases.
-type S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestExactly interface {
-	S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
-	isS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() bool
+	// IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest()
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 }
+
+var _ S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,22 +71,16 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetCpuSubfunctio
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 // NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
 func NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest {
 	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -108,7 +100,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetTypeName() st
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -117,15 +109,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetLengthInBytes
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, error) {
-	return S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, error) {
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest")
 	}
@@ -136,12 +124,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParseWithBuffer(ctx con
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) Serialize() ([]byte, error) {
@@ -167,11 +150,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) SerializeWithWri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) isS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() bool {
-	return true
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() {
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) String() string {

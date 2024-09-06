@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type CIPData interface {
 	GetDataType() CIPDataTypeCode
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// CIPDataExactly can be used when we want exactly this type and not a type which fulfills CIPData.
-// This is useful for switch cases.
-type CIPDataExactly interface {
-	CIPData
-	isCIPData() bool
+	// IsCIPData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPData()
 }
 
 // _CIPData is the data-structure of this message
@@ -57,6 +54,8 @@ type _CIPData struct {
 	// Arguments.
 	PacketLength uint16
 }
+
+var _ CIPData = (*_CIPData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -118,46 +117,46 @@ func CIPDataParse(ctx context.Context, theBytes []byte, packetLength uint16) (CI
 	return CIPDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), packetLength)
 }
 
+func CIPDataParseWithBufferProducer(packetLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPData, error) {
+		return CIPDataParseWithBuffer(ctx, readBuffer, packetLength)
+	}
+}
+
 func CIPDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPData, error) {
+	v, err := (&_CIPData{PacketLength: packetLength}).parse(ctx, readBuffer, packetLength)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_CIPData) parse(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (__cIPData CIPData, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CIPData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CIPData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataType)
-	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
+	dataType, err := ReadEnumField[CIPDataTypeCode](ctx, "dataType", "CIPDataTypeCode", ReadEnum(CIPDataTypeCodeByValue, ReadUnsignedShort(readBuffer, uint8(16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataType' field"))
 	}
-	_dataType, _dataTypeErr := CIPDataTypeCodeParseWithBuffer(ctx, readBuffer)
-	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of CIPData")
+	m.DataType = dataType
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(packetLength)-int32(int32(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	dataType := _dataType
-	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataType")
-	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(packetLength) - uint16(uint16(2)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CIPData")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("CIPData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CIPData")
 	}
 
-	// Create the instance
-	return &_CIPData{
-		PacketLength: packetLength,
-		DataType:     dataType,
-		Data:         data,
-	}, nil
+	return m, nil
 }
 
 func (m *_CIPData) Serialize() ([]byte, error) {
@@ -177,21 +176,11 @@ func (m *_CIPData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for CIPData")
 	}
 
-	// Simple Field (dataType)
-	if pushErr := writeBuffer.PushContext("dataType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for dataType")
-	}
-	_dataTypeErr := writeBuffer.WriteSerializable(ctx, m.GetDataType())
-	if popErr := writeBuffer.PopContext("dataType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for dataType")
-	}
-	if _dataTypeErr != nil {
-		return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
+	if err := WriteSimpleEnumField[CIPDataTypeCode](ctx, "dataType", "CIPDataTypeCode", m.GetDataType(), WriteEnum[CIPDataTypeCode, uint16](CIPDataTypeCode.GetValue, CIPDataTypeCode.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataType' field")
 	}
 
-	// Array Field (data)
-	// Byte Array field (data)
-	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
@@ -211,9 +200,7 @@ func (m *_CIPData) GetPacketLength() uint16 {
 //
 ////
 
-func (m *_CIPData) isCIPData() bool {
-	return true
-}
+func (m *_CIPData) IsCIPData() {}
 
 func (m *_CIPData) String() string {
 	if m == nil {

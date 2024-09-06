@@ -83,8 +83,7 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataCarMovingDirection");
 
     // Simple Field (carMovingDirection)
-    writeSimpleField(
-        "carMovingDirection", carMovingDirection, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("carMovingDirection", carMovingDirection, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLiftCarDirectionTagged actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
     BACnetLiftCarDirectionTagged carMovingDirection =
         readSimpleField(
             "carMovingDirection",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDirectionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type FirmataCommandProtocolVersion interface {
 	GetMajorVersion() uint8
 	// GetMinorVersion returns MinorVersion (property field)
 	GetMinorVersion() uint8
-}
-
-// FirmataCommandProtocolVersionExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandProtocolVersion.
-// This is useful for switch cases.
-type FirmataCommandProtocolVersionExactly interface {
-	FirmataCommandProtocolVersion
-	isFirmataCommandProtocolVersion() bool
+	// IsFirmataCommandProtocolVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommandProtocolVersion()
 }
 
 // _FirmataCommandProtocolVersion is the data-structure of this message
 type _FirmataCommandProtocolVersion struct {
-	*_FirmataCommand
+	FirmataCommandContract
 	MajorVersion uint8
 	MinorVersion uint8
 }
+
+var _ FirmataCommandProtocolVersion = (*_FirmataCommandProtocolVersion)(nil)
+var _ FirmataCommandRequirements = (*_FirmataCommandProtocolVersion)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_FirmataCommandProtocolVersion) GetCommandCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FirmataCommandProtocolVersion) InitializeParent(parent FirmataCommand) {}
-
-func (m *_FirmataCommandProtocolVersion) GetParent() FirmataCommand {
-	return m._FirmataCommand
+func (m *_FirmataCommandProtocolVersion) GetParent() FirmataCommandContract {
+	return m.FirmataCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_FirmataCommandProtocolVersion) GetMinorVersion() uint8 {
 // NewFirmataCommandProtocolVersion factory function for _FirmataCommandProtocolVersion
 func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *_FirmataCommandProtocolVersion {
 	_result := &_FirmataCommandProtocolVersion{
-		MajorVersion:    majorVersion,
-		MinorVersion:    minorVersion,
-		_FirmataCommand: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(response),
+		MajorVersion:           majorVersion,
+		MinorVersion:           minorVersion,
 	}
-	_result._FirmataCommand._FirmataCommandChildRequirements = _result
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_FirmataCommandProtocolVersion) GetTypeName() string {
 }
 
 func (m *_FirmataCommandProtocolVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	// Simple field (majorVersion)
 	lengthInBits += 8
@@ -137,49 +135,34 @@ func (m *_FirmataCommandProtocolVersion) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataCommandProtocolVersionParse(ctx context.Context, theBytes []byte, response bool) (FirmataCommandProtocolVersion, error) {
-	return FirmataCommandProtocolVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func FirmataCommandProtocolVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandProtocolVersion, error) {
+func (m *_FirmataCommandProtocolVersion) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataCommand, response bool) (__firmataCommandProtocolVersion FirmataCommandProtocolVersion, err error) {
+	m.FirmataCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommandProtocolVersion")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
-	if _majorVersionErr != nil {
-		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of FirmataCommandProtocolVersion")
+	majorVersion, err := ReadSimpleField(ctx, "majorVersion", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'majorVersion' field"))
 	}
-	majorVersion := _majorVersion
+	m.MajorVersion = majorVersion
 
-	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
-	if _minorVersionErr != nil {
-		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of FirmataCommandProtocolVersion")
+	minorVersion, err := ReadSimpleField(ctx, "minorVersion", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minorVersion' field"))
 	}
-	minorVersion := _minorVersion
+	m.MinorVersion = minorVersion
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandProtocolVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandProtocolVersion")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FirmataCommandProtocolVersion{
-		_FirmataCommand: &_FirmataCommand{
-			Response: response,
-		},
-		MajorVersion: majorVersion,
-		MinorVersion: minorVersion,
-	}
-	_child._FirmataCommand._FirmataCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FirmataCommandProtocolVersion) Serialize() ([]byte, error) {
@@ -200,18 +183,12 @@ func (m *_FirmataCommandProtocolVersion) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for FirmataCommandProtocolVersion")
 		}
 
-		// Simple Field (majorVersion)
-		majorVersion := uint8(m.GetMajorVersion())
-		_majorVersionErr := writeBuffer.WriteUint8("majorVersion", 8, uint8((majorVersion)))
-		if _majorVersionErr != nil {
-			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
+		if err := WriteSimpleField[uint8](ctx, "majorVersion", m.GetMajorVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'majorVersion' field")
 		}
 
-		// Simple Field (minorVersion)
-		minorVersion := uint8(m.GetMinorVersion())
-		_minorVersionErr := writeBuffer.WriteUint8("minorVersion", 8, uint8((minorVersion)))
-		if _minorVersionErr != nil {
-			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
+		if err := WriteSimpleField[uint8](ctx, "minorVersion", m.GetMinorVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minorVersion' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandProtocolVersion"); popErr != nil {
@@ -219,12 +196,10 @@ func (m *_FirmataCommandProtocolVersion) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.FirmataCommandContract.(*_FirmataCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FirmataCommandProtocolVersion) isFirmataCommandProtocolVersion() bool {
-	return true
-}
+func (m *_FirmataCommandProtocolVersion) IsFirmataCommandProtocolVersion() {}
 
 func (m *_FirmataCommandProtocolVersion) String() string {
 	if m == nil {

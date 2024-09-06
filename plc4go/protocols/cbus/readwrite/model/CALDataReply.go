@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type CALDataReply interface {
 	GetParamNo() Parameter
 	// GetParameterValue returns ParameterValue (property field)
 	GetParameterValue() ParameterValue
-}
-
-// CALDataReplyExactly can be used when we want exactly this type and not a type which fulfills CALDataReply.
-// This is useful for switch cases.
-type CALDataReplyExactly interface {
-	CALDataReply
-	isCALDataReply() bool
+	// IsCALDataReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataReply()
 }
 
 // _CALDataReply is the data-structure of this message
 type _CALDataReply struct {
-	*_CALData
+	CALDataContract
 	ParamNo        Parameter
 	ParameterValue ParameterValue
 }
+
+var _ CALDataReply = (*_CALDataReply)(nil)
+var _ CALDataRequirements = (*_CALDataReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,13 +67,8 @@ type _CALDataReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataReply) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.AdditionalData = additionalData
-}
-
-func (m *_CALDataReply) GetParent() CALData {
-	return m._CALData
+func (m *_CALDataReply) GetParent() CALDataContract {
+	return m.CALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -96,12 +91,15 @@ func (m *_CALDataReply) GetParameterValue() ParameterValue {
 
 // NewCALDataReply factory function for _CALDataReply
 func NewCALDataReply(paramNo Parameter, parameterValue ParameterValue, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReply {
-	_result := &_CALDataReply{
-		ParamNo:        paramNo,
-		ParameterValue: parameterValue,
-		_CALData:       NewCALData(commandTypeContainer, additionalData, requestContext),
+	if parameterValue == nil {
+		panic("parameterValue of type ParameterValue for CALDataReply must not be nil")
 	}
-	_result._CALData._CALDataChildRequirements = _result
+	_result := &_CALDataReply{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		ParameterValue:  parameterValue,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 
@@ -121,7 +119,7 @@ func (m *_CALDataReply) GetTypeName() string {
 }
 
 func (m *_CALDataReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -136,61 +134,34 @@ func (m *_CALDataReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataReplyParse(ctx context.Context, theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataReply, error) {
-	return CALDataReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
-}
-
-func CALDataReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataReply, error) {
+func (m *_CALDataReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (__cALDataReply CALDataReply, err error) {
+	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALDataReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALDataReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (paramNo)
-	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
-	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataReply")
-	}
-	paramNo := _paramNo
-	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
-	}
+	m.ParamNo = paramNo
 
-	// Simple Field (parameterValue)
-	if pullErr := readBuffer.PullContext("parameterValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameterValue")
+	parameterValue, err := ReadSimpleField[ParameterValue](ctx, "parameterValue", ReadComplex[ParameterValue](ParameterValueParseWithBufferProducer[ParameterValue]((ParameterType)(paramNo.ParameterType()), (uint8)(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterValue' field"))
 	}
-	_parameterValue, _parameterValueErr := ParameterValueParseWithBuffer(ctx, readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
-	if _parameterValueErr != nil {
-		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CALDataReply")
-	}
-	parameterValue := _parameterValue.(ParameterValue)
-	if closeErr := readBuffer.CloseContext("parameterValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameterValue")
-	}
+	m.ParameterValue = parameterValue
 
 	if closeErr := readBuffer.CloseContext("CALDataReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALDataReply")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CALDataReply{
-		_CALData: &_CALData{
-			RequestContext: requestContext,
-		},
-		ParamNo:        paramNo,
-		ParameterValue: parameterValue,
-	}
-	_child._CALData._CALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CALDataReply) Serialize() ([]byte, error) {
@@ -211,28 +182,12 @@ func (m *_CALDataReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for CALDataReply")
 		}
 
-		// Simple Field (paramNo)
-		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for paramNo")
-		}
-		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
-		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for paramNo")
-		}
-		if _paramNoErr != nil {
-			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
+		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'paramNo' field")
 		}
 
-		// Simple Field (parameterValue)
-		if pushErr := writeBuffer.PushContext("parameterValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameterValue")
-		}
-		_parameterValueErr := writeBuffer.WriteSerializable(ctx, m.GetParameterValue())
-		if popErr := writeBuffer.PopContext("parameterValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameterValue")
-		}
-		if _parameterValueErr != nil {
-			return errors.Wrap(_parameterValueErr, "Error serializing 'parameterValue' field")
+		if err := WriteSimpleField[ParameterValue](ctx, "parameterValue", m.GetParameterValue(), WriteComplex[ParameterValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameterValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataReply"); popErr != nil {
@@ -240,12 +195,10 @@ func (m *_CALDataReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CALDataContract.(*_CALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CALDataReply) isCALDataReply() bool {
-	return true
-}
+func (m *_CALDataReply) IsCALDataReply() {}
 
 func (m *_CALDataReply) String() string {
 	if m == nil {

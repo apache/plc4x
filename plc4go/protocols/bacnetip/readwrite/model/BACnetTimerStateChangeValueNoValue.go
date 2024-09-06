@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetTimerStateChangeValueNoValue interface {
 	BACnetTimerStateChangeValue
 	// GetNoValue returns NoValue (property field)
 	GetNoValue() BACnetContextTagNull
-}
-
-// BACnetTimerStateChangeValueNoValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueNoValue.
-// This is useful for switch cases.
-type BACnetTimerStateChangeValueNoValueExactly interface {
-	BACnetTimerStateChangeValueNoValue
-	isBACnetTimerStateChangeValueNoValue() bool
+	// IsBACnetTimerStateChangeValueNoValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueNoValue()
 }
 
 // _BACnetTimerStateChangeValueNoValue is the data-structure of this message
 type _BACnetTimerStateChangeValueNoValue struct {
-	*_BACnetTimerStateChangeValue
+	BACnetTimerStateChangeValueContract
 	NoValue BACnetContextTagNull
 }
+
+var _ BACnetTimerStateChangeValueNoValue = (*_BACnetTimerStateChangeValueNoValue)(nil)
+var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueNoValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetTimerStateChangeValueNoValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetTimerStateChangeValueNoValue) InitializeParent(parent BACnetTimerStateChangeValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetTimerStateChangeValueNoValue) GetParent() BACnetTimerStateChangeValue {
-	return m._BACnetTimerStateChangeValue
+func (m *_BACnetTimerStateChangeValueNoValue) GetParent() BACnetTimerStateChangeValueContract {
+	return m.BACnetTimerStateChangeValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetTimerStateChangeValueNoValue) GetNoValue() BACnetContextTagNull 
 
 // NewBACnetTimerStateChangeValueNoValue factory function for _BACnetTimerStateChangeValueNoValue
 func NewBACnetTimerStateChangeValueNoValue(noValue BACnetContextTagNull, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueNoValue {
-	_result := &_BACnetTimerStateChangeValueNoValue{
-		NoValue:                      noValue,
-		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+	if noValue == nil {
+		panic("noValue of type BACnetContextTagNull for BACnetTimerStateChangeValueNoValue must not be nil")
 	}
-	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result
+	_result := &_BACnetTimerStateChangeValueNoValue{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		NoValue:                             noValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetTimerStateChangeValueNoValue) GetTypeName() string {
 }
 
 func (m *_BACnetTimerStateChangeValueNoValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
 
 	// Simple field (noValue)
 	lengthInBits += m.NoValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetTimerStateChangeValueNoValue) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerStateChangeValueNoValueParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNoValue, error) {
-	return BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNoValue, error) {
+func (m *_BACnetTimerStateChangeValueNoValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetTimerStateChangeValue, objectTypeArgument BACnetObjectType) (__bACnetTimerStateChangeValueNoValue BACnetTimerStateChangeValueNoValue, err error) {
+	m.BACnetTimerStateChangeValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueNoValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueNoValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noValue)
-	if pullErr := readBuffer.PullContext("noValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for noValue")
+	noValue, err := ReadSimpleField[BACnetContextTagNull](ctx, "noValue", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer[BACnetContextTagNull]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noValue' field"))
 	}
-	_noValue, _noValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
-	if _noValueErr != nil {
-		return nil, errors.Wrap(_noValueErr, "Error parsing 'noValue' field of BACnetTimerStateChangeValueNoValue")
-	}
-	noValue := _noValue.(BACnetContextTagNull)
-	if closeErr := readBuffer.CloseContext("noValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for noValue")
-	}
+	m.NoValue = noValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueNoValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueNoValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetTimerStateChangeValueNoValue{
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		NoValue: noValue,
-	}
-	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetTimerStateChangeValueNoValue) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetTimerStateChangeValueNoValue) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueNoValue")
 		}
 
-		// Simple Field (noValue)
-		if pushErr := writeBuffer.PushContext("noValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for noValue")
-		}
-		_noValueErr := writeBuffer.WriteSerializable(ctx, m.GetNoValue())
-		if popErr := writeBuffer.PopContext("noValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for noValue")
-		}
-		if _noValueErr != nil {
-			return errors.Wrap(_noValueErr, "Error serializing 'noValue' field")
+		if err := WriteSimpleField[BACnetContextTagNull](ctx, "noValue", m.GetNoValue(), WriteComplex[BACnetContextTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueNoValue"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetTimerStateChangeValueNoValue) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetTimerStateChangeValueNoValue) isBACnetTimerStateChangeValueNoValue() bool {
-	return true
-}
+func (m *_BACnetTimerStateChangeValueNoValue) IsBACnetTimerStateChangeValueNoValue() {}
 
 func (m *_BACnetTimerStateChangeValueNoValue) String() string {
 	if m == nil {

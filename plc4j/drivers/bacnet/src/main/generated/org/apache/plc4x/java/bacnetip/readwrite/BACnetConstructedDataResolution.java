@@ -82,7 +82,7 @@ public class BACnetConstructedDataResolution extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataResolution");
 
     // Simple Field (resolution)
-    writeSimpleField("resolution", resolution, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("resolution", resolution, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataResolution extends BACnetConstructedData imple
     BACnetApplicationTagReal resolution =
         readSimpleField(
             "resolution",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

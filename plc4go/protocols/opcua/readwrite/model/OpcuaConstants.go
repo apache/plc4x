@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,18 +41,15 @@ type OpcuaConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// OpcuaConstantsExactly can be used when we want exactly this type and not a type which fulfills OpcuaConstants.
-// This is useful for switch cases.
-type OpcuaConstantsExactly interface {
-	OpcuaConstants
-	isOpcuaConstants() bool
+	// IsOpcuaConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaConstants()
 }
 
 // _OpcuaConstants is the data-structure of this message
 type _OpcuaConstants struct {
 }
+
+var _ OpcuaConstants = (*_OpcuaConstants)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func OpcuaConstantsParse(ctx context.Context, theBytes []byte) (OpcuaConstants, 
 	return OpcuaConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func OpcuaConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaConstants, error) {
+		return OpcuaConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func OpcuaConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaConstants, error) {
+	v, err := (&_OpcuaConstants{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_OpcuaConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__opcuaConstants OpcuaConstants, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaConstants"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaConstants")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (protocolVersion)
-	protocolVersion, _protocolVersionErr := readBuffer.ReadUint8("protocolVersion", 8)
-	if _protocolVersionErr != nil {
-		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of OpcuaConstants")
+	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, uint8(8)), OpcuaConstants_PROTOCOLVERSION)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}
-	if protocolVersion != OpcuaConstants_PROTOCOLVERSION {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", OpcuaConstants_PROTOCOLVERSION) + " but got " + fmt.Sprintf("%d", protocolVersion))
-	}
+	_ = protocolVersion
 
 	if closeErr := readBuffer.CloseContext("OpcuaConstants"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaConstants")
 	}
 
-	// Create the instance
-	return &_OpcuaConstants{}, nil
+	return m, nil
 }
 
 func (m *_OpcuaConstants) Serialize() ([]byte, error) {
@@ -148,10 +155,8 @@ func (m *_OpcuaConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for OpcuaConstants")
 	}
 
-	// Const Field (protocolVersion)
-	_protocolVersionErr := writeBuffer.WriteUint8("protocolVersion", 8, uint8(0))
-	if _protocolVersionErr != nil {
-		return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
+	if err := WriteConstField(ctx, "protocolVersion", OpcuaConstants_PROTOCOLVERSION, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 	}
 
 	if popErr := writeBuffer.PopContext("OpcuaConstants"); popErr != nil {
@@ -160,9 +165,7 @@ func (m *_OpcuaConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return nil
 }
 
-func (m *_OpcuaConstants) isOpcuaConstants() bool {
-	return true
-}
+func (m *_OpcuaConstants) IsOpcuaConstants() {}
 
 func (m *_OpcuaConstants) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -51,18 +53,13 @@ type SetTriggeringRequest interface {
 	GetNoOfLinksToRemove() int32
 	// GetLinksToRemove returns LinksToRemove (property field)
 	GetLinksToRemove() []uint32
-}
-
-// SetTriggeringRequestExactly can be used when we want exactly this type and not a type which fulfills SetTriggeringRequest.
-// This is useful for switch cases.
-type SetTriggeringRequestExactly interface {
-	SetTriggeringRequest
-	isSetTriggeringRequest() bool
+	// IsSetTriggeringRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetTriggeringRequest()
 }
 
 // _SetTriggeringRequest is the data-structure of this message
 type _SetTriggeringRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader     ExtensionObjectDefinition
 	SubscriptionId    uint32
 	TriggeringItemId  uint32
@@ -71,6 +68,9 @@ type _SetTriggeringRequest struct {
 	NoOfLinksToRemove int32
 	LinksToRemove     []uint32
 }
+
+var _ SetTriggeringRequest = (*_SetTriggeringRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SetTriggeringRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -86,10 +86,8 @@ func (m *_SetTriggeringRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SetTriggeringRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_SetTriggeringRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_SetTriggeringRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,17 +130,20 @@ func (m *_SetTriggeringRequest) GetLinksToRemove() []uint32 {
 
 // NewSetTriggeringRequest factory function for _SetTriggeringRequest
 func NewSetTriggeringRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) *_SetTriggeringRequest {
-	_result := &_SetTriggeringRequest{
-		RequestHeader:              requestHeader,
-		SubscriptionId:             subscriptionId,
-		TriggeringItemId:           triggeringItemId,
-		NoOfLinksToAdd:             noOfLinksToAdd,
-		LinksToAdd:                 linksToAdd,
-		NoOfLinksToRemove:          noOfLinksToRemove,
-		LinksToRemove:              linksToRemove,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetTriggeringRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_SetTriggeringRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		TriggeringItemId:                  triggeringItemId,
+		NoOfLinksToAdd:                    noOfLinksToAdd,
+		LinksToAdd:                        linksToAdd,
+		NoOfLinksToRemove:                 noOfLinksToRemove,
+		LinksToRemove:                     linksToRemove,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -162,7 +163,7 @@ func (m *_SetTriggeringRequest) GetTypeName() string {
 }
 
 func (m *_SetTriggeringRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -196,133 +197,64 @@ func (m *_SetTriggeringRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SetTriggeringRequestParse(ctx context.Context, theBytes []byte, identifier string) (SetTriggeringRequest, error) {
-	return SetTriggeringRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetTriggeringRequest, error) {
+func (m *_SetTriggeringRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setTriggeringRequest SetTriggeringRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetTriggeringRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetTriggeringRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of SetTriggeringRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SetTriggeringRequest")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
+	m.SubscriptionId = subscriptionId
 
-	// Simple Field (triggeringItemId)
-	_triggeringItemId, _triggeringItemIdErr := readBuffer.ReadUint32("triggeringItemId", 32)
-	if _triggeringItemIdErr != nil {
-		return nil, errors.Wrap(_triggeringItemIdErr, "Error parsing 'triggeringItemId' field of SetTriggeringRequest")
+	triggeringItemId, err := ReadSimpleField(ctx, "triggeringItemId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'triggeringItemId' field"))
 	}
-	triggeringItemId := _triggeringItemId
+	m.TriggeringItemId = triggeringItemId
 
-	// Simple Field (noOfLinksToAdd)
-	_noOfLinksToAdd, _noOfLinksToAddErr := readBuffer.ReadInt32("noOfLinksToAdd", 32)
-	if _noOfLinksToAddErr != nil {
-		return nil, errors.Wrap(_noOfLinksToAddErr, "Error parsing 'noOfLinksToAdd' field of SetTriggeringRequest")
+	noOfLinksToAdd, err := ReadSimpleField(ctx, "noOfLinksToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLinksToAdd' field"))
 	}
-	noOfLinksToAdd := _noOfLinksToAdd
+	m.NoOfLinksToAdd = noOfLinksToAdd
 
-	// Array field (linksToAdd)
-	if pullErr := readBuffer.PullContext("linksToAdd", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for linksToAdd")
+	linksToAdd, err := ReadCountArrayField[uint32](ctx, "linksToAdd", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfLinksToAdd))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linksToAdd' field"))
 	}
-	// Count array
-	linksToAdd := make([]uint32, max(noOfLinksToAdd, 0))
-	// This happens when the size is set conditional to 0
-	if len(linksToAdd) == 0 {
-		linksToAdd = nil
-	}
-	{
-		_numItems := uint16(max(noOfLinksToAdd, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'linksToAdd' field of SetTriggeringRequest")
-			}
-			linksToAdd[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("linksToAdd", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for linksToAdd")
-	}
+	m.LinksToAdd = linksToAdd
 
-	// Simple Field (noOfLinksToRemove)
-	_noOfLinksToRemove, _noOfLinksToRemoveErr := readBuffer.ReadInt32("noOfLinksToRemove", 32)
-	if _noOfLinksToRemoveErr != nil {
-		return nil, errors.Wrap(_noOfLinksToRemoveErr, "Error parsing 'noOfLinksToRemove' field of SetTriggeringRequest")
+	noOfLinksToRemove, err := ReadSimpleField(ctx, "noOfLinksToRemove", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLinksToRemove' field"))
 	}
-	noOfLinksToRemove := _noOfLinksToRemove
+	m.NoOfLinksToRemove = noOfLinksToRemove
 
-	// Array field (linksToRemove)
-	if pullErr := readBuffer.PullContext("linksToRemove", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for linksToRemove")
+	linksToRemove, err := ReadCountArrayField[uint32](ctx, "linksToRemove", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfLinksToRemove))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linksToRemove' field"))
 	}
-	// Count array
-	linksToRemove := make([]uint32, max(noOfLinksToRemove, 0))
-	// This happens when the size is set conditional to 0
-	if len(linksToRemove) == 0 {
-		linksToRemove = nil
-	}
-	{
-		_numItems := uint16(max(noOfLinksToRemove, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'linksToRemove' field of SetTriggeringRequest")
-			}
-			linksToRemove[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("linksToRemove", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for linksToRemove")
-	}
+	m.LinksToRemove = linksToRemove
 
 	if closeErr := readBuffer.CloseContext("SetTriggeringRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SetTriggeringRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SetTriggeringRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		SubscriptionId:             subscriptionId,
-		TriggeringItemId:           triggeringItemId,
-		NoOfLinksToAdd:             noOfLinksToAdd,
-		LinksToAdd:                 linksToAdd,
-		NoOfLinksToRemove:          noOfLinksToRemove,
-		LinksToRemove:              linksToRemove,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SetTriggeringRequest) Serialize() ([]byte, error) {
@@ -343,74 +275,32 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SetTriggeringRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (subscriptionId)
-		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
-		if _subscriptionIdErr != nil {
-			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		// Simple Field (triggeringItemId)
-		triggeringItemId := uint32(m.GetTriggeringItemId())
-		_triggeringItemIdErr := writeBuffer.WriteUint32("triggeringItemId", 32, uint32((triggeringItemId)))
-		if _triggeringItemIdErr != nil {
-			return errors.Wrap(_triggeringItemIdErr, "Error serializing 'triggeringItemId' field")
+		if err := WriteSimpleField[uint32](ctx, "triggeringItemId", m.GetTriggeringItemId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'triggeringItemId' field")
 		}
 
-		// Simple Field (noOfLinksToAdd)
-		noOfLinksToAdd := int32(m.GetNoOfLinksToAdd())
-		_noOfLinksToAddErr := writeBuffer.WriteInt32("noOfLinksToAdd", 32, int32((noOfLinksToAdd)))
-		if _noOfLinksToAddErr != nil {
-			return errors.Wrap(_noOfLinksToAddErr, "Error serializing 'noOfLinksToAdd' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLinksToAdd", m.GetNoOfLinksToAdd(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLinksToAdd' field")
 		}
 
-		// Array Field (linksToAdd)
-		if pushErr := writeBuffer.PushContext("linksToAdd", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for linksToAdd")
-		}
-		for _curItem, _element := range m.GetLinksToAdd() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'linksToAdd' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("linksToAdd", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for linksToAdd")
+		if err := WriteSimpleTypeArrayField(ctx, "linksToAdd", m.GetLinksToAdd(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linksToAdd' field")
 		}
 
-		// Simple Field (noOfLinksToRemove)
-		noOfLinksToRemove := int32(m.GetNoOfLinksToRemove())
-		_noOfLinksToRemoveErr := writeBuffer.WriteInt32("noOfLinksToRemove", 32, int32((noOfLinksToRemove)))
-		if _noOfLinksToRemoveErr != nil {
-			return errors.Wrap(_noOfLinksToRemoveErr, "Error serializing 'noOfLinksToRemove' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLinksToRemove", m.GetNoOfLinksToRemove(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLinksToRemove' field")
 		}
 
-		// Array Field (linksToRemove)
-		if pushErr := writeBuffer.PushContext("linksToRemove", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for linksToRemove")
-		}
-		for _curItem, _element := range m.GetLinksToRemove() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'linksToRemove' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("linksToRemove", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for linksToRemove")
+		if err := WriteSimpleTypeArrayField(ctx, "linksToRemove", m.GetLinksToRemove(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linksToRemove' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SetTriggeringRequest"); popErr != nil {
@@ -418,12 +308,10 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SetTriggeringRequest) isSetTriggeringRequest() bool {
-	return true
-}
+func (m *_SetTriggeringRequest) IsSetTriggeringRequest() {}
 
 func (m *_SetTriggeringRequest) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataMinimumValueTimestamp interface {
 	GetMinimumValueTimestamp() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-}
-
-// BACnetConstructedDataMinimumValueTimestampExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumValueTimestamp.
-// This is useful for switch cases.
-type BACnetConstructedDataMinimumValueTimestampExactly interface {
-	BACnetConstructedDataMinimumValueTimestamp
-	isBACnetConstructedDataMinimumValueTimestamp() bool
+	// IsBACnetConstructedDataMinimumValueTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMinimumValueTimestamp()
 }
 
 // _BACnetConstructedDataMinimumValueTimestamp is the data-structure of this message
 type _BACnetConstructedDataMinimumValueTimestamp struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MinimumValueTimestamp BACnetDateTime
 }
+
+var _ BACnetConstructedDataMinimumValueTimestamp = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMinimumValueTimestamp) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMinimumValueTimestamp) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetActualValue() BACnetDat
 
 // NewBACnetConstructedDataMinimumValueTimestamp factory function for _BACnetConstructedDataMinimumValueTimestamp
 func NewBACnetConstructedDataMinimumValueTimestamp(minimumValueTimestamp BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValueTimestamp {
-	_result := &_BACnetConstructedDataMinimumValueTimestamp{
-		MinimumValueTimestamp:  minimumValueTimestamp,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if minimumValueTimestamp == nil {
+		panic("minimumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMinimumValueTimestamp must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataMinimumValueTimestamp{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumValueTimestamp:         minimumValueTimestamp,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minimumValueTimestamp)
 	lengthInBits += m.MinimumValueTimestamp.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMinimumValueTimestampParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
-	return BACnetConstructedDataMinimumValueTimestampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMinimumValueTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
+func (m *_BACnetConstructedDataMinimumValueTimestamp) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMinimumValueTimestamp BACnetConstructedDataMinimumValueTimestamp, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumValueTimestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMinimumValueTimestamp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minimumValueTimestamp)
-	if pullErr := readBuffer.PullContext("minimumValueTimestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minimumValueTimestamp")
+	minimumValueTimestamp, err := ReadSimpleField[BACnetDateTime](ctx, "minimumValueTimestamp", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumValueTimestamp' field"))
 	}
-	_minimumValueTimestamp, _minimumValueTimestampErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _minimumValueTimestampErr != nil {
-		return nil, errors.Wrap(_minimumValueTimestampErr, "Error parsing 'minimumValueTimestamp' field of BACnetConstructedDataMinimumValueTimestamp")
-	}
-	minimumValueTimestamp := _minimumValueTimestamp.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("minimumValueTimestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minimumValueTimestamp")
-	}
+	m.MinimumValueTimestamp = minimumValueTimestamp
 
-	// Virtual field
-	_actualValue := minimumValueTimestamp
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), minimumValueTimestamp)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumValueTimestamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumValueTimestamp")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMinimumValueTimestamp{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MinimumValueTimestamp: minimumValueTimestamp,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMinimumValueTimestamp) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumValueTimestamp")
 		}
 
-		// Simple Field (minimumValueTimestamp)
-		if pushErr := writeBuffer.PushContext("minimumValueTimestamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minimumValueTimestamp")
-		}
-		_minimumValueTimestampErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumValueTimestamp())
-		if popErr := writeBuffer.PopContext("minimumValueTimestamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minimumValueTimestamp")
-		}
-		if _minimumValueTimestampErr != nil {
-			return errors.Wrap(_minimumValueTimestampErr, "Error serializing 'minimumValueTimestamp' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "minimumValueTimestamp", m.GetMinimumValueTimestamp(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minimumValueTimestamp' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) isBACnetConstructedDataMinimumValueTimestamp() bool {
-	return true
+func (m *_BACnetConstructedDataMinimumValueTimestamp) IsBACnetConstructedDataMinimumValueTimestamp() {
 }
 
 func (m *_BACnetConstructedDataMinimumValueTimestamp) String() string {

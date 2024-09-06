@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type ViewDescription interface {
 	GetTimestamp() int64
 	// GetViewVersion returns ViewVersion (property field)
 	GetViewVersion() uint32
-}
-
-// ViewDescriptionExactly can be used when we want exactly this type and not a type which fulfills ViewDescription.
-// This is useful for switch cases.
-type ViewDescriptionExactly interface {
-	ViewDescription
-	isViewDescription() bool
+	// IsViewDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsViewDescription()
 }
 
 // _ViewDescription is the data-structure of this message
 type _ViewDescription struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ViewId      NodeId
 	Timestamp   int64
 	ViewVersion uint32
 }
+
+var _ ViewDescription = (*_ViewDescription)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ViewDescription)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_ViewDescription) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ViewDescription) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_ViewDescription) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_ViewDescription) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_ViewDescription) GetViewVersion() uint32 {
 
 // NewViewDescription factory function for _ViewDescription
 func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_ViewDescription {
-	_result := &_ViewDescription{
-		ViewId:                     viewId,
-		Timestamp:                  timestamp,
-		ViewVersion:                viewVersion,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if viewId == nil {
+		panic("viewId of type NodeId for ViewDescription must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_ViewDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ViewId:                            viewId,
+		Timestamp:                         timestamp,
+		ViewVersion:                       viewVersion,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_ViewDescription) GetTypeName() string {
 }
 
 func (m *_ViewDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (viewId)
 	lengthInBits += m.ViewId.GetLengthInBits(ctx)
@@ -148,61 +149,40 @@ func (m *_ViewDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ViewDescriptionParse(ctx context.Context, theBytes []byte, identifier string) (ViewDescription, error) {
-	return ViewDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func ViewDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ViewDescription, error) {
+func (m *_ViewDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__viewDescription ViewDescription, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ViewDescription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ViewDescription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (viewId)
-	if pullErr := readBuffer.PullContext("viewId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for viewId")
+	viewId, err := ReadSimpleField[NodeId](ctx, "viewId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'viewId' field"))
 	}
-	_viewId, _viewIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _viewIdErr != nil {
-		return nil, errors.Wrap(_viewIdErr, "Error parsing 'viewId' field of ViewDescription")
-	}
-	viewId := _viewId.(NodeId)
-	if closeErr := readBuffer.CloseContext("viewId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for viewId")
-	}
+	m.ViewId = viewId
 
-	// Simple Field (timestamp)
-	_timestamp, _timestampErr := readBuffer.ReadInt64("timestamp", 64)
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of ViewDescription")
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
-	timestamp := _timestamp
+	m.Timestamp = timestamp
 
-	// Simple Field (viewVersion)
-	_viewVersion, _viewVersionErr := readBuffer.ReadUint32("viewVersion", 32)
-	if _viewVersionErr != nil {
-		return nil, errors.Wrap(_viewVersionErr, "Error parsing 'viewVersion' field of ViewDescription")
+	viewVersion, err := ReadSimpleField(ctx, "viewVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'viewVersion' field"))
 	}
-	viewVersion := _viewVersion
+	m.ViewVersion = viewVersion
 
 	if closeErr := readBuffer.CloseContext("ViewDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ViewDescription")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ViewDescription{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ViewId:                     viewId,
-		Timestamp:                  timestamp,
-		ViewVersion:                viewVersion,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ViewDescription) Serialize() ([]byte, error) {
@@ -223,30 +203,16 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for ViewDescription")
 		}
 
-		// Simple Field (viewId)
-		if pushErr := writeBuffer.PushContext("viewId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for viewId")
-		}
-		_viewIdErr := writeBuffer.WriteSerializable(ctx, m.GetViewId())
-		if popErr := writeBuffer.PopContext("viewId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for viewId")
-		}
-		if _viewIdErr != nil {
-			return errors.Wrap(_viewIdErr, "Error serializing 'viewId' field")
+		if err := WriteSimpleField[NodeId](ctx, "viewId", m.GetViewId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'viewId' field")
 		}
 
-		// Simple Field (timestamp)
-		timestamp := int64(m.GetTimestamp())
-		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
-		if _timestampErr != nil {
-			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		// Simple Field (viewVersion)
-		viewVersion := uint32(m.GetViewVersion())
-		_viewVersionErr := writeBuffer.WriteUint32("viewVersion", 32, uint32((viewVersion)))
-		if _viewVersionErr != nil {
-			return errors.Wrap(_viewVersionErr, "Error serializing 'viewVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "viewVersion", m.GetViewVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'viewVersion' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ViewDescription"); popErr != nil {
@@ -254,12 +220,10 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ViewDescription) isViewDescription() bool {
-	return true
-}
+func (m *_ViewDescription) IsViewDescription() {}
 
 func (m *_ViewDescription) String() string {
 	if m == nil {

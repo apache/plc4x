@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetChannelValueEnumerated interface {
 	BACnetChannelValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
-}
-
-// BACnetChannelValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueEnumerated.
-// This is useful for switch cases.
-type BACnetChannelValueEnumeratedExactly interface {
-	BACnetChannelValueEnumerated
-	isBACnetChannelValueEnumerated() bool
+	// IsBACnetChannelValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueEnumerated()
 }
 
 // _BACnetChannelValueEnumerated is the data-structure of this message
 type _BACnetChannelValueEnumerated struct {
-	*_BACnetChannelValue
+	BACnetChannelValueContract
 	EnumeratedValue BACnetApplicationTagEnumerated
 }
+
+var _ BACnetChannelValueEnumerated = (*_BACnetChannelValueEnumerated)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetChannelValueEnumerated struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetChannelValueEnumerated) InitializeParent(parent BACnetChannelValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetChannelValueEnumerated) GetParent() BACnetChannelValue {
-	return m._BACnetChannelValue
+func (m *_BACnetChannelValueEnumerated) GetParent() BACnetChannelValueContract {
+	return m.BACnetChannelValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetChannelValueEnumerated) GetEnumeratedValue() BACnetApplicationTa
 
 // NewBACnetChannelValueEnumerated factory function for _BACnetChannelValueEnumerated
 func NewBACnetChannelValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueEnumerated {
-	_result := &_BACnetChannelValueEnumerated{
-		EnumeratedValue:     enumeratedValue,
-		_BACnetChannelValue: NewBACnetChannelValue(peekedTagHeader),
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetChannelValueEnumerated must not be nil")
 	}
-	_result._BACnetChannelValue._BACnetChannelValueChildRequirements = _result
+	_result := &_BACnetChannelValueEnumerated{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		EnumeratedValue:            enumeratedValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetChannelValueEnumerated) GetTypeName() string {
 }
 
 func (m *_BACnetChannelValueEnumerated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (enumeratedValue)
 	lengthInBits += m.EnumeratedValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetChannelValueEnumerated) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueEnumeratedParse(ctx context.Context, theBytes []byte) (BACnetChannelValueEnumerated, error) {
-	return BACnetChannelValueEnumeratedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetChannelValueEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
+func (m *_BACnetChannelValueEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueEnumerated BACnetChannelValueEnumerated, err error) {
+	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueEnumerated")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (enumeratedValue)
-	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
+	enumeratedValue, err := ReadSimpleField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", ReadComplex[BACnetApplicationTagEnumerated](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagEnumerated](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumeratedValue' field"))
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _enumeratedValueErr != nil {
-		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetChannelValueEnumerated")
-	}
-	enumeratedValue := _enumeratedValue.(BACnetApplicationTagEnumerated)
-	if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enumeratedValue")
-	}
+	m.EnumeratedValue = enumeratedValue
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueEnumerated"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueEnumerated")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetChannelValueEnumerated{
-		_BACnetChannelValue: &_BACnetChannelValue{},
-		EnumeratedValue:     enumeratedValue,
-	}
-	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetChannelValueEnumerated) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetChannelValueEnumerated) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueEnumerated")
 		}
 
-		// Simple Field (enumeratedValue)
-		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
-		}
-		_enumeratedValueErr := writeBuffer.WriteSerializable(ctx, m.GetEnumeratedValue())
-		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enumeratedValue")
-		}
-		if _enumeratedValueErr != nil {
-			return errors.Wrap(_enumeratedValueErr, "Error serializing 'enumeratedValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", m.GetEnumeratedValue(), WriteComplex[BACnetApplicationTagEnumerated](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enumeratedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueEnumerated"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetChannelValueEnumerated) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetChannelValueContract.(*_BACnetChannelValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetChannelValueEnumerated) isBACnetChannelValueEnumerated() bool {
-	return true
-}
+func (m *_BACnetChannelValueEnumerated) IsBACnetChannelValueEnumerated() {}
 
 func (m *_BACnetChannelValueEnumerated) String() string {
 	if m == nil {

@@ -28,7 +28,7 @@
 
   <artifactId>plc4j-driver-plc4x</artifactId>
       
-  <name>PLC4J: Driver: PLC4X (Proxy-Protocol)</name>
+  <name>PLC4J: Driver: PLC4X (Proxy)</name>
   <description>Implementation of a PLC4X driver for the PLC4X protocol, which is used for relaying PLC4X requests from one system to another.</description>
 
   <properties>

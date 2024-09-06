@@ -62,10 +62,10 @@ public class BACnetEventLogRecord implements Message {
     writeBuffer.pushContext("BACnetEventLogRecord");
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (logDatum)
-    writeSimpleField("logDatum", logDatum, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logDatum", logDatum, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventLogRecord");
   }
@@ -98,13 +98,13 @@ public class BACnetEventLogRecord implements Message {
     BACnetDateTimeEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetEventLogRecordLogDatum logDatum =
         readSimpleField(
             "logDatum",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventLogRecordLogDatum.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

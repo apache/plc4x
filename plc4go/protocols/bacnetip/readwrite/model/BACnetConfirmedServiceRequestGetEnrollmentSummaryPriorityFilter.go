@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,13 +46,8 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
 	GetMaxPriority() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterExactly interface {
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
-	isBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() bool
+	// IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter()
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the data-structure of this message
@@ -63,6 +60,8 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,6 +91,18 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetCl
 
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingTag BACnetOpeningTag, minPriority BACnetContextTagUnsignedInteger, maxPriority BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if minPriority == nil {
+		panic("minPriority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if maxPriority == nil {
+		panic("maxPriority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
 	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{OpeningTag: openingTag, MinPriority: minPriority, MaxPriority: maxPriority, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -136,81 +147,58 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(ctx co
 	return BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
+	v, err := (&_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (minPriority)
-	if pullErr := readBuffer.PullContext("minPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minPriority")
+	minPriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "minPriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minPriority' field"))
 	}
-	_minPriority, _minPriorityErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _minPriorityErr != nil {
-		return nil, errors.Wrap(_minPriorityErr, "Error parsing 'minPriority' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
-	}
-	minPriority := _minPriority.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("minPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minPriority")
-	}
+	m.MinPriority = minPriority
 
-	// Simple Field (maxPriority)
-	if pullErr := readBuffer.PullContext("maxPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxPriority")
+	maxPriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "maxPriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxPriority' field"))
 	}
-	_maxPriority, _maxPriorityErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _maxPriorityErr != nil {
-		return nil, errors.Wrap(_maxPriorityErr, "Error parsing 'maxPriority' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
-	}
-	maxPriority := _maxPriority.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxPriority")
-	}
+	m.MaxPriority = maxPriority
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 
-	// Create the instance
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{
-		TagNumber:   tagNumber,
-		OpeningTag:  openingTag,
-		MinPriority: minPriority,
-		MaxPriority: maxPriority,
-		ClosingTag:  closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Serialize() ([]byte, error) {
@@ -230,52 +218,20 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Seria
 		return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (minPriority)
-	if pushErr := writeBuffer.PushContext("minPriority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for minPriority")
-	}
-	_minPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetMinPriority())
-	if popErr := writeBuffer.PopContext("minPriority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for minPriority")
-	}
-	if _minPriorityErr != nil {
-		return errors.Wrap(_minPriorityErr, "Error serializing 'minPriority' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "minPriority", m.GetMinPriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'minPriority' field")
 	}
 
-	// Simple Field (maxPriority)
-	if pushErr := writeBuffer.PushContext("maxPriority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for maxPriority")
-	}
-	_maxPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetMaxPriority())
-	if popErr := writeBuffer.PopContext("maxPriority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for maxPriority")
-	}
-	if _maxPriorityErr != nil {
-		return errors.Wrap(_maxPriorityErr, "Error serializing 'maxPriority' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "maxPriority", m.GetMaxPriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'maxPriority' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter"); popErr != nil {
@@ -294,8 +250,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetTa
 //
 ////
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) isBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() {
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) String() string {

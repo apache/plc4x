@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,23 +41,21 @@ type BACnetServiceAckReadPropertyMultiple interface {
 	BACnetServiceAck
 	// GetData returns Data (property field)
 	GetData() []BACnetReadAccessResult
-}
-
-// BACnetServiceAckReadPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadPropertyMultiple.
-// This is useful for switch cases.
-type BACnetServiceAckReadPropertyMultipleExactly interface {
-	BACnetServiceAckReadPropertyMultiple
-	isBACnetServiceAckReadPropertyMultiple() bool
+	// IsBACnetServiceAckReadPropertyMultiple is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckReadPropertyMultiple()
 }
 
 // _BACnetServiceAckReadPropertyMultiple is the data-structure of this message
 type _BACnetServiceAckReadPropertyMultiple struct {
-	*_BACnetServiceAck
+	BACnetServiceAckContract
 	Data []BACnetReadAccessResult
 
 	// Arguments.
 	ServiceAckPayloadLength uint32
 }
+
+var _ BACnetServiceAckReadPropertyMultiple = (*_BACnetServiceAckReadPropertyMultiple)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadPropertyMultiple)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetServiceChoice() BACnetConfirm
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetServiceAckReadPropertyMultiple) InitializeParent(parent BACnetServiceAck) {}
-
-func (m *_BACnetServiceAckReadPropertyMultiple) GetParent() BACnetServiceAck {
-	return m._BACnetServiceAck
+func (m *_BACnetServiceAckReadPropertyMultiple) GetParent() BACnetServiceAckContract {
+	return m.BACnetServiceAckContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,10 +92,10 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetData() []BACnetReadAccessResu
 // NewBACnetServiceAckReadPropertyMultiple factory function for _BACnetServiceAckReadPropertyMultiple
 func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyMultiple {
 	_result := &_BACnetServiceAckReadPropertyMultiple{
-		Data:              data,
-		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		Data:                     data,
 	}
-	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 
@@ -117,7 +115,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -133,55 +131,28 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(ctx context.Context, theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
-	return BACnetServiceAckReadPropertyMultipleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
-}
-
-func BACnetServiceAckReadPropertyMultipleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
+func (m *_BACnetServiceAckReadPropertyMultiple) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckPayloadLength uint32, serviceAckLength uint32) (__bACnetServiceAckReadPropertyMultiple BACnetServiceAckReadPropertyMultiple, err error) {
+	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckReadPropertyMultiple")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
+	data, err := ReadLengthArrayField[BACnetReadAccessResult](ctx, "data", ReadComplex[BACnetReadAccessResult](BACnetReadAccessResultParseWithBuffer, readBuffer), int(serviceAckPayloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Length array
-	var data []BACnetReadAccessResult
-	{
-		_dataLength := serviceAckPayloadLength
-		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
-		for positionAware.GetPos() < _dataEndPos {
-			_item, _err := BACnetReadAccessResultParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetServiceAckReadPropertyMultiple")
-			}
-			data = append(data, _item.(BACnetReadAccessResult))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadPropertyMultiple"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckReadPropertyMultiple")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetServiceAckReadPropertyMultiple{
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
-		Data: data,
-	}
-	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetServiceAckReadPropertyMultiple) Serialize() ([]byte, error) {
@@ -202,21 +173,8 @@ func (m *_BACnetServiceAckReadPropertyMultiple) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckReadPropertyMultiple")
 		}
 
-		// Array Field (data)
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
-		}
-		for _curItem, _element := range m.GetData() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetData()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
+		if err := WriteComplexTypeArrayField(ctx, "data", m.GetData(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckReadPropertyMultiple"); popErr != nil {
@@ -224,7 +182,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetServiceAckContract.(*_BACnetServiceAck).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -237,9 +195,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetServiceAckPayloadLength() uin
 //
 ////
 
-func (m *_BACnetServiceAckReadPropertyMultiple) isBACnetServiceAckReadPropertyMultiple() bool {
-	return true
-}
+func (m *_BACnetServiceAckReadPropertyMultiple) IsBACnetServiceAckReadPropertyMultiple() {}
 
 func (m *_BACnetServiceAckReadPropertyMultiple) String() string {
 	if m == nil {

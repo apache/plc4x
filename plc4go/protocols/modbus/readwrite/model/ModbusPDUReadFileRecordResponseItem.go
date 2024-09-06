@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type ModbusPDUReadFileRecordResponseItem interface {
 	GetReferenceType() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// ModbusPDUReadFileRecordResponseItemExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadFileRecordResponseItem.
-// This is useful for switch cases.
-type ModbusPDUReadFileRecordResponseItemExactly interface {
-	ModbusPDUReadFileRecordResponseItem
-	isModbusPDUReadFileRecordResponseItem() bool
+	// IsModbusPDUReadFileRecordResponseItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadFileRecordResponseItem()
 }
 
 // _ModbusPDUReadFileRecordResponseItem is the data-structure of this message
@@ -54,6 +51,8 @@ type _ModbusPDUReadFileRecordResponseItem struct {
 	ReferenceType uint8
 	Data          []byte
 }
+
+var _ ModbusPDUReadFileRecordResponseItem = (*_ModbusPDUReadFileRecordResponseItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -118,46 +117,52 @@ func ModbusPDUReadFileRecordResponseItemParse(ctx context.Context, theBytes []by
 	return ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ModbusPDUReadFileRecordResponseItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordResponseItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordResponseItem, error) {
+		return ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordResponseItem, error) {
+	v, err := (&_ModbusPDUReadFileRecordResponseItem{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ModbusPDUReadFileRecordResponseItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__modbusPDUReadFileRecordResponseItem ModbusPDUReadFileRecordResponseItem, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordResponseItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadFileRecordResponseItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := readBuffer.ReadUint8("dataLength", 8)
+	dataLength, err := ReadImplicitField[uint8](ctx, "dataLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLength' field"))
+	}
 	_ = dataLength
-	if _dataLengthErr != nil {
-		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of ModbusPDUReadFileRecordResponseItem")
-	}
 
-	// Simple Field (referenceType)
-	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
-	if _referenceTypeErr != nil {
-		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ModbusPDUReadFileRecordResponseItem")
+	referenceType, err := ReadSimpleField(ctx, "referenceType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceType' field"))
 	}
-	referenceType := _referenceType
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(dataLength) - uint16(uint16(1)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ModbusPDUReadFileRecordResponseItem")
+	m.ReferenceType = referenceType
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(dataLength)-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFileRecordResponseItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadFileRecordResponseItem")
 	}
 
-	// Create the instance
-	return &_ModbusPDUReadFileRecordResponseItem{
-		ReferenceType: referenceType,
-		Data:          data,
-	}, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUReadFileRecordResponseItem) Serialize() ([]byte, error) {
@@ -176,24 +181,16 @@ func (m *_ModbusPDUReadFileRecordResponseItem) SerializeWithWriteBuffer(ctx cont
 	if pushErr := writeBuffer.PushContext("ModbusPDUReadFileRecordResponseItem"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadFileRecordResponseItem")
 	}
-
-	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint8(uint8(uint8(len(m.GetData()))) + uint8(uint8(1)))
-	_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
-	if _dataLengthErr != nil {
-		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
+	if err := WriteImplicitField(ctx, "dataLength", dataLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataLength' field")
 	}
 
-	// Simple Field (referenceType)
-	referenceType := uint8(m.GetReferenceType())
-	_referenceTypeErr := writeBuffer.WriteUint8("referenceType", 8, uint8((referenceType)))
-	if _referenceTypeErr != nil {
-		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
+	if err := WriteSimpleField[uint8](ctx, "referenceType", m.GetReferenceType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'referenceType' field")
 	}
 
-	// Array Field (data)
-	// Byte Array field (data)
-	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
@@ -203,9 +200,7 @@ func (m *_ModbusPDUReadFileRecordResponseItem) SerializeWithWriteBuffer(ctx cont
 	return nil
 }
 
-func (m *_ModbusPDUReadFileRecordResponseItem) isModbusPDUReadFileRecordResponseItem() bool {
-	return true
-}
+func (m *_ModbusPDUReadFileRecordResponseItem) IsModbusPDUReadFileRecordResponseItem() {}
 
 func (m *_ModbusPDUReadFileRecordResponseItem) String() string {
 	if m == nil {

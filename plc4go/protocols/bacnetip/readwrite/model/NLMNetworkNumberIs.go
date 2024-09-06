@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,23 +43,21 @@ type NLMNetworkNumberIs interface {
 	GetNetworkNumber() uint16
 	// GetNetworkNumberConfigured returns NetworkNumberConfigured (property field)
 	GetNetworkNumberConfigured() bool
-}
-
-// NLMNetworkNumberIsExactly can be used when we want exactly this type and not a type which fulfills NLMNetworkNumberIs.
-// This is useful for switch cases.
-type NLMNetworkNumberIsExactly interface {
-	NLMNetworkNumberIs
-	isNLMNetworkNumberIs() bool
+	// IsNLMNetworkNumberIs is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMNetworkNumberIs()
 }
 
 // _NLMNetworkNumberIs is the data-structure of this message
 type _NLMNetworkNumberIs struct {
-	*_NLM
+	NLMContract
 	NetworkNumber           uint16
 	NetworkNumberConfigured bool
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ NLMNetworkNumberIs = (*_NLMNetworkNumberIs)(nil)
+var _ NLMRequirements = (*_NLMNetworkNumberIs)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,10 +73,8 @@ func (m *_NLMNetworkNumberIs) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMNetworkNumberIs) InitializeParent(parent NLM) {}
-
-func (m *_NLMNetworkNumberIs) GetParent() NLM {
-	return m._NLM
+func (m *_NLMNetworkNumberIs) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,11 +98,11 @@ func (m *_NLMNetworkNumberIs) GetNetworkNumberConfigured() bool {
 // NewNLMNetworkNumberIs factory function for _NLMNetworkNumberIs
 func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, apduLength uint16) *_NLMNetworkNumberIs {
 	_result := &_NLMNetworkNumberIs{
+		NLMContract:             NewNLM(apduLength),
 		NetworkNumber:           networkNumber,
 		NetworkNumberConfigured: networkNumberConfigured,
-		_NLM:                    NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -124,7 +122,7 @@ func (m *_NLMNetworkNumberIs) GetTypeName() string {
 }
 
 func (m *_NLMNetworkNumberIs) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (networkNumber)
 	lengthInBits += 16
@@ -142,67 +140,40 @@ func (m *_NLMNetworkNumberIs) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMNetworkNumberIsParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMNetworkNumberIs, error) {
-	return NLMNetworkNumberIsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMNetworkNumberIsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMNetworkNumberIs, error) {
+func (m *_NLMNetworkNumberIs) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMNetworkNumberIs NLMNetworkNumberIs, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMNetworkNumberIs"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMNetworkNumberIs")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkNumber)
-	_networkNumber, _networkNumberErr := readBuffer.ReadUint16("networkNumber", 16)
-	if _networkNumberErr != nil {
-		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of NLMNetworkNumberIs")
+	networkNumber, err := ReadSimpleField(ctx, "networkNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
-	networkNumber := _networkNumber
+	m.NetworkNumber = networkNumber
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NLMNetworkNumberIs")
-		}
-		if reserved != uint8(0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (networkNumberConfigured)
-	_networkNumberConfigured, _networkNumberConfiguredErr := readBuffer.ReadBit("networkNumberConfigured")
-	if _networkNumberConfiguredErr != nil {
-		return nil, errors.Wrap(_networkNumberConfiguredErr, "Error parsing 'networkNumberConfigured' field of NLMNetworkNumberIs")
+	networkNumberConfigured, err := ReadSimpleField(ctx, "networkNumberConfigured", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumberConfigured' field"))
 	}
-	networkNumberConfigured := _networkNumberConfigured
+	m.NetworkNumberConfigured = networkNumberConfigured
 
 	if closeErr := readBuffer.CloseContext("NLMNetworkNumberIs"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMNetworkNumberIs")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMNetworkNumberIs{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		NetworkNumber:           networkNumber,
-		NetworkNumberConfigured: networkNumberConfigured,
-		reservedField0:          reservedField0,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMNetworkNumberIs) Serialize() ([]byte, error) {
@@ -223,34 +194,16 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for NLMNetworkNumberIs")
 		}
 
-		// Simple Field (networkNumber)
-		networkNumber := uint16(m.GetNetworkNumber())
-		_networkNumberErr := writeBuffer.WriteUint16("networkNumber", 16, uint16((networkNumber)))
-		if _networkNumberErr != nil {
-			return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "networkNumber", m.GetNetworkNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkNumber' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (networkNumberConfigured)
-		networkNumberConfigured := bool(m.GetNetworkNumberConfigured())
-		_networkNumberConfiguredErr := writeBuffer.WriteBit("networkNumberConfigured", (networkNumberConfigured))
-		if _networkNumberConfiguredErr != nil {
-			return errors.Wrap(_networkNumberConfiguredErr, "Error serializing 'networkNumberConfigured' field")
+		if err := WriteSimpleField[bool](ctx, "networkNumberConfigured", m.GetNetworkNumberConfigured(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkNumberConfigured' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMNetworkNumberIs"); popErr != nil {
@@ -258,12 +211,10 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMNetworkNumberIs) isNLMNetworkNumberIs() bool {
-	return true
-}
+func (m *_NLMNetworkNumberIs) IsNLMNetworkNumberIs() {}
 
 func (m *_NLMNetworkNumberIs) String() string {
 	if m == nil {

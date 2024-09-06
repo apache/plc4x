@@ -21,6 +21,7 @@ package utils
 
 import (
 	"context"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"math/big"
@@ -75,11 +76,20 @@ type listContext struct {
 	list        []any
 }
 
+var _ WriteBuffer = (*jsonWriteBuffer)(nil)
+
 //
 // Internal section
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
+
+func (*jsonWriteBuffer) GetByteOrder() binary.ByteOrder {
+	return binary.BigEndian
+}
+
+func (*jsonWriteBuffer) SetByteOrder(_ binary.ByteOrder) {
+}
 
 func (j *jsonWriteBuffer) PushContext(logicalName string, writerArgs ...WithWriterArgs) error {
 	renderedAsList := j.IsToBeRenderedAsList(UpcastWriterArgs(writerArgs...)...)
@@ -175,9 +185,9 @@ func (j *jsonWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, val
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwFloatKey, uint(bitLength), writerArgs...))
 }
 
-func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error {
+func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs) error {
 	attr := j.generateAttr(logicalName, rwStringKey, uint(bitLength), writerArgs...)
-	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwEncodingKey)] = encoding
+	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwEncodingKey)] = j.ExtractEncoding(UpcastWriterArgs(writerArgs...)...)
 	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, attr)
 }

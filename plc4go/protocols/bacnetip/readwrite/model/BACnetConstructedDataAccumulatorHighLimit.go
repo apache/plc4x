@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAccumulatorHighLimit interface {
 	GetHighLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataAccumulatorHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorHighLimit.
-// This is useful for switch cases.
-type BACnetConstructedDataAccumulatorHighLimitExactly interface {
-	BACnetConstructedDataAccumulatorHighLimit
-	isBACnetConstructedDataAccumulatorHighLimit() bool
+	// IsBACnetConstructedDataAccumulatorHighLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccumulatorHighLimit()
 }
 
 // _BACnetConstructedDataAccumulatorHighLimit is the data-structure of this message
 type _BACnetConstructedDataAccumulatorHighLimit struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	HighLimit BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataAccumulatorHighLimit = (*_BACnetConstructedDataAccumulatorHighLimit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorHighLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAccumulatorHighLimit) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAccumulatorHighLimit) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAccumulatorHighLimit) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataAccumulatorHighLimit factory function for _BACnetConstructedDataAccumulatorHighLimit
 func NewBACnetConstructedDataAccumulatorHighLimit(highLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorHighLimit {
-	_result := &_BACnetConstructedDataAccumulatorHighLimit{
-		HighLimit:              highLimit,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if highLimit == nil {
+		panic("highLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorHighLimit must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAccumulatorHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		HighLimit:                     highLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (highLimit)
 	lengthInBits += m.HighLimit.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAccumulatorHighLimitParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorHighLimit, error) {
-	return BACnetConstructedDataAccumulatorHighLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAccumulatorHighLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorHighLimit, error) {
+func (m *_BACnetConstructedDataAccumulatorHighLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAccumulatorHighLimit BACnetConstructedDataAccumulatorHighLimit, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccumulatorHighLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccumulatorHighLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (highLimit)
-	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
+	highLimit, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "highLimit", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highLimit' field"))
 	}
-	_highLimit, _highLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _highLimitErr != nil {
-		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetConstructedDataAccumulatorHighLimit")
-	}
-	highLimit := _highLimit.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("highLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for highLimit")
-	}
+	m.HighLimit = highLimit
 
-	// Virtual field
-	_actualValue := highLimit
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), highLimit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccumulatorHighLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccumulatorHighLimit")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAccumulatorHighLimit{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		HighLimit: highLimit,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAccumulatorHighLimit) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccumulatorHighLimit")
 		}
 
-		// Simple Field (highLimit)
-		if pushErr := writeBuffer.PushContext("highLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for highLimit")
-		}
-		_highLimitErr := writeBuffer.WriteSerializable(ctx, m.GetHighLimit())
-		if popErr := writeBuffer.PopContext("highLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for highLimit")
-		}
-		if _highLimitErr != nil {
-			return errors.Wrap(_highLimitErr, "Error serializing 'highLimit' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "highLimit", m.GetHighLimit(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'highLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimit) isBACnetConstructedDataAccumulatorHighLimit() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAccumulatorHighLimit) IsBACnetConstructedDataAccumulatorHighLimit() {}
 
 func (m *_BACnetConstructedDataAccumulatorHighLimit) String() string {
 	if m == nil {

@@ -75,6 +75,7 @@ func (m MultiError) Is(target error) bool {
 
 type ParseAssertError struct {
 	Message string
+	Err     error // TODO: make available as root cause
 }
 
 func (e ParseAssertError) Error() string {

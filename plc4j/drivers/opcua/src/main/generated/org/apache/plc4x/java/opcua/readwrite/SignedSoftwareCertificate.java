@@ -68,11 +68,10 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("SignedSoftwareCertificate");
 
     // Simple Field (certificateData)
-    writeSimpleField(
-        "certificateData", certificateData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("certificateData", certificateData, writeComplex(writeBuffer));
 
     // Simple Field (signature)
-    writeSimpleField("signature", signature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("signature", signature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SignedSoftwareCertificate");
   }
@@ -106,14 +105,11 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
     PascalByteString certificateData =
         readSimpleField(
             "certificateData",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString signature =
         readSimpleField(
-            "signature",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "signature", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SignedSoftwareCertificate");
     // Create the instance

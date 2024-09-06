@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type ListOfCovNotificationsList interface {
 	GetSpecifications() []ListOfCovNotifications
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// ListOfCovNotificationsListExactly can be used when we want exactly this type and not a type which fulfills ListOfCovNotificationsList.
-// This is useful for switch cases.
-type ListOfCovNotificationsListExactly interface {
-	ListOfCovNotificationsList
-	isListOfCovNotificationsList() bool
+	// IsListOfCovNotificationsList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsListOfCovNotificationsList()
 }
 
 // _ListOfCovNotificationsList is the data-structure of this message
@@ -60,6 +57,8 @@ type _ListOfCovNotificationsList struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ ListOfCovNotificationsList = (*_ListOfCovNotificationsList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,12 @@ func (m *_ListOfCovNotificationsList) GetClosingTag() BACnetClosingTag {
 
 // NewListOfCovNotificationsList factory function for _ListOfCovNotificationsList
 func NewListOfCovNotificationsList(openingTag BACnetOpeningTag, specifications []ListOfCovNotifications, closingTag BACnetClosingTag, tagNumber uint8) *_ListOfCovNotificationsList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ListOfCovNotificationsList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ListOfCovNotificationsList must not be nil")
+	}
 	return &_ListOfCovNotificationsList{OpeningTag: openingTag, Specifications: specifications, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -130,73 +135,52 @@ func ListOfCovNotificationsListParse(ctx context.Context, theBytes []byte, tagNu
 	return ListOfCovNotificationsListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func ListOfCovNotificationsListParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ListOfCovNotificationsList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ListOfCovNotificationsList, error) {
+		return ListOfCovNotificationsListParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func ListOfCovNotificationsListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (ListOfCovNotificationsList, error) {
+	v, err := (&_ListOfCovNotificationsList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ListOfCovNotificationsList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__listOfCovNotificationsList ListOfCovNotificationsList, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ListOfCovNotificationsList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ListOfCovNotificationsList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of ListOfCovNotificationsList")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (specifications)
-	if pullErr := readBuffer.PullContext("specifications", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for specifications")
+	specifications, err := ReadTerminatedArrayField[ListOfCovNotifications](ctx, "specifications", ReadComplex[ListOfCovNotifications](ListOfCovNotificationsParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'specifications' field"))
 	}
-	// Terminated array
-	var specifications []ListOfCovNotifications
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := ListOfCovNotificationsParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'specifications' field of ListOfCovNotificationsList")
-			}
-			specifications = append(specifications, _item.(ListOfCovNotifications))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("specifications", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for specifications")
-	}
+	m.Specifications = specifications
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of ListOfCovNotificationsList")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("ListOfCovNotificationsList"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ListOfCovNotificationsList")
 	}
 
-	// Create the instance
-	return &_ListOfCovNotificationsList{
-		TagNumber:      tagNumber,
-		OpeningTag:     openingTag,
-		Specifications: specifications,
-		ClosingTag:     closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_ListOfCovNotificationsList) Serialize() ([]byte, error) {
@@ -216,45 +200,16 @@ func (m *_ListOfCovNotificationsList) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for ListOfCovNotificationsList")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (specifications)
-	if pushErr := writeBuffer.PushContext("specifications", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for specifications")
-	}
-	for _curItem, _element := range m.GetSpecifications() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSpecifications()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'specifications' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("specifications", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for specifications")
+	if err := WriteComplexTypeArrayField(ctx, "specifications", m.GetSpecifications(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'specifications' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ListOfCovNotificationsList"); popErr != nil {
@@ -273,9 +228,7 @@ func (m *_ListOfCovNotificationsList) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_ListOfCovNotificationsList) isListOfCovNotificationsList() bool {
-	return true
-}
+func (m *_ListOfCovNotificationsList) IsListOfCovNotificationsList() {}
 
 func (m *_ListOfCovNotificationsList) String() string {
 	if m == nil {

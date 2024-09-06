@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetActionList interface {
 	GetAction() []BACnetActionCommand
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-}
-
-// BACnetActionListExactly can be used when we want exactly this type and not a type which fulfills BACnetActionList.
-// This is useful for switch cases.
-type BACnetActionListExactly interface {
-	BACnetActionList
-	isBACnetActionList() bool
+	// IsBACnetActionList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetActionList()
 }
 
 // _BACnetActionList is the data-structure of this message
@@ -57,6 +54,8 @@ type _BACnetActionList struct {
 	Action          []BACnetActionCommand
 	InnerClosingTag BACnetClosingTag
 }
+
+var _ BACnetActionList = (*_BACnetActionList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,6 +81,12 @@ func (m *_BACnetActionList) GetInnerClosingTag() BACnetClosingTag {
 
 // NewBACnetActionList factory function for _BACnetActionList
 func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) *_BACnetActionList {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetActionList must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetActionList must not be nil")
+	}
 	return &_BACnetActionList{InnerOpeningTag: innerOpeningTag, Action: action, InnerClosingTag: innerClosingTag}
 }
 
@@ -127,72 +132,52 @@ func BACnetActionListParse(ctx context.Context, theBytes []byte) (BACnetActionLi
 	return BACnetActionListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetActionListParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionList, error) {
+		return BACnetActionListParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionList, error) {
+	v, err := (&_BACnetActionList{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetActionList) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetActionList BACnetActionList, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetActionList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetActionList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (innerOpeningTag)
-	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
+	innerOpeningTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerOpeningTag' field"))
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetActionList")
-	}
-	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
-	}
+	m.InnerOpeningTag = innerOpeningTag
 
-	// Array field (action)
-	if pullErr := readBuffer.PullContext("action", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for action")
+	action, err := ReadTerminatedArrayField[BACnetActionCommand](ctx, "action", ReadComplex[BACnetActionCommand](BACnetActionCommandParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'action' field"))
 	}
-	// Terminated array
-	var action []BACnetActionCommand
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0)) {
-			_item, _err := BACnetActionCommandParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'action' field of BACnetActionList")
-			}
-			action = append(action, _item.(BACnetActionCommand))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("action", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for action")
-	}
+	m.Action = action
 
-	// Simple Field (innerClosingTag)
-	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
+	innerClosingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "innerClosingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerClosingTag' field"))
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetActionList")
-	}
-	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for innerClosingTag")
-	}
+	m.InnerClosingTag = innerClosingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetActionList"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetActionList")
 	}
 
-	// Create the instance
-	return &_BACnetActionList{
-		InnerOpeningTag: innerOpeningTag,
-		Action:          action,
-		InnerClosingTag: innerClosingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetActionList) Serialize() ([]byte, error) {
@@ -212,45 +197,16 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(pushErr, "Error pushing for BACnetActionList")
 	}
 
-	// Simple Field (innerOpeningTag)
-	if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
-	}
-	_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
-	if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for innerOpeningTag")
-	}
-	if _innerOpeningTagErr != nil {
-		return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", m.GetInnerOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerOpeningTag' field")
 	}
 
-	// Array Field (action)
-	if pushErr := writeBuffer.PushContext("action", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for action")
-	}
-	for _curItem, _element := range m.GetAction() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAction()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'action' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("action", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for action")
+	if err := WriteComplexTypeArrayField(ctx, "action", m.GetAction(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'action' field")
 	}
 
-	// Simple Field (innerClosingTag)
-	if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
-	}
-	_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
-	if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for innerClosingTag")
-	}
-	if _innerClosingTagErr != nil {
-		return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "innerClosingTag", m.GetInnerClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerClosingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetActionList"); popErr != nil {
@@ -259,9 +215,7 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(ctx context.Context, writeB
 	return nil
 }
 
-func (m *_BACnetActionList) isBACnetActionList() bool {
-	return true
-}
+func (m *_BACnetActionList) IsBACnetActionList() {}
 
 func (m *_BACnetActionList) String() string {
 	if m == nil {

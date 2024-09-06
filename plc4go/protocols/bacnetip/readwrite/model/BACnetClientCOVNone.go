@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetClientCOVNone interface {
 	BACnetClientCOV
 	// GetDefaultIncrement returns DefaultIncrement (property field)
 	GetDefaultIncrement() BACnetApplicationTagNull
-}
-
-// BACnetClientCOVNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOVNone.
-// This is useful for switch cases.
-type BACnetClientCOVNoneExactly interface {
-	BACnetClientCOVNone
-	isBACnetClientCOVNone() bool
+	// IsBACnetClientCOVNone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetClientCOVNone()
 }
 
 // _BACnetClientCOVNone is the data-structure of this message
 type _BACnetClientCOVNone struct {
-	*_BACnetClientCOV
+	BACnetClientCOVContract
 	DefaultIncrement BACnetApplicationTagNull
 }
+
+var _ BACnetClientCOVNone = (*_BACnetClientCOVNone)(nil)
+var _ BACnetClientCOVRequirements = (*_BACnetClientCOVNone)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetClientCOVNone struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetClientCOVNone) InitializeParent(parent BACnetClientCOV, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetClientCOVNone) GetParent() BACnetClientCOV {
-	return m._BACnetClientCOV
+func (m *_BACnetClientCOVNone) GetParent() BACnetClientCOVContract {
+	return m.BACnetClientCOVContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetClientCOVNone) GetDefaultIncrement() BACnetApplicationTagNull {
 
 // NewBACnetClientCOVNone factory function for _BACnetClientCOVNone
 func NewBACnetClientCOVNone(defaultIncrement BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetClientCOVNone {
-	_result := &_BACnetClientCOVNone{
-		DefaultIncrement: defaultIncrement,
-		_BACnetClientCOV: NewBACnetClientCOV(peekedTagHeader),
+	if defaultIncrement == nil {
+		panic("defaultIncrement of type BACnetApplicationTagNull for BACnetClientCOVNone must not be nil")
 	}
-	_result._BACnetClientCOV._BACnetClientCOVChildRequirements = _result
+	_result := &_BACnetClientCOVNone{
+		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
+		DefaultIncrement:        defaultIncrement,
+	}
+	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetClientCOVNone) GetTypeName() string {
 }
 
 func (m *_BACnetClientCOVNone) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetClientCOVContract.(*_BACnetClientCOV).getLengthInBits(ctx))
 
 	// Simple field (defaultIncrement)
 	lengthInBits += m.DefaultIncrement.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetClientCOVNone) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetClientCOVNoneParse(ctx context.Context, theBytes []byte) (BACnetClientCOVNone, error) {
-	return BACnetClientCOVNoneParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetClientCOVNoneParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVNone, error) {
+func (m *_BACnetClientCOVNone) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetClientCOV) (__bACnetClientCOVNone BACnetClientCOVNone, err error) {
+	m.BACnetClientCOVContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetClientCOVNone"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetClientCOVNone")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (defaultIncrement)
-	if pullErr := readBuffer.PullContext("defaultIncrement"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for defaultIncrement")
+	defaultIncrement, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "defaultIncrement", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultIncrement' field"))
 	}
-	_defaultIncrement, _defaultIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _defaultIncrementErr != nil {
-		return nil, errors.Wrap(_defaultIncrementErr, "Error parsing 'defaultIncrement' field of BACnetClientCOVNone")
-	}
-	defaultIncrement := _defaultIncrement.(BACnetApplicationTagNull)
-	if closeErr := readBuffer.CloseContext("defaultIncrement"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for defaultIncrement")
-	}
+	m.DefaultIncrement = defaultIncrement
 
 	if closeErr := readBuffer.CloseContext("BACnetClientCOVNone"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetClientCOVNone")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetClientCOVNone{
-		_BACnetClientCOV: &_BACnetClientCOV{},
-		DefaultIncrement: defaultIncrement,
-	}
-	_child._BACnetClientCOV._BACnetClientCOVChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetClientCOVNone) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetClientCOVNone) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for BACnetClientCOVNone")
 		}
 
-		// Simple Field (defaultIncrement)
-		if pushErr := writeBuffer.PushContext("defaultIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for defaultIncrement")
-		}
-		_defaultIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultIncrement())
-		if popErr := writeBuffer.PopContext("defaultIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for defaultIncrement")
-		}
-		if _defaultIncrementErr != nil {
-			return errors.Wrap(_defaultIncrementErr, "Error serializing 'defaultIncrement' field")
+		if err := WriteSimpleField[BACnetApplicationTagNull](ctx, "defaultIncrement", m.GetDefaultIncrement(), WriteComplex[BACnetApplicationTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'defaultIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetClientCOVNone"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetClientCOVNone) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetClientCOVContract.(*_BACnetClientCOV).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetClientCOVNone) isBACnetClientCOVNone() bool {
-	return true
-}
+func (m *_BACnetClientCOVNone) IsBACnetClientCOVNone() {}
 
 func (m *_BACnetClientCOVNone) String() string {
 	if m == nil {

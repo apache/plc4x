@@ -68,10 +68,10 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("KeyValuePair");
 
     // Simple Field (key)
-    writeSimpleField("key", key, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("key", key, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("KeyValuePair");
   }
@@ -104,14 +104,10 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
 
     QualifiedName key =
         readSimpleField(
-            "key",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "key", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     Variant value =
-        readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+        readSimpleField("value", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("KeyValuePair");
     // Create the instance

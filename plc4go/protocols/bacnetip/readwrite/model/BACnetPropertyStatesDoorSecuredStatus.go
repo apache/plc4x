@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesDoorSecuredStatus interface {
 	BACnetPropertyStates
 	// GetDoorSecuredStatus returns DoorSecuredStatus (property field)
 	GetDoorSecuredStatus() BACnetDoorSecuredStatusTagged
-}
-
-// BACnetPropertyStatesDoorSecuredStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesDoorSecuredStatus.
-// This is useful for switch cases.
-type BACnetPropertyStatesDoorSecuredStatusExactly interface {
-	BACnetPropertyStatesDoorSecuredStatus
-	isBACnetPropertyStatesDoorSecuredStatus() bool
+	// IsBACnetPropertyStatesDoorSecuredStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesDoorSecuredStatus()
 }
 
 // _BACnetPropertyStatesDoorSecuredStatus is the data-structure of this message
 type _BACnetPropertyStatesDoorSecuredStatus struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	DoorSecuredStatus BACnetDoorSecuredStatusTagged
 }
+
+var _ BACnetPropertyStatesDoorSecuredStatus = (*_BACnetPropertyStatesDoorSecuredStatus)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorSecuredStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesDoorSecuredStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesDoorSecuredStatus) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesDoorSecuredStatus) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesDoorSecuredStatus) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesDoorSecuredStatus) GetDoorSecuredStatus() BACnetDo
 
 // NewBACnetPropertyStatesDoorSecuredStatus factory function for _BACnetPropertyStatesDoorSecuredStatus
 func NewBACnetPropertyStatesDoorSecuredStatus(doorSecuredStatus BACnetDoorSecuredStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesDoorSecuredStatus {
-	_result := &_BACnetPropertyStatesDoorSecuredStatus{
-		DoorSecuredStatus:     doorSecuredStatus,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if doorSecuredStatus == nil {
+		panic("doorSecuredStatus of type BACnetDoorSecuredStatusTagged for BACnetPropertyStatesDoorSecuredStatus must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesDoorSecuredStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		DoorSecuredStatus:            doorSecuredStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesDoorSecuredStatus) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesDoorSecuredStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (doorSecuredStatus)
 	lengthInBits += m.DoorSecuredStatus.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesDoorSecuredStatus) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesDoorSecuredStatusParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {
-	return BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {
+func (m *_BACnetPropertyStatesDoorSecuredStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesDoorSecuredStatus BACnetPropertyStatesDoorSecuredStatus, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorSecuredStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesDoorSecuredStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorSecuredStatus)
-	if pullErr := readBuffer.PullContext("doorSecuredStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorSecuredStatus")
+	doorSecuredStatus, err := ReadSimpleField[BACnetDoorSecuredStatusTagged](ctx, "doorSecuredStatus", ReadComplex[BACnetDoorSecuredStatusTagged](BACnetDoorSecuredStatusTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorSecuredStatus' field"))
 	}
-	_doorSecuredStatus, _doorSecuredStatusErr := BACnetDoorSecuredStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _doorSecuredStatusErr != nil {
-		return nil, errors.Wrap(_doorSecuredStatusErr, "Error parsing 'doorSecuredStatus' field of BACnetPropertyStatesDoorSecuredStatus")
-	}
-	doorSecuredStatus := _doorSecuredStatus.(BACnetDoorSecuredStatusTagged)
-	if closeErr := readBuffer.CloseContext("doorSecuredStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorSecuredStatus")
-	}
+	m.DoorSecuredStatus = doorSecuredStatus
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesDoorSecuredStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesDoorSecuredStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesDoorSecuredStatus{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		DoorSecuredStatus:     doorSecuredStatus,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesDoorSecuredStatus) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesDoorSecuredStatus) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesDoorSecuredStatus")
 		}
 
-		// Simple Field (doorSecuredStatus)
-		if pushErr := writeBuffer.PushContext("doorSecuredStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorSecuredStatus")
-		}
-		_doorSecuredStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDoorSecuredStatus())
-		if popErr := writeBuffer.PopContext("doorSecuredStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorSecuredStatus")
-		}
-		if _doorSecuredStatusErr != nil {
-			return errors.Wrap(_doorSecuredStatusErr, "Error serializing 'doorSecuredStatus' field")
+		if err := WriteSimpleField[BACnetDoorSecuredStatusTagged](ctx, "doorSecuredStatus", m.GetDoorSecuredStatus(), WriteComplex[BACnetDoorSecuredStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorSecuredStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesDoorSecuredStatus"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesDoorSecuredStatus) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesDoorSecuredStatus) isBACnetPropertyStatesDoorSecuredStatus() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesDoorSecuredStatus) IsBACnetPropertyStatesDoorSecuredStatus() {}
 
 func (m *_BACnetPropertyStatesDoorSecuredStatus) String() string {
 	if m == nil {

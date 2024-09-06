@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type HistoryUpdateResult interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
-}
-
-// HistoryUpdateResultExactly can be used when we want exactly this type and not a type which fulfills HistoryUpdateResult.
-// This is useful for switch cases.
-type HistoryUpdateResultExactly interface {
-	HistoryUpdateResult
-	isHistoryUpdateResult() bool
+	// IsHistoryUpdateResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryUpdateResult()
 }
 
 // _HistoryUpdateResult is the data-structure of this message
 type _HistoryUpdateResult struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	StatusCode           StatusCode
 	NoOfOperationResults int32
 	OperationResults     []StatusCode
 	NoOfDiagnosticInfos  int32
 	DiagnosticInfos      []DiagnosticInfo
 }
+
+var _ HistoryUpdateResult = (*_HistoryUpdateResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_HistoryUpdateResult) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_HistoryUpdateResult) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_HistoryUpdateResult) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_HistoryUpdateResult) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,18 @@ func (m *_HistoryUpdateResult) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewHistoryUpdateResult factory function for _HistoryUpdateResult
 func NewHistoryUpdateResult(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResult {
-	_result := &_HistoryUpdateResult{
-		StatusCode:                 statusCode,
-		NoOfOperationResults:       noOfOperationResults,
-		OperationResults:           operationResults,
-		NoOfDiagnosticInfos:        noOfDiagnosticInfos,
-		DiagnosticInfos:            diagnosticInfos,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for HistoryUpdateResult must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_HistoryUpdateResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfOperationResults:              noOfOperationResults,
+		OperationResults:                  operationResults,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +147,7 @@ func (m *_HistoryUpdateResult) GetTypeName() string {
 }
 
 func (m *_HistoryUpdateResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -184,117 +185,52 @@ func (m *_HistoryUpdateResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HistoryUpdateResultParse(ctx context.Context, theBytes []byte, identifier string) (HistoryUpdateResult, error) {
-	return HistoryUpdateResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func HistoryUpdateResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryUpdateResult, error) {
+func (m *_HistoryUpdateResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyUpdateResult HistoryUpdateResult, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HistoryUpdateResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HistoryUpdateResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of HistoryUpdateResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
-	}
+	m.StatusCode = statusCode
 
-	// Simple Field (noOfOperationResults)
-	_noOfOperationResults, _noOfOperationResultsErr := readBuffer.ReadInt32("noOfOperationResults", 32)
-	if _noOfOperationResultsErr != nil {
-		return nil, errors.Wrap(_noOfOperationResultsErr, "Error parsing 'noOfOperationResults' field of HistoryUpdateResult")
+	noOfOperationResults, err := ReadSimpleField(ctx, "noOfOperationResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOperationResults' field"))
 	}
-	noOfOperationResults := _noOfOperationResults
+	m.NoOfOperationResults = noOfOperationResults
 
-	// Array field (operationResults)
-	if pullErr := readBuffer.PullContext("operationResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for operationResults")
+	operationResults, err := ReadCountArrayField[StatusCode](ctx, "operationResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfOperationResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operationResults' field"))
 	}
-	// Count array
-	operationResults := make([]StatusCode, max(noOfOperationResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(operationResults) == 0 {
-		operationResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfOperationResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'operationResults' field of HistoryUpdateResult")
-			}
-			operationResults[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("operationResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for operationResults")
-	}
+	m.OperationResults = operationResults
 
-	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
-	if _noOfDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of HistoryUpdateResult")
+	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	noOfDiagnosticInfos := _noOfDiagnosticInfos
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
 
-	// Array field (diagnosticInfos)
-	if pullErr := readBuffer.PullContext("diagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfos")
+	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfos' field"))
 	}
-	// Count array
-	diagnosticInfos := make([]DiagnosticInfo, max(noOfDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(diagnosticInfos) == 0 {
-		diagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'diagnosticInfos' field of HistoryUpdateResult")
-			}
-			diagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("diagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for diagnosticInfos")
-	}
+	m.DiagnosticInfos = diagnosticInfos
 
 	if closeErr := readBuffer.CloseContext("HistoryUpdateResult"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HistoryUpdateResult")
 	}
 
-	// Create a partially initialized instance
-	_child := &_HistoryUpdateResult{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		StatusCode:                 statusCode,
-		NoOfOperationResults:       noOfOperationResults,
-		OperationResults:           operationResults,
-		NoOfDiagnosticInfos:        noOfDiagnosticInfos,
-		DiagnosticInfos:            diagnosticInfos,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_HistoryUpdateResult) Serialize() ([]byte, error) {
@@ -315,64 +251,24 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for HistoryUpdateResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (noOfOperationResults)
-		noOfOperationResults := int32(m.GetNoOfOperationResults())
-		_noOfOperationResultsErr := writeBuffer.WriteInt32("noOfOperationResults", 32, int32((noOfOperationResults)))
-		if _noOfOperationResultsErr != nil {
-			return errors.Wrap(_noOfOperationResultsErr, "Error serializing 'noOfOperationResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfOperationResults", m.GetNoOfOperationResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfOperationResults' field")
 		}
 
-		// Array Field (operationResults)
-		if pushErr := writeBuffer.PushContext("operationResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for operationResults")
-		}
-		for _curItem, _element := range m.GetOperationResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetOperationResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'operationResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("operationResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for operationResults")
+		if err := WriteComplexTypeArrayField(ctx, "operationResults", m.GetOperationResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'operationResults' field")
 		}
 
-		// Simple Field (noOfDiagnosticInfos)
-		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
-		if _noOfDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
-		// Array Field (diagnosticInfos)
-		if pushErr := writeBuffer.PushContext("diagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for diagnosticInfos")
-		}
-		for _curItem, _element := range m.GetDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'diagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("diagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for diagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "diagnosticInfos", m.GetDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'diagnosticInfos' field")
 		}
 
 		if popErr := writeBuffer.PopContext("HistoryUpdateResult"); popErr != nil {
@@ -380,12 +276,10 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_HistoryUpdateResult) isHistoryUpdateResult() bool {
-	return true
-}
+func (m *_HistoryUpdateResult) IsHistoryUpdateResult() {}
 
 func (m *_HistoryUpdateResult) String() string {
 	if m == nil {

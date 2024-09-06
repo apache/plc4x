@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type AirConditioningDataSetZoneGroupOn interface {
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
-}
-
-// AirConditioningDataSetZoneGroupOnExactly can be used when we want exactly this type and not a type which fulfills AirConditioningDataSetZoneGroupOn.
-// This is useful for switch cases.
-type AirConditioningDataSetZoneGroupOnExactly interface {
-	AirConditioningDataSetZoneGroupOn
-	isAirConditioningDataSetZoneGroupOn() bool
+	// IsAirConditioningDataSetZoneGroupOn is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataSetZoneGroupOn()
 }
 
 // _AirConditioningDataSetZoneGroupOn is the data-structure of this message
 type _AirConditioningDataSetZoneGroupOn struct {
-	*_AirConditioningData
+	AirConditioningDataContract
 	ZoneGroup byte
 }
+
+var _ AirConditioningDataSetZoneGroupOn = (*_AirConditioningDataSetZoneGroupOn)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataSetZoneGroupOn)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _AirConditioningDataSetZoneGroupOn struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AirConditioningDataSetZoneGroupOn) InitializeParent(parent AirConditioningData, commandTypeContainer AirConditioningCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_AirConditioningDataSetZoneGroupOn) GetParent() AirConditioningData {
-	return m._AirConditioningData
+func (m *_AirConditioningDataSetZoneGroupOn) GetParent() AirConditioningDataContract {
+	return m.AirConditioningDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,10 +85,10 @@ func (m *_AirConditioningDataSetZoneGroupOn) GetZoneGroup() byte {
 // NewAirConditioningDataSetZoneGroupOn factory function for _AirConditioningDataSetZoneGroupOn
 func NewAirConditioningDataSetZoneGroupOn(zoneGroup byte, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetZoneGroupOn {
 	_result := &_AirConditioningDataSetZoneGroupOn{
-		ZoneGroup:            zoneGroup,
-		_AirConditioningData: NewAirConditioningData(commandTypeContainer),
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
 	}
-	_result._AirConditioningData._AirConditioningDataChildRequirements = _result
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 
@@ -112,7 +108,7 @@ func (m *_AirConditioningDataSetZoneGroupOn) GetTypeName() string {
 }
 
 func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -124,39 +120,28 @@ func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataSetZoneGroupOnParse(ctx context.Context, theBytes []byte) (AirConditioningDataSetZoneGroupOn, error) {
-	return AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOn, error) {
+func (m *_AirConditioningDataSetZoneGroupOn) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataSetZoneGroupOn AirConditioningDataSetZoneGroupOn, err error) {
+	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneGroupOn"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataSetZoneGroupOn")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataSetZoneGroupOn")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
-	zoneGroup := _zoneGroup
+	m.ZoneGroup = zoneGroup
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataSetZoneGroupOn"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AirConditioningDataSetZoneGroupOn")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AirConditioningDataSetZoneGroupOn{
-		_AirConditioningData: &_AirConditioningData{},
-		ZoneGroup:            zoneGroup,
-	}
-	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AirConditioningDataSetZoneGroupOn) Serialize() ([]byte, error) {
@@ -177,11 +162,8 @@ func (m *_AirConditioningDataSetZoneGroupOn) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataSetZoneGroupOn")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataSetZoneGroupOn"); popErr != nil {
@@ -189,12 +171,10 @@ func (m *_AirConditioningDataSetZoneGroupOn) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AirConditioningDataContract.(*_AirConditioningData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AirConditioningDataSetZoneGroupOn) isAirConditioningDataSetZoneGroupOn() bool {
-	return true
-}
+func (m *_AirConditioningDataSetZoneGroupOn) IsAirConditioningDataSetZoneGroupOn() {}
 
 func (m *_AirConditioningDataSetZoneGroupOn) String() string {
 	if m == nil {

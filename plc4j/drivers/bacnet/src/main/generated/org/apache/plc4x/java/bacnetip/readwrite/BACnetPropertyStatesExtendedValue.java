@@ -60,7 +60,7 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesExtendedValue");
 
     // Simple Field (extendedValue)
-    writeSimpleField("extendedValue", extendedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("extendedValue", extendedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesExtendedValue");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
     BACnetContextTagUnsignedInteger extendedValue =
         readSimpleField(
             "extendedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

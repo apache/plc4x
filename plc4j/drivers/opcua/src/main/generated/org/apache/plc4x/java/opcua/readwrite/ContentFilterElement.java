@@ -79,7 +79,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
         "filterOperator",
         "FilterOperator",
         filterOperator,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             FilterOperator::getValue, FilterOperator::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (noOfFilterOperands)
@@ -130,15 +130,14 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
         readEnumField(
             "filterOperator",
             "FilterOperator",
-            new DataReaderEnumDefault<>(
-                FilterOperator::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(FilterOperator::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfFilterOperands = readSimpleField("noOfFilterOperands", readSignedInt(readBuffer, 32));
 
     List<ExtensionObject> filterOperands =
         readCountArrayField(
             "filterOperands",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer),
             noOfFilterOperands);
 

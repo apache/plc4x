@@ -88,7 +88,7 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -102,7 +102,7 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     serializeBACnetNotificationParametersChangeOfDiscreteValueNewValueChild(writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue");
   }
@@ -142,14 +142,13 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
     boolean peekedIsContextTag =
@@ -242,7 +241,7 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue");

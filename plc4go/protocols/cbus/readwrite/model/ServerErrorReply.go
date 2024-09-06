@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,19 +42,17 @@ type ServerErrorReply interface {
 	utils.LengthAware
 	utils.Serializable
 	ReplyOrConfirmation
-}
-
-// ServerErrorReplyExactly can be used when we want exactly this type and not a type which fulfills ServerErrorReply.
-// This is useful for switch cases.
-type ServerErrorReplyExactly interface {
-	ServerErrorReply
-	isServerErrorReply() bool
+	// IsServerErrorReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServerErrorReply()
 }
 
 // _ServerErrorReply is the data-structure of this message
 type _ServerErrorReply struct {
-	*_ReplyOrConfirmation
+	ReplyOrConfirmationContract
 }
+
+var _ ServerErrorReply = (*_ServerErrorReply)(nil)
+var _ ReplyOrConfirmationRequirements = (*_ServerErrorReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _ServerErrorReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServerErrorReply) InitializeParent(parent ReplyOrConfirmation, peekedByte byte) {
-	m.PeekedByte = peekedByte
-}
-
-func (m *_ServerErrorReply) GetParent() ReplyOrConfirmation {
-	return m._ReplyOrConfirmation
+func (m *_ServerErrorReply) GetParent() ReplyOrConfirmationContract {
+	return m.ReplyOrConfirmationContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,9 +85,9 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 // NewServerErrorReply factory function for _ServerErrorReply
 func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_ReplyOrConfirmation: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
 	}
-	_result._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _result
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result
 }
 
@@ -111,7 +107,7 @@ func (m *_ServerErrorReply) GetTypeName() string {
 }
 
 func (m *_ServerErrorReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
 
 	// Const Field (errorMarker)
 	lengthInBits += 8
@@ -123,43 +119,28 @@ func (m *_ServerErrorReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ServerErrorReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
-	return ServerErrorReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
-}
-
-func ServerErrorReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
+func (m *_ServerErrorReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ReplyOrConfirmation, cBusOptions CBusOptions, requestContext RequestContext) (__serverErrorReply ServerErrorReply, err error) {
+	m.ReplyOrConfirmationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ServerErrorReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (errorMarker)
-	errorMarker, _errorMarkerErr := readBuffer.ReadByte("errorMarker")
-	if _errorMarkerErr != nil {
-		return nil, errors.Wrap(_errorMarkerErr, "Error parsing 'errorMarker' field of ServerErrorReply")
+	errorMarker, err := ReadConstField[byte](ctx, "errorMarker", ReadByte(readBuffer, 8), ServerErrorReply_ERRORMARKER)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorMarker' field"))
 	}
-	if errorMarker != ServerErrorReply_ERRORMARKER {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ServerErrorReply_ERRORMARKER) + " but got " + fmt.Sprintf("%d", errorMarker))
-	}
+	_ = errorMarker
 
 	if closeErr := readBuffer.CloseContext("ServerErrorReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ServerErrorReply")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ServerErrorReply{
-		_ReplyOrConfirmation: &_ReplyOrConfirmation{
-			CBusOptions:    cBusOptions,
-			RequestContext: requestContext,
-		},
-	}
-	_child._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ServerErrorReply) Serialize() ([]byte, error) {
@@ -180,10 +161,8 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for ServerErrorReply")
 		}
 
-		// Const Field (errorMarker)
-		_errorMarkerErr := writeBuffer.WriteByte("errorMarker", 0x21)
-		if _errorMarkerErr != nil {
-			return errors.Wrap(_errorMarkerErr, "Error serializing 'errorMarker' field")
+		if err := WriteConstField(ctx, "errorMarker", ServerErrorReply_ERRORMARKER, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorMarker' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ServerErrorReply"); popErr != nil {
@@ -191,12 +170,10 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ServerErrorReply) isServerErrorReply() bool {
-	return true
-}
+func (m *_ServerErrorReply) IsServerErrorReply() {}
 
 func (m *_ServerErrorReply) String() string {
 	if m == nil {

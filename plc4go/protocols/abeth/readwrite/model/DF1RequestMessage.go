@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,11 +35,17 @@ import (
 
 // DF1RequestMessage is the corresponding interface of DF1RequestMessage
 type DF1RequestMessage interface {
+	DF1RequestMessageContract
+	DF1RequestMessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandCode returns CommandCode (discriminator field)
-	GetCommandCode() uint8
+	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1RequestMessage()
+}
+
+// DF1RequestMessageContract provides a set of functions which can be overwritten by a sub struct
+type DF1RequestMessageContract interface {
 	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
 	// GetSourceAddress returns SourceAddress (property field)
@@ -46,18 +54,21 @@ type DF1RequestMessage interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
+	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1RequestMessage()
 }
 
-// DF1RequestMessageExactly can be used when we want exactly this type and not a type which fulfills DF1RequestMessage.
-// This is useful for switch cases.
-type DF1RequestMessageExactly interface {
-	DF1RequestMessage
-	isDF1RequestMessage() bool
+// DF1RequestMessageRequirements provides a set of functions which need to be implemented by a sub struct
+type DF1RequestMessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandCode returns CommandCode (discriminator field)
+	GetCommandCode() uint8
 }
 
 // _DF1RequestMessage is the data-structure of this message
 type _DF1RequestMessage struct {
-	_DF1RequestMessageChildRequirements
+	_SubType           DF1RequestMessage
 	DestinationAddress uint8
 	SourceAddress      uint8
 	Status             uint8
@@ -66,25 +77,7 @@ type _DF1RequestMessage struct {
 	reservedField0 *uint16
 }
 
-type _DF1RequestMessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandCode() uint8
-}
-
-type DF1RequestMessageParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1RequestMessage, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type DF1RequestMessageChild interface {
-	utils.Serializable
-	InitializeParent(parent DF1RequestMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16)
-	GetParent() *DF1RequestMessage
-
-	GetTypeName() string
-	DF1RequestMessage
-}
+var _ DF1RequestMessageContract = (*_DF1RequestMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -132,7 +125,7 @@ func (m *_DF1RequestMessage) GetTypeName() string {
 	return "DF1RequestMessage"
 }
 
-func (m *_DF1RequestMessage) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1RequestMessage) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (destinationAddress)
@@ -156,106 +149,96 @@ func (m *_DF1RequestMessage) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_DF1RequestMessage) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func DF1RequestMessageParse(ctx context.Context, theBytes []byte) (DF1RequestMessage, error) {
-	return DF1RequestMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func DF1RequestMessageParse[T DF1RequestMessage](ctx context.Context, theBytes []byte) (T, error) {
+	return DF1RequestMessageParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestMessage, error) {
+func DF1RequestMessageParseWithBufferProducer[T DF1RequestMessage]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := DF1RequestMessageParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func DF1RequestMessageParseWithBuffer[T DF1RequestMessage](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_DF1RequestMessage{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_DF1RequestMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dF1RequestMessage DF1RequestMessage, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1RequestMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1RequestMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationAddress)
-	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
-	if _destinationAddressErr != nil {
-		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field of DF1RequestMessage")
+	destinationAddress, err := ReadSimpleField(ctx, "destinationAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
-	destinationAddress := _destinationAddress
+	m.DestinationAddress = destinationAddress
 
-	// Simple Field (sourceAddress)
-	_sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
-	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of DF1RequestMessage")
+	sourceAddress, err := ReadSimpleField(ctx, "sourceAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
-	sourceAddress := _sourceAddress
+	m.SourceAddress = sourceAddress
 
-	var reservedField0 *uint16
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DF1RequestMessage")
-		}
-		if reserved != uint16(0x0000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
+	}
+	m.reservedField0 = reservedField0
+
+	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandCode' field"))
 	}
 
-	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 8)
-	if _commandCodeErr != nil {
-		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field of DF1RequestMessage")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
+	m.Status = status
 
-	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DF1RequestMessage")
+	transactionCounter, err := ReadSimpleField(ctx, "transactionCounter", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transactionCounter' field"))
 	}
-	status := _status
-
-	// Simple Field (transactionCounter)
-	_transactionCounter, _transactionCounterErr := readBuffer.ReadUint16("transactionCounter", 16)
-	if _transactionCounterErr != nil {
-		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field of DF1RequestMessage")
-	}
-	transactionCounter := _transactionCounter
+	m.TransactionCounter = transactionCounter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type DF1RequestMessageChildSerializeRequirement interface {
-		DF1RequestMessage
-		InitializeParent(DF1RequestMessage, uint8, uint8, uint8, uint16)
-		GetParent() DF1RequestMessage
-	}
-	var _childTemp any
-	var _child DF1RequestMessageChildSerializeRequirement
-	var typeSwitchError error
+	var _child DF1RequestMessage
 	switch {
 	case commandCode == 0x0F: // DF1CommandRequestMessage
-		_childTemp, typeSwitchError = DF1CommandRequestMessageParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_DF1CommandRequestMessage{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandRequestMessage for type-switch of DF1RequestMessage")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
+		return nil, errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1RequestMessage")
-	}
-	_child = _childTemp.(DF1RequestMessageChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("DF1RequestMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DF1RequestMessage")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, destinationAddress, sourceAddress, status, transactionCounter)
-	_child.GetParent().(*_DF1RequestMessage).reservedField0 = reservedField0
 	return _child, nil
 }
 
-func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1RequestMessage, serializeChildFunction func() error) error {
+func (pm *_DF1RequestMessage) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DF1RequestMessage, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -267,56 +250,28 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for DF1RequestMessage")
 	}
 
-	// Simple Field (destinationAddress)
-	destinationAddress := uint8(m.GetDestinationAddress())
-	_destinationAddressErr := writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
-	if _destinationAddressErr != nil {
-		return errors.Wrap(_destinationAddressErr, "Error serializing 'destinationAddress' field")
+	if err := WriteSimpleField[uint8](ctx, "destinationAddress", m.GetDestinationAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 	}
 
-	// Simple Field (sourceAddress)
-	sourceAddress := uint8(m.GetSourceAddress())
-	_sourceAddressErr := writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
-	if _sourceAddressErr != nil {
-		return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
+	if err := WriteSimpleField[uint8](ctx, "sourceAddress", m.GetSourceAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceAddress' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint16 = uint16(0x0000)
-		if pm.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0000),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *pm.reservedField0
-		}
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0000), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode := uint8(child.GetCommandCode())
-	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 8, uint8((commandCode)))
-
-	if _commandCodeErr != nil {
-		return errors.Wrap(_commandCodeErr, "Error serializing 'commandCode' field")
+	if err := WriteDiscriminatorField(ctx, "commandCode", m.GetCommandCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandCode' field")
 	}
 
-	// Simple Field (status)
-	status := uint8(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
-	// Simple Field (transactionCounter)
-	transactionCounter := uint16(m.GetTransactionCounter())
-	_transactionCounterErr := writeBuffer.WriteUint16("transactionCounter", 16, uint16((transactionCounter)))
-	if _transactionCounterErr != nil {
-		return errors.Wrap(_transactionCounterErr, "Error serializing 'transactionCounter' field")
+	if err := WriteSimpleField[uint16](ctx, "transactionCounter", m.GetTransactionCounter(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'transactionCounter' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -330,17 +285,4 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 	return nil
 }
 
-func (m *_DF1RequestMessage) isDF1RequestMessage() bool {
-	return true
-}
-
-func (m *_DF1RequestMessage) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_DF1RequestMessage) IsDF1RequestMessage() {}

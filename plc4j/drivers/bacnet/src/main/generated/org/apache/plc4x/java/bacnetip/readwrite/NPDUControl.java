@@ -116,7 +116,7 @@ public class NPDUControl implements Message {
         "networkPriority",
         "NPDUNetworkPriority",
         networkPriority,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             NPDUNetworkPriority::getValue,
             NPDUNetworkPriority::name,
             writeUnsignedByte(writeBuffer, 2)));
@@ -181,8 +181,7 @@ public class NPDUControl implements Message {
         readEnumField(
             "networkPriority",
             "NPDUNetworkPriority",
-            new DataReaderEnumDefault<>(
-                NPDUNetworkPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(NPDUNetworkPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     readBuffer.closeContext("NPDUControl");
     // Create the instance

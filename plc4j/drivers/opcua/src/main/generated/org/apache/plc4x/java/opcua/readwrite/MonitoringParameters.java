@@ -97,7 +97,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     writeSimpleField("samplingInterval", samplingInterval, writeDouble(writeBuffer, 64));
 
     // Simple Field (filter)
-    writeSimpleField("filter", filter, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("filter", filter, writeComplex(writeBuffer));
 
     // Simple Field (queueSize)
     writeSimpleField("queueSize", queueSize, writeUnsignedLong(writeBuffer, 32));
@@ -156,7 +156,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     ExtensionObject filter =
         readSimpleField(
             "filter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     long queueSize = readSimpleField("queueSize", readUnsignedLong(readBuffer, 32));

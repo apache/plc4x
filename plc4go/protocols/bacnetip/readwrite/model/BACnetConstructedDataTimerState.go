@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataTimerState interface {
 	GetTimerState() BACnetTimerStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimerStateTagged
-}
-
-// BACnetConstructedDataTimerStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerState.
-// This is useful for switch cases.
-type BACnetConstructedDataTimerStateExactly interface {
-	BACnetConstructedDataTimerState
-	isBACnetConstructedDataTimerState() bool
+	// IsBACnetConstructedDataTimerState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimerState()
 }
 
 // _BACnetConstructedDataTimerState is the data-structure of this message
 type _BACnetConstructedDataTimerState struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	TimerState BACnetTimerStateTagged
 }
+
+var _ BACnetConstructedDataTimerState = (*_BACnetConstructedDataTimerState)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataTimerState) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTimerState) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTimerState) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTimerState) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataTimerState) GetActualValue() BACnetTimerStateTagg
 
 // NewBACnetConstructedDataTimerState factory function for _BACnetConstructedDataTimerState
 func NewBACnetConstructedDataTimerState(timerState BACnetTimerStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerState {
-	_result := &_BACnetConstructedDataTimerState{
-		TimerState:             timerState,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if timerState == nil {
+		panic("timerState of type BACnetTimerStateTagged for BACnetConstructedDataTimerState must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataTimerState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimerState:                    timerState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataTimerState) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTimerState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (timerState)
 	lengthInBits += m.TimerState.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataTimerState) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTimerStateParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerState, error) {
-	return BACnetConstructedDataTimerStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTimerStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerState, error) {
+func (m *_BACnetConstructedDataTimerState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimerState BACnetConstructedDataTimerState, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimerState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timerState)
-	if pullErr := readBuffer.PullContext("timerState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timerState")
+	timerState, err := ReadSimpleField[BACnetTimerStateTagged](ctx, "timerState", ReadComplex[BACnetTimerStateTagged](BACnetTimerStateTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timerState' field"))
 	}
-	_timerState, _timerStateErr := BACnetTimerStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _timerStateErr != nil {
-		return nil, errors.Wrap(_timerStateErr, "Error parsing 'timerState' field of BACnetConstructedDataTimerState")
-	}
-	timerState := _timerState.(BACnetTimerStateTagged)
-	if closeErr := readBuffer.CloseContext("timerState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timerState")
-	}
+	m.TimerState = timerState
 
-	// Virtual field
-	_actualValue := timerState
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetTimerStateTagged](ctx, "actualValue", (*BACnetTimerStateTagged)(nil), timerState)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimerState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimerState")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTimerState{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		TimerState: timerState,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTimerState) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataTimerState) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimerState")
 		}
 
-		// Simple Field (timerState)
-		if pushErr := writeBuffer.PushContext("timerState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timerState")
-		}
-		_timerStateErr := writeBuffer.WriteSerializable(ctx, m.GetTimerState())
-		if popErr := writeBuffer.PopContext("timerState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timerState")
-		}
-		if _timerStateErr != nil {
-			return errors.Wrap(_timerStateErr, "Error serializing 'timerState' field")
+		if err := WriteSimpleField[BACnetTimerStateTagged](ctx, "timerState", m.GetTimerState(), WriteComplex[BACnetTimerStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timerState' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataTimerState) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTimerState) isBACnetConstructedDataTimerState() bool {
-	return true
-}
+func (m *_BACnetConstructedDataTimerState) IsBACnetConstructedDataTimerState() {}
 
 func (m *_BACnetConstructedDataTimerState) String() string {
 	if m == nil {

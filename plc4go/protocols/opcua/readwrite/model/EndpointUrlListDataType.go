@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type EndpointUrlListDataType interface {
 	GetNoOfEndpointUrlList() int32
 	// GetEndpointUrlList returns EndpointUrlList (property field)
 	GetEndpointUrlList() []PascalString
-}
-
-// EndpointUrlListDataTypeExactly can be used when we want exactly this type and not a type which fulfills EndpointUrlListDataType.
-// This is useful for switch cases.
-type EndpointUrlListDataTypeExactly interface {
-	EndpointUrlListDataType
-	isEndpointUrlListDataType() bool
+	// IsEndpointUrlListDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEndpointUrlListDataType()
 }
 
 // _EndpointUrlListDataType is the data-structure of this message
 type _EndpointUrlListDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NoOfEndpointUrlList int32
 	EndpointUrlList     []PascalString
 }
+
+var _ EndpointUrlListDataType = (*_EndpointUrlListDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EndpointUrlListDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_EndpointUrlListDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EndpointUrlListDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_EndpointUrlListDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_EndpointUrlListDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_EndpointUrlListDataType) GetEndpointUrlList() []PascalString {
 // NewEndpointUrlListDataType factory function for _EndpointUrlListDataType
 func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []PascalString) *_EndpointUrlListDataType {
 	_result := &_EndpointUrlListDataType{
-		NoOfEndpointUrlList:        noOfEndpointUrlList,
-		EndpointUrlList:            endpointUrlList,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEndpointUrlList:               noOfEndpointUrlList,
+		EndpointUrlList:                   endpointUrlList,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_EndpointUrlListDataType) GetTypeName() string {
 }
 
 func (m *_EndpointUrlListDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (noOfEndpointUrlList)
 	lengthInBits += 32
@@ -144,67 +142,34 @@ func (m *_EndpointUrlListDataType) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EndpointUrlListDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (EndpointUrlListDataType, error) {
-	return EndpointUrlListDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func EndpointUrlListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EndpointUrlListDataType, error) {
+func (m *_EndpointUrlListDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__endpointUrlListDataType EndpointUrlListDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EndpointUrlListDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EndpointUrlListDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfEndpointUrlList)
-	_noOfEndpointUrlList, _noOfEndpointUrlListErr := readBuffer.ReadInt32("noOfEndpointUrlList", 32)
-	if _noOfEndpointUrlListErr != nil {
-		return nil, errors.Wrap(_noOfEndpointUrlListErr, "Error parsing 'noOfEndpointUrlList' field of EndpointUrlListDataType")
+	noOfEndpointUrlList, err := ReadSimpleField(ctx, "noOfEndpointUrlList", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEndpointUrlList' field"))
 	}
-	noOfEndpointUrlList := _noOfEndpointUrlList
+	m.NoOfEndpointUrlList = noOfEndpointUrlList
 
-	// Array field (endpointUrlList)
-	if pullErr := readBuffer.PullContext("endpointUrlList", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrlList")
+	endpointUrlList, err := ReadCountArrayField[PascalString](ctx, "endpointUrlList", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfEndpointUrlList))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrlList' field"))
 	}
-	// Count array
-	endpointUrlList := make([]PascalString, max(noOfEndpointUrlList, 0))
-	// This happens when the size is set conditional to 0
-	if len(endpointUrlList) == 0 {
-		endpointUrlList = nil
-	}
-	{
-		_numItems := uint16(max(noOfEndpointUrlList, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'endpointUrlList' field of EndpointUrlListDataType")
-			}
-			endpointUrlList[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("endpointUrlList", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrlList")
-	}
+	m.EndpointUrlList = endpointUrlList
 
 	if closeErr := readBuffer.CloseContext("EndpointUrlListDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EndpointUrlListDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_EndpointUrlListDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NoOfEndpointUrlList:        noOfEndpointUrlList,
-		EndpointUrlList:            endpointUrlList,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_EndpointUrlListDataType) Serialize() ([]byte, error) {
@@ -225,28 +190,12 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for EndpointUrlListDataType")
 		}
 
-		// Simple Field (noOfEndpointUrlList)
-		noOfEndpointUrlList := int32(m.GetNoOfEndpointUrlList())
-		_noOfEndpointUrlListErr := writeBuffer.WriteInt32("noOfEndpointUrlList", 32, int32((noOfEndpointUrlList)))
-		if _noOfEndpointUrlListErr != nil {
-			return errors.Wrap(_noOfEndpointUrlListErr, "Error serializing 'noOfEndpointUrlList' field")
+		if err := WriteSimpleField[int32](ctx, "noOfEndpointUrlList", m.GetNoOfEndpointUrlList(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfEndpointUrlList' field")
 		}
 
-		// Array Field (endpointUrlList)
-		if pushErr := writeBuffer.PushContext("endpointUrlList", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrlList")
-		}
-		for _curItem, _element := range m.GetEndpointUrlList() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEndpointUrlList()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'endpointUrlList' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("endpointUrlList", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrlList")
+		if err := WriteComplexTypeArrayField(ctx, "endpointUrlList", m.GetEndpointUrlList(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrlList' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EndpointUrlListDataType"); popErr != nil {
@@ -254,12 +203,10 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_EndpointUrlListDataType) isEndpointUrlListDataType() bool {
-	return true
-}
+func (m *_EndpointUrlListDataType) IsEndpointUrlListDataType() {}
 
 func (m *_EndpointUrlListDataType) String() string {
 	if m == nil {

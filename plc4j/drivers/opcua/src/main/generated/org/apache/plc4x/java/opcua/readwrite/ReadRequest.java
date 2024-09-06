@@ -91,7 +91,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("ReadRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (maxAge)
     writeSimpleField("maxAge", maxAge, writeDouble(writeBuffer, 64));
@@ -101,7 +101,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
         "timestampsToReturn",
         "TimestampsToReturn",
         timestampsToReturn,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TimestampsToReturn::getValue,
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -159,7 +159,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -169,15 +169,14 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
         readEnumField(
             "timestampsToReturn",
             "TimestampsToReturn",
-            new DataReaderEnumDefault<>(
-                TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfNodesToRead = readSimpleField("noOfNodesToRead", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> nodesToRead =
         readCountArrayField(
             "nodesToRead",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("628")),
                 readBuffer),
             noOfNodesToRead);

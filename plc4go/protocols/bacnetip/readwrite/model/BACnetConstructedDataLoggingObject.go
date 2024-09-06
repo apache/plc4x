@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLoggingObject interface {
 	GetLoggingObject() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
-}
-
-// BACnetConstructedDataLoggingObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoggingObject.
-// This is useful for switch cases.
-type BACnetConstructedDataLoggingObjectExactly interface {
-	BACnetConstructedDataLoggingObject
-	isBACnetConstructedDataLoggingObject() bool
+	// IsBACnetConstructedDataLoggingObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLoggingObject()
 }
 
 // _BACnetConstructedDataLoggingObject is the data-structure of this message
 type _BACnetConstructedDataLoggingObject struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LoggingObject BACnetApplicationTagObjectIdentifier
 }
+
+var _ BACnetConstructedDataLoggingObject = (*_BACnetConstructedDataLoggingObject)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoggingObject)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLoggingObject) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLoggingObject) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLoggingObject) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLoggingObject) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLoggingObject) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataLoggingObject factory function for _BACnetConstructedDataLoggingObject
 func NewBACnetConstructedDataLoggingObject(loggingObject BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingObject {
-	_result := &_BACnetConstructedDataLoggingObject{
-		LoggingObject:          loggingObject,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if loggingObject == nil {
+		panic("loggingObject of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLoggingObject must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLoggingObject{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LoggingObject:                 loggingObject,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLoggingObject) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLoggingObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (loggingObject)
 	lengthInBits += m.LoggingObject.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLoggingObject) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLoggingObjectParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingObject, error) {
-	return BACnetConstructedDataLoggingObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLoggingObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingObject, error) {
+func (m *_BACnetConstructedDataLoggingObject) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLoggingObject BACnetConstructedDataLoggingObject, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingObject"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLoggingObject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (loggingObject)
-	if pullErr := readBuffer.PullContext("loggingObject"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for loggingObject")
+	loggingObject, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "loggingObject", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'loggingObject' field"))
 	}
-	_loggingObject, _loggingObjectErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _loggingObjectErr != nil {
-		return nil, errors.Wrap(_loggingObjectErr, "Error parsing 'loggingObject' field of BACnetConstructedDataLoggingObject")
-	}
-	loggingObject := _loggingObject.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("loggingObject"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for loggingObject")
-	}
+	m.LoggingObject = loggingObject
 
-	// Virtual field
-	_actualValue := loggingObject
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagObjectIdentifier](ctx, "actualValue", (*BACnetApplicationTagObjectIdentifier)(nil), loggingObject)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingObject"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingObject")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLoggingObject{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LoggingObject: loggingObject,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLoggingObject) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLoggingObject) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLoggingObject")
 		}
 
-		// Simple Field (loggingObject)
-		if pushErr := writeBuffer.PushContext("loggingObject"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for loggingObject")
-		}
-		_loggingObjectErr := writeBuffer.WriteSerializable(ctx, m.GetLoggingObject())
-		if popErr := writeBuffer.PopContext("loggingObject"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for loggingObject")
-		}
-		if _loggingObjectErr != nil {
-			return errors.Wrap(_loggingObjectErr, "Error serializing 'loggingObject' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "loggingObject", m.GetLoggingObject(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'loggingObject' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataLoggingObject) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLoggingObject) isBACnetConstructedDataLoggingObject() bool {
-	return true
-}
+func (m *_BACnetConstructedDataLoggingObject) IsBACnetConstructedDataLoggingObject() {}
 
 func (m *_BACnetConstructedDataLoggingObject) String() string {
 	if m == nil {

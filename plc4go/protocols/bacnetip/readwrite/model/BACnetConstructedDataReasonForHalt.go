@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataReasonForHalt interface {
 	GetProgramError() BACnetProgramErrorTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProgramErrorTagged
-}
-
-// BACnetConstructedDataReasonForHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReasonForHalt.
-// This is useful for switch cases.
-type BACnetConstructedDataReasonForHaltExactly interface {
-	BACnetConstructedDataReasonForHalt
-	isBACnetConstructedDataReasonForHalt() bool
+	// IsBACnetConstructedDataReasonForHalt is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataReasonForHalt()
 }
 
 // _BACnetConstructedDataReasonForHalt is the data-structure of this message
 type _BACnetConstructedDataReasonForHalt struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ProgramError BACnetProgramErrorTagged
 }
+
+var _ BACnetConstructedDataReasonForHalt = (*_BACnetConstructedDataReasonForHalt)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForHalt)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataReasonForHalt) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataReasonForHalt) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataReasonForHalt) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataReasonForHalt) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataReasonForHalt) GetActualValue() BACnetProgramErro
 
 // NewBACnetConstructedDataReasonForHalt factory function for _BACnetConstructedDataReasonForHalt
 func NewBACnetConstructedDataReasonForHalt(programError BACnetProgramErrorTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForHalt {
-	_result := &_BACnetConstructedDataReasonForHalt{
-		ProgramError:           programError,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if programError == nil {
+		panic("programError of type BACnetProgramErrorTagged for BACnetConstructedDataReasonForHalt must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataReasonForHalt{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramError:                  programError,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataReasonForHalt) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataReasonForHalt) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (programError)
 	lengthInBits += m.ProgramError.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataReasonForHalt) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataReasonForHaltParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReasonForHalt, error) {
-	return BACnetConstructedDataReasonForHaltParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataReasonForHaltParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReasonForHalt, error) {
+func (m *_BACnetConstructedDataReasonForHalt) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataReasonForHalt BACnetConstructedDataReasonForHalt, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReasonForHalt"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataReasonForHalt")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (programError)
-	if pullErr := readBuffer.PullContext("programError"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for programError")
+	programError, err := ReadSimpleField[BACnetProgramErrorTagged](ctx, "programError", ReadComplex[BACnetProgramErrorTagged](BACnetProgramErrorTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programError' field"))
 	}
-	_programError, _programErrorErr := BACnetProgramErrorTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _programErrorErr != nil {
-		return nil, errors.Wrap(_programErrorErr, "Error parsing 'programError' field of BACnetConstructedDataReasonForHalt")
-	}
-	programError := _programError.(BACnetProgramErrorTagged)
-	if closeErr := readBuffer.CloseContext("programError"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for programError")
-	}
+	m.ProgramError = programError
 
-	// Virtual field
-	_actualValue := programError
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetProgramErrorTagged](ctx, "actualValue", (*BACnetProgramErrorTagged)(nil), programError)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReasonForHalt"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReasonForHalt")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataReasonForHalt{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ProgramError: programError,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataReasonForHalt) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataReasonForHalt) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReasonForHalt")
 		}
 
-		// Simple Field (programError)
-		if pushErr := writeBuffer.PushContext("programError"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for programError")
-		}
-		_programErrorErr := writeBuffer.WriteSerializable(ctx, m.GetProgramError())
-		if popErr := writeBuffer.PopContext("programError"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for programError")
-		}
-		if _programErrorErr != nil {
-			return errors.Wrap(_programErrorErr, "Error serializing 'programError' field")
+		if err := WriteSimpleField[BACnetProgramErrorTagged](ctx, "programError", m.GetProgramError(), WriteComplex[BACnetProgramErrorTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'programError' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataReasonForHalt) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataReasonForHalt) isBACnetConstructedDataReasonForHalt() bool {
-	return true
-}
+func (m *_BACnetConstructedDataReasonForHalt) IsBACnetConstructedDataReasonForHalt() {}
 
 func (m *_BACnetConstructedDataReasonForHalt) String() string {
 	if m == nil {

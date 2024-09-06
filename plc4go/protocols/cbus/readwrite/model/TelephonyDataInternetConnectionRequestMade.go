@@ -37,19 +37,17 @@ type TelephonyDataInternetConnectionRequestMade interface {
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
-}
-
-// TelephonyDataInternetConnectionRequestMadeExactly can be used when we want exactly this type and not a type which fulfills TelephonyDataInternetConnectionRequestMade.
-// This is useful for switch cases.
-type TelephonyDataInternetConnectionRequestMadeExactly interface {
-	TelephonyDataInternetConnectionRequestMade
-	isTelephonyDataInternetConnectionRequestMade() bool
+	// IsTelephonyDataInternetConnectionRequestMade is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataInternetConnectionRequestMade()
 }
 
 // _TelephonyDataInternetConnectionRequestMade is the data-structure of this message
 type _TelephonyDataInternetConnectionRequestMade struct {
-	*_TelephonyData
+	TelephonyDataContract
 }
+
+var _ TelephonyDataInternetConnectionRequestMade = (*_TelephonyDataInternetConnectionRequestMade)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataInternetConnectionRequestMade)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _TelephonyDataInternetConnectionRequestMade struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TelephonyDataInternetConnectionRequestMade) InitializeParent(parent TelephonyData, commandTypeContainer TelephonyCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_TelephonyDataInternetConnectionRequestMade) GetParent() TelephonyData {
-	return m._TelephonyData
+func (m *_TelephonyDataInternetConnectionRequestMade) GetParent() TelephonyDataContract {
+	return m.TelephonyDataContract
 }
 
 // NewTelephonyDataInternetConnectionRequestMade factory function for _TelephonyDataInternetConnectionRequestMade
 func NewTelephonyDataInternetConnectionRequestMade(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataInternetConnectionRequestMade {
 	_result := &_TelephonyDataInternetConnectionRequestMade{
-		_TelephonyData: NewTelephonyData(commandTypeContainer, argument),
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 	}
-	_result._TelephonyData._TelephonyDataChildRequirements = _result
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_TelephonyDataInternetConnectionRequestMade) GetTypeName() string {
 }
 
 func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataInternetConnectionRequestMadeParse(ctx context.Context, theBytes []byte) (TelephonyDataInternetConnectionRequestMade, error) {
-	return TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {
+func (m *_TelephonyDataInternetConnectionRequestMade) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataInternetConnectionRequestMade TelephonyDataInternetConnectionRequestMade, err error) {
+	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataInternetConnectionRequestMade"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataInternetConnectionRequestMade")
 	}
@@ -123,12 +112,7 @@ func TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx context.Conte
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataInternetConnectionRequestMade")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TelephonyDataInternetConnectionRequestMade{
-		_TelephonyData: &_TelephonyData{},
-	}
-	_child._TelephonyData._TelephonyDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TelephonyDataInternetConnectionRequestMade) Serialize() ([]byte, error) {
@@ -154,11 +138,10 @@ func (m *_TelephonyDataInternetConnectionRequestMade) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TelephonyDataContract.(*_TelephonyData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMade) isTelephonyDataInternetConnectionRequestMade() bool {
-	return true
+func (m *_TelephonyDataInternetConnectionRequestMade) IsTelephonyDataInternetConnectionRequestMade() {
 }
 
 func (m *_TelephonyDataInternetConnectionRequestMade) String() string {

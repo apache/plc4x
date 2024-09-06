@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,20 +43,18 @@ type BVLCRegisterForeignDevice interface {
 	BVLC
 	// GetTtl returns Ttl (property field)
 	GetTtl() uint16
-}
-
-// BVLCRegisterForeignDeviceExactly can be used when we want exactly this type and not a type which fulfills BVLCRegisterForeignDevice.
-// This is useful for switch cases.
-type BVLCRegisterForeignDeviceExactly interface {
-	BVLCRegisterForeignDevice
-	isBVLCRegisterForeignDevice() bool
+	// IsBVLCRegisterForeignDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCRegisterForeignDevice()
 }
 
 // _BVLCRegisterForeignDevice is the data-structure of this message
 type _BVLCRegisterForeignDevice struct {
-	*_BVLC
+	BVLCContract
 	Ttl uint16
 }
+
+var _ BVLCRegisterForeignDevice = (*_BVLCRegisterForeignDevice)(nil)
+var _ BVLCRequirements = (*_BVLCRegisterForeignDevice)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,10 +70,8 @@ func (m *_BVLCRegisterForeignDevice) GetBvlcFunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BVLCRegisterForeignDevice) InitializeParent(parent BVLC) {}
-
-func (m *_BVLCRegisterForeignDevice) GetParent() BVLC {
-	return m._BVLC
+func (m *_BVLCRegisterForeignDevice) GetParent() BVLCContract {
+	return m.BVLCContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,10 +91,10 @@ func (m *_BVLCRegisterForeignDevice) GetTtl() uint16 {
 // NewBVLCRegisterForeignDevice factory function for _BVLCRegisterForeignDevice
 func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
 	_result := &_BVLCRegisterForeignDevice{
-		Ttl:   ttl,
-		_BVLC: NewBVLC(),
+		BVLCContract: NewBVLC(),
+		Ttl:          ttl,
 	}
-	_result._BVLC._BVLCChildRequirements = _result
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 
@@ -115,7 +114,7 @@ func (m *_BVLCRegisterForeignDevice) GetTypeName() string {
 }
 
 func (m *_BVLCRegisterForeignDevice) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Simple field (ttl)
 	lengthInBits += 16
@@ -127,39 +126,28 @@ func (m *_BVLCRegisterForeignDevice) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCRegisterForeignDeviceParse(ctx context.Context, theBytes []byte) (BVLCRegisterForeignDevice, error) {
-	return BVLCRegisterForeignDeviceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func BVLCRegisterForeignDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
+func (m *_BVLCRegisterForeignDevice) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCRegisterForeignDevice BVLCRegisterForeignDevice, err error) {
+	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCRegisterForeignDevice")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ttl)
-	_ttl, _ttlErr := readBuffer.ReadUint16("ttl", 16)
-	if _ttlErr != nil {
-		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field of BVLCRegisterForeignDevice")
+	ttl, err := ReadSimpleField(ctx, "ttl", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ttl' field"))
 	}
-	ttl := _ttl
+	m.Ttl = ttl
 
 	if closeErr := readBuffer.CloseContext("BVLCRegisterForeignDevice"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCRegisterForeignDevice")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BVLCRegisterForeignDevice{
-		_BVLC: &_BVLC{},
-		Ttl:   ttl,
-	}
-	_child._BVLC._BVLCChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BVLCRegisterForeignDevice) Serialize() ([]byte, error) {
@@ -180,11 +168,8 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BVLCRegisterForeignDevice")
 		}
 
-		// Simple Field (ttl)
-		ttl := uint16(m.GetTtl())
-		_ttlErr := writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
-		if _ttlErr != nil {
-			return errors.Wrap(_ttlErr, "Error serializing 'ttl' field")
+		if err := WriteSimpleField[uint16](ctx, "ttl", m.GetTtl(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ttl' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCRegisterForeignDevice"); popErr != nil {
@@ -192,12 +177,10 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BVLCRegisterForeignDevice) isBVLCRegisterForeignDevice() bool {
-	return true
-}
+func (m *_BVLCRegisterForeignDevice) IsBVLCRegisterForeignDevice() {}
 
 func (m *_BVLCRegisterForeignDevice) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type ReplyNetwork interface {
 	GetNetworkRoute() NetworkRoute
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
-}
-
-// ReplyNetworkExactly can be used when we want exactly this type and not a type which fulfills ReplyNetwork.
-// This is useful for switch cases.
-type ReplyNetworkExactly interface {
-	ReplyNetwork
-	isReplyNetwork() bool
+	// IsReplyNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReplyNetwork()
 }
 
 // _ReplyNetwork is the data-structure of this message
@@ -54,6 +51,8 @@ type _ReplyNetwork struct {
 	NetworkRoute NetworkRoute
 	UnitAddress  UnitAddress
 }
+
+var _ ReplyNetwork = (*_ReplyNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,12 @@ func (m *_ReplyNetwork) GetUnitAddress() UnitAddress {
 
 // NewReplyNetwork factory function for _ReplyNetwork
 func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_ReplyNetwork {
+	if networkRoute == nil {
+		panic("networkRoute of type NetworkRoute for ReplyNetwork must not be nil")
+	}
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for ReplyNetwork must not be nil")
+	}
 	return &_ReplyNetwork{NetworkRoute: networkRoute, UnitAddress: unitAddress}
 }
 
@@ -113,52 +118,46 @@ func ReplyNetworkParse(ctx context.Context, theBytes []byte) (ReplyNetwork, erro
 	return ReplyNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ReplyNetworkParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
+		return ReplyNetworkParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ReplyNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
+	v, err := (&_ReplyNetwork{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ReplyNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__replyNetwork ReplyNetwork, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ReplyNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ReplyNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkRoute)
-	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
+	networkRoute, err := ReadSimpleField[NetworkRoute](ctx, "networkRoute", ReadComplex[NetworkRoute](NetworkRouteParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkRoute' field"))
 	}
-	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(ctx, readBuffer)
-	if _networkRouteErr != nil {
-		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of ReplyNetwork")
-	}
-	networkRoute := _networkRoute.(NetworkRoute)
-	if closeErr := readBuffer.CloseContext("networkRoute"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkRoute")
-	}
+	m.NetworkRoute = networkRoute
 
-	// Simple Field (unitAddress)
-	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
+	unitAddress, err := ReadSimpleField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitAddress' field"))
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(ctx, readBuffer)
-	if _unitAddressErr != nil {
-		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of ReplyNetwork")
-	}
-	unitAddress := _unitAddress.(UnitAddress)
-	if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
-	}
+	m.UnitAddress = unitAddress
 
 	if closeErr := readBuffer.CloseContext("ReplyNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReplyNetwork")
 	}
 
-	// Create the instance
-	return &_ReplyNetwork{
-		NetworkRoute: networkRoute,
-		UnitAddress:  unitAddress,
-	}, nil
+	return m, nil
 }
 
 func (m *_ReplyNetwork) Serialize() ([]byte, error) {
@@ -178,28 +177,12 @@ func (m *_ReplyNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for ReplyNetwork")
 	}
 
-	// Simple Field (networkRoute)
-	if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkRoute")
-	}
-	_networkRouteErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkRoute())
-	if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkRoute")
-	}
-	if _networkRouteErr != nil {
-		return errors.Wrap(_networkRouteErr, "Error serializing 'networkRoute' field")
+	if err := WriteSimpleField[NetworkRoute](ctx, "networkRoute", m.GetNetworkRoute(), WriteComplex[NetworkRoute](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkRoute' field")
 	}
 
-	// Simple Field (unitAddress)
-	if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for unitAddress")
-	}
-	_unitAddressErr := writeBuffer.WriteSerializable(ctx, m.GetUnitAddress())
-	if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for unitAddress")
-	}
-	if _unitAddressErr != nil {
-		return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
+	if err := WriteSimpleField[UnitAddress](ctx, "unitAddress", m.GetUnitAddress(), WriteComplex[UnitAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'unitAddress' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ReplyNetwork"); popErr != nil {
@@ -208,9 +191,7 @@ func (m *_ReplyNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_ReplyNetwork) isReplyNetwork() bool {
-	return true
-}
+func (m *_ReplyNetwork) IsReplyNetwork() {}
 
 func (m *_ReplyNetwork) String() string {
 	if m == nil {

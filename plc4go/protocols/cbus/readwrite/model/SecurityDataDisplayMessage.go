@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SecurityDataDisplayMessage interface {
 	SecurityData
 	// GetMessage returns Message (property field)
 	GetMessage() string
-}
-
-// SecurityDataDisplayMessageExactly can be used when we want exactly this type and not a type which fulfills SecurityDataDisplayMessage.
-// This is useful for switch cases.
-type SecurityDataDisplayMessageExactly interface {
-	SecurityDataDisplayMessage
-	isSecurityDataDisplayMessage() bool
+	// IsSecurityDataDisplayMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataDisplayMessage()
 }
 
 // _SecurityDataDisplayMessage is the data-structure of this message
 type _SecurityDataDisplayMessage struct {
-	*_SecurityData
+	SecurityDataContract
 	Message string
 }
+
+var _ SecurityDataDisplayMessage = (*_SecurityDataDisplayMessage)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataDisplayMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _SecurityDataDisplayMessage struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataDisplayMessage) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataDisplayMessage) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataDisplayMessage) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_SecurityDataDisplayMessage) GetMessage() string {
 // NewSecurityDataDisplayMessage factory function for _SecurityDataDisplayMessage
 func NewSecurityDataDisplayMessage(message string, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDisplayMessage {
 	_result := &_SecurityDataDisplayMessage{
-		Message:       message,
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Message:              message,
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_SecurityDataDisplayMessage) GetTypeName() string {
 }
 
 func (m *_SecurityDataDisplayMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (message)
 	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
@@ -125,39 +120,28 @@ func (m *_SecurityDataDisplayMessage) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataDisplayMessageParse(ctx context.Context, theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataDisplayMessage, error) {
-	return SecurityDataDisplayMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func SecurityDataDisplayMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataDisplayMessage, error) {
+func (m *_SecurityDataDisplayMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData, commandTypeContainer SecurityCommandTypeContainer) (__securityDataDisplayMessage SecurityDataDisplayMessage, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataDisplayMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataDisplayMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (message)
-	_message, _messageErr := readBuffer.ReadString("message", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), "UTF-8")
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of SecurityDataDisplayMessage")
+	message, err := ReadSimpleField(ctx, "message", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
-	message := _message
+	m.Message = message
 
 	if closeErr := readBuffer.CloseContext("SecurityDataDisplayMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataDisplayMessage")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataDisplayMessage{
-		_SecurityData: &_SecurityData{},
-		Message:       message,
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataDisplayMessage) Serialize() ([]byte, error) {
@@ -178,11 +162,8 @@ func (m *_SecurityDataDisplayMessage) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataDisplayMessage")
 		}
 
-		// Simple Field (message)
-		message := string(m.GetMessage())
-		_messageErr := writeBuffer.WriteString("message", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), "UTF-8", (message))
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[string](ctx, "message", m.GetMessage(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityDataDisplayMessage"); popErr != nil {
@@ -190,12 +171,10 @@ func (m *_SecurityDataDisplayMessage) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataDisplayMessage) isSecurityDataDisplayMessage() bool {
-	return true
-}
+func (m *_SecurityDataDisplayMessage) IsSecurityDataDisplayMessage() {}
 
 func (m *_SecurityDataDisplayMessage) String() string {
 	if m == nil {

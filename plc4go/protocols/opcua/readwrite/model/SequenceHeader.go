@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type SequenceHeader interface {
 	GetSequenceNumber() int32
 	// GetRequestId returns RequestId (property field)
 	GetRequestId() int32
-}
-
-// SequenceHeaderExactly can be used when we want exactly this type and not a type which fulfills SequenceHeader.
-// This is useful for switch cases.
-type SequenceHeaderExactly interface {
-	SequenceHeader
-	isSequenceHeader() bool
+	// IsSequenceHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSequenceHeader()
 }
 
 // _SequenceHeader is the data-structure of this message
@@ -54,6 +51,8 @@ type _SequenceHeader struct {
 	SequenceNumber int32
 	RequestId      int32
 }
+
+var _ SequenceHeader = (*_SequenceHeader)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,40 +112,46 @@ func SequenceHeaderParse(ctx context.Context, theBytes []byte) (SequenceHeader, 
 	return SequenceHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SequenceHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SequenceHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SequenceHeader, error) {
+		return SequenceHeaderParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SequenceHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SequenceHeader, error) {
+	v, err := (&_SequenceHeader{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_SequenceHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__sequenceHeader SequenceHeader, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SequenceHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SequenceHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadInt32("sequenceNumber", 32)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of SequenceHeader")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
+	m.SequenceNumber = sequenceNumber
 
-	// Simple Field (requestId)
-	_requestId, _requestIdErr := readBuffer.ReadInt32("requestId", 32)
-	if _requestIdErr != nil {
-		return nil, errors.Wrap(_requestIdErr, "Error parsing 'requestId' field of SequenceHeader")
+	requestId, err := ReadSimpleField(ctx, "requestId", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestId' field"))
 	}
-	requestId := _requestId
+	m.RequestId = requestId
 
 	if closeErr := readBuffer.CloseContext("SequenceHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SequenceHeader")
 	}
 
-	// Create the instance
-	return &_SequenceHeader{
-		SequenceNumber: sequenceNumber,
-		RequestId:      requestId,
-	}, nil
+	return m, nil
 }
 
 func (m *_SequenceHeader) Serialize() ([]byte, error) {
@@ -166,18 +171,12 @@ func (m *_SequenceHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for SequenceHeader")
 	}
 
-	// Simple Field (sequenceNumber)
-	sequenceNumber := int32(m.GetSequenceNumber())
-	_sequenceNumberErr := writeBuffer.WriteInt32("sequenceNumber", 32, int32((sequenceNumber)))
-	if _sequenceNumberErr != nil {
-		return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+	if err := WriteSimpleField[int32](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 	}
 
-	// Simple Field (requestId)
-	requestId := int32(m.GetRequestId())
-	_requestIdErr := writeBuffer.WriteInt32("requestId", 32, int32((requestId)))
-	if _requestIdErr != nil {
-		return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
+	if err := WriteSimpleField[int32](ctx, "requestId", m.GetRequestId(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'requestId' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SequenceHeader"); popErr != nil {
@@ -186,9 +185,7 @@ func (m *_SequenceHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return nil
 }
 
-func (m *_SequenceHeader) isSequenceHeader() bool {
-	return true
-}
+func (m *_SequenceHeader) IsSequenceHeader() {}
 
 func (m *_SequenceHeader) String() string {
 	if m == nil {

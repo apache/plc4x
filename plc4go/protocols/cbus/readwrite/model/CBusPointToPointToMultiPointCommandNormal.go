@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type CBusPointToPointToMultiPointCommandNormal interface {
 	GetApplication() ApplicationIdContainer
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
-}
-
-// CBusPointToPointToMultiPointCommandNormalExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointToMultiPointCommandNormal.
-// This is useful for switch cases.
-type CBusPointToPointToMultiPointCommandNormalExactly interface {
-	CBusPointToPointToMultiPointCommandNormal
-	isCBusPointToPointToMultiPointCommandNormal() bool
+	// IsCBusPointToPointToMultiPointCommandNormal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToPointToMultiPointCommandNormal()
 }
 
 // _CBusPointToPointToMultiPointCommandNormal is the data-structure of this message
 type _CBusPointToPointToMultiPointCommandNormal struct {
-	*_CBusPointToPointToMultiPointCommand
+	CBusPointToPointToMultiPointCommandContract
 	Application ApplicationIdContainer
 	SalData     SALData
 }
+
+var _ CBusPointToPointToMultiPointCommandNormal = (*_CBusPointToPointToMultiPointCommandNormal)(nil)
+var _ CBusPointToPointToMultiPointCommandRequirements = (*_CBusPointToPointToMultiPointCommandNormal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,14 +67,8 @@ type _CBusPointToPointToMultiPointCommandNormal struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) InitializeParent(parent CBusPointToPointToMultiPointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte) {
-	m.BridgeAddress = bridgeAddress
-	m.NetworkRoute = networkRoute
-	m.PeekedApplication = peekedApplication
-}
-
-func (m *_CBusPointToPointToMultiPointCommandNormal) GetParent() CBusPointToPointToMultiPointCommand {
-	return m._CBusPointToPointToMultiPointCommand
+func (m *_CBusPointToPointToMultiPointCommandNormal) GetParent() CBusPointToPointToMultiPointCommandContract {
+	return m.CBusPointToPointToMultiPointCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +91,15 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetSalData() SALData {
 
 // NewCBusPointToPointToMultiPointCommandNormal factory function for _CBusPointToPointToMultiPointCommandNormal
 func NewCBusPointToPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandNormal {
-	_result := &_CBusPointToPointToMultiPointCommandNormal{
-		Application:                          application,
-		SalData:                              salData,
-		_CBusPointToPointToMultiPointCommand: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+	if salData == nil {
+		panic("salData of type SALData for CBusPointToPointToMultiPointCommandNormal must not be nil")
 	}
-	_result._CBusPointToPointToMultiPointCommand._CBusPointToPointToMultiPointCommandChildRequirements = _result
+	_result := &_CBusPointToPointToMultiPointCommandNormal{
+		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+		Application: application,
+		SalData:     salData,
+	}
+	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
 	return _result
 }
 
@@ -122,7 +119,7 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetTypeName() string {
 }
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).getLengthInBits(ctx))
 
 	// Simple field (application)
 	lengthInBits += 8
@@ -137,61 +134,34 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusPointToPointToMultiPointCommandNormalParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
-	return CBusPointToPointToMultiPointCommandNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
+func (m *_CBusPointToPointToMultiPointCommandNormal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusPointToPointToMultiPointCommand, cBusOptions CBusOptions) (__cBusPointToPointToMultiPointCommandNormal CBusPointToPointToMultiPointCommandNormal, err error) {
+	m.CBusPointToPointToMultiPointCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultiPointCommandNormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToPointToMultiPointCommandNormal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CBusPointToPointToMultiPointCommandNormal")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
-	}
+	m.Application = application
 
-	// Simple Field (salData)
-	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for salData")
+	salData, err := ReadSimpleField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(application.ApplicationId())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
 	}
-	_salData, _salDataErr := SALDataParseWithBuffer(ctx, readBuffer, ApplicationId(application.ApplicationId()))
-	if _salDataErr != nil {
-		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of CBusPointToPointToMultiPointCommandNormal")
-	}
-	salData := _salData.(SALData)
-	if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for salData")
-	}
+	m.SalData = salData
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointToMultiPointCommandNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointToMultiPointCommandNormal")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CBusPointToPointToMultiPointCommandNormal{
-		_CBusPointToPointToMultiPointCommand: &_CBusPointToPointToMultiPointCommand{
-			CBusOptions: cBusOptions,
-		},
-		Application: application,
-		SalData:     salData,
-	}
-	_child._CBusPointToPointToMultiPointCommand._CBusPointToPointToMultiPointCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) Serialize() ([]byte, error) {
@@ -212,28 +182,12 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointToMultiPointCommandNormal")
 		}
 
-		// Simple Field (application)
-		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for application")
-		}
-		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
-		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for application")
-		}
-		if _applicationErr != nil {
-			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		// Simple Field (salData)
-		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for salData")
-		}
-		_salDataErr := writeBuffer.WriteSerializable(ctx, m.GetSalData())
-		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for salData")
-		}
-		if _salDataErr != nil {
-			return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
+		if err := WriteSimpleField[SALData](ctx, "salData", m.GetSalData(), WriteComplex[SALData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'salData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToPointToMultiPointCommandNormal"); popErr != nil {
@@ -241,12 +195,10 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) isCBusPointToPointToMultiPointCommandNormal() bool {
-	return true
-}
+func (m *_CBusPointToPointToMultiPointCommandNormal) IsCBusPointToPointToMultiPointCommandNormal() {}
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) String() string {
 	if m == nil {

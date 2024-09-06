@@ -65,7 +65,7 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "tunnelingResponseDataBlock",
         tunnelingResponseDataBlock,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("TunnelingResponse");
@@ -97,8 +97,7 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
     TunnelingResponseDataBlock tunnelingResponseDataBlock =
         readSimpleField(
             "tunnelingResponseDataBlock",
-            new DataReaderComplexDefault<>(
-                () -> TunnelingResponseDataBlock.staticParse(readBuffer), readBuffer),
+            readComplex(() -> TunnelingResponseDataBlock.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("TunnelingResponse");

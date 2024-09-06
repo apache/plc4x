@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataManipulatedVariableReference interface {
 	GetManipulatedVariableReference() BACnetObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectPropertyReference
-}
-
-// BACnetConstructedDataManipulatedVariableReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataManipulatedVariableReference.
-// This is useful for switch cases.
-type BACnetConstructedDataManipulatedVariableReferenceExactly interface {
-	BACnetConstructedDataManipulatedVariableReference
-	isBACnetConstructedDataManipulatedVariableReference() bool
+	// IsBACnetConstructedDataManipulatedVariableReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataManipulatedVariableReference()
 }
 
 // _BACnetConstructedDataManipulatedVariableReference is the data-structure of this message
 type _BACnetConstructedDataManipulatedVariableReference struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ManipulatedVariableReference BACnetObjectPropertyReference
 }
+
+var _ BACnetConstructedDataManipulatedVariableReference = (*_BACnetConstructedDataManipulatedVariableReference)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataManipulatedVariableReference)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) GetPropertyIdentifi
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataManipulatedVariableReference) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataManipulatedVariableReference) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataManipulatedVariableReference) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) GetActualValue() BA
 
 // NewBACnetConstructedDataManipulatedVariableReference factory function for _BACnetConstructedDataManipulatedVariableReference
 func NewBACnetConstructedDataManipulatedVariableReference(manipulatedVariableReference BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManipulatedVariableReference {
-	_result := &_BACnetConstructedDataManipulatedVariableReference{
-		ManipulatedVariableReference: manipulatedVariableReference,
-		_BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if manipulatedVariableReference == nil {
+		panic("manipulatedVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataManipulatedVariableReference must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataManipulatedVariableReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ManipulatedVariableReference:  manipulatedVariableReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) GetTypeName() strin
 }
 
 func (m *_BACnetConstructedDataManipulatedVariableReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (manipulatedVariableReference)
 	lengthInBits += m.ManipulatedVariableReference.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataManipulatedVariableReferenceParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManipulatedVariableReference, error) {
-	return BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManipulatedVariableReference, error) {
+func (m *_BACnetConstructedDataManipulatedVariableReference) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataManipulatedVariableReference BACnetConstructedDataManipulatedVariableReference, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataManipulatedVariableReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataManipulatedVariableReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (manipulatedVariableReference)
-	if pullErr := readBuffer.PullContext("manipulatedVariableReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for manipulatedVariableReference")
+	manipulatedVariableReference, err := ReadSimpleField[BACnetObjectPropertyReference](ctx, "manipulatedVariableReference", ReadComplex[BACnetObjectPropertyReference](BACnetObjectPropertyReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manipulatedVariableReference' field"))
 	}
-	_manipulatedVariableReference, _manipulatedVariableReferenceErr := BACnetObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
-	if _manipulatedVariableReferenceErr != nil {
-		return nil, errors.Wrap(_manipulatedVariableReferenceErr, "Error parsing 'manipulatedVariableReference' field of BACnetConstructedDataManipulatedVariableReference")
-	}
-	manipulatedVariableReference := _manipulatedVariableReference.(BACnetObjectPropertyReference)
-	if closeErr := readBuffer.CloseContext("manipulatedVariableReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for manipulatedVariableReference")
-	}
+	m.ManipulatedVariableReference = manipulatedVariableReference
 
-	// Virtual field
-	_actualValue := manipulatedVariableReference
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetObjectPropertyReference](ctx, "actualValue", (*BACnetObjectPropertyReference)(nil), manipulatedVariableReference)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataManipulatedVariableReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataManipulatedVariableReference")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataManipulatedVariableReference{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ManipulatedVariableReference: manipulatedVariableReference,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataManipulatedVariableReference) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataManipulatedVariableReference")
 		}
 
-		// Simple Field (manipulatedVariableReference)
-		if pushErr := writeBuffer.PushContext("manipulatedVariableReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for manipulatedVariableReference")
-		}
-		_manipulatedVariableReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetManipulatedVariableReference())
-		if popErr := writeBuffer.PopContext("manipulatedVariableReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for manipulatedVariableReference")
-		}
-		if _manipulatedVariableReferenceErr != nil {
-			return errors.Wrap(_manipulatedVariableReferenceErr, "Error serializing 'manipulatedVariableReference' field")
+		if err := WriteSimpleField[BACnetObjectPropertyReference](ctx, "manipulatedVariableReference", m.GetManipulatedVariableReference(), WriteComplex[BACnetObjectPropertyReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'manipulatedVariableReference' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataManipulatedVariableReference) isBACnetConstructedDataManipulatedVariableReference() bool {
-	return true
+func (m *_BACnetConstructedDataManipulatedVariableReference) IsBACnetConstructedDataManipulatedVariableReference() {
 }
 
 func (m *_BACnetConstructedDataManipulatedVariableReference) String() string {

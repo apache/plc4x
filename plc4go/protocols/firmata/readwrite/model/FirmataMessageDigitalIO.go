@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,21 +45,19 @@ type FirmataMessageDigitalIO interface {
 	GetPinBlock() uint8
 	// GetData returns Data (property field)
 	GetData() []int8
-}
-
-// FirmataMessageDigitalIOExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageDigitalIO.
-// This is useful for switch cases.
-type FirmataMessageDigitalIOExactly interface {
-	FirmataMessageDigitalIO
-	isFirmataMessageDigitalIO() bool
+	// IsFirmataMessageDigitalIO is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataMessageDigitalIO()
 }
 
 // _FirmataMessageDigitalIO is the data-structure of this message
 type _FirmataMessageDigitalIO struct {
-	*_FirmataMessage
+	FirmataMessageContract
 	PinBlock uint8
 	Data     []int8
 }
+
+var _ FirmataMessageDigitalIO = (*_FirmataMessageDigitalIO)(nil)
+var _ FirmataMessageRequirements = (*_FirmataMessageDigitalIO)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +73,8 @@ func (m *_FirmataMessageDigitalIO) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FirmataMessageDigitalIO) InitializeParent(parent FirmataMessage) {}
-
-func (m *_FirmataMessageDigitalIO) GetParent() FirmataMessage {
-	return m._FirmataMessage
+func (m *_FirmataMessageDigitalIO) GetParent() FirmataMessageContract {
+	return m.FirmataMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,11 +98,11 @@ func (m *_FirmataMessageDigitalIO) GetData() []int8 {
 // NewFirmataMessageDigitalIO factory function for _FirmataMessageDigitalIO
 func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_FirmataMessageDigitalIO {
 	_result := &_FirmataMessageDigitalIO{
-		PinBlock:        pinBlock,
-		Data:            data,
-		_FirmataMessage: NewFirmataMessage(response),
+		FirmataMessageContract: NewFirmataMessage(response),
+		PinBlock:               pinBlock,
+		Data:                   data,
 	}
-	_result._FirmataMessage._FirmataMessageChildRequirements = _result
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
 	return _result
 }
 
@@ -123,7 +122,7 @@ func (m *_FirmataMessageDigitalIO) GetTypeName() string {
 }
 
 func (m *_FirmataMessageDigitalIO) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataMessageContract.(*_FirmataMessage).getLengthInBits(ctx))
 
 	// Simple field (pinBlock)
 	lengthInBits += 4
@@ -140,69 +139,34 @@ func (m *_FirmataMessageDigitalIO) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataMessageDigitalIOParse(ctx context.Context, theBytes []byte, response bool) (FirmataMessageDigitalIO, error) {
-	return FirmataMessageDigitalIOParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
-}
-
-func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageDigitalIO, error) {
+func (m *_FirmataMessageDigitalIO) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataMessage, response bool) (__firmataMessageDigitalIO FirmataMessageDigitalIO, err error) {
+	m.FirmataMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataMessageDigitalIO"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataMessageDigitalIO")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pinBlock)
-	_pinBlock, _pinBlockErr := readBuffer.ReadUint8("pinBlock", 4)
-	if _pinBlockErr != nil {
-		return nil, errors.Wrap(_pinBlockErr, "Error parsing 'pinBlock' field of FirmataMessageDigitalIO")
+	pinBlock, err := ReadSimpleField(ctx, "pinBlock", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pinBlock' field"))
 	}
-	pinBlock := _pinBlock
+	m.PinBlock = pinBlock
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
+	data, err := ReadCountArrayField[int8](ctx, "data", ReadSignedByte(readBuffer, uint8(8)), uint64(int32(2)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Count array
-	data := make([]int8, max(uint16(2), 0))
-	// This happens when the size is set conditional to 0
-	if len(data) == 0 {
-		data = nil
-	}
-	{
-		_numItems := uint16(max(uint16(2), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadInt8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of FirmataMessageDigitalIO")
-			}
-			data[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageDigitalIO"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessageDigitalIO")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FirmataMessageDigitalIO{
-		_FirmataMessage: &_FirmataMessage{
-			Response: response,
-		},
-		PinBlock: pinBlock,
-		Data:     data,
-	}
-	_child._FirmataMessage._FirmataMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FirmataMessageDigitalIO) Serialize() ([]byte, error) {
@@ -223,26 +187,12 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for FirmataMessageDigitalIO")
 		}
 
-		// Simple Field (pinBlock)
-		pinBlock := uint8(m.GetPinBlock())
-		_pinBlockErr := writeBuffer.WriteUint8("pinBlock", 4, uint8((pinBlock)))
-		if _pinBlockErr != nil {
-			return errors.Wrap(_pinBlockErr, "Error serializing 'pinBlock' field")
+		if err := WriteSimpleField[uint8](ctx, "pinBlock", m.GetPinBlock(), WriteUnsignedByte(writeBuffer, 4), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pinBlock' field")
 		}
 
-		// Array Field (data)
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
-		}
-		for _curItem, _element := range m.GetData() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteInt8("", 8, int8(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
+		if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteSignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageDigitalIO"); popErr != nil {
@@ -250,12 +200,10 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.FirmataMessageContract.(*_FirmataMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FirmataMessageDigitalIO) isFirmataMessageDigitalIO() bool {
-	return true
-}
+func (m *_FirmataMessageDigitalIO) IsFirmataMessageDigitalIO() {}
 
 func (m *_FirmataMessageDigitalIO) String() string {
 	if m == nil {

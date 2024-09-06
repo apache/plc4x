@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,18 +54,13 @@ type CEMIAdditionalInformationBusmonitorInfo interface {
 	GetLostFlag() bool
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
-}
-
-// CEMIAdditionalInformationBusmonitorInfoExactly can be used when we want exactly this type and not a type which fulfills CEMIAdditionalInformationBusmonitorInfo.
-// This is useful for switch cases.
-type CEMIAdditionalInformationBusmonitorInfoExactly interface {
-	CEMIAdditionalInformationBusmonitorInfo
-	isCEMIAdditionalInformationBusmonitorInfo() bool
+	// IsCEMIAdditionalInformationBusmonitorInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCEMIAdditionalInformationBusmonitorInfo()
 }
 
 // _CEMIAdditionalInformationBusmonitorInfo is the data-structure of this message
 type _CEMIAdditionalInformationBusmonitorInfo struct {
-	*_CEMIAdditionalInformation
+	CEMIAdditionalInformationContract
 	FrameErrorFlag  bool
 	BitErrorFlag    bool
 	ParityErrorFlag bool
@@ -71,6 +68,9 @@ type _CEMIAdditionalInformationBusmonitorInfo struct {
 	LostFlag        bool
 	SequenceNumber  uint8
 }
+
+var _ CEMIAdditionalInformationBusmonitorInfo = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
+var _ CEMIAdditionalInformationRequirements = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -86,11 +86,8 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetAdditionalInformationType(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) InitializeParent(parent CEMIAdditionalInformation) {
-}
-
-func (m *_CEMIAdditionalInformationBusmonitorInfo) GetParent() CEMIAdditionalInformation {
-	return m._CEMIAdditionalInformation
+func (m *_CEMIAdditionalInformationBusmonitorInfo) GetParent() CEMIAdditionalInformationContract {
+	return m.CEMIAdditionalInformationContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -143,15 +140,15 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLen() uint8 {
 // NewCEMIAdditionalInformationBusmonitorInfo factory function for _CEMIAdditionalInformationBusmonitorInfo
 func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *_CEMIAdditionalInformationBusmonitorInfo {
 	_result := &_CEMIAdditionalInformationBusmonitorInfo{
-		FrameErrorFlag:             frameErrorFlag,
-		BitErrorFlag:               bitErrorFlag,
-		ParityErrorFlag:            parityErrorFlag,
-		UnknownFlag:                unknownFlag,
-		LostFlag:                   lostFlag,
-		SequenceNumber:             sequenceNumber,
-		_CEMIAdditionalInformation: NewCEMIAdditionalInformation(),
+		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
+		FrameErrorFlag:                    frameErrorFlag,
+		BitErrorFlag:                      bitErrorFlag,
+		ParityErrorFlag:                   parityErrorFlag,
+		UnknownFlag:                       unknownFlag,
+		LostFlag:                          lostFlag,
+		SequenceNumber:                    sequenceNumber,
 	}
-	_result._CEMIAdditionalInformation._CEMIAdditionalInformationChildRequirements = _result
+	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
 	return _result
 }
 
@@ -171,7 +168,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {
 }
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).getLengthInBits(ctx))
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -201,88 +198,64 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(ctx context.Context, theBytes []byte) (CEMIAdditionalInformationBusmonitorInfo, error) {
-	return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
+func (m *_CEMIAdditionalInformationBusmonitorInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMIAdditionalInformation) (__cEMIAdditionalInformationBusmonitorInfo CEMIAdditionalInformationBusmonitorInfo, err error) {
+	m.CEMIAdditionalInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CEMIAdditionalInformationBusmonitorInfo")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (len)
-	len, _lenErr := readBuffer.ReadUint8("len", 8)
-	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of CEMIAdditionalInformationBusmonitorInfo")
+	len, err := ReadConstField[uint8](ctx, "len", ReadUnsignedByte(readBuffer, uint8(8)), CEMIAdditionalInformationBusmonitorInfo_LEN)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'len' field"))
 	}
-	if len != CEMIAdditionalInformationBusmonitorInfo_LEN {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CEMIAdditionalInformationBusmonitorInfo_LEN) + " but got " + fmt.Sprintf("%d", len))
-	}
+	_ = len
 
-	// Simple Field (frameErrorFlag)
-	_frameErrorFlag, _frameErrorFlagErr := readBuffer.ReadBit("frameErrorFlag")
-	if _frameErrorFlagErr != nil {
-		return nil, errors.Wrap(_frameErrorFlagErr, "Error parsing 'frameErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	frameErrorFlag, err := ReadSimpleField(ctx, "frameErrorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'frameErrorFlag' field"))
 	}
-	frameErrorFlag := _frameErrorFlag
+	m.FrameErrorFlag = frameErrorFlag
 
-	// Simple Field (bitErrorFlag)
-	_bitErrorFlag, _bitErrorFlagErr := readBuffer.ReadBit("bitErrorFlag")
-	if _bitErrorFlagErr != nil {
-		return nil, errors.Wrap(_bitErrorFlagErr, "Error parsing 'bitErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	bitErrorFlag, err := ReadSimpleField(ctx, "bitErrorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitErrorFlag' field"))
 	}
-	bitErrorFlag := _bitErrorFlag
+	m.BitErrorFlag = bitErrorFlag
 
-	// Simple Field (parityErrorFlag)
-	_parityErrorFlag, _parityErrorFlagErr := readBuffer.ReadBit("parityErrorFlag")
-	if _parityErrorFlagErr != nil {
-		return nil, errors.Wrap(_parityErrorFlagErr, "Error parsing 'parityErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	parityErrorFlag, err := ReadSimpleField(ctx, "parityErrorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parityErrorFlag' field"))
 	}
-	parityErrorFlag := _parityErrorFlag
+	m.ParityErrorFlag = parityErrorFlag
 
-	// Simple Field (unknownFlag)
-	_unknownFlag, _unknownFlagErr := readBuffer.ReadBit("unknownFlag")
-	if _unknownFlagErr != nil {
-		return nil, errors.Wrap(_unknownFlagErr, "Error parsing 'unknownFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	unknownFlag, err := ReadSimpleField(ctx, "unknownFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownFlag' field"))
 	}
-	unknownFlag := _unknownFlag
+	m.UnknownFlag = unknownFlag
 
-	// Simple Field (lostFlag)
-	_lostFlag, _lostFlagErr := readBuffer.ReadBit("lostFlag")
-	if _lostFlagErr != nil {
-		return nil, errors.Wrap(_lostFlagErr, "Error parsing 'lostFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	lostFlag, err := ReadSimpleField(ctx, "lostFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lostFlag' field"))
 	}
-	lostFlag := _lostFlag
+	m.LostFlag = lostFlag
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 3)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of CEMIAdditionalInformationBusmonitorInfo")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
+	m.SequenceNumber = sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformationBusmonitorInfo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CEMIAdditionalInformationBusmonitorInfo")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CEMIAdditionalInformationBusmonitorInfo{
-		_CEMIAdditionalInformation: &_CEMIAdditionalInformation{},
-		FrameErrorFlag:             frameErrorFlag,
-		BitErrorFlag:               bitErrorFlag,
-		ParityErrorFlag:            parityErrorFlag,
-		UnknownFlag:                unknownFlag,
-		LostFlag:                   lostFlag,
-		SequenceNumber:             sequenceNumber,
-	}
-	_child._CEMIAdditionalInformation._CEMIAdditionalInformationChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) Serialize() ([]byte, error) {
@@ -303,52 +276,32 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for CEMIAdditionalInformationBusmonitorInfo")
 		}
 
-		// Const Field (len)
-		_lenErr := writeBuffer.WriteUint8("len", 8, uint8(1))
-		if _lenErr != nil {
-			return errors.Wrap(_lenErr, "Error serializing 'len' field")
+		if err := WriteConstField(ctx, "len", CEMIAdditionalInformationBusmonitorInfo_LEN, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'len' field")
 		}
 
-		// Simple Field (frameErrorFlag)
-		frameErrorFlag := bool(m.GetFrameErrorFlag())
-		_frameErrorFlagErr := writeBuffer.WriteBit("frameErrorFlag", (frameErrorFlag))
-		if _frameErrorFlagErr != nil {
-			return errors.Wrap(_frameErrorFlagErr, "Error serializing 'frameErrorFlag' field")
+		if err := WriteSimpleField[bool](ctx, "frameErrorFlag", m.GetFrameErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'frameErrorFlag' field")
 		}
 
-		// Simple Field (bitErrorFlag)
-		bitErrorFlag := bool(m.GetBitErrorFlag())
-		_bitErrorFlagErr := writeBuffer.WriteBit("bitErrorFlag", (bitErrorFlag))
-		if _bitErrorFlagErr != nil {
-			return errors.Wrap(_bitErrorFlagErr, "Error serializing 'bitErrorFlag' field")
+		if err := WriteSimpleField[bool](ctx, "bitErrorFlag", m.GetBitErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitErrorFlag' field")
 		}
 
-		// Simple Field (parityErrorFlag)
-		parityErrorFlag := bool(m.GetParityErrorFlag())
-		_parityErrorFlagErr := writeBuffer.WriteBit("parityErrorFlag", (parityErrorFlag))
-		if _parityErrorFlagErr != nil {
-			return errors.Wrap(_parityErrorFlagErr, "Error serializing 'parityErrorFlag' field")
+		if err := WriteSimpleField[bool](ctx, "parityErrorFlag", m.GetParityErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parityErrorFlag' field")
 		}
 
-		// Simple Field (unknownFlag)
-		unknownFlag := bool(m.GetUnknownFlag())
-		_unknownFlagErr := writeBuffer.WriteBit("unknownFlag", (unknownFlag))
-		if _unknownFlagErr != nil {
-			return errors.Wrap(_unknownFlagErr, "Error serializing 'unknownFlag' field")
+		if err := WriteSimpleField[bool](ctx, "unknownFlag", m.GetUnknownFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownFlag' field")
 		}
 
-		// Simple Field (lostFlag)
-		lostFlag := bool(m.GetLostFlag())
-		_lostFlagErr := writeBuffer.WriteBit("lostFlag", (lostFlag))
-		if _lostFlagErr != nil {
-			return errors.Wrap(_lostFlagErr, "Error serializing 'lostFlag' field")
+		if err := WriteSimpleField[bool](ctx, "lostFlag", m.GetLostFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lostFlag' field")
 		}
 
-		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 3, uint8((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CEMIAdditionalInformationBusmonitorInfo"); popErr != nil {
@@ -356,12 +309,10 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) isCEMIAdditionalInformationBusmonitorInfo() bool {
-	return true
-}
+func (m *_CEMIAdditionalInformationBusmonitorInfo) IsCEMIAdditionalInformationBusmonitorInfo() {}
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) String() string {
 	if m == nil {

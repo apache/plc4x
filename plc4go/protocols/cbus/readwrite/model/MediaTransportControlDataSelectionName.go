@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type MediaTransportControlDataSelectionName interface {
 	MediaTransportControlData
 	// GetSelectionName returns SelectionName (property field)
 	GetSelectionName() string
-}
-
-// MediaTransportControlDataSelectionNameExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataSelectionName.
-// This is useful for switch cases.
-type MediaTransportControlDataSelectionNameExactly interface {
-	MediaTransportControlDataSelectionName
-	isMediaTransportControlDataSelectionName() bool
+	// IsMediaTransportControlDataSelectionName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataSelectionName()
 }
 
 // _MediaTransportControlDataSelectionName is the data-structure of this message
 type _MediaTransportControlDataSelectionName struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	SelectionName string
 }
+
+var _ MediaTransportControlDataSelectionName = (*_MediaTransportControlDataSelectionName)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSelectionName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _MediaTransportControlDataSelectionName struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataSelectionName) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataSelectionName) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataSelectionName) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_MediaTransportControlDataSelectionName) GetSelectionName() string {
 // NewMediaTransportControlDataSelectionName factory function for _MediaTransportControlDataSelectionName
 func NewMediaTransportControlDataSelectionName(selectionName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSelectionName {
 	_result := &_MediaTransportControlDataSelectionName{
-		SelectionName:              selectionName,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		SelectionName:                     selectionName,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_MediaTransportControlDataSelectionName) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataSelectionName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (selectionName)
 	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
@@ -125,39 +120,28 @@ func (m *_MediaTransportControlDataSelectionName) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataSelectionNameParse(ctx context.Context, theBytes []byte, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataSelectionName, error) {
-	return MediaTransportControlDataSelectionNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func MediaTransportControlDataSelectionNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataSelectionName, error) {
+func (m *_MediaTransportControlDataSelectionName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer) (__mediaTransportControlDataSelectionName MediaTransportControlDataSelectionName, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSelectionName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataSelectionName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (selectionName)
-	_selectionName, _selectionNameErr := readBuffer.ReadString("selectionName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), "UTF-8")
-	if _selectionNameErr != nil {
-		return nil, errors.Wrap(_selectionNameErr, "Error parsing 'selectionName' field of MediaTransportControlDataSelectionName")
+	selectionName, err := ReadSimpleField(ctx, "selectionName", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectionName' field"))
 	}
-	selectionName := _selectionName
+	m.SelectionName = selectionName
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataSelectionName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataSelectionName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataSelectionName{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		SelectionName:              selectionName,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataSelectionName) Serialize() ([]byte, error) {
@@ -178,11 +162,8 @@ func (m *_MediaTransportControlDataSelectionName) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataSelectionName")
 		}
 
-		// Simple Field (selectionName)
-		selectionName := string(m.GetSelectionName())
-		_selectionNameErr := writeBuffer.WriteString("selectionName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), "UTF-8", (selectionName))
-		if _selectionNameErr != nil {
-			return errors.Wrap(_selectionNameErr, "Error serializing 'selectionName' field")
+		if err := WriteSimpleField[string](ctx, "selectionName", m.GetSelectionName(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'selectionName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataSelectionName"); popErr != nil {
@@ -190,12 +171,10 @@ func (m *_MediaTransportControlDataSelectionName) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataSelectionName) isMediaTransportControlDataSelectionName() bool {
-	return true
-}
+func (m *_MediaTransportControlDataSelectionName) IsMediaTransportControlDataSelectionName() {}
 
 func (m *_MediaTransportControlDataSelectionName) String() string {
 	if m == nil {

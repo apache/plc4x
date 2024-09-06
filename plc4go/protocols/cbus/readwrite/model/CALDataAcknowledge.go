@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type CALDataAcknowledge interface {
 	GetParamNo() Parameter
 	// GetCode returns Code (property field)
 	GetCode() uint8
-}
-
-// CALDataAcknowledgeExactly can be used when we want exactly this type and not a type which fulfills CALDataAcknowledge.
-// This is useful for switch cases.
-type CALDataAcknowledgeExactly interface {
-	CALDataAcknowledge
-	isCALDataAcknowledge() bool
+	// IsCALDataAcknowledge is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataAcknowledge()
 }
 
 // _CALDataAcknowledge is the data-structure of this message
 type _CALDataAcknowledge struct {
-	*_CALData
+	CALDataContract
 	ParamNo Parameter
 	Code    uint8
 }
+
+var _ CALDataAcknowledge = (*_CALDataAcknowledge)(nil)
+var _ CALDataRequirements = (*_CALDataAcknowledge)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,13 +67,8 @@ type _CALDataAcknowledge struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataAcknowledge) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.AdditionalData = additionalData
-}
-
-func (m *_CALDataAcknowledge) GetParent() CALData {
-	return m._CALData
+func (m *_CALDataAcknowledge) GetParent() CALDataContract {
+	return m.CALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,11 +92,11 @@ func (m *_CALDataAcknowledge) GetCode() uint8 {
 // NewCALDataAcknowledge factory function for _CALDataAcknowledge
 func NewCALDataAcknowledge(paramNo Parameter, code uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataAcknowledge {
 	_result := &_CALDataAcknowledge{
-		ParamNo:  paramNo,
-		Code:     code,
-		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		Code:            code,
 	}
-	_result._CALData._CALDataChildRequirements = _result
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 
@@ -121,7 +116,7 @@ func (m *_CALDataAcknowledge) GetTypeName() string {
 }
 
 func (m *_CALDataAcknowledge) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -136,55 +131,34 @@ func (m *_CALDataAcknowledge) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataAcknowledgeParse(ctx context.Context, theBytes []byte, requestContext RequestContext) (CALDataAcknowledge, error) {
-	return CALDataAcknowledgeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
-}
-
-func CALDataAcknowledgeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {
+func (m *_CALDataAcknowledge) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, requestContext RequestContext) (__cALDataAcknowledge CALDataAcknowledge, err error) {
+	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALDataAcknowledge"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALDataAcknowledge")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (paramNo)
-	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
-	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataAcknowledge")
-	}
-	paramNo := _paramNo
-	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
-	}
+	m.ParamNo = paramNo
 
-	// Simple Field (code)
-	_code, _codeErr := readBuffer.ReadUint8("code", 8)
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of CALDataAcknowledge")
+	code, err := ReadSimpleField(ctx, "code", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
-	code := _code
+	m.Code = code
 
 	if closeErr := readBuffer.CloseContext("CALDataAcknowledge"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALDataAcknowledge")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CALDataAcknowledge{
-		_CALData: &_CALData{
-			RequestContext: requestContext,
-		},
-		ParamNo: paramNo,
-		Code:    code,
-	}
-	_child._CALData._CALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CALDataAcknowledge) Serialize() ([]byte, error) {
@@ -205,23 +179,12 @@ func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for CALDataAcknowledge")
 		}
 
-		// Simple Field (paramNo)
-		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for paramNo")
-		}
-		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
-		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for paramNo")
-		}
-		if _paramNoErr != nil {
-			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
+		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'paramNo' field")
 		}
 
-		// Simple Field (code)
-		code := uint8(m.GetCode())
-		_codeErr := writeBuffer.WriteUint8("code", 8, uint8((code)))
-		if _codeErr != nil {
-			return errors.Wrap(_codeErr, "Error serializing 'code' field")
+		if err := WriteSimpleField[uint8](ctx, "code", m.GetCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'code' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataAcknowledge"); popErr != nil {
@@ -229,12 +192,10 @@ func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CALDataContract.(*_CALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CALDataAcknowledge) isCALDataAcknowledge() bool {
-	return true
-}
+func (m *_CALDataAcknowledge) IsCALDataAcknowledge() {}
 
 func (m *_CALDataAcknowledge) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type CALDataIdentify interface {
 	CALData
 	// GetAttribute returns Attribute (property field)
 	GetAttribute() Attribute
-}
-
-// CALDataIdentifyExactly can be used when we want exactly this type and not a type which fulfills CALDataIdentify.
-// This is useful for switch cases.
-type CALDataIdentifyExactly interface {
-	CALDataIdentify
-	isCALDataIdentify() bool
+	// IsCALDataIdentify is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataIdentify()
 }
 
 // _CALDataIdentify is the data-structure of this message
 type _CALDataIdentify struct {
-	*_CALData
+	CALDataContract
 	Attribute Attribute
 }
+
+var _ CALDataIdentify = (*_CALDataIdentify)(nil)
+var _ CALDataRequirements = (*_CALDataIdentify)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _CALDataIdentify struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataIdentify) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.AdditionalData = additionalData
-}
-
-func (m *_CALDataIdentify) GetParent() CALData {
-	return m._CALData
+func (m *_CALDataIdentify) GetParent() CALDataContract {
+	return m.CALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_CALDataIdentify) GetAttribute() Attribute {
 // NewCALDataIdentify factory function for _CALDataIdentify
 func NewCALDataIdentify(attribute Attribute, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataIdentify {
 	_result := &_CALDataIdentify{
-		Attribute: attribute,
-		_CALData:  NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		Attribute:       attribute,
 	}
-	_result._CALData._CALDataChildRequirements = _result
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_CALDataIdentify) GetTypeName() string {
 }
 
 func (m *_CALDataIdentify) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	// Simple field (attribute)
 	lengthInBits += 8
@@ -125,47 +120,28 @@ func (m *_CALDataIdentify) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataIdentifyParse(ctx context.Context, theBytes []byte, requestContext RequestContext) (CALDataIdentify, error) {
-	return CALDataIdentifyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
-}
-
-func CALDataIdentifyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataIdentify, error) {
+func (m *_CALDataIdentify) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, requestContext RequestContext) (__cALDataIdentify CALDataIdentify, err error) {
+	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALDataIdentify"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALDataIdentify")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (attribute)
-	if pullErr := readBuffer.PullContext("attribute"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for attribute")
+	attribute, err := ReadEnumField[Attribute](ctx, "attribute", "Attribute", ReadEnum(AttributeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attribute' field"))
 	}
-	_attribute, _attributeErr := AttributeParseWithBuffer(ctx, readBuffer)
-	if _attributeErr != nil {
-		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field of CALDataIdentify")
-	}
-	attribute := _attribute
-	if closeErr := readBuffer.CloseContext("attribute"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for attribute")
-	}
+	m.Attribute = attribute
 
 	if closeErr := readBuffer.CloseContext("CALDataIdentify"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALDataIdentify")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CALDataIdentify{
-		_CALData: &_CALData{
-			RequestContext: requestContext,
-		},
-		Attribute: attribute,
-	}
-	_child._CALData._CALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CALDataIdentify) Serialize() ([]byte, error) {
@@ -186,16 +162,8 @@ func (m *_CALDataIdentify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for CALDataIdentify")
 		}
 
-		// Simple Field (attribute)
-		if pushErr := writeBuffer.PushContext("attribute"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for attribute")
-		}
-		_attributeErr := writeBuffer.WriteSerializable(ctx, m.GetAttribute())
-		if popErr := writeBuffer.PopContext("attribute"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for attribute")
-		}
-		if _attributeErr != nil {
-			return errors.Wrap(_attributeErr, "Error serializing 'attribute' field")
+		if err := WriteSimpleEnumField[Attribute](ctx, "attribute", "Attribute", m.GetAttribute(), WriteEnum[Attribute, uint8](Attribute.GetValue, Attribute.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'attribute' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataIdentify"); popErr != nil {
@@ -203,12 +171,10 @@ func (m *_CALDataIdentify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CALDataContract.(*_CALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CALDataIdentify) isCALDataIdentify() bool {
-	return true
-}
+func (m *_CALDataIdentify) IsCALDataIdentify() {}
 
 func (m *_CALDataIdentify) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataNetworkInterfaceName interface {
 	GetNetworkInterfaceName() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataNetworkInterfaceNameExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkInterfaceName.
-// This is useful for switch cases.
-type BACnetConstructedDataNetworkInterfaceNameExactly interface {
-	BACnetConstructedDataNetworkInterfaceName
-	isBACnetConstructedDataNetworkInterfaceName() bool
+	// IsBACnetConstructedDataNetworkInterfaceName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNetworkInterfaceName()
 }
 
 // _BACnetConstructedDataNetworkInterfaceName is the data-structure of this message
 type _BACnetConstructedDataNetworkInterfaceName struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NetworkInterfaceName BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataNetworkInterfaceName = (*_BACnetConstructedDataNetworkInterfaceName)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkInterfaceName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataNetworkInterfaceName) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataNetworkInterfaceName) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataNetworkInterfaceName) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataNetworkInterfaceName factory function for _BACnetConstructedDataNetworkInterfaceName
 func NewBACnetConstructedDataNetworkInterfaceName(networkInterfaceName BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkInterfaceName {
-	_result := &_BACnetConstructedDataNetworkInterfaceName{
-		NetworkInterfaceName:   networkInterfaceName,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if networkInterfaceName == nil {
+		panic("networkInterfaceName of type BACnetApplicationTagCharacterString for BACnetConstructedDataNetworkInterfaceName must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataNetworkInterfaceName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NetworkInterfaceName:          networkInterfaceName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNetworkInterfaceName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (networkInterfaceName)
 	lengthInBits += m.NetworkInterfaceName.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataNetworkInterfaceNameParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkInterfaceName, error) {
-	return BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkInterfaceName, error) {
+func (m *_BACnetConstructedDataNetworkInterfaceName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNetworkInterfaceName BACnetConstructedDataNetworkInterfaceName, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkInterfaceName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNetworkInterfaceName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkInterfaceName)
-	if pullErr := readBuffer.PullContext("networkInterfaceName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkInterfaceName")
+	networkInterfaceName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "networkInterfaceName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkInterfaceName' field"))
 	}
-	_networkInterfaceName, _networkInterfaceNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _networkInterfaceNameErr != nil {
-		return nil, errors.Wrap(_networkInterfaceNameErr, "Error parsing 'networkInterfaceName' field of BACnetConstructedDataNetworkInterfaceName")
-	}
-	networkInterfaceName := _networkInterfaceName.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("networkInterfaceName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkInterfaceName")
-	}
+	m.NetworkInterfaceName = networkInterfaceName
 
-	// Virtual field
-	_actualValue := networkInterfaceName
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), networkInterfaceName)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkInterfaceName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkInterfaceName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataNetworkInterfaceName{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NetworkInterfaceName: networkInterfaceName,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataNetworkInterfaceName) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNetworkInterfaceName")
 		}
 
-		// Simple Field (networkInterfaceName)
-		if pushErr := writeBuffer.PushContext("networkInterfaceName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkInterfaceName")
-		}
-		_networkInterfaceNameErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkInterfaceName())
-		if popErr := writeBuffer.PopContext("networkInterfaceName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkInterfaceName")
-		}
-		if _networkInterfaceNameErr != nil {
-			return errors.Wrap(_networkInterfaceNameErr, "Error serializing 'networkInterfaceName' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "networkInterfaceName", m.GetNetworkInterfaceName(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkInterfaceName' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataNetworkInterfaceName) isBACnetConstructedDataNetworkInterfaceName() bool {
-	return true
-}
+func (m *_BACnetConstructedDataNetworkInterfaceName) IsBACnetConstructedDataNetworkInterfaceName() {}
 
 func (m *_BACnetConstructedDataNetworkInterfaceName) String() string {
 	if m == nil {

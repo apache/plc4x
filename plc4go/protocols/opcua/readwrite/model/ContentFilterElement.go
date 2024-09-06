@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type ContentFilterElement interface {
 	GetNoOfFilterOperands() int32
 	// GetFilterOperands returns FilterOperands (property field)
 	GetFilterOperands() []ExtensionObject
-}
-
-// ContentFilterElementExactly can be used when we want exactly this type and not a type which fulfills ContentFilterElement.
-// This is useful for switch cases.
-type ContentFilterElementExactly interface {
-	ContentFilterElement
-	isContentFilterElement() bool
+	// IsContentFilterElement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsContentFilterElement()
 }
 
 // _ContentFilterElement is the data-structure of this message
 type _ContentFilterElement struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	FilterOperator     FilterOperator
 	NoOfFilterOperands int32
 	FilterOperands     []ExtensionObject
 }
+
+var _ ContentFilterElement = (*_ContentFilterElement)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterElement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_ContentFilterElement) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ContentFilterElement) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_ContentFilterElement) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_ContentFilterElement) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,12 +103,12 @@ func (m *_ContentFilterElement) GetFilterOperands() []ExtensionObject {
 // NewContentFilterElement factory function for _ContentFilterElement
 func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) *_ContentFilterElement {
 	_result := &_ContentFilterElement{
-		FilterOperator:             filterOperator,
-		NoOfFilterOperands:         noOfFilterOperands,
-		FilterOperands:             filterOperands,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		FilterOperator:                    filterOperator,
+		NoOfFilterOperands:                noOfFilterOperands,
+		FilterOperands:                    filterOperands,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +128,7 @@ func (m *_ContentFilterElement) GetTypeName() string {
 }
 
 func (m *_ContentFilterElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (filterOperator)
 	lengthInBits += 32
@@ -155,81 +153,40 @@ func (m *_ContentFilterElement) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ContentFilterElementParse(ctx context.Context, theBytes []byte, identifier string) (ContentFilterElement, error) {
-	return ContentFilterElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func ContentFilterElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ContentFilterElement, error) {
+func (m *_ContentFilterElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__contentFilterElement ContentFilterElement, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ContentFilterElement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ContentFilterElement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (filterOperator)
-	if pullErr := readBuffer.PullContext("filterOperator"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterOperator")
+	filterOperator, err := ReadEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", ReadEnum(FilterOperatorByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterOperator' field"))
 	}
-	_filterOperator, _filterOperatorErr := FilterOperatorParseWithBuffer(ctx, readBuffer)
-	if _filterOperatorErr != nil {
-		return nil, errors.Wrap(_filterOperatorErr, "Error parsing 'filterOperator' field of ContentFilterElement")
-	}
-	filterOperator := _filterOperator
-	if closeErr := readBuffer.CloseContext("filterOperator"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterOperator")
-	}
+	m.FilterOperator = filterOperator
 
-	// Simple Field (noOfFilterOperands)
-	_noOfFilterOperands, _noOfFilterOperandsErr := readBuffer.ReadInt32("noOfFilterOperands", 32)
-	if _noOfFilterOperandsErr != nil {
-		return nil, errors.Wrap(_noOfFilterOperandsErr, "Error parsing 'noOfFilterOperands' field of ContentFilterElement")
+	noOfFilterOperands, err := ReadSimpleField(ctx, "noOfFilterOperands", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfFilterOperands' field"))
 	}
-	noOfFilterOperands := _noOfFilterOperands
+	m.NoOfFilterOperands = noOfFilterOperands
 
-	// Array field (filterOperands)
-	if pullErr := readBuffer.PullContext("filterOperands", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterOperands")
+	filterOperands, err := ReadCountArrayField[ExtensionObject](ctx, "filterOperands", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfFilterOperands))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterOperands' field"))
 	}
-	// Count array
-	filterOperands := make([]ExtensionObject, max(noOfFilterOperands, 0))
-	// This happens when the size is set conditional to 0
-	if len(filterOperands) == 0 {
-		filterOperands = nil
-	}
-	{
-		_numItems := uint16(max(noOfFilterOperands, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectParseWithBuffer(arrayCtx, readBuffer, bool(true))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'filterOperands' field of ContentFilterElement")
-			}
-			filterOperands[_curItem] = _item.(ExtensionObject)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("filterOperands", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterOperands")
-	}
+	m.FilterOperands = filterOperands
 
 	if closeErr := readBuffer.CloseContext("ContentFilterElement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ContentFilterElement")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ContentFilterElement{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		FilterOperator:             filterOperator,
-		NoOfFilterOperands:         noOfFilterOperands,
-		FilterOperands:             filterOperands,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ContentFilterElement) Serialize() ([]byte, error) {
@@ -250,40 +207,16 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ContentFilterElement")
 		}
 
-		// Simple Field (filterOperator)
-		if pushErr := writeBuffer.PushContext("filterOperator"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filterOperator")
-		}
-		_filterOperatorErr := writeBuffer.WriteSerializable(ctx, m.GetFilterOperator())
-		if popErr := writeBuffer.PopContext("filterOperator"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filterOperator")
-		}
-		if _filterOperatorErr != nil {
-			return errors.Wrap(_filterOperatorErr, "Error serializing 'filterOperator' field")
+		if err := WriteSimpleEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", m.GetFilterOperator(), WriteEnum[FilterOperator, uint32](FilterOperator.GetValue, FilterOperator.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'filterOperator' field")
 		}
 
-		// Simple Field (noOfFilterOperands)
-		noOfFilterOperands := int32(m.GetNoOfFilterOperands())
-		_noOfFilterOperandsErr := writeBuffer.WriteInt32("noOfFilterOperands", 32, int32((noOfFilterOperands)))
-		if _noOfFilterOperandsErr != nil {
-			return errors.Wrap(_noOfFilterOperandsErr, "Error serializing 'noOfFilterOperands' field")
+		if err := WriteSimpleField[int32](ctx, "noOfFilterOperands", m.GetNoOfFilterOperands(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfFilterOperands' field")
 		}
 
-		// Array Field (filterOperands)
-		if pushErr := writeBuffer.PushContext("filterOperands", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filterOperands")
-		}
-		for _curItem, _element := range m.GetFilterOperands() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFilterOperands()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'filterOperands' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("filterOperands", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filterOperands")
+		if err := WriteComplexTypeArrayField(ctx, "filterOperands", m.GetFilterOperands(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'filterOperands' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ContentFilterElement"); popErr != nil {
@@ -291,12 +224,10 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ContentFilterElement) isContentFilterElement() bool {
-	return true
-}
+func (m *_ContentFilterElement) IsContentFilterElement() {}
 
 func (m *_ContentFilterElement) String() string {
 	if m == nil {

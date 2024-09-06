@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type BACnetFaultParameterFaultState interface {
 	GetListOfFaultValues() BACnetFaultParameterFaultStateListOfFaultValues
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetFaultParameterFaultStateExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultState.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultStateExactly interface {
-	BACnetFaultParameterFaultState
-	isBACnetFaultParameterFaultState() bool
+	// IsBACnetFaultParameterFaultState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultState()
 }
 
 // _BACnetFaultParameterFaultState is the data-structure of this message
 type _BACnetFaultParameterFaultState struct {
-	*_BACnetFaultParameter
+	BACnetFaultParameterContract
 	OpeningTag        BACnetOpeningTag
 	ListOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues
 	ClosingTag        BACnetClosingTag
 }
+
+var _ BACnetFaultParameterFaultState = (*_BACnetFaultParameterFaultState)(nil)
+var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,12 +70,8 @@ type _BACnetFaultParameterFaultState struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultState) InitializeParent(parent BACnetFaultParameter, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultState) GetParent() BACnetFaultParameter {
-	return m._BACnetFaultParameter
+func (m *_BACnetFaultParameterFaultState) GetParent() BACnetFaultParameterContract {
+	return m.BACnetFaultParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,13 +98,22 @@ func (m *_BACnetFaultParameterFaultState) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetFaultParameterFaultState factory function for _BACnetFaultParameterFaultState
 func NewBACnetFaultParameterFaultState(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultState {
-	_result := &_BACnetFaultParameterFaultState{
-		OpeningTag:            openingTag,
-		ListOfFaultValues:     listOfFaultValues,
-		ClosingTag:            closingTag,
-		_BACnetFaultParameter: NewBACnetFaultParameter(peekedTagHeader),
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultState must not be nil")
 	}
-	_result._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _result
+	if listOfFaultValues == nil {
+		panic("listOfFaultValues of type BACnetFaultParameterFaultStateListOfFaultValues for BACnetFaultParameterFaultState must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultState must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultState{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		ListOfFaultValues:            listOfFaultValues,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
 
@@ -128,7 +133,7 @@ func (m *_BACnetFaultParameterFaultState) GetTypeName() string {
 }
 
 func (m *_BACnetFaultParameterFaultState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterContract.(*_BACnetFaultParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -146,73 +151,40 @@ func (m *_BACnetFaultParameterFaultState) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultStateParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultState, error) {
-	return BACnetFaultParameterFaultStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultState, error) {
+func (m *_BACnetFaultParameterFaultState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameter) (__bACnetFaultParameterFaultState BACnetFaultParameterFaultState, err error) {
+	m.BACnetFaultParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(4))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultState")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (listOfFaultValues)
-	if pullErr := readBuffer.PullContext("listOfFaultValues"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfFaultValues")
+	listOfFaultValues, err := ReadSimpleField[BACnetFaultParameterFaultStateListOfFaultValues](ctx, "listOfFaultValues", ReadComplex[BACnetFaultParameterFaultStateListOfFaultValues](BACnetFaultParameterFaultStateListOfFaultValuesParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfFaultValues' field"))
 	}
-	_listOfFaultValues, _listOfFaultValuesErr := BACnetFaultParameterFaultStateListOfFaultValuesParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _listOfFaultValuesErr != nil {
-		return nil, errors.Wrap(_listOfFaultValuesErr, "Error parsing 'listOfFaultValues' field of BACnetFaultParameterFaultState")
-	}
-	listOfFaultValues := _listOfFaultValues.(BACnetFaultParameterFaultStateListOfFaultValues)
-	if closeErr := readBuffer.CloseContext("listOfFaultValues"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfFaultValues")
-	}
+	m.ListOfFaultValues = listOfFaultValues
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(4))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultState")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultState")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultState{
-		_BACnetFaultParameter: &_BACnetFaultParameter{},
-		OpeningTag:            openingTag,
-		ListOfFaultValues:     listOfFaultValues,
-		ClosingTag:            closingTag,
-	}
-	_child._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultState) Serialize() ([]byte, error) {
@@ -233,40 +205,16 @@ func (m *_BACnetFaultParameterFaultState) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultState")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (listOfFaultValues)
-		if pushErr := writeBuffer.PushContext("listOfFaultValues"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfFaultValues")
-		}
-		_listOfFaultValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfFaultValues())
-		if popErr := writeBuffer.PopContext("listOfFaultValues"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfFaultValues")
-		}
-		if _listOfFaultValuesErr != nil {
-			return errors.Wrap(_listOfFaultValuesErr, "Error serializing 'listOfFaultValues' field")
+		if err := WriteSimpleField[BACnetFaultParameterFaultStateListOfFaultValues](ctx, "listOfFaultValues", m.GetListOfFaultValues(), WriteComplex[BACnetFaultParameterFaultStateListOfFaultValues](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfFaultValues' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultState"); popErr != nil {
@@ -274,12 +222,10 @@ func (m *_BACnetFaultParameterFaultState) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterContract.(*_BACnetFaultParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultState) isBACnetFaultParameterFaultState() bool {
-	return true
-}
+func (m *_BACnetFaultParameterFaultState) IsBACnetFaultParameterFaultState() {}
 
 func (m *_BACnetFaultParameterFaultState) String() string {
 	if m == nil {

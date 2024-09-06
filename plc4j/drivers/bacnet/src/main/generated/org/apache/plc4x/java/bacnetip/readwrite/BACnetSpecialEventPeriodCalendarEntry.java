@@ -61,7 +61,7 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
     writeBuffer.pushContext("BACnetSpecialEventPeriodCalendarEntry");
 
     // Simple Field (calendarEntry)
-    writeSimpleField("calendarEntry", calendarEntry, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("calendarEntry", calendarEntry, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSpecialEventPeriodCalendarEntry");
   }
@@ -92,7 +92,7 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
     BACnetCalendarEntryEnclosed calendarEntry =
         readSimpleField(
             "calendarEntry",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetCalendarEntryEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

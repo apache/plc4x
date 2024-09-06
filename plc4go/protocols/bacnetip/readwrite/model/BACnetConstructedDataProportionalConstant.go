@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataProportionalConstant interface {
 	GetProportionalConstant() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataProportionalConstantExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProportionalConstant.
-// This is useful for switch cases.
-type BACnetConstructedDataProportionalConstantExactly interface {
-	BACnetConstructedDataProportionalConstant
-	isBACnetConstructedDataProportionalConstant() bool
+	// IsBACnetConstructedDataProportionalConstant is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProportionalConstant()
 }
 
 // _BACnetConstructedDataProportionalConstant is the data-structure of this message
 type _BACnetConstructedDataProportionalConstant struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ProportionalConstant BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataProportionalConstant = (*_BACnetConstructedDataProportionalConstant)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProportionalConstant)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataProportionalConstant) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataProportionalConstant) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataProportionalConstant) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataProportionalConstant) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataProportionalConstant) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataProportionalConstant factory function for _BACnetConstructedDataProportionalConstant
 func NewBACnetConstructedDataProportionalConstant(proportionalConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstant {
-	_result := &_BACnetConstructedDataProportionalConstant{
-		ProportionalConstant:   proportionalConstant,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if proportionalConstant == nil {
+		panic("proportionalConstant of type BACnetApplicationTagReal for BACnetConstructedDataProportionalConstant must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataProportionalConstant{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProportionalConstant:          proportionalConstant,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataProportionalConstant) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (proportionalConstant)
 	lengthInBits += m.ProportionalConstant.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataProportionalConstantParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
-	return BACnetConstructedDataProportionalConstantParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataProportionalConstantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
+func (m *_BACnetConstructedDataProportionalConstant) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProportionalConstant BACnetConstructedDataProportionalConstant, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProportionalConstant"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProportionalConstant")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (proportionalConstant)
-	if pullErr := readBuffer.PullContext("proportionalConstant"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for proportionalConstant")
+	proportionalConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "proportionalConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proportionalConstant' field"))
 	}
-	_proportionalConstant, _proportionalConstantErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _proportionalConstantErr != nil {
-		return nil, errors.Wrap(_proportionalConstantErr, "Error parsing 'proportionalConstant' field of BACnetConstructedDataProportionalConstant")
-	}
-	proportionalConstant := _proportionalConstant.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("proportionalConstant"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for proportionalConstant")
-	}
+	m.ProportionalConstant = proportionalConstant
 
-	// Virtual field
-	_actualValue := proportionalConstant
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), proportionalConstant)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProportionalConstant"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProportionalConstant")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataProportionalConstant{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ProportionalConstant: proportionalConstant,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataProportionalConstant) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProportionalConstant")
 		}
 
-		// Simple Field (proportionalConstant)
-		if pushErr := writeBuffer.PushContext("proportionalConstant"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for proportionalConstant")
-		}
-		_proportionalConstantErr := writeBuffer.WriteSerializable(ctx, m.GetProportionalConstant())
-		if popErr := writeBuffer.PopContext("proportionalConstant"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for proportionalConstant")
-		}
-		if _proportionalConstantErr != nil {
-			return errors.Wrap(_proportionalConstantErr, "Error serializing 'proportionalConstant' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "proportionalConstant", m.GetProportionalConstant(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'proportionalConstant' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataProportionalConstant) isBACnetConstructedDataProportionalConstant() bool {
-	return true
-}
+func (m *_BACnetConstructedDataProportionalConstant) IsBACnetConstructedDataProportionalConstant() {}
 
 func (m *_BACnetConstructedDataProportionalConstant) String() string {
 	if m == nil {

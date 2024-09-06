@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type NLMRequestMasterKey interface {
 	GetNumberOfSupportedKeyAlgorithms() uint8
 	// GetEncryptionAndSignatureAlgorithms returns EncryptionAndSignatureAlgorithms (property field)
 	GetEncryptionAndSignatureAlgorithms() []byte
-}
-
-// NLMRequestMasterKeyExactly can be used when we want exactly this type and not a type which fulfills NLMRequestMasterKey.
-// This is useful for switch cases.
-type NLMRequestMasterKeyExactly interface {
-	NLMRequestMasterKey
-	isNLMRequestMasterKey() bool
+	// IsNLMRequestMasterKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMRequestMasterKey()
 }
 
 // _NLMRequestMasterKey is the data-structure of this message
 type _NLMRequestMasterKey struct {
-	*_NLM
+	NLMContract
 	NumberOfSupportedKeyAlgorithms   uint8
 	EncryptionAndSignatureAlgorithms []byte
 }
+
+var _ NLMRequestMasterKey = (*_NLMRequestMasterKey)(nil)
+var _ NLMRequirements = (*_NLMRequestMasterKey)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_NLMRequestMasterKey) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMRequestMasterKey) InitializeParent(parent NLM) {}
-
-func (m *_NLMRequestMasterKey) GetParent() NLM {
-	return m._NLM
+func (m *_NLMRequestMasterKey) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_NLMRequestMasterKey) GetEncryptionAndSignatureAlgorithms() []byte {
 // NewNLMRequestMasterKey factory function for _NLMRequestMasterKey
 func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte, apduLength uint16) *_NLMRequestMasterKey {
 	_result := &_NLMRequestMasterKey{
+		NLMContract:                      NewNLM(apduLength),
 		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
 		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
-		_NLM:                             NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_NLMRequestMasterKey) GetTypeName() string {
 }
 
 func (m *_NLMRequestMasterKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (numberOfSupportedKeyAlgorithms)
 	lengthInBits += 8
@@ -139,48 +137,34 @@ func (m *_NLMRequestMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMRequestMasterKeyParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMRequestMasterKey, error) {
-	return NLMRequestMasterKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMRequestMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRequestMasterKey, error) {
+func (m *_NLMRequestMasterKey) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMRequestMasterKey NLMRequestMasterKey, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMRequestMasterKey"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMRequestMasterKey")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfSupportedKeyAlgorithms)
-	_numberOfSupportedKeyAlgorithms, _numberOfSupportedKeyAlgorithmsErr := readBuffer.ReadUint8("numberOfSupportedKeyAlgorithms", 8)
-	if _numberOfSupportedKeyAlgorithmsErr != nil {
-		return nil, errors.Wrap(_numberOfSupportedKeyAlgorithmsErr, "Error parsing 'numberOfSupportedKeyAlgorithms' field of NLMRequestMasterKey")
+	numberOfSupportedKeyAlgorithms, err := ReadSimpleField(ctx, "numberOfSupportedKeyAlgorithms", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfSupportedKeyAlgorithms' field"))
 	}
-	numberOfSupportedKeyAlgorithms := _numberOfSupportedKeyAlgorithms
-	// Byte Array field (encryptionAndSignatureAlgorithms)
-	numberOfBytesencryptionAndSignatureAlgorithms := int(uint16(apduLength) - uint16(uint16(2)))
-	encryptionAndSignatureAlgorithms, _readArrayErr := readBuffer.ReadByteArray("encryptionAndSignatureAlgorithms", numberOfBytesencryptionAndSignatureAlgorithms)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'encryptionAndSignatureAlgorithms' field of NLMRequestMasterKey")
+	m.NumberOfSupportedKeyAlgorithms = numberOfSupportedKeyAlgorithms
+
+	encryptionAndSignatureAlgorithms, err := readBuffer.ReadByteArray("encryptionAndSignatureAlgorithms", int(int32(apduLength)-int32(int32(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encryptionAndSignatureAlgorithms' field"))
 	}
+	m.EncryptionAndSignatureAlgorithms = encryptionAndSignatureAlgorithms
 
 	if closeErr := readBuffer.CloseContext("NLMRequestMasterKey"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMRequestMasterKey")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMRequestMasterKey{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
-		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMRequestMasterKey) Serialize() ([]byte, error) {
@@ -201,16 +185,11 @@ func (m *_NLMRequestMasterKey) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NLMRequestMasterKey")
 		}
 
-		// Simple Field (numberOfSupportedKeyAlgorithms)
-		numberOfSupportedKeyAlgorithms := uint8(m.GetNumberOfSupportedKeyAlgorithms())
-		_numberOfSupportedKeyAlgorithmsErr := writeBuffer.WriteUint8("numberOfSupportedKeyAlgorithms", 8, uint8((numberOfSupportedKeyAlgorithms)))
-		if _numberOfSupportedKeyAlgorithmsErr != nil {
-			return errors.Wrap(_numberOfSupportedKeyAlgorithmsErr, "Error serializing 'numberOfSupportedKeyAlgorithms' field")
+		if err := WriteSimpleField[uint8](ctx, "numberOfSupportedKeyAlgorithms", m.GetNumberOfSupportedKeyAlgorithms(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfSupportedKeyAlgorithms' field")
 		}
 
-		// Array Field (encryptionAndSignatureAlgorithms)
-		// Byte Array field (encryptionAndSignatureAlgorithms)
-		if err := writeBuffer.WriteByteArray("encryptionAndSignatureAlgorithms", m.GetEncryptionAndSignatureAlgorithms()); err != nil {
+		if err := WriteByteArrayField(ctx, "encryptionAndSignatureAlgorithms", m.GetEncryptionAndSignatureAlgorithms(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'encryptionAndSignatureAlgorithms' field")
 		}
 
@@ -219,12 +198,10 @@ func (m *_NLMRequestMasterKey) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMRequestMasterKey) isNLMRequestMasterKey() bool {
-	return true
-}
+func (m *_NLMRequestMasterKey) IsNLMRequestMasterKey() {}
 
 func (m *_NLMRequestMasterKey) String() string {
 	if m == nil {

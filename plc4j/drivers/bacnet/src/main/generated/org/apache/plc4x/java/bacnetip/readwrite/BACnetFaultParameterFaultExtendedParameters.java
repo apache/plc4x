@@ -75,13 +75,13 @@ public class BACnetFaultParameterFaultExtendedParameters implements Message {
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParameters");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (parameters)
     writeComplexTypeArrayField("parameters", parameters, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParameters");
   }
@@ -122,13 +122,13 @@ public class BACnetFaultParameterFaultExtendedParameters implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetFaultParameterFaultExtendedParametersEntry> parameters =
         readTerminatedArrayField(
             "parameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetFaultParameterFaultExtendedParametersEntry.staticParse(readBuffer),
                 readBuffer),
             () ->
@@ -139,7 +139,7 @@ public class BACnetFaultParameterFaultExtendedParameters implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParameters");

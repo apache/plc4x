@@ -84,17 +84,17 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("OpenSecureChannelResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (serverProtocolVersion)
     writeSimpleField(
         "serverProtocolVersion", serverProtocolVersion, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (securityToken)
-    writeSimpleField("securityToken", securityToken, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityToken", securityToken, writeComplex(writeBuffer));
 
     // Simple Field (serverNonce)
-    writeSimpleField("serverNonce", serverNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverNonce", serverNonce, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpenSecureChannelResponse");
   }
@@ -134,7 +134,7 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -144,15 +144,13 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     ExtensionObjectDefinition securityToken =
         readSimpleField(
             "securityToken",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("443")),
                 readBuffer));
 
     PascalByteString serverNonce =
         readSimpleField(
-            "serverNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "serverNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpenSecureChannelResponse");
     // Create the instance

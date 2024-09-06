@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDaysRemaining interface {
 	GetDaysRemaining() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-}
-
-// BACnetConstructedDataDaysRemainingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDaysRemaining.
-// This is useful for switch cases.
-type BACnetConstructedDataDaysRemainingExactly interface {
-	BACnetConstructedDataDaysRemaining
-	isBACnetConstructedDataDaysRemaining() bool
+	// IsBACnetConstructedDataDaysRemaining is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDaysRemaining()
 }
 
 // _BACnetConstructedDataDaysRemaining is the data-structure of this message
 type _BACnetConstructedDataDaysRemaining struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DaysRemaining BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetConstructedDataDaysRemaining = (*_BACnetConstructedDataDaysRemaining)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaysRemaining)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDaysRemaining) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDaysRemaining) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDaysRemaining) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDaysRemaining) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDaysRemaining) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataDaysRemaining factory function for _BACnetConstructedDataDaysRemaining
 func NewBACnetConstructedDataDaysRemaining(daysRemaining BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaysRemaining {
-	_result := &_BACnetConstructedDataDaysRemaining{
-		DaysRemaining:          daysRemaining,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if daysRemaining == nil {
+		panic("daysRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataDaysRemaining must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDaysRemaining{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DaysRemaining:                 daysRemaining,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDaysRemaining) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (daysRemaining)
 	lengthInBits += m.DaysRemaining.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDaysRemainingParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaysRemaining, error) {
-	return BACnetConstructedDataDaysRemainingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDaysRemainingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaysRemaining, error) {
+func (m *_BACnetConstructedDataDaysRemaining) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDaysRemaining BACnetConstructedDataDaysRemaining, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDaysRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDaysRemaining")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (daysRemaining)
-	if pullErr := readBuffer.PullContext("daysRemaining"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for daysRemaining")
+	daysRemaining, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "daysRemaining", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daysRemaining' field"))
 	}
-	_daysRemaining, _daysRemainingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _daysRemainingErr != nil {
-		return nil, errors.Wrap(_daysRemainingErr, "Error parsing 'daysRemaining' field of BACnetConstructedDataDaysRemaining")
-	}
-	daysRemaining := _daysRemaining.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("daysRemaining"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for daysRemaining")
-	}
+	m.DaysRemaining = daysRemaining
 
-	// Virtual field
-	_actualValue := daysRemaining
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagSignedInteger](ctx, "actualValue", (*BACnetApplicationTagSignedInteger)(nil), daysRemaining)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDaysRemaining"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDaysRemaining")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDaysRemaining{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DaysRemaining: daysRemaining,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDaysRemaining) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDaysRemaining")
 		}
 
-		// Simple Field (daysRemaining)
-		if pushErr := writeBuffer.PushContext("daysRemaining"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for daysRemaining")
-		}
-		_daysRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetDaysRemaining())
-		if popErr := writeBuffer.PopContext("daysRemaining"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for daysRemaining")
-		}
-		if _daysRemainingErr != nil {
-			return errors.Wrap(_daysRemainingErr, "Error serializing 'daysRemaining' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "daysRemaining", m.GetDaysRemaining(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'daysRemaining' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) isBACnetConstructedDataDaysRemaining() bool {
-	return true
-}
+func (m *_BACnetConstructedDataDaysRemaining) IsBACnetConstructedDataDaysRemaining() {}
 
 func (m *_BACnetConstructedDataDaysRemaining) String() string {
 	if m == nil {

@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -34,11 +37,17 @@ import (
 
 // CIPEncapsulationPacket is the corresponding interface of CIPEncapsulationPacket
 type CIPEncapsulationPacket interface {
+	CIPEncapsulationPacketContract
+	CIPEncapsulationPacketRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandType returns CommandType (discriminator field)
-	GetCommandType() uint16
+	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPEncapsulationPacket()
+}
+
+// CIPEncapsulationPacketContract provides a set of functions which can be overwritten by a sub struct
+type CIPEncapsulationPacketContract interface {
 	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
 	// GetStatus returns Status (property field)
@@ -47,18 +56,21 @@ type CIPEncapsulationPacket interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
+	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPEncapsulationPacket()
 }
 
-// CIPEncapsulationPacketExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationPacket.
-// This is useful for switch cases.
-type CIPEncapsulationPacketExactly interface {
-	CIPEncapsulationPacket
-	isCIPEncapsulationPacket() bool
+// CIPEncapsulationPacketRequirements provides a set of functions which need to be implemented by a sub struct
+type CIPEncapsulationPacketRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() uint16
 }
 
 // _CIPEncapsulationPacket is the data-structure of this message
 type _CIPEncapsulationPacket struct {
-	_CIPEncapsulationPacketChildRequirements
+	_SubType      CIPEncapsulationPacket
 	SessionHandle uint32
 	Status        uint32
 	SenderContext []uint8
@@ -67,25 +79,7 @@ type _CIPEncapsulationPacket struct {
 	reservedField0 *uint32
 }
 
-type _CIPEncapsulationPacketChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() uint16
-}
-
-type CIPEncapsulationPacketParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CIPEncapsulationPacket, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type CIPEncapsulationPacketChild interface {
-	utils.Serializable
-	InitializeParent(parent CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
-	GetParent() *CIPEncapsulationPacket
-
-	GetTypeName() string
-	CIPEncapsulationPacket
-}
+var _ CIPEncapsulationPacketContract = (*_CIPEncapsulationPacket)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -133,7 +127,7 @@ func (m *_CIPEncapsulationPacket) GetTypeName() string {
 	return "CIPEncapsulationPacket"
 }
 
-func (m *_CIPEncapsulationPacket) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_CIPEncapsulationPacket) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 16
@@ -162,139 +156,114 @@ func (m *_CIPEncapsulationPacket) GetParentLengthInBits(ctx context.Context) uin
 }
 
 func (m *_CIPEncapsulationPacket) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func CIPEncapsulationPacketParse(ctx context.Context, theBytes []byte) (CIPEncapsulationPacket, error) {
-	return CIPEncapsulationPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func CIPEncapsulationPacketParse[T CIPEncapsulationPacket](ctx context.Context, theBytes []byte) (T, error) {
+	return CIPEncapsulationPacketParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationPacket, error) {
+func CIPEncapsulationPacketParseWithBufferProducer[T CIPEncapsulationPacket]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := CIPEncapsulationPacketParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func CIPEncapsulationPacketParseWithBuffer[T CIPEncapsulationPacket](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_CIPEncapsulationPacket{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_CIPEncapsulationPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cIPEncapsulationPacket CIPEncapsulationPacket, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CIPEncapsulationPacket"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (commandType) (Used as input to a switch field)
-	commandType, _commandTypeErr := readBuffer.ReadUint16("commandType", 16)
-	if _commandTypeErr != nil {
-		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field of CIPEncapsulationPacket")
+	commandType, err := ReadDiscriminatorField[uint16](ctx, "commandType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
 
-	// Implicit Field (packetLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetLen, _packetLenErr := readBuffer.ReadUint16("packetLen", 16)
+	packetLen, err := ReadImplicitField[uint16](ctx, "packetLen", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetLen' field"))
+	}
 	_ = packetLen
-	if _packetLenErr != nil {
-		return nil, errors.Wrap(_packetLenErr, "Error parsing 'packetLen' field of CIPEncapsulationPacket")
-	}
 
-	// Simple Field (sessionHandle)
-	_sessionHandle, _sessionHandleErr := readBuffer.ReadUint32("sessionHandle", 32)
-	if _sessionHandleErr != nil {
-		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field of CIPEncapsulationPacket")
+	sessionHandle, err := ReadSimpleField(ctx, "sessionHandle", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionHandle' field"))
 	}
-	sessionHandle := _sessionHandle
+	m.SessionHandle = sessionHandle
 
-	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint32("status", 32)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CIPEncapsulationPacket")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
+	m.Status = status
 
-	// Array field (senderContext)
-	if pullErr := readBuffer.PullContext("senderContext", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for senderContext")
+	senderContext, err := ReadCountArrayField[uint8](ctx, "senderContext", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'senderContext' field"))
 	}
-	// Count array
-	senderContext := make([]uint8, max(uint16(8), 0))
-	// This happens when the size is set conditional to 0
-	if len(senderContext) == 0 {
-		senderContext = nil
-	}
-	{
-		_numItems := uint16(max(uint16(8), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field of CIPEncapsulationPacket")
-			}
-			senderContext[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("senderContext", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for senderContext")
-	}
+	m.SenderContext = senderContext
 
-	// Simple Field (options)
-	_options, _optionsErr := readBuffer.ReadUint32("options", 32)
-	if _optionsErr != nil {
-		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field of CIPEncapsulationPacket")
+	options, err := ReadSimpleField(ctx, "options", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'options' field"))
 	}
-	options := _options
+	m.Options = options
 
-	var reservedField0 *uint32
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint32("reserved", 32)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CIPEncapsulationPacket")
-		}
-		if reserved != uint32(0x00000000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint32(0x00000000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, uint8(32)), uint32(0x00000000), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type CIPEncapsulationPacketChildSerializeRequirement interface {
-		CIPEncapsulationPacket
-		InitializeParent(CIPEncapsulationPacket, uint32, uint32, []uint8, uint32)
-		GetParent() CIPEncapsulationPacket
-	}
-	var _childTemp any
-	var _child CIPEncapsulationPacketChildSerializeRequirement
-	var typeSwitchError error
+	var _child CIPEncapsulationPacket
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
-		_childTemp, typeSwitchError = CIPEncapsulationConnectionRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_CIPEncapsulationConnectionRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationConnectionRequest for type-switch of CIPEncapsulationPacket")
+		}
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
-		_childTemp, typeSwitchError = CIPEncapsulationConnectionResponseParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_CIPEncapsulationConnectionResponse{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationConnectionResponse for type-switch of CIPEncapsulationPacket")
+		}
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
-		_childTemp, typeSwitchError = CIPEncapsulationReadRequestParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_CIPEncapsulationReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadRequest for type-switch of CIPEncapsulationPacket")
+		}
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParseWithBuffer(ctx, readBuffer, packetLen)
+		if _child, err = (&_CIPEncapsulationReadResponse{}).parse(ctx, readBuffer, m, packetLen); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadResponse for type-switch of CIPEncapsulationPacket")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
+		return nil, errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CIPEncapsulationPacket")
-	}
-	_child = _childTemp.(CIPEncapsulationPacketChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationPacket"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CIPEncapsulationPacket")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, sessionHandle, status, senderContext, options)
-	_child.GetParent().(*_CIPEncapsulationPacket).reservedField0 = reservedField0
 	return _child, nil
 }
 
-func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CIPEncapsulationPacket, serializeChildFunction func() error) error {
+func (pm *_CIPEncapsulationPacket) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CIPEncapsulationPacket, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -306,71 +275,32 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationPacket")
 	}
 
-	// Discriminator Field (commandType) (Used as input to a switch field)
-	commandType := uint16(child.GetCommandType())
-	_commandTypeErr := writeBuffer.WriteUint16("commandType", 16, uint16((commandType)))
-
-	if _commandTypeErr != nil {
-		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
+	if err := WriteDiscriminatorField(ctx, "commandType", m.GetCommandType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandType' field")
 	}
-
-	// Implicit Field (packetLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	packetLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(28)))
-	_packetLenErr := writeBuffer.WriteUint16("packetLen", 16, uint16((packetLen)))
-	if _packetLenErr != nil {
-		return errors.Wrap(_packetLenErr, "Error serializing 'packetLen' field")
+	if err := WriteImplicitField(ctx, "packetLen", packetLen, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'packetLen' field")
 	}
 
-	// Simple Field (sessionHandle)
-	sessionHandle := uint32(m.GetSessionHandle())
-	_sessionHandleErr := writeBuffer.WriteUint32("sessionHandle", 32, uint32((sessionHandle)))
-	if _sessionHandleErr != nil {
-		return errors.Wrap(_sessionHandleErr, "Error serializing 'sessionHandle' field")
+	if err := WriteSimpleField[uint32](ctx, "sessionHandle", m.GetSessionHandle(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sessionHandle' field")
 	}
 
-	// Simple Field (status)
-	status := uint32(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint32("status", 32, uint32((status)))
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleField[uint32](ctx, "status", m.GetStatus(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
-	// Array Field (senderContext)
-	if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for senderContext")
-	}
-	for _curItem, _element := range m.GetSenderContext() {
-		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for senderContext")
+	if err := WriteSimpleTypeArrayField(ctx, "senderContext", m.GetSenderContext(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'senderContext' field")
 	}
 
-	// Simple Field (options)
-	options := uint32(m.GetOptions())
-	_optionsErr := writeBuffer.WriteUint32("options", 32, uint32((options)))
-	if _optionsErr != nil {
-		return errors.Wrap(_optionsErr, "Error serializing 'options' field")
+	if err := WriteSimpleField[uint32](ctx, "options", m.GetOptions(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'options' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint32 = uint32(0x00000000)
-		if pm.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint32(0x00000000),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *pm.reservedField0
-		}
-		_err := writeBuffer.WriteUint32("reserved", 32, uint32(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint32](ctx, "reserved", uint32(0x00000000), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -384,17 +314,4 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 	return nil
 }
 
-func (m *_CIPEncapsulationPacket) isCIPEncapsulationPacket() bool {
-	return true
-}
-
-func (m *_CIPEncapsulationPacket) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_CIPEncapsulationPacket) IsCIPEncapsulationPacket() {}

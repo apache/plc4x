@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,20 +45,18 @@ type MediaTransportControlDataNextPreviousSelection interface {
 	GetIsSetThePreviousSelection() bool
 	// GetIsSetTheNextSelection returns IsSetTheNextSelection (virtual field)
 	GetIsSetTheNextSelection() bool
-}
-
-// MediaTransportControlDataNextPreviousSelectionExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataNextPreviousSelection.
-// This is useful for switch cases.
-type MediaTransportControlDataNextPreviousSelectionExactly interface {
-	MediaTransportControlDataNextPreviousSelection
-	isMediaTransportControlDataNextPreviousSelection() bool
+	// IsMediaTransportControlDataNextPreviousSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataNextPreviousSelection()
 }
 
 // _MediaTransportControlDataNextPreviousSelection is the data-structure of this message
 type _MediaTransportControlDataNextPreviousSelection struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	Operation byte
 }
+
+var _ MediaTransportControlDataNextPreviousSelection = (*_MediaTransportControlDataNextPreviousSelection)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataNextPreviousSelection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,13 +68,8 @@ type _MediaTransportControlDataNextPreviousSelection struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataNextPreviousSelection) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataNextPreviousSelection) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataNextPreviousSelection) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,10 +110,10 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetIsSetTheNextSelecti
 // NewMediaTransportControlDataNextPreviousSelection factory function for _MediaTransportControlDataNextPreviousSelection
 func NewMediaTransportControlDataNextPreviousSelection(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataNextPreviousSelection {
 	_result := &_MediaTransportControlDataNextPreviousSelection{
-		Operation:                  operation,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -138,7 +133,7 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -154,49 +149,40 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataNextPreviousSelectionParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataNextPreviousSelection, error) {
-	return MediaTransportControlDataNextPreviousSelectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MediaTransportControlDataNextPreviousSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousSelection, error) {
+func (m *_MediaTransportControlDataNextPreviousSelection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataNextPreviousSelection MediaTransportControlDataNextPreviousSelection, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataNextPreviousSelection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataNextPreviousSelection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (operation)
-	_operation, _operationErr := readBuffer.ReadByte("operation")
-	if _operationErr != nil {
-		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of MediaTransportControlDataNextPreviousSelection")
+	operation, err := ReadSimpleField(ctx, "operation", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operation' field"))
 	}
-	operation := _operation
+	m.Operation = operation
 
-	// Virtual field
-	_isSetThePreviousSelection := bool((operation) == (0x00))
-	isSetThePreviousSelection := bool(_isSetThePreviousSelection)
+	isSetThePreviousSelection, err := ReadVirtualField[bool](ctx, "isSetThePreviousSelection", (*bool)(nil), bool((operation) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetThePreviousSelection' field"))
+	}
 	_ = isSetThePreviousSelection
 
-	// Virtual field
-	_isSetTheNextSelection := bool((operation) != (0x00))
-	isSetTheNextSelection := bool(_isSetTheNextSelection)
+	isSetTheNextSelection, err := ReadVirtualField[bool](ctx, "isSetTheNextSelection", (*bool)(nil), bool((operation) != (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetTheNextSelection' field"))
+	}
 	_ = isSetTheNextSelection
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataNextPreviousSelection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataNextPreviousSelection")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataNextPreviousSelection{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		Operation:                  operation,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataNextPreviousSelection) Serialize() ([]byte, error) {
@@ -217,11 +203,8 @@ func (m *_MediaTransportControlDataNextPreviousSelection) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataNextPreviousSelection")
 		}
 
-		// Simple Field (operation)
-		operation := byte(m.GetOperation())
-		_operationErr := writeBuffer.WriteByte("operation", (operation))
-		if _operationErr != nil {
-			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
+		if err := WriteSimpleField[byte](ctx, "operation", m.GetOperation(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'operation' field")
 		}
 		// Virtual field
 		isSetThePreviousSelection := m.GetIsSetThePreviousSelection()
@@ -241,11 +224,10 @@ func (m *_MediaTransportControlDataNextPreviousSelection) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelection) isMediaTransportControlDataNextPreviousSelection() bool {
-	return true
+func (m *_MediaTransportControlDataNextPreviousSelection) IsMediaTransportControlDataNextPreviousSelection() {
 }
 
 func (m *_MediaTransportControlDataNextPreviousSelection) String() string {

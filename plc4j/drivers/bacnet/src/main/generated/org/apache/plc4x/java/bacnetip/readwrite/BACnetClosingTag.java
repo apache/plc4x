@@ -59,7 +59,7 @@ public class BACnetClosingTag implements Message {
     writeBuffer.pushContext("BACnetClosingTag");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetClosingTag");
   }
@@ -89,9 +89,7 @@ public class BACnetClosingTag implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getActualTagNumber()) == (tagNumberArgument))) {
       throw new ParseAssertException("tagnumber doesn't match");

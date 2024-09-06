@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type MediaTransportControlDataSetTrack interface {
 	GetTrackMLSB() byte
 	// GetTrackLSB returns TrackLSB (property field)
 	GetTrackLSB() byte
-}
-
-// MediaTransportControlDataSetTrackExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataSetTrack.
-// This is useful for switch cases.
-type MediaTransportControlDataSetTrackExactly interface {
-	MediaTransportControlDataSetTrack
-	isMediaTransportControlDataSetTrack() bool
+	// IsMediaTransportControlDataSetTrack is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataSetTrack()
 }
 
 // _MediaTransportControlDataSetTrack is the data-structure of this message
 type _MediaTransportControlDataSetTrack struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	TrackMSB  byte
 	TrackMMSB byte
 	TrackMLSB byte
 	TrackLSB  byte
 }
+
+var _ MediaTransportControlDataSetTrack = (*_MediaTransportControlDataSetTrack)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSetTrack)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,13 +73,8 @@ type _MediaTransportControlDataSetTrack struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataSetTrack) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataSetTrack) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataSetTrack) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,13 +106,13 @@ func (m *_MediaTransportControlDataSetTrack) GetTrackLSB() byte {
 // NewMediaTransportControlDataSetTrack factory function for _MediaTransportControlDataSetTrack
 func NewMediaTransportControlDataSetTrack(trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSetTrack {
 	_result := &_MediaTransportControlDataSetTrack{
-		TrackMSB:                   trackMSB,
-		TrackMMSB:                  trackMMSB,
-		TrackMLSB:                  trackMLSB,
-		TrackLSB:                   trackLSB,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TrackMSB:                          trackMSB,
+		TrackMMSB:                         trackMMSB,
+		TrackMLSB:                         trackMLSB,
+		TrackLSB:                          trackLSB,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -137,7 +132,7 @@ func (m *_MediaTransportControlDataSetTrack) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataSetTrack) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (trackMSB)
 	lengthInBits += 8
@@ -158,63 +153,46 @@ func (m *_MediaTransportControlDataSetTrack) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataSetTrackParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataSetTrack, error) {
-	return MediaTransportControlDataSetTrackParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MediaTransportControlDataSetTrackParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetTrack, error) {
+func (m *_MediaTransportControlDataSetTrack) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataSetTrack MediaTransportControlDataSetTrack, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetTrack"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataSetTrack")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (trackMSB)
-	_trackMSB, _trackMSBErr := readBuffer.ReadByte("trackMSB")
-	if _trackMSBErr != nil {
-		return nil, errors.Wrap(_trackMSBErr, "Error parsing 'trackMSB' field of MediaTransportControlDataSetTrack")
+	trackMSB, err := ReadSimpleField(ctx, "trackMSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackMSB' field"))
 	}
-	trackMSB := _trackMSB
+	m.TrackMSB = trackMSB
 
-	// Simple Field (trackMMSB)
-	_trackMMSB, _trackMMSBErr := readBuffer.ReadByte("trackMMSB")
-	if _trackMMSBErr != nil {
-		return nil, errors.Wrap(_trackMMSBErr, "Error parsing 'trackMMSB' field of MediaTransportControlDataSetTrack")
+	trackMMSB, err := ReadSimpleField(ctx, "trackMMSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackMMSB' field"))
 	}
-	trackMMSB := _trackMMSB
+	m.TrackMMSB = trackMMSB
 
-	// Simple Field (trackMLSB)
-	_trackMLSB, _trackMLSBErr := readBuffer.ReadByte("trackMLSB")
-	if _trackMLSBErr != nil {
-		return nil, errors.Wrap(_trackMLSBErr, "Error parsing 'trackMLSB' field of MediaTransportControlDataSetTrack")
+	trackMLSB, err := ReadSimpleField(ctx, "trackMLSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackMLSB' field"))
 	}
-	trackMLSB := _trackMLSB
+	m.TrackMLSB = trackMLSB
 
-	// Simple Field (trackLSB)
-	_trackLSB, _trackLSBErr := readBuffer.ReadByte("trackLSB")
-	if _trackLSBErr != nil {
-		return nil, errors.Wrap(_trackLSBErr, "Error parsing 'trackLSB' field of MediaTransportControlDataSetTrack")
+	trackLSB, err := ReadSimpleField(ctx, "trackLSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackLSB' field"))
 	}
-	trackLSB := _trackLSB
+	m.TrackLSB = trackLSB
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataSetTrack"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataSetTrack")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataSetTrack{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		TrackMSB:                   trackMSB,
-		TrackMMSB:                  trackMMSB,
-		TrackMLSB:                  trackMLSB,
-		TrackLSB:                   trackLSB,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataSetTrack) Serialize() ([]byte, error) {
@@ -235,32 +213,20 @@ func (m *_MediaTransportControlDataSetTrack) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataSetTrack")
 		}
 
-		// Simple Field (trackMSB)
-		trackMSB := byte(m.GetTrackMSB())
-		_trackMSBErr := writeBuffer.WriteByte("trackMSB", (trackMSB))
-		if _trackMSBErr != nil {
-			return errors.Wrap(_trackMSBErr, "Error serializing 'trackMSB' field")
+		if err := WriteSimpleField[byte](ctx, "trackMSB", m.GetTrackMSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackMSB' field")
 		}
 
-		// Simple Field (trackMMSB)
-		trackMMSB := byte(m.GetTrackMMSB())
-		_trackMMSBErr := writeBuffer.WriteByte("trackMMSB", (trackMMSB))
-		if _trackMMSBErr != nil {
-			return errors.Wrap(_trackMMSBErr, "Error serializing 'trackMMSB' field")
+		if err := WriteSimpleField[byte](ctx, "trackMMSB", m.GetTrackMMSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackMMSB' field")
 		}
 
-		// Simple Field (trackMLSB)
-		trackMLSB := byte(m.GetTrackMLSB())
-		_trackMLSBErr := writeBuffer.WriteByte("trackMLSB", (trackMLSB))
-		if _trackMLSBErr != nil {
-			return errors.Wrap(_trackMLSBErr, "Error serializing 'trackMLSB' field")
+		if err := WriteSimpleField[byte](ctx, "trackMLSB", m.GetTrackMLSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackMLSB' field")
 		}
 
-		// Simple Field (trackLSB)
-		trackLSB := byte(m.GetTrackLSB())
-		_trackLSBErr := writeBuffer.WriteByte("trackLSB", (trackLSB))
-		if _trackLSBErr != nil {
-			return errors.Wrap(_trackLSBErr, "Error serializing 'trackLSB' field")
+		if err := WriteSimpleField[byte](ctx, "trackLSB", m.GetTrackLSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackLSB' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataSetTrack"); popErr != nil {
@@ -268,12 +234,10 @@ func (m *_MediaTransportControlDataSetTrack) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataSetTrack) isMediaTransportControlDataSetTrack() bool {
-	return true
-}
+func (m *_MediaTransportControlDataSetTrack) IsMediaTransportControlDataSetTrack() {}
 
 func (m *_MediaTransportControlDataSetTrack) String() string {
 	if m == nil {

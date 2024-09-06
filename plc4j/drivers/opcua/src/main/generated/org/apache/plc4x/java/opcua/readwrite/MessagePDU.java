@@ -70,8 +70,7 @@ public abstract class MessagePDU implements Message {
         "chunk",
         "ChunkType",
         chunk,
-        new DataWriterEnumDefault<>(
-            ChunkType::getValue, ChunkType::name, writeString(writeBuffer, 8)));
+        writeEnum(ChunkType::getValue, ChunkType::name, writeString(writeBuffer, 8)));
 
     // Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
@@ -119,9 +118,7 @@ public abstract class MessagePDU implements Message {
 
     ChunkType chunk =
         readEnumField(
-            "chunk",
-            "ChunkType",
-            new DataReaderEnumDefault<>(ChunkType::enumForValue, readString(readBuffer, 8)));
+            "chunk", "ChunkType", readEnum(ChunkType::enumForValue, readString(readBuffer, 8)));
 
     long totalLength = readImplicitField("totalLength", readUnsignedLong(readBuffer, 32));
 

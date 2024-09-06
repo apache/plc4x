@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type QueryDataSet interface {
 	GetNoOfValues() int32
 	// GetValues returns Values (property field)
 	GetValues() []Variant
-}
-
-// QueryDataSetExactly can be used when we want exactly this type and not a type which fulfills QueryDataSet.
-// This is useful for switch cases.
-type QueryDataSetExactly interface {
-	QueryDataSet
-	isQueryDataSet() bool
+	// IsQueryDataSet is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQueryDataSet()
 }
 
 // _QueryDataSet is the data-structure of this message
 type _QueryDataSet struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NodeId             ExpandedNodeId
 	TypeDefinitionNode ExpandedNodeId
 	NoOfValues         int32
 	Values             []Variant
 }
+
+var _ QueryDataSet = (*_QueryDataSet)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QueryDataSet)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -77,10 +77,8 @@ func (m *_QueryDataSet) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_QueryDataSet) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_QueryDataSet) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_QueryDataSet) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,14 +109,20 @@ func (m *_QueryDataSet) GetValues() []Variant {
 
 // NewQueryDataSet factory function for _QueryDataSet
 func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
-	_result := &_QueryDataSet{
-		NodeId:                     nodeId,
-		TypeDefinitionNode:         typeDefinitionNode,
-		NoOfValues:                 noOfValues,
-		Values:                     values,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if nodeId == nil {
+		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
+	_result := &_QueryDataSet{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		TypeDefinitionNode:                typeDefinitionNode,
+		NoOfValues:                        noOfValues,
+		Values:                            values,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -138,7 +142,7 @@ func (m *_QueryDataSet) GetTypeName() string {
 }
 
 func (m *_QueryDataSet) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -166,95 +170,46 @@ func (m *_QueryDataSet) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func QueryDataSetParse(ctx context.Context, theBytes []byte, identifier string) (QueryDataSet, error) {
-	return QueryDataSetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func QueryDataSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryDataSet, error) {
+func (m *_QueryDataSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryDataSet QueryDataSet, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QueryDataSet"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QueryDataSet")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
+	nodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "nodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
-	_nodeId, _nodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of QueryDataSet")
-	}
-	nodeId := _nodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
-	}
+	m.NodeId = nodeId
 
-	// Simple Field (typeDefinitionNode)
-	if pullErr := readBuffer.PullContext("typeDefinitionNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeDefinitionNode")
+	typeDefinitionNode, err := ReadSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeDefinitionNode' field"))
 	}
-	_typeDefinitionNode, _typeDefinitionNodeErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _typeDefinitionNodeErr != nil {
-		return nil, errors.Wrap(_typeDefinitionNodeErr, "Error parsing 'typeDefinitionNode' field of QueryDataSet")
-	}
-	typeDefinitionNode := _typeDefinitionNode.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("typeDefinitionNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeDefinitionNode")
-	}
+	m.TypeDefinitionNode = typeDefinitionNode
 
-	// Simple Field (noOfValues)
-	_noOfValues, _noOfValuesErr := readBuffer.ReadInt32("noOfValues", 32)
-	if _noOfValuesErr != nil {
-		return nil, errors.Wrap(_noOfValuesErr, "Error parsing 'noOfValues' field of QueryDataSet")
+	noOfValues, err := ReadSimpleField(ctx, "noOfValues", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfValues' field"))
 	}
-	noOfValues := _noOfValues
+	m.NoOfValues = noOfValues
 
-	// Array field (values)
-	if pullErr := readBuffer.PullContext("values", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for values")
+	values, err := ReadCountArrayField[Variant](ctx, "values", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfValues))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'values' field"))
 	}
-	// Count array
-	values := make([]Variant, max(noOfValues, 0))
-	// This happens when the size is set conditional to 0
-	if len(values) == 0 {
-		values = nil
-	}
-	{
-		_numItems := uint16(max(noOfValues, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := VariantParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'values' field of QueryDataSet")
-			}
-			values[_curItem] = _item.(Variant)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("values", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for values")
-	}
+	m.Values = values
 
 	if closeErr := readBuffer.CloseContext("QueryDataSet"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for QueryDataSet")
 	}
 
-	// Create a partially initialized instance
-	_child := &_QueryDataSet{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NodeId:                     nodeId,
-		TypeDefinitionNode:         typeDefinitionNode,
-		NoOfValues:                 noOfValues,
-		Values:                     values,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_QueryDataSet) Serialize() ([]byte, error) {
@@ -275,52 +230,20 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for QueryDataSet")
 		}
 
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		// Simple Field (typeDefinitionNode)
-		if pushErr := writeBuffer.PushContext("typeDefinitionNode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for typeDefinitionNode")
-		}
-		_typeDefinitionNodeErr := writeBuffer.WriteSerializable(ctx, m.GetTypeDefinitionNode())
-		if popErr := writeBuffer.PopContext("typeDefinitionNode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for typeDefinitionNode")
-		}
-		if _typeDefinitionNodeErr != nil {
-			return errors.Wrap(_typeDefinitionNodeErr, "Error serializing 'typeDefinitionNode' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", m.GetTypeDefinitionNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeDefinitionNode' field")
 		}
 
-		// Simple Field (noOfValues)
-		noOfValues := int32(m.GetNoOfValues())
-		_noOfValuesErr := writeBuffer.WriteInt32("noOfValues", 32, int32((noOfValues)))
-		if _noOfValuesErr != nil {
-			return errors.Wrap(_noOfValuesErr, "Error serializing 'noOfValues' field")
+		if err := WriteSimpleField[int32](ctx, "noOfValues", m.GetNoOfValues(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfValues' field")
 		}
 
-		// Array Field (values)
-		if pushErr := writeBuffer.PushContext("values", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for values")
-		}
-		for _curItem, _element := range m.GetValues() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetValues()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'values' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("values", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for values")
+		if err := WriteComplexTypeArrayField(ctx, "values", m.GetValues(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryDataSet"); popErr != nil {
@@ -328,12 +251,10 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_QueryDataSet) isQueryDataSet() bool {
-	return true
-}
+func (m *_QueryDataSet) IsQueryDataSet() {}
 
 func (m *_QueryDataSet) String() string {
 	if m == nil {

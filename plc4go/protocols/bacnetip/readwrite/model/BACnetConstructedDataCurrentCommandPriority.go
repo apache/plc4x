@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataCurrentCommandPriority interface {
 	GetCurrentCommandPriority() BACnetOptionalUnsigned
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetOptionalUnsigned
-}
-
-// BACnetConstructedDataCurrentCommandPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCurrentCommandPriority.
-// This is useful for switch cases.
-type BACnetConstructedDataCurrentCommandPriorityExactly interface {
-	BACnetConstructedDataCurrentCommandPriority
-	isBACnetConstructedDataCurrentCommandPriority() bool
+	// IsBACnetConstructedDataCurrentCommandPriority is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCurrentCommandPriority()
 }
 
 // _BACnetConstructedDataCurrentCommandPriority is the data-structure of this message
 type _BACnetConstructedDataCurrentCommandPriority struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	CurrentCommandPriority BACnetOptionalUnsigned
 }
+
+var _ BACnetConstructedDataCurrentCommandPriority = (*_BACnetConstructedDataCurrentCommandPriority)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCurrentCommandPriority)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCurrentCommandPriority) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCurrentCommandPriority) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetActualValue() BACnetOp
 
 // NewBACnetConstructedDataCurrentCommandPriority factory function for _BACnetConstructedDataCurrentCommandPriority
 func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority BACnetOptionalUnsigned, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCurrentCommandPriority {
-	_result := &_BACnetConstructedDataCurrentCommandPriority{
-		CurrentCommandPriority: currentCommandPriority,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if currentCommandPriority == nil {
+		panic("currentCommandPriority of type BACnetOptionalUnsigned for BACnetConstructedDataCurrentCommandPriority must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataCurrentCommandPriority{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CurrentCommandPriority:        currentCommandPriority,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (currentCommandPriority)
 	lengthInBits += m.CurrentCommandPriority.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCurrentCommandPriorityParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
-	return BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
+func (m *_BACnetConstructedDataCurrentCommandPriority) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCurrentCommandPriority BACnetConstructedDataCurrentCommandPriority, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCurrentCommandPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCurrentCommandPriority")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (currentCommandPriority)
-	if pullErr := readBuffer.PullContext("currentCommandPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for currentCommandPriority")
+	currentCommandPriority, err := ReadSimpleField[BACnetOptionalUnsigned](ctx, "currentCommandPriority", ReadComplex[BACnetOptionalUnsigned](BACnetOptionalUnsignedParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentCommandPriority' field"))
 	}
-	_currentCommandPriority, _currentCommandPriorityErr := BACnetOptionalUnsignedParseWithBuffer(ctx, readBuffer)
-	if _currentCommandPriorityErr != nil {
-		return nil, errors.Wrap(_currentCommandPriorityErr, "Error parsing 'currentCommandPriority' field of BACnetConstructedDataCurrentCommandPriority")
-	}
-	currentCommandPriority := _currentCommandPriority.(BACnetOptionalUnsigned)
-	if closeErr := readBuffer.CloseContext("currentCommandPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for currentCommandPriority")
-	}
+	m.CurrentCommandPriority = currentCommandPriority
 
-	// Virtual field
-	_actualValue := currentCommandPriority
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetOptionalUnsigned](ctx, "actualValue", (*BACnetOptionalUnsigned)(nil), currentCommandPriority)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCurrentCommandPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCurrentCommandPriority")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCurrentCommandPriority{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		CurrentCommandPriority: currentCommandPriority,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCurrentCommandPriority")
 		}
 
-		// Simple Field (currentCommandPriority)
-		if pushErr := writeBuffer.PushContext("currentCommandPriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for currentCommandPriority")
-		}
-		_currentCommandPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetCurrentCommandPriority())
-		if popErr := writeBuffer.PopContext("currentCommandPriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for currentCommandPriority")
-		}
-		if _currentCommandPriorityErr != nil {
-			return errors.Wrap(_currentCommandPriorityErr, "Error serializing 'currentCommandPriority' field")
+		if err := WriteSimpleField[BACnetOptionalUnsigned](ctx, "currentCommandPriority", m.GetCurrentCommandPriority(), WriteComplex[BACnetOptionalUnsigned](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentCommandPriority' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) isBACnetConstructedDataCurrentCommandPriority() bool {
-	return true
+func (m *_BACnetConstructedDataCurrentCommandPriority) IsBACnetConstructedDataCurrentCommandPriority() {
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) String() string {

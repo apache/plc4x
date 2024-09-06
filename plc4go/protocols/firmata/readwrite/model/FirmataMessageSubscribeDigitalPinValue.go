@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,23 +45,21 @@ type FirmataMessageSubscribeDigitalPinValue interface {
 	GetPin() uint8
 	// GetEnable returns Enable (property field)
 	GetEnable() bool
-}
-
-// FirmataMessageSubscribeDigitalPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageSubscribeDigitalPinValue.
-// This is useful for switch cases.
-type FirmataMessageSubscribeDigitalPinValueExactly interface {
-	FirmataMessageSubscribeDigitalPinValue
-	isFirmataMessageSubscribeDigitalPinValue() bool
+	// IsFirmataMessageSubscribeDigitalPinValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataMessageSubscribeDigitalPinValue()
 }
 
 // _FirmataMessageSubscribeDigitalPinValue is the data-structure of this message
 type _FirmataMessageSubscribeDigitalPinValue struct {
-	*_FirmataMessage
+	FirmataMessageContract
 	Pin    uint8
 	Enable bool
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ FirmataMessageSubscribeDigitalPinValue = (*_FirmataMessageSubscribeDigitalPinValue)(nil)
+var _ FirmataMessageRequirements = (*_FirmataMessageSubscribeDigitalPinValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +75,8 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FirmataMessageSubscribeDigitalPinValue) InitializeParent(parent FirmataMessage) {}
-
-func (m *_FirmataMessageSubscribeDigitalPinValue) GetParent() FirmataMessage {
-	return m._FirmataMessage
+func (m *_FirmataMessageSubscribeDigitalPinValue) GetParent() FirmataMessageContract {
+	return m.FirmataMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,11 +100,11 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetEnable() bool {
 // NewFirmataMessageSubscribeDigitalPinValue factory function for _FirmataMessageSubscribeDigitalPinValue
 func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeDigitalPinValue {
 	_result := &_FirmataMessageSubscribeDigitalPinValue{
-		Pin:             pin,
-		Enable:          enable,
-		_FirmataMessage: NewFirmataMessage(response),
+		FirmataMessageContract: NewFirmataMessage(response),
+		Pin:                    pin,
+		Enable:                 enable,
 	}
-	_result._FirmataMessage._FirmataMessageChildRequirements = _result
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
 	return _result
 }
 
@@ -125,7 +124,7 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetTypeName() string {
 }
 
 func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataMessageContract.(*_FirmataMessage).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -143,67 +142,40 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataMessageSubscribeDigitalPinValueParse(ctx context.Context, theBytes []byte, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
-	return FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
-}
-
-func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
+func (m *_FirmataMessageSubscribeDigitalPinValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataMessage, response bool) (__firmataMessageSubscribeDigitalPinValue FirmataMessageSubscribeDigitalPinValue, err error) {
+	m.FirmataMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeDigitalPinValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataMessageSubscribeDigitalPinValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataMessageSubscribeDigitalPinValue")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
+	m.Pin = pin
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of FirmataMessageSubscribeDigitalPinValue")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (enable)
-	_enable, _enableErr := readBuffer.ReadBit("enable")
-	if _enableErr != nil {
-		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of FirmataMessageSubscribeDigitalPinValue")
+	enable, err := ReadSimpleField(ctx, "enable", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
 	}
-	enable := _enable
+	m.Enable = enable
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageSubscribeDigitalPinValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessageSubscribeDigitalPinValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FirmataMessageSubscribeDigitalPinValue{
-		_FirmataMessage: &_FirmataMessage{
-			Response: response,
-		},
-		Pin:            pin,
-		Enable:         enable,
-		reservedField0: reservedField0,
-	}
-	_child._FirmataMessage._FirmataMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FirmataMessageSubscribeDigitalPinValue) Serialize() ([]byte, error) {
@@ -224,34 +196,16 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for FirmataMessageSubscribeDigitalPinValue")
 		}
 
-		// Simple Field (pin)
-		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 4, uint8((pin)))
-		if _pinErr != nil {
-			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
+		if err := WriteSimpleField[uint8](ctx, "pin", m.GetPin(), WriteUnsignedByte(writeBuffer, 4), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pin' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (enable)
-		enable := bool(m.GetEnable())
-		_enableErr := writeBuffer.WriteBit("enable", (enable))
-		if _enableErr != nil {
-			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
+		if err := WriteSimpleField[bool](ctx, "enable", m.GetEnable(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageSubscribeDigitalPinValue"); popErr != nil {
@@ -259,12 +213,10 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.FirmataMessageContract.(*_FirmataMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValue) isFirmataMessageSubscribeDigitalPinValue() bool {
-	return true
-}
+func (m *_FirmataMessageSubscribeDigitalPinValue) IsFirmataMessageSubscribeDigitalPinValue() {}
 
 func (m *_FirmataMessageSubscribeDigitalPinValue) String() string {
 	if m == nil {

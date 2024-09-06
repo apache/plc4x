@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataSetpointReference interface {
 	GetSetpointReference() BACnetSetpointReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSetpointReference
-}
-
-// BACnetConstructedDataSetpointReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSetpointReference.
-// This is useful for switch cases.
-type BACnetConstructedDataSetpointReferenceExactly interface {
-	BACnetConstructedDataSetpointReference
-	isBACnetConstructedDataSetpointReference() bool
+	// IsBACnetConstructedDataSetpointReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSetpointReference()
 }
 
 // _BACnetConstructedDataSetpointReference is the data-structure of this message
 type _BACnetConstructedDataSetpointReference struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	SetpointReference BACnetSetpointReference
 }
+
+var _ BACnetConstructedDataSetpointReference = (*_BACnetConstructedDataSetpointReference)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSetpointReference)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataSetpointReference) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataSetpointReference) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataSetpointReference) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataSetpointReference) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataSetpointReference) GetActualValue() BACnetSetpoin
 
 // NewBACnetConstructedDataSetpointReference factory function for _BACnetConstructedDataSetpointReference
 func NewBACnetConstructedDataSetpointReference(setpointReference BACnetSetpointReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpointReference {
-	_result := &_BACnetConstructedDataSetpointReference{
-		SetpointReference:      setpointReference,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if setpointReference == nil {
+		panic("setpointReference of type BACnetSetpointReference for BACnetConstructedDataSetpointReference must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataSetpointReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SetpointReference:             setpointReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataSetpointReference) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataSetpointReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (setpointReference)
 	lengthInBits += m.SetpointReference.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataSetpointReference) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataSetpointReferenceParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpointReference, error) {
-	return BACnetConstructedDataSetpointReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpointReference, error) {
+func (m *_BACnetConstructedDataSetpointReference) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataSetpointReference BACnetConstructedDataSetpointReference, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpointReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSetpointReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (setpointReference)
-	if pullErr := readBuffer.PullContext("setpointReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for setpointReference")
+	setpointReference, err := ReadSimpleField[BACnetSetpointReference](ctx, "setpointReference", ReadComplex[BACnetSetpointReference](BACnetSetpointReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setpointReference' field"))
 	}
-	_setpointReference, _setpointReferenceErr := BACnetSetpointReferenceParseWithBuffer(ctx, readBuffer)
-	if _setpointReferenceErr != nil {
-		return nil, errors.Wrap(_setpointReferenceErr, "Error parsing 'setpointReference' field of BACnetConstructedDataSetpointReference")
-	}
-	setpointReference := _setpointReference.(BACnetSetpointReference)
-	if closeErr := readBuffer.CloseContext("setpointReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for setpointReference")
-	}
+	m.SetpointReference = setpointReference
 
-	// Virtual field
-	_actualValue := setpointReference
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetSetpointReference](ctx, "actualValue", (*BACnetSetpointReference)(nil), setpointReference)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSetpointReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSetpointReference")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataSetpointReference{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		SetpointReference: setpointReference,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataSetpointReference) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataSetpointReference) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSetpointReference")
 		}
 
-		// Simple Field (setpointReference)
-		if pushErr := writeBuffer.PushContext("setpointReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setpointReference")
-		}
-		_setpointReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetSetpointReference())
-		if popErr := writeBuffer.PopContext("setpointReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setpointReference")
-		}
-		if _setpointReferenceErr != nil {
-			return errors.Wrap(_setpointReferenceErr, "Error serializing 'setpointReference' field")
+		if err := WriteSimpleField[BACnetSetpointReference](ctx, "setpointReference", m.GetSetpointReference(), WriteComplex[BACnetSetpointReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setpointReference' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataSetpointReference) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataSetpointReference) isBACnetConstructedDataSetpointReference() bool {
-	return true
-}
+func (m *_BACnetConstructedDataSetpointReference) IsBACnetConstructedDataSetpointReference() {}
 
 func (m *_BACnetConstructedDataSetpointReference) String() string {
 	if m == nil {

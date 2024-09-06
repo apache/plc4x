@@ -37,19 +37,17 @@ type CALDataReset interface {
 	utils.LengthAware
 	utils.Serializable
 	CALData
-}
-
-// CALDataResetExactly can be used when we want exactly this type and not a type which fulfills CALDataReset.
-// This is useful for switch cases.
-type CALDataResetExactly interface {
-	CALDataReset
-	isCALDataReset() bool
+	// IsCALDataReset is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataReset()
 }
 
 // _CALDataReset is the data-structure of this message
 type _CALDataReset struct {
-	*_CALData
+	CALDataContract
 }
+
+var _ CALDataReset = (*_CALDataReset)(nil)
+var _ CALDataRequirements = (*_CALDataReset)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _CALDataReset struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataReset) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.AdditionalData = additionalData
-}
-
-func (m *_CALDataReset) GetParent() CALData {
-	return m._CALData
+func (m *_CALDataReset) GetParent() CALDataContract {
+	return m.CALDataContract
 }
 
 // NewCALDataReset factory function for _CALDataReset
 func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReset {
 	_result := &_CALDataReset{
-		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
-	_result._CALData._CALDataChildRequirements = _result
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_CALDataReset) GetTypeName() string {
 }
 
 func (m *_CALDataReset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_CALDataReset) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataResetParse(ctx context.Context, theBytes []byte, requestContext RequestContext) (CALDataReset, error) {
-	return CALDataResetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
-}
-
-func CALDataResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataReset, error) {
+func (m *_CALDataReset) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, requestContext RequestContext) (__cALDataReset CALDataReset, err error) {
+	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALDataReset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALDataReset")
 	}
@@ -123,14 +112,7 @@ func CALDataResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for CALDataReset")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CALDataReset{
-		_CALData: &_CALData{
-			RequestContext: requestContext,
-		},
-	}
-	_child._CALData._CALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CALDataReset) Serialize() ([]byte, error) {
@@ -156,12 +138,10 @@ func (m *_CALDataReset) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CALDataContract.(*_CALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CALDataReset) isCALDataReset() bool {
-	return true
-}
+func (m *_CALDataReset) IsCALDataReset() {}
 
 func (m *_CALDataReset) String() string {
 	if m == nil {

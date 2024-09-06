@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type NLMUpdateKeyDistributionKey interface {
 	GetKeyRevision() byte
 	// GetKey returns Key (property field)
 	GetKey() NLMUpdateKeyUpdateKeyEntry
-}
-
-// NLMUpdateKeyDistributionKeyExactly can be used when we want exactly this type and not a type which fulfills NLMUpdateKeyDistributionKey.
-// This is useful for switch cases.
-type NLMUpdateKeyDistributionKeyExactly interface {
-	NLMUpdateKeyDistributionKey
-	isNLMUpdateKeyDistributionKey() bool
+	// IsNLMUpdateKeyDistributionKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMUpdateKeyDistributionKey()
 }
 
 // _NLMUpdateKeyDistributionKey is the data-structure of this message
 type _NLMUpdateKeyDistributionKey struct {
-	*_NLM
+	NLMContract
 	KeyRevision byte
 	Key         NLMUpdateKeyUpdateKeyEntry
 }
+
+var _ NLMUpdateKeyDistributionKey = (*_NLMUpdateKeyDistributionKey)(nil)
+var _ NLMRequirements = (*_NLMUpdateKeyDistributionKey)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_NLMUpdateKeyDistributionKey) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMUpdateKeyDistributionKey) InitializeParent(parent NLM) {}
-
-func (m *_NLMUpdateKeyDistributionKey) GetParent() NLM {
-	return m._NLM
+func (m *_NLMUpdateKeyDistributionKey) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,15 @@ func (m *_NLMUpdateKeyDistributionKey) GetKey() NLMUpdateKeyUpdateKeyEntry {
 
 // NewNLMUpdateKeyDistributionKey factory function for _NLMUpdateKeyDistributionKey
 func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyDistributionKey {
+	if key == nil {
+		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMUpdateKeyDistributionKey must not be nil")
+	}
 	_result := &_NLMUpdateKeyDistributionKey{
+		NLMContract: NewNLM(apduLength),
 		KeyRevision: keyRevision,
 		Key:         key,
-		_NLM:        NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -122,7 +123,7 @@ func (m *_NLMUpdateKeyDistributionKey) GetTypeName() string {
 }
 
 func (m *_NLMUpdateKeyDistributionKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (keyRevision)
 	lengthInBits += 8
@@ -137,55 +138,34 @@ func (m *_NLMUpdateKeyDistributionKey) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMUpdateKeyDistributionKeyParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
-	return NLMUpdateKeyDistributionKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMUpdateKeyDistributionKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
+func (m *_NLMUpdateKeyDistributionKey) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMUpdateKeyDistributionKey NLMUpdateKeyDistributionKey, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyDistributionKey"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMUpdateKeyDistributionKey")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (keyRevision)
-	_keyRevision, _keyRevisionErr := readBuffer.ReadByte("keyRevision")
-	if _keyRevisionErr != nil {
-		return nil, errors.Wrap(_keyRevisionErr, "Error parsing 'keyRevision' field of NLMUpdateKeyDistributionKey")
+	keyRevision, err := ReadSimpleField(ctx, "keyRevision", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyRevision' field"))
 	}
-	keyRevision := _keyRevision
+	m.KeyRevision = keyRevision
 
-	// Simple Field (key)
-	if pullErr := readBuffer.PullContext("key"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for key")
+	key, err := ReadSimpleField[NLMUpdateKeyUpdateKeyEntry](ctx, "key", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
-	_key, _keyErr := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx, readBuffer)
-	if _keyErr != nil {
-		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of NLMUpdateKeyDistributionKey")
-	}
-	key := _key.(NLMUpdateKeyUpdateKeyEntry)
-	if closeErr := readBuffer.CloseContext("key"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for key")
-	}
+	m.Key = key
 
 	if closeErr := readBuffer.CloseContext("NLMUpdateKeyDistributionKey"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMUpdateKeyDistributionKey")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMUpdateKeyDistributionKey{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		KeyRevision: keyRevision,
-		Key:         key,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMUpdateKeyDistributionKey) Serialize() ([]byte, error) {
@@ -206,23 +186,12 @@ func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for NLMUpdateKeyDistributionKey")
 		}
 
-		// Simple Field (keyRevision)
-		keyRevision := byte(m.GetKeyRevision())
-		_keyRevisionErr := writeBuffer.WriteByte("keyRevision", (keyRevision))
-		if _keyRevisionErr != nil {
-			return errors.Wrap(_keyRevisionErr, "Error serializing 'keyRevision' field")
+		if err := WriteSimpleField[byte](ctx, "keyRevision", m.GetKeyRevision(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'keyRevision' field")
 		}
 
-		// Simple Field (key)
-		if pushErr := writeBuffer.PushContext("key"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for key")
-		}
-		_keyErr := writeBuffer.WriteSerializable(ctx, m.GetKey())
-		if popErr := writeBuffer.PopContext("key"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for key")
-		}
-		if _keyErr != nil {
-			return errors.Wrap(_keyErr, "Error serializing 'key' field")
+		if err := WriteSimpleField[NLMUpdateKeyUpdateKeyEntry](ctx, "key", m.GetKey(), WriteComplex[NLMUpdateKeyUpdateKeyEntry](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'key' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMUpdateKeyDistributionKey"); popErr != nil {
@@ -230,12 +199,10 @@ func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMUpdateKeyDistributionKey) isNLMUpdateKeyDistributionKey() bool {
-	return true
-}
+func (m *_NLMUpdateKeyDistributionKey) IsNLMUpdateKeyDistributionKey() {}
 
 func (m *_NLMUpdateKeyDistributionKey) String() string {
 	if m == nil {

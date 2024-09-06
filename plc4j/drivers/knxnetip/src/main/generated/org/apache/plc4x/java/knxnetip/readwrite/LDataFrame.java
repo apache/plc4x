@@ -108,8 +108,7 @@ public abstract class LDataFrame implements Message {
         "priority",
         "CEMIPriority",
         priority,
-        new DataWriterEnumDefault<>(
-            CEMIPriority::getValue, CEMIPriority::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(CEMIPriority::getValue, CEMIPriority::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (acknowledgeRequested)
     writeSimpleField("acknowledgeRequested", acknowledgeRequested, writeBoolean(writeBuffer));
@@ -177,8 +176,7 @@ public abstract class LDataFrame implements Message {
         readEnumField(
             "priority",
             "CEMIPriority",
-            new DataReaderEnumDefault<>(
-                CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     boolean acknowledgeRequested = readSimpleField("acknowledgeRequested", readBoolean(readBuffer));
 

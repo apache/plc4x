@@ -37,19 +37,17 @@ type DataSetReaderTransportDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// DataSetReaderTransportDataTypeExactly can be used when we want exactly this type and not a type which fulfills DataSetReaderTransportDataType.
-// This is useful for switch cases.
-type DataSetReaderTransportDataTypeExactly interface {
-	DataSetReaderTransportDataType
-	isDataSetReaderTransportDataType() bool
+	// IsDataSetReaderTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSetReaderTransportDataType()
 }
 
 // _DataSetReaderTransportDataType is the data-structure of this message
 type _DataSetReaderTransportDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ DataSetReaderTransportDataType = (*_DataSetReaderTransportDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DataSetReaderTransportDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_DataSetReaderTransportDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DataSetReaderTransportDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_DataSetReaderTransportDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_DataSetReaderTransportDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewDataSetReaderTransportDataType factory function for _DataSetReaderTransportDataType
 func NewDataSetReaderTransportDataType() *_DataSetReaderTransportDataType {
 	_result := &_DataSetReaderTransportDataType{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_DataSetReaderTransportDataType) GetTypeName() string {
 }
 
 func (m *_DataSetReaderTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_DataSetReaderTransportDataType) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DataSetReaderTransportDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (DataSetReaderTransportDataType, error) {
-	return DataSetReaderTransportDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func DataSetReaderTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataSetReaderTransportDataType, error) {
+func (m *_DataSetReaderTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetReaderTransportDataType DataSetReaderTransportDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DataSetReaderTransportDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DataSetReaderTransportDataType")
 	}
@@ -124,12 +116,7 @@ func DataSetReaderTransportDataTypeParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(closeErr, "Error closing for DataSetReaderTransportDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DataSetReaderTransportDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DataSetReaderTransportDataType) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_DataSetReaderTransportDataType) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DataSetReaderTransportDataType) isDataSetReaderTransportDataType() bool {
-	return true
-}
+func (m *_DataSetReaderTransportDataType) IsDataSetReaderTransportDataType() {}
 
 func (m *_DataSetReaderTransportDataType) String() string {
 	if m == nil {

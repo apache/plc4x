@@ -37,19 +37,17 @@ type SecurityDataOtherAlarmRaised interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataOtherAlarmRaisedExactly can be used when we want exactly this type and not a type which fulfills SecurityDataOtherAlarmRaised.
-// This is useful for switch cases.
-type SecurityDataOtherAlarmRaisedExactly interface {
-	SecurityDataOtherAlarmRaised
-	isSecurityDataOtherAlarmRaised() bool
+	// IsSecurityDataOtherAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataOtherAlarmRaised()
 }
 
 // _SecurityDataOtherAlarmRaised is the data-structure of this message
 type _SecurityDataOtherAlarmRaised struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataOtherAlarmRaised = (*_SecurityDataOtherAlarmRaised)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataOtherAlarmRaised)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataOtherAlarmRaised struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataOtherAlarmRaised) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataOtherAlarmRaised) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataOtherAlarmRaised) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataOtherAlarmRaised factory function for _SecurityDataOtherAlarmRaised
 func NewSecurityDataOtherAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataOtherAlarmRaised {
 	_result := &_SecurityDataOtherAlarmRaised{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataOtherAlarmRaised) GetTypeName() string {
 }
 
 func (m *_SecurityDataOtherAlarmRaised) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataOtherAlarmRaised) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataOtherAlarmRaisedParse(ctx context.Context, theBytes []byte) (SecurityDataOtherAlarmRaised, error) {
-	return SecurityDataOtherAlarmRaisedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataOtherAlarmRaisedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataOtherAlarmRaised, error) {
+func (m *_SecurityDataOtherAlarmRaised) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataOtherAlarmRaised SecurityDataOtherAlarmRaised, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataOtherAlarmRaised"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataOtherAlarmRaised")
 	}
@@ -123,12 +112,7 @@ func SecurityDataOtherAlarmRaisedParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataOtherAlarmRaised")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataOtherAlarmRaised{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataOtherAlarmRaised) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataOtherAlarmRaised) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataOtherAlarmRaised) isSecurityDataOtherAlarmRaised() bool {
-	return true
-}
+func (m *_SecurityDataOtherAlarmRaised) IsSecurityDataOtherAlarmRaised() {}
 
 func (m *_SecurityDataOtherAlarmRaised) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,44 +35,35 @@ import (
 
 // AdsDiscoveryBlock is the corresponding interface of AdsDiscoveryBlock
 type AdsDiscoveryBlock interface {
+	AdsDiscoveryBlockContract
+	AdsDiscoveryBlockRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsAdsDiscoveryBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlock()
+}
+
+// AdsDiscoveryBlockContract provides a set of functions which can be overwritten by a sub struct
+type AdsDiscoveryBlockContract interface {
+	// IsAdsDiscoveryBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlock()
+}
+
+// AdsDiscoveryBlockRequirements provides a set of functions which need to be implemented by a sub struct
+type AdsDiscoveryBlockRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetBlockType returns BlockType (discriminator field)
 	GetBlockType() AdsDiscoveryBlockType
 }
 
-// AdsDiscoveryBlockExactly can be used when we want exactly this type and not a type which fulfills AdsDiscoveryBlock.
-// This is useful for switch cases.
-type AdsDiscoveryBlockExactly interface {
-	AdsDiscoveryBlock
-	isAdsDiscoveryBlock() bool
-}
-
 // _AdsDiscoveryBlock is the data-structure of this message
 type _AdsDiscoveryBlock struct {
-	_AdsDiscoveryBlockChildRequirements
+	_SubType AdsDiscoveryBlock
 }
 
-type _AdsDiscoveryBlockChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetBlockType() AdsDiscoveryBlockType
-}
-
-type AdsDiscoveryBlockParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsDiscoveryBlock, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type AdsDiscoveryBlockChild interface {
-	utils.Serializable
-	InitializeParent(parent AdsDiscoveryBlock)
-	GetParent() *AdsDiscoveryBlock
-
-	GetTypeName() string
-	AdsDiscoveryBlock
-}
+var _ AdsDiscoveryBlockContract = (*_AdsDiscoveryBlock)(nil)
 
 // NewAdsDiscoveryBlock factory function for _AdsDiscoveryBlock
 func NewAdsDiscoveryBlock() *_AdsDiscoveryBlock {
@@ -92,7 +85,7 @@ func (m *_AdsDiscoveryBlock) GetTypeName() string {
 	return "AdsDiscoveryBlock"
 }
 
-func (m *_AdsDiscoveryBlock) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlock) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (blockType)
 	lengthInBits += 16
@@ -101,83 +94,98 @@ func (m *_AdsDiscoveryBlock) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_AdsDiscoveryBlock) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlock, error) {
-	return AdsDiscoveryBlockParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func AdsDiscoveryBlockParse[T AdsDiscoveryBlock](ctx context.Context, theBytes []byte) (T, error) {
+	return AdsDiscoveryBlockParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDiscoveryBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlock, error) {
+func AdsDiscoveryBlockParseWithBufferProducer[T AdsDiscoveryBlock]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := AdsDiscoveryBlockParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func AdsDiscoveryBlockParseWithBuffer[T AdsDiscoveryBlock](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_AdsDiscoveryBlock{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_AdsDiscoveryBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDiscoveryBlock AdsDiscoveryBlock, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (blockType) (Used as input to a switch field)
-	if pullErr := readBuffer.PullContext("blockType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for blockType")
-	}
-	blockType_temp, _blockTypeErr := AdsDiscoveryBlockTypeParseWithBuffer(ctx, readBuffer)
-	var blockType AdsDiscoveryBlockType = blockType_temp
-	if closeErr := readBuffer.CloseContext("blockType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for blockType")
-	}
-	if _blockTypeErr != nil {
-		return nil, errors.Wrap(_blockTypeErr, "Error parsing 'blockType' field of AdsDiscoveryBlock")
+	blockType, err := ReadDiscriminatorEnumField[AdsDiscoveryBlockType](ctx, "blockType", "AdsDiscoveryBlockType", ReadEnum(AdsDiscoveryBlockTypeByValue, ReadUnsignedShort(readBuffer, uint8(16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blockType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type AdsDiscoveryBlockChildSerializeRequirement interface {
-		AdsDiscoveryBlock
-		InitializeParent(AdsDiscoveryBlock)
-		GetParent() AdsDiscoveryBlock
-	}
-	var _childTemp any
-	var _child AdsDiscoveryBlockChildSerializeRequirement
-	var typeSwitchError error
+	var _child AdsDiscoveryBlock
 	switch {
 	case blockType == AdsDiscoveryBlockType_STATUS: // AdsDiscoveryBlockStatus
-		_childTemp, typeSwitchError = AdsDiscoveryBlockStatusParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockStatus{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockStatus for type-switch of AdsDiscoveryBlock")
+		}
 	case blockType == AdsDiscoveryBlockType_PASSWORD: // AdsDiscoveryBlockPassword
-		_childTemp, typeSwitchError = AdsDiscoveryBlockPasswordParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockPassword{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockPassword for type-switch of AdsDiscoveryBlock")
+		}
 	case blockType == AdsDiscoveryBlockType_VERSION: // AdsDiscoveryBlockVersion
-		_childTemp, typeSwitchError = AdsDiscoveryBlockVersionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockVersion{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockVersion for type-switch of AdsDiscoveryBlock")
+		}
 	case blockType == AdsDiscoveryBlockType_OS_DATA: // AdsDiscoveryBlockOsData
-		_childTemp, typeSwitchError = AdsDiscoveryBlockOsDataParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockOsData{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockOsData for type-switch of AdsDiscoveryBlock")
+		}
 	case blockType == AdsDiscoveryBlockType_HOST_NAME: // AdsDiscoveryBlockHostName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockHostNameParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockHostName{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockHostName for type-switch of AdsDiscoveryBlock")
+		}
 	case blockType == AdsDiscoveryBlockType_AMS_NET_ID: // AdsDiscoveryBlockAmsNetId
-		_childTemp, typeSwitchError = AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockAmsNetId{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockAmsNetId for type-switch of AdsDiscoveryBlock")
+		}
 	case blockType == AdsDiscoveryBlockType_ROUTE_NAME: // AdsDiscoveryBlockRouteName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockRouteNameParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockRouteName{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockRouteName for type-switch of AdsDiscoveryBlock")
+		}
 	case blockType == AdsDiscoveryBlockType_USER_NAME: // AdsDiscoveryBlockUserName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockUserNameParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockUserName{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockUserName for type-switch of AdsDiscoveryBlock")
+		}
 	case blockType == AdsDiscoveryBlockType_FINGERPRINT: // AdsDiscoveryBlockFingerprint
-		_childTemp, typeSwitchError = AdsDiscoveryBlockFingerprintParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AdsDiscoveryBlockFingerprint{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockFingerprint for type-switch of AdsDiscoveryBlock")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [blockType=%v]", blockType)
+		return nil, errors.Errorf("Unmapped type for parameters [blockType=%v]", blockType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AdsDiscoveryBlock")
-	}
-	_child = _childTemp.(AdsDiscoveryBlockChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlock"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDiscoveryBlock")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_AdsDiscoveryBlock) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsDiscoveryBlock, serializeChildFunction func() error) error {
+func (pm *_AdsDiscoveryBlock) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsDiscoveryBlock, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -189,18 +197,8 @@ func (pm *_AdsDiscoveryBlock) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlock")
 	}
 
-	// Discriminator Field (blockType) (Used as input to a switch field)
-	blockType := AdsDiscoveryBlockType(child.GetBlockType())
-	if pushErr := writeBuffer.PushContext("blockType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for blockType")
-	}
-	_blockTypeErr := writeBuffer.WriteSerializable(ctx, blockType)
-	if popErr := writeBuffer.PopContext("blockType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for blockType")
-	}
-
-	if _blockTypeErr != nil {
-		return errors.Wrap(_blockTypeErr, "Error serializing 'blockType' field")
+	if err := WriteDiscriminatorEnumField(ctx, "blockType", "AdsDiscoveryBlockType", m.GetBlockType(), WriteEnum[AdsDiscoveryBlockType, uint16](AdsDiscoveryBlockType.GetValue, AdsDiscoveryBlockType.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+		return errors.Wrap(err, "Error serializing 'blockType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -214,17 +212,4 @@ func (pm *_AdsDiscoveryBlock) SerializeParent(ctx context.Context, writeBuffer u
 	return nil
 }
 
-func (m *_AdsDiscoveryBlock) isAdsDiscoveryBlock() bool {
-	return true
-}
-
-func (m *_AdsDiscoveryBlock) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_AdsDiscoveryBlock) IsAdsDiscoveryBlock() {}

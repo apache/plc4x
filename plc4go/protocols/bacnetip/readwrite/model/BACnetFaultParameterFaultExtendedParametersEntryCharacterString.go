@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultExtendedParametersEntryCharacterString interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetFaultParameterFaultExtendedParametersEntryCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryCharacterString.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultExtendedParametersEntryCharacterStringExactly interface {
-	BACnetFaultParameterFaultExtendedParametersEntryCharacterString
-	isBACnetFaultParameterFaultExtendedParametersEntryCharacterString() bool
+	// IsBACnetFaultParameterFaultExtendedParametersEntryCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryCharacterString()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryCharacterString is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryCharacterString struct {
-	*_BACnetFaultParameterFaultExtendedParametersEntry
+	BACnetFaultParameterFaultExtendedParametersEntryContract
 	CharacterStringValue BACnetApplicationTagCharacterString
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryCharacterString = (*_BACnetFaultParameterFaultExtendedParametersEntryCharacterString)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryCharacterString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryCharacterString struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetParent() BACnetFaultParameterFaultExtendedParametersEntry {
-	return m._BACnetFaultParameterFaultExtendedParametersEntry
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetParent() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetCh
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString factory function for _BACnetFaultParameterFaultExtendedParametersEntryCharacterString
 func NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString {
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{
-		CharacterStringValue:                              characterStringValue,
-		_BACnetFaultParameterFaultExtendedParametersEntry: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetFaultParameterFaultExtendedParametersEntryCharacterString must not be nil")
 	}
-	_result._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		CharacterStringValue: characterStringValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetTy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (characterStringValue)
 	lengthInBits += m.CharacterStringValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetLe
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryCharacterStringParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryCharacterString, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultExtendedParametersEntryCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryCharacterString, error) {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryCharacterString BACnetFaultParameterFaultExtendedParametersEntryCharacterString, err error) {
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryCharacterString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (characterStringValue)
-	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
+	characterStringValue, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterStringValue' field"))
 	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _characterStringValueErr != nil {
-		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetFaultParameterFaultExtendedParametersEntryCharacterString")
-	}
-	characterStringValue := _characterStringValue.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for characterStringValue")
-	}
+	m.CharacterStringValue = characterStringValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryCharacterString")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{
-		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
-		CharacterStringValue:                              characterStringValue,
-	}
-	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) Seria
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryCharacterString")
 		}
 
-		// Simple Field (characterStringValue)
-		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
-		}
-		_characterStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterStringValue())
-		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for characterStringValue")
-		}
-		if _characterStringValueErr != nil {
-			return errors.Wrap(_characterStringValueErr, "Error serializing 'characterStringValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", m.GetCharacterStringValue(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'characterStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) Seria
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) isBACnetFaultParameterFaultExtendedParametersEntryCharacterString() bool {
-	return true
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) IsBACnetFaultParameterFaultExtendedParametersEntryCharacterString() {
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) String() string {

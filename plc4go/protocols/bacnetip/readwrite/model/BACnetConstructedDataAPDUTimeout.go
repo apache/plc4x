@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAPDUTimeout interface {
 	GetApduTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataAPDUTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDUTimeout.
-// This is useful for switch cases.
-type BACnetConstructedDataAPDUTimeoutExactly interface {
-	BACnetConstructedDataAPDUTimeout
-	isBACnetConstructedDataAPDUTimeout() bool
+	// IsBACnetConstructedDataAPDUTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAPDUTimeout()
 }
 
 // _BACnetConstructedDataAPDUTimeout is the data-structure of this message
 type _BACnetConstructedDataAPDUTimeout struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ApduTimeout BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataAPDUTimeout = (*_BACnetConstructedDataAPDUTimeout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAPDUTimeout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAPDUTimeout) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAPDUTimeout) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAPDUTimeout) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAPDUTimeout) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAPDUTimeout) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataAPDUTimeout factory function for _BACnetConstructedDataAPDUTimeout
 func NewBACnetConstructedDataAPDUTimeout(apduTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUTimeout {
-	_result := &_BACnetConstructedDataAPDUTimeout{
-		ApduTimeout:            apduTimeout,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if apduTimeout == nil {
+		panic("apduTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUTimeout must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAPDUTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ApduTimeout:                   apduTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAPDUTimeout) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (apduTimeout)
 	lengthInBits += m.ApduTimeout.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAPDUTimeoutParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUTimeout, error) {
-	return BACnetConstructedDataAPDUTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAPDUTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUTimeout, error) {
+func (m *_BACnetConstructedDataAPDUTimeout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAPDUTimeout BACnetConstructedDataAPDUTimeout, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAPDUTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAPDUTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (apduTimeout)
-	if pullErr := readBuffer.PullContext("apduTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for apduTimeout")
+	apduTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduTimeout' field"))
 	}
-	_apduTimeout, _apduTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _apduTimeoutErr != nil {
-		return nil, errors.Wrap(_apduTimeoutErr, "Error parsing 'apduTimeout' field of BACnetConstructedDataAPDUTimeout")
-	}
-	apduTimeout := _apduTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("apduTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for apduTimeout")
-	}
+	m.ApduTimeout = apduTimeout
 
-	// Virtual field
-	_actualValue := apduTimeout
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), apduTimeout)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAPDUTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAPDUTimeout")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAPDUTimeout{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ApduTimeout: apduTimeout,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAPDUTimeout) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAPDUTimeout) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAPDUTimeout")
 		}
 
-		// Simple Field (apduTimeout)
-		if pushErr := writeBuffer.PushContext("apduTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for apduTimeout")
-		}
-		_apduTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetApduTimeout())
-		if popErr := writeBuffer.PopContext("apduTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for apduTimeout")
-		}
-		if _apduTimeoutErr != nil {
-			return errors.Wrap(_apduTimeoutErr, "Error serializing 'apduTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduTimeout", m.GetApduTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'apduTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAPDUTimeout) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAPDUTimeout) isBACnetConstructedDataAPDUTimeout() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAPDUTimeout) IsBACnetConstructedDataAPDUTimeout() {}
 
 func (m *_BACnetConstructedDataAPDUTimeout) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type PortSegment interface {
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() PortSegmentType
-}
-
-// PortSegmentExactly can be used when we want exactly this type and not a type which fulfills PortSegment.
-// This is useful for switch cases.
-type PortSegmentExactly interface {
-	PortSegment
-	isPortSegment() bool
+	// IsPortSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortSegment()
 }
 
 // _PortSegment is the data-structure of this message
 type _PortSegment struct {
-	*_PathSegment
+	PathSegmentContract
 	SegmentType PortSegmentType
 }
+
+var _ PortSegment = (*_PortSegment)(nil)
+var _ PathSegmentRequirements = (*_PortSegment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_PortSegment) GetPathSegment() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PortSegment) InitializeParent(parent PathSegment) {}
-
-func (m *_PortSegment) GetParent() PathSegment {
-	return m._PathSegment
+func (m *_PortSegment) GetParent() PathSegmentContract {
+	return m.PathSegmentContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_PortSegment) GetSegmentType() PortSegmentType {
 
 // NewPortSegment factory function for _PortSegment
 func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
-	_result := &_PortSegment{
-		SegmentType:  segmentType,
-		_PathSegment: NewPathSegment(),
+	if segmentType == nil {
+		panic("segmentType of type PortSegmentType for PortSegment must not be nil")
 	}
-	_result._PathSegment._PathSegmentChildRequirements = _result
+	_result := &_PortSegment{
+		PathSegmentContract: NewPathSegment(),
+		SegmentType:         segmentType,
+	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_PortSegment) GetTypeName() string {
 }
 
 func (m *_PortSegment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.PathSegmentContract.(*_PathSegment).getLengthInBits(ctx))
 
 	// Simple field (segmentType)
 	lengthInBits += m.SegmentType.GetLengthInBits(ctx)
@@ -126,45 +127,28 @@ func (m *_PortSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PortSegmentParse(ctx context.Context, theBytes []byte) (PortSegment, error) {
-	return PortSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func PortSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegment, error) {
+func (m *_PortSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_PathSegment) (__portSegment PortSegment, err error) {
+	m.PathSegmentContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PortSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PortSegment")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (segmentType)
-	if pullErr := readBuffer.PullContext("segmentType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for segmentType")
+	segmentType, err := ReadSimpleField[PortSegmentType](ctx, "segmentType", ReadComplex[PortSegmentType](PortSegmentTypeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentType' field"))
 	}
-	_segmentType, _segmentTypeErr := PortSegmentTypeParseWithBuffer(ctx, readBuffer)
-	if _segmentTypeErr != nil {
-		return nil, errors.Wrap(_segmentTypeErr, "Error parsing 'segmentType' field of PortSegment")
-	}
-	segmentType := _segmentType.(PortSegmentType)
-	if closeErr := readBuffer.CloseContext("segmentType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for segmentType")
-	}
+	m.SegmentType = segmentType
 
 	if closeErr := readBuffer.CloseContext("PortSegment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PortSegment")
 	}
 
-	// Create a partially initialized instance
-	_child := &_PortSegment{
-		_PathSegment: &_PathSegment{},
-		SegmentType:  segmentType,
-	}
-	_child._PathSegment._PathSegmentChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_PortSegment) Serialize() ([]byte, error) {
@@ -185,16 +169,8 @@ func (m *_PortSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for PortSegment")
 		}
 
-		// Simple Field (segmentType)
-		if pushErr := writeBuffer.PushContext("segmentType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for segmentType")
-		}
-		_segmentTypeErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentType())
-		if popErr := writeBuffer.PopContext("segmentType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for segmentType")
-		}
-		if _segmentTypeErr != nil {
-			return errors.Wrap(_segmentTypeErr, "Error serializing 'segmentType' field")
+		if err := WriteSimpleField[PortSegmentType](ctx, "segmentType", m.GetSegmentType(), WriteComplex[PortSegmentType](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PortSegment"); popErr != nil {
@@ -202,12 +178,10 @@ func (m *_PortSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.PathSegmentContract.(*_PathSegment).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_PortSegment) isPortSegment() bool {
-	return true
-}
+func (m *_PortSegment) IsPortSegment() {}
 
 func (m *_PortSegment) String() string {
 	if m == nil {

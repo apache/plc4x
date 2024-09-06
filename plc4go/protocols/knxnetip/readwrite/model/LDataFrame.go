@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,13 +35,17 @@ import (
 
 // LDataFrame is the corresponding interface of LDataFrame
 type LDataFrame interface {
+	LDataFrameContract
+	LDataFrameRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetNotAckFrame returns NotAckFrame (discriminator field)
-	GetNotAckFrame() bool
-	// GetPolling returns Polling (discriminator field)
-	GetPolling() bool
+	// IsLDataFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataFrame()
+}
+
+// LDataFrameContract provides a set of functions which can be overwritten by a sub struct
+type LDataFrameContract interface {
 	// GetFrameType returns FrameType (property field)
 	GetFrameType() bool
 	// GetNotRepeated returns NotRepeated (property field)
@@ -50,18 +56,23 @@ type LDataFrame interface {
 	GetAcknowledgeRequested() bool
 	// GetErrorFlag returns ErrorFlag (property field)
 	GetErrorFlag() bool
+	// IsLDataFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataFrame()
 }
 
-// LDataFrameExactly can be used when we want exactly this type and not a type which fulfills LDataFrame.
-// This is useful for switch cases.
-type LDataFrameExactly interface {
-	LDataFrame
-	isLDataFrame() bool
+// LDataFrameRequirements provides a set of functions which need to be implemented by a sub struct
+type LDataFrameRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetNotAckFrame returns NotAckFrame (discriminator field)
+	GetNotAckFrame() bool
+	// GetPolling returns Polling (discriminator field)
+	GetPolling() bool
 }
 
 // _LDataFrame is the data-structure of this message
 type _LDataFrame struct {
-	_LDataFrameChildRequirements
+	_SubType             LDataFrame
 	FrameType            bool
 	NotRepeated          bool
 	Priority             CEMIPriority
@@ -69,26 +80,7 @@ type _LDataFrame struct {
 	ErrorFlag            bool
 }
 
-type _LDataFrameChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetNotAckFrame() bool
-	GetPolling() bool
-}
-
-type LDataFrameParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LDataFrame, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type LDataFrameChild interface {
-	utils.Serializable
-	InitializeParent(parent LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
-	GetParent() *LDataFrame
-
-	GetTypeName() string
-	LDataFrame
-}
+var _ LDataFrameContract = (*_LDataFrame)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,7 +132,7 @@ func (m *_LDataFrame) GetTypeName() string {
 	return "LDataFrame"
 }
 
-func (m *_LDataFrame) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_LDataFrame) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (frameType)
@@ -166,111 +158,109 @@ func (m *_LDataFrame) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_LDataFrame) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func LDataFrameParse(ctx context.Context, theBytes []byte) (LDataFrame, error) {
-	return LDataFrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func LDataFrameParse[T LDataFrame](ctx context.Context, theBytes []byte) (T, error) {
+	return LDataFrameParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrame, error) {
+func LDataFrameParseWithBufferProducer[T LDataFrame]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := LDataFrameParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func LDataFrameParseWithBuffer[T LDataFrame](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_LDataFrame{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_LDataFrame) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__lDataFrame LDataFrame, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LDataFrame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LDataFrame")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (frameType)
-	_frameType, _frameTypeErr := readBuffer.ReadBit("frameType")
-	if _frameTypeErr != nil {
-		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field of LDataFrame")
+	frameType, err := ReadSimpleField(ctx, "frameType", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'frameType' field"))
 	}
-	frameType := _frameType
+	m.FrameType = frameType
 
-	// Discriminator Field (polling) (Used as input to a switch field)
-	polling, _pollingErr := readBuffer.ReadBit("polling")
-	if _pollingErr != nil {
-		return nil, errors.Wrap(_pollingErr, "Error parsing 'polling' field of LDataFrame")
+	polling, err := ReadDiscriminatorField[bool](ctx, "polling", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'polling' field"))
 	}
 
-	// Simple Field (notRepeated)
-	_notRepeated, _notRepeatedErr := readBuffer.ReadBit("notRepeated")
-	if _notRepeatedErr != nil {
-		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field of LDataFrame")
+	notRepeated, err := ReadSimpleField(ctx, "notRepeated", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notRepeated' field"))
 	}
-	notRepeated := _notRepeated
+	m.NotRepeated = notRepeated
 
-	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame, _notAckFrameErr := readBuffer.ReadBit("notAckFrame")
-	if _notAckFrameErr != nil {
-		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field of LDataFrame")
+	notAckFrame, err := ReadDiscriminatorField[bool](ctx, "notAckFrame", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notAckFrame' field"))
 	}
 
-	// Simple Field (priority)
-	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priority")
+	priority, err := ReadEnumField[CEMIPriority](ctx, "priority", "CEMIPriority", ReadEnum(CEMIPriorityByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}
-	_priority, _priorityErr := CEMIPriorityParseWithBuffer(ctx, readBuffer)
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of LDataFrame")
-	}
-	priority := _priority
-	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priority")
-	}
+	m.Priority = priority
 
-	// Simple Field (acknowledgeRequested)
-	_acknowledgeRequested, _acknowledgeRequestedErr := readBuffer.ReadBit("acknowledgeRequested")
-	if _acknowledgeRequestedErr != nil {
-		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field of LDataFrame")
+	acknowledgeRequested, err := ReadSimpleField(ctx, "acknowledgeRequested", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledgeRequested' field"))
 	}
-	acknowledgeRequested := _acknowledgeRequested
+	m.AcknowledgeRequested = acknowledgeRequested
 
-	// Simple Field (errorFlag)
-	_errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
-	if _errorFlagErr != nil {
-		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field of LDataFrame")
+	errorFlag, err := ReadSimpleField(ctx, "errorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorFlag' field"))
 	}
-	errorFlag := _errorFlag
+	m.ErrorFlag = errorFlag
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type LDataFrameChildSerializeRequirement interface {
-		LDataFrame
-		InitializeParent(LDataFrame, bool, bool, CEMIPriority, bool, bool)
-		GetParent() LDataFrame
-	}
-	var _childTemp any
-	var _child LDataFrameChildSerializeRequirement
-	var typeSwitchError error
+	var _child LDataFrame
 	switch {
 	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
-		_childTemp, typeSwitchError = LDataExtendedParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_LDataExtended{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LDataExtended for type-switch of LDataFrame")
+		}
 	case notAckFrame == bool(true) && polling == bool(true): // LPollData
-		_childTemp, typeSwitchError = LPollDataParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_LPollData{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LPollData for type-switch of LDataFrame")
+		}
 	case notAckFrame == bool(false): // LDataFrameACK
-		_childTemp, typeSwitchError = LDataFrameACKParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_LDataFrameACK{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LDataFrameACK for type-switch of LDataFrame")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [notAckFrame=%v, polling=%v]", notAckFrame, polling)
+		return nil, errors.Errorf("Unmapped type for parameters [notAckFrame=%v, polling=%v]", notAckFrame, polling)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of LDataFrame")
-	}
-	_child = _childTemp.(LDataFrameChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("LDataFrame"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LDataFrame")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, frameType, notRepeated, priority, acknowledgeRequested, errorFlag)
 	return _child, nil
 }
 
-func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LDataFrame, serializeChildFunction func() error) error {
+func (pm *_LDataFrame) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LDataFrame, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -282,60 +272,32 @@ func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(pushErr, "Error pushing for LDataFrame")
 	}
 
-	// Simple Field (frameType)
-	frameType := bool(m.GetFrameType())
-	_frameTypeErr := writeBuffer.WriteBit("frameType", (frameType))
-	if _frameTypeErr != nil {
-		return errors.Wrap(_frameTypeErr, "Error serializing 'frameType' field")
+	if err := WriteSimpleField[bool](ctx, "frameType", m.GetFrameType(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'frameType' field")
 	}
 
-	// Discriminator Field (polling) (Used as input to a switch field)
-	polling := bool(child.GetPolling())
-	_pollingErr := writeBuffer.WriteBit("polling", (polling))
-
-	if _pollingErr != nil {
-		return errors.Wrap(_pollingErr, "Error serializing 'polling' field")
+	if err := WriteDiscriminatorField(ctx, "polling", m.GetPolling(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'polling' field")
 	}
 
-	// Simple Field (notRepeated)
-	notRepeated := bool(m.GetNotRepeated())
-	_notRepeatedErr := writeBuffer.WriteBit("notRepeated", (notRepeated))
-	if _notRepeatedErr != nil {
-		return errors.Wrap(_notRepeatedErr, "Error serializing 'notRepeated' field")
+	if err := WriteSimpleField[bool](ctx, "notRepeated", m.GetNotRepeated(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'notRepeated' field")
 	}
 
-	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame := bool(child.GetNotAckFrame())
-	_notAckFrameErr := writeBuffer.WriteBit("notAckFrame", (notAckFrame))
-
-	if _notAckFrameErr != nil {
-		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
+	if err := WriteDiscriminatorField(ctx, "notAckFrame", m.GetNotAckFrame(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'notAckFrame' field")
 	}
 
-	// Simple Field (priority)
-	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for priority")
-	}
-	_priorityErr := writeBuffer.WriteSerializable(ctx, m.GetPriority())
-	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for priority")
-	}
-	if _priorityErr != nil {
-		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+	if err := WriteSimpleEnumField[CEMIPriority](ctx, "priority", "CEMIPriority", m.GetPriority(), WriteEnum[CEMIPriority, uint8](CEMIPriority.GetValue, CEMIPriority.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 
-	// Simple Field (acknowledgeRequested)
-	acknowledgeRequested := bool(m.GetAcknowledgeRequested())
-	_acknowledgeRequestedErr := writeBuffer.WriteBit("acknowledgeRequested", (acknowledgeRequested))
-	if _acknowledgeRequestedErr != nil {
-		return errors.Wrap(_acknowledgeRequestedErr, "Error serializing 'acknowledgeRequested' field")
+	if err := WriteSimpleField[bool](ctx, "acknowledgeRequested", m.GetAcknowledgeRequested(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'acknowledgeRequested' field")
 	}
 
-	// Simple Field (errorFlag)
-	errorFlag := bool(m.GetErrorFlag())
-	_errorFlagErr := writeBuffer.WriteBit("errorFlag", (errorFlag))
-	if _errorFlagErr != nil {
-		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
+	if err := WriteSimpleField[bool](ctx, "errorFlag", m.GetErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'errorFlag' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -349,17 +311,4 @@ func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 	return nil
 }
 
-func (m *_LDataFrame) isLDataFrame() bool {
-	return true
-}
-
-func (m *_LDataFrame) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_LDataFrame) IsLDataFrame() {}

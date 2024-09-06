@@ -82,7 +82,7 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataAPDULength");
 
     // Simple Field (apduLength)
-    writeSimpleField("apduLength", apduLength, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("apduLength", apduLength, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger apduLength =
         readSimpleField(
             "apduLength",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

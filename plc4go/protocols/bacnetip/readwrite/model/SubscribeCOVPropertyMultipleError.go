@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type SubscribeCOVPropertyMultipleError interface {
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedSubscription returns FirstFailedSubscription (property field)
 	GetFirstFailedSubscription() SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
-}
-
-// SubscribeCOVPropertyMultipleErrorExactly can be used when we want exactly this type and not a type which fulfills SubscribeCOVPropertyMultipleError.
-// This is useful for switch cases.
-type SubscribeCOVPropertyMultipleErrorExactly interface {
-	SubscribeCOVPropertyMultipleError
-	isSubscribeCOVPropertyMultipleError() bool
+	// IsSubscribeCOVPropertyMultipleError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSubscribeCOVPropertyMultipleError()
 }
 
 // _SubscribeCOVPropertyMultipleError is the data-structure of this message
 type _SubscribeCOVPropertyMultipleError struct {
-	*_BACnetError
+	BACnetErrorContract
 	ErrorType               ErrorEnclosed
 	FirstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
 }
+
+var _ SubscribeCOVPropertyMultipleError = (*_SubscribeCOVPropertyMultipleError)(nil)
+var _ BACnetErrorRequirements = (*_SubscribeCOVPropertyMultipleError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_SubscribeCOVPropertyMultipleError) GetErrorChoice() BACnetConfirmedSer
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SubscribeCOVPropertyMultipleError) InitializeParent(parent BACnetError) {}
-
-func (m *_SubscribeCOVPropertyMultipleError) GetParent() BACnetError {
-	return m._BACnetError
+func (m *_SubscribeCOVPropertyMultipleError) GetParent() BACnetErrorContract {
+	return m.BACnetErrorContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_SubscribeCOVPropertyMultipleError) GetFirstFailedSubscription() Subscr
 
 // NewSubscribeCOVPropertyMultipleError factory function for _SubscribeCOVPropertyMultipleError
 func NewSubscribeCOVPropertyMultipleError(errorType ErrorEnclosed, firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) *_SubscribeCOVPropertyMultipleError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for SubscribeCOVPropertyMultipleError must not be nil")
+	}
+	if firstFailedSubscription == nil {
+		panic("firstFailedSubscription of type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription for SubscribeCOVPropertyMultipleError must not be nil")
+	}
 	_result := &_SubscribeCOVPropertyMultipleError{
+		BACnetErrorContract:     NewBACnetError(),
 		ErrorType:               errorType,
 		FirstFailedSubscription: firstFailedSubscription,
-		_BACnetError:            NewBACnetError(),
 	}
-	_result._BACnetError._BACnetErrorChildRequirements = _result
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_SubscribeCOVPropertyMultipleError) GetTypeName() string {
 }
 
 func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
 
 	// Simple field (errorType)
 	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
@@ -137,59 +141,34 @@ func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SubscribeCOVPropertyMultipleErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
-	return SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
-}
-
-func SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
+func (m *_SubscribeCOVPropertyMultipleError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__subscribeCOVPropertyMultipleError SubscribeCOVPropertyMultipleError, err error) {
+	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SubscribeCOVPropertyMultipleError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SubscribeCOVPropertyMultipleError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorType)
-	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
+	errorType, err := ReadSimpleField[ErrorEnclosed](ctx, "errorType", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorType' field"))
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of SubscribeCOVPropertyMultipleError")
-	}
-	errorType := _errorType.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorType")
-	}
+	m.ErrorType = errorType
 
-	// Simple Field (firstFailedSubscription)
-	if pullErr := readBuffer.PullContext("firstFailedSubscription"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedSubscription")
+	firstFailedSubscription, err := ReadSimpleField[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](ctx, "firstFailedSubscription", ReadComplex[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firstFailedSubscription' field"))
 	}
-	_firstFailedSubscription, _firstFailedSubscriptionErr := SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _firstFailedSubscriptionErr != nil {
-		return nil, errors.Wrap(_firstFailedSubscriptionErr, "Error parsing 'firstFailedSubscription' field of SubscribeCOVPropertyMultipleError")
-	}
-	firstFailedSubscription := _firstFailedSubscription.(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription)
-	if closeErr := readBuffer.CloseContext("firstFailedSubscription"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for firstFailedSubscription")
-	}
+	m.FirstFailedSubscription = firstFailedSubscription
 
 	if closeErr := readBuffer.CloseContext("SubscribeCOVPropertyMultipleError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SubscribeCOVPropertyMultipleError")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SubscribeCOVPropertyMultipleError{
-		_BACnetError:            &_BACnetError{},
-		ErrorType:               errorType,
-		FirstFailedSubscription: firstFailedSubscription,
-	}
-	_child._BACnetError._BACnetErrorChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SubscribeCOVPropertyMultipleError) Serialize() ([]byte, error) {
@@ -210,28 +189,12 @@ func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for SubscribeCOVPropertyMultipleError")
 		}
 
-		// Simple Field (errorType)
-		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorType")
-		}
-		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorType")
-		}
-		if _errorTypeErr != nil {
-			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		// Simple Field (firstFailedSubscription)
-		if pushErr := writeBuffer.PushContext("firstFailedSubscription"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for firstFailedSubscription")
-		}
-		_firstFailedSubscriptionErr := writeBuffer.WriteSerializable(ctx, m.GetFirstFailedSubscription())
-		if popErr := writeBuffer.PopContext("firstFailedSubscription"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for firstFailedSubscription")
-		}
-		if _firstFailedSubscriptionErr != nil {
-			return errors.Wrap(_firstFailedSubscriptionErr, "Error serializing 'firstFailedSubscription' field")
+		if err := WriteSimpleField[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](ctx, "firstFailedSubscription", m.GetFirstFailedSubscription(), WriteComplex[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'firstFailedSubscription' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SubscribeCOVPropertyMultipleError"); popErr != nil {
@@ -239,12 +202,10 @@ func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetErrorContract.(*_BACnetError).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SubscribeCOVPropertyMultipleError) isSubscribeCOVPropertyMultipleError() bool {
-	return true
-}
+func (m *_SubscribeCOVPropertyMultipleError) IsSubscribeCOVPropertyMultipleError() {}
 
 func (m *_SubscribeCOVPropertyMultipleError) String() string {
 	if m == nil {

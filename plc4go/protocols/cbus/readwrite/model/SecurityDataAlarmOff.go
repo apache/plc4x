@@ -37,19 +37,17 @@ type SecurityDataAlarmOff interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataAlarmOffExactly can be used when we want exactly this type and not a type which fulfills SecurityDataAlarmOff.
-// This is useful for switch cases.
-type SecurityDataAlarmOffExactly interface {
-	SecurityDataAlarmOff
-	isSecurityDataAlarmOff() bool
+	// IsSecurityDataAlarmOff is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataAlarmOff()
 }
 
 // _SecurityDataAlarmOff is the data-structure of this message
 type _SecurityDataAlarmOff struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataAlarmOff = (*_SecurityDataAlarmOff)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataAlarmOff)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataAlarmOff struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataAlarmOff) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataAlarmOff) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataAlarmOff) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataAlarmOff factory function for _SecurityDataAlarmOff
 func NewSecurityDataAlarmOff(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataAlarmOff {
 	_result := &_SecurityDataAlarmOff{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataAlarmOff) GetTypeName() string {
 }
 
 func (m *_SecurityDataAlarmOff) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataAlarmOff) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataAlarmOffParse(ctx context.Context, theBytes []byte) (SecurityDataAlarmOff, error) {
-	return SecurityDataAlarmOffParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataAlarmOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataAlarmOff, error) {
+func (m *_SecurityDataAlarmOff) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataAlarmOff SecurityDataAlarmOff, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataAlarmOff"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataAlarmOff")
 	}
@@ -123,12 +112,7 @@ func SecurityDataAlarmOffParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataAlarmOff")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataAlarmOff{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataAlarmOff) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataAlarmOff) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataAlarmOff) isSecurityDataAlarmOff() bool {
-	return true
-}
+func (m *_SecurityDataAlarmOff) IsSecurityDataAlarmOff() {}
 
 func (m *_SecurityDataAlarmOff) String() string {
 	if m == nil {

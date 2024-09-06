@@ -37,19 +37,17 @@ type MeteringDataMeasureOtherWater interface {
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
-}
-
-// MeteringDataMeasureOtherWaterExactly can be used when we want exactly this type and not a type which fulfills MeteringDataMeasureOtherWater.
-// This is useful for switch cases.
-type MeteringDataMeasureOtherWaterExactly interface {
-	MeteringDataMeasureOtherWater
-	isMeteringDataMeasureOtherWater() bool
+	// IsMeteringDataMeasureOtherWater is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataMeasureOtherWater()
 }
 
 // _MeteringDataMeasureOtherWater is the data-structure of this message
 type _MeteringDataMeasureOtherWater struct {
-	*_MeteringData
+	MeteringDataContract
 }
+
+var _ MeteringDataMeasureOtherWater = (*_MeteringDataMeasureOtherWater)(nil)
+var _ MeteringDataRequirements = (*_MeteringDataMeasureOtherWater)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _MeteringDataMeasureOtherWater struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MeteringDataMeasureOtherWater) InitializeParent(parent MeteringData, commandTypeContainer MeteringCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_MeteringDataMeasureOtherWater) GetParent() MeteringData {
-	return m._MeteringData
+func (m *_MeteringDataMeasureOtherWater) GetParent() MeteringDataContract {
+	return m.MeteringDataContract
 }
 
 // NewMeteringDataMeasureOtherWater factory function for _MeteringDataMeasureOtherWater
 func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureOtherWater {
 	_result := &_MeteringDataMeasureOtherWater{
-		_MeteringData: NewMeteringData(commandTypeContainer, argument),
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 	}
-	_result._MeteringData._MeteringDataChildRequirements = _result
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_MeteringDataMeasureOtherWater) GetTypeName() string {
 }
 
 func (m *_MeteringDataMeasureOtherWater) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_MeteringDataMeasureOtherWater) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataMeasureOtherWaterParse(ctx context.Context, theBytes []byte) (MeteringDataMeasureOtherWater, error) {
-	return MeteringDataMeasureOtherWaterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MeteringDataMeasureOtherWaterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureOtherWater, error) {
+func (m *_MeteringDataMeasureOtherWater) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeteringData) (__meteringDataMeasureOtherWater MeteringDataMeasureOtherWater, err error) {
+	m.MeteringDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeteringDataMeasureOtherWater"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeteringDataMeasureOtherWater")
 	}
@@ -123,12 +112,7 @@ func MeteringDataMeasureOtherWaterParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for MeteringDataMeasureOtherWater")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MeteringDataMeasureOtherWater{
-		_MeteringData: &_MeteringData{},
-	}
-	_child._MeteringData._MeteringDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MeteringDataMeasureOtherWater) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_MeteringDataMeasureOtherWater) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MeteringDataContract.(*_MeteringData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MeteringDataMeasureOtherWater) isMeteringDataMeasureOtherWater() bool {
-	return true
-}
+func (m *_MeteringDataMeasureOtherWater) IsMeteringDataMeasureOtherWater() {}
 
 func (m *_MeteringDataMeasureOtherWater) String() string {
 	if m == nil {

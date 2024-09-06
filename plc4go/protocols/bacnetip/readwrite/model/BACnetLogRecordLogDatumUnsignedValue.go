@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogRecordLogDatumUnsignedValue interface {
 	BACnetLogRecordLogDatum
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
-}
-
-// BACnetLogRecordLogDatumUnsignedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumUnsignedValue.
-// This is useful for switch cases.
-type BACnetLogRecordLogDatumUnsignedValueExactly interface {
-	BACnetLogRecordLogDatumUnsignedValue
-	isBACnetLogRecordLogDatumUnsignedValue() bool
+	// IsBACnetLogRecordLogDatumUnsignedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumUnsignedValue()
 }
 
 // _BACnetLogRecordLogDatumUnsignedValue is the data-structure of this message
 type _BACnetLogRecordLogDatumUnsignedValue struct {
-	*_BACnetLogRecordLogDatum
+	BACnetLogRecordLogDatumContract
 	UnsignedValue BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetLogRecordLogDatumUnsignedValue = (*_BACnetLogRecordLogDatumUnsignedValue)(nil)
+var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumUnsignedValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetLogRecordLogDatumUnsignedValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogRecordLogDatumUnsignedValue) InitializeParent(parent BACnetLogRecordLogDatum, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetLogRecordLogDatumUnsignedValue) GetParent() BACnetLogRecordLogDatum {
-	return m._BACnetLogRecordLogDatum
+func (m *_BACnetLogRecordLogDatumUnsignedValue) GetParent() BACnetLogRecordLogDatumContract {
+	return m.BACnetLogRecordLogDatumContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) GetUnsignedValue() BACnetContext
 
 // NewBACnetLogRecordLogDatumUnsignedValue factory function for _BACnetLogRecordLogDatumUnsignedValue
 func NewBACnetLogRecordLogDatumUnsignedValue(unsignedValue BACnetContextTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumUnsignedValue {
-	_result := &_BACnetLogRecordLogDatumUnsignedValue{
-		UnsignedValue:            unsignedValue,
-		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogRecordLogDatumUnsignedValue must not be nil")
 	}
-	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result
+	_result := &_BACnetLogRecordLogDatumUnsignedValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		UnsignedValue:                   unsignedValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
 	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogRecordLogDatumUnsignedValueParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
-	return BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
+func (m *_BACnetLogRecordLogDatumUnsignedValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogRecordLogDatum, tagNumber uint8) (__bACnetLogRecordLogDatumUnsignedValue BACnetLogRecordLogDatumUnsignedValue, err error) {
+	m.BACnetLogRecordLogDatumContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumUnsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumUnsignedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unsignedValue)
-	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
+	unsignedValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "unsignedValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unsignedValue' field"))
 	}
-	_unsignedValue, _unsignedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _unsignedValueErr != nil {
-		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetLogRecordLogDatumUnsignedValue")
-	}
-	unsignedValue := _unsignedValue.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
-	}
+	m.UnsignedValue = unsignedValue
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumUnsignedValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumUnsignedValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogRecordLogDatumUnsignedValue{
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
-			TagNumber: tagNumber,
-		},
-		UnsignedValue: unsignedValue,
-	}
-	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumUnsignedValue")
 		}
 
-		// Simple Field (unsignedValue)
-		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
-		}
-		_unsignedValueErr := writeBuffer.WriteSerializable(ctx, m.GetUnsignedValue())
-		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unsignedValue")
-		}
-		if _unsignedValueErr != nil {
-			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "unsignedValue", m.GetUnsignedValue(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unsignedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumUnsignedValue"); popErr != nil {
@@ -204,12 +174,10 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogRecordLogDatumUnsignedValue) isBACnetLogRecordLogDatumUnsignedValue() bool {
-	return true
-}
+func (m *_BACnetLogRecordLogDatumUnsignedValue) IsBACnetLogRecordLogDatumUnsignedValue() {}
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) String() string {
 	if m == nil {

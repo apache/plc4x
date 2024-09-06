@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,21 +45,19 @@ type RequestObsolete interface {
 	GetAlpha() Alpha
 	// GetCalDataDecoded returns CalDataDecoded (virtual field)
 	GetCalDataDecoded() CALData
-}
-
-// RequestObsoleteExactly can be used when we want exactly this type and not a type which fulfills RequestObsolete.
-// This is useful for switch cases.
-type RequestObsoleteExactly interface {
-	RequestObsolete
-	isRequestObsolete() bool
+	// IsRequestObsolete is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestObsolete()
 }
 
 // _RequestObsolete is the data-structure of this message
 type _RequestObsolete struct {
-	*_Request
+	RequestContract
 	CalData CALData
 	Alpha   Alpha
 }
+
+var _ RequestObsolete = (*_RequestObsolete)(nil)
+var _ RequestRequirements = (*_RequestObsolete)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,16 +69,8 @@ type _RequestObsolete struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestObsolete) InitializeParent(parent Request, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) {
-	m.PeekedByte = peekedByte
-	m.StartingCR = startingCR
-	m.ResetMode = resetMode
-	m.SecondPeek = secondPeek
-	m.Termination = termination
-}
-
-func (m *_RequestObsolete) GetParent() Request {
-	return m._Request
+func (m *_RequestObsolete) GetParent() RequestContract {
+	return m.RequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -107,7 +98,7 @@ func (m *_RequestObsolete) GetAlpha() Alpha {
 func (m *_RequestObsolete) GetCalDataDecoded() CALData {
 	ctx := context.Background()
 	_ = ctx
-	alpha := m.Alpha
+	alpha := m.GetAlpha()
 	_ = alpha
 	return CastCALData(m.GetCalData())
 }
@@ -120,11 +111,11 @@ func (m *_RequestObsolete) GetCalDataDecoded() CALData {
 // NewRequestObsolete factory function for _RequestObsolete
 func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestObsolete {
 	_result := &_RequestObsolete{
-		CalData:  calData,
-		Alpha:    alpha,
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		CalData:         calData,
+		Alpha:           alpha,
 	}
-	_result._Request._RequestChildRequirements = _result
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 
@@ -144,7 +135,7 @@ func (m *_RequestObsolete) GetTypeName() string {
 }
 
 func (m *_RequestObsolete) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	// Manual Field (calData)
 	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
@@ -163,72 +154,44 @@ func (m *_RequestObsolete) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestObsoleteParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestObsolete, error) {
-	return RequestObsoleteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func RequestObsoleteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {
+func (m *_RequestObsolete) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestObsolete RequestObsolete, err error) {
+	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestObsolete"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestObsolete")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(ctx, readBuffer)
-	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestObsolete")
+	calData, err := ReadManualField[CALData](ctx, "calData", readBuffer, EnsureType[CALData](ReadCALData(ctx, readBuffer)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
-	var calData CALData
-	if _calData != nil {
-		calData = _calData.(CALData)
-	}
+	m.CalData = calData
 
-	// Virtual field
-	_calDataDecoded := calData
-	calDataDecoded := _calDataDecoded
+	calDataDecoded, err := ReadVirtualField[CALData](ctx, "calDataDecoded", (*CALData)(nil), calData)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calDataDecoded' field"))
+	}
 	_ = calDataDecoded
 
-	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
-	var alpha Alpha = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
-		}
-		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of RequestObsolete")
-		default:
-			alpha = _val.(Alpha)
-			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for alpha")
-			}
-		}
+	var alpha Alpha
+	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alpha' field"))
+	}
+	if _alpha != nil {
+		alpha = *_alpha
+		m.Alpha = alpha
 	}
 
 	if closeErr := readBuffer.CloseContext("RequestObsolete"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestObsolete")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RequestObsolete{
-		_Request: &_Request{
-			CBusOptions: cBusOptions,
-		},
-		CalData: calData,
-		Alpha:   alpha,
-	}
-	_child._Request._RequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RequestObsolete) Serialize() ([]byte, error) {
@@ -249,10 +212,8 @@ func (m *_RequestObsolete) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for RequestObsolete")
 		}
 
-		// Manual Field (calData)
-		_calDataErr := WriteCALData(ctx, writeBuffer, m.GetCalData())
-		if _calDataErr != nil {
-			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+		if err := WriteManualField[CALData](ctx, "calData", func(ctx context.Context) error { return WriteCALData(ctx, writeBuffer, m.GetCalData()) }, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'calData' field")
 		}
 		// Virtual field
 		calDataDecoded := m.GetCalDataDecoded()
@@ -261,20 +222,8 @@ func (m *_RequestObsolete) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
-		// Optional Field (alpha) (Can be skipped, if the value is null)
-		var alpha Alpha = nil
-		if m.GetAlpha() != nil {
-			if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alpha")
-			}
-			alpha = m.GetAlpha()
-			_alphaErr := writeBuffer.WriteSerializable(ctx, alpha)
-			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alpha")
-			}
-			if _alphaErr != nil {
-				return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
-			}
+		if err := WriteOptionalField[Alpha](ctx, "alpha", GetRef(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'alpha' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestObsolete"); popErr != nil {
@@ -282,12 +231,10 @@ func (m *_RequestObsolete) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.RequestContract.(*_Request).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RequestObsolete) isRequestObsolete() bool {
-	return true
-}
+func (m *_RequestObsolete) IsRequestObsolete() {}
 
 func (m *_RequestObsolete) String() string {
 	if m == nil {

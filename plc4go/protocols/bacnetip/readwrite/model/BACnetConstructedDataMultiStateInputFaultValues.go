@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataMultiStateInputFaultValues interface {
 	BACnetConstructedData
 	// GetFaultValues returns FaultValues (property field)
 	GetFaultValues() []BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataMultiStateInputFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateInputFaultValues.
-// This is useful for switch cases.
-type BACnetConstructedDataMultiStateInputFaultValuesExactly interface {
-	BACnetConstructedDataMultiStateInputFaultValues
-	isBACnetConstructedDataMultiStateInputFaultValues() bool
+	// IsBACnetConstructedDataMultiStateInputFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMultiStateInputFaultValues()
 }
 
 // _BACnetConstructedDataMultiStateInputFaultValues is the data-structure of this message
 type _BACnetConstructedDataMultiStateInputFaultValues struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FaultValues []BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataMultiStateInputFaultValues = (*_BACnetConstructedDataMultiStateInputFaultValues)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateInputFaultValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetPropertyIdentifier
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValues) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetFaultValues() []BA
 // NewBACnetConstructedDataMultiStateInputFaultValues factory function for _BACnetConstructedDataMultiStateInputFaultValues
 func NewBACnetConstructedDataMultiStateInputFaultValues(faultValues []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateInputFaultValues {
 	_result := &_BACnetConstructedDataMultiStateInputFaultValues{
-		FaultValues:            faultValues,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultValues:                   faultValues,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetTypeName() string 
 }
 
 func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FaultValues) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMultiStateInputFaultValuesParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateInputFaultValues, error) {
-	return BACnetConstructedDataMultiStateInputFaultValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMultiStateInputFaultValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateInputFaultValues, error) {
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMultiStateInputFaultValues BACnetConstructedDataMultiStateInputFaultValues, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateInputFaultValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMultiStateInputFaultValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (faultValues)
-	if pullErr := readBuffer.PullContext("faultValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultValues")
+	faultValues, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "faultValues", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultValues' field"))
 	}
-	// Terminated array
-	var faultValues []BACnetApplicationTagUnsignedInteger
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field of BACnetConstructedDataMultiStateInputFaultValues")
-			}
-			faultValues = append(faultValues, _item.(BACnetApplicationTagUnsignedInteger))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("faultValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultValues")
-	}
+	m.FaultValues = faultValues
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateInputFaultValues"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMultiStateInputFaultValues")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMultiStateInputFaultValues{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FaultValues: faultValues,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMultiStateInputFaultValues) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMultiStateInputFaultValues")
 		}
 
-		// Array Field (faultValues)
-		if pushErr := writeBuffer.PushContext("faultValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultValues")
-		}
-		for _curItem, _element := range m.GetFaultValues() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFaultValues()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'faultValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("faultValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultValues")
+		if err := WriteComplexTypeArrayField(ctx, "faultValues", m.GetFaultValues(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMultiStateInputFaultValues"); popErr != nil {
@@ -228,11 +183,10 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValues) isBACnetConstructedDataMultiStateInputFaultValues() bool {
-	return true
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) IsBACnetConstructedDataMultiStateInputFaultValues() {
 }
 
 func (m *_BACnetConstructedDataMultiStateInputFaultValues) String() string {

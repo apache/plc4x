@@ -118,7 +118,7 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
     List<BACnetLiftFaultTagged> faultSignals =
         readTerminatedArrayField(
             "faultSignals",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftFaultTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

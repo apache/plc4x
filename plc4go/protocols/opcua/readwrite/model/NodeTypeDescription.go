@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,18 +47,13 @@ type NodeTypeDescription interface {
 	GetNoOfDataToReturn() int32
 	// GetDataToReturn returns DataToReturn (property field)
 	GetDataToReturn() []ExtensionObjectDefinition
-}
-
-// NodeTypeDescriptionExactly can be used when we want exactly this type and not a type which fulfills NodeTypeDescription.
-// This is useful for switch cases.
-type NodeTypeDescriptionExactly interface {
-	NodeTypeDescription
-	isNodeTypeDescription() bool
+	// IsNodeTypeDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeTypeDescription()
 }
 
 // _NodeTypeDescription is the data-structure of this message
 type _NodeTypeDescription struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	TypeDefinitionNode ExpandedNodeId
 	IncludeSubTypes    bool
 	NoOfDataToReturn   int32
@@ -64,6 +61,9 @@ type _NodeTypeDescription struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ NodeTypeDescription = (*_NodeTypeDescription)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_NodeTypeDescription)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,10 +79,8 @@ func (m *_NodeTypeDescription) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NodeTypeDescription) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_NodeTypeDescription) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_NodeTypeDescription) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,14 +111,17 @@ func (m *_NodeTypeDescription) GetDataToReturn() []ExtensionObjectDefinition {
 
 // NewNodeTypeDescription factory function for _NodeTypeDescription
 func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) *_NodeTypeDescription {
-	_result := &_NodeTypeDescription{
-		TypeDefinitionNode:         typeDefinitionNode,
-		IncludeSubTypes:            includeSubTypes,
-		NoOfDataToReturn:           noOfDataToReturn,
-		DataToReturn:               dataToReturn,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for NodeTypeDescription must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_NodeTypeDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TypeDefinitionNode:                typeDefinitionNode,
+		IncludeSubTypes:                   includeSubTypes,
+		NoOfDataToReturn:                  noOfDataToReturn,
+		DataToReturn:                      dataToReturn,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -140,7 +141,7 @@ func (m *_NodeTypeDescription) GetTypeName() string {
 }
 
 func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (typeDefinitionNode)
 	lengthInBits += m.TypeDefinitionNode.GetLengthInBits(ctx)
@@ -171,107 +172,52 @@ func (m *_NodeTypeDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NodeTypeDescriptionParse(ctx context.Context, theBytes []byte, identifier string) (NodeTypeDescription, error) {
-	return NodeTypeDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func NodeTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NodeTypeDescription, error) {
+func (m *_NodeTypeDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__nodeTypeDescription NodeTypeDescription, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NodeTypeDescription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NodeTypeDescription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (typeDefinitionNode)
-	if pullErr := readBuffer.PullContext("typeDefinitionNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeDefinitionNode")
+	typeDefinitionNode, err := ReadSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeDefinitionNode' field"))
 	}
-	_typeDefinitionNode, _typeDefinitionNodeErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _typeDefinitionNodeErr != nil {
-		return nil, errors.Wrap(_typeDefinitionNodeErr, "Error parsing 'typeDefinitionNode' field of NodeTypeDescription")
-	}
-	typeDefinitionNode := _typeDefinitionNode.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("typeDefinitionNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeDefinitionNode")
-	}
+	m.TypeDefinitionNode = typeDefinitionNode
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NodeTypeDescription")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (includeSubTypes)
-	_includeSubTypes, _includeSubTypesErr := readBuffer.ReadBit("includeSubTypes")
-	if _includeSubTypesErr != nil {
-		return nil, errors.Wrap(_includeSubTypesErr, "Error parsing 'includeSubTypes' field of NodeTypeDescription")
+	includeSubTypes, err := ReadSimpleField(ctx, "includeSubTypes", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'includeSubTypes' field"))
 	}
-	includeSubTypes := _includeSubTypes
+	m.IncludeSubTypes = includeSubTypes
 
-	// Simple Field (noOfDataToReturn)
-	_noOfDataToReturn, _noOfDataToReturnErr := readBuffer.ReadInt32("noOfDataToReturn", 32)
-	if _noOfDataToReturnErr != nil {
-		return nil, errors.Wrap(_noOfDataToReturnErr, "Error parsing 'noOfDataToReturn' field of NodeTypeDescription")
+	noOfDataToReturn, err := ReadSimpleField(ctx, "noOfDataToReturn", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataToReturn' field"))
 	}
-	noOfDataToReturn := _noOfDataToReturn
+	m.NoOfDataToReturn = noOfDataToReturn
 
-	// Array field (dataToReturn)
-	if pullErr := readBuffer.PullContext("dataToReturn", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataToReturn")
+	dataToReturn, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "dataToReturn", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("572")), readBuffer), uint64(noOfDataToReturn))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataToReturn' field"))
 	}
-	// Count array
-	dataToReturn := make([]ExtensionObjectDefinition, max(noOfDataToReturn, 0))
-	// This happens when the size is set conditional to 0
-	if len(dataToReturn) == 0 {
-		dataToReturn = nil
-	}
-	{
-		_numItems := uint16(max(noOfDataToReturn, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "572")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'dataToReturn' field of NodeTypeDescription")
-			}
-			dataToReturn[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("dataToReturn", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataToReturn")
-	}
+	m.DataToReturn = dataToReturn
 
 	if closeErr := readBuffer.CloseContext("NodeTypeDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeTypeDescription")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NodeTypeDescription{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		TypeDefinitionNode:         typeDefinitionNode,
-		IncludeSubTypes:            includeSubTypes,
-		NoOfDataToReturn:           noOfDataToReturn,
-		DataToReturn:               dataToReturn,
-		reservedField0:             reservedField0,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NodeTypeDescription) Serialize() ([]byte, error) {
@@ -292,63 +238,24 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NodeTypeDescription")
 		}
 
-		// Simple Field (typeDefinitionNode)
-		if pushErr := writeBuffer.PushContext("typeDefinitionNode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for typeDefinitionNode")
-		}
-		_typeDefinitionNodeErr := writeBuffer.WriteSerializable(ctx, m.GetTypeDefinitionNode())
-		if popErr := writeBuffer.PopContext("typeDefinitionNode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for typeDefinitionNode")
-		}
-		if _typeDefinitionNodeErr != nil {
-			return errors.Wrap(_typeDefinitionNodeErr, "Error serializing 'typeDefinitionNode' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", m.GetTypeDefinitionNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeDefinitionNode' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (includeSubTypes)
-		includeSubTypes := bool(m.GetIncludeSubTypes())
-		_includeSubTypesErr := writeBuffer.WriteBit("includeSubTypes", (includeSubTypes))
-		if _includeSubTypesErr != nil {
-			return errors.Wrap(_includeSubTypesErr, "Error serializing 'includeSubTypes' field")
+		if err := WriteSimpleField[bool](ctx, "includeSubTypes", m.GetIncludeSubTypes(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'includeSubTypes' field")
 		}
 
-		// Simple Field (noOfDataToReturn)
-		noOfDataToReturn := int32(m.GetNoOfDataToReturn())
-		_noOfDataToReturnErr := writeBuffer.WriteInt32("noOfDataToReturn", 32, int32((noOfDataToReturn)))
-		if _noOfDataToReturnErr != nil {
-			return errors.Wrap(_noOfDataToReturnErr, "Error serializing 'noOfDataToReturn' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDataToReturn", m.GetNoOfDataToReturn(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDataToReturn' field")
 		}
 
-		// Array Field (dataToReturn)
-		if pushErr := writeBuffer.PushContext("dataToReturn", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataToReturn")
-		}
-		for _curItem, _element := range m.GetDataToReturn() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDataToReturn()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'dataToReturn' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("dataToReturn", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataToReturn")
+		if err := WriteComplexTypeArrayField(ctx, "dataToReturn", m.GetDataToReturn(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataToReturn' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NodeTypeDescription"); popErr != nil {
@@ -356,12 +263,10 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NodeTypeDescription) isNodeTypeDescription() bool {
-	return true
-}
+func (m *_NodeTypeDescription) IsNodeTypeDescription() {}
 
 func (m *_NodeTypeDescription) String() string {
 	if m == nil {

@@ -62,7 +62,7 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
     writeBuffer.pushContext("TlvOrgSpecificProfibus");
 
     // Simple Field (specificUnit)
-    writeSimpleField("specificUnit", specificUnit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("specificUnit", specificUnit, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TlvOrgSpecificProfibus");
   }
@@ -93,8 +93,7 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
     TlvOrgSpecificProfibusUnit specificUnit =
         readSimpleField(
             "specificUnit",
-            new DataReaderComplexDefault<>(
-                () -> TlvOrgSpecificProfibusUnit.staticParse(readBuffer), readBuffer));
+            readComplex(() -> TlvOrgSpecificProfibusUnit.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("TlvOrgSpecificProfibus");
     // Create the instance

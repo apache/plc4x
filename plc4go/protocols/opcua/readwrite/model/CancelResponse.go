@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type CancelResponse interface {
 	GetResponseHeader() ExtensionObjectDefinition
 	// GetCancelCount returns CancelCount (property field)
 	GetCancelCount() uint32
-}
-
-// CancelResponseExactly can be used when we want exactly this type and not a type which fulfills CancelResponse.
-// This is useful for switch cases.
-type CancelResponseExactly interface {
-	CancelResponse
-	isCancelResponse() bool
+	// IsCancelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCancelResponse()
 }
 
 // _CancelResponse is the data-structure of this message
 type _CancelResponse struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader ExtensionObjectDefinition
 	CancelCount    uint32
 }
+
+var _ CancelResponse = (*_CancelResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CancelResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_CancelResponse) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CancelResponse) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CancelResponse) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CancelResponse) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,15 @@ func (m *_CancelResponse) GetCancelCount() uint32 {
 
 // NewCancelResponse factory function for _CancelResponse
 func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uint32) *_CancelResponse {
-	_result := &_CancelResponse{
-		ResponseHeader:             responseHeader,
-		CancelCount:                cancelCount,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CancelResponse must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_CancelResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		CancelCount:                       cancelCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +123,7 @@ func (m *_CancelResponse) GetTypeName() string {
 }
 
 func (m *_CancelResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -137,53 +138,34 @@ func (m *_CancelResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CancelResponseParse(ctx context.Context, theBytes []byte, identifier string) (CancelResponse, error) {
-	return CancelResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CancelResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CancelResponse, error) {
+func (m *_CancelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__cancelResponse CancelResponse, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CancelResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CancelResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of CancelResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
-	// Simple Field (cancelCount)
-	_cancelCount, _cancelCountErr := readBuffer.ReadUint32("cancelCount", 32)
-	if _cancelCountErr != nil {
-		return nil, errors.Wrap(_cancelCountErr, "Error parsing 'cancelCount' field of CancelResponse")
+	cancelCount, err := ReadSimpleField(ctx, "cancelCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cancelCount' field"))
 	}
-	cancelCount := _cancelCount
+	m.CancelCount = cancelCount
 
 	if closeErr := readBuffer.CloseContext("CancelResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CancelResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CancelResponse{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-		CancelCount:                cancelCount,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CancelResponse) Serialize() ([]byte, error) {
@@ -204,23 +186,12 @@ func (m *_CancelResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for CancelResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (cancelCount)
-		cancelCount := uint32(m.GetCancelCount())
-		_cancelCountErr := writeBuffer.WriteUint32("cancelCount", 32, uint32((cancelCount)))
-		if _cancelCountErr != nil {
-			return errors.Wrap(_cancelCountErr, "Error serializing 'cancelCount' field")
+		if err := WriteSimpleField[uint32](ctx, "cancelCount", m.GetCancelCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cancelCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CancelResponse"); popErr != nil {
@@ -228,12 +199,10 @@ func (m *_CancelResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CancelResponse) isCancelResponse() bool {
-	return true
-}
+func (m *_CancelResponse) IsCancelResponse() {}
 
 func (m *_CancelResponse) String() string {
 	if m == nil {

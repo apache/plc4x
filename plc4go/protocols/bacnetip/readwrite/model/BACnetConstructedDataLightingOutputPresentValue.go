@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLightingOutputPresentValue interface {
 	GetPresentValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataLightingOutputPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingOutputPresentValue.
-// This is useful for switch cases.
-type BACnetConstructedDataLightingOutputPresentValueExactly interface {
-	BACnetConstructedDataLightingOutputPresentValue
-	isBACnetConstructedDataLightingOutputPresentValue() bool
+	// IsBACnetConstructedDataLightingOutputPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLightingOutputPresentValue()
 }
 
 // _BACnetConstructedDataLightingOutputPresentValue is the data-structure of this message
 type _BACnetConstructedDataLightingOutputPresentValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	PresentValue BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataLightingOutputPresentValue = (*_BACnetConstructedDataLightingOutputPresentValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputPresentValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLightingOutputPresentValue) GetPropertyIdentifier
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLightingOutputPresentValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLightingOutputPresentValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLightingOutputPresentValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLightingOutputPresentValue) GetActualValue() BACn
 
 // NewBACnetConstructedDataLightingOutputPresentValue factory function for _BACnetConstructedDataLightingOutputPresentValue
 func NewBACnetConstructedDataLightingOutputPresentValue(presentValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputPresentValue {
-	_result := &_BACnetConstructedDataLightingOutputPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if presentValue == nil {
+		panic("presentValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputPresentValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLightingOutputPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLightingOutputPresentValue) GetTypeName() string 
 }
 
 func (m *_BACnetConstructedDataLightingOutputPresentValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLightingOutputPresentValue) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLightingOutputPresentValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputPresentValue, error) {
-	return BACnetConstructedDataLightingOutputPresentValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLightingOutputPresentValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputPresentValue, error) {
+func (m *_BACnetConstructedDataLightingOutputPresentValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLightingOutputPresentValue BACnetConstructedDataLightingOutputPresentValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputPresentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLightingOutputPresentValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (presentValue)
-	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
+	presentValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "presentValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'presentValue' field"))
 	}
-	_presentValue, _presentValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataLightingOutputPresentValue")
-	}
-	presentValue := _presentValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for presentValue")
-	}
+	m.PresentValue = presentValue
 
-	// Virtual field
-	_actualValue := presentValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), presentValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingOutputPresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingOutputPresentValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLightingOutputPresentValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		PresentValue: presentValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLightingOutputPresentValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLightingOutputPresentValue) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingOutputPresentValue")
 		}
 
-		// Simple Field (presentValue)
-		if pushErr := writeBuffer.PushContext("presentValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for presentValue")
-		}
-		_presentValueErr := writeBuffer.WriteSerializable(ctx, m.GetPresentValue())
-		if popErr := writeBuffer.PopContext("presentValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for presentValue")
-		}
-		if _presentValueErr != nil {
-			return errors.Wrap(_presentValueErr, "Error serializing 'presentValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "presentValue", m.GetPresentValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'presentValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataLightingOutputPresentValue) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLightingOutputPresentValue) isBACnetConstructedDataLightingOutputPresentValue() bool {
-	return true
+func (m *_BACnetConstructedDataLightingOutputPresentValue) IsBACnetConstructedDataLightingOutputPresentValue() {
 }
 
 func (m *_BACnetConstructedDataLightingOutputPresentValue) String() string {

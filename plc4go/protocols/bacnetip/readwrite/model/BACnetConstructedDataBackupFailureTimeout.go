@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataBackupFailureTimeout interface {
 	GetBackupFailureTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataBackupFailureTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBackupFailureTimeout.
-// This is useful for switch cases.
-type BACnetConstructedDataBackupFailureTimeoutExactly interface {
-	BACnetConstructedDataBackupFailureTimeout
-	isBACnetConstructedDataBackupFailureTimeout() bool
+	// IsBACnetConstructedDataBackupFailureTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBackupFailureTimeout()
 }
 
 // _BACnetConstructedDataBackupFailureTimeout is the data-structure of this message
 type _BACnetConstructedDataBackupFailureTimeout struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	BackupFailureTimeout BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataBackupFailureTimeout = (*_BACnetConstructedDataBackupFailureTimeout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupFailureTimeout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataBackupFailureTimeout) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataBackupFailureTimeout) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataBackupFailureTimeout) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataBackupFailureTimeout factory function for _BACnetConstructedDataBackupFailureTimeout
 func NewBACnetConstructedDataBackupFailureTimeout(backupFailureTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupFailureTimeout {
-	_result := &_BACnetConstructedDataBackupFailureTimeout{
-		BackupFailureTimeout:   backupFailureTimeout,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if backupFailureTimeout == nil {
+		panic("backupFailureTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBackupFailureTimeout must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataBackupFailureTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BackupFailureTimeout:          backupFailureTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (backupFailureTimeout)
 	lengthInBits += m.BackupFailureTimeout.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataBackupFailureTimeoutParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupFailureTimeout, error) {
-	return BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupFailureTimeout, error) {
+func (m *_BACnetConstructedDataBackupFailureTimeout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBackupFailureTimeout BACnetConstructedDataBackupFailureTimeout, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupFailureTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBackupFailureTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (backupFailureTimeout)
-	if pullErr := readBuffer.PullContext("backupFailureTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for backupFailureTimeout")
+	backupFailureTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupFailureTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'backupFailureTimeout' field"))
 	}
-	_backupFailureTimeout, _backupFailureTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _backupFailureTimeoutErr != nil {
-		return nil, errors.Wrap(_backupFailureTimeoutErr, "Error parsing 'backupFailureTimeout' field of BACnetConstructedDataBackupFailureTimeout")
-	}
-	backupFailureTimeout := _backupFailureTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("backupFailureTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for backupFailureTimeout")
-	}
+	m.BackupFailureTimeout = backupFailureTimeout
 
-	// Virtual field
-	_actualValue := backupFailureTimeout
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), backupFailureTimeout)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBackupFailureTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBackupFailureTimeout")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataBackupFailureTimeout{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		BackupFailureTimeout: backupFailureTimeout,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataBackupFailureTimeout) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBackupFailureTimeout")
 		}
 
-		// Simple Field (backupFailureTimeout)
-		if pushErr := writeBuffer.PushContext("backupFailureTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for backupFailureTimeout")
-		}
-		_backupFailureTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetBackupFailureTimeout())
-		if popErr := writeBuffer.PopContext("backupFailureTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for backupFailureTimeout")
-		}
-		if _backupFailureTimeoutErr != nil {
-			return errors.Wrap(_backupFailureTimeoutErr, "Error serializing 'backupFailureTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupFailureTimeout", m.GetBackupFailureTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'backupFailureTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeout) isBACnetConstructedDataBackupFailureTimeout() bool {
-	return true
-}
+func (m *_BACnetConstructedDataBackupFailureTimeout) IsBACnetConstructedDataBackupFailureTimeout() {}
 
 func (m *_BACnetConstructedDataBackupFailureTimeout) String() string {
 	if m == nil {

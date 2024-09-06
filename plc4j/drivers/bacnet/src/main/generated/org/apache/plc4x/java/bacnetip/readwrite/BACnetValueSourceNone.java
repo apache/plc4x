@@ -59,7 +59,7 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
     writeBuffer.pushContext("BACnetValueSourceNone");
 
     // Simple Field (none)
-    writeSimpleField("none", none, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("none", none, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetValueSourceNone");
   }
@@ -90,7 +90,7 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
     BACnetContextTagNull none =
         readSimpleField(
             "none",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagNull)
                         BACnetContextTag.staticParse(

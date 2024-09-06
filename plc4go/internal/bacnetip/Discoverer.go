@@ -178,7 +178,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					}
 					d.log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
 					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
-					incomingBvlc, err := driverModel.BVLCParse(ctxForModel, buf[:n])
+					incomingBvlc, err := driverModel.BVLCParse[driverModel.BVLC](ctxForModel, buf[:n])
 					if err != nil {
 						d.log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true
@@ -218,7 +218,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					}
 					d.log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
 					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
-					incomingBvlc, err := driverModel.BVLCParse(ctxForModel, buf[:n])
+					incomingBvlc, err := driverModel.BVLCParse[driverModel.BVLC](ctxForModel, buf[:n])
 					if err != nil {
 						d.log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true
@@ -262,14 +262,14 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 				continue
 			}
 			apdu := npdu.GetApdu()
-			if _, ok := apdu.(driverModel.APDUConfirmedRequestExactly); ok {
+			if _, ok := apdu.(driverModel.APDUConfirmedRequest); ok {
 				d.log.Debug().Stringer("apdu", apdu).Msg("Got apdu")
 				continue
 			}
-			apduUnconfirmedRequest := apdu.(driverModel.APDUUnconfirmedRequestExactly)
+			apduUnconfirmedRequest := apdu.(driverModel.APDUUnconfirmedRequest)
 			serviceRequest := apduUnconfirmedRequest.GetServiceRequest()
 			switch serviceRequest := serviceRequest.(type) {
-			case driverModel.BACnetUnconfirmedServiceRequestIAmExactly:
+			case driverModel.BACnetUnconfirmedServiceRequestIAm:
 				iAm := serviceRequest
 				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
 				if err != nil {
@@ -286,7 +286,7 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 
 				// Pass the event back to the callback
 				callback(discoveryEvent)
-			case driverModel.BACnetUnconfirmedServiceRequestIHaveExactly:
+			case driverModel.BACnetUnconfirmedServiceRequestIHave:
 				iHave := serviceRequest
 				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
 				if err != nil {
@@ -583,7 +583,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 		}
 	}
 	if _, ok := filteredOptionMap["bacnet-port"]; ok {
-		parsedInt, err := exactlyOneInt(filteredOptionMap, "bacnet-port")
+		parsedInt, err := OneInt(filteredOptionMap, "bacnet-port")
 		if err != nil {
 			return nil, err
 		}
@@ -597,8 +597,8 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 			return
 		}
 		ok = true
-		whoIsLowLimit, err = exactlyOneUint(filteredOptionMap, "who-is-low-limit")
-		whoIsHighLimit, err = exactlyOneUint(filteredOptionMap, "who-is-high-limit")
+		whoIsLowLimit, err = OneUint(filteredOptionMap, "who-is-low-limit")
+		whoIsHighLimit, err = OneUint(filteredOptionMap, "who-is-high-limit")
 		return
 	}(); ok {
 		collectedOptions = append(collectedOptions, whoIsLimits(whoIsLow, whoIsHigh))
@@ -616,8 +616,8 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 			return
 		}
 		ok = true
-		whoIsLowLimit, err = exactlyOneUint(filteredOptionMap, "who-has-device-instance-range-low-limit")
-		whoIsHighLimit, err = exactlyOneUint(filteredOptionMap, "who-has-device-instance-range-high-limit")
+		whoIsLowLimit, err = OneUint(filteredOptionMap, "who-has-device-instance-range-low-limit")
+		whoIsHighLimit, err = OneUint(filteredOptionMap, "who-has-device-instance-range-high-limit")
 		return
 	}(); ok {
 		collectedOptions = append(collectedOptions, whoHasLimits(whoHasDeviceInstanceRangeLowLimit, whoHasDeviceInstanceRangeHighLimit))
@@ -630,8 +630,8 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 			return
 		}
 		ok = true
-		whoHasObjectIdentifierType, err = exactlyOneString(filteredOptionMap, "who-has-object-identifier-type")
-		whoHasObjectIdentifierInstance, err = exactlyOneUint(filteredOptionMap, "who-has-object-identifier-instance")
+		whoHasObjectIdentifierType, err = OneString(filteredOptionMap, "who-has-object-identifier-type")
+		whoHasObjectIdentifierInstance, err = OneUint(filteredOptionMap, "who-has-object-identifier-instance")
 		return
 	}(); ok {
 		collectedOptions = append(collectedOptions, whoHasObjectIdentifier(whoHasObjectIdentifierType, objectIdentifierInstance))
@@ -640,7 +640,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 	}
 
 	if _, ok := filteredOptionMap["who-has-object-name"]; ok {
-		if name, err := exactlyOneString(filteredOptionMap, "who-has-object-name"); err != nil {
+		if name, err := OneString(filteredOptionMap, "who-has-object-name"); err != nil {
 			return nil, err
 		} else {
 			collectedOptions = append(collectedOptions, whoHasObjectName(name))
@@ -649,8 +649,8 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 	return newProtocolSpecificOptions(collectedOptions...)
 }
 
-func exactlyOneInt(filteredOptionMap map[string][]any, key string) (int, error) {
-	value, err := exactlyOne(filteredOptionMap, key)
+func OneInt(filteredOptionMap map[string][]any, key string) (int, error) {
+	value, err := One(filteredOptionMap, key)
 	if err != nil {
 		return 0, err
 	}
@@ -661,8 +661,8 @@ func exactlyOneInt(filteredOptionMap map[string][]any, key string) (int, error) 
 	return int(parsedInt), nil
 }
 
-func exactlyOneUint(filteredOptionMap map[string][]any, key string) (uint, error) {
-	value, err := exactlyOne(filteredOptionMap, key)
+func OneUint(filteredOptionMap map[string][]any, key string) (uint, error) {
+	value, err := One(filteredOptionMap, key)
 	if err != nil {
 		return 0, err
 	}
@@ -672,15 +672,15 @@ func exactlyOneUint(filteredOptionMap map[string][]any, key string) (uint, error
 	}
 	return uint(parsedInt), nil
 }
-func exactlyOneString(filteredOptionMap map[string][]any, key string) (string, error) {
-	value, err := exactlyOne(filteredOptionMap, key)
+func OneString(filteredOptionMap map[string][]any, key string) (string, error) {
+	value, err := One(filteredOptionMap, key)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("%v", value), nil
 }
 
-func exactlyOne(filteredOptionMap map[string][]any, key string) (any, error) {
+func One(filteredOptionMap map[string][]any, key string) (any, error) {
 	values := filteredOptionMap[key]
 	if len(values) != 1 {
 		return nil, errors.Errorf("%s expects only one value", key)

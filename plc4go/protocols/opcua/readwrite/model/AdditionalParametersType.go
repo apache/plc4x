@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type AdditionalParametersType interface {
 	GetNoOfParameters() int32
 	// GetParameters returns Parameters (property field)
 	GetParameters() []ExtensionObjectDefinition
-}
-
-// AdditionalParametersTypeExactly can be used when we want exactly this type and not a type which fulfills AdditionalParametersType.
-// This is useful for switch cases.
-type AdditionalParametersTypeExactly interface {
-	AdditionalParametersType
-	isAdditionalParametersType() bool
+	// IsAdditionalParametersType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdditionalParametersType()
 }
 
 // _AdditionalParametersType is the data-structure of this message
 type _AdditionalParametersType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NoOfParameters int32
 	Parameters     []ExtensionObjectDefinition
 }
+
+var _ AdditionalParametersType = (*_AdditionalParametersType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AdditionalParametersType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_AdditionalParametersType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdditionalParametersType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_AdditionalParametersType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_AdditionalParametersType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_AdditionalParametersType) GetParameters() []ExtensionObjectDefinition 
 // NewAdditionalParametersType factory function for _AdditionalParametersType
 func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObjectDefinition) *_AdditionalParametersType {
 	_result := &_AdditionalParametersType{
-		NoOfParameters:             noOfParameters,
-		Parameters:                 parameters,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfParameters:                    noOfParameters,
+		Parameters:                        parameters,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_AdditionalParametersType) GetTypeName() string {
 }
 
 func (m *_AdditionalParametersType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (noOfParameters)
 	lengthInBits += 32
@@ -144,67 +142,34 @@ func (m *_AdditionalParametersType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdditionalParametersTypeParse(ctx context.Context, theBytes []byte, identifier string) (AdditionalParametersType, error) {
-	return AdditionalParametersTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func AdditionalParametersTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AdditionalParametersType, error) {
+func (m *_AdditionalParametersType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__additionalParametersType AdditionalParametersType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdditionalParametersType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdditionalParametersType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfParameters)
-	_noOfParameters, _noOfParametersErr := readBuffer.ReadInt32("noOfParameters", 32)
-	if _noOfParametersErr != nil {
-		return nil, errors.Wrap(_noOfParametersErr, "Error parsing 'noOfParameters' field of AdditionalParametersType")
+	noOfParameters, err := ReadSimpleField(ctx, "noOfParameters", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfParameters' field"))
 	}
-	noOfParameters := _noOfParameters
+	m.NoOfParameters = noOfParameters
 
-	// Array field (parameters)
-	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
+	parameters, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "parameters", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfParameters))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}
-	// Count array
-	parameters := make([]ExtensionObjectDefinition, max(noOfParameters, 0))
-	// This happens when the size is set conditional to 0
-	if len(parameters) == 0 {
-		parameters = nil
-	}
-	{
-		_numItems := uint16(max(noOfParameters, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of AdditionalParametersType")
-			}
-			parameters[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameters")
-	}
+	m.Parameters = parameters
 
 	if closeErr := readBuffer.CloseContext("AdditionalParametersType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdditionalParametersType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdditionalParametersType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NoOfParameters:             noOfParameters,
-		Parameters:                 parameters,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdditionalParametersType) Serialize() ([]byte, error) {
@@ -225,28 +190,12 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for AdditionalParametersType")
 		}
 
-		// Simple Field (noOfParameters)
-		noOfParameters := int32(m.GetNoOfParameters())
-		_noOfParametersErr := writeBuffer.WriteInt32("noOfParameters", 32, int32((noOfParameters)))
-		if _noOfParametersErr != nil {
-			return errors.Wrap(_noOfParametersErr, "Error serializing 'noOfParameters' field")
+		if err := WriteSimpleField[int32](ctx, "noOfParameters", m.GetNoOfParameters(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfParameters' field")
 		}
 
-		// Array Field (parameters)
-		if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameters")
-		}
-		for _curItem, _element := range m.GetParameters() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetParameters()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameters")
+		if err := WriteComplexTypeArrayField(ctx, "parameters", m.GetParameters(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameters' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdditionalParametersType"); popErr != nil {
@@ -254,12 +203,10 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdditionalParametersType) isAdditionalParametersType() bool {
-	return true
-}
+func (m *_AdditionalParametersType) IsAdditionalParametersType() {}
 
 func (m *_AdditionalParametersType) String() string {
 	if m == nil {

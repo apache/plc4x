@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type S7VarRequestParameterItemAddress interface {
 	S7VarRequestParameterItem
 	// GetAddress returns Address (property field)
 	GetAddress() S7Address
-}
-
-// S7VarRequestParameterItemAddressExactly can be used when we want exactly this type and not a type which fulfills S7VarRequestParameterItemAddress.
-// This is useful for switch cases.
-type S7VarRequestParameterItemAddressExactly interface {
-	S7VarRequestParameterItemAddress
-	isS7VarRequestParameterItemAddress() bool
+	// IsS7VarRequestParameterItemAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7VarRequestParameterItemAddress()
 }
 
 // _S7VarRequestParameterItemAddress is the data-structure of this message
 type _S7VarRequestParameterItemAddress struct {
-	*_S7VarRequestParameterItem
+	S7VarRequestParameterItemContract
 	Address S7Address
 }
+
+var _ S7VarRequestParameterItemAddress = (*_S7VarRequestParameterItemAddress)(nil)
+var _ S7VarRequestParameterItemRequirements = (*_S7VarRequestParameterItemAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_S7VarRequestParameterItemAddress) GetItemType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7VarRequestParameterItemAddress) InitializeParent(parent S7VarRequestParameterItem) {}
-
-func (m *_S7VarRequestParameterItemAddress) GetParent() S7VarRequestParameterItem {
-	return m._S7VarRequestParameterItem
+func (m *_S7VarRequestParameterItemAddress) GetParent() S7VarRequestParameterItemContract {
+	return m.S7VarRequestParameterItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_S7VarRequestParameterItemAddress) GetAddress() S7Address {
 
 // NewS7VarRequestParameterItemAddress factory function for _S7VarRequestParameterItemAddress
 func NewS7VarRequestParameterItemAddress(address S7Address) *_S7VarRequestParameterItemAddress {
-	_result := &_S7VarRequestParameterItemAddress{
-		Address:                    address,
-		_S7VarRequestParameterItem: NewS7VarRequestParameterItem(),
+	if address == nil {
+		panic("address of type S7Address for S7VarRequestParameterItemAddress must not be nil")
 	}
-	_result._S7VarRequestParameterItem._S7VarRequestParameterItemChildRequirements = _result
+	_result := &_S7VarRequestParameterItemAddress{
+		S7VarRequestParameterItemContract: NewS7VarRequestParameterItem(),
+		Address:                           address,
+	}
+	_result.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_S7VarRequestParameterItemAddress) GetTypeName() string {
 }
 
 func (m *_S7VarRequestParameterItemAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem).getLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -129,52 +130,34 @@ func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7VarRequestParameterItemAddressParse(ctx context.Context, theBytes []byte) (S7VarRequestParameterItemAddress, error) {
-	return S7VarRequestParameterItemAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func S7VarRequestParameterItemAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
+func (m *_S7VarRequestParameterItemAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7VarRequestParameterItem) (__s7VarRequestParameterItemAddress S7VarRequestParameterItemAddress, err error) {
+	m.S7VarRequestParameterItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7VarRequestParameterItemAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
+	itemLength, err := ReadImplicitField[uint8](ctx, "itemLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
+	}
 	_ = itemLength
-	if _itemLengthErr != nil {
-		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of S7VarRequestParameterItemAddress")
-	}
 
-	// Simple Field (address)
-	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for address")
+	address, err := ReadSimpleField[S7Address](ctx, "address", ReadComplex[S7Address](S7AddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	_address, _addressErr := S7AddressParseWithBuffer(ctx, readBuffer)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of S7VarRequestParameterItemAddress")
-	}
-	address := _address.(S7Address)
-	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for address")
-	}
+	m.Address = address
 
 	if closeErr := readBuffer.CloseContext("S7VarRequestParameterItemAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7VarRequestParameterItemAddress")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7VarRequestParameterItemAddress{
-		_S7VarRequestParameterItem: &_S7VarRequestParameterItem{},
-		Address:                    address,
-	}
-	_child._S7VarRequestParameterItem._S7VarRequestParameterItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7VarRequestParameterItemAddress) Serialize() ([]byte, error) {
@@ -194,24 +177,13 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(ctx context
 		if pushErr := writeBuffer.PushContext("S7VarRequestParameterItemAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for S7VarRequestParameterItemAddress")
 		}
-
-		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(m.GetAddress().GetLengthInBytes(ctx))
-		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, uint8((itemLength)))
-		if _itemLengthErr != nil {
-			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
+		if err := WriteImplicitField(ctx, "itemLength", itemLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemLength' field")
 		}
 
-		// Simple Field (address)
-		if pushErr := writeBuffer.PushContext("address"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for address")
-		}
-		_addressErr := writeBuffer.WriteSerializable(ctx, m.GetAddress())
-		if popErr := writeBuffer.PopContext("address"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for address")
-		}
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[S7Address](ctx, "address", m.GetAddress(), WriteComplex[S7Address](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7VarRequestParameterItemAddress"); popErr != nil {
@@ -219,12 +191,10 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7VarRequestParameterItemAddress) isS7VarRequestParameterItemAddress() bool {
-	return true
-}
+func (m *_S7VarRequestParameterItemAddress) IsS7VarRequestParameterItemAddress() {}
 
 func (m *_S7VarRequestParameterItemAddress) String() string {
 	if m == nil {

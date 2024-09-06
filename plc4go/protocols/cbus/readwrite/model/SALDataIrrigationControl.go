@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SALDataIrrigationControl interface {
 	SALData
 	// GetIrrigationControlData returns IrrigationControlData (property field)
 	GetIrrigationControlData() LightingData
-}
-
-// SALDataIrrigationControlExactly can be used when we want exactly this type and not a type which fulfills SALDataIrrigationControl.
-// This is useful for switch cases.
-type SALDataIrrigationControlExactly interface {
-	SALDataIrrigationControl
-	isSALDataIrrigationControl() bool
+	// IsSALDataIrrigationControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataIrrigationControl()
 }
 
 // _SALDataIrrigationControl is the data-structure of this message
 type _SALDataIrrigationControl struct {
-	*_SALData
+	SALDataContract
 	IrrigationControlData LightingData
 }
+
+var _ SALDataIrrigationControl = (*_SALDataIrrigationControl)(nil)
+var _ SALDataRequirements = (*_SALDataIrrigationControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_SALDataIrrigationControl) GetApplicationId() ApplicationId {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataIrrigationControl) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataIrrigationControl) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataIrrigationControl) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_SALDataIrrigationControl) GetIrrigationControlData() LightingData {
 
 // NewSALDataIrrigationControl factory function for _SALDataIrrigationControl
 func NewSALDataIrrigationControl(irrigationControlData LightingData, salData SALData) *_SALDataIrrigationControl {
-	_result := &_SALDataIrrigationControl{
-		IrrigationControlData: irrigationControlData,
-		_SALData:              NewSALData(salData),
+	if irrigationControlData == nil {
+		panic("irrigationControlData of type LightingData for SALDataIrrigationControl must not be nil")
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result := &_SALDataIrrigationControl{
+		SALDataContract:       NewSALData(salData),
+		IrrigationControlData: irrigationControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_SALDataIrrigationControl) GetTypeName() string {
 }
 
 func (m *_SALDataIrrigationControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (irrigationControlData)
 	lengthInBits += m.IrrigationControlData.GetLengthInBits(ctx)
@@ -128,45 +127,28 @@ func (m *_SALDataIrrigationControl) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataIrrigationControlParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataIrrigationControl, error) {
-	return SALDataIrrigationControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataIrrigationControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {
+func (m *_SALDataIrrigationControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataIrrigationControl SALDataIrrigationControl, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataIrrigationControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataIrrigationControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (irrigationControlData)
-	if pullErr := readBuffer.PullContext("irrigationControlData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for irrigationControlData")
+	irrigationControlData, err := ReadSimpleField[LightingData](ctx, "irrigationControlData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'irrigationControlData' field"))
 	}
-	_irrigationControlData, _irrigationControlDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _irrigationControlDataErr != nil {
-		return nil, errors.Wrap(_irrigationControlDataErr, "Error parsing 'irrigationControlData' field of SALDataIrrigationControl")
-	}
-	irrigationControlData := _irrigationControlData.(LightingData)
-	if closeErr := readBuffer.CloseContext("irrigationControlData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for irrigationControlData")
-	}
+	m.IrrigationControlData = irrigationControlData
 
 	if closeErr := readBuffer.CloseContext("SALDataIrrigationControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataIrrigationControl")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataIrrigationControl{
-		_SALData:              &_SALData{},
-		IrrigationControlData: irrigationControlData,
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataIrrigationControl) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for SALDataIrrigationControl")
 		}
 
-		// Simple Field (irrigationControlData)
-		if pushErr := writeBuffer.PushContext("irrigationControlData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for irrigationControlData")
-		}
-		_irrigationControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetIrrigationControlData())
-		if popErr := writeBuffer.PopContext("irrigationControlData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for irrigationControlData")
-		}
-		if _irrigationControlDataErr != nil {
-			return errors.Wrap(_irrigationControlDataErr, "Error serializing 'irrigationControlData' field")
+		if err := WriteSimpleField[LightingData](ctx, "irrigationControlData", m.GetIrrigationControlData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'irrigationControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataIrrigationControl"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataIrrigationControl) isSALDataIrrigationControl() bool {
-	return true
-}
+func (m *_SALDataIrrigationControl) IsSALDataIrrigationControl() {}
 
 func (m *_SALDataIrrigationControl) String() string {
 	if m == nil {

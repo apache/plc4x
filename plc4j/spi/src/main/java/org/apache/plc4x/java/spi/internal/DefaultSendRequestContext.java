@@ -110,7 +110,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     @Override
     public ConversationContext.SendRequestContext<T> onTimeout(Consumer<TimeoutException> onTimeoutConsumer) {
-        if (this.onTimeoutConsumer != null) {
+        if (this.onTimeoutConsumer != null && !(this.onTimeoutConsumer instanceof NoopTimeoutConsumer)) {
             throw new ConversationContext.PlcWiringException("can't handle multiple timeout consumers");
         }
         this.onTimeoutConsumer = onTimeoutConsumer;

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,20 +45,18 @@ type MediaTransportControlDataShuffleOnOff interface {
 	GetIsOff() bool
 	// GetIsOn returns IsOn (virtual field)
 	GetIsOn() bool
-}
-
-// MediaTransportControlDataShuffleOnOffExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataShuffleOnOff.
-// This is useful for switch cases.
-type MediaTransportControlDataShuffleOnOffExactly interface {
-	MediaTransportControlDataShuffleOnOff
-	isMediaTransportControlDataShuffleOnOff() bool
+	// IsMediaTransportControlDataShuffleOnOff is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataShuffleOnOff()
 }
 
 // _MediaTransportControlDataShuffleOnOff is the data-structure of this message
 type _MediaTransportControlDataShuffleOnOff struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	State byte
 }
+
+var _ MediaTransportControlDataShuffleOnOff = (*_MediaTransportControlDataShuffleOnOff)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataShuffleOnOff)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,13 +68,8 @@ type _MediaTransportControlDataShuffleOnOff struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataShuffleOnOff) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataShuffleOnOff) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataShuffleOnOff) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,10 +110,10 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetIsOn() bool {
 // NewMediaTransportControlDataShuffleOnOff factory function for _MediaTransportControlDataShuffleOnOff
 func NewMediaTransportControlDataShuffleOnOff(state byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataShuffleOnOff {
 	_result := &_MediaTransportControlDataShuffleOnOff{
-		State:                      state,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		State:                             state,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -138,7 +133,7 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (state)
 	lengthInBits += 8
@@ -154,49 +149,40 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataShuffleOnOffParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataShuffleOnOff, error) {
-	return MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
+func (m *_MediaTransportControlDataShuffleOnOff) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataShuffleOnOff MediaTransportControlDataShuffleOnOff, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataShuffleOnOff"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataShuffleOnOff")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (state)
-	_state, _stateErr := readBuffer.ReadByte("state")
-	if _stateErr != nil {
-		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of MediaTransportControlDataShuffleOnOff")
+	state, err := ReadSimpleField(ctx, "state", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'state' field"))
 	}
-	state := _state
+	m.State = state
 
-	// Virtual field
-	_isOff := bool((state) == (0x00))
-	isOff := bool(_isOff)
+	isOff, err := ReadVirtualField[bool](ctx, "isOff", (*bool)(nil), bool((state) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOff' field"))
+	}
 	_ = isOff
 
-	// Virtual field
-	_isOn := bool((state) > (0xFE))
-	isOn := bool(_isOn)
+	isOn, err := ReadVirtualField[bool](ctx, "isOn", (*bool)(nil), bool((state) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOn' field"))
+	}
 	_ = isOn
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataShuffleOnOff"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataShuffleOnOff")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataShuffleOnOff{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		State:                      state,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataShuffleOnOff) Serialize() ([]byte, error) {
@@ -217,11 +203,8 @@ func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataShuffleOnOff")
 		}
 
-		// Simple Field (state)
-		state := byte(m.GetState())
-		_stateErr := writeBuffer.WriteByte("state", (state))
-		if _stateErr != nil {
-			return errors.Wrap(_stateErr, "Error serializing 'state' field")
+		if err := WriteSimpleField[byte](ctx, "state", m.GetState(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'state' field")
 		}
 		// Virtual field
 		isOff := m.GetIsOff()
@@ -241,12 +224,10 @@ func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataShuffleOnOff) isMediaTransportControlDataShuffleOnOff() bool {
-	return true
-}
+func (m *_MediaTransportControlDataShuffleOnOff) IsMediaTransportControlDataShuffleOnOff() {}
 
 func (m *_MediaTransportControlDataShuffleOnOff) String() string {
 	if m == nil {

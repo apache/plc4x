@@ -36,18 +36,15 @@ type LocaleId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// LocaleIdExactly can be used when we want exactly this type and not a type which fulfills LocaleId.
-// This is useful for switch cases.
-type LocaleIdExactly interface {
-	LocaleId
-	isLocaleId() bool
+	// IsLocaleId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLocaleId()
 }
 
 // _LocaleId is the data-structure of this message
 type _LocaleId struct {
 }
+
+var _ LocaleId = (*_LocaleId)(nil)
 
 // NewLocaleId factory function for _LocaleId
 func NewLocaleId() *_LocaleId {
@@ -83,11 +80,23 @@ func LocaleIdParse(ctx context.Context, theBytes []byte) (LocaleId, error) {
 	return LocaleIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LocaleIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LocaleId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LocaleId, error) {
+		return LocaleIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LocaleIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LocaleId, error) {
+	v, err := (&_LocaleId{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_LocaleId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__localeId LocaleId, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LocaleId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LocaleId")
 	}
@@ -98,8 +107,7 @@ func LocaleIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 		return nil, errors.Wrap(closeErr, "Error closing for LocaleId")
 	}
 
-	// Create the instance
-	return &_LocaleId{}, nil
+	return m, nil
 }
 
 func (m *_LocaleId) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_LocaleId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-func (m *_LocaleId) isLocaleId() bool {
-	return true
-}
+func (m *_LocaleId) IsLocaleId() {}
 
 func (m *_LocaleId) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime interfac
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
-}
-
-// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime.
-// This is useful for switch cases.
-type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeExactly interface {
-	BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
-	isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime() bool
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime struct {
-	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
 	TimeValue BACnetApplicationTagTime
 }
+
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime)(nil)
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime struct 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) InitializeParent(parent BACnetNotificationParametersChangeOfDiscreteValueNewValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) GetParent() BACnetNotificationParametersChangeOfDiscreteValueNewValue {
-	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValue
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) GetParent() BACnetNotificationParametersChangeOfDiscreteValueNewValueContract {
+	return m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Ge
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(timeValue BACnetApplicationTagTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{
-		TimeValue: timeValue,
-		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime must not be nil")
 	}
-	_result._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _result
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		TimeValue: timeValue,
+	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Ge
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).getLengthInBits(ctx))
 
 	// Simple field (timeValue)
 	lengthInBits += m.TimeValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Ge
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error) {
-	return BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error) {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParametersChangeOfDiscreteValueNewValue, tagNumber uint8) (__bACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, err error) {
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeValue)
-	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
+	timeValue, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "timeValue", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeValue' field"))
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timeValueErr != nil {
-		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime")
-	}
-	timeValue := _timeValue.(BACnetApplicationTagTime)
-	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeValue")
-	}
+	m.TimeValue = timeValue
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{
-		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
-			TagNumber: tagNumber,
-		},
-		TimeValue: timeValue,
-	}
-	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Se
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime")
 		}
 
-		// Simple Field (timeValue)
-		if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeValue")
-		}
-		_timeValueErr := writeBuffer.WriteSerializable(ctx, m.GetTimeValue())
-		if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeValue")
-		}
-		if _timeValueErr != nil {
-			return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "timeValue", m.GetTimeValue(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime"); popErr != nil {
@@ -204,11 +174,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Se
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime() bool {
-	return true
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime() {
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) String() string {

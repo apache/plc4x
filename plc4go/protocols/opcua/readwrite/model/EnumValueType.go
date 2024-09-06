@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type EnumValueType interface {
 	GetDisplayName() LocalizedText
 	// GetDescription returns Description (property field)
 	GetDescription() LocalizedText
-}
-
-// EnumValueTypeExactly can be used when we want exactly this type and not a type which fulfills EnumValueType.
-// This is useful for switch cases.
-type EnumValueTypeExactly interface {
-	EnumValueType
-	isEnumValueType() bool
+	// IsEnumValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEnumValueType()
 }
 
 // _EnumValueType is the data-structure of this message
 type _EnumValueType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	Value       int64
 	DisplayName LocalizedText
 	Description LocalizedText
 }
+
+var _ EnumValueType = (*_EnumValueType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EnumValueType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_EnumValueType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EnumValueType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_EnumValueType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_EnumValueType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,19 @@ func (m *_EnumValueType) GetDescription() LocalizedText {
 
 // NewEnumValueType factory function for _EnumValueType
 func NewEnumValueType(value int64, displayName LocalizedText, description LocalizedText) *_EnumValueType {
-	_result := &_EnumValueType{
-		Value:                      value,
-		DisplayName:                displayName,
-		Description:                description,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if displayName == nil {
+		panic("displayName of type LocalizedText for EnumValueType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if description == nil {
+		panic("description of type LocalizedText for EnumValueType must not be nil")
+	}
+	_result := &_EnumValueType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Value:                             value,
+		DisplayName:                       displayName,
+		Description:                       description,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +134,7 @@ func (m *_EnumValueType) GetTypeName() string {
 }
 
 func (m *_EnumValueType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += 64
@@ -148,67 +152,40 @@ func (m *_EnumValueType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EnumValueTypeParse(ctx context.Context, theBytes []byte, identifier string) (EnumValueType, error) {
-	return EnumValueTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func EnumValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EnumValueType, error) {
+func (m *_EnumValueType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__enumValueType EnumValueType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EnumValueType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EnumValueType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadInt64("value", 64)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of EnumValueType")
+	value, err := ReadSimpleField(ctx, "value", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
+	m.Value = value
 
-	// Simple Field (displayName)
-	if pullErr := readBuffer.PullContext("displayName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for displayName")
+	displayName, err := ReadSimpleField[LocalizedText](ctx, "displayName", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'displayName' field"))
 	}
-	_displayName, _displayNameErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _displayNameErr != nil {
-		return nil, errors.Wrap(_displayNameErr, "Error parsing 'displayName' field of EnumValueType")
-	}
-	displayName := _displayName.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("displayName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for displayName")
-	}
+	m.DisplayName = displayName
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
+	description, err := ReadSimpleField[LocalizedText](ctx, "description", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
-	_description, _descriptionErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of EnumValueType")
-	}
-	description := _description.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
-	}
+	m.Description = description
 
 	if closeErr := readBuffer.CloseContext("EnumValueType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EnumValueType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_EnumValueType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		Value:                      value,
-		DisplayName:                displayName,
-		Description:                description,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_EnumValueType) Serialize() ([]byte, error) {
@@ -229,35 +206,16 @@ func (m *_EnumValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for EnumValueType")
 		}
 
-		// Simple Field (value)
-		value := int64(m.GetValue())
-		_valueErr := writeBuffer.WriteInt64("value", 64, int64((value)))
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[int64](ctx, "value", m.GetValue(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
-		// Simple Field (displayName)
-		if pushErr := writeBuffer.PushContext("displayName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for displayName")
-		}
-		_displayNameErr := writeBuffer.WriteSerializable(ctx, m.GetDisplayName())
-		if popErr := writeBuffer.PopContext("displayName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for displayName")
-		}
-		if _displayNameErr != nil {
-			return errors.Wrap(_displayNameErr, "Error serializing 'displayName' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "displayName", m.GetDisplayName(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'displayName' field")
 		}
 
-		// Simple Field (description)
-		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for description")
-		}
-		_descriptionErr := writeBuffer.WriteSerializable(ctx, m.GetDescription())
-		if popErr := writeBuffer.PopContext("description"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for description")
-		}
-		if _descriptionErr != nil {
-			return errors.Wrap(_descriptionErr, "Error serializing 'description' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "description", m.GetDescription(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'description' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EnumValueType"); popErr != nil {
@@ -265,12 +223,10 @@ func (m *_EnumValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_EnumValueType) isEnumValueType() bool {
-	return true
-}
+func (m *_EnumValueType) IsEnumValueType() {}
 
 func (m *_EnumValueType) String() string {
 	if m == nil {

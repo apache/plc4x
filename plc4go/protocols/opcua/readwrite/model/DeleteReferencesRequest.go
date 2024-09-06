@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type DeleteReferencesRequest interface {
 	GetNoOfReferencesToDelete() int32
 	// GetReferencesToDelete returns ReferencesToDelete (property field)
 	GetReferencesToDelete() []ExtensionObjectDefinition
-}
-
-// DeleteReferencesRequestExactly can be used when we want exactly this type and not a type which fulfills DeleteReferencesRequest.
-// This is useful for switch cases.
-type DeleteReferencesRequestExactly interface {
-	DeleteReferencesRequest
-	isDeleteReferencesRequest() bool
+	// IsDeleteReferencesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteReferencesRequest()
 }
 
 // _DeleteReferencesRequest is the data-structure of this message
 type _DeleteReferencesRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader          ExtensionObjectDefinition
 	NoOfReferencesToDelete int32
 	ReferencesToDelete     []ExtensionObjectDefinition
 }
+
+var _ DeleteReferencesRequest = (*_DeleteReferencesRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DeleteReferencesRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_DeleteReferencesRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DeleteReferencesRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_DeleteReferencesRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_DeleteReferencesRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_DeleteReferencesRequest) GetReferencesToDelete() []ExtensionObjectDefi
 
 // NewDeleteReferencesRequest factory function for _DeleteReferencesRequest
 func NewDeleteReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) *_DeleteReferencesRequest {
-	_result := &_DeleteReferencesRequest{
-		RequestHeader:              requestHeader,
-		NoOfReferencesToDelete:     noOfReferencesToDelete,
-		ReferencesToDelete:         referencesToDelete,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteReferencesRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_DeleteReferencesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfReferencesToDelete:            noOfReferencesToDelete,
+		ReferencesToDelete:                referencesToDelete,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_DeleteReferencesRequest) GetTypeName() string {
 }
 
 func (m *_DeleteReferencesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -155,81 +156,40 @@ func (m *_DeleteReferencesRequest) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeleteReferencesRequestParse(ctx context.Context, theBytes []byte, identifier string) (DeleteReferencesRequest, error) {
-	return DeleteReferencesRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func DeleteReferencesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteReferencesRequest, error) {
+func (m *_DeleteReferencesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteReferencesRequest DeleteReferencesRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeleteReferencesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeleteReferencesRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of DeleteReferencesRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (noOfReferencesToDelete)
-	_noOfReferencesToDelete, _noOfReferencesToDeleteErr := readBuffer.ReadInt32("noOfReferencesToDelete", 32)
-	if _noOfReferencesToDeleteErr != nil {
-		return nil, errors.Wrap(_noOfReferencesToDeleteErr, "Error parsing 'noOfReferencesToDelete' field of DeleteReferencesRequest")
+	noOfReferencesToDelete, err := ReadSimpleField(ctx, "noOfReferencesToDelete", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencesToDelete' field"))
 	}
-	noOfReferencesToDelete := _noOfReferencesToDelete
+	m.NoOfReferencesToDelete = noOfReferencesToDelete
 
-	// Array field (referencesToDelete)
-	if pullErr := readBuffer.PullContext("referencesToDelete", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referencesToDelete")
+	referencesToDelete, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "referencesToDelete", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("387")), readBuffer), uint64(noOfReferencesToDelete))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencesToDelete' field"))
 	}
-	// Count array
-	referencesToDelete := make([]ExtensionObjectDefinition, max(noOfReferencesToDelete, 0))
-	// This happens when the size is set conditional to 0
-	if len(referencesToDelete) == 0 {
-		referencesToDelete = nil
-	}
-	{
-		_numItems := uint16(max(noOfReferencesToDelete, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "387")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'referencesToDelete' field of DeleteReferencesRequest")
-			}
-			referencesToDelete[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("referencesToDelete", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referencesToDelete")
-	}
+	m.ReferencesToDelete = referencesToDelete
 
 	if closeErr := readBuffer.CloseContext("DeleteReferencesRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeleteReferencesRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DeleteReferencesRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		NoOfReferencesToDelete:     noOfReferencesToDelete,
-		ReferencesToDelete:         referencesToDelete,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DeleteReferencesRequest) Serialize() ([]byte, error) {
@@ -250,40 +210,16 @@ func (m *_DeleteReferencesRequest) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for DeleteReferencesRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfReferencesToDelete)
-		noOfReferencesToDelete := int32(m.GetNoOfReferencesToDelete())
-		_noOfReferencesToDeleteErr := writeBuffer.WriteInt32("noOfReferencesToDelete", 32, int32((noOfReferencesToDelete)))
-		if _noOfReferencesToDeleteErr != nil {
-			return errors.Wrap(_noOfReferencesToDeleteErr, "Error serializing 'noOfReferencesToDelete' field")
+		if err := WriteSimpleField[int32](ctx, "noOfReferencesToDelete", m.GetNoOfReferencesToDelete(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfReferencesToDelete' field")
 		}
 
-		// Array Field (referencesToDelete)
-		if pushErr := writeBuffer.PushContext("referencesToDelete", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referencesToDelete")
-		}
-		for _curItem, _element := range m.GetReferencesToDelete() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReferencesToDelete()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'referencesToDelete' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("referencesToDelete", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referencesToDelete")
+		if err := WriteComplexTypeArrayField(ctx, "referencesToDelete", m.GetReferencesToDelete(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'referencesToDelete' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeleteReferencesRequest"); popErr != nil {
@@ -291,12 +227,10 @@ func (m *_DeleteReferencesRequest) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DeleteReferencesRequest) isDeleteReferencesRequest() bool {
-	return true
-}
+func (m *_DeleteReferencesRequest) IsDeleteReferencesRequest() {}
 
 func (m *_DeleteReferencesRequest) String() string {
 	if m == nil {

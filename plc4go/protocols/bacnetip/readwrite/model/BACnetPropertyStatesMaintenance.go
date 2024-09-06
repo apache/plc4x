@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesMaintenance interface {
 	BACnetPropertyStates
 	// GetMaintenance returns Maintenance (property field)
 	GetMaintenance() BACnetMaintenanceTagged
-}
-
-// BACnetPropertyStatesMaintenanceExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesMaintenance.
-// This is useful for switch cases.
-type BACnetPropertyStatesMaintenanceExactly interface {
-	BACnetPropertyStatesMaintenance
-	isBACnetPropertyStatesMaintenance() bool
+	// IsBACnetPropertyStatesMaintenance is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesMaintenance()
 }
 
 // _BACnetPropertyStatesMaintenance is the data-structure of this message
 type _BACnetPropertyStatesMaintenance struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	Maintenance BACnetMaintenanceTagged
 }
+
+var _ BACnetPropertyStatesMaintenance = (*_BACnetPropertyStatesMaintenance)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesMaintenance)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesMaintenance struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesMaintenance) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesMaintenance) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesMaintenance) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesMaintenance) GetMaintenance() BACnetMaintenanceTag
 
 // NewBACnetPropertyStatesMaintenance factory function for _BACnetPropertyStatesMaintenance
 func NewBACnetPropertyStatesMaintenance(maintenance BACnetMaintenanceTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesMaintenance {
-	_result := &_BACnetPropertyStatesMaintenance{
-		Maintenance:           maintenance,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if maintenance == nil {
+		panic("maintenance of type BACnetMaintenanceTagged for BACnetPropertyStatesMaintenance must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesMaintenance{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Maintenance:                  maintenance,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesMaintenance) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesMaintenance) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (maintenance)
 	lengthInBits += m.Maintenance.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesMaintenance) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesMaintenanceParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
-	return BACnetPropertyStatesMaintenanceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesMaintenanceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
+func (m *_BACnetPropertyStatesMaintenance) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesMaintenance BACnetPropertyStatesMaintenance, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesMaintenance"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesMaintenance")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maintenance)
-	if pullErr := readBuffer.PullContext("maintenance"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maintenance")
+	maintenance, err := ReadSimpleField[BACnetMaintenanceTagged](ctx, "maintenance", ReadComplex[BACnetMaintenanceTagged](BACnetMaintenanceTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maintenance' field"))
 	}
-	_maintenance, _maintenanceErr := BACnetMaintenanceTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _maintenanceErr != nil {
-		return nil, errors.Wrap(_maintenanceErr, "Error parsing 'maintenance' field of BACnetPropertyStatesMaintenance")
-	}
-	maintenance := _maintenance.(BACnetMaintenanceTagged)
-	if closeErr := readBuffer.CloseContext("maintenance"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maintenance")
-	}
+	m.Maintenance = maintenance
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesMaintenance"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesMaintenance")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesMaintenance{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		Maintenance:           maintenance,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesMaintenance) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesMaintenance) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesMaintenance")
 		}
 
-		// Simple Field (maintenance)
-		if pushErr := writeBuffer.PushContext("maintenance"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maintenance")
-		}
-		_maintenanceErr := writeBuffer.WriteSerializable(ctx, m.GetMaintenance())
-		if popErr := writeBuffer.PopContext("maintenance"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maintenance")
-		}
-		if _maintenanceErr != nil {
-			return errors.Wrap(_maintenanceErr, "Error serializing 'maintenance' field")
+		if err := WriteSimpleField[BACnetMaintenanceTagged](ctx, "maintenance", m.GetMaintenance(), WriteComplex[BACnetMaintenanceTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maintenance' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesMaintenance"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesMaintenance) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesMaintenance) isBACnetPropertyStatesMaintenance() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesMaintenance) IsBACnetPropertyStatesMaintenance() {}
 
 func (m *_BACnetPropertyStatesMaintenance) String() string {
 	if m == nil {

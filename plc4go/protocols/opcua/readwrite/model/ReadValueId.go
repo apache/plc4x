@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type ReadValueId interface {
 	GetIndexRange() PascalString
 	// GetDataEncoding returns DataEncoding (property field)
 	GetDataEncoding() QualifiedName
-}
-
-// ReadValueIdExactly can be used when we want exactly this type and not a type which fulfills ReadValueId.
-// This is useful for switch cases.
-type ReadValueIdExactly interface {
-	ReadValueId
-	isReadValueId() bool
+	// IsReadValueId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReadValueId()
 }
 
 // _ReadValueId is the data-structure of this message
 type _ReadValueId struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NodeId       NodeId
 	AttributeId  uint32
 	IndexRange   PascalString
 	DataEncoding QualifiedName
 }
+
+var _ ReadValueId = (*_ReadValueId)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ReadValueId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -77,10 +77,8 @@ func (m *_ReadValueId) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ReadValueId) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_ReadValueId) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_ReadValueId) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,14 +109,23 @@ func (m *_ReadValueId) GetDataEncoding() QualifiedName {
 
 // NewReadValueId factory function for _ReadValueId
 func NewReadValueId(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) *_ReadValueId {
-	_result := &_ReadValueId{
-		NodeId:                     nodeId,
-		AttributeId:                attributeId,
-		IndexRange:                 indexRange,
-		DataEncoding:               dataEncoding,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if nodeId == nil {
+		panic("nodeId of type NodeId for ReadValueId must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if indexRange == nil {
+		panic("indexRange of type PascalString for ReadValueId must not be nil")
+	}
+	if dataEncoding == nil {
+		panic("dataEncoding of type QualifiedName for ReadValueId must not be nil")
+	}
+	_result := &_ReadValueId{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+		DataEncoding:                      dataEncoding,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -138,7 +145,7 @@ func (m *_ReadValueId) GetTypeName() string {
 }
 
 func (m *_ReadValueId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -159,81 +166,46 @@ func (m *_ReadValueId) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ReadValueIdParse(ctx context.Context, theBytes []byte, identifier string) (ReadValueId, error) {
-	return ReadValueIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func ReadValueIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReadValueId, error) {
+func (m *_ReadValueId) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__readValueId ReadValueId, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ReadValueId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ReadValueId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
-	_nodeId, _nodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of ReadValueId")
-	}
-	nodeId := _nodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
-	}
+	m.NodeId = nodeId
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of ReadValueId")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
-	attributeId := _attributeId
+	m.AttributeId = attributeId
 
-	// Simple Field (indexRange)
-	if pullErr := readBuffer.PullContext("indexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for indexRange")
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
 	}
-	_indexRange, _indexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _indexRangeErr != nil {
-		return nil, errors.Wrap(_indexRangeErr, "Error parsing 'indexRange' field of ReadValueId")
-	}
-	indexRange := _indexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("indexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for indexRange")
-	}
+	m.IndexRange = indexRange
 
-	// Simple Field (dataEncoding)
-	if pullErr := readBuffer.PullContext("dataEncoding"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataEncoding")
+	dataEncoding, err := ReadSimpleField[QualifiedName](ctx, "dataEncoding", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataEncoding' field"))
 	}
-	_dataEncoding, _dataEncodingErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _dataEncodingErr != nil {
-		return nil, errors.Wrap(_dataEncodingErr, "Error parsing 'dataEncoding' field of ReadValueId")
-	}
-	dataEncoding := _dataEncoding.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("dataEncoding"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataEncoding")
-	}
+	m.DataEncoding = dataEncoding
 
 	if closeErr := readBuffer.CloseContext("ReadValueId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReadValueId")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ReadValueId{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NodeId:                     nodeId,
-		AttributeId:                attributeId,
-		IndexRange:                 indexRange,
-		DataEncoding:               dataEncoding,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ReadValueId) Serialize() ([]byte, error) {
@@ -254,47 +226,20 @@ func (m *_ReadValueId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for ReadValueId")
 		}
 
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		// Simple Field (attributeId)
-		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
-		if _attributeIdErr != nil {
-			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		// Simple Field (indexRange)
-		if pushErr := writeBuffer.PushContext("indexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for indexRange")
-		}
-		_indexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetIndexRange())
-		if popErr := writeBuffer.PopContext("indexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for indexRange")
-		}
-		if _indexRangeErr != nil {
-			return errors.Wrap(_indexRangeErr, "Error serializing 'indexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexRange' field")
 		}
 
-		// Simple Field (dataEncoding)
-		if pushErr := writeBuffer.PushContext("dataEncoding"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataEncoding")
-		}
-		_dataEncodingErr := writeBuffer.WriteSerializable(ctx, m.GetDataEncoding())
-		if popErr := writeBuffer.PopContext("dataEncoding"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataEncoding")
-		}
-		if _dataEncodingErr != nil {
-			return errors.Wrap(_dataEncodingErr, "Error serializing 'dataEncoding' field")
+		if err := WriteSimpleField[QualifiedName](ctx, "dataEncoding", m.GetDataEncoding(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataEncoding' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReadValueId"); popErr != nil {
@@ -302,12 +247,10 @@ func (m *_ReadValueId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ReadValueId) isReadValueId() bool {
-	return true
-}
+func (m *_ReadValueId) IsReadValueId() {}
 
 func (m *_ReadValueId) String() string {
 	if m == nil {

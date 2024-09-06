@@ -36,18 +36,15 @@ type SessionAuthenticationToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// SessionAuthenticationTokenExactly can be used when we want exactly this type and not a type which fulfills SessionAuthenticationToken.
-// This is useful for switch cases.
-type SessionAuthenticationTokenExactly interface {
-	SessionAuthenticationToken
-	isSessionAuthenticationToken() bool
+	// IsSessionAuthenticationToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSessionAuthenticationToken()
 }
 
 // _SessionAuthenticationToken is the data-structure of this message
 type _SessionAuthenticationToken struct {
 }
+
+var _ SessionAuthenticationToken = (*_SessionAuthenticationToken)(nil)
 
 // NewSessionAuthenticationToken factory function for _SessionAuthenticationToken
 func NewSessionAuthenticationToken() *_SessionAuthenticationToken {
@@ -83,11 +80,23 @@ func SessionAuthenticationTokenParse(ctx context.Context, theBytes []byte) (Sess
 	return SessionAuthenticationTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SessionAuthenticationTokenParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
+		return SessionAuthenticationTokenParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SessionAuthenticationTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
+	v, err := (&_SessionAuthenticationToken{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_SessionAuthenticationToken) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__sessionAuthenticationToken SessionAuthenticationToken, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SessionAuthenticationToken"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SessionAuthenticationToken")
 	}
@@ -98,8 +107,7 @@ func SessionAuthenticationTokenParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for SessionAuthenticationToken")
 	}
 
-	// Create the instance
-	return &_SessionAuthenticationToken{}, nil
+	return m, nil
 }
 
 func (m *_SessionAuthenticationToken) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_SessionAuthenticationToken) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-func (m *_SessionAuthenticationToken) isSessionAuthenticationToken() bool {
-	return true
-}
+func (m *_SessionAuthenticationToken) IsSessionAuthenticationToken() {}
 
 func (m *_SessionAuthenticationToken) String() string {
 	if m == nil {

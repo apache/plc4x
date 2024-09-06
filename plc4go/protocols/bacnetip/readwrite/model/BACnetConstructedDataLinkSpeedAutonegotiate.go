@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLinkSpeedAutonegotiate interface {
 	GetLinkSpeedAutonegotiate() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataLinkSpeedAutonegotiateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLinkSpeedAutonegotiate.
-// This is useful for switch cases.
-type BACnetConstructedDataLinkSpeedAutonegotiateExactly interface {
-	BACnetConstructedDataLinkSpeedAutonegotiate
-	isBACnetConstructedDataLinkSpeedAutonegotiate() bool
+	// IsBACnetConstructedDataLinkSpeedAutonegotiate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLinkSpeedAutonegotiate()
 }
 
 // _BACnetConstructedDataLinkSpeedAutonegotiate is the data-structure of this message
 type _BACnetConstructedDataLinkSpeedAutonegotiate struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LinkSpeedAutonegotiate BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataLinkSpeedAutonegotiate = (*_BACnetConstructedDataLinkSpeedAutonegotiate)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeedAutonegotiate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetActualValue() BACnetAp
 
 // NewBACnetConstructedDataLinkSpeedAutonegotiate factory function for _BACnetConstructedDataLinkSpeedAutonegotiate
 func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeedAutonegotiate {
-	_result := &_BACnetConstructedDataLinkSpeedAutonegotiate{
-		LinkSpeedAutonegotiate: linkSpeedAutonegotiate,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if linkSpeedAutonegotiate == nil {
+		panic("linkSpeedAutonegotiate of type BACnetApplicationTagBoolean for BACnetConstructedDataLinkSpeedAutonegotiate must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLinkSpeedAutonegotiate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LinkSpeedAutonegotiate:        linkSpeedAutonegotiate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (linkSpeedAutonegotiate)
 	lengthInBits += m.LinkSpeedAutonegotiate.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLinkSpeedAutonegotiateParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
-	return BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLinkSpeedAutonegotiate BACnetConstructedDataLinkSpeedAutonegotiate, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeedAutonegotiate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLinkSpeedAutonegotiate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (linkSpeedAutonegotiate)
-	if pullErr := readBuffer.PullContext("linkSpeedAutonegotiate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeedAutonegotiate")
+	linkSpeedAutonegotiate, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "linkSpeedAutonegotiate", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkSpeedAutonegotiate' field"))
 	}
-	_linkSpeedAutonegotiate, _linkSpeedAutonegotiateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _linkSpeedAutonegotiateErr != nil {
-		return nil, errors.Wrap(_linkSpeedAutonegotiateErr, "Error parsing 'linkSpeedAutonegotiate' field of BACnetConstructedDataLinkSpeedAutonegotiate")
-	}
-	linkSpeedAutonegotiate := _linkSpeedAutonegotiate.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("linkSpeedAutonegotiate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for linkSpeedAutonegotiate")
-	}
+	m.LinkSpeedAutonegotiate = linkSpeedAutonegotiate
 
-	// Virtual field
-	_actualValue := linkSpeedAutonegotiate
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), linkSpeedAutonegotiate)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLinkSpeedAutonegotiate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLinkSpeedAutonegotiate")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLinkSpeedAutonegotiate{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LinkSpeedAutonegotiate: linkSpeedAutonegotiate,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLinkSpeedAutonegotiate")
 		}
 
-		// Simple Field (linkSpeedAutonegotiate)
-		if pushErr := writeBuffer.PushContext("linkSpeedAutonegotiate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for linkSpeedAutonegotiate")
-		}
-		_linkSpeedAutonegotiateErr := writeBuffer.WriteSerializable(ctx, m.GetLinkSpeedAutonegotiate())
-		if popErr := writeBuffer.PopContext("linkSpeedAutonegotiate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for linkSpeedAutonegotiate")
-		}
-		if _linkSpeedAutonegotiateErr != nil {
-			return errors.Wrap(_linkSpeedAutonegotiateErr, "Error serializing 'linkSpeedAutonegotiate' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "linkSpeedAutonegotiate", m.GetLinkSpeedAutonegotiate(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linkSpeedAutonegotiate' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) isBACnetConstructedDataLinkSpeedAutonegotiate() bool {
-	return true
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) IsBACnetConstructedDataLinkSpeedAutonegotiate() {
 }
 
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) String() string {

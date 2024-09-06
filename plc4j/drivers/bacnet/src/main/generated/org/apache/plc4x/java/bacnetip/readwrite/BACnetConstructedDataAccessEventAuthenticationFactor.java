@@ -86,7 +86,7 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
     writeSimpleField(
         "accessEventAuthenticationFactor",
         accessEventAuthenticationFactor,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAuthenticationFactor actualValue = getActualValue();
@@ -128,8 +128,7 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
     BACnetAuthenticationFactor accessEventAuthenticationFactor =
         readSimpleField(
             "accessEventAuthenticationFactor",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer));
     BACnetAuthenticationFactor actualValue =
         readVirtualField(
             "actualValue", BACnetAuthenticationFactor.class, accessEventAuthenticationFactor);

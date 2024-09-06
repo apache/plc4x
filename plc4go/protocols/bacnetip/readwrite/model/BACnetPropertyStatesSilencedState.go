@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesSilencedState interface {
 	BACnetPropertyStates
 	// GetSilencedState returns SilencedState (property field)
 	GetSilencedState() BACnetSilencedStateTagged
-}
-
-// BACnetPropertyStatesSilencedStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesSilencedState.
-// This is useful for switch cases.
-type BACnetPropertyStatesSilencedStateExactly interface {
-	BACnetPropertyStatesSilencedState
-	isBACnetPropertyStatesSilencedState() bool
+	// IsBACnetPropertyStatesSilencedState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesSilencedState()
 }
 
 // _BACnetPropertyStatesSilencedState is the data-structure of this message
 type _BACnetPropertyStatesSilencedState struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	SilencedState BACnetSilencedStateTagged
 }
+
+var _ BACnetPropertyStatesSilencedState = (*_BACnetPropertyStatesSilencedState)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSilencedState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesSilencedState struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesSilencedState) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesSilencedState) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesSilencedState) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesSilencedState) GetSilencedState() BACnetSilencedSt
 
 // NewBACnetPropertyStatesSilencedState factory function for _BACnetPropertyStatesSilencedState
 func NewBACnetPropertyStatesSilencedState(silencedState BACnetSilencedStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesSilencedState {
-	_result := &_BACnetPropertyStatesSilencedState{
-		SilencedState:         silencedState,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if silencedState == nil {
+		panic("silencedState of type BACnetSilencedStateTagged for BACnetPropertyStatesSilencedState must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesSilencedState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		SilencedState:                silencedState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesSilencedState) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesSilencedState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (silencedState)
 	lengthInBits += m.SilencedState.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesSilencedState) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesSilencedStateParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {
-	return BACnetPropertyStatesSilencedStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesSilencedStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {
+func (m *_BACnetPropertyStatesSilencedState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesSilencedState BACnetPropertyStatesSilencedState, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesSilencedState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesSilencedState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (silencedState)
-	if pullErr := readBuffer.PullContext("silencedState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for silencedState")
+	silencedState, err := ReadSimpleField[BACnetSilencedStateTagged](ctx, "silencedState", ReadComplex[BACnetSilencedStateTagged](BACnetSilencedStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'silencedState' field"))
 	}
-	_silencedState, _silencedStateErr := BACnetSilencedStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _silencedStateErr != nil {
-		return nil, errors.Wrap(_silencedStateErr, "Error parsing 'silencedState' field of BACnetPropertyStatesSilencedState")
-	}
-	silencedState := _silencedState.(BACnetSilencedStateTagged)
-	if closeErr := readBuffer.CloseContext("silencedState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for silencedState")
-	}
+	m.SilencedState = silencedState
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesSilencedState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesSilencedState")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesSilencedState{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		SilencedState:         silencedState,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesSilencedState) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesSilencedState")
 		}
 
-		// Simple Field (silencedState)
-		if pushErr := writeBuffer.PushContext("silencedState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for silencedState")
-		}
-		_silencedStateErr := writeBuffer.WriteSerializable(ctx, m.GetSilencedState())
-		if popErr := writeBuffer.PopContext("silencedState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for silencedState")
-		}
-		if _silencedStateErr != nil {
-			return errors.Wrap(_silencedStateErr, "Error serializing 'silencedState' field")
+		if err := WriteSimpleField[BACnetSilencedStateTagged](ctx, "silencedState", m.GetSilencedState(), WriteComplex[BACnetSilencedStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'silencedState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesSilencedState"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesSilencedState) isBACnetPropertyStatesSilencedState() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesSilencedState) IsBACnetPropertyStatesSilencedState() {}
 
 func (m *_BACnetPropertyStatesSilencedState) String() string {
 	if m == nil {

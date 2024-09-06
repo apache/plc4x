@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type NLMSetMasterKey interface {
 	NLM
 	// GetKey returns Key (property field)
 	GetKey() NLMUpdateKeyUpdateKeyEntry
-}
-
-// NLMSetMasterKeyExactly can be used when we want exactly this type and not a type which fulfills NLMSetMasterKey.
-// This is useful for switch cases.
-type NLMSetMasterKeyExactly interface {
-	NLMSetMasterKey
-	isNLMSetMasterKey() bool
+	// IsNLMSetMasterKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMSetMasterKey()
 }
 
 // _NLMSetMasterKey is the data-structure of this message
 type _NLMSetMasterKey struct {
-	*_NLM
+	NLMContract
 	Key NLMUpdateKeyUpdateKeyEntry
 }
+
+var _ NLMSetMasterKey = (*_NLMSetMasterKey)(nil)
+var _ NLMRequirements = (*_NLMSetMasterKey)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_NLMSetMasterKey) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMSetMasterKey) InitializeParent(parent NLM) {}
-
-func (m *_NLMSetMasterKey) GetParent() NLM {
-	return m._NLM
+func (m *_NLMSetMasterKey) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_NLMSetMasterKey) GetKey() NLMUpdateKeyUpdateKeyEntry {
 
 // NewNLMSetMasterKey factory function for _NLMSetMasterKey
 func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMSetMasterKey {
-	_result := &_NLMSetMasterKey{
-		Key:  key,
-		_NLM: NewNLM(apduLength),
+	if key == nil {
+		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMSetMasterKey must not be nil")
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result := &_NLMSetMasterKey{
+		NLMContract: NewNLM(apduLength),
+		Key:         key,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_NLMSetMasterKey) GetTypeName() string {
 }
 
 func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (key)
 	lengthInBits += m.Key.GetLengthInBits(ctx)
@@ -126,47 +127,28 @@ func (m *_NLMSetMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMSetMasterKeyParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMSetMasterKey, error) {
-	return NLMSetMasterKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMSetMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSetMasterKey, error) {
+func (m *_NLMSetMasterKey) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMSetMasterKey NLMSetMasterKey, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMSetMasterKey"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMSetMasterKey")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (key)
-	if pullErr := readBuffer.PullContext("key"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for key")
+	key, err := ReadSimpleField[NLMUpdateKeyUpdateKeyEntry](ctx, "key", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
-	_key, _keyErr := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx, readBuffer)
-	if _keyErr != nil {
-		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of NLMSetMasterKey")
-	}
-	key := _key.(NLMUpdateKeyUpdateKeyEntry)
-	if closeErr := readBuffer.CloseContext("key"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for key")
-	}
+	m.Key = key
 
 	if closeErr := readBuffer.CloseContext("NLMSetMasterKey"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMSetMasterKey")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMSetMasterKey{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		Key: key,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMSetMasterKey) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for NLMSetMasterKey")
 		}
 
-		// Simple Field (key)
-		if pushErr := writeBuffer.PushContext("key"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for key")
-		}
-		_keyErr := writeBuffer.WriteSerializable(ctx, m.GetKey())
-		if popErr := writeBuffer.PopContext("key"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for key")
-		}
-		if _keyErr != nil {
-			return errors.Wrap(_keyErr, "Error serializing 'key' field")
+		if err := WriteSimpleField[NLMUpdateKeyUpdateKeyEntry](ctx, "key", m.GetKey(), WriteComplex[NLMUpdateKeyUpdateKeyEntry](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'key' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMSetMasterKey"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMSetMasterKey) isNLMSetMasterKey() bool {
-	return true
-}
+func (m *_NLMSetMasterKey) IsNLMSetMasterKey() {}
 
 func (m *_NLMSetMasterKey) String() string {
 	if m == nil {

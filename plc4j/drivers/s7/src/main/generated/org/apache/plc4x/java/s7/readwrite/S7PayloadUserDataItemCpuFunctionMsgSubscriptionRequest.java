@@ -109,7 +109,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
         "alarmtype",
         "AlarmStateType",
         alarmtype,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AlarmStateType::getValue, AlarmStateType::name, writeUnsignedShort(writeBuffer, 8)),
         (getSubscription()) >= (128));
 
@@ -169,8 +169,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
     AlarmStateType alarmtype =
         readOptionalField(
             "alarmtype",
-            new DataReaderEnumDefault<>(
-                AlarmStateType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(AlarmStateType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (subscription) >= (128));
 
     Short reserve =

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type AddReferencesItem interface {
 	GetTargetNodeId() ExpandedNodeId
 	// GetTargetNodeClass returns TargetNodeClass (property field)
 	GetTargetNodeClass() NodeClass
-}
-
-// AddReferencesItemExactly can be used when we want exactly this type and not a type which fulfills AddReferencesItem.
-// This is useful for switch cases.
-type AddReferencesItemExactly interface {
-	AddReferencesItem
-	isAddReferencesItem() bool
+	// IsAddReferencesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAddReferencesItem()
 }
 
 // _AddReferencesItem is the data-structure of this message
 type _AddReferencesItem struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	SourceNodeId    NodeId
 	ReferenceTypeId NodeId
 	IsForward       bool
@@ -70,6 +67,9 @@ type _AddReferencesItem struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ AddReferencesItem = (*_AddReferencesItem)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,10 +85,8 @@ func (m *_AddReferencesItem) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AddReferencesItem) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_AddReferencesItem) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_AddReferencesItem) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -127,16 +125,28 @@ func (m *_AddReferencesItem) GetTargetNodeClass() NodeClass {
 
 // NewAddReferencesItem factory function for _AddReferencesItem
 func NewAddReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) *_AddReferencesItem {
-	_result := &_AddReferencesItem{
-		SourceNodeId:               sourceNodeId,
-		ReferenceTypeId:            referenceTypeId,
-		IsForward:                  isForward,
-		TargetServerUri:            targetServerUri,
-		TargetNodeId:               targetNodeId,
-		TargetNodeClass:            targetNodeClass,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if sourceNodeId == nil {
+		panic("sourceNodeId of type NodeId for AddReferencesItem must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for AddReferencesItem must not be nil")
+	}
+	if targetServerUri == nil {
+		panic("targetServerUri of type PascalString for AddReferencesItem must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type ExpandedNodeId for AddReferencesItem must not be nil")
+	}
+	_result := &_AddReferencesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SourceNodeId:                      sourceNodeId,
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		TargetServerUri:                   targetServerUri,
+		TargetNodeId:                      targetNodeId,
+		TargetNodeClass:                   targetNodeClass,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -156,7 +166,7 @@ func (m *_AddReferencesItem) GetTypeName() string {
 }
 
 func (m *_AddReferencesItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (sourceNodeId)
 	lengthInBits += m.SourceNodeId.GetLengthInBits(ctx)
@@ -186,127 +196,64 @@ func (m *_AddReferencesItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AddReferencesItemParse(ctx context.Context, theBytes []byte, identifier string) (AddReferencesItem, error) {
-	return AddReferencesItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func AddReferencesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddReferencesItem, error) {
+func (m *_AddReferencesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addReferencesItem AddReferencesItem, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AddReferencesItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AddReferencesItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sourceNodeId)
-	if pullErr := readBuffer.PullContext("sourceNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceNodeId")
+	sourceNodeId, err := ReadSimpleField[NodeId](ctx, "sourceNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceNodeId' field"))
 	}
-	_sourceNodeId, _sourceNodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sourceNodeIdErr != nil {
-		return nil, errors.Wrap(_sourceNodeIdErr, "Error parsing 'sourceNodeId' field of AddReferencesItem")
-	}
-	sourceNodeId := _sourceNodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("sourceNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceNodeId")
-	}
+	m.SourceNodeId = sourceNodeId
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of AddReferencesItem")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
-	}
+	m.ReferenceTypeId = referenceTypeId
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AddReferencesItem")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of AddReferencesItem")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
-	isForward := _isForward
+	m.IsForward = isForward
 
-	// Simple Field (targetServerUri)
-	if pullErr := readBuffer.PullContext("targetServerUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetServerUri")
+	targetServerUri, err := ReadSimpleField[PascalString](ctx, "targetServerUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetServerUri' field"))
 	}
-	_targetServerUri, _targetServerUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _targetServerUriErr != nil {
-		return nil, errors.Wrap(_targetServerUriErr, "Error parsing 'targetServerUri' field of AddReferencesItem")
-	}
-	targetServerUri := _targetServerUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("targetServerUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetServerUri")
-	}
+	m.TargetServerUri = targetServerUri
 
-	// Simple Field (targetNodeId)
-	if pullErr := readBuffer.PullContext("targetNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNodeId")
+	targetNodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "targetNodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNodeId' field"))
 	}
-	_targetNodeId, _targetNodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeIdErr != nil {
-		return nil, errors.Wrap(_targetNodeIdErr, "Error parsing 'targetNodeId' field of AddReferencesItem")
-	}
-	targetNodeId := _targetNodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNodeId")
-	}
+	m.TargetNodeId = targetNodeId
 
-	// Simple Field (targetNodeClass)
-	if pullErr := readBuffer.PullContext("targetNodeClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNodeClass")
+	targetNodeClass, err := ReadEnumField[NodeClass](ctx, "targetNodeClass", "NodeClass", ReadEnum(NodeClassByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNodeClass' field"))
 	}
-	_targetNodeClass, _targetNodeClassErr := NodeClassParseWithBuffer(ctx, readBuffer)
-	if _targetNodeClassErr != nil {
-		return nil, errors.Wrap(_targetNodeClassErr, "Error parsing 'targetNodeClass' field of AddReferencesItem")
-	}
-	targetNodeClass := _targetNodeClass
-	if closeErr := readBuffer.CloseContext("targetNodeClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNodeClass")
-	}
+	m.TargetNodeClass = targetNodeClass
 
 	if closeErr := readBuffer.CloseContext("AddReferencesItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AddReferencesItem")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AddReferencesItem{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		SourceNodeId:               sourceNodeId,
-		ReferenceTypeId:            referenceTypeId,
-		IsForward:                  isForward,
-		TargetServerUri:            targetServerUri,
-		TargetNodeId:               targetNodeId,
-		TargetNodeClass:            targetNodeClass,
-		reservedField0:             reservedField0,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AddReferencesItem) Serialize() ([]byte, error) {
@@ -327,87 +274,32 @@ func (m *_AddReferencesItem) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for AddReferencesItem")
 		}
 
-		// Simple Field (sourceNodeId)
-		if pushErr := writeBuffer.PushContext("sourceNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceNodeId")
-		}
-		_sourceNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetSourceNodeId())
-		if popErr := writeBuffer.PopContext("sourceNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceNodeId")
-		}
-		if _sourceNodeIdErr != nil {
-			return errors.Wrap(_sourceNodeIdErr, "Error serializing 'sourceNodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "sourceNodeId", m.GetSourceNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceNodeId' field")
 		}
 
-		// Simple Field (referenceTypeId)
-		if pushErr := writeBuffer.PushContext("referenceTypeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceTypeId")
-		}
-		_referenceTypeIdErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTypeId())
-		if popErr := writeBuffer.PopContext("referenceTypeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceTypeId")
-		}
-		if _referenceTypeIdErr != nil {
-			return errors.Wrap(_referenceTypeIdErr, "Error serializing 'referenceTypeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceTypeId' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (isForward)
-		isForward := bool(m.GetIsForward())
-		_isForwardErr := writeBuffer.WriteBit("isForward", (isForward))
-		if _isForwardErr != nil {
-			return errors.Wrap(_isForwardErr, "Error serializing 'isForward' field")
+		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isForward' field")
 		}
 
-		// Simple Field (targetServerUri)
-		if pushErr := writeBuffer.PushContext("targetServerUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetServerUri")
-		}
-		_targetServerUriErr := writeBuffer.WriteSerializable(ctx, m.GetTargetServerUri())
-		if popErr := writeBuffer.PopContext("targetServerUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetServerUri")
-		}
-		if _targetServerUriErr != nil {
-			return errors.Wrap(_targetServerUriErr, "Error serializing 'targetServerUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "targetServerUri", m.GetTargetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetServerUri' field")
 		}
 
-		// Simple Field (targetNodeId)
-		if pushErr := writeBuffer.PushContext("targetNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetNodeId")
-		}
-		_targetNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetNodeId())
-		if popErr := writeBuffer.PopContext("targetNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetNodeId")
-		}
-		if _targetNodeIdErr != nil {
-			return errors.Wrap(_targetNodeIdErr, "Error serializing 'targetNodeId' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "targetNodeId", m.GetTargetNodeId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetNodeId' field")
 		}
 
-		// Simple Field (targetNodeClass)
-		if pushErr := writeBuffer.PushContext("targetNodeClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetNodeClass")
-		}
-		_targetNodeClassErr := writeBuffer.WriteSerializable(ctx, m.GetTargetNodeClass())
-		if popErr := writeBuffer.PopContext("targetNodeClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetNodeClass")
-		}
-		if _targetNodeClassErr != nil {
-			return errors.Wrap(_targetNodeClassErr, "Error serializing 'targetNodeClass' field")
+		if err := WriteSimpleEnumField[NodeClass](ctx, "targetNodeClass", "NodeClass", m.GetTargetNodeClass(), WriteEnum[NodeClass, uint32](NodeClass.GetValue, NodeClass.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetNodeClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AddReferencesItem"); popErr != nil {
@@ -415,12 +307,10 @@ func (m *_AddReferencesItem) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AddReferencesItem) isAddReferencesItem() bool {
-	return true
-}
+func (m *_AddReferencesItem) IsAddReferencesItem() {}
 
 func (m *_AddReferencesItem) String() string {
 	if m == nil {

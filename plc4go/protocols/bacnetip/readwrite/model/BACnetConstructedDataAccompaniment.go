@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAccompaniment interface {
 	GetAccompaniment() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-}
-
-// BACnetConstructedDataAccompanimentExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccompaniment.
-// This is useful for switch cases.
-type BACnetConstructedDataAccompanimentExactly interface {
-	BACnetConstructedDataAccompaniment
-	isBACnetConstructedDataAccompaniment() bool
+	// IsBACnetConstructedDataAccompaniment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccompaniment()
 }
 
 // _BACnetConstructedDataAccompaniment is the data-structure of this message
 type _BACnetConstructedDataAccompaniment struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Accompaniment BACnetDeviceObjectReference
 }
+
+var _ BACnetConstructedDataAccompaniment = (*_BACnetConstructedDataAccompaniment)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccompaniment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAccompaniment) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAccompaniment) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAccompaniment) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAccompaniment) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAccompaniment) GetActualValue() BACnetDeviceObjec
 
 // NewBACnetConstructedDataAccompaniment factory function for _BACnetConstructedDataAccompaniment
 func NewBACnetConstructedDataAccompaniment(accompaniment BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompaniment {
-	_result := &_BACnetConstructedDataAccompaniment{
-		Accompaniment:          accompaniment,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if accompaniment == nil {
+		panic("accompaniment of type BACnetDeviceObjectReference for BACnetConstructedDataAccompaniment must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAccompaniment{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Accompaniment:                 accompaniment,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAccompaniment) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAccompaniment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (accompaniment)
 	lengthInBits += m.Accompaniment.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAccompaniment) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAccompanimentParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompaniment, error) {
-	return BACnetConstructedDataAccompanimentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAccompanimentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompaniment, error) {
+func (m *_BACnetConstructedDataAccompaniment) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAccompaniment BACnetConstructedDataAccompaniment, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccompaniment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccompaniment")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accompaniment)
-	if pullErr := readBuffer.PullContext("accompaniment"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accompaniment")
+	accompaniment, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "accompaniment", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accompaniment' field"))
 	}
-	_accompaniment, _accompanimentErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _accompanimentErr != nil {
-		return nil, errors.Wrap(_accompanimentErr, "Error parsing 'accompaniment' field of BACnetConstructedDataAccompaniment")
-	}
-	accompaniment := _accompaniment.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("accompaniment"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accompaniment")
-	}
+	m.Accompaniment = accompaniment
 
-	// Virtual field
-	_actualValue := accompaniment
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectReference](ctx, "actualValue", (*BACnetDeviceObjectReference)(nil), accompaniment)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccompaniment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccompaniment")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAccompaniment{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Accompaniment: accompaniment,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAccompaniment) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAccompaniment) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccompaniment")
 		}
 
-		// Simple Field (accompaniment)
-		if pushErr := writeBuffer.PushContext("accompaniment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accompaniment")
-		}
-		_accompanimentErr := writeBuffer.WriteSerializable(ctx, m.GetAccompaniment())
-		if popErr := writeBuffer.PopContext("accompaniment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accompaniment")
-		}
-		if _accompanimentErr != nil {
-			return errors.Wrap(_accompanimentErr, "Error serializing 'accompaniment' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "accompaniment", m.GetAccompaniment(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accompaniment' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAccompaniment) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAccompaniment) isBACnetConstructedDataAccompaniment() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAccompaniment) IsBACnetConstructedDataAccompaniment() {}
 
 func (m *_BACnetConstructedDataAccompaniment) String() string {
 	if m == nil {

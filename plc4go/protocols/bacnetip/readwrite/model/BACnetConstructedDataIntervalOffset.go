@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataIntervalOffset interface {
 	GetIntervalOffset() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataIntervalOffsetExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntervalOffset.
-// This is useful for switch cases.
-type BACnetConstructedDataIntervalOffsetExactly interface {
-	BACnetConstructedDataIntervalOffset
-	isBACnetConstructedDataIntervalOffset() bool
+	// IsBACnetConstructedDataIntervalOffset is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIntervalOffset()
 }
 
 // _BACnetConstructedDataIntervalOffset is the data-structure of this message
 type _BACnetConstructedDataIntervalOffset struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	IntervalOffset BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataIntervalOffset = (*_BACnetConstructedDataIntervalOffset)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntervalOffset)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataIntervalOffset) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataIntervalOffset) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataIntervalOffset) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataIntervalOffset) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataIntervalOffset) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataIntervalOffset factory function for _BACnetConstructedDataIntervalOffset
 func NewBACnetConstructedDataIntervalOffset(intervalOffset BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntervalOffset {
-	_result := &_BACnetConstructedDataIntervalOffset{
-		IntervalOffset:         intervalOffset,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if intervalOffset == nil {
+		panic("intervalOffset of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIntervalOffset must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataIntervalOffset{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IntervalOffset:                intervalOffset,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataIntervalOffset) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (intervalOffset)
 	lengthInBits += m.IntervalOffset.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataIntervalOffsetParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntervalOffset, error) {
-	return BACnetConstructedDataIntervalOffsetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataIntervalOffsetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntervalOffset, error) {
+func (m *_BACnetConstructedDataIntervalOffset) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIntervalOffset BACnetConstructedDataIntervalOffset, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntervalOffset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIntervalOffset")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (intervalOffset)
-	if pullErr := readBuffer.PullContext("intervalOffset"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for intervalOffset")
+	intervalOffset, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "intervalOffset", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'intervalOffset' field"))
 	}
-	_intervalOffset, _intervalOffsetErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _intervalOffsetErr != nil {
-		return nil, errors.Wrap(_intervalOffsetErr, "Error parsing 'intervalOffset' field of BACnetConstructedDataIntervalOffset")
-	}
-	intervalOffset := _intervalOffset.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("intervalOffset"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for intervalOffset")
-	}
+	m.IntervalOffset = intervalOffset
 
-	// Virtual field
-	_actualValue := intervalOffset
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), intervalOffset)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntervalOffset"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntervalOffset")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataIntervalOffset{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		IntervalOffset: intervalOffset,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataIntervalOffset) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIntervalOffset")
 		}
 
-		// Simple Field (intervalOffset)
-		if pushErr := writeBuffer.PushContext("intervalOffset"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for intervalOffset")
-		}
-		_intervalOffsetErr := writeBuffer.WriteSerializable(ctx, m.GetIntervalOffset())
-		if popErr := writeBuffer.PopContext("intervalOffset"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for intervalOffset")
-		}
-		if _intervalOffsetErr != nil {
-			return errors.Wrap(_intervalOffsetErr, "Error serializing 'intervalOffset' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "intervalOffset", m.GetIntervalOffset(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'intervalOffset' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataIntervalOffset) isBACnetConstructedDataIntervalOffset() bool {
-	return true
-}
+func (m *_BACnetConstructedDataIntervalOffset) IsBACnetConstructedDataIntervalOffset() {}
 
 func (m *_BACnetConstructedDataIntervalOffset) String() string {
 	if m == nil {

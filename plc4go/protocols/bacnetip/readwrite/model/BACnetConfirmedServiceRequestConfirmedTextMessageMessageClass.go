@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,9 +35,17 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass()
+}
+
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract provides a set of functions which can be overwritten by a sub struct
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -44,18 +54,23 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// GetTagNumber() returns a parser argument
+	GetTagNumber() uint8
+	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass()
 }
 
-// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassExactly interface {
-	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
-	isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() bool
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
-	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements
+	_SubType        BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -64,25 +79,7 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 	TagNumber uint8
 }
 
-type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
-	GetParent() *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
-
-	GetTypeName() string
-	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
-}
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +107,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetClos
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -123,6 +121,15 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetPeek
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
+	}
 	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -141,7 +148,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetType
 	return "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
@@ -156,95 +163,89 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetPare
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
-	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse[T BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBufferProducer[T BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer[T](ctx, readBuffer, tagNumber)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer[T BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
+	v, err := (&_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetConfirmedServiceRequestConfirmedTextMessageMessageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement interface {
-		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
-		InitializeParent(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
-		GetParent() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
-	}
-	var _childTemp any
-	var _child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
+		}
 	case peekedTagNumber == uint8(1): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(ctx, readBuffer, tagNumber)
+		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
-	}
-	_child = _childTemp.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement)
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, openingTag, peekedTagHeader, closingTag)
 	return _child, nil
 }
 
-func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, serializeChildFunction func() error) error {
+func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -256,16 +257,8 @@ func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) Serial
 		return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
 	peekedTagNumber := m.GetPeekedTagNumber()
@@ -279,16 +272,8 @@ func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) Serial
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass"); popErr != nil {
@@ -307,17 +292,5 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetTagN
 //
 ////
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() bool {
-	return true
-}
-
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() {
 }

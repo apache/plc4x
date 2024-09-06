@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,22 +47,20 @@ type PortSegmentExtended interface {
 	GetAddress() string
 	// GetPaddingByte returns PaddingByte (virtual field)
 	GetPaddingByte() uint8
-}
-
-// PortSegmentExtendedExactly can be used when we want exactly this type and not a type which fulfills PortSegmentExtended.
-// This is useful for switch cases.
-type PortSegmentExtendedExactly interface {
-	PortSegmentExtended
-	isPortSegmentExtended() bool
+	// IsPortSegmentExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortSegmentExtended()
 }
 
 // _PortSegmentExtended is the data-structure of this message
 type _PortSegmentExtended struct {
-	*_PortSegmentType
+	PortSegmentTypeContract
 	Port            uint8
 	LinkAddressSize uint8
 	Address         string
 }
+
+var _ PortSegmentExtended = (*_PortSegmentExtended)(nil)
+var _ PortSegmentTypeRequirements = (*_PortSegmentExtended)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,10 +76,8 @@ func (m *_PortSegmentExtended) GetExtendedLinkAddress() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PortSegmentExtended) InitializeParent(parent PortSegmentType) {}
-
-func (m *_PortSegmentExtended) GetParent() PortSegmentType {
-	return m._PortSegmentType
+func (m *_PortSegmentExtended) GetParent() PortSegmentTypeContract {
+	return m.PortSegmentTypeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,12 +120,12 @@ func (m *_PortSegmentExtended) GetPaddingByte() uint8 {
 // NewPortSegmentExtended factory function for _PortSegmentExtended
 func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *_PortSegmentExtended {
 	_result := &_PortSegmentExtended{
-		Port:             port,
-		LinkAddressSize:  linkAddressSize,
-		Address:          address,
-		_PortSegmentType: NewPortSegmentType(),
+		PortSegmentTypeContract: NewPortSegmentType(),
+		Port:                    port,
+		LinkAddressSize:         linkAddressSize,
+		Address:                 address,
 	}
-	_result._PortSegmentType._PortSegmentTypeChildRequirements = _result
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
 	return _result
 }
 
@@ -147,7 +145,7 @@ func (m *_PortSegmentExtended) GetTypeName() string {
 }
 
 func (m *_PortSegmentExtended) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.PortSegmentTypeContract.(*_PortSegmentType).getLengthInBits(ctx))
 
 	// Simple field (port)
 	lengthInBits += 4
@@ -167,60 +165,46 @@ func (m *_PortSegmentExtended) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PortSegmentExtendedParse(ctx context.Context, theBytes []byte) (PortSegmentExtended, error) {
-	return PortSegmentExtendedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentExtended, error) {
+func (m *_PortSegmentExtended) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_PortSegmentType) (__portSegmentExtended PortSegmentExtended, err error) {
+	m.PortSegmentTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PortSegmentExtended"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PortSegmentExtended")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (port)
-	_port, _portErr := readBuffer.ReadUint8("port", 4)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of PortSegmentExtended")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
+	m.Port = port
 
-	// Simple Field (linkAddressSize)
-	_linkAddressSize, _linkAddressSizeErr := readBuffer.ReadUint8("linkAddressSize", 8)
-	if _linkAddressSizeErr != nil {
-		return nil, errors.Wrap(_linkAddressSizeErr, "Error parsing 'linkAddressSize' field of PortSegmentExtended")
+	linkAddressSize, err := ReadSimpleField(ctx, "linkAddressSize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkAddressSize' field"))
 	}
-	linkAddressSize := _linkAddressSize
+	m.LinkAddressSize = linkAddressSize
 
-	// Virtual field
-	_paddingByte := uint8(linkAddressSize) % uint8(uint8(2))
-	paddingByte := uint8(_paddingByte)
+	paddingByte, err := ReadVirtualField[uint8](ctx, "paddingByte", (*uint8)(nil), uint8(linkAddressSize)%uint8(uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paddingByte' field"))
+	}
 	_ = paddingByte
 
-	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadString("address", uint32(((linkAddressSize)*(8))+((paddingByte)*(8))), "UTF-8")
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of PortSegmentExtended")
+	address, err := ReadSimpleField(ctx, "address", ReadString(readBuffer, uint32(int32((int32(linkAddressSize)*int32(int32(8))))+int32((int32(paddingByte)*int32(int32(8)))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
+	m.Address = address
 
 	if closeErr := readBuffer.CloseContext("PortSegmentExtended"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PortSegmentExtended")
 	}
 
-	// Create a partially initialized instance
-	_child := &_PortSegmentExtended{
-		_PortSegmentType: &_PortSegmentType{},
-		Port:             port,
-		LinkAddressSize:  linkAddressSize,
-		Address:          address,
-	}
-	_child._PortSegmentType._PortSegmentTypeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_PortSegmentExtended) Serialize() ([]byte, error) {
@@ -241,18 +225,12 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for PortSegmentExtended")
 		}
 
-		// Simple Field (port)
-		port := uint8(m.GetPort())
-		_portErr := writeBuffer.WriteUint8("port", 4, uint8((port)))
-		if _portErr != nil {
-			return errors.Wrap(_portErr, "Error serializing 'port' field")
+		if err := WriteSimpleField[uint8](ctx, "port", m.GetPort(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'port' field")
 		}
 
-		// Simple Field (linkAddressSize)
-		linkAddressSize := uint8(m.GetLinkAddressSize())
-		_linkAddressSizeErr := writeBuffer.WriteUint8("linkAddressSize", 8, uint8((linkAddressSize)))
-		if _linkAddressSizeErr != nil {
-			return errors.Wrap(_linkAddressSizeErr, "Error serializing 'linkAddressSize' field")
+		if err := WriteSimpleField[uint8](ctx, "linkAddressSize", m.GetLinkAddressSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linkAddressSize' field")
 		}
 		// Virtual field
 		paddingByte := m.GetPaddingByte()
@@ -261,11 +239,8 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_paddingByteErr, "Error serializing 'paddingByte' field")
 		}
 
-		// Simple Field (address)
-		address := string(m.GetAddress())
-		_addressErr := writeBuffer.WriteString("address", uint32(((m.GetLinkAddressSize())*(8))+((m.GetPaddingByte())*(8))), "UTF-8", (address))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[string](ctx, "address", m.GetAddress(), WriteString(writeBuffer, int32(int32((int32(m.GetLinkAddressSize())*int32(int32(8))))+int32((int32(m.GetPaddingByte())*int32(int32(8))))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PortSegmentExtended"); popErr != nil {
@@ -273,12 +248,10 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.PortSegmentTypeContract.(*_PortSegmentType).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_PortSegmentExtended) isPortSegmentExtended() bool {
-	return true
-}
+func (m *_PortSegmentExtended) IsPortSegmentExtended() {}
 
 func (m *_PortSegmentExtended) String() string {
 	if m == nil {

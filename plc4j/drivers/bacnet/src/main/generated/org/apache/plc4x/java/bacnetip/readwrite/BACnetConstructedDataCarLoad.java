@@ -82,7 +82,7 @@ public class BACnetConstructedDataCarLoad extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataCarLoad");
 
     // Simple Field (carLoad)
-    writeSimpleField("carLoad", carLoad, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("carLoad", carLoad, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataCarLoad extends BACnetConstructedData implemen
     BACnetApplicationTagReal carLoad =
         readSimpleField(
             "carLoad",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

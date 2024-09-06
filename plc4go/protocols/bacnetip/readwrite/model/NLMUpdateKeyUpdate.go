@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -60,18 +61,13 @@ type NLMUpdateKeyUpdate interface {
 	GetSet2KeyCount() *uint8
 	// GetSet2Keys returns Set2Keys (property field)
 	GetSet2Keys() []NLMUpdateKeyUpdateKeyEntry
-}
-
-// NLMUpdateKeyUpdateExactly can be used when we want exactly this type and not a type which fulfills NLMUpdateKeyUpdate.
-// This is useful for switch cases.
-type NLMUpdateKeyUpdateExactly interface {
-	NLMUpdateKeyUpdate
-	isNLMUpdateKeyUpdate() bool
+	// IsNLMUpdateKeyUpdate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMUpdateKeyUpdate()
 }
 
 // _NLMUpdateKeyUpdate is the data-structure of this message
 type _NLMUpdateKeyUpdate struct {
-	*_NLM
+	NLMContract
 	ControlFlags       NLMUpdateKeyUpdateControlFlags
 	Set1KeyRevision    *byte
 	Set1ActivationTime *uint32
@@ -84,6 +80,9 @@ type _NLMUpdateKeyUpdate struct {
 	Set2KeyCount       *uint8
 	Set2Keys           []NLMUpdateKeyUpdateKeyEntry
 }
+
+var _ NLMUpdateKeyUpdate = (*_NLMUpdateKeyUpdate)(nil)
+var _ NLMRequirements = (*_NLMUpdateKeyUpdate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,10 +98,8 @@ func (m *_NLMUpdateKeyUpdate) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMUpdateKeyUpdate) InitializeParent(parent NLM) {}
-
-func (m *_NLMUpdateKeyUpdate) GetParent() NLM {
-	return m._NLM
+func (m *_NLMUpdateKeyUpdate) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -161,7 +158,11 @@ func (m *_NLMUpdateKeyUpdate) GetSet2Keys() []NLMUpdateKeyUpdateKeyEntry {
 
 // NewNLMUpdateKeyUpdate factory function for _NLMUpdateKeyUpdate
 func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyUpdate {
+	if controlFlags == nil {
+		panic("controlFlags of type NLMUpdateKeyUpdateControlFlags for NLMUpdateKeyUpdate must not be nil")
+	}
 	_result := &_NLMUpdateKeyUpdate{
+		NLMContract:        NewNLM(apduLength),
 		ControlFlags:       controlFlags,
 		Set1KeyRevision:    set1KeyRevision,
 		Set1ActivationTime: set1ActivationTime,
@@ -173,9 +174,8 @@ func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyR
 		Set2ExpirationTime: set2ExpirationTime,
 		Set2KeyCount:       set2KeyCount,
 		Set2Keys:           set2Keys,
-		_NLM:               NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -195,7 +195,7 @@ func (m *_NLMUpdateKeyUpdate) GetTypeName() string {
 }
 
 func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (controlFlags)
 	lengthInBits += m.ControlFlags.GetLengthInBits(ctx)
@@ -267,239 +267,96 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMUpdateKeyUpdateParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMUpdateKeyUpdate, error) {
-	return NLMUpdateKeyUpdateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyUpdate, error) {
+func (m *_NLMUpdateKeyUpdate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMUpdateKeyUpdate NLMUpdateKeyUpdate, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyUpdate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMUpdateKeyUpdate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (controlFlags)
-	if pullErr := readBuffer.PullContext("controlFlags"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for controlFlags")
+	controlFlags, err := ReadSimpleField[NLMUpdateKeyUpdateControlFlags](ctx, "controlFlags", ReadComplex[NLMUpdateKeyUpdateControlFlags](NLMUpdateKeyUpdateControlFlagsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'controlFlags' field"))
 	}
-	_controlFlags, _controlFlagsErr := NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx, readBuffer)
-	if _controlFlagsErr != nil {
-		return nil, errors.Wrap(_controlFlagsErr, "Error parsing 'controlFlags' field of NLMUpdateKeyUpdate")
-	}
-	controlFlags := _controlFlags.(NLMUpdateKeyUpdateControlFlags)
-	if closeErr := readBuffer.CloseContext("controlFlags"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for controlFlags")
-	}
+	m.ControlFlags = controlFlags
 
-	// Optional Field (set1KeyRevision) (Can be skipped, if a given expression evaluates to false)
-	var set1KeyRevision *byte = nil
-	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("set1KeyRevision")
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set1KeyRevision' field of NLMUpdateKeyUpdate")
-		default:
-			set1KeyRevision = &_val
-		}
+	var set1KeyRevision *byte
+	set1KeyRevision, err = ReadOptionalField[byte](ctx, "set1KeyRevision", ReadByte(readBuffer, 8), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyRevision' field"))
 	}
+	m.Set1KeyRevision = set1KeyRevision
 
-	// Optional Field (set1ActivationTime) (Can be skipped, if a given expression evaluates to false)
-	var set1ActivationTime *uint32 = nil
-	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("set1ActivationTime", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set1ActivationTime' field of NLMUpdateKeyUpdate")
-		default:
-			set1ActivationTime = &_val
-		}
+	var set1ActivationTime *uint32
+	set1ActivationTime, err = ReadOptionalField[uint32](ctx, "set1ActivationTime", ReadUnsignedInt(readBuffer, uint8(32)), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ActivationTime' field"))
 	}
+	m.Set1ActivationTime = set1ActivationTime
 
-	// Optional Field (set1ExpirationTime) (Can be skipped, if a given expression evaluates to false)
-	var set1ExpirationTime *uint32 = nil
-	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("set1ExpirationTime", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set1ExpirationTime' field of NLMUpdateKeyUpdate")
-		default:
-			set1ExpirationTime = &_val
-		}
+	var set1ExpirationTime *uint32
+	set1ExpirationTime, err = ReadOptionalField[uint32](ctx, "set1ExpirationTime", ReadUnsignedInt(readBuffer, uint8(32)), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ExpirationTime' field"))
 	}
+	m.Set1ExpirationTime = set1ExpirationTime
 
-	// Optional Field (set1KeyCount) (Can be skipped, if a given expression evaluates to false)
-	var set1KeyCount *uint8 = nil
-	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("set1KeyCount", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set1KeyCount' field of NLMUpdateKeyUpdate")
-		default:
-			set1KeyCount = &_val
-		}
+	var set1KeyCount *uint8
+	set1KeyCount, err = ReadOptionalField[uint8](ctx, "set1KeyCount", ReadUnsignedByte(readBuffer, uint8(8)), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyCount' field"))
 	}
+	m.Set1KeyCount = set1KeyCount
 
-	// Array field (set1Keys)
-	if pullErr := readBuffer.PullContext("set1Keys", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for set1Keys")
+	set1Keys, err := ReadCountArrayField[NLMUpdateKeyUpdateKeyEntry](ctx, "set1Keys", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer), uint64(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return int32((*set1KeyCount)) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1Keys' field"))
 	}
-	// Count array
-	set1Keys := make([]NLMUpdateKeyUpdateKeyEntry, max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(set1Keys) == 0 {
-		set1Keys = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'set1Keys' field of NLMUpdateKeyUpdate")
-			}
-			set1Keys[_curItem] = _item.(NLMUpdateKeyUpdateKeyEntry)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("set1Keys", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for set1Keys")
-	}
+	m.Set1Keys = set1Keys
 
-	// Optional Field (set2KeyRevision) (Can be skipped, if a given expression evaluates to false)
-	var set2KeyRevision *byte = nil
-	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("set2KeyRevision")
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set2KeyRevision' field of NLMUpdateKeyUpdate")
-		default:
-			set2KeyRevision = &_val
-		}
+	var set2KeyRevision *byte
+	set2KeyRevision, err = ReadOptionalField[byte](ctx, "set2KeyRevision", ReadByte(readBuffer, 8), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyRevision' field"))
 	}
+	m.Set2KeyRevision = set2KeyRevision
 
-	// Optional Field (set2ActivationTime) (Can be skipped, if a given expression evaluates to false)
-	var set2ActivationTime *uint32 = nil
-	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("set2ActivationTime", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set2ActivationTime' field of NLMUpdateKeyUpdate")
-		default:
-			set2ActivationTime = &_val
-		}
+	var set2ActivationTime *uint32
+	set2ActivationTime, err = ReadOptionalField[uint32](ctx, "set2ActivationTime", ReadUnsignedInt(readBuffer, uint8(32)), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ActivationTime' field"))
 	}
+	m.Set2ActivationTime = set2ActivationTime
 
-	// Optional Field (set2ExpirationTime) (Can be skipped, if a given expression evaluates to false)
-	var set2ExpirationTime *uint32 = nil
-	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("set2ExpirationTime", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set2ExpirationTime' field of NLMUpdateKeyUpdate")
-		default:
-			set2ExpirationTime = &_val
-		}
+	var set2ExpirationTime *uint32
+	set2ExpirationTime, err = ReadOptionalField[uint32](ctx, "set2ExpirationTime", ReadUnsignedInt(readBuffer, uint8(32)), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ExpirationTime' field"))
 	}
+	m.Set2ExpirationTime = set2ExpirationTime
 
-	// Optional Field (set2KeyCount) (Can be skipped, if a given expression evaluates to false)
-	var set2KeyCount *uint8 = nil
-	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("set2KeyCount", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set2KeyCount' field of NLMUpdateKeyUpdate")
-		default:
-			set2KeyCount = &_val
-		}
+	var set2KeyCount *uint8
+	set2KeyCount, err = ReadOptionalField[uint8](ctx, "set2KeyCount", ReadUnsignedByte(readBuffer, uint8(8)), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyCount' field"))
 	}
+	m.Set2KeyCount = set2KeyCount
 
-	// Array field (set2Keys)
-	if pullErr := readBuffer.PullContext("set2Keys", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for set2Keys")
+	set2Keys, err := ReadCountArrayField[NLMUpdateKeyUpdateKeyEntry](ctx, "set2Keys", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer), uint64(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return int32((*set1KeyCount)) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2Keys' field"))
 	}
-	// Count array
-	set2Keys := make([]NLMUpdateKeyUpdateKeyEntry, max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(set2Keys) == 0 {
-		set2Keys = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'set2Keys' field of NLMUpdateKeyUpdate")
-			}
-			set2Keys[_curItem] = _item.(NLMUpdateKeyUpdateKeyEntry)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("set2Keys", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for set2Keys")
-	}
+	m.Set2Keys = set2Keys
 
 	if closeErr := readBuffer.CloseContext("NLMUpdateKeyUpdate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMUpdateKeyUpdate")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMUpdateKeyUpdate{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		ControlFlags:       controlFlags,
-		Set1KeyRevision:    set1KeyRevision,
-		Set1ActivationTime: set1ActivationTime,
-		Set1ExpirationTime: set1ExpirationTime,
-		Set1KeyCount:       set1KeyCount,
-		Set1Keys:           set1Keys,
-		Set2KeyRevision:    set2KeyRevision,
-		Set2ActivationTime: set2ActivationTime,
-		Set2ExpirationTime: set2ExpirationTime,
-		Set2KeyCount:       set2KeyCount,
-		Set2Keys:           set2Keys,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMUpdateKeyUpdate) Serialize() ([]byte, error) {
@@ -520,130 +377,48 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for NLMUpdateKeyUpdate")
 		}
 
-		// Simple Field (controlFlags)
-		if pushErr := writeBuffer.PushContext("controlFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for controlFlags")
-		}
-		_controlFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetControlFlags())
-		if popErr := writeBuffer.PopContext("controlFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for controlFlags")
-		}
-		if _controlFlagsErr != nil {
-			return errors.Wrap(_controlFlagsErr, "Error serializing 'controlFlags' field")
+		if err := WriteSimpleField[NLMUpdateKeyUpdateControlFlags](ctx, "controlFlags", m.GetControlFlags(), WriteComplex[NLMUpdateKeyUpdateControlFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'controlFlags' field")
 		}
 
-		// Optional Field (set1KeyRevision) (Can be skipped, if the value is null)
-		var set1KeyRevision *byte = nil
-		if m.GetSet1KeyRevision() != nil {
-			set1KeyRevision = m.GetSet1KeyRevision()
-			_set1KeyRevisionErr := writeBuffer.WriteByte("set1KeyRevision", *(set1KeyRevision))
-			if _set1KeyRevisionErr != nil {
-				return errors.Wrap(_set1KeyRevisionErr, "Error serializing 'set1KeyRevision' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "set1KeyRevision", m.GetSet1KeyRevision(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1KeyRevision' field")
 		}
 
-		// Optional Field (set1ActivationTime) (Can be skipped, if the value is null)
-		var set1ActivationTime *uint32 = nil
-		if m.GetSet1ActivationTime() != nil {
-			set1ActivationTime = m.GetSet1ActivationTime()
-			_set1ActivationTimeErr := writeBuffer.WriteUint32("set1ActivationTime", 32, uint32(*(set1ActivationTime)))
-			if _set1ActivationTimeErr != nil {
-				return errors.Wrap(_set1ActivationTimeErr, "Error serializing 'set1ActivationTime' field")
-			}
+		if err := WriteOptionalField[uint32](ctx, "set1ActivationTime", m.GetSet1ActivationTime(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1ActivationTime' field")
 		}
 
-		// Optional Field (set1ExpirationTime) (Can be skipped, if the value is null)
-		var set1ExpirationTime *uint32 = nil
-		if m.GetSet1ExpirationTime() != nil {
-			set1ExpirationTime = m.GetSet1ExpirationTime()
-			_set1ExpirationTimeErr := writeBuffer.WriteUint32("set1ExpirationTime", 32, uint32(*(set1ExpirationTime)))
-			if _set1ExpirationTimeErr != nil {
-				return errors.Wrap(_set1ExpirationTimeErr, "Error serializing 'set1ExpirationTime' field")
-			}
+		if err := WriteOptionalField[uint32](ctx, "set1ExpirationTime", m.GetSet1ExpirationTime(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1ExpirationTime' field")
 		}
 
-		// Optional Field (set1KeyCount) (Can be skipped, if the value is null)
-		var set1KeyCount *uint8 = nil
-		if m.GetSet1KeyCount() != nil {
-			set1KeyCount = m.GetSet1KeyCount()
-			_set1KeyCountErr := writeBuffer.WriteUint8("set1KeyCount", 8, uint8(*(set1KeyCount)))
-			if _set1KeyCountErr != nil {
-				return errors.Wrap(_set1KeyCountErr, "Error serializing 'set1KeyCount' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "set1KeyCount", m.GetSet1KeyCount(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1KeyCount' field")
 		}
 
-		// Array Field (set1Keys)
-		if pushErr := writeBuffer.PushContext("set1Keys", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for set1Keys")
-		}
-		for _curItem, _element := range m.GetSet1Keys() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSet1Keys()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'set1Keys' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("set1Keys", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for set1Keys")
+		if err := WriteComplexTypeArrayField(ctx, "set1Keys", m.GetSet1Keys(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1Keys' field")
 		}
 
-		// Optional Field (set2KeyRevision) (Can be skipped, if the value is null)
-		var set2KeyRevision *byte = nil
-		if m.GetSet2KeyRevision() != nil {
-			set2KeyRevision = m.GetSet2KeyRevision()
-			_set2KeyRevisionErr := writeBuffer.WriteByte("set2KeyRevision", *(set2KeyRevision))
-			if _set2KeyRevisionErr != nil {
-				return errors.Wrap(_set2KeyRevisionErr, "Error serializing 'set2KeyRevision' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "set2KeyRevision", m.GetSet2KeyRevision(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2KeyRevision' field")
 		}
 
-		// Optional Field (set2ActivationTime) (Can be skipped, if the value is null)
-		var set2ActivationTime *uint32 = nil
-		if m.GetSet2ActivationTime() != nil {
-			set2ActivationTime = m.GetSet2ActivationTime()
-			_set2ActivationTimeErr := writeBuffer.WriteUint32("set2ActivationTime", 32, uint32(*(set2ActivationTime)))
-			if _set2ActivationTimeErr != nil {
-				return errors.Wrap(_set2ActivationTimeErr, "Error serializing 'set2ActivationTime' field")
-			}
+		if err := WriteOptionalField[uint32](ctx, "set2ActivationTime", m.GetSet2ActivationTime(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2ActivationTime' field")
 		}
 
-		// Optional Field (set2ExpirationTime) (Can be skipped, if the value is null)
-		var set2ExpirationTime *uint32 = nil
-		if m.GetSet2ExpirationTime() != nil {
-			set2ExpirationTime = m.GetSet2ExpirationTime()
-			_set2ExpirationTimeErr := writeBuffer.WriteUint32("set2ExpirationTime", 32, uint32(*(set2ExpirationTime)))
-			if _set2ExpirationTimeErr != nil {
-				return errors.Wrap(_set2ExpirationTimeErr, "Error serializing 'set2ExpirationTime' field")
-			}
+		if err := WriteOptionalField[uint32](ctx, "set2ExpirationTime", m.GetSet2ExpirationTime(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2ExpirationTime' field")
 		}
 
-		// Optional Field (set2KeyCount) (Can be skipped, if the value is null)
-		var set2KeyCount *uint8 = nil
-		if m.GetSet2KeyCount() != nil {
-			set2KeyCount = m.GetSet2KeyCount()
-			_set2KeyCountErr := writeBuffer.WriteUint8("set2KeyCount", 8, uint8(*(set2KeyCount)))
-			if _set2KeyCountErr != nil {
-				return errors.Wrap(_set2KeyCountErr, "Error serializing 'set2KeyCount' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "set2KeyCount", m.GetSet2KeyCount(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2KeyCount' field")
 		}
 
-		// Array Field (set2Keys)
-		if pushErr := writeBuffer.PushContext("set2Keys", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for set2Keys")
-		}
-		for _curItem, _element := range m.GetSet2Keys() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSet2Keys()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'set2Keys' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("set2Keys", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for set2Keys")
+		if err := WriteComplexTypeArrayField(ctx, "set2Keys", m.GetSet2Keys(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2Keys' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMUpdateKeyUpdate"); popErr != nil {
@@ -651,12 +426,10 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMUpdateKeyUpdate) isNLMUpdateKeyUpdate() bool {
-	return true
-}
+func (m *_NLMUpdateKeyUpdate) IsNLMUpdateKeyUpdate() {}
 
 func (m *_NLMUpdateKeyUpdate) String() string {
 	if m == nil {

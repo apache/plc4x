@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataNextStoppingFloor interface {
 	GetNextStoppingFloor() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataNextStoppingFloorExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNextStoppingFloor.
-// This is useful for switch cases.
-type BACnetConstructedDataNextStoppingFloorExactly interface {
-	BACnetConstructedDataNextStoppingFloor
-	isBACnetConstructedDataNextStoppingFloor() bool
+	// IsBACnetConstructedDataNextStoppingFloor is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNextStoppingFloor()
 }
 
 // _BACnetConstructedDataNextStoppingFloor is the data-structure of this message
 type _BACnetConstructedDataNextStoppingFloor struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NextStoppingFloor BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataNextStoppingFloor = (*_BACnetConstructedDataNextStoppingFloor)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNextStoppingFloor)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataNextStoppingFloor) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataNextStoppingFloor) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataNextStoppingFloor) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataNextStoppingFloor factory function for _BACnetConstructedDataNextStoppingFloor
 func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
-	_result := &_BACnetConstructedDataNextStoppingFloor{
-		NextStoppingFloor:      nextStoppingFloor,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if nextStoppingFloor == nil {
+		panic("nextStoppingFloor of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNextStoppingFloor must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataNextStoppingFloor{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NextStoppingFloor:             nextStoppingFloor,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (nextStoppingFloor)
 	lengthInBits += m.NextStoppingFloor.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataNextStoppingFloorParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNextStoppingFloor, error) {
-	return BACnetConstructedDataNextStoppingFloorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataNextStoppingFloorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNextStoppingFloor, error) {
+func (m *_BACnetConstructedDataNextStoppingFloor) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNextStoppingFloor BACnetConstructedDataNextStoppingFloor, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNextStoppingFloor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNextStoppingFloor")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nextStoppingFloor)
-	if pullErr := readBuffer.PullContext("nextStoppingFloor"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nextStoppingFloor")
+	nextStoppingFloor, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "nextStoppingFloor", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nextStoppingFloor' field"))
 	}
-	_nextStoppingFloor, _nextStoppingFloorErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _nextStoppingFloorErr != nil {
-		return nil, errors.Wrap(_nextStoppingFloorErr, "Error parsing 'nextStoppingFloor' field of BACnetConstructedDataNextStoppingFloor")
-	}
-	nextStoppingFloor := _nextStoppingFloor.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("nextStoppingFloor"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nextStoppingFloor")
-	}
+	m.NextStoppingFloor = nextStoppingFloor
 
-	// Virtual field
-	_actualValue := nextStoppingFloor
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), nextStoppingFloor)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNextStoppingFloor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNextStoppingFloor")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataNextStoppingFloor{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NextStoppingFloor: nextStoppingFloor,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataNextStoppingFloor) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNextStoppingFloor")
 		}
 
-		// Simple Field (nextStoppingFloor)
-		if pushErr := writeBuffer.PushContext("nextStoppingFloor"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nextStoppingFloor")
-		}
-		_nextStoppingFloorErr := writeBuffer.WriteSerializable(ctx, m.GetNextStoppingFloor())
-		if popErr := writeBuffer.PopContext("nextStoppingFloor"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nextStoppingFloor")
-		}
-		if _nextStoppingFloorErr != nil {
-			return errors.Wrap(_nextStoppingFloorErr, "Error serializing 'nextStoppingFloor' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "nextStoppingFloor", m.GetNextStoppingFloor(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nextStoppingFloor' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) isBACnetConstructedDataNextStoppingFloor() bool {
-	return true
-}
+func (m *_BACnetConstructedDataNextStoppingFloor) IsBACnetConstructedDataNextStoppingFloor() {}
 
 func (m *_BACnetConstructedDataNextStoppingFloor) String() string {
 	if m == nil {

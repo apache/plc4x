@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetEventParameterChangeOfTimerAlarmValue interface {
 	GetAlarmValues() []BACnetTimerStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetEventParameterChangeOfTimerAlarmValueExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfTimerAlarmValue.
-// This is useful for switch cases.
-type BACnetEventParameterChangeOfTimerAlarmValueExactly interface {
-	BACnetEventParameterChangeOfTimerAlarmValue
-	isBACnetEventParameterChangeOfTimerAlarmValue() bool
+	// IsBACnetEventParameterChangeOfTimerAlarmValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfTimerAlarmValue()
 }
 
 // _BACnetEventParameterChangeOfTimerAlarmValue is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetEventParameterChangeOfTimerAlarmValue struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetEventParameterChangeOfTimerAlarmValue = (*_BACnetEventParameterChangeOfTimerAlarmValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,6 +84,12 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetClosingTag() BACnetClo
 
 // NewBACnetEventParameterChangeOfTimerAlarmValue factory function for _BACnetEventParameterChangeOfTimerAlarmValue
 func NewBACnetEventParameterChangeOfTimerAlarmValue(openingTag BACnetOpeningTag, alarmValues []BACnetTimerStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfTimerAlarmValue {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimerAlarmValue must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimerAlarmValue must not be nil")
+	}
 	return &_BACnetEventParameterChangeOfTimerAlarmValue{OpeningTag: openingTag, AlarmValues: alarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -130,73 +135,52 @@ func BACnetEventParameterChangeOfTimerAlarmValueParse(ctx context.Context, theBy
 	return BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetEventParameterChangeOfTimerAlarmValueParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfTimerAlarmValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfTimerAlarmValue, error) {
+		return BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfTimerAlarmValue, error) {
+	v, err := (&_BACnetEventParameterChangeOfTimerAlarmValue{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterChangeOfTimerAlarmValue BACnetEventParameterChangeOfTimerAlarmValue, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfTimerAlarmValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfTimerAlarmValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfTimerAlarmValue")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (alarmValues)
-	if pullErr := readBuffer.PullContext("alarmValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
+	alarmValues, err := ReadTerminatedArrayField[BACnetTimerStateTagged](ctx, "alarmValues", ReadComplex[BACnetTimerStateTagged](BACnetTimerStateTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmValues' field"))
 	}
-	// Terminated array
-	var alarmValues []BACnetTimerStateTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimerStateTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetEventParameterChangeOfTimerAlarmValue")
-			}
-			alarmValues = append(alarmValues, _item.(BACnetTimerStateTagged))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("alarmValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alarmValues")
-	}
+	m.AlarmValues = alarmValues
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfTimerAlarmValue")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfTimerAlarmValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfTimerAlarmValue")
 	}
 
-	// Create the instance
-	return &_BACnetEventParameterChangeOfTimerAlarmValue{
-		TagNumber:   tagNumber,
-		OpeningTag:  openingTag,
-		AlarmValues: alarmValues,
-		ClosingTag:  closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) Serialize() ([]byte, error) {
@@ -216,45 +200,16 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) SerializeWithWriteBuffer(
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfTimerAlarmValue")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (alarmValues)
-	if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for alarmValues")
-	}
-	for _curItem, _element := range m.GetAlarmValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAlarmValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for alarmValues")
+	if err := WriteComplexTypeArrayField(ctx, "alarmValues", m.GetAlarmValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'alarmValues' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfTimerAlarmValue"); popErr != nil {
@@ -273,8 +228,7 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetTagNumber() uint8 {
 //
 ////
 
-func (m *_BACnetEventParameterChangeOfTimerAlarmValue) isBACnetEventParameterChangeOfTimerAlarmValue() bool {
-	return true
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) IsBACnetEventParameterChangeOfTimerAlarmValue() {
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) String() string {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -34,9 +35,17 @@ import (
 
 // CALData is the corresponding interface of CALData
 type CALData interface {
+	CALDataContract
+	CALDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCALData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALData()
+}
+
+// CALDataContract provides a set of functions which can be overwritten by a sub struct
+type CALDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() CALCommandTypeContainer
 	// GetAdditionalData returns AdditionalData (property field)
@@ -45,18 +54,25 @@ type CALData interface {
 	GetCommandType() CALCommandType
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (virtual field)
 	GetSendIdentifyRequestBefore() bool
+	// GetRequestContext() returns a parser argument
+	GetRequestContext() RequestContext
+	// IsCALData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALData()
 }
 
-// CALDataExactly can be used when we want exactly this type and not a type which fulfills CALData.
-// This is useful for switch cases.
-type CALDataExactly interface {
-	CALData
-	isCALData() bool
+// CALDataRequirements provides a set of functions which need to be implemented by a sub struct
+type CALDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() CALCommandType
+	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (discriminator field)
+	GetSendIdentifyRequestBefore() bool
 }
 
 // _CALData is the data-structure of this message
 type _CALData struct {
-	_CALDataChildRequirements
+	_SubType             CALData
 	CommandTypeContainer CALCommandTypeContainer
 	AdditionalData       CALData
 
@@ -64,26 +80,7 @@ type _CALData struct {
 	RequestContext RequestContext
 }
 
-type _CALDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() CALCommandType
-	GetSendIdentifyRequestBefore() bool
-}
-
-type CALDataParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CALData, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type CALDataChild interface {
-	utils.Serializable
-	InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData)
-	GetParent() *CALData
-
-	GetTypeName() string
-	CALData
-}
+var _ CALDataContract = (*_CALData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,20 +104,22 @@ func (m *_CALData) GetAdditionalData() CALData {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_CALData) GetCommandType() CALCommandType {
+func (pm *_CALData) GetCommandType() CALCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
-	additionalData := m.AdditionalData
+	additionalData := m.GetAdditionalData()
 	_ = additionalData
 	return CastCALCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
-func (m *_CALData) GetSendIdentifyRequestBefore() bool {
+func (pm *_CALData) GetSendIdentifyRequestBefore() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
-	additionalData := m.AdditionalData
+	additionalData := m.GetAdditionalData()
 	_ = additionalData
-	return bool(utils.InlineIf(bool((m.RequestContext) != (nil)), func() any { return bool(m.RequestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf(bool((m.GetRequestContext()) != (nil)), func() any { return bool(m.GetRequestContext().GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -148,7 +147,7 @@ func (m *_CALData) GetTypeName() string {
 	return "CALData"
 }
 
-func (m *_CALData) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_CALData) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -167,18 +166,36 @@ func (m *_CALData) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CALData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func CALDataParse(ctx context.Context, theBytes []byte, requestContext RequestContext) (CALData, error) {
-	return CALDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
+func CALDataParse[T CALData](ctx context.Context, theBytes []byte, requestContext RequestContext) (T, error) {
+	return CALDataParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
-func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALData, error) {
+func CALDataParseWithBufferProducer[T CALData](requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := CALDataParseWithBuffer[T](ctx, readBuffer, requestContext)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func CALDataParseWithBuffer[T CALData](ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (T, error) {
+	v, err := (&_CALData{RequestContext: requestContext}).parse(ctx, readBuffer, requestContext)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_CALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (__cALData CALData, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALData")
 	}
@@ -187,102 +204,92 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 
 	// Validation
 	if !(KnowsCALCommandTypeContainer(ctx, readBuffer)) {
-		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[CALCommandTypeContainer](ctx, "commandTypeContainer", "CALCommandTypeContainer", ReadEnum(CALCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
-	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of CALData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
-	}
+	m.CommandTypeContainer = commandTypeContainer
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := CALCommandType(_commandType)
+	commandType, err := ReadVirtualField[CALCommandType](ctx, "commandType", (*CALCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 	_ = commandType
 
-	// Virtual field
-	_sendIdentifyRequestBefore := utils.InlineIf(bool((requestContext) != (nil)), func() any { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool)
-	sendIdentifyRequestBefore := bool(_sendIdentifyRequestBefore)
+	sendIdentifyRequestBefore, err := ReadVirtualField[bool](ctx, "sendIdentifyRequestBefore", (*bool)(nil), utils.InlineIf(bool((requestContext) != (nil)), func() any { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendIdentifyRequestBefore' field"))
+	}
 	_ = sendIdentifyRequestBefore
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type CALDataChildSerializeRequirement interface {
-		CALData
-		InitializeParent(CALData, CALCommandTypeContainer, CALData)
-		GetParent() CALData
-	}
-	var _childTemp any
-	var _child CALDataChildSerializeRequirement
-	var typeSwitchError error
+	var _child CALData
 	switch {
 	case commandType == CALCommandType_RESET: // CALDataReset
-		_childTemp, typeSwitchError = CALDataResetParseWithBuffer(ctx, readBuffer, requestContext)
+		if _child, err = (&_CALDataReset{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataReset for type-switch of CALData")
+		}
 	case commandType == CALCommandType_RECALL: // CALDataRecall
-		_childTemp, typeSwitchError = CALDataRecallParseWithBuffer(ctx, readBuffer, requestContext)
+		if _child, err = (&_CALDataRecall{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataRecall for type-switch of CALData")
+		}
 	case commandType == CALCommandType_IDENTIFY: // CALDataIdentify
-		_childTemp, typeSwitchError = CALDataIdentifyParseWithBuffer(ctx, readBuffer, requestContext)
+		if _child, err = (&_CALDataIdentify{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataIdentify for type-switch of CALData")
+		}
 	case commandType == CALCommandType_GET_STATUS: // CALDataGetStatus
-		_childTemp, typeSwitchError = CALDataGetStatusParseWithBuffer(ctx, readBuffer, requestContext)
+		if _child, err = (&_CALDataGetStatus{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataGetStatus for type-switch of CALData")
+		}
 	case commandType == CALCommandType_WRITE: // CALDataWrite
-		_childTemp, typeSwitchError = CALDataWriteParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+		if _child, err = (&_CALDataWrite{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataWrite for type-switch of CALData")
+		}
 	case commandType == CALCommandType_REPLY && sendIdentifyRequestBefore == bool(true): // CALDataIdentifyReply
-		_childTemp, typeSwitchError = CALDataIdentifyReplyParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+		if _child, err = (&_CALDataIdentifyReply{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataIdentifyReply for type-switch of CALData")
+		}
 	case commandType == CALCommandType_REPLY: // CALDataReply
-		_childTemp, typeSwitchError = CALDataReplyParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+		if _child, err = (&_CALDataReply{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataReply for type-switch of CALData")
+		}
 	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataAcknowledge
-		_childTemp, typeSwitchError = CALDataAcknowledgeParseWithBuffer(ctx, readBuffer, requestContext)
+		if _child, err = (&_CALDataAcknowledge{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataAcknowledge for type-switch of CALData")
+		}
 	case commandType == CALCommandType_STATUS: // CALDataStatus
-		_childTemp, typeSwitchError = CALDataStatusParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+		if _child, err = (&_CALDataStatus{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataStatus for type-switch of CALData")
+		}
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataStatusExtended
-		_childTemp, typeSwitchError = CALDataStatusExtendedParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+		if _child, err = (&_CALDataStatusExtended{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CALDataStatusExtended for type-switch of CALData")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, sendIdentifyRequestBefore=%v]", commandType, sendIdentifyRequestBefore)
+		return nil, errors.Errorf("Unmapped type for parameters [commandType=%v, sendIdentifyRequestBefore=%v]", commandType, sendIdentifyRequestBefore)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CALData")
-	}
-	_child = _childTemp.(CALDataChildSerializeRequirement)
 
-	// Optional Field (additionalData) (Can be skipped, if a given expression evaluates to false)
-	var additionalData CALData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("additionalData"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for additionalData")
-		}
-		_val, _err := CALDataParseWithBuffer(ctx, readBuffer, nil)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'additionalData' field of CALData")
-		default:
-			additionalData = _val.(CALData)
-			if closeErr := readBuffer.CloseContext("additionalData"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for additionalData")
-			}
-		}
+	var additionalData CALData
+	_additionalData, err := ReadOptionalField[CALData](ctx, "additionalData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalData' field"))
+	}
+	if _additionalData != nil {
+		additionalData = *_additionalData
+		m.AdditionalData = additionalData
 	}
 
 	if closeErr := readBuffer.CloseContext("CALData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALData")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, commandTypeContainer, additionalData)
 	return _child, nil
 }
 
-func (pm *_CALData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CALData, serializeChildFunction func() error) error {
+func (pm *_CALData) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CALData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -294,16 +301,8 @@ func (pm *_CALData) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(pushErr, "Error pushing for CALData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[CALCommandTypeContainer](ctx, "commandTypeContainer", "CALCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[CALCommandTypeContainer, uint8](CALCommandTypeContainer.GetValue, CALCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
@@ -323,20 +322,8 @@ func (pm *_CALData) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Optional Field (additionalData) (Can be skipped, if the value is null)
-	var additionalData CALData = nil
-	if m.GetAdditionalData() != nil {
-		if pushErr := writeBuffer.PushContext("additionalData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for additionalData")
-		}
-		additionalData = m.GetAdditionalData()
-		_additionalDataErr := writeBuffer.WriteSerializable(ctx, additionalData)
-		if popErr := writeBuffer.PopContext("additionalData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for additionalData")
-		}
-		if _additionalDataErr != nil {
-			return errors.Wrap(_additionalDataErr, "Error serializing 'additionalData' field")
-		}
+	if err := WriteOptionalField[CALData](ctx, "additionalData", GetRef(m.GetAdditionalData()), WriteComplex[CALData](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'additionalData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CALData"); popErr != nil {
@@ -355,17 +342,4 @@ func (m *_CALData) GetRequestContext() RequestContext {
 //
 ////
 
-func (m *_CALData) isCALData() bool {
-	return true
-}
-
-func (m *_CALData) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_CALData) IsCALData() {}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataProtocolObjectTypesSupported interface {
 	GetProtocolObjectTypesSupported() BACnetObjectTypesSupportedTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectTypesSupportedTagged
-}
-
-// BACnetConstructedDataProtocolObjectTypesSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolObjectTypesSupported.
-// This is useful for switch cases.
-type BACnetConstructedDataProtocolObjectTypesSupportedExactly interface {
-	BACnetConstructedDataProtocolObjectTypesSupported
-	isBACnetConstructedDataProtocolObjectTypesSupported() bool
+	// IsBACnetConstructedDataProtocolObjectTypesSupported is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProtocolObjectTypesSupported()
 }
 
 // _BACnetConstructedDataProtocolObjectTypesSupported is the data-structure of this message
 type _BACnetConstructedDataProtocolObjectTypesSupported struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ProtocolObjectTypesSupported BACnetObjectTypesSupportedTagged
 }
+
+var _ BACnetConstructedDataProtocolObjectTypesSupported = (*_BACnetConstructedDataProtocolObjectTypesSupported)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolObjectTypesSupported)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetPropertyIdentifi
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataProtocolObjectTypesSupported) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetActualValue() BA
 
 // NewBACnetConstructedDataProtocolObjectTypesSupported factory function for _BACnetConstructedDataProtocolObjectTypesSupported
 func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported BACnetObjectTypesSupportedTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolObjectTypesSupported {
-	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
-		ProtocolObjectTypesSupported: protocolObjectTypesSupported,
-		_BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if protocolObjectTypesSupported == nil {
+		panic("protocolObjectTypesSupported of type BACnetObjectTypesSupportedTagged for BACnetConstructedDataProtocolObjectTypesSupported must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolObjectTypesSupported:  protocolObjectTypesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetTypeName() strin
 }
 
 func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (protocolObjectTypesSupported)
 	lengthInBits += m.ProtocolObjectTypesSupported.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataProtocolObjectTypesSupportedParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolObjectTypesSupported, error) {
-	return BACnetConstructedDataProtocolObjectTypesSupportedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataProtocolObjectTypesSupportedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolObjectTypesSupported, error) {
+func (m *_BACnetConstructedDataProtocolObjectTypesSupported) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProtocolObjectTypesSupported BACnetConstructedDataProtocolObjectTypesSupported, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolObjectTypesSupported"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProtocolObjectTypesSupported")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolObjectTypesSupported)
-	if pullErr := readBuffer.PullContext("protocolObjectTypesSupported"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolObjectTypesSupported")
+	protocolObjectTypesSupported, err := ReadSimpleField[BACnetObjectTypesSupportedTagged](ctx, "protocolObjectTypesSupported", ReadComplex[BACnetObjectTypesSupportedTagged](BACnetObjectTypesSupportedTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolObjectTypesSupported' field"))
 	}
-	_protocolObjectTypesSupported, _protocolObjectTypesSupportedErr := BACnetObjectTypesSupportedTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _protocolObjectTypesSupportedErr != nil {
-		return nil, errors.Wrap(_protocolObjectTypesSupportedErr, "Error parsing 'protocolObjectTypesSupported' field of BACnetConstructedDataProtocolObjectTypesSupported")
-	}
-	protocolObjectTypesSupported := _protocolObjectTypesSupported.(BACnetObjectTypesSupportedTagged)
-	if closeErr := readBuffer.CloseContext("protocolObjectTypesSupported"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolObjectTypesSupported")
-	}
+	m.ProtocolObjectTypesSupported = protocolObjectTypesSupported
 
-	// Virtual field
-	_actualValue := protocolObjectTypesSupported
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetObjectTypesSupportedTagged](ctx, "actualValue", (*BACnetObjectTypesSupportedTagged)(nil), protocolObjectTypesSupported)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolObjectTypesSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolObjectTypesSupported")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataProtocolObjectTypesSupported{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ProtocolObjectTypesSupported: protocolObjectTypesSupported,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataProtocolObjectTypesSupported) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolObjectTypesSupported")
 		}
 
-		// Simple Field (protocolObjectTypesSupported)
-		if pushErr := writeBuffer.PushContext("protocolObjectTypesSupported"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolObjectTypesSupported")
-		}
-		_protocolObjectTypesSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolObjectTypesSupported())
-		if popErr := writeBuffer.PopContext("protocolObjectTypesSupported"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolObjectTypesSupported")
-		}
-		if _protocolObjectTypesSupportedErr != nil {
-			return errors.Wrap(_protocolObjectTypesSupportedErr, "Error serializing 'protocolObjectTypesSupported' field")
+		if err := WriteSimpleField[BACnetObjectTypesSupportedTagged](ctx, "protocolObjectTypesSupported", m.GetProtocolObjectTypesSupported(), WriteComplex[BACnetObjectTypesSupportedTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolObjectTypesSupported' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataProtocolObjectTypesSupported) isBACnetConstructedDataProtocolObjectTypesSupported() bool {
-	return true
+func (m *_BACnetConstructedDataProtocolObjectTypesSupported) IsBACnetConstructedDataProtocolObjectTypesSupported() {
 }
 
 func (m *_BACnetConstructedDataProtocolObjectTypesSupported) String() string {

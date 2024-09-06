@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,21 +48,19 @@ type RequestDirectCommandAccess interface {
 	GetAlpha() Alpha
 	// GetCalDataDecoded returns CalDataDecoded (virtual field)
 	GetCalDataDecoded() CALData
-}
-
-// RequestDirectCommandAccessExactly can be used when we want exactly this type and not a type which fulfills RequestDirectCommandAccess.
-// This is useful for switch cases.
-type RequestDirectCommandAccessExactly interface {
-	RequestDirectCommandAccess
-	isRequestDirectCommandAccess() bool
+	// IsRequestDirectCommandAccess is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestDirectCommandAccess()
 }
 
 // _RequestDirectCommandAccess is the data-structure of this message
 type _RequestDirectCommandAccess struct {
-	*_Request
+	RequestContract
 	CalData CALData
 	Alpha   Alpha
 }
+
+var _ RequestDirectCommandAccess = (*_RequestDirectCommandAccess)(nil)
+var _ RequestRequirements = (*_RequestDirectCommandAccess)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,16 +72,8 @@ type _RequestDirectCommandAccess struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestDirectCommandAccess) InitializeParent(parent Request, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) {
-	m.PeekedByte = peekedByte
-	m.StartingCR = startingCR
-	m.ResetMode = resetMode
-	m.SecondPeek = secondPeek
-	m.Termination = termination
-}
-
-func (m *_RequestDirectCommandAccess) GetParent() Request {
-	return m._Request
+func (m *_RequestDirectCommandAccess) GetParent() RequestContract {
+	return m.RequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,7 +101,7 @@ func (m *_RequestDirectCommandAccess) GetAlpha() Alpha {
 func (m *_RequestDirectCommandAccess) GetCalDataDecoded() CALData {
 	ctx := context.Background()
 	_ = ctx
-	alpha := m.Alpha
+	alpha := m.GetAlpha()
 	_ = alpha
 	return CastCALData(m.GetCalData())
 }
@@ -136,11 +127,11 @@ func (m *_RequestDirectCommandAccess) GetAt() byte {
 // NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
 func NewRequestDirectCommandAccess(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
 	_result := &_RequestDirectCommandAccess{
-		CalData:  calData,
-		Alpha:    alpha,
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		CalData:         calData,
+		Alpha:           alpha,
 	}
-	_result._Request._RequestChildRequirements = _result
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 
@@ -160,7 +151,7 @@ func (m *_RequestDirectCommandAccess) GetTypeName() string {
 }
 
 func (m *_RequestDirectCommandAccess) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
 
 	// Const Field (at)
 	lengthInBits += 8
@@ -182,81 +173,50 @@ func (m *_RequestDirectCommandAccess) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestDirectCommandAccessParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
-	return RequestDirectCommandAccessParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func RequestDirectCommandAccessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
+func (m *_RequestDirectCommandAccess) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestDirectCommandAccess RequestDirectCommandAccess, err error) {
+	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestDirectCommandAccess"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestDirectCommandAccess")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (at)
-	at, _atErr := readBuffer.ReadByte("at")
-	if _atErr != nil {
-		return nil, errors.Wrap(_atErr, "Error parsing 'at' field of RequestDirectCommandAccess")
+	at, err := ReadConstField[byte](ctx, "at", ReadByte(readBuffer, 8), RequestDirectCommandAccess_AT)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'at' field"))
 	}
-	if at != RequestDirectCommandAccess_AT {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestDirectCommandAccess_AT) + " but got " + fmt.Sprintf("%d", at))
-	}
+	_ = at
 
-	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(ctx, readBuffer)
-	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestDirectCommandAccess")
+	calData, err := ReadManualField[CALData](ctx, "calData", readBuffer, EnsureType[CALData](ReadCALData(ctx, readBuffer)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
-	var calData CALData
-	if _calData != nil {
-		calData = _calData.(CALData)
-	}
+	m.CalData = calData
 
-	// Virtual field
-	_calDataDecoded := calData
-	calDataDecoded := _calDataDecoded
+	calDataDecoded, err := ReadVirtualField[CALData](ctx, "calDataDecoded", (*CALData)(nil), calData)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calDataDecoded' field"))
+	}
 	_ = calDataDecoded
 
-	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
-	var alpha Alpha = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
-		}
-		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of RequestDirectCommandAccess")
-		default:
-			alpha = _val.(Alpha)
-			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for alpha")
-			}
-		}
+	var alpha Alpha
+	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alpha' field"))
+	}
+	if _alpha != nil {
+		alpha = *_alpha
+		m.Alpha = alpha
 	}
 
 	if closeErr := readBuffer.CloseContext("RequestDirectCommandAccess"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestDirectCommandAccess")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RequestDirectCommandAccess{
-		_Request: &_Request{
-			CBusOptions: cBusOptions,
-		},
-		CalData: calData,
-		Alpha:   alpha,
-	}
-	_child._Request._RequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RequestDirectCommandAccess) Serialize() ([]byte, error) {
@@ -277,16 +237,12 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for RequestDirectCommandAccess")
 		}
 
-		// Const Field (at)
-		_atErr := writeBuffer.WriteByte("at", 0x40)
-		if _atErr != nil {
-			return errors.Wrap(_atErr, "Error serializing 'at' field")
+		if err := WriteConstField(ctx, "at", RequestDirectCommandAccess_AT, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'at' field")
 		}
 
-		// Manual Field (calData)
-		_calDataErr := WriteCALData(ctx, writeBuffer, m.GetCalData())
-		if _calDataErr != nil {
-			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+		if err := WriteManualField[CALData](ctx, "calData", func(ctx context.Context) error { return WriteCALData(ctx, writeBuffer, m.GetCalData()) }, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'calData' field")
 		}
 		// Virtual field
 		calDataDecoded := m.GetCalDataDecoded()
@@ -295,20 +251,8 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
-		// Optional Field (alpha) (Can be skipped, if the value is null)
-		var alpha Alpha = nil
-		if m.GetAlpha() != nil {
-			if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alpha")
-			}
-			alpha = m.GetAlpha()
-			_alphaErr := writeBuffer.WriteSerializable(ctx, alpha)
-			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alpha")
-			}
-			if _alphaErr != nil {
-				return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
-			}
+		if err := WriteOptionalField[Alpha](ctx, "alpha", GetRef(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'alpha' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestDirectCommandAccess"); popErr != nil {
@@ -316,12 +260,10 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.RequestContract.(*_Request).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RequestDirectCommandAccess) isRequestDirectCommandAccess() bool {
-	return true
-}
+func (m *_RequestDirectCommandAccess) IsRequestDirectCommandAccess() {}
 
 func (m *_RequestDirectCommandAccess) String() string {
 	if m == nil {

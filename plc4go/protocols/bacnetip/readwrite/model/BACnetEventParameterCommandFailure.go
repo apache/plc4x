@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type BACnetEventParameterCommandFailure interface {
 	GetFeedbackPropertyReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetEventParameterCommandFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterCommandFailure.
-// This is useful for switch cases.
-type BACnetEventParameterCommandFailureExactly interface {
-	BACnetEventParameterCommandFailure
-	isBACnetEventParameterCommandFailure() bool
+	// IsBACnetEventParameterCommandFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterCommandFailure()
 }
 
 // _BACnetEventParameterCommandFailure is the data-structure of this message
 type _BACnetEventParameterCommandFailure struct {
-	*_BACnetEventParameter
+	BACnetEventParameterContract
 	OpeningTag                BACnetOpeningTag
 	TimeDelay                 BACnetContextTagUnsignedInteger
 	FeedbackPropertyReference BACnetDeviceObjectPropertyReferenceEnclosed
 	ClosingTag                BACnetClosingTag
 }
+
+var _ BACnetEventParameterCommandFailure = (*_BACnetEventParameterCommandFailure)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterCommandFailure)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,12 +73,8 @@ type _BACnetEventParameterCommandFailure struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetEventParameterCommandFailure) InitializeParent(parent BACnetEventParameter, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetEventParameterCommandFailure) GetParent() BACnetEventParameter {
-	return m._BACnetEventParameter
+func (m *_BACnetEventParameterCommandFailure) GetParent() BACnetEventParameterContract {
+	return m.BACnetEventParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,14 +105,26 @@ func (m *_BACnetEventParameterCommandFailure) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetEventParameterCommandFailure factory function for _BACnetEventParameterCommandFailure
 func NewBACnetEventParameterCommandFailure(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, feedbackPropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterCommandFailure {
-	_result := &_BACnetEventParameterCommandFailure{
-		OpeningTag:                openingTag,
-		TimeDelay:                 timeDelay,
-		FeedbackPropertyReference: feedbackPropertyReference,
-		ClosingTag:                closingTag,
-		_BACnetEventParameter:     NewBACnetEventParameter(peekedTagHeader),
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterCommandFailure must not be nil")
 	}
-	_result._BACnetEventParameter._BACnetEventParameterChildRequirements = _result
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterCommandFailure must not be nil")
+	}
+	if feedbackPropertyReference == nil {
+		panic("feedbackPropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterCommandFailure must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterCommandFailure must not be nil")
+	}
+	_result := &_BACnetEventParameterCommandFailure{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		FeedbackPropertyReference:    feedbackPropertyReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 
@@ -136,7 +144,7 @@ func (m *_BACnetEventParameterCommandFailure) GetTypeName() string {
 }
 
 func (m *_BACnetEventParameterCommandFailure) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -157,87 +165,46 @@ func (m *_BACnetEventParameterCommandFailure) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterCommandFailureParse(ctx context.Context, theBytes []byte) (BACnetEventParameterCommandFailure, error) {
-	return BACnetEventParameterCommandFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetEventParameterCommandFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterCommandFailure, error) {
+func (m *_BACnetEventParameterCommandFailure) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterCommandFailure BACnetEventParameterCommandFailure, err error) {
+	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterCommandFailure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterCommandFailure")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(3))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterCommandFailure")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (timeDelay)
-	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
+	timeDelay, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDelay' field"))
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterCommandFailure")
-	}
-	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
-	}
+	m.TimeDelay = timeDelay
 
-	// Simple Field (feedbackPropertyReference)
-	if pullErr := readBuffer.PullContext("feedbackPropertyReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for feedbackPropertyReference")
+	feedbackPropertyReference, err := ReadSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "feedbackPropertyReference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'feedbackPropertyReference' field"))
 	}
-	_feedbackPropertyReference, _feedbackPropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _feedbackPropertyReferenceErr != nil {
-		return nil, errors.Wrap(_feedbackPropertyReferenceErr, "Error parsing 'feedbackPropertyReference' field of BACnetEventParameterCommandFailure")
-	}
-	feedbackPropertyReference := _feedbackPropertyReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("feedbackPropertyReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for feedbackPropertyReference")
-	}
+	m.FeedbackPropertyReference = feedbackPropertyReference
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(3))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterCommandFailure")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterCommandFailure"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterCommandFailure")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetEventParameterCommandFailure{
-		_BACnetEventParameter:     &_BACnetEventParameter{},
-		OpeningTag:                openingTag,
-		TimeDelay:                 timeDelay,
-		FeedbackPropertyReference: feedbackPropertyReference,
-		ClosingTag:                closingTag,
-	}
-	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetEventParameterCommandFailure) Serialize() ([]byte, error) {
@@ -258,52 +225,20 @@ func (m *_BACnetEventParameterCommandFailure) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterCommandFailure")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (timeDelay)
-		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelay")
-		}
-		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
-		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelay")
-		}
-		if _timeDelayErr != nil {
-			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", m.GetTimeDelay(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelay' field")
 		}
 
-		// Simple Field (feedbackPropertyReference)
-		if pushErr := writeBuffer.PushContext("feedbackPropertyReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for feedbackPropertyReference")
-		}
-		_feedbackPropertyReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetFeedbackPropertyReference())
-		if popErr := writeBuffer.PopContext("feedbackPropertyReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for feedbackPropertyReference")
-		}
-		if _feedbackPropertyReferenceErr != nil {
-			return errors.Wrap(_feedbackPropertyReferenceErr, "Error serializing 'feedbackPropertyReference' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "feedbackPropertyReference", m.GetFeedbackPropertyReference(), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'feedbackPropertyReference' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterCommandFailure"); popErr != nil {
@@ -311,12 +246,10 @@ func (m *_BACnetEventParameterCommandFailure) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetEventParameterContract.(*_BACnetEventParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetEventParameterCommandFailure) isBACnetEventParameterCommandFailure() bool {
-	return true
-}
+func (m *_BACnetEventParameterCommandFailure) IsBACnetEventParameterCommandFailure() {}
 
 func (m *_BACnetEventParameterCommandFailure) String() string {
 	if m == nil {

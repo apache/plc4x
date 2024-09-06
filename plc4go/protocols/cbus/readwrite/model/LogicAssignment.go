@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,13 +50,8 @@ type LogicAssignment interface {
 	GetAssignedToGav14() bool
 	// GetAssignedToGav13 returns AssignedToGav13 (property field)
 	GetAssignedToGav13() bool
-}
-
-// LogicAssignmentExactly can be used when we want exactly this type and not a type which fulfills LogicAssignment.
-// This is useful for switch cases.
-type LogicAssignmentExactly interface {
-	LogicAssignment
-	isLogicAssignment() bool
+	// IsLogicAssignment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLogicAssignment()
 }
 
 // _LogicAssignment is the data-structure of this message
@@ -69,6 +66,8 @@ type _LogicAssignment struct {
 	reservedField0 *bool
 	reservedField1 *bool
 }
+
+var _ LogicAssignment = (*_LogicAssignment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,108 +161,82 @@ func LogicAssignmentParse(ctx context.Context, theBytes []byte) (LogicAssignment
 	return LogicAssignmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LogicAssignmentParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {
+		return LogicAssignmentParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {
+	v, err := (&_LogicAssignment{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_LogicAssignment) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__logicAssignment LogicAssignment, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LogicAssignment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LogicAssignment")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (greaterOfOrLogic)
-	_greaterOfOrLogic, _greaterOfOrLogicErr := readBuffer.ReadBit("greaterOfOrLogic")
-	if _greaterOfOrLogicErr != nil {
-		return nil, errors.Wrap(_greaterOfOrLogicErr, "Error parsing 'greaterOfOrLogic' field of LogicAssignment")
+	greaterOfOrLogic, err := ReadSimpleField(ctx, "greaterOfOrLogic", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'greaterOfOrLogic' field"))
 	}
-	greaterOfOrLogic := _greaterOfOrLogic
+	m.GreaterOfOrLogic = greaterOfOrLogic
 
-	// Simple Field (reStrikeDelay)
-	_reStrikeDelay, _reStrikeDelayErr := readBuffer.ReadBit("reStrikeDelay")
-	if _reStrikeDelayErr != nil {
-		return nil, errors.Wrap(_reStrikeDelayErr, "Error parsing 'reStrikeDelay' field of LogicAssignment")
+	reStrikeDelay, err := ReadSimpleField(ctx, "reStrikeDelay", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reStrikeDelay' field"))
 	}
-	reStrikeDelay := _reStrikeDelay
+	m.ReStrikeDelay = reStrikeDelay
 
-	var reservedField0 *bool
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LogicAssignment")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	var reservedField1 *bool
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LogicAssignment")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField1 = reservedField1
 
-	// Simple Field (assignedToGav16)
-	_assignedToGav16, _assignedToGav16Err := readBuffer.ReadBit("assignedToGav16")
-	if _assignedToGav16Err != nil {
-		return nil, errors.Wrap(_assignedToGav16Err, "Error parsing 'assignedToGav16' field of LogicAssignment")
+	assignedToGav16, err := ReadSimpleField(ctx, "assignedToGav16", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedToGav16' field"))
 	}
-	assignedToGav16 := _assignedToGav16
+	m.AssignedToGav16 = assignedToGav16
 
-	// Simple Field (assignedToGav15)
-	_assignedToGav15, _assignedToGav15Err := readBuffer.ReadBit("assignedToGav15")
-	if _assignedToGav15Err != nil {
-		return nil, errors.Wrap(_assignedToGav15Err, "Error parsing 'assignedToGav15' field of LogicAssignment")
+	assignedToGav15, err := ReadSimpleField(ctx, "assignedToGav15", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedToGav15' field"))
 	}
-	assignedToGav15 := _assignedToGav15
+	m.AssignedToGav15 = assignedToGav15
 
-	// Simple Field (assignedToGav14)
-	_assignedToGav14, _assignedToGav14Err := readBuffer.ReadBit("assignedToGav14")
-	if _assignedToGav14Err != nil {
-		return nil, errors.Wrap(_assignedToGav14Err, "Error parsing 'assignedToGav14' field of LogicAssignment")
+	assignedToGav14, err := ReadSimpleField(ctx, "assignedToGav14", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedToGav14' field"))
 	}
-	assignedToGav14 := _assignedToGav14
+	m.AssignedToGav14 = assignedToGav14
 
-	// Simple Field (assignedToGav13)
-	_assignedToGav13, _assignedToGav13Err := readBuffer.ReadBit("assignedToGav13")
-	if _assignedToGav13Err != nil {
-		return nil, errors.Wrap(_assignedToGav13Err, "Error parsing 'assignedToGav13' field of LogicAssignment")
+	assignedToGav13, err := ReadSimpleField(ctx, "assignedToGav13", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedToGav13' field"))
 	}
-	assignedToGav13 := _assignedToGav13
+	m.AssignedToGav13 = assignedToGav13
 
 	if closeErr := readBuffer.CloseContext("LogicAssignment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LogicAssignment")
 	}
 
-	// Create the instance
-	return &_LogicAssignment{
-		GreaterOfOrLogic: greaterOfOrLogic,
-		ReStrikeDelay:    reStrikeDelay,
-		AssignedToGav16:  assignedToGav16,
-		AssignedToGav15:  assignedToGav15,
-		AssignedToGav14:  assignedToGav14,
-		AssignedToGav13:  assignedToGav13,
-		reservedField0:   reservedField0,
-		reservedField1:   reservedField1,
-	}, nil
+	return m, nil
 }
 
 func (m *_LogicAssignment) Serialize() ([]byte, error) {
@@ -283,78 +256,36 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for LogicAssignment")
 	}
 
-	// Simple Field (greaterOfOrLogic)
-	greaterOfOrLogic := bool(m.GetGreaterOfOrLogic())
-	_greaterOfOrLogicErr := writeBuffer.WriteBit("greaterOfOrLogic", (greaterOfOrLogic))
-	if _greaterOfOrLogicErr != nil {
-		return errors.Wrap(_greaterOfOrLogicErr, "Error serializing 'greaterOfOrLogic' field")
+	if err := WriteSimpleField[bool](ctx, "greaterOfOrLogic", m.GetGreaterOfOrLogic(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'greaterOfOrLogic' field")
 	}
 
-	// Simple Field (reStrikeDelay)
-	reStrikeDelay := bool(m.GetReStrikeDelay())
-	_reStrikeDelayErr := writeBuffer.WriteBit("reStrikeDelay", (reStrikeDelay))
-	if _reStrikeDelayErr != nil {
-		return errors.Wrap(_reStrikeDelayErr, "Error serializing 'reStrikeDelay' field")
+	if err := WriteSimpleField[bool](ctx, "reStrikeDelay", m.GetReStrikeDelay(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reStrikeDelay' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField1 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField1
-		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
-	// Simple Field (assignedToGav16)
-	assignedToGav16 := bool(m.GetAssignedToGav16())
-	_assignedToGav16Err := writeBuffer.WriteBit("assignedToGav16", (assignedToGav16))
-	if _assignedToGav16Err != nil {
-		return errors.Wrap(_assignedToGav16Err, "Error serializing 'assignedToGav16' field")
+	if err := WriteSimpleField[bool](ctx, "assignedToGav16", m.GetAssignedToGav16(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedToGav16' field")
 	}
 
-	// Simple Field (assignedToGav15)
-	assignedToGav15 := bool(m.GetAssignedToGav15())
-	_assignedToGav15Err := writeBuffer.WriteBit("assignedToGav15", (assignedToGav15))
-	if _assignedToGav15Err != nil {
-		return errors.Wrap(_assignedToGav15Err, "Error serializing 'assignedToGav15' field")
+	if err := WriteSimpleField[bool](ctx, "assignedToGav15", m.GetAssignedToGav15(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedToGav15' field")
 	}
 
-	// Simple Field (assignedToGav14)
-	assignedToGav14 := bool(m.GetAssignedToGav14())
-	_assignedToGav14Err := writeBuffer.WriteBit("assignedToGav14", (assignedToGav14))
-	if _assignedToGav14Err != nil {
-		return errors.Wrap(_assignedToGav14Err, "Error serializing 'assignedToGav14' field")
+	if err := WriteSimpleField[bool](ctx, "assignedToGav14", m.GetAssignedToGav14(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedToGav14' field")
 	}
 
-	// Simple Field (assignedToGav13)
-	assignedToGav13 := bool(m.GetAssignedToGav13())
-	_assignedToGav13Err := writeBuffer.WriteBit("assignedToGav13", (assignedToGav13))
-	if _assignedToGav13Err != nil {
-		return errors.Wrap(_assignedToGav13Err, "Error serializing 'assignedToGav13' field")
+	if err := WriteSimpleField[bool](ctx, "assignedToGav13", m.GetAssignedToGav13(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedToGav13' field")
 	}
 
 	if popErr := writeBuffer.PopContext("LogicAssignment"); popErr != nil {
@@ -363,9 +294,7 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return nil
 }
 
-func (m *_LogicAssignment) isLogicAssignment() bool {
-	return true
-}
+func (m *_LogicAssignment) IsLogicAssignment() {}
 
 func (m *_LogicAssignment) String() string {
 	if m == nil {

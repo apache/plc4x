@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type KnxAddress interface {
 	GetMiddleGroup() uint8
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint8
-}
-
-// KnxAddressExactly can be used when we want exactly this type and not a type which fulfills KnxAddress.
-// This is useful for switch cases.
-type KnxAddressExactly interface {
-	KnxAddress
-	isKnxAddress() bool
+	// IsKnxAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxAddress()
 }
 
 // _KnxAddress is the data-structure of this message
@@ -57,6 +54,8 @@ type _KnxAddress struct {
 	MiddleGroup uint8
 	SubGroup    uint8
 }
+
+var _ KnxAddress = (*_KnxAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -123,48 +122,52 @@ func KnxAddressParse(ctx context.Context, theBytes []byte) (KnxAddress, error) {
 	return KnxAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func KnxAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
+		return KnxAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
+	v, err := (&_KnxAddress{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_KnxAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__knxAddress KnxAddress, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (mainGroup)
-	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 4)
-	if _mainGroupErr != nil {
-		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field of KnxAddress")
+	mainGroup, err := ReadSimpleField(ctx, "mainGroup", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mainGroup' field"))
 	}
-	mainGroup := _mainGroup
+	m.MainGroup = mainGroup
 
-	// Simple Field (middleGroup)
-	_middleGroup, _middleGroupErr := readBuffer.ReadUint8("middleGroup", 4)
-	if _middleGroupErr != nil {
-		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field of KnxAddress")
+	middleGroup, err := ReadSimpleField(ctx, "middleGroup", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'middleGroup' field"))
 	}
-	middleGroup := _middleGroup
+	m.MiddleGroup = middleGroup
 
-	// Simple Field (subGroup)
-	_subGroup, _subGroupErr := readBuffer.ReadUint8("subGroup", 8)
-	if _subGroupErr != nil {
-		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field of KnxAddress")
+	subGroup, err := ReadSimpleField(ctx, "subGroup", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subGroup' field"))
 	}
-	subGroup := _subGroup
+	m.SubGroup = subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxAddress")
 	}
 
-	// Create the instance
-	return &_KnxAddress{
-		MainGroup:   mainGroup,
-		MiddleGroup: middleGroup,
-		SubGroup:    subGroup,
-	}, nil
+	return m, nil
 }
 
 func (m *_KnxAddress) Serialize() ([]byte, error) {
@@ -184,25 +187,16 @@ func (m *_KnxAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for KnxAddress")
 	}
 
-	// Simple Field (mainGroup)
-	mainGroup := uint8(m.GetMainGroup())
-	_mainGroupErr := writeBuffer.WriteUint8("mainGroup", 4, uint8((mainGroup)))
-	if _mainGroupErr != nil {
-		return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
+	if err := WriteSimpleField[uint8](ctx, "mainGroup", m.GetMainGroup(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'mainGroup' field")
 	}
 
-	// Simple Field (middleGroup)
-	middleGroup := uint8(m.GetMiddleGroup())
-	_middleGroupErr := writeBuffer.WriteUint8("middleGroup", 4, uint8((middleGroup)))
-	if _middleGroupErr != nil {
-		return errors.Wrap(_middleGroupErr, "Error serializing 'middleGroup' field")
+	if err := WriteSimpleField[uint8](ctx, "middleGroup", m.GetMiddleGroup(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'middleGroup' field")
 	}
 
-	// Simple Field (subGroup)
-	subGroup := uint8(m.GetSubGroup())
-	_subGroupErr := writeBuffer.WriteUint8("subGroup", 8, uint8((subGroup)))
-	if _subGroupErr != nil {
-		return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
+	if err := WriteSimpleField[uint8](ctx, "subGroup", m.GetSubGroup(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'subGroup' field")
 	}
 
 	if popErr := writeBuffer.PopContext("KnxAddress"); popErr != nil {
@@ -211,9 +205,7 @@ func (m *_KnxAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	return nil
 }
 
-func (m *_KnxAddress) isKnxAddress() bool {
-	return true
-}
+func (m *_KnxAddress) IsKnxAddress() {}
 
 func (m *_KnxAddress) String() string {
 	if m == nil {

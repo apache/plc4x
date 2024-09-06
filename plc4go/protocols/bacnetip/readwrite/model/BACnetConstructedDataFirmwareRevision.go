@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataFirmwareRevision interface {
 	GetFirmwareRevision() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataFirmwareRevisionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFirmwareRevision.
-// This is useful for switch cases.
-type BACnetConstructedDataFirmwareRevisionExactly interface {
-	BACnetConstructedDataFirmwareRevision
-	isBACnetConstructedDataFirmwareRevision() bool
+	// IsBACnetConstructedDataFirmwareRevision is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFirmwareRevision()
 }
 
 // _BACnetConstructedDataFirmwareRevision is the data-structure of this message
 type _BACnetConstructedDataFirmwareRevision struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FirmwareRevision BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataFirmwareRevision = (*_BACnetConstructedDataFirmwareRevision)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFirmwareRevision)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataFirmwareRevision) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataFirmwareRevision) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataFirmwareRevision) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataFirmwareRevision) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataFirmwareRevision) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataFirmwareRevision factory function for _BACnetConstructedDataFirmwareRevision
 func NewBACnetConstructedDataFirmwareRevision(firmwareRevision BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFirmwareRevision {
-	_result := &_BACnetConstructedDataFirmwareRevision{
-		FirmwareRevision:       firmwareRevision,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if firmwareRevision == nil {
+		panic("firmwareRevision of type BACnetApplicationTagCharacterString for BACnetConstructedDataFirmwareRevision must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataFirmwareRevision{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FirmwareRevision:              firmwareRevision,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataFirmwareRevision) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFirmwareRevision) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (firmwareRevision)
 	lengthInBits += m.FirmwareRevision.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataFirmwareRevision) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataFirmwareRevisionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFirmwareRevision, error) {
-	return BACnetConstructedDataFirmwareRevisionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataFirmwareRevisionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFirmwareRevision, error) {
+func (m *_BACnetConstructedDataFirmwareRevision) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFirmwareRevision BACnetConstructedDataFirmwareRevision, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFirmwareRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFirmwareRevision")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (firmwareRevision)
-	if pullErr := readBuffer.PullContext("firmwareRevision"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for firmwareRevision")
+	firmwareRevision, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "firmwareRevision", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firmwareRevision' field"))
 	}
-	_firmwareRevision, _firmwareRevisionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _firmwareRevisionErr != nil {
-		return nil, errors.Wrap(_firmwareRevisionErr, "Error parsing 'firmwareRevision' field of BACnetConstructedDataFirmwareRevision")
-	}
-	firmwareRevision := _firmwareRevision.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("firmwareRevision"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for firmwareRevision")
-	}
+	m.FirmwareRevision = firmwareRevision
 
-	// Virtual field
-	_actualValue := firmwareRevision
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), firmwareRevision)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFirmwareRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFirmwareRevision")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataFirmwareRevision{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FirmwareRevision: firmwareRevision,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataFirmwareRevision) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataFirmwareRevision) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFirmwareRevision")
 		}
 
-		// Simple Field (firmwareRevision)
-		if pushErr := writeBuffer.PushContext("firmwareRevision"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for firmwareRevision")
-		}
-		_firmwareRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetFirmwareRevision())
-		if popErr := writeBuffer.PopContext("firmwareRevision"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for firmwareRevision")
-		}
-		if _firmwareRevisionErr != nil {
-			return errors.Wrap(_firmwareRevisionErr, "Error serializing 'firmwareRevision' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "firmwareRevision", m.GetFirmwareRevision(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'firmwareRevision' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataFirmwareRevision) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataFirmwareRevision) isBACnetConstructedDataFirmwareRevision() bool {
-	return true
-}
+func (m *_BACnetConstructedDataFirmwareRevision) IsBACnetConstructedDataFirmwareRevision() {}
 
 func (m *_BACnetConstructedDataFirmwareRevision) String() string {
 	if m == nil {

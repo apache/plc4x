@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type S7AddressAny interface {
 	GetByteAddress() uint16
 	// GetBitAddress returns BitAddress (property field)
 	GetBitAddress() uint8
-}
-
-// S7AddressAnyExactly can be used when we want exactly this type and not a type which fulfills S7AddressAny.
-// This is useful for switch cases.
-type S7AddressAnyExactly interface {
-	S7AddressAny
-	isS7AddressAny() bool
+	// IsS7AddressAny is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7AddressAny()
 }
 
 // _S7AddressAny is the data-structure of this message
 type _S7AddressAny struct {
-	*_S7Address
+	S7AddressContract
 	TransportSize    TransportSize
 	NumberOfElements uint16
 	DbNumber         uint16
@@ -70,6 +67,9 @@ type _S7AddressAny struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ S7AddressAny = (*_S7AddressAny)(nil)
+var _ S7AddressRequirements = (*_S7AddressAny)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,10 +85,8 @@ func (m *_S7AddressAny) GetAddressType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7AddressAny) InitializeParent(parent S7Address) {}
-
-func (m *_S7AddressAny) GetParent() S7Address {
-	return m._S7Address
+func (m *_S7AddressAny) GetParent() S7AddressContract {
+	return m.S7AddressContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -128,15 +126,15 @@ func (m *_S7AddressAny) GetBitAddress() uint8 {
 // NewS7AddressAny factory function for _S7AddressAny
 func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *_S7AddressAny {
 	_result := &_S7AddressAny{
-		TransportSize:    transportSize,
-		NumberOfElements: numberOfElements,
-		DbNumber:         dbNumber,
-		Area:             area,
-		ByteAddress:      byteAddress,
-		BitAddress:       bitAddress,
-		_S7Address:       NewS7Address(),
+		S7AddressContract: NewS7Address(),
+		TransportSize:     transportSize,
+		NumberOfElements:  numberOfElements,
+		DbNumber:          dbNumber,
+		Area:              area,
+		ByteAddress:       byteAddress,
+		BitAddress:        bitAddress,
 	}
-	_result._S7Address._S7AddressChildRequirements = _result
+	_result.S7AddressContract.(*_S7Address)._SubType = _result
 	return _result
 }
 
@@ -156,7 +154,7 @@ func (m *_S7AddressAny) GetTypeName() string {
 }
 
 func (m *_S7AddressAny) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7AddressContract.(*_S7Address).getLengthInBits(ctx))
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -186,112 +184,64 @@ func (m *_S7AddressAny) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7AddressAnyParse(ctx context.Context, theBytes []byte) (S7AddressAny, error) {
-	return S7AddressAnyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7AddressAny, error) {
+func (m *_S7AddressAny) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Address) (__s7AddressAny S7AddressAny, err error) {
+	m.S7AddressContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7AddressAny")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
+	transportSize, err := ReadEnumField[TransportSize](ctx, "transportSize", "TransportSize", ReadEnum[TransportSize, uint8](TransportSizeFirstEnumForFieldCode, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
-	// Enum field (transportSize)
-	transportSizeCode, _transportSizeCodeErr := readBuffer.ReadUint8("TransportSize", 8)
-	if _transportSizeCodeErr != nil {
-		return nil, errors.Wrap(_transportSizeCodeErr, "Error serializing 'transportSize' field")
-	}
-	transportSize, _transportSizeErr := TransportSizeFirstEnumForFieldCode(transportSizeCode)
-	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
-	}
-	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
-	}
+	m.TransportSize = transportSize
 
-	// Simple Field (numberOfElements)
-	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint16("numberOfElements", 16)
-	if _numberOfElementsErr != nil {
-		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field of S7AddressAny")
+	numberOfElements, err := ReadSimpleField(ctx, "numberOfElements", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfElements' field"))
 	}
-	numberOfElements := _numberOfElements
+	m.NumberOfElements = numberOfElements
 
-	// Simple Field (dbNumber)
-	_dbNumber, _dbNumberErr := readBuffer.ReadUint16("dbNumber", 16)
-	if _dbNumberErr != nil {
-		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field of S7AddressAny")
+	dbNumber, err := ReadSimpleField(ctx, "dbNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dbNumber' field"))
 	}
-	dbNumber := _dbNumber
+	m.DbNumber = dbNumber
 
-	// Simple Field (area)
-	if pullErr := readBuffer.PullContext("area"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for area")
+	area, err := ReadEnumField[MemoryArea](ctx, "area", "MemoryArea", ReadEnum(MemoryAreaByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'area' field"))
 	}
-	_area, _areaErr := MemoryAreaParseWithBuffer(ctx, readBuffer)
-	if _areaErr != nil {
-		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field of S7AddressAny")
-	}
-	area := _area
-	if closeErr := readBuffer.CloseContext("area"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for area")
-	}
+	m.Area = area
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 5)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7AddressAny")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(5)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (byteAddress)
-	_byteAddress, _byteAddressErr := readBuffer.ReadUint16("byteAddress", 16)
-	if _byteAddressErr != nil {
-		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field of S7AddressAny")
+	byteAddress, err := ReadSimpleField(ctx, "byteAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteAddress' field"))
 	}
-	byteAddress := _byteAddress
+	m.ByteAddress = byteAddress
 
-	// Simple Field (bitAddress)
-	_bitAddress, _bitAddressErr := readBuffer.ReadUint8("bitAddress", 3)
-	if _bitAddressErr != nil {
-		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field of S7AddressAny")
+	bitAddress, err := ReadSimpleField(ctx, "bitAddress", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitAddress' field"))
 	}
-	bitAddress := _bitAddress
+	m.BitAddress = bitAddress
 
 	if closeErr := readBuffer.CloseContext("S7AddressAny"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7AddressAny")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7AddressAny{
-		_S7Address:       &_S7Address{},
-		TransportSize:    transportSize,
-		NumberOfElements: numberOfElements,
-		DbNumber:         dbNumber,
-		Area:             area,
-		ByteAddress:      byteAddress,
-		BitAddress:       bitAddress,
-		reservedField0:   reservedField0,
-	}
-	_child._S7Address._S7AddressChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7AddressAny) Serialize() ([]byte, error) {
@@ -312,72 +262,32 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for S7AddressAny")
 		}
 
-		if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportSize")
-		}
-		// Enum field (transportSize)
-		_transportSizeErr := writeBuffer.WriteUint8("TransportSize", 8, uint8(m.TransportSize.Code()), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
-		if _transportSizeErr != nil {
-			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
-		}
-		if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportSize")
+		if err := WriteEnumField(ctx, "transportSize", "TransportSize", m.GetTransportSize(), WriteEnum[TransportSize, uint8](TransportSize.GetCode, TransportSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportSize' field")
 		}
 
-		// Simple Field (numberOfElements)
-		numberOfElements := uint16(m.GetNumberOfElements())
-		_numberOfElementsErr := writeBuffer.WriteUint16("numberOfElements", 16, uint16((numberOfElements)))
-		if _numberOfElementsErr != nil {
-			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
+		if err := WriteSimpleField[uint16](ctx, "numberOfElements", m.GetNumberOfElements(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfElements' field")
 		}
 
-		// Simple Field (dbNumber)
-		dbNumber := uint16(m.GetDbNumber())
-		_dbNumberErr := writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
-		if _dbNumberErr != nil {
-			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "dbNumber", m.GetDbNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dbNumber' field")
 		}
 
-		// Simple Field (area)
-		if pushErr := writeBuffer.PushContext("area"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for area")
-		}
-		_areaErr := writeBuffer.WriteSerializable(ctx, m.GetArea())
-		if popErr := writeBuffer.PopContext("area"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for area")
-		}
-		if _areaErr != nil {
-			return errors.Wrap(_areaErr, "Error serializing 'area' field")
+		if err := WriteSimpleEnumField[MemoryArea](ctx, "area", "MemoryArea", m.GetArea(), WriteEnum[MemoryArea, uint8](MemoryArea.GetValue, MemoryArea.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'area' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 5, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 5)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (byteAddress)
-		byteAddress := uint16(m.GetByteAddress())
-		_byteAddressErr := writeBuffer.WriteUint16("byteAddress", 16, uint16((byteAddress)))
-		if _byteAddressErr != nil {
-			return errors.Wrap(_byteAddressErr, "Error serializing 'byteAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "byteAddress", m.GetByteAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'byteAddress' field")
 		}
 
-		// Simple Field (bitAddress)
-		bitAddress := uint8(m.GetBitAddress())
-		_bitAddressErr := writeBuffer.WriteUint8("bitAddress", 3, uint8((bitAddress)))
-		if _bitAddressErr != nil {
-			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
+		if err := WriteSimpleField[uint8](ctx, "bitAddress", m.GetBitAddress(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7AddressAny"); popErr != nil {
@@ -385,12 +295,10 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7AddressContract.(*_S7Address).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7AddressAny) isS7AddressAny() bool {
-	return true
-}
+func (m *_S7AddressAny) IsS7AddressAny() {}
 
 func (m *_S7AddressAny) String() string {
 	if m == nil {

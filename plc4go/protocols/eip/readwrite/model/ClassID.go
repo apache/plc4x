@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ClassID interface {
 	GetFormat() uint8
 	// GetSegmentClass returns SegmentClass (property field)
 	GetSegmentClass() uint8
-}
-
-// ClassIDExactly can be used when we want exactly this type and not a type which fulfills ClassID.
-// This is useful for switch cases.
-type ClassIDExactly interface {
-	ClassID
-	isClassID() bool
+	// IsClassID is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsClassID()
 }
 
 // _ClassID is the data-structure of this message
 type _ClassID struct {
-	*_LogicalSegmentType
+	LogicalSegmentTypeContract
 	Format       uint8
 	SegmentClass uint8
 }
+
+var _ ClassID = (*_ClassID)(nil)
+var _ LogicalSegmentTypeRequirements = (*_ClassID)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_ClassID) GetLogicalSegmentType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ClassID) InitializeParent(parent LogicalSegmentType) {}
-
-func (m *_ClassID) GetParent() LogicalSegmentType {
-	return m._LogicalSegmentType
+func (m *_ClassID) GetParent() LogicalSegmentTypeContract {
+	return m.LogicalSegmentTypeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_ClassID) GetSegmentClass() uint8 {
 // NewClassID factory function for _ClassID
 func NewClassID(format uint8, segmentClass uint8) *_ClassID {
 	_result := &_ClassID{
-		Format:              format,
-		SegmentClass:        segmentClass,
-		_LogicalSegmentType: NewLogicalSegmentType(),
+		LogicalSegmentTypeContract: NewLogicalSegmentType(),
+		Format:                     format,
+		SegmentClass:               segmentClass,
 	}
-	_result._LogicalSegmentType._LogicalSegmentTypeChildRequirements = _result
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_ClassID) GetTypeName() string {
 }
 
 func (m *_ClassID) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.LogicalSegmentTypeContract.(*_LogicalSegmentType).getLengthInBits(ctx))
 
 	// Simple field (format)
 	lengthInBits += 2
@@ -137,47 +135,34 @@ func (m *_ClassID) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ClassIDParse(ctx context.Context, theBytes []byte) (ClassID, error) {
-	return ClassIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func ClassIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClassID, error) {
+func (m *_ClassID) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LogicalSegmentType) (__classID ClassID, err error) {
+	m.LogicalSegmentTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ClassID"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ClassID")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (format)
-	_format, _formatErr := readBuffer.ReadUint8("format", 2)
-	if _formatErr != nil {
-		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of ClassID")
+	format, err := ReadSimpleField(ctx, "format", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'format' field"))
 	}
-	format := _format
+	m.Format = format
 
-	// Simple Field (segmentClass)
-	_segmentClass, _segmentClassErr := readBuffer.ReadUint8("segmentClass", 8)
-	if _segmentClassErr != nil {
-		return nil, errors.Wrap(_segmentClassErr, "Error parsing 'segmentClass' field of ClassID")
+	segmentClass, err := ReadSimpleField(ctx, "segmentClass", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentClass' field"))
 	}
-	segmentClass := _segmentClass
+	m.SegmentClass = segmentClass
 
 	if closeErr := readBuffer.CloseContext("ClassID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ClassID")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ClassID{
-		_LogicalSegmentType: &_LogicalSegmentType{},
-		Format:              format,
-		SegmentClass:        segmentClass,
-	}
-	_child._LogicalSegmentType._LogicalSegmentTypeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ClassID) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_ClassID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 			return errors.Wrap(pushErr, "Error pushing for ClassID")
 		}
 
-		// Simple Field (format)
-		format := uint8(m.GetFormat())
-		_formatErr := writeBuffer.WriteUint8("format", 2, uint8((format)))
-		if _formatErr != nil {
-			return errors.Wrap(_formatErr, "Error serializing 'format' field")
+		if err := WriteSimpleField[uint8](ctx, "format", m.GetFormat(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+			return errors.Wrap(err, "Error serializing 'format' field")
 		}
 
-		// Simple Field (segmentClass)
-		segmentClass := uint8(m.GetSegmentClass())
-		_segmentClassErr := writeBuffer.WriteUint8("segmentClass", 8, uint8((segmentClass)))
-		if _segmentClassErr != nil {
-			return errors.Wrap(_segmentClassErr, "Error serializing 'segmentClass' field")
+		if err := WriteSimpleField[uint8](ctx, "segmentClass", m.GetSegmentClass(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ClassID"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_ClassID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.LogicalSegmentTypeContract.(*_LogicalSegmentType).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ClassID) isClassID() bool {
-	return true
-}
+func (m *_ClassID) IsClassID() {}
 
 func (m *_ClassID) String() string {
 	if m == nil {

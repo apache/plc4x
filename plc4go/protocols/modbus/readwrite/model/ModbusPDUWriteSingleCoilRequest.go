@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ModbusPDUWriteSingleCoilRequest interface {
 	GetAddress() uint16
 	// GetValue returns Value (property field)
 	GetValue() uint16
-}
-
-// ModbusPDUWriteSingleCoilRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteSingleCoilRequest.
-// This is useful for switch cases.
-type ModbusPDUWriteSingleCoilRequestExactly interface {
-	ModbusPDUWriteSingleCoilRequest
-	isModbusPDUWriteSingleCoilRequest() bool
+	// IsModbusPDUWriteSingleCoilRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteSingleCoilRequest()
 }
 
 // _ModbusPDUWriteSingleCoilRequest is the data-structure of this message
 type _ModbusPDUWriteSingleCoilRequest struct {
-	*_ModbusPDU
+	ModbusPDUContract
 	Address uint16
 	Value   uint16
 }
+
+var _ ModbusPDUWriteSingleCoilRequest = (*_ModbusPDUWriteSingleCoilRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUWriteSingleCoilRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,10 +79,8 @@ func (m *_ModbusPDUWriteSingleCoilRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUWriteSingleCoilRequest) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUWriteSingleCoilRequest) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUWriteSingleCoilRequest) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,11 +104,11 @@ func (m *_ModbusPDUWriteSingleCoilRequest) GetValue() uint16 {
 // NewModbusPDUWriteSingleCoilRequest factory function for _ModbusPDUWriteSingleCoilRequest
 func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *_ModbusPDUWriteSingleCoilRequest {
 	_result := &_ModbusPDUWriteSingleCoilRequest{
-		Address:    address,
-		Value:      value,
-		_ModbusPDU: NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
+		Address:           address,
+		Value:             value,
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -130,7 +128,7 @@ func (m *_ModbusPDUWriteSingleCoilRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUWriteSingleCoilRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -145,47 +143,34 @@ func (m *_ModbusPDUWriteSingleCoilRequest) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUWriteSingleCoilRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUWriteSingleCoilRequest, error) {
-	return ModbusPDUWriteSingleCoilRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUWriteSingleCoilRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteSingleCoilRequest, error) {
+func (m *_ModbusPDUWriteSingleCoilRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUWriteSingleCoilRequest ModbusPDUWriteSingleCoilRequest, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleCoilRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUWriteSingleCoilRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadUint16("address", 16)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ModbusPDUWriteSingleCoilRequest")
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
+	m.Address = address
 
-	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadUint16("value", 16)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ModbusPDUWriteSingleCoilRequest")
+	value, err := ReadSimpleField(ctx, "value", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteSingleCoilRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUWriteSingleCoilRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUWriteSingleCoilRequest{
-		_ModbusPDU: &_ModbusPDU{},
-		Address:    address,
-		Value:      value,
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUWriteSingleCoilRequest) Serialize() ([]byte, error) {
@@ -206,18 +191,12 @@ func (m *_ModbusPDUWriteSingleCoilRequest) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUWriteSingleCoilRequest")
 		}
 
-		// Simple Field (address)
-		address := uint16(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint16("address", 16, uint16((address)))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[uint16](ctx, "address", m.GetAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
-		// Simple Field (value)
-		value := uint16(m.GetValue())
-		_valueErr := writeBuffer.WriteUint16("value", 16, uint16((value)))
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[uint16](ctx, "value", m.GetValue(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUWriteSingleCoilRequest"); popErr != nil {
@@ -225,12 +204,10 @@ func (m *_ModbusPDUWriteSingleCoilRequest) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUWriteSingleCoilRequest) isModbusPDUWriteSingleCoilRequest() bool {
-	return true
-}
+func (m *_ModbusPDUWriteSingleCoilRequest) IsModbusPDUWriteSingleCoilRequest() {}
 
 func (m *_ModbusPDUWriteSingleCoilRequest) String() string {
 	if m == nil {

@@ -36,18 +36,15 @@ type ImageBMP interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// ImageBMPExactly can be used when we want exactly this type and not a type which fulfills ImageBMP.
-// This is useful for switch cases.
-type ImageBMPExactly interface {
-	ImageBMP
-	isImageBMP() bool
+	// IsImageBMP is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsImageBMP()
 }
 
 // _ImageBMP is the data-structure of this message
 type _ImageBMP struct {
 }
+
+var _ ImageBMP = (*_ImageBMP)(nil)
 
 // NewImageBMP factory function for _ImageBMP
 func NewImageBMP() *_ImageBMP {
@@ -83,11 +80,23 @@ func ImageBMPParse(ctx context.Context, theBytes []byte) (ImageBMP, error) {
 	return ImageBMPParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ImageBMPParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ImageBMP, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ImageBMP, error) {
+		return ImageBMPParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ImageBMPParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageBMP, error) {
+	v, err := (&_ImageBMP{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ImageBMP) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__imageBMP ImageBMP, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ImageBMP"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ImageBMP")
 	}
@@ -98,8 +107,7 @@ func ImageBMPParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 		return nil, errors.Wrap(closeErr, "Error closing for ImageBMP")
 	}
 
-	// Create the instance
-	return &_ImageBMP{}, nil
+	return m, nil
 }
 
 func (m *_ImageBMP) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_ImageBMP) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-func (m *_ImageBMP) isImageBMP() bool {
-	return true
-}
+func (m *_ImageBMP) IsImageBMP() {}
 
 func (m *_ImageBMP) String() string {
 	if m == nil {

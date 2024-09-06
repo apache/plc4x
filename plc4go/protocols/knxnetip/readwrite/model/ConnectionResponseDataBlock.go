@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,44 +35,35 @@ import (
 
 // ConnectionResponseDataBlock is the corresponding interface of ConnectionResponseDataBlock
 type ConnectionResponseDataBlock interface {
+	ConnectionResponseDataBlockContract
+	ConnectionResponseDataBlockRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionResponseDataBlock()
+}
+
+// ConnectionResponseDataBlockContract provides a set of functions which can be overwritten by a sub struct
+type ConnectionResponseDataBlockContract interface {
+	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionResponseDataBlock()
+}
+
+// ConnectionResponseDataBlockRequirements provides a set of functions which need to be implemented by a sub struct
+type ConnectionResponseDataBlockRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetConnectionType returns ConnectionType (discriminator field)
 	GetConnectionType() uint8
 }
 
-// ConnectionResponseDataBlockExactly can be used when we want exactly this type and not a type which fulfills ConnectionResponseDataBlock.
-// This is useful for switch cases.
-type ConnectionResponseDataBlockExactly interface {
-	ConnectionResponseDataBlock
-	isConnectionResponseDataBlock() bool
-}
-
 // _ConnectionResponseDataBlock is the data-structure of this message
 type _ConnectionResponseDataBlock struct {
-	_ConnectionResponseDataBlockChildRequirements
+	_SubType ConnectionResponseDataBlock
 }
 
-type _ConnectionResponseDataBlockChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetConnectionType() uint8
-}
-
-type ConnectionResponseDataBlockParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ConnectionResponseDataBlock, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type ConnectionResponseDataBlockChild interface {
-	utils.Serializable
-	InitializeParent(parent ConnectionResponseDataBlock)
-	GetParent() *ConnectionResponseDataBlock
-
-	GetTypeName() string
-	ConnectionResponseDataBlock
-}
+var _ ConnectionResponseDataBlockContract = (*_ConnectionResponseDataBlock)(nil)
 
 // NewConnectionResponseDataBlock factory function for _ConnectionResponseDataBlock
 func NewConnectionResponseDataBlock() *_ConnectionResponseDataBlock {
@@ -92,7 +85,7 @@ func (m *_ConnectionResponseDataBlock) GetTypeName() string {
 	return "ConnectionResponseDataBlock"
 }
 
-func (m *_ConnectionResponseDataBlock) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_ConnectionResponseDataBlock) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -104,69 +97,76 @@ func (m *_ConnectionResponseDataBlock) GetParentLengthInBits(ctx context.Context
 }
 
 func (m *_ConnectionResponseDataBlock) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionResponseDataBlockParse(ctx context.Context, theBytes []byte) (ConnectionResponseDataBlock, error) {
-	return ConnectionResponseDataBlockParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func ConnectionResponseDataBlockParse[T ConnectionResponseDataBlock](ctx context.Context, theBytes []byte) (T, error) {
+	return ConnectionResponseDataBlockParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ConnectionResponseDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockParseWithBufferProducer[T ConnectionResponseDataBlock]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := ConnectionResponseDataBlockParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func ConnectionResponseDataBlockParseWithBuffer[T ConnectionResponseDataBlock](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_ConnectionResponseDataBlock{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_ConnectionResponseDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__connectionResponseDataBlock ConnectionResponseDataBlock, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionResponseDataBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
-	_ = structureLength
-	if _structureLengthErr != nil {
-		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of ConnectionResponseDataBlock")
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
+	_ = structureLength
 
-	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType, _connectionTypeErr := readBuffer.ReadUint8("connectionType", 8)
-	if _connectionTypeErr != nil {
-		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field of ConnectionResponseDataBlock")
+	connectionType, err := ReadDiscriminatorField[uint8](ctx, "connectionType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type ConnectionResponseDataBlockChildSerializeRequirement interface {
-		ConnectionResponseDataBlock
-		InitializeParent(ConnectionResponseDataBlock)
-		GetParent() ConnectionResponseDataBlock
-	}
-	var _childTemp any
-	var _child ConnectionResponseDataBlockChildSerializeRequirement
-	var typeSwitchError error
+	var _child ConnectionResponseDataBlock
 	switch {
 	case connectionType == 0x03: // ConnectionResponseDataBlockDeviceManagement
-		_childTemp, typeSwitchError = ConnectionResponseDataBlockDeviceManagementParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_ConnectionResponseDataBlockDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionResponseDataBlockDeviceManagement for type-switch of ConnectionResponseDataBlock")
+		}
 	case connectionType == 0x04: // ConnectionResponseDataBlockTunnelConnection
-		_childTemp, typeSwitchError = ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_ConnectionResponseDataBlockTunnelConnection{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionResponseDataBlockTunnelConnection for type-switch of ConnectionResponseDataBlock")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [connectionType=%v]", connectionType)
+		return nil, errors.Errorf("Unmapped type for parameters [connectionType=%v]", connectionType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ConnectionResponseDataBlock")
-	}
-	_child = _childTemp.(ConnectionResponseDataBlockChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponseDataBlock"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectionResponseDataBlock")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_ConnectionResponseDataBlock) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ConnectionResponseDataBlock, serializeChildFunction func() error) error {
+func (pm *_ConnectionResponseDataBlock) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ConnectionResponseDataBlock, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -177,20 +177,13 @@ func (pm *_ConnectionResponseDataBlock) SerializeParent(ctx context.Context, wri
 	if pushErr := writeBuffer.PushContext("ConnectionResponseDataBlock"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ConnectionResponseDataBlock")
 	}
-
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
-	if _structureLengthErr != nil {
-		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
+	if err := WriteImplicitField(ctx, "structureLength", structureLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType := uint8(child.GetConnectionType())
-	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 8, uint8((connectionType)))
-
-	if _connectionTypeErr != nil {
-		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
+	if err := WriteDiscriminatorField(ctx, "connectionType", m.GetConnectionType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'connectionType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -204,17 +197,4 @@ func (pm *_ConnectionResponseDataBlock) SerializeParent(ctx context.Context, wri
 	return nil
 }
 
-func (m *_ConnectionResponseDataBlock) isConnectionResponseDataBlock() bool {
-	return true
-}
-
-func (m *_ConnectionResponseDataBlock) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_ConnectionResponseDataBlock) IsConnectionResponseDataBlock() {}

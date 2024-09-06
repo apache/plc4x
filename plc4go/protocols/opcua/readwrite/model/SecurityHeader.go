@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type SecurityHeader interface {
 	GetSecureChannelId() uint32
 	// GetSecureTokenId returns SecureTokenId (property field)
 	GetSecureTokenId() uint32
-}
-
-// SecurityHeaderExactly can be used when we want exactly this type and not a type which fulfills SecurityHeader.
-// This is useful for switch cases.
-type SecurityHeaderExactly interface {
-	SecurityHeader
-	isSecurityHeader() bool
+	// IsSecurityHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityHeader()
 }
 
 // _SecurityHeader is the data-structure of this message
@@ -54,6 +51,8 @@ type _SecurityHeader struct {
 	SecureChannelId uint32
 	SecureTokenId   uint32
 }
+
+var _ SecurityHeader = (*_SecurityHeader)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,40 +112,46 @@ func SecurityHeaderParse(ctx context.Context, theBytes []byte) (SecurityHeader, 
 	return SecurityHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityHeader, error) {
+		return SecurityHeaderParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityHeader, error) {
+	v, err := (&_SecurityHeader{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_SecurityHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__securityHeader SecurityHeader, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (secureChannelId)
-	_secureChannelId, _secureChannelIdErr := readBuffer.ReadUint32("secureChannelId", 32)
-	if _secureChannelIdErr != nil {
-		return nil, errors.Wrap(_secureChannelIdErr, "Error parsing 'secureChannelId' field of SecurityHeader")
+	secureChannelId, err := ReadSimpleField(ctx, "secureChannelId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secureChannelId' field"))
 	}
-	secureChannelId := _secureChannelId
+	m.SecureChannelId = secureChannelId
 
-	// Simple Field (secureTokenId)
-	_secureTokenId, _secureTokenIdErr := readBuffer.ReadUint32("secureTokenId", 32)
-	if _secureTokenIdErr != nil {
-		return nil, errors.Wrap(_secureTokenIdErr, "Error parsing 'secureTokenId' field of SecurityHeader")
+	secureTokenId, err := ReadSimpleField(ctx, "secureTokenId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secureTokenId' field"))
 	}
-	secureTokenId := _secureTokenId
+	m.SecureTokenId = secureTokenId
 
 	if closeErr := readBuffer.CloseContext("SecurityHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityHeader")
 	}
 
-	// Create the instance
-	return &_SecurityHeader{
-		SecureChannelId: secureChannelId,
-		SecureTokenId:   secureTokenId,
-	}, nil
+	return m, nil
 }
 
 func (m *_SecurityHeader) Serialize() ([]byte, error) {
@@ -166,18 +171,12 @@ func (m *_SecurityHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for SecurityHeader")
 	}
 
-	// Simple Field (secureChannelId)
-	secureChannelId := uint32(m.GetSecureChannelId())
-	_secureChannelIdErr := writeBuffer.WriteUint32("secureChannelId", 32, uint32((secureChannelId)))
-	if _secureChannelIdErr != nil {
-		return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
+	if err := WriteSimpleField[uint32](ctx, "secureChannelId", m.GetSecureChannelId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'secureChannelId' field")
 	}
 
-	// Simple Field (secureTokenId)
-	secureTokenId := uint32(m.GetSecureTokenId())
-	_secureTokenIdErr := writeBuffer.WriteUint32("secureTokenId", 32, uint32((secureTokenId)))
-	if _secureTokenIdErr != nil {
-		return errors.Wrap(_secureTokenIdErr, "Error serializing 'secureTokenId' field")
+	if err := WriteSimpleField[uint32](ctx, "secureTokenId", m.GetSecureTokenId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'secureTokenId' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SecurityHeader"); popErr != nil {
@@ -186,9 +185,7 @@ func (m *_SecurityHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return nil
 }
 
-func (m *_SecurityHeader) isSecurityHeader() bool {
-	return true
-}
+func (m *_SecurityHeader) IsSecurityHeader() {}
 
 func (m *_SecurityHeader) String() string {
 	if m == nil {

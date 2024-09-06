@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,23 +47,21 @@ type LightingDataLabel interface {
 	GetLanguage() *Language
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// LightingDataLabelExactly can be used when we want exactly this type and not a type which fulfills LightingDataLabel.
-// This is useful for switch cases.
-type LightingDataLabelExactly interface {
-	LightingDataLabel
-	isLightingDataLabel() bool
+	// IsLightingDataLabel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingDataLabel()
 }
 
 // _LightingDataLabel is the data-structure of this message
 type _LightingDataLabel struct {
-	*_LightingData
+	LightingDataContract
 	Group        byte
 	LabelOptions LightingLabelOptions
 	Language     *Language
 	Data         []byte
 }
+
+var _ LightingDataLabel = (*_LightingDataLabel)(nil)
+var _ LightingDataRequirements = (*_LightingDataLabel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,12 +73,8 @@ type _LightingDataLabel struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_LightingDataLabel) InitializeParent(parent LightingData, commandTypeContainer LightingCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_LightingDataLabel) GetParent() LightingData {
-	return m._LightingData
+func (m *_LightingDataLabel) GetParent() LightingDataContract {
+	return m.LightingDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,14 +105,17 @@ func (m *_LightingDataLabel) GetData() []byte {
 
 // NewLightingDataLabel factory function for _LightingDataLabel
 func NewLightingDataLabel(group byte, labelOptions LightingLabelOptions, language *Language, data []byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataLabel {
-	_result := &_LightingDataLabel{
-		Group:         group,
-		LabelOptions:  labelOptions,
-		Language:      language,
-		Data:          data,
-		_LightingData: NewLightingData(commandTypeContainer),
+	if labelOptions == nil {
+		panic("labelOptions of type LightingLabelOptions for LightingDataLabel must not be nil")
 	}
-	_result._LightingData._LightingDataChildRequirements = _result
+	_result := &_LightingDataLabel{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+		LabelOptions:         labelOptions,
+		Language:             language,
+		Data:                 data,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
 
@@ -137,7 +135,7 @@ func (m *_LightingDataLabel) GetTypeName() string {
 }
 
 func (m *_LightingDataLabel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8
@@ -162,83 +160,47 @@ func (m *_LightingDataLabel) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingDataLabelParse(ctx context.Context, theBytes []byte, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
-	return LightingDataLabelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func LightingDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
+func (m *_LightingDataLabel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LightingData, commandTypeContainer LightingCommandTypeContainer) (__lightingDataLabel LightingDataLabel, err error) {
+	m.LightingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LightingDataLabel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LightingDataLabel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (group)
-	_group, _groupErr := readBuffer.ReadByte("group")
-	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataLabel")
+	group, err := ReadSimpleField(ctx, "group", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'group' field"))
 	}
-	group := _group
+	m.Group = group
 
-	// Simple Field (labelOptions)
-	if pullErr := readBuffer.PullContext("labelOptions"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelOptions")
+	labelOptions, err := ReadSimpleField[LightingLabelOptions](ctx, "labelOptions", ReadComplex[LightingLabelOptions](LightingLabelOptionsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'labelOptions' field"))
 	}
-	_labelOptions, _labelOptionsErr := LightingLabelOptionsParseWithBuffer(ctx, readBuffer)
-	if _labelOptionsErr != nil {
-		return nil, errors.Wrap(_labelOptionsErr, "Error parsing 'labelOptions' field of LightingDataLabel")
-	}
-	labelOptions := _labelOptions.(LightingLabelOptions)
-	if closeErr := readBuffer.CloseContext("labelOptions"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelOptions")
-	}
+	m.LabelOptions = labelOptions
 
-	// Optional Field (language) (Can be skipped, if a given expression evaluates to false)
-	var language *Language = nil
-	if bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON)) {
-		if pullErr := readBuffer.PullContext("language"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for language")
-		}
-		currentPos = positionAware.GetPos()
-		_val, _err := LanguageParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'language' field of LightingDataLabel")
-		default:
-			language = &_val
-		}
-		if closeErr := readBuffer.CloseContext("language"); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for language")
-		}
+	var language *Language
+	language, err = ReadOptionalField[Language](ctx, "language", ReadEnum(LanguageByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'language' field"))
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int((uint16(commandTypeContainer.NumBytes()) - uint16((utils.InlineIf((bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON))), func() any { return uint16((uint16(3))) }, func() any { return uint16((uint16(2))) }).(uint16)))))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of LightingDataLabel")
+	m.Language = language
+
+	data, err := readBuffer.ReadByteArray("data", int((int32(commandTypeContainer.NumBytes()) - int32((utils.InlineIf((bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON))), func() any { return int32((int32(3))) }, func() any { return int32((int32(2))) }).(int32))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("LightingDataLabel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LightingDataLabel")
 	}
 
-	// Create a partially initialized instance
-	_child := &_LightingDataLabel{
-		_LightingData: &_LightingData{},
-		Group:         group,
-		LabelOptions:  labelOptions,
-		Language:      language,
-		Data:          data,
-	}
-	_child._LightingData._LightingDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_LightingDataLabel) Serialize() ([]byte, error) {
@@ -259,44 +221,19 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for LightingDataLabel")
 		}
 
-		// Simple Field (group)
-		group := byte(m.GetGroup())
-		_groupErr := writeBuffer.WriteByte("group", (group))
-		if _groupErr != nil {
-			return errors.Wrap(_groupErr, "Error serializing 'group' field")
+		if err := WriteSimpleField[byte](ctx, "group", m.GetGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'group' field")
 		}
 
-		// Simple Field (labelOptions)
-		if pushErr := writeBuffer.PushContext("labelOptions"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for labelOptions")
-		}
-		_labelOptionsErr := writeBuffer.WriteSerializable(ctx, m.GetLabelOptions())
-		if popErr := writeBuffer.PopContext("labelOptions"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for labelOptions")
-		}
-		if _labelOptionsErr != nil {
-			return errors.Wrap(_labelOptionsErr, "Error serializing 'labelOptions' field")
+		if err := WriteSimpleField[LightingLabelOptions](ctx, "labelOptions", m.GetLabelOptions(), WriteComplex[LightingLabelOptions](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'labelOptions' field")
 		}
 
-		// Optional Field (language) (Can be skipped, if the value is null)
-		var language *Language = nil
-		if m.GetLanguage() != nil {
-			if pushErr := writeBuffer.PushContext("language"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for language")
-			}
-			language = m.GetLanguage()
-			_languageErr := writeBuffer.WriteSerializable(ctx, language)
-			if popErr := writeBuffer.PopContext("language"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for language")
-			}
-			if _languageErr != nil {
-				return errors.Wrap(_languageErr, "Error serializing 'language' field")
-			}
+		if err := WriteOptionalEnumField[Language](ctx, "language", "Language", m.GetLanguage(), WriteEnum[Language, uint8](Language.GetValue, Language.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetLabelOptions().GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON))); err != nil {
+			return errors.Wrap(err, "Error serializing 'language' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -305,12 +242,10 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.LightingDataContract.(*_LightingData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_LightingDataLabel) isLightingDataLabel() bool {
-	return true
-}
+func (m *_LightingDataLabel) IsLightingDataLabel() {}
 
 func (m *_LightingDataLabel) String() string {
 	if m == nil {

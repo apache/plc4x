@@ -37,19 +37,17 @@ type SecurityDataLineCutAlarmCleared interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataLineCutAlarmClearedExactly can be used when we want exactly this type and not a type which fulfills SecurityDataLineCutAlarmCleared.
-// This is useful for switch cases.
-type SecurityDataLineCutAlarmClearedExactly interface {
-	SecurityDataLineCutAlarmCleared
-	isSecurityDataLineCutAlarmCleared() bool
+	// IsSecurityDataLineCutAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataLineCutAlarmCleared()
 }
 
 // _SecurityDataLineCutAlarmCleared is the data-structure of this message
 type _SecurityDataLineCutAlarmCleared struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataLineCutAlarmCleared = (*_SecurityDataLineCutAlarmCleared)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataLineCutAlarmCleared)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataLineCutAlarmCleared struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataLineCutAlarmCleared) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataLineCutAlarmCleared) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataLineCutAlarmCleared) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataLineCutAlarmCleared factory function for _SecurityDataLineCutAlarmCleared
 func NewSecurityDataLineCutAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLineCutAlarmCleared {
 	_result := &_SecurityDataLineCutAlarmCleared{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataLineCutAlarmCleared) GetTypeName() string {
 }
 
 func (m *_SecurityDataLineCutAlarmCleared) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataLineCutAlarmCleared) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataLineCutAlarmClearedParse(ctx context.Context, theBytes []byte) (SecurityDataLineCutAlarmCleared, error) {
-	return SecurityDataLineCutAlarmClearedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataLineCutAlarmClearedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLineCutAlarmCleared, error) {
+func (m *_SecurityDataLineCutAlarmCleared) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataLineCutAlarmCleared SecurityDataLineCutAlarmCleared, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataLineCutAlarmCleared"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataLineCutAlarmCleared")
 	}
@@ -123,12 +112,7 @@ func SecurityDataLineCutAlarmClearedParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataLineCutAlarmCleared")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataLineCutAlarmCleared{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataLineCutAlarmCleared) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataLineCutAlarmCleared) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataLineCutAlarmCleared) isSecurityDataLineCutAlarmCleared() bool {
-	return true
-}
+func (m *_SecurityDataLineCutAlarmCleared) IsSecurityDataLineCutAlarmCleared() {}
 
 func (m *_SecurityDataLineCutAlarmCleared) String() string {
 	if m == nil {

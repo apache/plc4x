@@ -151,7 +151,7 @@ func AdsDiscoveryBlockTypeParse(ctx context.Context, theBytes []byte) (AdsDiscov
 func AdsDiscoveryBlockTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint16("AdsDiscoveryBlockType", 16)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("AdsDiscoveryBlockType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AdsDiscoveryBlockType")
 	}
@@ -174,7 +174,11 @@ func (e AdsDiscoveryBlockType) Serialize() ([]byte, error) {
 func (e AdsDiscoveryBlockType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("AdsDiscoveryBlockType", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint16("AdsDiscoveryBlockType", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+func (e AdsDiscoveryBlockType) GetValue() uint16 {
+	return uint16(e)
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

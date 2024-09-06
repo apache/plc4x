@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataFaultType interface {
 	GetFaultType() BACnetFaultTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetFaultTypeTagged
-}
-
-// BACnetConstructedDataFaultTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFaultType.
-// This is useful for switch cases.
-type BACnetConstructedDataFaultTypeExactly interface {
-	BACnetConstructedDataFaultType
-	isBACnetConstructedDataFaultType() bool
+	// IsBACnetConstructedDataFaultType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFaultType()
 }
 
 // _BACnetConstructedDataFaultType is the data-structure of this message
 type _BACnetConstructedDataFaultType struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FaultType BACnetFaultTypeTagged
 }
+
+var _ BACnetConstructedDataFaultType = (*_BACnetConstructedDataFaultType)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataFaultType) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataFaultType) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataFaultType) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataFaultType) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataFaultType) GetActualValue() BACnetFaultTypeTagged
 
 // NewBACnetConstructedDataFaultType factory function for _BACnetConstructedDataFaultType
 func NewBACnetConstructedDataFaultType(faultType BACnetFaultTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultType {
-	_result := &_BACnetConstructedDataFaultType{
-		FaultType:              faultType,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if faultType == nil {
+		panic("faultType of type BACnetFaultTypeTagged for BACnetConstructedDataFaultType must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataFaultType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultType:                     faultType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataFaultType) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFaultType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (faultType)
 	lengthInBits += m.FaultType.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataFaultType) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataFaultTypeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultType, error) {
-	return BACnetConstructedDataFaultTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataFaultTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultType, error) {
+func (m *_BACnetConstructedDataFaultType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFaultType BACnetConstructedDataFaultType, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFaultType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (faultType)
-	if pullErr := readBuffer.PullContext("faultType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultType")
+	faultType, err := ReadSimpleField[BACnetFaultTypeTagged](ctx, "faultType", ReadComplex[BACnetFaultTypeTagged](BACnetFaultTypeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultType' field"))
 	}
-	_faultType, _faultTypeErr := BACnetFaultTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _faultTypeErr != nil {
-		return nil, errors.Wrap(_faultTypeErr, "Error parsing 'faultType' field of BACnetConstructedDataFaultType")
-	}
-	faultType := _faultType.(BACnetFaultTypeTagged)
-	if closeErr := readBuffer.CloseContext("faultType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultType")
-	}
+	m.FaultType = faultType
 
-	// Virtual field
-	_actualValue := faultType
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetFaultTypeTagged](ctx, "actualValue", (*BACnetFaultTypeTagged)(nil), faultType)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFaultType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataFaultType{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FaultType: faultType,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataFaultType) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataFaultType) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFaultType")
 		}
 
-		// Simple Field (faultType)
-		if pushErr := writeBuffer.PushContext("faultType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultType")
-		}
-		_faultTypeErr := writeBuffer.WriteSerializable(ctx, m.GetFaultType())
-		if popErr := writeBuffer.PopContext("faultType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultType")
-		}
-		if _faultTypeErr != nil {
-			return errors.Wrap(_faultTypeErr, "Error serializing 'faultType' field")
+		if err := WriteSimpleField[BACnetFaultTypeTagged](ctx, "faultType", m.GetFaultType(), WriteComplex[BACnetFaultTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataFaultType) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataFaultType) isBACnetConstructedDataFaultType() bool {
-	return true
-}
+func (m *_BACnetConstructedDataFaultType) IsBACnetConstructedDataFaultType() {}
 
 func (m *_BACnetConstructedDataFaultType) String() string {
 	if m == nil {

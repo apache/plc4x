@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type BACnetConfirmedServiceRequestReadRangeRangeByTime interface {
 	GetReferenceTime() BACnetDateTime
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
-}
-
-// BACnetConfirmedServiceRequestReadRangeRangeByTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeByTime.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestReadRangeRangeByTimeExactly interface {
-	BACnetConfirmedServiceRequestReadRangeRangeByTime
-	isBACnetConfirmedServiceRequestReadRangeRangeByTime() bool
+	// IsBACnetConfirmedServiceRequestReadRangeRangeByTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRangeRangeByTime()
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeByTime is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRangeByTime struct {
-	*_BACnetConfirmedServiceRequestReadRangeRange
+	BACnetConfirmedServiceRequestReadRangeRangeContract
 	ReferenceTime BACnetDateTime
 	Count         BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetConfirmedServiceRequestReadRangeRangeByTime = (*_BACnetConfirmedServiceRequestReadRangeRangeByTime)(nil)
+var _ BACnetConfirmedServiceRequestReadRangeRangeRequirements = (*_BACnetConfirmedServiceRequestReadRangeRangeByTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,14 +67,8 @@ type _BACnetConfirmedServiceRequestReadRangeRangeByTime struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) InitializeParent(parent BACnetConfirmedServiceRequestReadRangeRange, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) {
-	m.PeekedTagHeader = peekedTagHeader
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetParent() BACnetConfirmedServiceRequestReadRangeRange {
-	return m._BACnetConfirmedServiceRequestReadRangeRange
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetParent() BACnetConfirmedServiceRequestReadRangeRangeContract {
+	return m.BACnetConfirmedServiceRequestReadRangeRangeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +91,18 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetCount() BACnetAp
 
 // NewBACnetConfirmedServiceRequestReadRangeRangeByTime factory function for _BACnetConfirmedServiceRequestReadRangeRangeByTime
 func NewBACnetConfirmedServiceRequestReadRangeRangeByTime(referenceTime BACnetDateTime, count BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRangeByTime {
+	if referenceTime == nil {
+		panic("referenceTime of type BACnetDateTime for BACnetConfirmedServiceRequestReadRangeRangeByTime must not be nil")
+	}
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByTime must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestReadRangeRangeByTime{
+		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
 		ReferenceTime: referenceTime,
 		Count:         count,
-		_BACnetConfirmedServiceRequestReadRangeRange: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
 	}
-	_result._BACnetConfirmedServiceRequestReadRangeRange._BACnetConfirmedServiceRequestReadRangeRangeChildRequirements = _result
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
 	return _result
 }
 
@@ -122,7 +122,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetTypeName() strin
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).getLengthInBits(ctx))
 
 	// Simple field (referenceTime)
 	lengthInBits += m.ReferenceTime.GetLengthInBits(ctx)
@@ -137,59 +137,34 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(ctx context.Context, theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
-	return BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequestReadRangeRange) (__bACnetConfirmedServiceRequestReadRangeRangeByTime BACnetConfirmedServiceRequestReadRangeRangeByTime, err error) {
+	m.BACnetConfirmedServiceRequestReadRangeRangeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceTime)
-	if pullErr := readBuffer.PullContext("referenceTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTime")
+	referenceTime, err := ReadSimpleField[BACnetDateTime](ctx, "referenceTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTime' field"))
 	}
-	_referenceTime, _referenceTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _referenceTimeErr != nil {
-		return nil, errors.Wrap(_referenceTimeErr, "Error parsing 'referenceTime' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
-	}
-	referenceTime := _referenceTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("referenceTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTime")
-	}
+	m.ReferenceTime = referenceTime
 
-	// Simple Field (count)
-	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for count")
+	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}
-	_count, _countErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
-	}
-	count := _count.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for count")
-	}
+	m.Count = count
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestReadRangeRangeByTime{
-		_BACnetConfirmedServiceRequestReadRangeRange: &_BACnetConfirmedServiceRequestReadRangeRange{},
-		ReferenceTime: referenceTime,
-		Count:         count,
-	}
-	_child._BACnetConfirmedServiceRequestReadRangeRange._BACnetConfirmedServiceRequestReadRangeRangeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize() ([]byte, error) {
@@ -210,28 +185,12 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadRangeRangeByTime")
 		}
 
-		// Simple Field (referenceTime)
-		if pushErr := writeBuffer.PushContext("referenceTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceTime")
-		}
-		_referenceTimeErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTime())
-		if popErr := writeBuffer.PopContext("referenceTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceTime")
-		}
-		if _referenceTimeErr != nil {
-			return errors.Wrap(_referenceTimeErr, "Error serializing 'referenceTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "referenceTime", m.GetReferenceTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceTime' field")
 		}
 
-		// Simple Field (count)
-		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for count")
-		}
-		_countErr := writeBuffer.WriteSerializable(ctx, m.GetCount())
-		if popErr := writeBuffer.PopContext("count"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for count")
-		}
-		if _countErr != nil {
-			return errors.Wrap(_countErr, "Error serializing 'count' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", m.GetCount(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); popErr != nil {
@@ -239,11 +198,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) isBACnetConfirmedServiceRequestReadRangeRangeByTime() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) IsBACnetConfirmedServiceRequestReadRangeRangeByTime() {
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) String() string {

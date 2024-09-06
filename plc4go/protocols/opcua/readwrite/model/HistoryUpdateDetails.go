@@ -37,19 +37,17 @@ type HistoryUpdateDetails interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// HistoryUpdateDetailsExactly can be used when we want exactly this type and not a type which fulfills HistoryUpdateDetails.
-// This is useful for switch cases.
-type HistoryUpdateDetailsExactly interface {
-	HistoryUpdateDetails
-	isHistoryUpdateDetails() bool
+	// IsHistoryUpdateDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryUpdateDetails()
 }
 
 // _HistoryUpdateDetails is the data-structure of this message
 type _HistoryUpdateDetails struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ HistoryUpdateDetails = (*_HistoryUpdateDetails)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateDetails)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_HistoryUpdateDetails) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_HistoryUpdateDetails) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_HistoryUpdateDetails) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_HistoryUpdateDetails) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewHistoryUpdateDetails factory function for _HistoryUpdateDetails
 func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
 	_result := &_HistoryUpdateDetails{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_HistoryUpdateDetails) GetTypeName() string {
 }
 
 func (m *_HistoryUpdateDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_HistoryUpdateDetails) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HistoryUpdateDetailsParse(ctx context.Context, theBytes []byte, identifier string) (HistoryUpdateDetails, error) {
-	return HistoryUpdateDetailsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func HistoryUpdateDetailsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryUpdateDetails, error) {
+func (m *_HistoryUpdateDetails) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyUpdateDetails HistoryUpdateDetails, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HistoryUpdateDetails"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HistoryUpdateDetails")
 	}
@@ -124,12 +116,7 @@ func HistoryUpdateDetailsParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(closeErr, "Error closing for HistoryUpdateDetails")
 	}
 
-	// Create a partially initialized instance
-	_child := &_HistoryUpdateDetails{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_HistoryUpdateDetails) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_HistoryUpdateDetails) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_HistoryUpdateDetails) isHistoryUpdateDetails() bool {
-	return true
-}
+func (m *_HistoryUpdateDetails) IsHistoryUpdateDetails() {}
 
 func (m *_HistoryUpdateDetails) String() string {
 	if m == nil {

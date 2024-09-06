@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,13 +56,8 @@ type HVACZoneList interface {
 	GetZone0() bool
 	// GetUnswitchedZone returns UnswitchedZone (virtual field)
 	GetUnswitchedZone() bool
-}
-
-// HVACZoneListExactly can be used when we want exactly this type and not a type which fulfills HVACZoneList.
-// This is useful for switch cases.
-type HVACZoneListExactly interface {
-	HVACZoneList
-	isHVACZoneList() bool
+	// IsHVACZoneList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACZoneList()
 }
 
 // _HVACZoneList is the data-structure of this message
@@ -74,6 +71,8 @@ type _HVACZoneList struct {
 	Zone1     bool
 	Zone0     bool
 }
+
+var _ HVACZoneList = (*_HVACZoneList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -192,93 +191,88 @@ func HVACZoneListParse(ctx context.Context, theBytes []byte) (HVACZoneList, erro
 	return HVACZoneListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACZoneListParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {
+		return HVACZoneListParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {
+	v, err := (&_HVACZoneList{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_HVACZoneList) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACZoneList HVACZoneList, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HVACZoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HVACZoneList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (expansion)
-	_expansion, _expansionErr := readBuffer.ReadBit("expansion")
-	if _expansionErr != nil {
-		return nil, errors.Wrap(_expansionErr, "Error parsing 'expansion' field of HVACZoneList")
+	expansion, err := ReadSimpleField(ctx, "expansion", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expansion' field"))
 	}
-	expansion := _expansion
+	m.Expansion = expansion
 
-	// Simple Field (zone6)
-	_zone6, _zone6Err := readBuffer.ReadBit("zone6")
-	if _zone6Err != nil {
-		return nil, errors.Wrap(_zone6Err, "Error parsing 'zone6' field of HVACZoneList")
+	zone6, err := ReadSimpleField(ctx, "zone6", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone6' field"))
 	}
-	zone6 := _zone6
+	m.Zone6 = zone6
 
-	// Simple Field (zone5)
-	_zone5, _zone5Err := readBuffer.ReadBit("zone5")
-	if _zone5Err != nil {
-		return nil, errors.Wrap(_zone5Err, "Error parsing 'zone5' field of HVACZoneList")
+	zone5, err := ReadSimpleField(ctx, "zone5", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone5' field"))
 	}
-	zone5 := _zone5
+	m.Zone5 = zone5
 
-	// Simple Field (zone4)
-	_zone4, _zone4Err := readBuffer.ReadBit("zone4")
-	if _zone4Err != nil {
-		return nil, errors.Wrap(_zone4Err, "Error parsing 'zone4' field of HVACZoneList")
+	zone4, err := ReadSimpleField(ctx, "zone4", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone4' field"))
 	}
-	zone4 := _zone4
+	m.Zone4 = zone4
 
-	// Simple Field (zone3)
-	_zone3, _zone3Err := readBuffer.ReadBit("zone3")
-	if _zone3Err != nil {
-		return nil, errors.Wrap(_zone3Err, "Error parsing 'zone3' field of HVACZoneList")
+	zone3, err := ReadSimpleField(ctx, "zone3", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone3' field"))
 	}
-	zone3 := _zone3
+	m.Zone3 = zone3
 
-	// Simple Field (zone2)
-	_zone2, _zone2Err := readBuffer.ReadBit("zone2")
-	if _zone2Err != nil {
-		return nil, errors.Wrap(_zone2Err, "Error parsing 'zone2' field of HVACZoneList")
+	zone2, err := ReadSimpleField(ctx, "zone2", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone2' field"))
 	}
-	zone2 := _zone2
+	m.Zone2 = zone2
 
-	// Simple Field (zone1)
-	_zone1, _zone1Err := readBuffer.ReadBit("zone1")
-	if _zone1Err != nil {
-		return nil, errors.Wrap(_zone1Err, "Error parsing 'zone1' field of HVACZoneList")
+	zone1, err := ReadSimpleField(ctx, "zone1", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone1' field"))
 	}
-	zone1 := _zone1
+	m.Zone1 = zone1
 
-	// Simple Field (zone0)
-	_zone0, _zone0Err := readBuffer.ReadBit("zone0")
-	if _zone0Err != nil {
-		return nil, errors.Wrap(_zone0Err, "Error parsing 'zone0' field of HVACZoneList")
+	zone0, err := ReadSimpleField(ctx, "zone0", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone0' field"))
 	}
-	zone0 := _zone0
+	m.Zone0 = zone0
 
-	// Virtual field
-	_unswitchedZone := zone0
-	unswitchedZone := bool(_unswitchedZone)
+	unswitchedZone, err := ReadVirtualField[bool](ctx, "unswitchedZone", (*bool)(nil), zone0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unswitchedZone' field"))
+	}
 	_ = unswitchedZone
 
 	if closeErr := readBuffer.CloseContext("HVACZoneList"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACZoneList")
 	}
 
-	// Create the instance
-	return &_HVACZoneList{
-		Expansion: expansion,
-		Zone6:     zone6,
-		Zone5:     zone5,
-		Zone4:     zone4,
-		Zone3:     zone3,
-		Zone2:     zone2,
-		Zone1:     zone1,
-		Zone0:     zone0,
-	}, nil
+	return m, nil
 }
 
 func (m *_HVACZoneList) Serialize() ([]byte, error) {
@@ -298,60 +292,36 @@ func (m *_HVACZoneList) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for HVACZoneList")
 	}
 
-	// Simple Field (expansion)
-	expansion := bool(m.GetExpansion())
-	_expansionErr := writeBuffer.WriteBit("expansion", (expansion))
-	if _expansionErr != nil {
-		return errors.Wrap(_expansionErr, "Error serializing 'expansion' field")
+	if err := WriteSimpleField[bool](ctx, "expansion", m.GetExpansion(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'expansion' field")
 	}
 
-	// Simple Field (zone6)
-	zone6 := bool(m.GetZone6())
-	_zone6Err := writeBuffer.WriteBit("zone6", (zone6))
-	if _zone6Err != nil {
-		return errors.Wrap(_zone6Err, "Error serializing 'zone6' field")
+	if err := WriteSimpleField[bool](ctx, "zone6", m.GetZone6(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'zone6' field")
 	}
 
-	// Simple Field (zone5)
-	zone5 := bool(m.GetZone5())
-	_zone5Err := writeBuffer.WriteBit("zone5", (zone5))
-	if _zone5Err != nil {
-		return errors.Wrap(_zone5Err, "Error serializing 'zone5' field")
+	if err := WriteSimpleField[bool](ctx, "zone5", m.GetZone5(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'zone5' field")
 	}
 
-	// Simple Field (zone4)
-	zone4 := bool(m.GetZone4())
-	_zone4Err := writeBuffer.WriteBit("zone4", (zone4))
-	if _zone4Err != nil {
-		return errors.Wrap(_zone4Err, "Error serializing 'zone4' field")
+	if err := WriteSimpleField[bool](ctx, "zone4", m.GetZone4(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'zone4' field")
 	}
 
-	// Simple Field (zone3)
-	zone3 := bool(m.GetZone3())
-	_zone3Err := writeBuffer.WriteBit("zone3", (zone3))
-	if _zone3Err != nil {
-		return errors.Wrap(_zone3Err, "Error serializing 'zone3' field")
+	if err := WriteSimpleField[bool](ctx, "zone3", m.GetZone3(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'zone3' field")
 	}
 
-	// Simple Field (zone2)
-	zone2 := bool(m.GetZone2())
-	_zone2Err := writeBuffer.WriteBit("zone2", (zone2))
-	if _zone2Err != nil {
-		return errors.Wrap(_zone2Err, "Error serializing 'zone2' field")
+	if err := WriteSimpleField[bool](ctx, "zone2", m.GetZone2(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'zone2' field")
 	}
 
-	// Simple Field (zone1)
-	zone1 := bool(m.GetZone1())
-	_zone1Err := writeBuffer.WriteBit("zone1", (zone1))
-	if _zone1Err != nil {
-		return errors.Wrap(_zone1Err, "Error serializing 'zone1' field")
+	if err := WriteSimpleField[bool](ctx, "zone1", m.GetZone1(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'zone1' field")
 	}
 
-	// Simple Field (zone0)
-	zone0 := bool(m.GetZone0())
-	_zone0Err := writeBuffer.WriteBit("zone0", (zone0))
-	if _zone0Err != nil {
-		return errors.Wrap(_zone0Err, "Error serializing 'zone0' field")
+	if err := WriteSimpleField[bool](ctx, "zone0", m.GetZone0(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'zone0' field")
 	}
 	// Virtual field
 	unswitchedZone := m.GetUnswitchedZone()
@@ -366,9 +336,7 @@ func (m *_HVACZoneList) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_HVACZoneList) isHVACZoneList() bool {
-	return true
-}
+func (m *_HVACZoneList) IsHVACZoneList() {}
 
 func (m *_HVACZoneList) String() string {
 	if m == nil {

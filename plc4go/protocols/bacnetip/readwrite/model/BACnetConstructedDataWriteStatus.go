@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataWriteStatus interface {
 	GetWriteStatus() BACnetWriteStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetWriteStatusTagged
-}
-
-// BACnetConstructedDataWriteStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataWriteStatus.
-// This is useful for switch cases.
-type BACnetConstructedDataWriteStatusExactly interface {
-	BACnetConstructedDataWriteStatus
-	isBACnetConstructedDataWriteStatus() bool
+	// IsBACnetConstructedDataWriteStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataWriteStatus()
 }
 
 // _BACnetConstructedDataWriteStatus is the data-structure of this message
 type _BACnetConstructedDataWriteStatus struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	WriteStatus BACnetWriteStatusTagged
 }
+
+var _ BACnetConstructedDataWriteStatus = (*_BACnetConstructedDataWriteStatus)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWriteStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataWriteStatus) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataWriteStatus) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataWriteStatus) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataWriteStatus) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataWriteStatus) GetActualValue() BACnetWriteStatusTa
 
 // NewBACnetConstructedDataWriteStatus factory function for _BACnetConstructedDataWriteStatus
 func NewBACnetConstructedDataWriteStatus(writeStatus BACnetWriteStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWriteStatus {
-	_result := &_BACnetConstructedDataWriteStatus{
-		WriteStatus:            writeStatus,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if writeStatus == nil {
+		panic("writeStatus of type BACnetWriteStatusTagged for BACnetConstructedDataWriteStatus must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataWriteStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		WriteStatus:                   writeStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataWriteStatus) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataWriteStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (writeStatus)
 	lengthInBits += m.WriteStatus.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataWriteStatus) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataWriteStatusParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWriteStatus, error) {
-	return BACnetConstructedDataWriteStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataWriteStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWriteStatus, error) {
+func (m *_BACnetConstructedDataWriteStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataWriteStatus BACnetConstructedDataWriteStatus, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWriteStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataWriteStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (writeStatus)
-	if pullErr := readBuffer.PullContext("writeStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for writeStatus")
+	writeStatus, err := ReadSimpleField[BACnetWriteStatusTagged](ctx, "writeStatus", ReadComplex[BACnetWriteStatusTagged](BACnetWriteStatusTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeStatus' field"))
 	}
-	_writeStatus, _writeStatusErr := BACnetWriteStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _writeStatusErr != nil {
-		return nil, errors.Wrap(_writeStatusErr, "Error parsing 'writeStatus' field of BACnetConstructedDataWriteStatus")
-	}
-	writeStatus := _writeStatus.(BACnetWriteStatusTagged)
-	if closeErr := readBuffer.CloseContext("writeStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for writeStatus")
-	}
+	m.WriteStatus = writeStatus
 
-	// Virtual field
-	_actualValue := writeStatus
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetWriteStatusTagged](ctx, "actualValue", (*BACnetWriteStatusTagged)(nil), writeStatus)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWriteStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataWriteStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataWriteStatus{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		WriteStatus: writeStatus,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataWriteStatus) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataWriteStatus")
 		}
 
-		// Simple Field (writeStatus)
-		if pushErr := writeBuffer.PushContext("writeStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writeStatus")
-		}
-		_writeStatusErr := writeBuffer.WriteSerializable(ctx, m.GetWriteStatus())
-		if popErr := writeBuffer.PopContext("writeStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writeStatus")
-		}
-		if _writeStatusErr != nil {
-			return errors.Wrap(_writeStatusErr, "Error serializing 'writeStatus' field")
+		if err := WriteSimpleField[BACnetWriteStatusTagged](ctx, "writeStatus", m.GetWriteStatus(), WriteComplex[BACnetWriteStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeStatus' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataWriteStatus) isBACnetConstructedDataWriteStatus() bool {
-	return true
-}
+func (m *_BACnetConstructedDataWriteStatus) IsBACnetConstructedDataWriteStatus() {}
 
 func (m *_BACnetConstructedDataWriteStatus) String() string {
 	if m == nil {

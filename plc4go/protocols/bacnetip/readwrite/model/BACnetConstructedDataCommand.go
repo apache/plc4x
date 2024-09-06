@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataCommand interface {
 	GetCommand() BACnetNetworkPortCommandTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNetworkPortCommandTagged
-}
-
-// BACnetConstructedDataCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCommand.
-// This is useful for switch cases.
-type BACnetConstructedDataCommandExactly interface {
-	BACnetConstructedDataCommand
-	isBACnetConstructedDataCommand() bool
+	// IsBACnetConstructedDataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCommand()
 }
 
 // _BACnetConstructedDataCommand is the data-structure of this message
 type _BACnetConstructedDataCommand struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Command BACnetNetworkPortCommandTagged
 }
+
+var _ BACnetConstructedDataCommand = (*_BACnetConstructedDataCommand)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataCommand) GetPropertyIdentifierArgument() BACnetPr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCommand) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCommand) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCommand) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataCommand) GetActualValue() BACnetNetworkPortComman
 
 // NewBACnetConstructedDataCommand factory function for _BACnetConstructedDataCommand
 func NewBACnetConstructedDataCommand(command BACnetNetworkPortCommandTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
-	_result := &_BACnetConstructedDataCommand{
-		Command:                command,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if command == nil {
+		panic("command of type BACnetNetworkPortCommandTagged for BACnetConstructedDataCommand must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataCommand{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Command:                       command,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataCommand) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataCommand) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCommandParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCommand, error) {
-	return BACnetConstructedDataCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCommand, error) {
+func (m *_BACnetConstructedDataCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCommand BACnetConstructedDataCommand, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
+	command, err := ReadSimpleField[BACnetNetworkPortCommandTagged](ctx, "command", ReadComplex[BACnetNetworkPortCommandTagged](BACnetNetworkPortCommandTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
-	_command, _commandErr := BACnetNetworkPortCommandTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of BACnetConstructedDataCommand")
-	}
-	command := _command.(BACnetNetworkPortCommandTagged)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
-	}
+	m.Command = command
 
-	// Virtual field
-	_actualValue := command
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetNetworkPortCommandTagged](ctx, "actualValue", (*BACnetNetworkPortCommandTagged)(nil), command)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCommand")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCommand{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Command: command,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCommand) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataCommand) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCommand")
 		}
 
-		// Simple Field (command)
-		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for command")
-		}
-		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
-		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for command")
-		}
-		if _commandErr != nil {
-			return errors.Wrap(_commandErr, "Error serializing 'command' field")
+		if err := WriteSimpleField[BACnetNetworkPortCommandTagged](ctx, "command", m.GetCommand(), WriteComplex[BACnetNetworkPortCommandTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'command' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataCommand) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCommand) isBACnetConstructedDataCommand() bool {
-	return true
-}
+func (m *_BACnetConstructedDataCommand) IsBACnetConstructedDataCommand() {}
 
 func (m *_BACnetConstructedDataCommand) String() string {
 	if m == nil {

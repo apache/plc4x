@@ -62,7 +62,7 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("RegisterServerResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RegisterServerResponse");
   }
@@ -93,7 +93,7 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 

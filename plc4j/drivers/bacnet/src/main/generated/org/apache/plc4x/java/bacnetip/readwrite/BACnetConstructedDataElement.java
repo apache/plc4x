@@ -122,21 +122,14 @@ public class BACnetConstructedDataElement implements Message {
 
     // Optional Field (applicationTag) (Can be skipped, if the value is null)
     writeOptionalField(
-        "applicationTag",
-        applicationTag,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getIsApplicationTag());
+        "applicationTag", applicationTag, writeComplex(writeBuffer), getIsApplicationTag());
 
     // Optional Field (contextTag) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "contextTag", contextTag, new DataWriterComplexDefault<>(writeBuffer), getIsContextTag());
+    writeOptionalField("contextTag", contextTag, writeComplex(writeBuffer), getIsContextTag());
 
     // Optional Field (constructedData) (Can be skipped, if the value is null)
     writeOptionalField(
-        "constructedData",
-        constructedData,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getIsConstructedData());
+        "constructedData", constructedData, writeComplex(writeBuffer), getIsConstructedData());
 
     writeBuffer.popContext("BACnetConstructedDataElement");
   }
@@ -191,8 +184,7 @@ public class BACnetConstructedDataElement implements Message {
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
     boolean isApplicationTag =
@@ -217,14 +209,13 @@ public class BACnetConstructedDataElement implements Message {
     BACnetApplicationTag applicationTag =
         readOptionalField(
             "applicationTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetApplicationTag.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetApplicationTag.staticParse(readBuffer), readBuffer),
             isApplicationTag);
 
     BACnetContextTag contextTag =
         readOptionalField(
             "contextTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetContextTag.staticParse(
                         readBuffer,
@@ -236,7 +227,7 @@ public class BACnetConstructedDataElement implements Message {
     BACnetConstructedData constructedData =
         readOptionalField(
             "constructedData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ParameterValueInterfaceOptions3 interface {
 	GetValue() InterfaceOptions3
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// ParameterValueInterfaceOptions3Exactly can be used when we want exactly this type and not a type which fulfills ParameterValueInterfaceOptions3.
-// This is useful for switch cases.
-type ParameterValueInterfaceOptions3Exactly interface {
-	ParameterValueInterfaceOptions3
-	isParameterValueInterfaceOptions3() bool
+	// IsParameterValueInterfaceOptions3 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueInterfaceOptions3()
 }
 
 // _ParameterValueInterfaceOptions3 is the data-structure of this message
 type _ParameterValueInterfaceOptions3 struct {
-	*_ParameterValue
+	ParameterValueContract
 	Value InterfaceOptions3
 	Data  []byte
 }
+
+var _ ParameterValueInterfaceOptions3 = (*_ParameterValueInterfaceOptions3)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions3)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_ParameterValueInterfaceOptions3) GetParameterType() ParameterType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ParameterValueInterfaceOptions3) InitializeParent(parent ParameterValue) {}
-
-func (m *_ParameterValueInterfaceOptions3) GetParent() ParameterValue {
-	return m._ParameterValue
+func (m *_ParameterValueInterfaceOptions3) GetParent() ParameterValueContract {
+	return m.ParameterValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,15 @@ func (m *_ParameterValueInterfaceOptions3) GetData() []byte {
 
 // NewParameterValueInterfaceOptions3 factory function for _ParameterValueInterfaceOptions3
 func NewParameterValueInterfaceOptions3(value InterfaceOptions3, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions3 {
-	_result := &_ParameterValueInterfaceOptions3{
-		Value:           value,
-		Data:            data,
-		_ParameterValue: NewParameterValue(numBytes),
+	if value == nil {
+		panic("value of type InterfaceOptions3 for ParameterValueInterfaceOptions3 must not be nil")
 	}
-	_result._ParameterValue._ParameterValueChildRequirements = _result
+	_result := &_ParameterValueInterfaceOptions3{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 
@@ -122,7 +123,7 @@ func (m *_ParameterValueInterfaceOptions3) GetTypeName() string {
 }
 
 func (m *_ParameterValueInterfaceOptions3) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)
@@ -139,15 +140,11 @@ func (m *_ParameterValueInterfaceOptions3) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueInterfaceOptions3Parse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions3, error) {
-	return ParameterValueInterfaceOptions3ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
-}
-
-func ParameterValueInterfaceOptions3ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions3, error) {
+func (m *_ParameterValueInterfaceOptions3) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueInterfaceOptions3 ParameterValueInterfaceOptions3, err error) {
+	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions3"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterValueInterfaceOptions3")
 	}
@@ -156,42 +153,26 @@ func ParameterValueInterfaceOptions3ParseWithBuffer(ctx context.Context, readBuf
 
 	// Validation
 	if !(bool((numBytes) >= (1))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"InterfaceOptions3 has exactly one byte"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "InterfaceOptions3 has exactly one byte"})
 	}
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
+	value, err := ReadSimpleField[InterfaceOptions3](ctx, "value", ReadComplex[InterfaceOptions3](InterfaceOptions3ParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	_value, _valueErr := InterfaceOptions3ParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueInterfaceOptions3")
+	m.Value = value
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	value := _value.(InterfaceOptions3)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
-	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(numBytes) - uint16(uint16(1)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueInterfaceOptions3")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("ParameterValueInterfaceOptions3"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterValueInterfaceOptions3")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ParameterValueInterfaceOptions3{
-		_ParameterValue: &_ParameterValue{
-			NumBytes: numBytes,
-		},
-		Value: value,
-		Data:  data,
-	}
-	_child._ParameterValue._ParameterValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ParameterValueInterfaceOptions3) Serialize() ([]byte, error) {
@@ -212,21 +193,11 @@ func (m *_ParameterValueInterfaceOptions3) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueInterfaceOptions3")
 		}
 
-		// Simple Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[InterfaceOptions3](ctx, "value", m.GetValue(), WriteComplex[InterfaceOptions3](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -235,12 +206,10 @@ func (m *_ParameterValueInterfaceOptions3) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ParameterValueContract.(*_ParameterValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ParameterValueInterfaceOptions3) isParameterValueInterfaceOptions3() bool {
-	return true
-}
+func (m *_ParameterValueInterfaceOptions3) IsParameterValueInterfaceOptions3() {}
 
 func (m *_ParameterValueInterfaceOptions3) String() string {
 	if m == nil {

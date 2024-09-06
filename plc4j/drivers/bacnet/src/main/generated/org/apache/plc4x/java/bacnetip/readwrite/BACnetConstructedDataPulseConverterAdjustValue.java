@@ -83,7 +83,7 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
     writeBuffer.pushContext("BACnetConstructedDataPulseConverterAdjustValue");
 
     // Simple Field (adjustValue)
-    writeSimpleField("adjustValue", adjustValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("adjustValue", adjustValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
     BACnetApplicationTagReal adjustValue =
         readSimpleField(
             "adjustValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetDailySchedule interface {
 	GetDaySchedule() []BACnetTimeValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetDailyScheduleExactly can be used when we want exactly this type and not a type which fulfills BACnetDailySchedule.
-// This is useful for switch cases.
-type BACnetDailyScheduleExactly interface {
-	BACnetDailySchedule
-	isBACnetDailySchedule() bool
+	// IsBACnetDailySchedule is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDailySchedule()
 }
 
 // _BACnetDailySchedule is the data-structure of this message
@@ -57,6 +54,8 @@ type _BACnetDailySchedule struct {
 	DaySchedule []BACnetTimeValue
 	ClosingTag  BACnetClosingTag
 }
+
+var _ BACnetDailySchedule = (*_BACnetDailySchedule)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,6 +81,12 @@ func (m *_BACnetDailySchedule) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetDailySchedule factory function for _BACnetDailySchedule
 func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) *_BACnetDailySchedule {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDailySchedule must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDailySchedule must not be nil")
+	}
 	return &_BACnetDailySchedule{OpeningTag: openingTag, DaySchedule: daySchedule, ClosingTag: closingTag}
 }
 
@@ -127,72 +132,52 @@ func BACnetDailyScheduleParse(ctx context.Context, theBytes []byte) (BACnetDaily
 	return BACnetDailyScheduleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetDailyScheduleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDailySchedule, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDailySchedule, error) {
+		return BACnetDailyScheduleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetDailyScheduleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDailySchedule, error) {
+	v, err := (&_BACnetDailySchedule{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetDailySchedule) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetDailySchedule BACnetDailySchedule, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetDailySchedule"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDailySchedule")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetDailySchedule")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Array field (daySchedule)
-	if pullErr := readBuffer.PullContext("daySchedule", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for daySchedule")
+	daySchedule, err := ReadTerminatedArrayField[BACnetTimeValue](ctx, "daySchedule", ReadComplex[BACnetTimeValue](BACnetTimeValueParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daySchedule' field"))
 	}
-	// Terminated array
-	var daySchedule []BACnetTimeValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0)) {
-			_item, _err := BACnetTimeValueParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'daySchedule' field of BACnetDailySchedule")
-			}
-			daySchedule = append(daySchedule, _item.(BACnetTimeValue))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("daySchedule", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for daySchedule")
-	}
+	m.DaySchedule = daySchedule
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetDailySchedule")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetDailySchedule"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDailySchedule")
 	}
 
-	// Create the instance
-	return &_BACnetDailySchedule{
-		OpeningTag:  openingTag,
-		DaySchedule: daySchedule,
-		ClosingTag:  closingTag,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetDailySchedule) Serialize() ([]byte, error) {
@@ -212,45 +197,16 @@ func (m *_BACnetDailySchedule) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for BACnetDailySchedule")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (daySchedule)
-	if pushErr := writeBuffer.PushContext("daySchedule", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for daySchedule")
-	}
-	for _curItem, _element := range m.GetDaySchedule() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDaySchedule()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'daySchedule' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("daySchedule", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for daySchedule")
+	if err := WriteComplexTypeArrayField(ctx, "daySchedule", m.GetDaySchedule(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'daySchedule' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDailySchedule"); popErr != nil {
@@ -259,9 +215,7 @@ func (m *_BACnetDailySchedule) SerializeWithWriteBuffer(ctx context.Context, wri
 	return nil
 }
 
-func (m *_BACnetDailySchedule) isBACnetDailySchedule() bool {
-	return true
-}
+func (m *_BACnetDailySchedule) IsBACnetDailySchedule() {}
 
 func (m *_BACnetDailySchedule) String() string {
 	if m == nil {

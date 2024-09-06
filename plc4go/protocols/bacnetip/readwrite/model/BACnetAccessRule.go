@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,13 +48,8 @@ type BACnetAccessRule interface {
 	GetLocation() BACnetDeviceObjectReferenceEnclosed
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetContextTagBoolean
-}
-
-// BACnetAccessRuleExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessRule.
-// This is useful for switch cases.
-type BACnetAccessRuleExactly interface {
-	BACnetAccessRule
-	isBACnetAccessRule() bool
+	// IsBACnetAccessRule is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessRule()
 }
 
 // _BACnetAccessRule is the data-structure of this message
@@ -64,6 +60,8 @@ type _BACnetAccessRule struct {
 	Location           BACnetDeviceObjectReferenceEnclosed
 	Enable             BACnetContextTagBoolean
 }
+
+var _ BACnetAccessRule = (*_BACnetAccessRule)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,6 +95,15 @@ func (m *_BACnetAccessRule) GetEnable() BACnetContextTagBoolean {
 
 // NewBACnetAccessRule factory function for _BACnetAccessRule
 func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, timeRange BACnetDeviceObjectPropertyReferenceEnclosed, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, location BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAccessRule {
+	if timeRangeSpecifier == nil {
+		panic("timeRangeSpecifier of type BACnetAccessRuleTimeRangeSpecifierTagged for BACnetAccessRule must not be nil")
+	}
+	if locationSpecifier == nil {
+		panic("locationSpecifier of type BACnetAccessRuleLocationSpecifierTagged for BACnetAccessRule must not be nil")
+	}
+	if enable == nil {
+		panic("enable of type BACnetContextTagBoolean for BACnetAccessRule must not be nil")
+	}
 	return &_BACnetAccessRule{TimeRangeSpecifier: timeRangeSpecifier, TimeRange: timeRange, LocationSpecifier: locationSpecifier, Location: location, Enable: enable}
 }
 
@@ -148,112 +155,72 @@ func BACnetAccessRuleParse(ctx context.Context, theBytes []byte) (BACnetAccessRu
 	return BACnetAccessRuleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAccessRuleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessRule, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessRule, error) {
+		return BACnetAccessRuleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessRule, error) {
+	v, err := (&_BACnetAccessRule{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetAccessRule) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAccessRule BACnetAccessRule, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAccessRule"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAccessRule")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeRangeSpecifier)
-	if pullErr := readBuffer.PullContext("timeRangeSpecifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeRangeSpecifier")
+	timeRangeSpecifier, err := ReadSimpleField[BACnetAccessRuleTimeRangeSpecifierTagged](ctx, "timeRangeSpecifier", ReadComplex[BACnetAccessRuleTimeRangeSpecifierTagged](BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeRangeSpecifier' field"))
 	}
-	_timeRangeSpecifier, _timeRangeSpecifierErr := BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _timeRangeSpecifierErr != nil {
-		return nil, errors.Wrap(_timeRangeSpecifierErr, "Error parsing 'timeRangeSpecifier' field of BACnetAccessRule")
+	m.TimeRangeSpecifier = timeRangeSpecifier
+
+	var timeRange BACnetDeviceObjectPropertyReferenceEnclosed
+	_timeRange, err := ReadOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "timeRange", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer), bool((timeRangeSpecifier) != (nil)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeRange' field"))
 	}
-	timeRangeSpecifier := _timeRangeSpecifier.(BACnetAccessRuleTimeRangeSpecifierTagged)
-	if closeErr := readBuffer.CloseContext("timeRangeSpecifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeRangeSpecifier")
+	if _timeRange != nil {
+		timeRange = *_timeRange
+		m.TimeRange = timeRange
 	}
 
-	// Optional Field (timeRange) (Can be skipped, if a given expression evaluates to false)
-	var timeRange BACnetDeviceObjectPropertyReferenceEnclosed = nil
-	if bool((timeRangeSpecifier) != (nil)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("timeRange"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for timeRange")
-		}
-		_val, _err := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(1))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timeRange' field of BACnetAccessRule")
-		default:
-			timeRange = _val.(BACnetDeviceObjectPropertyReferenceEnclosed)
-			if closeErr := readBuffer.CloseContext("timeRange"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for timeRange")
-			}
-		}
+	locationSpecifier, err := ReadSimpleField[BACnetAccessRuleLocationSpecifierTagged](ctx, "locationSpecifier", ReadComplex[BACnetAccessRuleLocationSpecifierTagged](BACnetAccessRuleLocationSpecifierTaggedParseWithBufferProducer((uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'locationSpecifier' field"))
+	}
+	m.LocationSpecifier = locationSpecifier
+
+	var location BACnetDeviceObjectReferenceEnclosed
+	_location, err := ReadOptionalField[BACnetDeviceObjectReferenceEnclosed](ctx, "location", ReadComplex[BACnetDeviceObjectReferenceEnclosed](BACnetDeviceObjectReferenceEnclosedParseWithBufferProducer((uint8)(uint8(3))), readBuffer), bool((locationSpecifier) != (nil)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'location' field"))
+	}
+	if _location != nil {
+		location = *_location
+		m.Location = location
 	}
 
-	// Simple Field (locationSpecifier)
-	if pullErr := readBuffer.PullContext("locationSpecifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for locationSpecifier")
+	enable, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "enable", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
 	}
-	_locationSpecifier, _locationSpecifierErr := BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _locationSpecifierErr != nil {
-		return nil, errors.Wrap(_locationSpecifierErr, "Error parsing 'locationSpecifier' field of BACnetAccessRule")
-	}
-	locationSpecifier := _locationSpecifier.(BACnetAccessRuleLocationSpecifierTagged)
-	if closeErr := readBuffer.CloseContext("locationSpecifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for locationSpecifier")
-	}
-
-	// Optional Field (location) (Can be skipped, if a given expression evaluates to false)
-	var location BACnetDeviceObjectReferenceEnclosed = nil
-	if bool((locationSpecifier) != (nil)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("location"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for location")
-		}
-		_val, _err := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(3))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'location' field of BACnetAccessRule")
-		default:
-			location = _val.(BACnetDeviceObjectReferenceEnclosed)
-			if closeErr := readBuffer.CloseContext("location"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for location")
-			}
-		}
-	}
-
-	// Simple Field (enable)
-	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enable")
-	}
-	_enable, _enableErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _enableErr != nil {
-		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetAccessRule")
-	}
-	enable := _enable.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enable")
-	}
+	m.Enable = enable
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessRule"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessRule")
 	}
 
-	// Create the instance
-	return &_BACnetAccessRule{
-		TimeRangeSpecifier: timeRangeSpecifier,
-		TimeRange:          timeRange,
-		LocationSpecifier:  locationSpecifier,
-		Location:           location,
-		Enable:             enable,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetAccessRule) Serialize() ([]byte, error) {
@@ -273,72 +240,24 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(pushErr, "Error pushing for BACnetAccessRule")
 	}
 
-	// Simple Field (timeRangeSpecifier)
-	if pushErr := writeBuffer.PushContext("timeRangeSpecifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeRangeSpecifier")
-	}
-	_timeRangeSpecifierErr := writeBuffer.WriteSerializable(ctx, m.GetTimeRangeSpecifier())
-	if popErr := writeBuffer.PopContext("timeRangeSpecifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeRangeSpecifier")
-	}
-	if _timeRangeSpecifierErr != nil {
-		return errors.Wrap(_timeRangeSpecifierErr, "Error serializing 'timeRangeSpecifier' field")
+	if err := WriteSimpleField[BACnetAccessRuleTimeRangeSpecifierTagged](ctx, "timeRangeSpecifier", m.GetTimeRangeSpecifier(), WriteComplex[BACnetAccessRuleTimeRangeSpecifierTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeRangeSpecifier' field")
 	}
 
-	// Optional Field (timeRange) (Can be skipped, if the value is null)
-	var timeRange BACnetDeviceObjectPropertyReferenceEnclosed = nil
-	if m.GetTimeRange() != nil {
-		if pushErr := writeBuffer.PushContext("timeRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeRange")
-		}
-		timeRange = m.GetTimeRange()
-		_timeRangeErr := writeBuffer.WriteSerializable(ctx, timeRange)
-		if popErr := writeBuffer.PopContext("timeRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeRange")
-		}
-		if _timeRangeErr != nil {
-			return errors.Wrap(_timeRangeErr, "Error serializing 'timeRange' field")
-		}
+	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "timeRange", GetRef(m.GetTimeRange()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeRange' field")
 	}
 
-	// Simple Field (locationSpecifier)
-	if pushErr := writeBuffer.PushContext("locationSpecifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for locationSpecifier")
-	}
-	_locationSpecifierErr := writeBuffer.WriteSerializable(ctx, m.GetLocationSpecifier())
-	if popErr := writeBuffer.PopContext("locationSpecifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for locationSpecifier")
-	}
-	if _locationSpecifierErr != nil {
-		return errors.Wrap(_locationSpecifierErr, "Error serializing 'locationSpecifier' field")
+	if err := WriteSimpleField[BACnetAccessRuleLocationSpecifierTagged](ctx, "locationSpecifier", m.GetLocationSpecifier(), WriteComplex[BACnetAccessRuleLocationSpecifierTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'locationSpecifier' field")
 	}
 
-	// Optional Field (location) (Can be skipped, if the value is null)
-	var location BACnetDeviceObjectReferenceEnclosed = nil
-	if m.GetLocation() != nil {
-		if pushErr := writeBuffer.PushContext("location"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for location")
-		}
-		location = m.GetLocation()
-		_locationErr := writeBuffer.WriteSerializable(ctx, location)
-		if popErr := writeBuffer.PopContext("location"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for location")
-		}
-		if _locationErr != nil {
-			return errors.Wrap(_locationErr, "Error serializing 'location' field")
-		}
+	if err := WriteOptionalField[BACnetDeviceObjectReferenceEnclosed](ctx, "location", GetRef(m.GetLocation()), WriteComplex[BACnetDeviceObjectReferenceEnclosed](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'location' field")
 	}
 
-	// Simple Field (enable)
-	if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for enable")
-	}
-	_enableErr := writeBuffer.WriteSerializable(ctx, m.GetEnable())
-	if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for enable")
-	}
-	if _enableErr != nil {
-		return errors.Wrap(_enableErr, "Error serializing 'enable' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "enable", m.GetEnable(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'enable' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAccessRule"); popErr != nil {
@@ -347,9 +266,7 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 	return nil
 }
 
-func (m *_BACnetAccessRule) isBACnetAccessRule() bool {
-	return true
-}
+func (m *_BACnetAccessRule) IsBACnetAccessRule() {}
 
 func (m *_BACnetAccessRule) String() string {
 	if m == nil {

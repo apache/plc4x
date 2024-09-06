@@ -87,26 +87,23 @@ public class BACnetCOVMultipleSubscription implements Message {
     writeBuffer.pushContext("BACnetCOVMultipleSubscription");
 
     // Simple Field (recipient)
-    writeSimpleField("recipient", recipient, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("recipient", recipient, writeComplex(writeBuffer));
 
     // Simple Field (issueConfirmedNotifications)
     writeSimpleField(
-        "issueConfirmedNotifications",
-        issueConfirmedNotifications,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "issueConfirmedNotifications", issueConfirmedNotifications, writeComplex(writeBuffer));
 
     // Simple Field (timeRemaining)
-    writeSimpleField("timeRemaining", timeRemaining, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeRemaining", timeRemaining, writeComplex(writeBuffer));
 
     // Simple Field (maxNotificationDelay)
-    writeSimpleField(
-        "maxNotificationDelay", maxNotificationDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxNotificationDelay", maxNotificationDelay, writeComplex(writeBuffer));
 
     // Simple Field (listOfCovSubscriptionSpecification)
     writeSimpleField(
         "listOfCovSubscriptionSpecification",
         listOfCovSubscriptionSpecification,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCOVMultipleSubscription");
   }
@@ -149,14 +146,14 @@ public class BACnetCOVMultipleSubscription implements Message {
     BACnetRecipientProcessEnclosed recipient =
         readSimpleField(
             "recipient",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetRecipientProcessEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetContextTagBoolean issueConfirmedNotifications =
         readSimpleField(
             "issueConfirmedNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -166,7 +163,7 @@ public class BACnetCOVMultipleSubscription implements Message {
     BACnetContextTagUnsignedInteger timeRemaining =
         readSimpleField(
             "timeRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -178,7 +175,7 @@ public class BACnetCOVMultipleSubscription implements Message {
     BACnetContextTagUnsignedInteger maxNotificationDelay =
         readSimpleField(
             "maxNotificationDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -191,7 +188,7 @@ public class BACnetCOVMultipleSubscription implements Message {
         listOfCovSubscriptionSpecification =
             readSimpleField(
                 "listOfCovSubscriptionSpecification",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification.staticParse(
                             readBuffer, (short) (4)),

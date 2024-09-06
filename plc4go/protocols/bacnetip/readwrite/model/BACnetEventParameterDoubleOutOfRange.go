@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type BACnetEventParameterDoubleOutOfRange interface {
 	GetDeadband() BACnetContextTagDouble
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-}
-
-// BACnetEventParameterDoubleOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterDoubleOutOfRange.
-// This is useful for switch cases.
-type BACnetEventParameterDoubleOutOfRangeExactly interface {
-	BACnetEventParameterDoubleOutOfRange
-	isBACnetEventParameterDoubleOutOfRange() bool
+	// IsBACnetEventParameterDoubleOutOfRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterDoubleOutOfRange()
 }
 
 // _BACnetEventParameterDoubleOutOfRange is the data-structure of this message
 type _BACnetEventParameterDoubleOutOfRange struct {
-	*_BACnetEventParameter
+	BACnetEventParameterContract
 	OpeningTag BACnetOpeningTag
 	TimeDelay  BACnetContextTagUnsignedInteger
 	LowLimit   BACnetContextTagDouble
@@ -68,6 +65,9 @@ type _BACnetEventParameterDoubleOutOfRange struct {
 	Deadband   BACnetContextTagDouble
 	ClosingTag BACnetClosingTag
 }
+
+var _ BACnetEventParameterDoubleOutOfRange = (*_BACnetEventParameterDoubleOutOfRange)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterDoubleOutOfRange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,12 +79,8 @@ type _BACnetEventParameterDoubleOutOfRange struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetEventParameterDoubleOutOfRange) InitializeParent(parent BACnetEventParameter, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetEventParameterDoubleOutOfRange) GetParent() BACnetEventParameter {
-	return m._BACnetEventParameter
+func (m *_BACnetEventParameterDoubleOutOfRange) GetParent() BACnetEventParameterContract {
+	return m.BACnetEventParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -123,16 +119,34 @@ func (m *_BACnetEventParameterDoubleOutOfRange) GetClosingTag() BACnetClosingTag
 
 // NewBACnetEventParameterDoubleOutOfRange factory function for _BACnetEventParameterDoubleOutOfRange
 func NewBACnetEventParameterDoubleOutOfRange(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagDouble, highLimit BACnetContextTagDouble, deadband BACnetContextTagDouble, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterDoubleOutOfRange {
-	_result := &_BACnetEventParameterDoubleOutOfRange{
-		OpeningTag:            openingTag,
-		TimeDelay:             timeDelay,
-		LowLimit:              lowLimit,
-		HighLimit:             highLimit,
-		Deadband:              deadband,
-		ClosingTag:            closingTag,
-		_BACnetEventParameter: NewBACnetEventParameter(peekedTagHeader),
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterDoubleOutOfRange must not be nil")
 	}
-	_result._BACnetEventParameter._BACnetEventParameterChildRequirements = _result
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterDoubleOutOfRange must not be nil")
+	}
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetContextTagDouble for BACnetEventParameterDoubleOutOfRange must not be nil")
+	}
+	if highLimit == nil {
+		panic("highLimit of type BACnetContextTagDouble for BACnetEventParameterDoubleOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagDouble for BACnetEventParameterDoubleOutOfRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterDoubleOutOfRange must not be nil")
+	}
+	_result := &_BACnetEventParameterDoubleOutOfRange{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		LowLimit:                     lowLimit,
+		HighLimit:                    highLimit,
+		Deadband:                     deadband,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 
@@ -152,7 +166,7 @@ func (m *_BACnetEventParameterDoubleOutOfRange) GetTypeName() string {
 }
 
 func (m *_BACnetEventParameterDoubleOutOfRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -179,115 +193,58 @@ func (m *_BACnetEventParameterDoubleOutOfRange) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterDoubleOutOfRangeParse(ctx context.Context, theBytes []byte) (BACnetEventParameterDoubleOutOfRange, error) {
-	return BACnetEventParameterDoubleOutOfRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetEventParameterDoubleOutOfRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterDoubleOutOfRange, error) {
+func (m *_BACnetEventParameterDoubleOutOfRange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterDoubleOutOfRange BACnetEventParameterDoubleOutOfRange, err error) {
+	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterDoubleOutOfRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterDoubleOutOfRange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(14))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(14)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterDoubleOutOfRange")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-	}
+	m.OpeningTag = openingTag
 
-	// Simple Field (timeDelay)
-	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
+	timeDelay, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDelay' field"))
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterDoubleOutOfRange")
-	}
-	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
-	}
+	m.TimeDelay = timeDelay
 
-	// Simple Field (lowLimit)
-	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
+	lowLimit, err := ReadSimpleField[BACnetContextTagDouble](ctx, "lowLimit", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowLimit' field"))
 	}
-	_lowLimit, _lowLimitErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_DOUBLE))
-	if _lowLimitErr != nil {
-		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field of BACnetEventParameterDoubleOutOfRange")
-	}
-	lowLimit := _lowLimit.(BACnetContextTagDouble)
-	if closeErr := readBuffer.CloseContext("lowLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lowLimit")
-	}
+	m.LowLimit = lowLimit
 
-	// Simple Field (highLimit)
-	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
+	highLimit, err := ReadSimpleField[BACnetContextTagDouble](ctx, "highLimit", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highLimit' field"))
 	}
-	_highLimit, _highLimitErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_DOUBLE))
-	if _highLimitErr != nil {
-		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetEventParameterDoubleOutOfRange")
-	}
-	highLimit := _highLimit.(BACnetContextTagDouble)
-	if closeErr := readBuffer.CloseContext("highLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for highLimit")
-	}
+	m.HighLimit = highLimit
 
-	// Simple Field (deadband)
-	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deadband")
+	deadband, err := ReadSimpleField[BACnetContextTagDouble](ctx, "deadband", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadband' field"))
 	}
-	_deadband, _deadbandErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_DOUBLE))
-	if _deadbandErr != nil {
-		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetEventParameterDoubleOutOfRange")
-	}
-	deadband := _deadband.(BACnetContextTagDouble)
-	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deadband")
-	}
+	m.Deadband = deadband
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(14))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(14)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterDoubleOutOfRange")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-	}
+	m.ClosingTag = closingTag
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterDoubleOutOfRange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterDoubleOutOfRange")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetEventParameterDoubleOutOfRange{
-		_BACnetEventParameter: &_BACnetEventParameter{},
-		OpeningTag:            openingTag,
-		TimeDelay:             timeDelay,
-		LowLimit:              lowLimit,
-		HighLimit:             highLimit,
-		Deadband:              deadband,
-		ClosingTag:            closingTag,
-	}
-	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetEventParameterDoubleOutOfRange) Serialize() ([]byte, error) {
@@ -308,76 +265,28 @@ func (m *_BACnetEventParameterDoubleOutOfRange) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterDoubleOutOfRange")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (timeDelay)
-		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelay")
-		}
-		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
-		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelay")
-		}
-		if _timeDelayErr != nil {
-			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", m.GetTimeDelay(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelay' field")
 		}
 
-		// Simple Field (lowLimit)
-		if pushErr := writeBuffer.PushContext("lowLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lowLimit")
-		}
-		_lowLimitErr := writeBuffer.WriteSerializable(ctx, m.GetLowLimit())
-		if popErr := writeBuffer.PopContext("lowLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lowLimit")
-		}
-		if _lowLimitErr != nil {
-			return errors.Wrap(_lowLimitErr, "Error serializing 'lowLimit' field")
+		if err := WriteSimpleField[BACnetContextTagDouble](ctx, "lowLimit", m.GetLowLimit(), WriteComplex[BACnetContextTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lowLimit' field")
 		}
 
-		// Simple Field (highLimit)
-		if pushErr := writeBuffer.PushContext("highLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for highLimit")
-		}
-		_highLimitErr := writeBuffer.WriteSerializable(ctx, m.GetHighLimit())
-		if popErr := writeBuffer.PopContext("highLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for highLimit")
-		}
-		if _highLimitErr != nil {
-			return errors.Wrap(_highLimitErr, "Error serializing 'highLimit' field")
+		if err := WriteSimpleField[BACnetContextTagDouble](ctx, "highLimit", m.GetHighLimit(), WriteComplex[BACnetContextTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'highLimit' field")
 		}
 
-		// Simple Field (deadband)
-		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deadband")
-		}
-		_deadbandErr := writeBuffer.WriteSerializable(ctx, m.GetDeadband())
-		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deadband")
-		}
-		if _deadbandErr != nil {
-			return errors.Wrap(_deadbandErr, "Error serializing 'deadband' field")
+		if err := WriteSimpleField[BACnetContextTagDouble](ctx, "deadband", m.GetDeadband(), WriteComplex[BACnetContextTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deadband' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterDoubleOutOfRange"); popErr != nil {
@@ -385,12 +294,10 @@ func (m *_BACnetEventParameterDoubleOutOfRange) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetEventParameterContract.(*_BACnetEventParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRange) isBACnetEventParameterDoubleOutOfRange() bool {
-	return true
-}
+func (m *_BACnetEventParameterDoubleOutOfRange) IsBACnetEventParameterDoubleOutOfRange() {}
 
 func (m *_BACnetEventParameterDoubleOutOfRange) String() string {
 	if m == nil {

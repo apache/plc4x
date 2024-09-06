@@ -84,14 +84,13 @@ public class CALDataWrite extends CALData implements Message {
         "paramNo",
         "Parameter",
         paramNo,
-        new DataWriterEnumDefault<>(
-            Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (code)
     writeSimpleField("code", code, writeByte(writeBuffer, 8));
 
     // Simple Field (parameterValue)
-    writeSimpleField("parameterValue", parameterValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameterValue", parameterValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALDataWrite");
   }
@@ -132,14 +131,14 @@ public class CALDataWrite extends CALData implements Message {
         readEnumField(
             "paramNo",
             "Parameter",
-            new DataReaderEnumDefault<>(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte code = readSimpleField("code", readByte(readBuffer, 8));
 
     ParameterValue parameterValue =
         readSimpleField(
             "parameterValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ParameterValue.staticParse(
                         readBuffer,

@@ -75,13 +75,13 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
     writeBuffer.pushContext("BACnetEventParameterChangeOfBitstringListOfBitstringValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfBitstringValues)
     writeComplexTypeArrayField("listOfBitstringValues", listOfBitstringValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfBitstringListOfBitstringValues");
   }
@@ -122,13 +122,13 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetApplicationTagBitString> listOfBitstringValues =
         readTerminatedArrayField(
             "listOfBitstringValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             () ->
@@ -139,7 +139,7 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfBitstringListOfBitstringValues");

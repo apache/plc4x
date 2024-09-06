@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStateActionUnknown interface {
 	BACnetPropertyStates
 	// GetUnknownValue returns UnknownValue (property field)
 	GetUnknownValue() BACnetContextTagUnknown
-}
-
-// BACnetPropertyStateActionUnknownExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStateActionUnknown.
-// This is useful for switch cases.
-type BACnetPropertyStateActionUnknownExactly interface {
-	BACnetPropertyStateActionUnknown
-	isBACnetPropertyStateActionUnknown() bool
+	// IsBACnetPropertyStateActionUnknown is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStateActionUnknown()
 }
 
 // _BACnetPropertyStateActionUnknown is the data-structure of this message
 type _BACnetPropertyStateActionUnknown struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	UnknownValue BACnetContextTagUnknown
 }
+
+var _ BACnetPropertyStateActionUnknown = (*_BACnetPropertyStateActionUnknown)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStateActionUnknown)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStateActionUnknown struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStateActionUnknown) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStateActionUnknown) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStateActionUnknown) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStateActionUnknown) GetUnknownValue() BACnetContextTagUn
 
 // NewBACnetPropertyStateActionUnknown factory function for _BACnetPropertyStateActionUnknown
 func NewBACnetPropertyStateActionUnknown(unknownValue BACnetContextTagUnknown, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStateActionUnknown {
-	_result := &_BACnetPropertyStateActionUnknown{
-		UnknownValue:          unknownValue,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if unknownValue == nil {
+		panic("unknownValue of type BACnetContextTagUnknown for BACnetPropertyStateActionUnknown must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStateActionUnknown{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		UnknownValue:                 unknownValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStateActionUnknown) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStateActionUnknown) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (unknownValue)
 	lengthInBits += m.UnknownValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStateActionUnknown) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStateActionUnknownParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
-	return BACnetPropertyStateActionUnknownParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStateActionUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
+func (m *_BACnetPropertyStateActionUnknown) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStateActionUnknown BACnetPropertyStateActionUnknown, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStateActionUnknown"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStateActionUnknown")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unknownValue)
-	if pullErr := readBuffer.PullContext("unknownValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unknownValue")
+	unknownValue, err := ReadSimpleField[BACnetContextTagUnknown](ctx, "unknownValue", ReadComplex[BACnetContextTagUnknown](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnknown]((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNKNOWN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownValue' field"))
 	}
-	_unknownValue, _unknownValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNKNOWN))
-	if _unknownValueErr != nil {
-		return nil, errors.Wrap(_unknownValueErr, "Error parsing 'unknownValue' field of BACnetPropertyStateActionUnknown")
-	}
-	unknownValue := _unknownValue.(BACnetContextTagUnknown)
-	if closeErr := readBuffer.CloseContext("unknownValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unknownValue")
-	}
+	m.UnknownValue = unknownValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStateActionUnknown"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStateActionUnknown")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStateActionUnknown{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		UnknownValue:          unknownValue,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStateActionUnknown) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStateActionUnknown")
 		}
 
-		// Simple Field (unknownValue)
-		if pushErr := writeBuffer.PushContext("unknownValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unknownValue")
-		}
-		_unknownValueErr := writeBuffer.WriteSerializable(ctx, m.GetUnknownValue())
-		if popErr := writeBuffer.PopContext("unknownValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unknownValue")
-		}
-		if _unknownValueErr != nil {
-			return errors.Wrap(_unknownValueErr, "Error serializing 'unknownValue' field")
+		if err := WriteSimpleField[BACnetContextTagUnknown](ctx, "unknownValue", m.GetUnknownValue(), WriteComplex[BACnetContextTagUnknown](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStateActionUnknown"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStateActionUnknown) isBACnetPropertyStateActionUnknown() bool {
-	return true
-}
+func (m *_BACnetPropertyStateActionUnknown) IsBACnetPropertyStateActionUnknown() {}
 
 func (m *_BACnetPropertyStateActionUnknown) String() string {
 	if m == nil {

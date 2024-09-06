@@ -70,11 +70,11 @@ func (m SubscriptionEvent) GetAddress(name string) string {
 	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	switch tag.(type) {
 	case GroupAddress3LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 3)
+		groupAddress, err = driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, rawAddress, 3)
 	case GroupAddress2LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 2)
+		groupAddress, err = driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, rawAddress, 2)
 	case GroupAddress1LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 1)
+		groupAddress, err = driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, rawAddress, 1)
 	}
 	if err != nil {
 		m.log.Debug().Err(err).Msg("error parsing")

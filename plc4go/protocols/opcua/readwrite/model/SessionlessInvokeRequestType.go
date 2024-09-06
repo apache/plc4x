@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -53,18 +55,13 @@ type SessionlessInvokeRequestType interface {
 	GetLocaleIds() []PascalString
 	// GetServiceId returns ServiceId (property field)
 	GetServiceId() uint32
-}
-
-// SessionlessInvokeRequestTypeExactly can be used when we want exactly this type and not a type which fulfills SessionlessInvokeRequestType.
-// This is useful for switch cases.
-type SessionlessInvokeRequestTypeExactly interface {
-	SessionlessInvokeRequestType
-	isSessionlessInvokeRequestType() bool
+	// IsSessionlessInvokeRequestType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSessionlessInvokeRequestType()
 }
 
 // _SessionlessInvokeRequestType is the data-structure of this message
 type _SessionlessInvokeRequestType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	UrisVersion       uint32
 	NoOfNamespaceUris int32
 	NamespaceUris     []PascalString
@@ -74,6 +71,9 @@ type _SessionlessInvokeRequestType struct {
 	LocaleIds         []PascalString
 	ServiceId         uint32
 }
+
+var _ SessionlessInvokeRequestType = (*_SessionlessInvokeRequestType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SessionlessInvokeRequestType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,10 +89,8 @@ func (m *_SessionlessInvokeRequestType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SessionlessInvokeRequestType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_SessionlessInvokeRequestType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_SessionlessInvokeRequestType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -140,17 +138,17 @@ func (m *_SessionlessInvokeRequestType) GetServiceId() uint32 {
 // NewSessionlessInvokeRequestType factory function for _SessionlessInvokeRequestType
 func NewSessionlessInvokeRequestType(urisVersion uint32, noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, noOfLocaleIds int32, localeIds []PascalString, serviceId uint32) *_SessionlessInvokeRequestType {
 	_result := &_SessionlessInvokeRequestType{
-		UrisVersion:                urisVersion,
-		NoOfNamespaceUris:          noOfNamespaceUris,
-		NamespaceUris:              namespaceUris,
-		NoOfServerUris:             noOfServerUris,
-		ServerUris:                 serverUris,
-		NoOfLocaleIds:              noOfLocaleIds,
-		LocaleIds:                  localeIds,
-		ServiceId:                  serviceId,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		UrisVersion:                       urisVersion,
+		NoOfNamespaceUris:                 noOfNamespaceUris,
+		NamespaceUris:                     namespaceUris,
+		NoOfServerUris:                    noOfServerUris,
+		ServerUris:                        serverUris,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		ServiceId:                         serviceId,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -170,7 +168,7 @@ func (m *_SessionlessInvokeRequestType) GetTypeName() string {
 }
 
 func (m *_SessionlessInvokeRequestType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (urisVersion)
 	lengthInBits += 32
@@ -224,155 +222,70 @@ func (m *_SessionlessInvokeRequestType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SessionlessInvokeRequestTypeParse(ctx context.Context, theBytes []byte, identifier string) (SessionlessInvokeRequestType, error) {
-	return SessionlessInvokeRequestTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func SessionlessInvokeRequestTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SessionlessInvokeRequestType, error) {
+func (m *_SessionlessInvokeRequestType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__sessionlessInvokeRequestType SessionlessInvokeRequestType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SessionlessInvokeRequestType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SessionlessInvokeRequestType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (urisVersion)
-	_urisVersion, _urisVersionErr := readBuffer.ReadUint32("urisVersion", 32)
-	if _urisVersionErr != nil {
-		return nil, errors.Wrap(_urisVersionErr, "Error parsing 'urisVersion' field of SessionlessInvokeRequestType")
+	urisVersion, err := ReadSimpleField(ctx, "urisVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'urisVersion' field"))
 	}
-	urisVersion := _urisVersion
+	m.UrisVersion = urisVersion
 
-	// Simple Field (noOfNamespaceUris)
-	_noOfNamespaceUris, _noOfNamespaceUrisErr := readBuffer.ReadInt32("noOfNamespaceUris", 32)
-	if _noOfNamespaceUrisErr != nil {
-		return nil, errors.Wrap(_noOfNamespaceUrisErr, "Error parsing 'noOfNamespaceUris' field of SessionlessInvokeRequestType")
+	noOfNamespaceUris, err := ReadSimpleField(ctx, "noOfNamespaceUris", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNamespaceUris' field"))
 	}
-	noOfNamespaceUris := _noOfNamespaceUris
+	m.NoOfNamespaceUris = noOfNamespaceUris
 
-	// Array field (namespaceUris)
-	if pullErr := readBuffer.PullContext("namespaceUris", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for namespaceUris")
+	namespaceUris, err := ReadCountArrayField[PascalString](ctx, "namespaceUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaceUris))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceUris' field"))
 	}
-	// Count array
-	namespaceUris := make([]PascalString, max(noOfNamespaceUris, 0))
-	// This happens when the size is set conditional to 0
-	if len(namespaceUris) == 0 {
-		namespaceUris = nil
-	}
-	{
-		_numItems := uint16(max(noOfNamespaceUris, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'namespaceUris' field of SessionlessInvokeRequestType")
-			}
-			namespaceUris[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("namespaceUris", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for namespaceUris")
-	}
+	m.NamespaceUris = namespaceUris
 
-	// Simple Field (noOfServerUris)
-	_noOfServerUris, _noOfServerUrisErr := readBuffer.ReadInt32("noOfServerUris", 32)
-	if _noOfServerUrisErr != nil {
-		return nil, errors.Wrap(_noOfServerUrisErr, "Error parsing 'noOfServerUris' field of SessionlessInvokeRequestType")
+	noOfServerUris, err := ReadSimpleField(ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerUris' field"))
 	}
-	noOfServerUris := _noOfServerUris
+	m.NoOfServerUris = noOfServerUris
 
-	// Array field (serverUris)
-	if pullErr := readBuffer.PullContext("serverUris", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverUris")
+	serverUris, err := ReadCountArrayField[PascalString](ctx, "serverUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerUris))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUris' field"))
 	}
-	// Count array
-	serverUris := make([]PascalString, max(noOfServerUris, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverUris) == 0 {
-		serverUris = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerUris, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverUris' field of SessionlessInvokeRequestType")
-			}
-			serverUris[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("serverUris", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverUris")
-	}
+	m.ServerUris = serverUris
 
-	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
-	if _noOfLocaleIdsErr != nil {
-		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of SessionlessInvokeRequestType")
+	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	noOfLocaleIds := _noOfLocaleIds
+	m.NoOfLocaleIds = noOfLocaleIds
 
-	// Array field (localeIds)
-	if pullErr := readBuffer.PullContext("localeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
+	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeIds' field"))
 	}
-	// Count array
-	localeIds := make([]PascalString, max(noOfLocaleIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(localeIds) == 0 {
-		localeIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfLocaleIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'localeIds' field of SessionlessInvokeRequestType")
-			}
-			localeIds[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("localeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localeIds")
-	}
+	m.LocaleIds = localeIds
 
-	// Simple Field (serviceId)
-	_serviceId, _serviceIdErr := readBuffer.ReadUint32("serviceId", 32)
-	if _serviceIdErr != nil {
-		return nil, errors.Wrap(_serviceIdErr, "Error parsing 'serviceId' field of SessionlessInvokeRequestType")
+	serviceId, err := ReadSimpleField(ctx, "serviceId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceId' field"))
 	}
-	serviceId := _serviceId
+	m.ServiceId = serviceId
 
 	if closeErr := readBuffer.CloseContext("SessionlessInvokeRequestType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SessionlessInvokeRequestType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SessionlessInvokeRequestType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		UrisVersion:                urisVersion,
-		NoOfNamespaceUris:          noOfNamespaceUris,
-		NamespaceUris:              namespaceUris,
-		NoOfServerUris:             noOfServerUris,
-		ServerUris:                 serverUris,
-		NoOfLocaleIds:              noOfLocaleIds,
-		LocaleIds:                  localeIds,
-		ServiceId:                  serviceId,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SessionlessInvokeRequestType) Serialize() ([]byte, error) {
@@ -393,90 +306,36 @@ func (m *_SessionlessInvokeRequestType) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for SessionlessInvokeRequestType")
 		}
 
-		// Simple Field (urisVersion)
-		urisVersion := uint32(m.GetUrisVersion())
-		_urisVersionErr := writeBuffer.WriteUint32("urisVersion", 32, uint32((urisVersion)))
-		if _urisVersionErr != nil {
-			return errors.Wrap(_urisVersionErr, "Error serializing 'urisVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "urisVersion", m.GetUrisVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'urisVersion' field")
 		}
 
-		// Simple Field (noOfNamespaceUris)
-		noOfNamespaceUris := int32(m.GetNoOfNamespaceUris())
-		_noOfNamespaceUrisErr := writeBuffer.WriteInt32("noOfNamespaceUris", 32, int32((noOfNamespaceUris)))
-		if _noOfNamespaceUrisErr != nil {
-			return errors.Wrap(_noOfNamespaceUrisErr, "Error serializing 'noOfNamespaceUris' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNamespaceUris", m.GetNoOfNamespaceUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNamespaceUris' field")
 		}
 
-		// Array Field (namespaceUris)
-		if pushErr := writeBuffer.PushContext("namespaceUris", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for namespaceUris")
-		}
-		for _curItem, _element := range m.GetNamespaceUris() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNamespaceUris()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'namespaceUris' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("namespaceUris", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for namespaceUris")
+		if err := WriteComplexTypeArrayField(ctx, "namespaceUris", m.GetNamespaceUris(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'namespaceUris' field")
 		}
 
-		// Simple Field (noOfServerUris)
-		noOfServerUris := int32(m.GetNoOfServerUris())
-		_noOfServerUrisErr := writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
-		if _noOfServerUrisErr != nil {
-			return errors.Wrap(_noOfServerUrisErr, "Error serializing 'noOfServerUris' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerUris", m.GetNoOfServerUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerUris' field")
 		}
 
-		// Array Field (serverUris)
-		if pushErr := writeBuffer.PushContext("serverUris", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUris")
-		}
-		for _curItem, _element := range m.GetServerUris() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerUris()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverUris' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverUris", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUris")
+		if err := WriteComplexTypeArrayField(ctx, "serverUris", m.GetServerUris(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUris' field")
 		}
 
-		// Simple Field (noOfLocaleIds)
-		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
-		if _noOfLocaleIdsErr != nil {
-			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
-		// Array Field (localeIds)
-		if pushErr := writeBuffer.PushContext("localeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localeIds")
-		}
-		for _curItem, _element := range m.GetLocaleIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLocaleIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'localeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("localeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localeIds")
+		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
 
-		// Simple Field (serviceId)
-		serviceId := uint32(m.GetServiceId())
-		_serviceIdErr := writeBuffer.WriteUint32("serviceId", 32, uint32((serviceId)))
-		if _serviceIdErr != nil {
-			return errors.Wrap(_serviceIdErr, "Error serializing 'serviceId' field")
+		if err := WriteSimpleField[uint32](ctx, "serviceId", m.GetServiceId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SessionlessInvokeRequestType"); popErr != nil {
@@ -484,12 +343,10 @@ func (m *_SessionlessInvokeRequestType) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SessionlessInvokeRequestType) isSessionlessInvokeRequestType() bool {
-	return true
-}
+func (m *_SessionlessInvokeRequestType) IsSessionlessInvokeRequestType() {}
 
 func (m *_SessionlessInvokeRequestType) String() string {
 	if m == nil {

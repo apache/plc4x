@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,22 +41,20 @@ type ConnectedAddressItem interface {
 	TypeId
 	// GetConnectionId returns ConnectionId (property field)
 	GetConnectionId() uint32
-}
-
-// ConnectedAddressItemExactly can be used when we want exactly this type and not a type which fulfills ConnectedAddressItem.
-// This is useful for switch cases.
-type ConnectedAddressItemExactly interface {
-	ConnectedAddressItem
-	isConnectedAddressItem() bool
+	// IsConnectedAddressItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectedAddressItem()
 }
 
 // _ConnectedAddressItem is the data-structure of this message
 type _ConnectedAddressItem struct {
-	*_TypeId
+	TypeIdContract
 	ConnectionId uint32
 	// Reserved Fields
 	reservedField0 *uint16
 }
+
+var _ ConnectedAddressItem = (*_ConnectedAddressItem)(nil)
+var _ TypeIdRequirements = (*_ConnectedAddressItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,10 +70,8 @@ func (m *_ConnectedAddressItem) GetId() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConnectedAddressItem) InitializeParent(parent TypeId) {}
-
-func (m *_ConnectedAddressItem) GetParent() TypeId {
-	return m._TypeId
+func (m *_ConnectedAddressItem) GetParent() TypeIdContract {
+	return m.TypeIdContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +91,10 @@ func (m *_ConnectedAddressItem) GetConnectionId() uint32 {
 // NewConnectedAddressItem factory function for _ConnectedAddressItem
 func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
 	_result := &_ConnectedAddressItem{
-		ConnectionId: connectionId,
-		_TypeId:      NewTypeId(),
+		TypeIdContract: NewTypeId(),
+		ConnectionId:   connectionId,
 	}
-	_result._TypeId._TypeIdChildRequirements = _result
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
 
@@ -116,7 +114,7 @@ func (m *_ConnectedAddressItem) GetTypeName() string {
 }
 
 func (m *_ConnectedAddressItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TypeIdContract.(*_TypeId).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -131,57 +129,34 @@ func (m *_ConnectedAddressItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectedAddressItemParse(ctx context.Context, theBytes []byte) (ConnectedAddressItem, error) {
-	return ConnectedAddressItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedAddressItem, error) {
+func (m *_ConnectedAddressItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TypeId) (__connectedAddressItem ConnectedAddressItem, err error) {
+	m.TypeIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectedAddressItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectedAddressItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint16
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ConnectedAddressItem")
-		}
-		if reserved != uint16(0x0004) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0004),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0004))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (connectionId)
-	_connectionId, _connectionIdErr := readBuffer.ReadUint32("connectionId", 32)
-	if _connectionIdErr != nil {
-		return nil, errors.Wrap(_connectionIdErr, "Error parsing 'connectionId' field of ConnectedAddressItem")
+	connectionId, err := ReadSimpleField(ctx, "connectionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionId' field"))
 	}
-	connectionId := _connectionId
+	m.ConnectionId = connectionId
 
 	if closeErr := readBuffer.CloseContext("ConnectedAddressItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectedAddressItem")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ConnectedAddressItem{
-		_TypeId:        &_TypeId{},
-		ConnectionId:   connectionId,
-		reservedField0: reservedField0,
-	}
-	_child._TypeId._TypeIdChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ConnectedAddressItem) Serialize() ([]byte, error) {
@@ -202,27 +177,12 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ConnectedAddressItem")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint16 = uint16(0x0004)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint16(0x0004),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0004), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (connectionId)
-		connectionId := uint32(m.GetConnectionId())
-		_connectionIdErr := writeBuffer.WriteUint32("connectionId", 32, uint32((connectionId)))
-		if _connectionIdErr != nil {
-			return errors.Wrap(_connectionIdErr, "Error serializing 'connectionId' field")
+		if err := WriteSimpleField[uint32](ctx, "connectionId", m.GetConnectionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectedAddressItem"); popErr != nil {
@@ -230,12 +190,10 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TypeIdContract.(*_TypeId).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ConnectedAddressItem) isConnectedAddressItem() bool {
-	return true
-}
+func (m *_ConnectedAddressItem) IsConnectedAddressItem() {}
 
 func (m *_ConnectedAddressItem) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataChangeOfStateTime interface {
 	GetChangeOfStateTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-}
-
-// BACnetConstructedDataChangeOfStateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChangeOfStateTime.
-// This is useful for switch cases.
-type BACnetConstructedDataChangeOfStateTimeExactly interface {
-	BACnetConstructedDataChangeOfStateTime
-	isBACnetConstructedDataChangeOfStateTime() bool
+	// IsBACnetConstructedDataChangeOfStateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataChangeOfStateTime()
 }
 
 // _BACnetConstructedDataChangeOfStateTime is the data-structure of this message
 type _BACnetConstructedDataChangeOfStateTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ChangeOfStateTime BACnetDateTime
 }
+
+var _ BACnetConstructedDataChangeOfStateTime = (*_BACnetConstructedDataChangeOfStateTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangeOfStateTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataChangeOfStateTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataChangeOfStateTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataChangeOfStateTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetActualValue() BACnetDateTim
 
 // NewBACnetConstructedDataChangeOfStateTime factory function for _BACnetConstructedDataChangeOfStateTime
 func NewBACnetConstructedDataChangeOfStateTime(changeOfStateTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateTime {
-	_result := &_BACnetConstructedDataChangeOfStateTime{
-		ChangeOfStateTime:      changeOfStateTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if changeOfStateTime == nil {
+		panic("changeOfStateTime of type BACnetDateTime for BACnetConstructedDataChangeOfStateTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataChangeOfStateTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ChangeOfStateTime:             changeOfStateTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataChangeOfStateTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (changeOfStateTime)
 	lengthInBits += m.ChangeOfStateTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataChangeOfStateTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateTime, error) {
-	return BACnetConstructedDataChangeOfStateTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataChangeOfStateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateTime, error) {
+func (m *_BACnetConstructedDataChangeOfStateTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataChangeOfStateTime BACnetConstructedDataChangeOfStateTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangeOfStateTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataChangeOfStateTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (changeOfStateTime)
-	if pullErr := readBuffer.PullContext("changeOfStateTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for changeOfStateTime")
+	changeOfStateTime, err := ReadSimpleField[BACnetDateTime](ctx, "changeOfStateTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changeOfStateTime' field"))
 	}
-	_changeOfStateTime, _changeOfStateTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _changeOfStateTimeErr != nil {
-		return nil, errors.Wrap(_changeOfStateTimeErr, "Error parsing 'changeOfStateTime' field of BACnetConstructedDataChangeOfStateTime")
-	}
-	changeOfStateTime := _changeOfStateTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("changeOfStateTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for changeOfStateTime")
-	}
+	m.ChangeOfStateTime = changeOfStateTime
 
-	// Virtual field
-	_actualValue := changeOfStateTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), changeOfStateTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangeOfStateTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangeOfStateTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataChangeOfStateTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ChangeOfStateTime: changeOfStateTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataChangeOfStateTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChangeOfStateTime")
 		}
 
-		// Simple Field (changeOfStateTime)
-		if pushErr := writeBuffer.PushContext("changeOfStateTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changeOfStateTime")
-		}
-		_changeOfStateTimeErr := writeBuffer.WriteSerializable(ctx, m.GetChangeOfStateTime())
-		if popErr := writeBuffer.PopContext("changeOfStateTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changeOfStateTime")
-		}
-		if _changeOfStateTimeErr != nil {
-			return errors.Wrap(_changeOfStateTimeErr, "Error serializing 'changeOfStateTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "changeOfStateTime", m.GetChangeOfStateTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changeOfStateTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataChangeOfStateTime) isBACnetConstructedDataChangeOfStateTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataChangeOfStateTime) IsBACnetConstructedDataChangeOfStateTime() {}
 
 func (m *_BACnetConstructedDataChangeOfStateTime) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type AdsDiscoveryBlockUserName interface {
 	AdsDiscoveryBlock
 	// GetUserName returns UserName (property field)
 	GetUserName() AmsString
-}
-
-// AdsDiscoveryBlockUserNameExactly can be used when we want exactly this type and not a type which fulfills AdsDiscoveryBlockUserName.
-// This is useful for switch cases.
-type AdsDiscoveryBlockUserNameExactly interface {
-	AdsDiscoveryBlockUserName
-	isAdsDiscoveryBlockUserName() bool
+	// IsAdsDiscoveryBlockUserName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockUserName()
 }
 
 // _AdsDiscoveryBlockUserName is the data-structure of this message
 type _AdsDiscoveryBlockUserName struct {
-	*_AdsDiscoveryBlock
+	AdsDiscoveryBlockContract
 	UserName AmsString
 }
+
+var _ AdsDiscoveryBlockUserName = (*_AdsDiscoveryBlockUserName)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockUserName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_AdsDiscoveryBlockUserName) GetBlockType() AdsDiscoveryBlockType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsDiscoveryBlockUserName) InitializeParent(parent AdsDiscoveryBlock) {}
-
-func (m *_AdsDiscoveryBlockUserName) GetParent() AdsDiscoveryBlock {
-	return m._AdsDiscoveryBlock
+func (m *_AdsDiscoveryBlockUserName) GetParent() AdsDiscoveryBlockContract {
+	return m.AdsDiscoveryBlockContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_AdsDiscoveryBlockUserName) GetUserName() AmsString {
 
 // NewAdsDiscoveryBlockUserName factory function for _AdsDiscoveryBlockUserName
 func NewAdsDiscoveryBlockUserName(userName AmsString) *_AdsDiscoveryBlockUserName {
-	_result := &_AdsDiscoveryBlockUserName{
-		UserName:           userName,
-		_AdsDiscoveryBlock: NewAdsDiscoveryBlock(),
+	if userName == nil {
+		panic("userName of type AmsString for AdsDiscoveryBlockUserName must not be nil")
 	}
-	_result._AdsDiscoveryBlock._AdsDiscoveryBlockChildRequirements = _result
+	_result := &_AdsDiscoveryBlockUserName{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		UserName:                  userName,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_AdsDiscoveryBlockUserName) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockUserName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Simple field (userName)
 	lengthInBits += m.UserName.GetLengthInBits(ctx)
@@ -126,45 +127,28 @@ func (m *_AdsDiscoveryBlockUserName) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockUserNameParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockUserName, error) {
-	return AdsDiscoveryBlockUserNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsDiscoveryBlockUserNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockUserName, error) {
+func (m *_AdsDiscoveryBlockUserName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockUserName AdsDiscoveryBlockUserName, err error) {
+	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockUserName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockUserName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (userName)
-	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userName")
+	userName, err := ReadSimpleField[AmsString](ctx, "userName", ReadComplex[AmsString](AmsStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
-	_userName, _userNameErr := AmsStringParseWithBuffer(ctx, readBuffer)
-	if _userNameErr != nil {
-		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of AdsDiscoveryBlockUserName")
-	}
-	userName := _userName.(AmsString)
-	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userName")
-	}
+	m.UserName = userName
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockUserName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDiscoveryBlockUserName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsDiscoveryBlockUserName{
-		_AdsDiscoveryBlock: &_AdsDiscoveryBlock{},
-		UserName:           userName,
-	}
-	_child._AdsDiscoveryBlock._AdsDiscoveryBlockChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsDiscoveryBlockUserName) Serialize() ([]byte, error) {
@@ -185,16 +169,8 @@ func (m *_AdsDiscoveryBlockUserName) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockUserName")
 		}
 
-		// Simple Field (userName)
-		if pushErr := writeBuffer.PushContext("userName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userName")
-		}
-		_userNameErr := writeBuffer.WriteSerializable(ctx, m.GetUserName())
-		if popErr := writeBuffer.PopContext("userName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userName")
-		}
-		if _userNameErr != nil {
-			return errors.Wrap(_userNameErr, "Error serializing 'userName' field")
+		if err := WriteSimpleField[AmsString](ctx, "userName", m.GetUserName(), WriteComplex[AmsString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDiscoveryBlockUserName"); popErr != nil {
@@ -202,12 +178,10 @@ func (m *_AdsDiscoveryBlockUserName) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsDiscoveryBlockUserName) isAdsDiscoveryBlockUserName() bool {
-	return true
-}
+func (m *_AdsDiscoveryBlockUserName) IsAdsDiscoveryBlockUserName() {}
 
 func (m *_AdsDiscoveryBlockUserName) String() string {
 	if m == nil {

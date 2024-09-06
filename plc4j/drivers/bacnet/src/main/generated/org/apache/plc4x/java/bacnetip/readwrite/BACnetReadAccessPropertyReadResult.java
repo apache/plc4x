@@ -90,16 +90,13 @@ public class BACnetReadAccessPropertyReadResult implements Message {
 
     // Optional Field (propertyValue) (Can be skipped, if the value is null)
     writeOptionalField(
-        "propertyValue",
-        propertyValue,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (getPeekedTagNumber()) == (4));
+        "propertyValue", propertyValue, writeComplex(writeBuffer), (getPeekedTagNumber()) == (4));
 
     // Optional Field (propertyAccessError) (Can be skipped, if the value is null)
     writeOptionalField(
         "propertyAccessError",
         propertyAccessError,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (getPeekedTagNumber()) == (5));
 
     writeBuffer.popContext("BACnetReadAccessPropertyReadResult");
@@ -144,15 +141,14 @@ public class BACnetReadAccessPropertyReadResult implements Message {
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
 
     BACnetConstructedData propertyValue =
         readOptionalField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -171,8 +167,7 @@ public class BACnetReadAccessPropertyReadResult implements Message {
     ErrorEnclosed propertyAccessError =
         readOptionalField(
             "propertyAccessError",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer),
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer),
             (peekedTagNumber) == (5));
     // Validation
     if (!(((((peekedTagNumber) == (5)) && ((propertyAccessError) != (null))))

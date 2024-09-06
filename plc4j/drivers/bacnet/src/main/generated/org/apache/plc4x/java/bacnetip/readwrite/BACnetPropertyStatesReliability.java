@@ -60,7 +60,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
     writeBuffer.pushContext("BACnetPropertyStatesReliability");
 
     // Simple Field (reliability)
-    writeSimpleField("reliability", reliability, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reliability", reliability, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesReliability");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
     BACnetReliabilityTagged reliability =
         readSimpleField(
             "reliability",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReliabilityTagged.staticParse(
                         readBuffer,

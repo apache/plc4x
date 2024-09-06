@@ -139,8 +139,7 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
     List<Plc4xTagRequest> tags =
         readCountArrayField(
             "tags",
-            new DataReaderComplexDefault<>(
-                () -> Plc4xTagRequest.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Plc4xTagRequest.staticParse(readBuffer), readBuffer),
             numTags,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

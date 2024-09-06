@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type AirConditioningDataRefresh interface {
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
-}
-
-// AirConditioningDataRefreshExactly can be used when we want exactly this type and not a type which fulfills AirConditioningDataRefresh.
-// This is useful for switch cases.
-type AirConditioningDataRefreshExactly interface {
-	AirConditioningDataRefresh
-	isAirConditioningDataRefresh() bool
+	// IsAirConditioningDataRefresh is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataRefresh()
 }
 
 // _AirConditioningDataRefresh is the data-structure of this message
 type _AirConditioningDataRefresh struct {
-	*_AirConditioningData
+	AirConditioningDataContract
 	ZoneGroup byte
 }
+
+var _ AirConditioningDataRefresh = (*_AirConditioningDataRefresh)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataRefresh)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _AirConditioningDataRefresh struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AirConditioningDataRefresh) InitializeParent(parent AirConditioningData, commandTypeContainer AirConditioningCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_AirConditioningDataRefresh) GetParent() AirConditioningData {
-	return m._AirConditioningData
+func (m *_AirConditioningDataRefresh) GetParent() AirConditioningDataContract {
+	return m.AirConditioningDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,10 +85,10 @@ func (m *_AirConditioningDataRefresh) GetZoneGroup() byte {
 // NewAirConditioningDataRefresh factory function for _AirConditioningDataRefresh
 func NewAirConditioningDataRefresh(zoneGroup byte, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataRefresh {
 	_result := &_AirConditioningDataRefresh{
-		ZoneGroup:            zoneGroup,
-		_AirConditioningData: NewAirConditioningData(commandTypeContainer),
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
 	}
-	_result._AirConditioningData._AirConditioningDataChildRequirements = _result
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 
@@ -112,7 +108,7 @@ func (m *_AirConditioningDataRefresh) GetTypeName() string {
 }
 
 func (m *_AirConditioningDataRefresh) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -124,39 +120,28 @@ func (m *_AirConditioningDataRefresh) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataRefreshParse(ctx context.Context, theBytes []byte) (AirConditioningDataRefresh, error) {
-	return AirConditioningDataRefreshParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AirConditioningDataRefreshParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataRefresh, error) {
+func (m *_AirConditioningDataRefresh) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataRefresh AirConditioningDataRefresh, err error) {
+	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataRefresh"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataRefresh")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataRefresh")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
-	zoneGroup := _zoneGroup
+	m.ZoneGroup = zoneGroup
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataRefresh"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AirConditioningDataRefresh")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AirConditioningDataRefresh{
-		_AirConditioningData: &_AirConditioningData{},
-		ZoneGroup:            zoneGroup,
-	}
-	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AirConditioningDataRefresh) Serialize() ([]byte, error) {
@@ -177,11 +162,8 @@ func (m *_AirConditioningDataRefresh) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataRefresh")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataRefresh"); popErr != nil {
@@ -189,12 +171,10 @@ func (m *_AirConditioningDataRefresh) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AirConditioningDataContract.(*_AirConditioningData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AirConditioningDataRefresh) isAirConditioningDataRefresh() bool {
-	return true
-}
+func (m *_AirConditioningDataRefresh) IsAirConditioningDataRefresh() {}
 
 func (m *_AirConditioningDataRefresh) String() string {
 	if m == nil {

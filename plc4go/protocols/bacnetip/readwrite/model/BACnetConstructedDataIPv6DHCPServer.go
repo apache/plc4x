@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataIPv6DHCPServer interface {
 	GetDhcpServer() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-}
-
-// BACnetConstructedDataIPv6DHCPServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6DHCPServer.
-// This is useful for switch cases.
-type BACnetConstructedDataIPv6DHCPServerExactly interface {
-	BACnetConstructedDataIPv6DHCPServer
-	isBACnetConstructedDataIPv6DHCPServer() bool
+	// IsBACnetConstructedDataIPv6DHCPServer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6DHCPServer()
 }
 
 // _BACnetConstructedDataIPv6DHCPServer is the data-structure of this message
 type _BACnetConstructedDataIPv6DHCPServer struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DhcpServer BACnetApplicationTagOctetString
 }
+
+var _ BACnetConstructedDataIPv6DHCPServer = (*_BACnetConstructedDataIPv6DHCPServer)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DHCPServer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataIPv6DHCPServer) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataIPv6DHCPServer) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataIPv6DHCPServer) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataIPv6DHCPServer factory function for _BACnetConstructedDataIPv6DHCPServer
 func NewBACnetConstructedDataIPv6DHCPServer(dhcpServer BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPServer {
-	_result := &_BACnetConstructedDataIPv6DHCPServer{
-		DhcpServer:             dhcpServer,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if dhcpServer == nil {
+		panic("dhcpServer of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DHCPServer must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataIPv6DHCPServer{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DhcpServer:                    dhcpServer,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (dhcpServer)
 	lengthInBits += m.DhcpServer.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataIPv6DHCPServerParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPServer, error) {
-	return BACnetConstructedDataIPv6DHCPServerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataIPv6DHCPServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPServer, error) {
+func (m *_BACnetConstructedDataIPv6DHCPServer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPv6DHCPServer BACnetConstructedDataIPv6DHCPServer, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPServer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6DHCPServer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dhcpServer)
-	if pullErr := readBuffer.PullContext("dhcpServer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dhcpServer")
+	dhcpServer, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "dhcpServer", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dhcpServer' field"))
 	}
-	_dhcpServer, _dhcpServerErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _dhcpServerErr != nil {
-		return nil, errors.Wrap(_dhcpServerErr, "Error parsing 'dhcpServer' field of BACnetConstructedDataIPv6DHCPServer")
-	}
-	dhcpServer := _dhcpServer.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("dhcpServer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dhcpServer")
-	}
+	m.DhcpServer = dhcpServer
 
-	// Virtual field
-	_actualValue := dhcpServer
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagOctetString](ctx, "actualValue", (*BACnetApplicationTagOctetString)(nil), dhcpServer)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DHCPServer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6DHCPServer")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataIPv6DHCPServer{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DhcpServer: dhcpServer,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPServer) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6DHCPServer")
 		}
 
-		// Simple Field (dhcpServer)
-		if pushErr := writeBuffer.PushContext("dhcpServer"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dhcpServer")
-		}
-		_dhcpServerErr := writeBuffer.WriteSerializable(ctx, m.GetDhcpServer())
-		if popErr := writeBuffer.PopContext("dhcpServer"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dhcpServer")
-		}
-		if _dhcpServerErr != nil {
-			return errors.Wrap(_dhcpServerErr, "Error serializing 'dhcpServer' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "dhcpServer", m.GetDhcpServer(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dhcpServer' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPServer) isBACnetConstructedDataIPv6DHCPServer() bool {
-	return true
-}
+func (m *_BACnetConstructedDataIPv6DHCPServer) IsBACnetConstructedDataIPv6DHCPServer() {}
 
 func (m *_BACnetConstructedDataIPv6DHCPServer) String() string {
 	if m == nil {

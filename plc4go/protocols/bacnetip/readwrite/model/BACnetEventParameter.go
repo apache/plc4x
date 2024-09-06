@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,47 +35,40 @@ import (
 
 // BACnetEventParameter is the corresponding interface of BACnetEventParameter
 type BACnetEventParameter interface {
+	BACnetEventParameterContract
+	BACnetEventParameterRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetEventParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameter()
+}
+
+// BACnetEventParameterContract provides a set of functions which can be overwritten by a sub struct
+type BACnetEventParameterContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// IsBACnetEventParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameter()
 }
 
-// BACnetEventParameterExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameter.
-// This is useful for switch cases.
-type BACnetEventParameterExactly interface {
-	BACnetEventParameter
-	isBACnetEventParameter() bool
+// BACnetEventParameterRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetEventParameterRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetEventParameter is the data-structure of this message
 type _BACnetEventParameter struct {
-	_BACnetEventParameterChildRequirements
+	_SubType        BACnetEventParameter
 	PeekedTagHeader BACnetTagHeader
 }
 
-type _BACnetEventParameterChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetEventParameterParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetEventParameter, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetEventParameterChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetEventParameter, peekedTagHeader BACnetTagHeader)
-	GetParent() *BACnetEventParameter
-
-	GetTypeName() string
-	BACnetEventParameter
-}
+var _ BACnetEventParameterContract = (*_BACnetEventParameter)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,7 +88,8 @@ func (m *_BACnetEventParameter) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetEventParameter) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetEventParameter) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -106,6 +102,9 @@ func (m *_BACnetEventParameter) GetPeekedTagNumber() uint8 {
 
 // NewBACnetEventParameter factory function for _BACnetEventParameter
 func NewBACnetEventParameter(peekedTagHeader BACnetTagHeader) *_BACnetEventParameter {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameter must not be nil")
+	}
 	return &_BACnetEventParameter{PeekedTagHeader: peekedTagHeader}
 }
 
@@ -124,7 +123,7 @@ func (m *_BACnetEventParameter) GetTypeName() string {
 	return "BACnetEventParameter"
 }
 
-func (m *_BACnetEventParameter) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetEventParameter) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -133,103 +132,145 @@ func (m *_BACnetEventParameter) GetParentLengthInBits(ctx context.Context) uint1
 }
 
 func (m *_BACnetEventParameter) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterParse(ctx context.Context, theBytes []byte) (BACnetEventParameter, error) {
-	return BACnetEventParameterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterParse[T BACnetEventParameter](ctx context.Context, theBytes []byte) (T, error) {
+	return BACnetEventParameterParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameter, error) {
+func BACnetEventParameterParseWithBufferProducer[T BACnetEventParameter]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetEventParameterParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetEventParameterParseWithBuffer[T BACnetEventParameter](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_BACnetEventParameter{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetEventParameter) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetEventParameter BACnetEventParameter, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetEventParameterChildSerializeRequirement interface {
-		BACnetEventParameter
-		InitializeParent(BACnetEventParameter, BACnetTagHeader)
-		GetParent() BACnetEventParameter
-	}
-	var _childTemp any
-	var _child BACnetEventParameterChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetEventParameter
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfBitstring
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfBitstringParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterChangeOfBitstring{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfBitstring for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfState
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStateParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterChangeOfState{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfState for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(2): // BACnetEventParameterChangeOfValue
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterChangeOfValue{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfValue for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(3): // BACnetEventParameterCommandFailure
-		_childTemp, typeSwitchError = BACnetEventParameterCommandFailureParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterCommandFailure{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterCommandFailure for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(4): // BACnetEventParameterFloatingLimit
-		_childTemp, typeSwitchError = BACnetEventParameterFloatingLimitParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterFloatingLimit{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterFloatingLimit for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(5): // BACnetEventParameterOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterOutOfRangeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterOutOfRange for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(8): // BACnetEventParameterChangeOfLifeSavety
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterChangeOfLifeSavety{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfLifeSavety for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(9): // BACnetEventParameterExtended
-		_childTemp, typeSwitchError = BACnetEventParameterExtendedParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterExtended{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterExtended for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(10): // BACnetEventParameterBufferReady
-		_childTemp, typeSwitchError = BACnetEventParameterBufferReadyParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterBufferReady{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterBufferReady for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(11): // BACnetEventParameterUnsignedRange
-		_childTemp, typeSwitchError = BACnetEventParameterUnsignedRangeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterUnsignedRange{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterUnsignedRange for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(13): // BACnetEventParameterAccessEvent
-		_childTemp, typeSwitchError = BACnetEventParameterAccessEventParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterAccessEvent{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterAccessEvent for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(14): // BACnetEventParameterDoubleOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterDoubleOutOfRangeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterDoubleOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterDoubleOutOfRange for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(15): // BACnetEventParameterSignedOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterSignedOutOfRangeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterSignedOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterSignedOutOfRange for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(16): // BACnetEventParameterUnsignedOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterUnsignedOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterUnsignedOutOfRange for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(17): // BACnetEventParameterChangeOfCharacterString
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfCharacterStringParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterChangeOfCharacterString{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfCharacterString for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(18): // BACnetEventParameterChangeOfStatusFlags
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterChangeOfStatusFlags{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfStatusFlags for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(20): // BACnetEventParameterNone
-		_childTemp, typeSwitchError = BACnetEventParameterNoneParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterNone{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterNone for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(21): // BACnetEventParameterChangeOfDiscreteValue
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfDiscreteValueParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterChangeOfDiscreteValue{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfDiscreteValue for type-switch of BACnetEventParameter")
+		}
 	case peekedTagNumber == uint8(22): // BACnetEventParameterChangeOfTimer
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfTimerParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetEventParameterChangeOfTimer{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfTimer for type-switch of BACnetEventParameter")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetEventParameter")
-	}
-	_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameter")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
 }
 
-func (pm *_BACnetEventParameter) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetEventParameter, serializeChildFunction func() error) error {
+func (pm *_BACnetEventParameter) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetEventParameter, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -258,17 +299,4 @@ func (pm *_BACnetEventParameter) SerializeParent(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_BACnetEventParameter) isBACnetEventParameter() bool {
-	return true
-}
-
-func (m *_BACnetEventParameter) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetEventParameter) IsBACnetEventParameter() {}

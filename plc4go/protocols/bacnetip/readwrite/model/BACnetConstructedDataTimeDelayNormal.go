@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataTimeDelayNormal interface {
 	GetTimeDelayNormal() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataTimeDelayNormalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeDelayNormal.
-// This is useful for switch cases.
-type BACnetConstructedDataTimeDelayNormalExactly interface {
-	BACnetConstructedDataTimeDelayNormal
-	isBACnetConstructedDataTimeDelayNormal() bool
+	// IsBACnetConstructedDataTimeDelayNormal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeDelayNormal()
 }
 
 // _BACnetConstructedDataTimeDelayNormal is the data-structure of this message
 type _BACnetConstructedDataTimeDelayNormal struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	TimeDelayNormal BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataTimeDelayNormal = (*_BACnetConstructedDataTimeDelayNormal)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeDelayNormal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTimeDelayNormal) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTimeDelayNormal) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTimeDelayNormal) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetActualValue() BACnetApplicati
 
 // NewBACnetConstructedDataTimeDelayNormal factory function for _BACnetConstructedDataTimeDelayNormal
 func NewBACnetConstructedDataTimeDelayNormal(timeDelayNormal BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelayNormal {
-	_result := &_BACnetConstructedDataTimeDelayNormal{
-		TimeDelayNormal:        timeDelayNormal,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if timeDelayNormal == nil {
+		panic("timeDelayNormal of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeDelayNormal must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataTimeDelayNormal{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeDelayNormal:               timeDelayNormal,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (timeDelayNormal)
 	lengthInBits += m.TimeDelayNormal.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTimeDelayNormalParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeDelayNormal, error) {
-	return BACnetConstructedDataTimeDelayNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTimeDelayNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeDelayNormal, error) {
+func (m *_BACnetConstructedDataTimeDelayNormal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimeDelayNormal BACnetConstructedDataTimeDelayNormal, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeDelayNormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeDelayNormal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeDelayNormal)
-	if pullErr := readBuffer.PullContext("timeDelayNormal"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeDelayNormal")
+	timeDelayNormal, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeDelayNormal", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDelayNormal' field"))
 	}
-	_timeDelayNormal, _timeDelayNormalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timeDelayNormalErr != nil {
-		return nil, errors.Wrap(_timeDelayNormalErr, "Error parsing 'timeDelayNormal' field of BACnetConstructedDataTimeDelayNormal")
-	}
-	timeDelayNormal := _timeDelayNormal.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeDelayNormal"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeDelayNormal")
-	}
+	m.TimeDelayNormal = timeDelayNormal
 
-	// Virtual field
-	_actualValue := timeDelayNormal
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), timeDelayNormal)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeDelayNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeDelayNormal")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTimeDelayNormal{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		TimeDelayNormal: timeDelayNormal,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTimeDelayNormal) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeDelayNormal")
 		}
 
-		// Simple Field (timeDelayNormal)
-		if pushErr := writeBuffer.PushContext("timeDelayNormal"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelayNormal")
-		}
-		_timeDelayNormalErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelayNormal())
-		if popErr := writeBuffer.PopContext("timeDelayNormal"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelayNormal")
-		}
-		if _timeDelayNormalErr != nil {
-			return errors.Wrap(_timeDelayNormalErr, "Error serializing 'timeDelayNormal' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeDelayNormal", m.GetTimeDelayNormal(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelayNormal' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormal) isBACnetConstructedDataTimeDelayNormal() bool {
-	return true
-}
+func (m *_BACnetConstructedDataTimeDelayNormal) IsBACnetConstructedDataTimeDelayNormal() {}
 
 func (m *_BACnetConstructedDataTimeDelayNormal) String() string {
 	if m == nil {

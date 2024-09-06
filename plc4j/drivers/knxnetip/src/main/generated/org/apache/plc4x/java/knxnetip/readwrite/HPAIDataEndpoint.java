@@ -76,13 +76,13 @@ public class HPAIDataEndpoint implements Message {
         "hostProtocolCode",
         "HostProtocolCode",
         hostProtocolCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HostProtocolCode::getValue,
             HostProtocolCode::name,
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (ipAddress)
-    writeSimpleField("ipAddress", ipAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipAddress", ipAddress, writeComplex(writeBuffer));
 
     // Simple Field (ipPort)
     writeSimpleField("ipPort", ipPort, writeUnsignedInt(writeBuffer, 16));
@@ -127,13 +127,11 @@ public class HPAIDataEndpoint implements Message {
         readEnumField(
             "hostProtocolCode",
             "HostProtocolCode",
-            new DataReaderEnumDefault<>(
-                HostProtocolCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HostProtocolCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     IPAddress ipAddress =
         readSimpleField(
-            "ipAddress",
-            new DataReaderComplexDefault<>(() -> IPAddress.staticParse(readBuffer), readBuffer));
+            "ipAddress", readComplex(() -> IPAddress.staticParse(readBuffer), readBuffer));
 
     int ipPort = readSimpleField("ipPort", readUnsignedInt(readBuffer, 16));
 

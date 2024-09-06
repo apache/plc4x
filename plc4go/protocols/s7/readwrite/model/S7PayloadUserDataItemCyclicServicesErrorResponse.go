@@ -37,19 +37,17 @@ type S7PayloadUserDataItemCyclicServicesErrorResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
-}
-
-// S7PayloadUserDataItemCyclicServicesErrorResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCyclicServicesErrorResponse.
-// This is useful for switch cases.
-type S7PayloadUserDataItemCyclicServicesErrorResponseExactly interface {
-	S7PayloadUserDataItemCyclicServicesErrorResponse
-	isS7PayloadUserDataItemCyclicServicesErrorResponse() bool
+	// IsS7PayloadUserDataItemCyclicServicesErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesErrorResponse()
 }
 
 // _S7PayloadUserDataItemCyclicServicesErrorResponse is the data-structure of this message
 type _S7PayloadUserDataItemCyclicServicesErrorResponse struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 }
+
+var _ S7PayloadUserDataItemCyclicServicesErrorResponse = (*_S7PayloadUserDataItemCyclicServicesErrorResponse)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesErrorResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,22 +71,16 @@ func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetCpuSubfunction() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 // NewS7PayloadUserDataItemCyclicServicesErrorResponse factory function for _S7PayloadUserDataItemCyclicServicesErrorResponse
 func NewS7PayloadUserDataItemCyclicServicesErrorResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesErrorResponse {
 	_result := &_S7PayloadUserDataItemCyclicServicesErrorResponse{
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -108,7 +100,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetTypeName() string
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -117,15 +109,11 @@ func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetLengthInBytes(ctx
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCyclicServicesErrorResponseParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesErrorResponse, error) {
-	return S7PayloadUserDataItemCyclicServicesErrorResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadUserDataItemCyclicServicesErrorResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesErrorResponse, error) {
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCyclicServicesErrorResponse S7PayloadUserDataItemCyclicServicesErrorResponse, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCyclicServicesErrorResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCyclicServicesErrorResponse")
 	}
@@ -136,12 +124,7 @@ func S7PayloadUserDataItemCyclicServicesErrorResponseParseWithBuffer(ctx context
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCyclicServicesErrorResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadUserDataItemCyclicServicesErrorResponse{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) Serialize() ([]byte, error) {
@@ -167,11 +150,10 @@ func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) SerializeWithWriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) isS7PayloadUserDataItemCyclicServicesErrorResponse() bool {
-	return true
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) IsS7PayloadUserDataItemCyclicServicesErrorResponse() {
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) String() string {

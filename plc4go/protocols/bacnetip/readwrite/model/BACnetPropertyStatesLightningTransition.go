@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesLightningTransition interface {
 	BACnetPropertyStates
 	// GetLightningTransition returns LightningTransition (property field)
 	GetLightningTransition() BACnetLightingTransitionTagged
-}
-
-// BACnetPropertyStatesLightningTransitionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLightningTransition.
-// This is useful for switch cases.
-type BACnetPropertyStatesLightningTransitionExactly interface {
-	BACnetPropertyStatesLightningTransition
-	isBACnetPropertyStatesLightningTransition() bool
+	// IsBACnetPropertyStatesLightningTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLightningTransition()
 }
 
 // _BACnetPropertyStatesLightningTransition is the data-structure of this message
 type _BACnetPropertyStatesLightningTransition struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	LightningTransition BACnetLightingTransitionTagged
 }
+
+var _ BACnetPropertyStatesLightningTransition = (*_BACnetPropertyStatesLightningTransition)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningTransition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesLightningTransition struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesLightningTransition) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesLightningTransition) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesLightningTransition) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesLightningTransition) GetLightningTransition() BACn
 
 // NewBACnetPropertyStatesLightningTransition factory function for _BACnetPropertyStatesLightningTransition
 func NewBACnetPropertyStatesLightningTransition(lightningTransition BACnetLightingTransitionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLightningTransition {
-	_result := &_BACnetPropertyStatesLightningTransition{
-		LightningTransition:   lightningTransition,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if lightningTransition == nil {
+		panic("lightningTransition of type BACnetLightingTransitionTagged for BACnetPropertyStatesLightningTransition must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesLightningTransition{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LightningTransition:          lightningTransition,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesLightningTransition) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesLightningTransition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (lightningTransition)
 	lengthInBits += m.LightningTransition.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesLightningTransition) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLightningTransitionParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {
-	return BACnetPropertyStatesLightningTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesLightningTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {
+func (m *_BACnetPropertyStatesLightningTransition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLightningTransition BACnetPropertyStatesLightningTransition, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningTransition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLightningTransition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightningTransition)
-	if pullErr := readBuffer.PullContext("lightningTransition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightningTransition")
+	lightningTransition, err := ReadSimpleField[BACnetLightingTransitionTagged](ctx, "lightningTransition", ReadComplex[BACnetLightingTransitionTagged](BACnetLightingTransitionTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightningTransition' field"))
 	}
-	_lightningTransition, _lightningTransitionErr := BACnetLightingTransitionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _lightningTransitionErr != nil {
-		return nil, errors.Wrap(_lightningTransitionErr, "Error parsing 'lightningTransition' field of BACnetPropertyStatesLightningTransition")
-	}
-	lightningTransition := _lightningTransition.(BACnetLightingTransitionTagged)
-	if closeErr := readBuffer.CloseContext("lightningTransition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightningTransition")
-	}
+	m.LightningTransition = lightningTransition
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLightningTransition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLightningTransition")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesLightningTransition{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		LightningTransition:   lightningTransition,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesLightningTransition) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesLightningTransition) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLightningTransition")
 		}
 
-		// Simple Field (lightningTransition)
-		if pushErr := writeBuffer.PushContext("lightningTransition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightningTransition")
-		}
-		_lightningTransitionErr := writeBuffer.WriteSerializable(ctx, m.GetLightningTransition())
-		if popErr := writeBuffer.PopContext("lightningTransition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightningTransition")
-		}
-		if _lightningTransitionErr != nil {
-			return errors.Wrap(_lightningTransitionErr, "Error serializing 'lightningTransition' field")
+		if err := WriteSimpleField[BACnetLightingTransitionTagged](ctx, "lightningTransition", m.GetLightningTransition(), WriteComplex[BACnetLightingTransitionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightningTransition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLightningTransition"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesLightningTransition) SerializeWithWriteBuffer(ctx 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesLightningTransition) isBACnetPropertyStatesLightningTransition() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesLightningTransition) IsBACnetPropertyStatesLightningTransition() {}
 
 func (m *_BACnetPropertyStatesLightningTransition) String() string {
 	if m == nil {

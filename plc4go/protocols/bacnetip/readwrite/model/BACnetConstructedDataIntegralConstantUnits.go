@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataIntegralConstantUnits interface {
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
-}
-
-// BACnetConstructedDataIntegralConstantUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegralConstantUnits.
-// This is useful for switch cases.
-type BACnetConstructedDataIntegralConstantUnitsExactly interface {
-	BACnetConstructedDataIntegralConstantUnits
-	isBACnetConstructedDataIntegralConstantUnits() bool
+	// IsBACnetConstructedDataIntegralConstantUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIntegralConstantUnits()
 }
 
 // _BACnetConstructedDataIntegralConstantUnits is the data-structure of this message
 type _BACnetConstructedDataIntegralConstantUnits struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Units BACnetEngineeringUnitsTagged
 }
+
+var _ BACnetConstructedDataIntegralConstantUnits = (*_BACnetConstructedDataIntegralConstantUnits)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegralConstantUnits)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataIntegralConstantUnits) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataIntegralConstantUnits) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataIntegralConstantUnits) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataIntegralConstantUnits) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataIntegralConstantUnits) GetActualValue() BACnetEng
 
 // NewBACnetConstructedDataIntegralConstantUnits factory function for _BACnetConstructedDataIntegralConstantUnits
 func NewBACnetConstructedDataIntegralConstantUnits(units BACnetEngineeringUnitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstantUnits {
-	_result := &_BACnetConstructedDataIntegralConstantUnits{
-		Units:                  units,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataIntegralConstantUnits must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataIntegralConstantUnits{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Units:                         units,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataIntegralConstantUnits) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIntegralConstantUnits) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (units)
 	lengthInBits += m.Units.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataIntegralConstantUnits) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataIntegralConstantUnitsParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstantUnits, error) {
-	return BACnetConstructedDataIntegralConstantUnitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataIntegralConstantUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstantUnits, error) {
+func (m *_BACnetConstructedDataIntegralConstantUnits) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIntegralConstantUnits BACnetConstructedDataIntegralConstantUnits, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegralConstantUnits"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIntegralConstantUnits")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (units)
-	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for units")
+	units, err := ReadSimpleField[BACnetEngineeringUnitsTagged](ctx, "units", ReadComplex[BACnetEngineeringUnitsTagged](BACnetEngineeringUnitsTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'units' field"))
 	}
-	_units, _unitsErr := BACnetEngineeringUnitsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _unitsErr != nil {
-		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of BACnetConstructedDataIntegralConstantUnits")
-	}
-	units := _units.(BACnetEngineeringUnitsTagged)
-	if closeErr := readBuffer.CloseContext("units"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for units")
-	}
+	m.Units = units
 
-	// Virtual field
-	_actualValue := units
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetEngineeringUnitsTagged](ctx, "actualValue", (*BACnetEngineeringUnitsTagged)(nil), units)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegralConstantUnits"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntegralConstantUnits")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataIntegralConstantUnits{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Units: units,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataIntegralConstantUnits) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataIntegralConstantUnits) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIntegralConstantUnits")
 		}
 
-		// Simple Field (units)
-		if pushErr := writeBuffer.PushContext("units"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for units")
-		}
-		_unitsErr := writeBuffer.WriteSerializable(ctx, m.GetUnits())
-		if popErr := writeBuffer.PopContext("units"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for units")
-		}
-		if _unitsErr != nil {
-			return errors.Wrap(_unitsErr, "Error serializing 'units' field")
+		if err := WriteSimpleField[BACnetEngineeringUnitsTagged](ctx, "units", m.GetUnits(), WriteComplex[BACnetEngineeringUnitsTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'units' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataIntegralConstantUnits) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataIntegralConstantUnits) isBACnetConstructedDataIntegralConstantUnits() bool {
-	return true
+func (m *_BACnetConstructedDataIntegralConstantUnits) IsBACnetConstructedDataIntegralConstantUnits() {
 }
 
 func (m *_BACnetConstructedDataIntegralConstantUnits) String() string {

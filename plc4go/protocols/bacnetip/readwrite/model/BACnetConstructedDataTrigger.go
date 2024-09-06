@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataTrigger interface {
 	GetTrigger() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataTriggerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrigger.
-// This is useful for switch cases.
-type BACnetConstructedDataTriggerExactly interface {
-	BACnetConstructedDataTrigger
-	isBACnetConstructedDataTrigger() bool
+	// IsBACnetConstructedDataTrigger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTrigger()
 }
 
 // _BACnetConstructedDataTrigger is the data-structure of this message
 type _BACnetConstructedDataTrigger struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Trigger BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataTrigger = (*_BACnetConstructedDataTrigger)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrigger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataTrigger) GetPropertyIdentifierArgument() BACnetPr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTrigger) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTrigger) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTrigger) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataTrigger) GetActualValue() BACnetApplicationTagBoo
 
 // NewBACnetConstructedDataTrigger factory function for _BACnetConstructedDataTrigger
 func NewBACnetConstructedDataTrigger(trigger BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrigger {
-	_result := &_BACnetConstructedDataTrigger{
-		Trigger:                trigger,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if trigger == nil {
+		panic("trigger of type BACnetApplicationTagBoolean for BACnetConstructedDataTrigger must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataTrigger{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Trigger:                       trigger,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataTrigger) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTrigger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (trigger)
 	lengthInBits += m.Trigger.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataTrigger) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTriggerParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrigger, error) {
-	return BACnetConstructedDataTriggerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTriggerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrigger, error) {
+func (m *_BACnetConstructedDataTrigger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTrigger BACnetConstructedDataTrigger, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrigger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTrigger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (trigger)
-	if pullErr := readBuffer.PullContext("trigger"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for trigger")
+	trigger, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "trigger", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trigger' field"))
 	}
-	_trigger, _triggerErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _triggerErr != nil {
-		return nil, errors.Wrap(_triggerErr, "Error parsing 'trigger' field of BACnetConstructedDataTrigger")
-	}
-	trigger := _trigger.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("trigger"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for trigger")
-	}
+	m.Trigger = trigger
 
-	// Virtual field
-	_actualValue := trigger
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), trigger)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrigger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTrigger")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTrigger{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Trigger: trigger,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTrigger) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTrigger")
 		}
 
-		// Simple Field (trigger)
-		if pushErr := writeBuffer.PushContext("trigger"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for trigger")
-		}
-		_triggerErr := writeBuffer.WriteSerializable(ctx, m.GetTrigger())
-		if popErr := writeBuffer.PopContext("trigger"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for trigger")
-		}
-		if _triggerErr != nil {
-			return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "trigger", m.GetTrigger(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trigger' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTrigger) isBACnetConstructedDataTrigger() bool {
-	return true
-}
+func (m *_BACnetConstructedDataTrigger) IsBACnetConstructedDataTrigger() {}
 
 func (m *_BACnetConstructedDataTrigger) String() string {
 	if m == nil {

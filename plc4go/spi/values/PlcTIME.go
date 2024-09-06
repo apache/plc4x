@@ -86,7 +86,7 @@ func (m PlcTIME) Serialize() ([]byte, error) {
 }
 
 func (m PlcTIME) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+	return writeBuffer.WriteString("PlcTIME", uint32(len([]rune(m.GetString()))*8), m.GetString())
 }
 
 func (m PlcTIME) String() string {

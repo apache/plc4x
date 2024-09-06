@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type IdentifyReplyCommandLogicalAssignment interface {
 	IdentifyReplyCommand
 	// GetLogicAssigment returns LogicAssigment (property field)
 	GetLogicAssigment() []LogicAssignment
-}
-
-// IdentifyReplyCommandLogicalAssignmentExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandLogicalAssignment.
-// This is useful for switch cases.
-type IdentifyReplyCommandLogicalAssignmentExactly interface {
-	IdentifyReplyCommandLogicalAssignment
-	isIdentifyReplyCommandLogicalAssignment() bool
+	// IsIdentifyReplyCommandLogicalAssignment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandLogicalAssignment()
 }
 
 // _IdentifyReplyCommandLogicalAssignment is the data-structure of this message
 type _IdentifyReplyCommandLogicalAssignment struct {
-	*_IdentifyReplyCommand
+	IdentifyReplyCommandContract
 	LogicAssigment []LogicAssignment
 }
+
+var _ IdentifyReplyCommandLogicalAssignment = (*_IdentifyReplyCommandLogicalAssignment)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandLogicalAssignment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_IdentifyReplyCommandLogicalAssignment) InitializeParent(parent IdentifyReplyCommand) {}
-
-func (m *_IdentifyReplyCommandLogicalAssignment) GetParent() IdentifyReplyCommand {
-	return m._IdentifyReplyCommand
+func (m *_IdentifyReplyCommandLogicalAssignment) GetParent() IdentifyReplyCommandContract {
+	return m.IdentifyReplyCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLogicAssigment() []LogicAssi
 // NewIdentifyReplyCommandLogicalAssignment factory function for _IdentifyReplyCommandLogicalAssignment
 func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, numBytes uint8) *_IdentifyReplyCommandLogicalAssignment {
 	_result := &_IdentifyReplyCommandLogicalAssignment{
-		LogicAssigment:        logicAssigment,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		LogicAssigment:               logicAssigment,
 	}
-	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.LogicAssigment) > 0 {
@@ -133,61 +131,28 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandLogicalAssignmentParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
-	return IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
-}
-
-func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
+func (m *_IdentifyReplyCommandLogicalAssignment) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandLogicalAssignment IdentifyReplyCommandLogicalAssignment, err error) {
+	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandLogicalAssignment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandLogicalAssignment")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (logicAssigment)
-	if pullErr := readBuffer.PullContext("logicAssigment", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for logicAssigment")
+	logicAssigment, err := ReadCountArrayField[LogicAssignment](ctx, "logicAssigment", ReadComplex[LogicAssignment](LogicAssignmentParseWithBuffer, readBuffer), uint64(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logicAssigment' field"))
 	}
-	// Count array
-	logicAssigment := make([]LogicAssignment, max(numBytes, 0))
-	// This happens when the size is set conditional to 0
-	if len(logicAssigment) == 0 {
-		logicAssigment = nil
-	}
-	{
-		_numItems := uint16(max(numBytes, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := LogicAssignmentParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'logicAssigment' field of IdentifyReplyCommandLogicalAssignment")
-			}
-			logicAssigment[_curItem] = _item.(LogicAssignment)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("logicAssigment", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for logicAssigment")
-	}
+	m.LogicAssigment = logicAssigment
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandLogicalAssignment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandLogicalAssignment")
 	}
 
-	// Create a partially initialized instance
-	_child := &_IdentifyReplyCommandLogicalAssignment{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
-		LogicAssigment: logicAssigment,
-	}
-	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_IdentifyReplyCommandLogicalAssignment) Serialize() ([]byte, error) {
@@ -208,21 +173,8 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandLogicalAssignment")
 		}
 
-		// Array Field (logicAssigment)
-		if pushErr := writeBuffer.PushContext("logicAssigment", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for logicAssigment")
-		}
-		for _curItem, _element := range m.GetLogicAssigment() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLogicAssigment()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'logicAssigment' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("logicAssigment", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for logicAssigment")
+		if err := WriteComplexTypeArrayField(ctx, "logicAssigment", m.GetLogicAssigment(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'logicAssigment' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandLogicalAssignment"); popErr != nil {
@@ -230,12 +182,10 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) isIdentifyReplyCommandLogicalAssignment() bool {
-	return true
-}
+func (m *_IdentifyReplyCommandLogicalAssignment) IsIdentifyReplyCommandLogicalAssignment() {}
 
 func (m *_IdentifyReplyCommandLogicalAssignment) String() string {
 	if m == nil {

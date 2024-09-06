@@ -75,13 +75,13 @@ public class BACnetFaultParameterFaultCharacterStringListOfFaultValues implement
     writeBuffer.pushContext("BACnetFaultParameterFaultCharacterStringListOfFaultValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfFaultValues)
     writeComplexTypeArrayField("listOfFaultValues", listOfFaultValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultCharacterStringListOfFaultValues");
   }
@@ -122,13 +122,13 @@ public class BACnetFaultParameterFaultCharacterStringListOfFaultValues implement
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetApplicationTagCharacterString> listOfFaultValues =
         readTerminatedArrayField(
             "listOfFaultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -141,7 +141,7 @@ public class BACnetFaultParameterFaultCharacterStringListOfFaultValues implement
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultCharacterStringListOfFaultValues");

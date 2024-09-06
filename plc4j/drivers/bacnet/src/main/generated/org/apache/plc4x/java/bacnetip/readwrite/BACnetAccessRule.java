@@ -84,29 +84,21 @@ public class BACnetAccessRule implements Message {
     writeBuffer.pushContext("BACnetAccessRule");
 
     // Simple Field (timeRangeSpecifier)
-    writeSimpleField(
-        "timeRangeSpecifier", timeRangeSpecifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeRangeSpecifier", timeRangeSpecifier, writeComplex(writeBuffer));
 
     // Optional Field (timeRange) (Can be skipped, if the value is null)
     writeOptionalField(
-        "timeRange",
-        timeRange,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (getTimeRangeSpecifier()) != (null));
+        "timeRange", timeRange, writeComplex(writeBuffer), (getTimeRangeSpecifier()) != (null));
 
     // Simple Field (locationSpecifier)
-    writeSimpleField(
-        "locationSpecifier", locationSpecifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("locationSpecifier", locationSpecifier, writeComplex(writeBuffer));
 
     // Optional Field (location) (Can be skipped, if the value is null)
     writeOptionalField(
-        "location",
-        location,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (getLocationSpecifier()) != (null));
+        "location", location, writeComplex(writeBuffer), (getLocationSpecifier()) != (null));
 
     // Simple Field (enable)
-    writeSimpleField("enable", enable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enable", enable, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAccessRule");
   }
@@ -152,7 +144,7 @@ public class BACnetAccessRule implements Message {
     BACnetAccessRuleTimeRangeSpecifierTagged timeRangeSpecifier =
         readSimpleField(
             "timeRangeSpecifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessRuleTimeRangeSpecifierTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -161,7 +153,7 @@ public class BACnetAccessRule implements Message {
     BACnetDeviceObjectPropertyReferenceEnclosed timeRange =
         readOptionalField(
             "timeRange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -171,7 +163,7 @@ public class BACnetAccessRule implements Message {
     BACnetAccessRuleLocationSpecifierTagged locationSpecifier =
         readSimpleField(
             "locationSpecifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessRuleLocationSpecifierTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -180,7 +172,7 @@ public class BACnetAccessRule implements Message {
     BACnetDeviceObjectReferenceEnclosed location =
         readOptionalField(
             "location",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (3)),
                 readBuffer),
             (locationSpecifier) != (null));
@@ -188,7 +180,7 @@ public class BACnetAccessRule implements Message {
     BACnetContextTagBoolean enable =
         readSimpleField(
             "enable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

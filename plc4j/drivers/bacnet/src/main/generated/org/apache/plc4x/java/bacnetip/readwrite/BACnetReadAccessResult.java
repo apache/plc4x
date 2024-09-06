@@ -63,11 +63,10 @@ public class BACnetReadAccessResult implements Message {
     writeBuffer.pushContext("BACnetReadAccessResult");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (listOfResults) (Can be skipped, if the value is null)
-    writeOptionalField("listOfResults", listOfResults, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("listOfResults", listOfResults, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetReadAccessResult");
   }
@@ -102,7 +101,7 @@ public class BACnetReadAccessResult implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -114,7 +113,7 @@ public class BACnetReadAccessResult implements Message {
     BACnetReadAccessResultListOfResults listOfResults =
         readOptionalField(
             "listOfResults",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReadAccessResultListOfResults.staticParse(
                         readBuffer,

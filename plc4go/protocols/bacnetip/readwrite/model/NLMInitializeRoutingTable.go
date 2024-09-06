@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type NLMInitializeRoutingTable interface {
 	GetNumberOfPorts() uint8
 	// GetPortMappings returns PortMappings (property field)
 	GetPortMappings() []NLMInitializeRoutingTablePortMapping
-}
-
-// NLMInitializeRoutingTableExactly can be used when we want exactly this type and not a type which fulfills NLMInitializeRoutingTable.
-// This is useful for switch cases.
-type NLMInitializeRoutingTableExactly interface {
-	NLMInitializeRoutingTable
-	isNLMInitializeRoutingTable() bool
+	// IsNLMInitializeRoutingTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMInitializeRoutingTable()
 }
 
 // _NLMInitializeRoutingTable is the data-structure of this message
 type _NLMInitializeRoutingTable struct {
-	*_NLM
+	NLMContract
 	NumberOfPorts uint8
 	PortMappings  []NLMInitializeRoutingTablePortMapping
 }
+
+var _ NLMInitializeRoutingTable = (*_NLMInitializeRoutingTable)(nil)
+var _ NLMRequirements = (*_NLMInitializeRoutingTable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_NLMInitializeRoutingTable) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMInitializeRoutingTable) InitializeParent(parent NLM) {}
-
-func (m *_NLMInitializeRoutingTable) GetParent() NLM {
-	return m._NLM
+func (m *_NLMInitializeRoutingTable) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_NLMInitializeRoutingTable) GetPortMappings() []NLMInitializeRoutingTab
 // NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
 func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
 	_result := &_NLMInitializeRoutingTable{
+		NLMContract:   NewNLM(apduLength),
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
-		_NLM:          NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_NLMInitializeRoutingTable) GetTypeName() string {
 }
 
 func (m *_NLMInitializeRoutingTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (numberOfPorts)
 	lengthInBits += 8
@@ -144,69 +142,34 @@ func (m *_NLMInitializeRoutingTable) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMInitializeRoutingTableParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMInitializeRoutingTable, error) {
-	return NLMInitializeRoutingTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMInitializeRoutingTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMInitializeRoutingTable, error) {
+func (m *_NLMInitializeRoutingTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMInitializeRoutingTable NLMInitializeRoutingTable, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMInitializeRoutingTable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMInitializeRoutingTable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfPorts)
-	_numberOfPorts, _numberOfPortsErr := readBuffer.ReadUint8("numberOfPorts", 8)
-	if _numberOfPortsErr != nil {
-		return nil, errors.Wrap(_numberOfPortsErr, "Error parsing 'numberOfPorts' field of NLMInitializeRoutingTable")
+	numberOfPorts, err := ReadSimpleField(ctx, "numberOfPorts", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfPorts' field"))
 	}
-	numberOfPorts := _numberOfPorts
+	m.NumberOfPorts = numberOfPorts
 
-	// Array field (portMappings)
-	if pullErr := readBuffer.PullContext("portMappings", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for portMappings")
+	portMappings, err := ReadCountArrayField[NLMInitializeRoutingTablePortMapping](ctx, "portMappings", ReadComplex[NLMInitializeRoutingTablePortMapping](NLMInitializeRoutingTablePortMappingParseWithBuffer, readBuffer), uint64(numberOfPorts))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portMappings' field"))
 	}
-	// Count array
-	portMappings := make([]NLMInitializeRoutingTablePortMapping, max(numberOfPorts, 0))
-	// This happens when the size is set conditional to 0
-	if len(portMappings) == 0 {
-		portMappings = nil
-	}
-	{
-		_numItems := uint16(max(numberOfPorts, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NLMInitializeRoutingTablePortMappingParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'portMappings' field of NLMInitializeRoutingTable")
-			}
-			portMappings[_curItem] = _item.(NLMInitializeRoutingTablePortMapping)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("portMappings", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for portMappings")
-	}
+	m.PortMappings = portMappings
 
 	if closeErr := readBuffer.CloseContext("NLMInitializeRoutingTable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMInitializeRoutingTable")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMInitializeRoutingTable{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		NumberOfPorts: numberOfPorts,
-		PortMappings:  portMappings,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMInitializeRoutingTable) Serialize() ([]byte, error) {
@@ -227,28 +190,12 @@ func (m *_NLMInitializeRoutingTable) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for NLMInitializeRoutingTable")
 		}
 
-		// Simple Field (numberOfPorts)
-		numberOfPorts := uint8(m.GetNumberOfPorts())
-		_numberOfPortsErr := writeBuffer.WriteUint8("numberOfPorts", 8, uint8((numberOfPorts)))
-		if _numberOfPortsErr != nil {
-			return errors.Wrap(_numberOfPortsErr, "Error serializing 'numberOfPorts' field")
+		if err := WriteSimpleField[uint8](ctx, "numberOfPorts", m.GetNumberOfPorts(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfPorts' field")
 		}
 
-		// Array Field (portMappings)
-		if pushErr := writeBuffer.PushContext("portMappings", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for portMappings")
-		}
-		for _curItem, _element := range m.GetPortMappings() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPortMappings()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'portMappings' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("portMappings", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for portMappings")
+		if err := WriteComplexTypeArrayField(ctx, "portMappings", m.GetPortMappings(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'portMappings' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMInitializeRoutingTable"); popErr != nil {
@@ -256,12 +203,10 @@ func (m *_NLMInitializeRoutingTable) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMInitializeRoutingTable) isNLMInitializeRoutingTable() bool {
-	return true
-}
+func (m *_NLMInitializeRoutingTable) IsNLMInitializeRoutingTable() {}
 
 func (m *_NLMInitializeRoutingTable) String() string {
 	if m == nil {

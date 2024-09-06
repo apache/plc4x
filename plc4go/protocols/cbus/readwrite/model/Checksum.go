@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,19 +40,16 @@ type Checksum interface {
 	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() byte
-}
-
-// ChecksumExactly can be used when we want exactly this type and not a type which fulfills Checksum.
-// This is useful for switch cases.
-type ChecksumExactly interface {
-	Checksum
-	isChecksum() bool
+	// IsChecksum is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsChecksum()
 }
 
 // _Checksum is the data-structure of this message
 type _Checksum struct {
 	Value byte
 }
+
+var _ Checksum = (*_Checksum)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func ChecksumParse(ctx context.Context, theBytes []byte) (Checksum, error) {
 	return ChecksumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ChecksumParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {
+		return ChecksumParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {
+	v, err := (&_Checksum{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_Checksum) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__checksum Checksum, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Checksum"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Checksum")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadByte("value")
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of Checksum")
+	value, err := ReadSimpleField(ctx, "value", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("Checksum"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Checksum")
 	}
 
-	// Create the instance
-	return &_Checksum{
-		Value: value,
-	}, nil
+	return m, nil
 }
 
 func (m *_Checksum) Serialize() ([]byte, error) {
@@ -148,11 +155,8 @@ func (m *_Checksum) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for Checksum")
 	}
 
-	// Simple Field (value)
-	value := byte(m.GetValue())
-	_valueErr := writeBuffer.WriteByte("value", (value))
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[byte](ctx, "value", m.GetValue(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Checksum"); popErr != nil {
@@ -161,9 +165,7 @@ func (m *_Checksum) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-func (m *_Checksum) isChecksum() bool {
-	return true
-}
+func (m *_Checksum) IsChecksum() {}
 
 func (m *_Checksum) String() string {
 	if m == nil {

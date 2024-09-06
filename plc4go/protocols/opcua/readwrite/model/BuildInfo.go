@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type BuildInfo interface {
 	GetBuildNumber() PascalString
 	// GetBuildDate returns BuildDate (property field)
 	GetBuildDate() int64
-}
-
-// BuildInfoExactly can be used when we want exactly this type and not a type which fulfills BuildInfo.
-// This is useful for switch cases.
-type BuildInfoExactly interface {
-	BuildInfo
-	isBuildInfo() bool
+	// IsBuildInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBuildInfo()
 }
 
 // _BuildInfo is the data-structure of this message
 type _BuildInfo struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ProductUri       PascalString
 	ManufacturerName PascalString
 	ProductName      PascalString
@@ -68,6 +65,9 @@ type _BuildInfo struct {
 	BuildNumber      PascalString
 	BuildDate        int64
 }
+
+var _ BuildInfo = (*_BuildInfo)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_BuildInfo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,10 +83,8 @@ func (m *_BuildInfo) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BuildInfo) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_BuildInfo) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_BuildInfo) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,16 +123,31 @@ func (m *_BuildInfo) GetBuildDate() int64 {
 
 // NewBuildInfo factory function for _BuildInfo
 func NewBuildInfo(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) *_BuildInfo {
-	_result := &_BuildInfo{
-		ProductUri:                 productUri,
-		ManufacturerName:           manufacturerName,
-		ProductName:                productName,
-		SoftwareVersion:            softwareVersion,
-		BuildNumber:                buildNumber,
-		BuildDate:                  buildDate,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if productUri == nil {
+		panic("productUri of type PascalString for BuildInfo must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if manufacturerName == nil {
+		panic("manufacturerName of type PascalString for BuildInfo must not be nil")
+	}
+	if productName == nil {
+		panic("productName of type PascalString for BuildInfo must not be nil")
+	}
+	if softwareVersion == nil {
+		panic("softwareVersion of type PascalString for BuildInfo must not be nil")
+	}
+	if buildNumber == nil {
+		panic("buildNumber of type PascalString for BuildInfo must not be nil")
+	}
+	_result := &_BuildInfo{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ProductUri:                        productUri,
+		ManufacturerName:                  manufacturerName,
+		ProductName:                       productName,
+		SoftwareVersion:                   softwareVersion,
+		BuildNumber:                       buildNumber,
+		BuildDate:                         buildDate,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -154,7 +167,7 @@ func (m *_BuildInfo) GetTypeName() string {
 }
 
 func (m *_BuildInfo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (productUri)
 	lengthInBits += m.ProductUri.GetLengthInBits(ctx)
@@ -181,109 +194,58 @@ func (m *_BuildInfo) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BuildInfoParse(ctx context.Context, theBytes []byte, identifier string) (BuildInfo, error) {
-	return BuildInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func BuildInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BuildInfo, error) {
+func (m *_BuildInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__buildInfo BuildInfo, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BuildInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BuildInfo")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (productUri)
-	if pullErr := readBuffer.PullContext("productUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for productUri")
+	productUri, err := ReadSimpleField[PascalString](ctx, "productUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productUri' field"))
 	}
-	_productUri, _productUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _productUriErr != nil {
-		return nil, errors.Wrap(_productUriErr, "Error parsing 'productUri' field of BuildInfo")
-	}
-	productUri := _productUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("productUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for productUri")
-	}
+	m.ProductUri = productUri
 
-	// Simple Field (manufacturerName)
-	if pullErr := readBuffer.PullContext("manufacturerName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for manufacturerName")
+	manufacturerName, err := ReadSimpleField[PascalString](ctx, "manufacturerName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manufacturerName' field"))
 	}
-	_manufacturerName, _manufacturerNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _manufacturerNameErr != nil {
-		return nil, errors.Wrap(_manufacturerNameErr, "Error parsing 'manufacturerName' field of BuildInfo")
-	}
-	manufacturerName := _manufacturerName.(PascalString)
-	if closeErr := readBuffer.CloseContext("manufacturerName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for manufacturerName")
-	}
+	m.ManufacturerName = manufacturerName
 
-	// Simple Field (productName)
-	if pullErr := readBuffer.PullContext("productName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for productName")
+	productName, err := ReadSimpleField[PascalString](ctx, "productName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productName' field"))
 	}
-	_productName, _productNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _productNameErr != nil {
-		return nil, errors.Wrap(_productNameErr, "Error parsing 'productName' field of BuildInfo")
-	}
-	productName := _productName.(PascalString)
-	if closeErr := readBuffer.CloseContext("productName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for productName")
-	}
+	m.ProductName = productName
 
-	// Simple Field (softwareVersion)
-	if pullErr := readBuffer.PullContext("softwareVersion"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for softwareVersion")
+	softwareVersion, err := ReadSimpleField[PascalString](ctx, "softwareVersion", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'softwareVersion' field"))
 	}
-	_softwareVersion, _softwareVersionErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _softwareVersionErr != nil {
-		return nil, errors.Wrap(_softwareVersionErr, "Error parsing 'softwareVersion' field of BuildInfo")
-	}
-	softwareVersion := _softwareVersion.(PascalString)
-	if closeErr := readBuffer.CloseContext("softwareVersion"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for softwareVersion")
-	}
+	m.SoftwareVersion = softwareVersion
 
-	// Simple Field (buildNumber)
-	if pullErr := readBuffer.PullContext("buildNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for buildNumber")
+	buildNumber, err := ReadSimpleField[PascalString](ctx, "buildNumber", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'buildNumber' field"))
 	}
-	_buildNumber, _buildNumberErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _buildNumberErr != nil {
-		return nil, errors.Wrap(_buildNumberErr, "Error parsing 'buildNumber' field of BuildInfo")
-	}
-	buildNumber := _buildNumber.(PascalString)
-	if closeErr := readBuffer.CloseContext("buildNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for buildNumber")
-	}
+	m.BuildNumber = buildNumber
 
-	// Simple Field (buildDate)
-	_buildDate, _buildDateErr := readBuffer.ReadInt64("buildDate", 64)
-	if _buildDateErr != nil {
-		return nil, errors.Wrap(_buildDateErr, "Error parsing 'buildDate' field of BuildInfo")
+	buildDate, err := ReadSimpleField(ctx, "buildDate", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'buildDate' field"))
 	}
-	buildDate := _buildDate
+	m.BuildDate = buildDate
 
 	if closeErr := readBuffer.CloseContext("BuildInfo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BuildInfo")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BuildInfo{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ProductUri:                 productUri,
-		ManufacturerName:           manufacturerName,
-		ProductName:                productName,
-		SoftwareVersion:            softwareVersion,
-		BuildNumber:                buildNumber,
-		BuildDate:                  buildDate,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BuildInfo) Serialize() ([]byte, error) {
@@ -304,71 +266,28 @@ func (m *_BuildInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for BuildInfo")
 		}
 
-		// Simple Field (productUri)
-		if pushErr := writeBuffer.PushContext("productUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for productUri")
-		}
-		_productUriErr := writeBuffer.WriteSerializable(ctx, m.GetProductUri())
-		if popErr := writeBuffer.PopContext("productUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for productUri")
-		}
-		if _productUriErr != nil {
-			return errors.Wrap(_productUriErr, "Error serializing 'productUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "productUri", m.GetProductUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'productUri' field")
 		}
 
-		// Simple Field (manufacturerName)
-		if pushErr := writeBuffer.PushContext("manufacturerName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for manufacturerName")
-		}
-		_manufacturerNameErr := writeBuffer.WriteSerializable(ctx, m.GetManufacturerName())
-		if popErr := writeBuffer.PopContext("manufacturerName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for manufacturerName")
-		}
-		if _manufacturerNameErr != nil {
-			return errors.Wrap(_manufacturerNameErr, "Error serializing 'manufacturerName' field")
+		if err := WriteSimpleField[PascalString](ctx, "manufacturerName", m.GetManufacturerName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'manufacturerName' field")
 		}
 
-		// Simple Field (productName)
-		if pushErr := writeBuffer.PushContext("productName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for productName")
-		}
-		_productNameErr := writeBuffer.WriteSerializable(ctx, m.GetProductName())
-		if popErr := writeBuffer.PopContext("productName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for productName")
-		}
-		if _productNameErr != nil {
-			return errors.Wrap(_productNameErr, "Error serializing 'productName' field")
+		if err := WriteSimpleField[PascalString](ctx, "productName", m.GetProductName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'productName' field")
 		}
 
-		// Simple Field (softwareVersion)
-		if pushErr := writeBuffer.PushContext("softwareVersion"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for softwareVersion")
-		}
-		_softwareVersionErr := writeBuffer.WriteSerializable(ctx, m.GetSoftwareVersion())
-		if popErr := writeBuffer.PopContext("softwareVersion"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for softwareVersion")
-		}
-		if _softwareVersionErr != nil {
-			return errors.Wrap(_softwareVersionErr, "Error serializing 'softwareVersion' field")
+		if err := WriteSimpleField[PascalString](ctx, "softwareVersion", m.GetSoftwareVersion(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'softwareVersion' field")
 		}
 
-		// Simple Field (buildNumber)
-		if pushErr := writeBuffer.PushContext("buildNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for buildNumber")
-		}
-		_buildNumberErr := writeBuffer.WriteSerializable(ctx, m.GetBuildNumber())
-		if popErr := writeBuffer.PopContext("buildNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for buildNumber")
-		}
-		if _buildNumberErr != nil {
-			return errors.Wrap(_buildNumberErr, "Error serializing 'buildNumber' field")
+		if err := WriteSimpleField[PascalString](ctx, "buildNumber", m.GetBuildNumber(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'buildNumber' field")
 		}
 
-		// Simple Field (buildDate)
-		buildDate := int64(m.GetBuildDate())
-		_buildDateErr := writeBuffer.WriteInt64("buildDate", 64, int64((buildDate)))
-		if _buildDateErr != nil {
-			return errors.Wrap(_buildDateErr, "Error serializing 'buildDate' field")
+		if err := WriteSimpleField[int64](ctx, "buildDate", m.GetBuildDate(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'buildDate' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BuildInfo"); popErr != nil {
@@ -376,12 +295,10 @@ func (m *_BuildInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BuildInfo) isBuildInfo() bool {
-	return true
-}
+func (m *_BuildInfo) IsBuildInfo() {}
 
 func (m *_BuildInfo) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataCOVResubscriptionInterval interface {
 	GetCovResubscriptionInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataCOVResubscriptionIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCOVResubscriptionInterval.
-// This is useful for switch cases.
-type BACnetConstructedDataCOVResubscriptionIntervalExactly interface {
-	BACnetConstructedDataCOVResubscriptionInterval
-	isBACnetConstructedDataCOVResubscriptionInterval() bool
+	// IsBACnetConstructedDataCOVResubscriptionInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCOVResubscriptionInterval()
 }
 
 // _BACnetConstructedDataCOVResubscriptionInterval is the data-structure of this message
 type _BACnetConstructedDataCOVResubscriptionInterval struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	CovResubscriptionInterval BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataCOVResubscriptionInterval = (*_BACnetConstructedDataCOVResubscriptionInterval)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVResubscriptionInterval)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetPropertyIdentifierA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataCOVResubscriptionInterval) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetActualValue() BACne
 
 // NewBACnetConstructedDataCOVResubscriptionInterval factory function for _BACnetConstructedDataCOVResubscriptionInterval
 func NewBACnetConstructedDataCOVResubscriptionInterval(covResubscriptionInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVResubscriptionInterval {
-	_result := &_BACnetConstructedDataCOVResubscriptionInterval{
-		CovResubscriptionInterval: covResubscriptionInterval,
-		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if covResubscriptionInterval == nil {
+		panic("covResubscriptionInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVResubscriptionInterval must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataCOVResubscriptionInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovResubscriptionInterval:     covResubscriptionInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (covResubscriptionInterval)
 	lengthInBits += m.CovResubscriptionInterval.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataCOVResubscriptionIntervalParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVResubscriptionInterval, error) {
-	return BACnetConstructedDataCOVResubscriptionIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataCOVResubscriptionIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVResubscriptionInterval, error) {
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCOVResubscriptionInterval BACnetConstructedDataCOVResubscriptionInterval, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVResubscriptionInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCOVResubscriptionInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (covResubscriptionInterval)
-	if pullErr := readBuffer.PullContext("covResubscriptionInterval"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for covResubscriptionInterval")
+	covResubscriptionInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covResubscriptionInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covResubscriptionInterval' field"))
 	}
-	_covResubscriptionInterval, _covResubscriptionIntervalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _covResubscriptionIntervalErr != nil {
-		return nil, errors.Wrap(_covResubscriptionIntervalErr, "Error parsing 'covResubscriptionInterval' field of BACnetConstructedDataCOVResubscriptionInterval")
-	}
-	covResubscriptionInterval := _covResubscriptionInterval.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("covResubscriptionInterval"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for covResubscriptionInterval")
-	}
+	m.CovResubscriptionInterval = covResubscriptionInterval
 
-	// Virtual field
-	_actualValue := covResubscriptionInterval
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), covResubscriptionInterval)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVResubscriptionInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCOVResubscriptionInterval")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataCOVResubscriptionInterval{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		CovResubscriptionInterval: covResubscriptionInterval,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataCOVResubscriptionInterval) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCOVResubscriptionInterval")
 		}
 
-		// Simple Field (covResubscriptionInterval)
-		if pushErr := writeBuffer.PushContext("covResubscriptionInterval"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covResubscriptionInterval")
-		}
-		_covResubscriptionIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetCovResubscriptionInterval())
-		if popErr := writeBuffer.PopContext("covResubscriptionInterval"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covResubscriptionInterval")
-		}
-		if _covResubscriptionIntervalErr != nil {
-			return errors.Wrap(_covResubscriptionIntervalErr, "Error serializing 'covResubscriptionInterval' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covResubscriptionInterval", m.GetCovResubscriptionInterval(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'covResubscriptionInterval' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionInterval) isBACnetConstructedDataCOVResubscriptionInterval() bool {
-	return true
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) IsBACnetConstructedDataCOVResubscriptionInterval() {
 }
 
 func (m *_BACnetConstructedDataCOVResubscriptionInterval) String() string {

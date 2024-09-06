@@ -84,9 +84,7 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
 
     // Simple Field (activeAuthenticationPolicy)
     writeSimpleField(
-        "activeAuthenticationPolicy",
-        activeAuthenticationPolicy,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "activeAuthenticationPolicy", activeAuthenticationPolicy, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -128,7 +126,7 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
     BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy =
         readSimpleField(
             "activeAuthenticationPolicy",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

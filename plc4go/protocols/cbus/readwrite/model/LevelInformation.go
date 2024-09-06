@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,9 +35,17 @@ import (
 
 // LevelInformation is the corresponding interface of LevelInformation
 type LevelInformation interface {
+	LevelInformationContract
+	LevelInformationRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLevelInformation()
+}
+
+// LevelInformationContract provides a set of functions which can be overwritten by a sub struct
+type LevelInformationContract interface {
 	// GetRaw returns Raw (property field)
 	GetRaw() uint16
 	// GetNibble1 returns Nibble1 (virtual field)
@@ -54,41 +64,27 @@ type LevelInformation interface {
 	GetIsCorruptedByNoiseOrLevelsDiffer() bool
 	// GetIsCorrupted returns IsCorrupted (virtual field)
 	GetIsCorrupted() bool
+	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLevelInformation()
 }
 
-// LevelInformationExactly can be used when we want exactly this type and not a type which fulfills LevelInformation.
-// This is useful for switch cases.
-type LevelInformationExactly interface {
-	LevelInformation
-	isLevelInformation() bool
+// LevelInformationRequirements provides a set of functions which need to be implemented by a sub struct
+type LevelInformationRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetIsAbsent returns IsAbsent (discriminator field)
+	GetIsAbsent() bool
+	// GetIsCorrupted returns IsCorrupted (discriminator field)
+	GetIsCorrupted() bool
 }
 
 // _LevelInformation is the data-structure of this message
 type _LevelInformation struct {
-	_LevelInformationChildRequirements
-	Raw uint16
+	_SubType LevelInformation
+	Raw      uint16
 }
 
-type _LevelInformationChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsAbsent() bool
-	GetIsCorrupted() bool
-}
-
-type LevelInformationParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LevelInformation, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type LevelInformationChild interface {
-	utils.Serializable
-	InitializeParent(parent LevelInformation, raw uint16)
-	GetParent() *LevelInformation
-
-	GetTypeName() string
-	LevelInformation
-}
+var _ LevelInformationContract = (*_LevelInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,49 +104,57 @@ func (m *_LevelInformation) GetRaw() uint16 {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_LevelInformation) GetNibble1() uint8 {
+func (pm *_LevelInformation) GetNibble1() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8((m.GetRaw() & 0xF000) >> uint8(12))
 }
 
-func (m *_LevelInformation) GetNibble2() uint8 {
+func (pm *_LevelInformation) GetNibble2() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8((m.GetRaw() & 0x0F00) >> uint8(8))
 }
 
-func (m *_LevelInformation) GetNibble3() uint8 {
+func (pm *_LevelInformation) GetNibble3() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8((m.GetRaw() & 0x00F0) >> uint8(4))
 }
 
-func (m *_LevelInformation) GetNibble4() uint8 {
+func (pm *_LevelInformation) GetNibble4() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8((m.GetRaw() & 0x000F) >> uint8(0))
 }
 
-func (m *_LevelInformation) GetIsAbsent() bool {
+func (pm *_LevelInformation) GetIsAbsent() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool(bool(bool(bool((m.GetNibble1()) == (0x0))) && bool(bool((m.GetNibble2()) == (0x0)))) && bool(bool((m.GetNibble3()) == (0x0)))) && bool(bool((m.GetNibble4()) == (0x0))))
 }
 
-func (m *_LevelInformation) GetIsCorruptedByNoise() bool {
+func (pm *_LevelInformation) GetIsCorruptedByNoise() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool(!(m.GetIsAbsent())) && bool((bool(bool(bool((bool(bool((bool((m.GetNibble1()) < (0x5)))) || bool((bool((m.GetNibble1()) == (0x8))))) || bool((bool((m.GetNibble1()) == (0xC)))))) || bool((bool(bool((bool((m.GetNibble2()) < (0x5)))) || bool((bool((m.GetNibble2()) == (0x8))))) || bool((bool((m.GetNibble2()) == (0xC))))))) || bool((bool(bool((bool((m.GetNibble3()) < (0x5)))) || bool((bool((m.GetNibble3()) == (0x8))))) || bool((bool((m.GetNibble3()) == (0xC))))))) || bool((bool(bool((bool((m.GetNibble4()) < (0x5)))) || bool((bool((m.GetNibble4()) == (0x8))))) || bool((bool((m.GetNibble4()) == (0xC)))))))))
 }
 
-func (m *_LevelInformation) GetIsCorruptedByNoiseOrLevelsDiffer() bool {
+func (pm *_LevelInformation) GetIsCorruptedByNoiseOrLevelsDiffer() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool(!(m.GetIsAbsent())) && bool((bool(bool(bool((bool(bool((bool((m.GetNibble1()) == (0x7)))) || bool((bool((m.GetNibble1()) == (0xB))))) || bool((bool((m.GetNibble1()) > (0xC)))))) || bool((bool(bool((bool((m.GetNibble2()) == (0x7)))) || bool((bool((m.GetNibble2()) == (0xB))))) || bool((bool((m.GetNibble2()) > (0xC))))))) || bool((bool(bool((bool((m.GetNibble3()) == (0x7)))) || bool((bool((m.GetNibble3()) == (0xB))))) || bool((bool((m.GetNibble3()) > (0xC))))))) || bool((bool(bool((bool((m.GetNibble4()) == (0x7)))) || bool((bool((m.GetNibble4()) == (0xB))))) || bool((bool((m.GetNibble4()) > (0xC)))))))))
 }
 
-func (m *_LevelInformation) GetIsCorrupted() bool {
+func (pm *_LevelInformation) GetIsCorrupted() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool(m.GetIsCorruptedByNoise()) || bool(m.GetIsCorruptedByNoiseOrLevelsDiffer()))
@@ -181,7 +185,7 @@ func (m *_LevelInformation) GetTypeName() string {
 	return "LevelInformation"
 }
 
-func (m *_LevelInformation) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_LevelInformation) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -204,107 +208,123 @@ func (m *_LevelInformation) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_LevelInformation) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func LevelInformationParse(ctx context.Context, theBytes []byte) (LevelInformation, error) {
-	return LevelInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func LevelInformationParse[T LevelInformation](ctx context.Context, theBytes []byte) (T, error) {
+	return LevelInformationParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformation, error) {
+func LevelInformationParseWithBufferProducer[T LevelInformation]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := LevelInformationParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func LevelInformationParseWithBuffer[T LevelInformation](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_LevelInformation{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_LevelInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__levelInformation LevelInformation, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LevelInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LevelInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (raw)
-	currentPos = positionAware.GetPos()
-	raw, _err := readBuffer.ReadUint16("raw", 16)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'raw' field of LevelInformation")
+	raw, err := ReadPeekField[uint16](ctx, "raw", ReadUnsignedShort(readBuffer, uint8(16)), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'raw' field"))
 	}
+	m.Raw = raw
 
-	readBuffer.Reset(currentPos)
-
-	// Virtual field
-	_nibble1 := (raw & 0xF000) >> uint8(12)
-	nibble1 := uint8(_nibble1)
+	nibble1, err := ReadVirtualField[uint8](ctx, "nibble1", (*uint8)(nil), (raw&0xF000)>>uint8(12))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble1' field"))
+	}
 	_ = nibble1
 
-	// Virtual field
-	_nibble2 := (raw & 0x0F00) >> uint8(8)
-	nibble2 := uint8(_nibble2)
+	nibble2, err := ReadVirtualField[uint8](ctx, "nibble2", (*uint8)(nil), (raw&0x0F00)>>uint8(8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble2' field"))
+	}
 	_ = nibble2
 
-	// Virtual field
-	_nibble3 := (raw & 0x00F0) >> uint8(4)
-	nibble3 := uint8(_nibble3)
+	nibble3, err := ReadVirtualField[uint8](ctx, "nibble3", (*uint8)(nil), (raw&0x00F0)>>uint8(4))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble3' field"))
+	}
 	_ = nibble3
 
-	// Virtual field
-	_nibble4 := (raw & 0x000F) >> uint8(0)
-	nibble4 := uint8(_nibble4)
+	nibble4, err := ReadVirtualField[uint8](ctx, "nibble4", (*uint8)(nil), (raw&0x000F)>>uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble4' field"))
+	}
 	_ = nibble4
 
-	// Virtual field
-	_isAbsent := bool(bool(bool(bool((nibble1) == (0x0))) && bool(bool((nibble2) == (0x0)))) && bool(bool((nibble3) == (0x0)))) && bool(bool((nibble4) == (0x0)))
-	isAbsent := bool(_isAbsent)
+	isAbsent, err := ReadVirtualField[bool](ctx, "isAbsent", (*bool)(nil), bool(bool(bool(bool((nibble1) == (0x0))) && bool(bool((nibble2) == (0x0)))) && bool(bool((nibble3) == (0x0)))) && bool(bool((nibble4) == (0x0))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAbsent' field"))
+	}
 	_ = isAbsent
 
-	// Virtual field
-	_isCorruptedByNoise := bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) < (0x5)))) || bool((bool((nibble1) == (0x8))))) || bool((bool((nibble1) == (0xC)))))) || bool((bool(bool((bool((nibble2) < (0x5)))) || bool((bool((nibble2) == (0x8))))) || bool((bool((nibble2) == (0xC))))))) || bool((bool(bool((bool((nibble3) < (0x5)))) || bool((bool((nibble3) == (0x8))))) || bool((bool((nibble3) == (0xC))))))) || bool((bool(bool((bool((nibble4) < (0x5)))) || bool((bool((nibble4) == (0x8))))) || bool((bool((nibble4) == (0xC))))))))
-	isCorruptedByNoise := bool(_isCorruptedByNoise)
+	isCorruptedByNoise, err := ReadVirtualField[bool](ctx, "isCorruptedByNoise", (*bool)(nil), bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) < (0x5)))) || bool((bool((nibble1) == (0x8))))) || bool((bool((nibble1) == (0xC)))))) || bool((bool(bool((bool((nibble2) < (0x5)))) || bool((bool((nibble2) == (0x8))))) || bool((bool((nibble2) == (0xC))))))) || bool((bool(bool((bool((nibble3) < (0x5)))) || bool((bool((nibble3) == (0x8))))) || bool((bool((nibble3) == (0xC))))))) || bool((bool(bool((bool((nibble4) < (0x5)))) || bool((bool((nibble4) == (0x8))))) || bool((bool((nibble4) == (0xC)))))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorruptedByNoise' field"))
+	}
 	_ = isCorruptedByNoise
 
-	// Virtual field
-	_isCorruptedByNoiseOrLevelsDiffer := bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) == (0x7)))) || bool((bool((nibble1) == (0xB))))) || bool((bool((nibble1) > (0xC)))))) || bool((bool(bool((bool((nibble2) == (0x7)))) || bool((bool((nibble2) == (0xB))))) || bool((bool((nibble2) > (0xC))))))) || bool((bool(bool((bool((nibble3) == (0x7)))) || bool((bool((nibble3) == (0xB))))) || bool((bool((nibble3) > (0xC))))))) || bool((bool(bool((bool((nibble4) == (0x7)))) || bool((bool((nibble4) == (0xB))))) || bool((bool((nibble4) > (0xC))))))))
-	isCorruptedByNoiseOrLevelsDiffer := bool(_isCorruptedByNoiseOrLevelsDiffer)
+	isCorruptedByNoiseOrLevelsDiffer, err := ReadVirtualField[bool](ctx, "isCorruptedByNoiseOrLevelsDiffer", (*bool)(nil), bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) == (0x7)))) || bool((bool((nibble1) == (0xB))))) || bool((bool((nibble1) > (0xC)))))) || bool((bool(bool((bool((nibble2) == (0x7)))) || bool((bool((nibble2) == (0xB))))) || bool((bool((nibble2) > (0xC))))))) || bool((bool(bool((bool((nibble3) == (0x7)))) || bool((bool((nibble3) == (0xB))))) || bool((bool((nibble3) > (0xC))))))) || bool((bool(bool((bool((nibble4) == (0x7)))) || bool((bool((nibble4) == (0xB))))) || bool((bool((nibble4) > (0xC)))))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorruptedByNoiseOrLevelsDiffer' field"))
+	}
 	_ = isCorruptedByNoiseOrLevelsDiffer
 
-	// Virtual field
-	_isCorrupted := bool(isCorruptedByNoise) || bool(isCorruptedByNoiseOrLevelsDiffer)
-	isCorrupted := bool(_isCorrupted)
+	isCorrupted, err := ReadVirtualField[bool](ctx, "isCorrupted", (*bool)(nil), bool(isCorruptedByNoise) || bool(isCorruptedByNoiseOrLevelsDiffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorrupted' field"))
+	}
 	_ = isCorrupted
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type LevelInformationChildSerializeRequirement interface {
-		LevelInformation
-		InitializeParent(LevelInformation, uint16)
-		GetParent() LevelInformation
-	}
-	var _childTemp any
-	var _child LevelInformationChildSerializeRequirement
-	var typeSwitchError error
+	var _child LevelInformation
 	switch {
 	case isAbsent == bool(true): // LevelInformationAbsent
-		_childTemp, typeSwitchError = LevelInformationAbsentParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_LevelInformationAbsent{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationAbsent for type-switch of LevelInformation")
+		}
 	case 0 == 0 && isCorrupted == bool(true): // LevelInformationCorrupted
-		_childTemp, typeSwitchError = LevelInformationCorruptedParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_LevelInformationCorrupted{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationCorrupted for type-switch of LevelInformation")
+		}
 	case 0 == 0: // LevelInformationNormal
-		_childTemp, typeSwitchError = LevelInformationNormalParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_LevelInformationNormal{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationNormal for type-switch of LevelInformation")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAbsent=%v, isCorrupted=%v]", isAbsent, isCorrupted)
+		return nil, errors.Errorf("Unmapped type for parameters [isAbsent=%v, isCorrupted=%v]", isAbsent, isCorrupted)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of LevelInformation")
-	}
-	_child = _childTemp.(LevelInformationChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("LevelInformation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LevelInformation")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, raw)
 	return _child, nil
 }
 
-func (pm *_LevelInformation) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LevelInformation, serializeChildFunction func() error) error {
+func (pm *_LevelInformation) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LevelInformation, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -375,17 +395,4 @@ func (pm *_LevelInformation) SerializeParent(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-func (m *_LevelInformation) isLevelInformation() bool {
-	return true
-}
-
-func (m *_LevelInformation) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_LevelInformation) IsLevelInformation() {}

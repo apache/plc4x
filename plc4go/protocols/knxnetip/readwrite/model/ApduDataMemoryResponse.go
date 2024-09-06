@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ApduDataMemoryResponse interface {
 	GetAddress() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// ApduDataMemoryResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryResponse.
-// This is useful for switch cases.
-type ApduDataMemoryResponseExactly interface {
-	ApduDataMemoryResponse
-	isApduDataMemoryResponse() bool
+	// IsApduDataMemoryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataMemoryResponse()
 }
 
 // _ApduDataMemoryResponse is the data-structure of this message
 type _ApduDataMemoryResponse struct {
-	*_ApduData
+	ApduDataContract
 	Address uint16
 	Data    []byte
 }
+
+var _ ApduDataMemoryResponse = (*_ApduDataMemoryResponse)(nil)
+var _ ApduDataRequirements = (*_ApduDataMemoryResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_ApduDataMemoryResponse) GetApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataMemoryResponse) InitializeParent(parent ApduData) {}
-
-func (m *_ApduDataMemoryResponse) GetParent() ApduData {
-	return m._ApduData
+func (m *_ApduDataMemoryResponse) GetParent() ApduDataContract {
+	return m.ApduDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_ApduDataMemoryResponse) GetData() []byte {
 // NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
 func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
 	_result := &_ApduDataMemoryResponse{
-		Address:   address,
-		Data:      data,
-		_ApduData: NewApduData(dataLength),
+		ApduDataContract: NewApduData(dataLength),
+		Address:          address,
+		Data:             data,
 	}
-	_result._ApduData._ApduDataChildRequirements = _result
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_ApduDataMemoryResponse) GetTypeName() string {
 }
 
 func (m *_ApduDataMemoryResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Implicit Field (numBytes)
 	lengthInBits += 6
@@ -142,55 +140,40 @@ func (m *_ApduDataMemoryResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataMemoryResponseParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataMemoryResponse, error) {
-	return ApduDataMemoryResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
-}
-
-func ApduDataMemoryResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryResponse, error) {
+func (m *_ApduDataMemoryResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataMemoryResponse ApduDataMemoryResponse, err error) {
+	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataMemoryResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataMemoryResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (numBytes) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numBytes, _numBytesErr := readBuffer.ReadUint8("numBytes", 6)
+	numBytes, err := ReadImplicitField[uint8](ctx, "numBytes", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBytes' field"))
+	}
 	_ = numBytes
-	if _numBytesErr != nil {
-		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field of ApduDataMemoryResponse")
-	}
 
-	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadUint16("address", 16)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ApduDataMemoryResponse")
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
-	// Byte Array field (data)
-	numberOfBytesdata := int(numBytes)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataMemoryResponse")
+	m.Address = address
+
+	data, err := readBuffer.ReadByteArray("data", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataMemoryResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataMemoryResponse{
-		_ApduData: &_ApduData{
-			DataLength: dataLength,
-		},
-		Address: address,
-		Data:    data,
-	}
-	_child._ApduData._ApduDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataMemoryResponse) Serialize() ([]byte, error) {
@@ -210,24 +193,16 @@ func (m *_ApduDataMemoryResponse) SerializeWithWriteBuffer(ctx context.Context, 
 		if pushErr := writeBuffer.PushContext("ApduDataMemoryResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ApduDataMemoryResponse")
 		}
-
-		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numBytes := uint8(uint8(len(m.GetData())))
-		_numBytesErr := writeBuffer.WriteUint8("numBytes", 6, uint8((numBytes)))
-		if _numBytesErr != nil {
-			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
+		if err := WriteImplicitField(ctx, "numBytes", numBytes, WriteUnsignedByte(writeBuffer, 6)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numBytes' field")
 		}
 
-		// Simple Field (address)
-		address := uint16(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint16("address", 16, uint16((address)))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[uint16](ctx, "address", m.GetAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -236,12 +211,10 @@ func (m *_ApduDataMemoryResponse) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataContract.(*_ApduData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataMemoryResponse) isApduDataMemoryResponse() bool {
-	return true
-}
+func (m *_ApduDataMemoryResponse) IsApduDataMemoryResponse() {}
 
 func (m *_ApduDataMemoryResponse) String() string {
 	if m == nil {

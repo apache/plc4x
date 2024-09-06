@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,19 +40,16 @@ type IPAddress interface {
 	utils.Serializable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
-}
-
-// IPAddressExactly can be used when we want exactly this type and not a type which fulfills IPAddress.
-// This is useful for switch cases.
-type IPAddressExactly interface {
-	IPAddress
-	isIPAddress() bool
+	// IsIPAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIPAddress()
 }
 
 // _IPAddress is the data-structure of this message
 type _IPAddress struct {
 	Addr []byte
 }
+
+var _ IPAddress = (*_IPAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -105,31 +104,40 @@ func IPAddressParse(ctx context.Context, theBytes []byte) (IPAddress, error) {
 	return IPAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func IPAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {
+		return IPAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func IPAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {
+	v, err := (&_IPAddress{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_IPAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__iPAddress IPAddress, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IPAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IPAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (addr)
-	numberOfBytesaddr := int(uint16(4))
-	addr, _readArrayErr := readBuffer.ReadByteArray("addr", numberOfBytesaddr)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'addr' field of IPAddress")
+
+	addr, err := readBuffer.ReadByteArray("addr", int(int32(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addr' field"))
 	}
+	m.Addr = addr
 
 	if closeErr := readBuffer.CloseContext("IPAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IPAddress")
 	}
 
-	// Create the instance
-	return &_IPAddress{
-		Addr: addr,
-	}, nil
+	return m, nil
 }
 
 func (m *_IPAddress) Serialize() ([]byte, error) {
@@ -149,9 +157,7 @@ func (m *_IPAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for IPAddress")
 	}
 
-	// Array Field (addr)
-	// Byte Array field (addr)
-	if err := writeBuffer.WriteByteArray("addr", m.GetAddr()); err != nil {
+	if err := WriteByteArrayField(ctx, "addr", m.GetAddr(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'addr' field")
 	}
 
@@ -161,9 +167,7 @@ func (m *_IPAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	return nil
 }
 
-func (m *_IPAddress) isIPAddress() bool {
-	return true
-}
+func (m *_IPAddress) IsIPAddress() {}
 
 func (m *_IPAddress) String() string {
 	if m == nil {

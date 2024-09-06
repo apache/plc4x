@@ -82,7 +82,7 @@ public class BACnetConstructedDataScaleFactor extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataScaleFactor");
 
     // Simple Field (scaleFactor)
-    writeSimpleField("scaleFactor", scaleFactor, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("scaleFactor", scaleFactor, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataScaleFactor extends BACnetConstructedData impl
     BACnetApplicationTagReal scaleFactor =
         readSimpleField(
             "scaleFactor",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

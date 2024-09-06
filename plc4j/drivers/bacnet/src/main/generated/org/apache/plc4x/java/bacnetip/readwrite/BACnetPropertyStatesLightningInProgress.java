@@ -61,8 +61,7 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
     writeBuffer.pushContext("BACnetPropertyStatesLightningInProgress");
 
     // Simple Field (lightningInProgress)
-    writeSimpleField(
-        "lightningInProgress", lightningInProgress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightningInProgress", lightningInProgress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLightningInProgress");
   }
@@ -93,7 +92,7 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
     BACnetLightingInProgressTagged lightningInProgress =
         readSimpleField(
             "lightningInProgress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingInProgressTagged.staticParse(
                         readBuffer,

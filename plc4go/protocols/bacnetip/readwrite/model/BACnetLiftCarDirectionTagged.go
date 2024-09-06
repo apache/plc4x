@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,13 +46,8 @@ type BACnetLiftCarDirectionTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-}
-
-// BACnetLiftCarDirectionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarDirectionTagged.
-// This is useful for switch cases.
-type BACnetLiftCarDirectionTaggedExactly interface {
-	BACnetLiftCarDirectionTagged
-	isBACnetLiftCarDirectionTagged() bool
+	// IsBACnetLiftCarDirectionTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLiftCarDirectionTagged()
 }
 
 // _BACnetLiftCarDirectionTagged is the data-structure of this message
@@ -63,6 +60,8 @@ type _BACnetLiftCarDirectionTagged struct {
 	TagNumber uint8
 	TagClass  TagClass
 }
+
+var _ BACnetLiftCarDirectionTagged = (*_BACnetLiftCarDirectionTagged)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,6 +102,9 @@ func (m *_BACnetLiftCarDirectionTagged) GetIsProprietary() bool {
 
 // NewBACnetLiftCarDirectionTagged factory function for _BACnetLiftCarDirectionTagged
 func NewBACnetLiftCarDirectionTagged(header BACnetTagHeader, value BACnetLiftCarDirection, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDirectionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftCarDirectionTagged must not be nil")
+	}
 	return &_BACnetLiftCarDirectionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 
@@ -146,77 +148,68 @@ func BACnetLiftCarDirectionTaggedParse(ctx context.Context, theBytes []byte, tag
 	return BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetLiftCarDirectionTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarDirectionTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarDirectionTagged, error) {
+		return BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetLiftCarDirectionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftCarDirectionTagged, error) {
+	v, err := (&_BACnetLiftCarDirectionTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetLiftCarDirectionTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetLiftCarDirectionTagged BACnetLiftCarDirectionTagged, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLiftCarDirectionTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLiftCarDirectionTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetLiftCarDirectionTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftCarDirectionTagged")
+	value, err := ReadManualField[BACnetLiftCarDirection](ctx, "value", readBuffer, EnsureType[BACnetLiftCarDirection](ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	var value BACnetLiftCarDirection
-	if _value != nil {
-		value = _value.(BACnetLiftCarDirection)
-	}
+	m.Value = value
 
-	// Virtual field
-	_isProprietary := bool((value) == (BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
+	isProprietary, err := ReadVirtualField[bool](ctx, "isProprietary", (*bool)(nil), bool((value) == (BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isProprietary' field"))
+	}
 	_ = isProprietary
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetLiftCarDirectionTagged")
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}
-	var proprietaryValue uint32
-	if _proprietaryValue != nil {
-		proprietaryValue = _proprietaryValue.(uint32)
-	}
+	m.ProprietaryValue = proprietaryValue
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftCarDirectionTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLiftCarDirectionTagged")
 	}
 
-	// Create the instance
-	return &_BACnetLiftCarDirectionTagged{
-		TagNumber:        tagNumber,
-		TagClass:         tagClass,
-		Header:           header,
-		Value:            value,
-		ProprietaryValue: proprietaryValue,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetLiftCarDirectionTagged) Serialize() ([]byte, error) {
@@ -236,22 +229,12 @@ func (m *_BACnetLiftCarDirectionTagged) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(pushErr, "Error pushing for BACnetLiftCarDirectionTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetLiftCarDirection](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 	// Virtual field
 	isProprietary := m.GetIsProprietary()
@@ -260,10 +243,10 @@ func (m *_BACnetLiftCarDirectionTagged) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
-	if _proprietaryValueErr != nil {
-		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
+	if err := WriteManualField[uint32](ctx, "proprietaryValue", func(ctx context.Context) error {
+		return WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
+	}, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'proprietaryValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLiftCarDirectionTagged"); popErr != nil {
@@ -285,9 +268,7 @@ func (m *_BACnetLiftCarDirectionTagged) GetTagClass() TagClass {
 //
 ////
 
-func (m *_BACnetLiftCarDirectionTagged) isBACnetLiftCarDirectionTagged() bool {
-	return true
-}
+func (m *_BACnetLiftCarDirectionTagged) IsBACnetLiftCarDirectionTagged() {}
 
 func (m *_BACnetLiftCarDirectionTagged) String() string {
 	if m == nil {

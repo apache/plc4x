@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataPulseRate interface {
 	GetPulseRate() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataPulseRateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPulseRate.
-// This is useful for switch cases.
-type BACnetConstructedDataPulseRateExactly interface {
-	BACnetConstructedDataPulseRate
-	isBACnetConstructedDataPulseRate() bool
+	// IsBACnetConstructedDataPulseRate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPulseRate()
 }
 
 // _BACnetConstructedDataPulseRate is the data-structure of this message
 type _BACnetConstructedDataPulseRate struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	PulseRate BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataPulseRate = (*_BACnetConstructedDataPulseRate)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseRate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataPulseRate) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataPulseRate) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataPulseRate) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataPulseRate) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataPulseRate) GetActualValue() BACnetApplicationTagU
 
 // NewBACnetConstructedDataPulseRate factory function for _BACnetConstructedDataPulseRate
 func NewBACnetConstructedDataPulseRate(pulseRate BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseRate {
-	_result := &_BACnetConstructedDataPulseRate{
-		PulseRate:              pulseRate,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if pulseRate == nil {
+		panic("pulseRate of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPulseRate must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataPulseRate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PulseRate:                     pulseRate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataPulseRate) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataPulseRate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (pulseRate)
 	lengthInBits += m.PulseRate.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataPulseRate) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataPulseRateParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPulseRate, error) {
-	return BACnetConstructedDataPulseRateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataPulseRateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPulseRate, error) {
+func (m *_BACnetConstructedDataPulseRate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPulseRate BACnetConstructedDataPulseRate, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPulseRate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPulseRate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pulseRate)
-	if pullErr := readBuffer.PullContext("pulseRate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pulseRate")
+	pulseRate, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "pulseRate", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pulseRate' field"))
 	}
-	_pulseRate, _pulseRateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _pulseRateErr != nil {
-		return nil, errors.Wrap(_pulseRateErr, "Error parsing 'pulseRate' field of BACnetConstructedDataPulseRate")
-	}
-	pulseRate := _pulseRate.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("pulseRate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pulseRate")
-	}
+	m.PulseRate = pulseRate
 
-	// Virtual field
-	_actualValue := pulseRate
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), pulseRate)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPulseRate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPulseRate")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataPulseRate{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		PulseRate: pulseRate,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataPulseRate) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataPulseRate) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPulseRate")
 		}
 
-		// Simple Field (pulseRate)
-		if pushErr := writeBuffer.PushContext("pulseRate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pulseRate")
-		}
-		_pulseRateErr := writeBuffer.WriteSerializable(ctx, m.GetPulseRate())
-		if popErr := writeBuffer.PopContext("pulseRate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pulseRate")
-		}
-		if _pulseRateErr != nil {
-			return errors.Wrap(_pulseRateErr, "Error serializing 'pulseRate' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "pulseRate", m.GetPulseRate(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pulseRate' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataPulseRate) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataPulseRate) isBACnetConstructedDataPulseRate() bool {
-	return true
-}
+func (m *_BACnetConstructedDataPulseRate) IsBACnetConstructedDataPulseRate() {}
 
 func (m *_BACnetConstructedDataPulseRate) String() string {
 	if m == nil {

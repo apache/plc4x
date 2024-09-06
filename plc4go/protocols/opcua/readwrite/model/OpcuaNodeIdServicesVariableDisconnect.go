@@ -109,7 +109,7 @@ func OpcuaNodeIdServicesVariableDisconnectParse(ctx context.Context, theBytes []
 func OpcuaNodeIdServicesVariableDisconnectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaNodeIdServicesVariableDisconnect, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadInt32("OpcuaNodeIdServicesVariableDisconnect", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("OpcuaNodeIdServicesVariableDisconnect", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading OpcuaNodeIdServicesVariableDisconnect")
 	}
@@ -132,7 +132,11 @@ func (e OpcuaNodeIdServicesVariableDisconnect) Serialize() ([]byte, error) {
 func (e OpcuaNodeIdServicesVariableDisconnect) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteInt32("OpcuaNodeIdServicesVariableDisconnect", 32, int32(int32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteInt32("OpcuaNodeIdServicesVariableDisconnect", 32, int32(int32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+func (e OpcuaNodeIdServicesVariableDisconnect) GetValue() int32 {
+	return int32(e)
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

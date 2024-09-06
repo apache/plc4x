@@ -86,10 +86,10 @@ public class BACnetEventTransitionBitsTagged implements Message {
     writeBuffer.pushContext("BACnetEventTransitionBitsTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean toOffnormal = getToOffnormal();
@@ -140,9 +140,7 @@ public class BACnetEventTransitionBitsTagged implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getTagClass()) == (tagClass))) {
       throw new ParseValidationException("tag class doesn't match");
@@ -156,7 +154,7 @@ public class BACnetEventTransitionBitsTagged implements Message {
     BACnetTagPayloadBitString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadBitString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

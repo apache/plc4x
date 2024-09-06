@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger interface 
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
-}
-
-// BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger.
-// This is useful for switch cases.
-type BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerExactly interface {
-	BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
-	isBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger() bool
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger struct {
-	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
 	IntegerValue BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger)(nil)
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) InitializeParent(parent BACnetNotificationParametersChangeOfDiscreteValueNewValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) GetParent() BACnetNotificationParametersChangeOfDiscreteValueNewValue {
-	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValue
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) GetParent() BACnetNotificationParametersChangeOfDiscreteValueNewValueContract {
+	return m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) GetI
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger(integerValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger {
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger{
-		IntegerValue: integerValue,
-		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger must not be nil")
 	}
-	_result._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _result
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger{
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		IntegerValue: integerValue,
+	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) GetT
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).getLengthInBits(ctx))
 
 	// Simple field (integerValue)
 	lengthInBits += m.IntegerValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) GetL
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger, error) {
-	return BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger, error) {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParametersChangeOfDiscreteValueNewValue, tagNumber uint8) (__bACnetNotificationParametersChangeOfDiscreteValueNewValueInteger BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger, err error) {
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (integerValue)
-	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
+	integerValue, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "integerValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integerValue' field"))
 	}
-	_integerValue, _integerValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _integerValueErr != nil {
-		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
-	}
-	integerValue := _integerValue.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for integerValue")
-	}
+	m.IntegerValue = integerValue
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger{
-		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
-			TagNumber: tagNumber,
-		},
-		IntegerValue: integerValue,
-	}
-	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) Seri
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 		}
 
-		// Simple Field (integerValue)
-		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for integerValue")
-		}
-		_integerValueErr := writeBuffer.WriteSerializable(ctx, m.GetIntegerValue())
-		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for integerValue")
-		}
-		if _integerValueErr != nil {
-			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "integerValue", m.GetIntegerValue(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'integerValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger"); popErr != nil {
@@ -204,11 +174,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) Seri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) isBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger() bool {
-	return true
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger() {
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) String() string {

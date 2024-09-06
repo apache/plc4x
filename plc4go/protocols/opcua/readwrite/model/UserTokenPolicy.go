@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,24 +49,22 @@ type UserTokenPolicy interface {
 	GetIssuerEndpointUrl() PascalString
 	// GetSecurityPolicyUri returns SecurityPolicyUri (property field)
 	GetSecurityPolicyUri() PascalString
-}
-
-// UserTokenPolicyExactly can be used when we want exactly this type and not a type which fulfills UserTokenPolicy.
-// This is useful for switch cases.
-type UserTokenPolicyExactly interface {
-	UserTokenPolicy
-	isUserTokenPolicy() bool
+	// IsUserTokenPolicy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUserTokenPolicy()
 }
 
 // _UserTokenPolicy is the data-structure of this message
 type _UserTokenPolicy struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	PolicyId          PascalString
 	TokenType         UserTokenType
 	IssuedTokenType   PascalString
 	IssuerEndpointUrl PascalString
 	SecurityPolicyUri PascalString
 }
+
+var _ UserTokenPolicy = (*_UserTokenPolicy)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UserTokenPolicy)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_UserTokenPolicy) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_UserTokenPolicy) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_UserTokenPolicy) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_UserTokenPolicy) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,15 +116,27 @@ func (m *_UserTokenPolicy) GetSecurityPolicyUri() PascalString {
 
 // NewUserTokenPolicy factory function for _UserTokenPolicy
 func NewUserTokenPolicy(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) *_UserTokenPolicy {
-	_result := &_UserTokenPolicy{
-		PolicyId:                   policyId,
-		TokenType:                  tokenType,
-		IssuedTokenType:            issuedTokenType,
-		IssuerEndpointUrl:          issuerEndpointUrl,
-		SecurityPolicyUri:          securityPolicyUri,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if policyId == nil {
+		panic("policyId of type PascalString for UserTokenPolicy must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if issuedTokenType == nil {
+		panic("issuedTokenType of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if issuerEndpointUrl == nil {
+		panic("issuerEndpointUrl of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for UserTokenPolicy must not be nil")
+	}
+	_result := &_UserTokenPolicy{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		TokenType:                         tokenType,
+		IssuedTokenType:                   issuedTokenType,
+		IssuerEndpointUrl:                 issuerEndpointUrl,
+		SecurityPolicyUri:                 securityPolicyUri,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -146,7 +156,7 @@ func (m *_UserTokenPolicy) GetTypeName() string {
 }
 
 func (m *_UserTokenPolicy) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (policyId)
 	lengthInBits += m.PolicyId.GetLengthInBits(ctx)
@@ -170,101 +180,52 @@ func (m *_UserTokenPolicy) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func UserTokenPolicyParse(ctx context.Context, theBytes []byte, identifier string) (UserTokenPolicy, error) {
-	return UserTokenPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func UserTokenPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserTokenPolicy, error) {
+func (m *_UserTokenPolicy) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__userTokenPolicy UserTokenPolicy, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UserTokenPolicy"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UserTokenPolicy")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (policyId)
-	if pullErr := readBuffer.PullContext("policyId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for policyId")
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
 	}
-	_policyId, _policyIdErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _policyIdErr != nil {
-		return nil, errors.Wrap(_policyIdErr, "Error parsing 'policyId' field of UserTokenPolicy")
-	}
-	policyId := _policyId.(PascalString)
-	if closeErr := readBuffer.CloseContext("policyId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for policyId")
-	}
+	m.PolicyId = policyId
 
-	// Simple Field (tokenType)
-	if pullErr := readBuffer.PullContext("tokenType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tokenType")
+	tokenType, err := ReadEnumField[UserTokenType](ctx, "tokenType", "UserTokenType", ReadEnum(UserTokenTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tokenType' field"))
 	}
-	_tokenType, _tokenTypeErr := UserTokenTypeParseWithBuffer(ctx, readBuffer)
-	if _tokenTypeErr != nil {
-		return nil, errors.Wrap(_tokenTypeErr, "Error parsing 'tokenType' field of UserTokenPolicy")
-	}
-	tokenType := _tokenType
-	if closeErr := readBuffer.CloseContext("tokenType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tokenType")
-	}
+	m.TokenType = tokenType
 
-	// Simple Field (issuedTokenType)
-	if pullErr := readBuffer.PullContext("issuedTokenType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for issuedTokenType")
+	issuedTokenType, err := ReadSimpleField[PascalString](ctx, "issuedTokenType", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuedTokenType' field"))
 	}
-	_issuedTokenType, _issuedTokenTypeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _issuedTokenTypeErr != nil {
-		return nil, errors.Wrap(_issuedTokenTypeErr, "Error parsing 'issuedTokenType' field of UserTokenPolicy")
-	}
-	issuedTokenType := _issuedTokenType.(PascalString)
-	if closeErr := readBuffer.CloseContext("issuedTokenType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for issuedTokenType")
-	}
+	m.IssuedTokenType = issuedTokenType
 
-	// Simple Field (issuerEndpointUrl)
-	if pullErr := readBuffer.PullContext("issuerEndpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for issuerEndpointUrl")
+	issuerEndpointUrl, err := ReadSimpleField[PascalString](ctx, "issuerEndpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuerEndpointUrl' field"))
 	}
-	_issuerEndpointUrl, _issuerEndpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _issuerEndpointUrlErr != nil {
-		return nil, errors.Wrap(_issuerEndpointUrlErr, "Error parsing 'issuerEndpointUrl' field of UserTokenPolicy")
-	}
-	issuerEndpointUrl := _issuerEndpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("issuerEndpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for issuerEndpointUrl")
-	}
+	m.IssuerEndpointUrl = issuerEndpointUrl
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of UserTokenPolicy")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
-	}
+	m.SecurityPolicyUri = securityPolicyUri
 
 	if closeErr := readBuffer.CloseContext("UserTokenPolicy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for UserTokenPolicy")
 	}
 
-	// Create a partially initialized instance
-	_child := &_UserTokenPolicy{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		PolicyId:                   policyId,
-		TokenType:                  tokenType,
-		IssuedTokenType:            issuedTokenType,
-		IssuerEndpointUrl:          issuerEndpointUrl,
-		SecurityPolicyUri:          securityPolicyUri,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_UserTokenPolicy) Serialize() ([]byte, error) {
@@ -285,64 +246,24 @@ func (m *_UserTokenPolicy) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for UserTokenPolicy")
 		}
 
-		// Simple Field (policyId)
-		if pushErr := writeBuffer.PushContext("policyId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for policyId")
-		}
-		_policyIdErr := writeBuffer.WriteSerializable(ctx, m.GetPolicyId())
-		if popErr := writeBuffer.PopContext("policyId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for policyId")
-		}
-		if _policyIdErr != nil {
-			return errors.Wrap(_policyIdErr, "Error serializing 'policyId' field")
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyId' field")
 		}
 
-		// Simple Field (tokenType)
-		if pushErr := writeBuffer.PushContext("tokenType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tokenType")
-		}
-		_tokenTypeErr := writeBuffer.WriteSerializable(ctx, m.GetTokenType())
-		if popErr := writeBuffer.PopContext("tokenType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tokenType")
-		}
-		if _tokenTypeErr != nil {
-			return errors.Wrap(_tokenTypeErr, "Error serializing 'tokenType' field")
+		if err := WriteSimpleEnumField[UserTokenType](ctx, "tokenType", "UserTokenType", m.GetTokenType(), WriteEnum[UserTokenType, uint32](UserTokenType.GetValue, UserTokenType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'tokenType' field")
 		}
 
-		// Simple Field (issuedTokenType)
-		if pushErr := writeBuffer.PushContext("issuedTokenType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for issuedTokenType")
-		}
-		_issuedTokenTypeErr := writeBuffer.WriteSerializable(ctx, m.GetIssuedTokenType())
-		if popErr := writeBuffer.PopContext("issuedTokenType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for issuedTokenType")
-		}
-		if _issuedTokenTypeErr != nil {
-			return errors.Wrap(_issuedTokenTypeErr, "Error serializing 'issuedTokenType' field")
+		if err := WriteSimpleField[PascalString](ctx, "issuedTokenType", m.GetIssuedTokenType(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'issuedTokenType' field")
 		}
 
-		// Simple Field (issuerEndpointUrl)
-		if pushErr := writeBuffer.PushContext("issuerEndpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for issuerEndpointUrl")
-		}
-		_issuerEndpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetIssuerEndpointUrl())
-		if popErr := writeBuffer.PopContext("issuerEndpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for issuerEndpointUrl")
-		}
-		if _issuerEndpointUrlErr != nil {
-			return errors.Wrap(_issuerEndpointUrlErr, "Error serializing 'issuerEndpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "issuerEndpointUrl", m.GetIssuerEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'issuerEndpointUrl' field")
 		}
 
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UserTokenPolicy"); popErr != nil {
@@ -350,12 +271,10 @@ func (m *_UserTokenPolicy) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_UserTokenPolicy) isUserTokenPolicy() bool {
-	return true
-}
+func (m *_UserTokenPolicy) IsUserTokenPolicy() {}
 
 func (m *_UserTokenPolicy) String() string {
 	if m == nil {

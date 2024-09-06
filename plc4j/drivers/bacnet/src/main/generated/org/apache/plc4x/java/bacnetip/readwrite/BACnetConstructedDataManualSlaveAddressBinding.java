@@ -119,8 +119,7 @@ public class BACnetConstructedDataManualSlaveAddressBinding extends BACnetConstr
     List<BACnetAddressBinding> manualSlaveAddressBinding =
         readTerminatedArrayField(
             "manualSlaveAddressBinding",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAddressBinding.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetAddressBinding.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

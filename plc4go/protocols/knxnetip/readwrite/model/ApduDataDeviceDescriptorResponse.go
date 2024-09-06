@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ApduDataDeviceDescriptorResponse interface {
 	GetDescriptorType() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// ApduDataDeviceDescriptorResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataDeviceDescriptorResponse.
-// This is useful for switch cases.
-type ApduDataDeviceDescriptorResponseExactly interface {
-	ApduDataDeviceDescriptorResponse
-	isApduDataDeviceDescriptorResponse() bool
+	// IsApduDataDeviceDescriptorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataDeviceDescriptorResponse()
 }
 
 // _ApduDataDeviceDescriptorResponse is the data-structure of this message
 type _ApduDataDeviceDescriptorResponse struct {
-	*_ApduData
+	ApduDataContract
 	DescriptorType uint8
 	Data           []byte
 }
+
+var _ ApduDataDeviceDescriptorResponse = (*_ApduDataDeviceDescriptorResponse)(nil)
+var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_ApduDataDeviceDescriptorResponse) GetApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataDeviceDescriptorResponse) InitializeParent(parent ApduData) {}
-
-func (m *_ApduDataDeviceDescriptorResponse) GetParent() ApduData {
-	return m._ApduData
+func (m *_ApduDataDeviceDescriptorResponse) GetParent() ApduDataContract {
+	return m.ApduDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_ApduDataDeviceDescriptorResponse) GetData() []byte {
 // NewApduDataDeviceDescriptorResponse factory function for _ApduDataDeviceDescriptorResponse
 func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *_ApduDataDeviceDescriptorResponse {
 	_result := &_ApduDataDeviceDescriptorResponse{
-		DescriptorType: descriptorType,
-		Data:           data,
-		_ApduData:      NewApduData(dataLength),
+		ApduDataContract: NewApduData(dataLength),
+		DescriptorType:   descriptorType,
+		Data:             data,
 	}
-	_result._ApduData._ApduDataChildRequirements = _result
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_ApduDataDeviceDescriptorResponse) GetTypeName() string {
 }
 
 func (m *_ApduDataDeviceDescriptorResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -139,48 +137,34 @@ func (m *_ApduDataDeviceDescriptorResponse) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataDeviceDescriptorResponseParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataDeviceDescriptorResponse, error) {
-	return ApduDataDeviceDescriptorResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
-}
-
-func ApduDataDeviceDescriptorResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorResponse, error) {
+func (m *_ApduDataDeviceDescriptorResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataDeviceDescriptorResponse ApduDataDeviceDescriptorResponse, err error) {
+	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataDeviceDescriptorResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (descriptorType)
-	_descriptorType, _descriptorTypeErr := readBuffer.ReadUint8("descriptorType", 6)
-	if _descriptorTypeErr != nil {
-		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field of ApduDataDeviceDescriptorResponse")
+	descriptorType, err := ReadSimpleField(ctx, "descriptorType", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'descriptorType' field"))
 	}
-	descriptorType := _descriptorType
-	// Byte Array field (data)
-	numberOfBytesdata := int(utils.InlineIf((bool((dataLength) < (1))), func() any { return uint16(uint16(0)) }, func() any { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataDeviceDescriptorResponse")
+	m.DescriptorType = descriptorType
+
+	data, err := readBuffer.ReadByteArray("data", int(utils.InlineIf((bool((dataLength) < (1))), func() any { return int32(int32(0)) }, func() any { return int32(int32(dataLength) - int32(int32(1))) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("ApduDataDeviceDescriptorResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataDeviceDescriptorResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataDeviceDescriptorResponse{
-		_ApduData: &_ApduData{
-			DataLength: dataLength,
-		},
-		DescriptorType: descriptorType,
-		Data:           data,
-	}
-	_child._ApduData._ApduDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataDeviceDescriptorResponse) Serialize() ([]byte, error) {
@@ -201,16 +185,11 @@ func (m *_ApduDataDeviceDescriptorResponse) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for ApduDataDeviceDescriptorResponse")
 		}
 
-		// Simple Field (descriptorType)
-		descriptorType := uint8(m.GetDescriptorType())
-		_descriptorTypeErr := writeBuffer.WriteUint8("descriptorType", 6, uint8((descriptorType)))
-		if _descriptorTypeErr != nil {
-			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
+		if err := WriteSimpleField[uint8](ctx, "descriptorType", m.GetDescriptorType(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+			return errors.Wrap(err, "Error serializing 'descriptorType' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -219,12 +198,10 @@ func (m *_ApduDataDeviceDescriptorResponse) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataContract.(*_ApduData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataDeviceDescriptorResponse) isApduDataDeviceDescriptorResponse() bool {
-	return true
-}
+func (m *_ApduDataDeviceDescriptorResponse) IsApduDataDeviceDescriptorResponse() {}
 
 func (m *_ApduDataDeviceDescriptorResponse) String() string {
 	if m == nil {

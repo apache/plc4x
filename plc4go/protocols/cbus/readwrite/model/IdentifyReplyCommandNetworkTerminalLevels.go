@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type IdentifyReplyCommandNetworkTerminalLevels interface {
 	IdentifyReplyCommand
 	// GetNetworkTerminalLevels returns NetworkTerminalLevels (property field)
 	GetNetworkTerminalLevels() []byte
-}
-
-// IdentifyReplyCommandNetworkTerminalLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandNetworkTerminalLevels.
-// This is useful for switch cases.
-type IdentifyReplyCommandNetworkTerminalLevelsExactly interface {
-	IdentifyReplyCommandNetworkTerminalLevels
-	isIdentifyReplyCommandNetworkTerminalLevels() bool
+	// IsIdentifyReplyCommandNetworkTerminalLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandNetworkTerminalLevels()
 }
 
 // _IdentifyReplyCommandNetworkTerminalLevels is the data-structure of this message
 type _IdentifyReplyCommandNetworkTerminalLevels struct {
-	*_IdentifyReplyCommand
+	IdentifyReplyCommandContract
 	NetworkTerminalLevels []byte
 }
+
+var _ IdentifyReplyCommandNetworkTerminalLevels = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) InitializeParent(parent IdentifyReplyCommand) {}
-
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetParent() IdentifyReplyCommand {
-	return m._IdentifyReplyCommand
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetParent() IdentifyReplyCommandContract {
+	return m.IdentifyReplyCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetNetworkTerminalLevels() 
 // NewIdentifyReplyCommandNetworkTerminalLevels factory function for _IdentifyReplyCommandNetworkTerminalLevels
 func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandNetworkTerminalLevels {
 	_result := &_IdentifyReplyCommandNetworkTerminalLevels{
-		NetworkTerminalLevels: networkTerminalLevels,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		NetworkTerminalLevels:        networkTerminalLevels,
 	}
-	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.NetworkTerminalLevels) > 0 {
@@ -128,40 +126,28 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandNetworkTerminalLevelsParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkTerminalLevels, error) {
-	return IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
-}
-
-func IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkTerminalLevels, error) {
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandNetworkTerminalLevels IdentifyReplyCommandNetworkTerminalLevels, err error) {
+	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkTerminalLevels"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandNetworkTerminalLevels")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (networkTerminalLevels)
-	numberOfBytesnetworkTerminalLevels := int(numBytes)
-	networkTerminalLevels, _readArrayErr := readBuffer.ReadByteArray("networkTerminalLevels", numberOfBytesnetworkTerminalLevels)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'networkTerminalLevels' field of IdentifyReplyCommandNetworkTerminalLevels")
+
+	networkTerminalLevels, err := readBuffer.ReadByteArray("networkTerminalLevels", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkTerminalLevels' field"))
 	}
+	m.NetworkTerminalLevels = networkTerminalLevels
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandNetworkTerminalLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandNetworkTerminalLevels")
 	}
 
-	// Create a partially initialized instance
-	_child := &_IdentifyReplyCommandNetworkTerminalLevels{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
-		NetworkTerminalLevels: networkTerminalLevels,
-	}
-	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) Serialize() ([]byte, error) {
@@ -182,9 +168,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandNetworkTerminalLevels")
 		}
 
-		// Array Field (networkTerminalLevels)
-		// Byte Array field (networkTerminalLevels)
-		if err := writeBuffer.WriteByteArray("networkTerminalLevels", m.GetNetworkTerminalLevels()); err != nil {
+		if err := WriteByteArrayField(ctx, "networkTerminalLevels", m.GetNetworkTerminalLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkTerminalLevels' field")
 		}
 
@@ -193,12 +177,10 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) isIdentifyReplyCommandNetworkTerminalLevels() bool {
-	return true
-}
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) IsIdentifyReplyCommandNetworkTerminalLevels() {}
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) String() string {
 	if m == nil {

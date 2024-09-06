@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type MediaTransportControlDataCategoryName interface {
 	MediaTransportControlData
 	// GetCategoryName returns CategoryName (property field)
 	GetCategoryName() string
-}
-
-// MediaTransportControlDataCategoryNameExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataCategoryName.
-// This is useful for switch cases.
-type MediaTransportControlDataCategoryNameExactly interface {
-	MediaTransportControlDataCategoryName
-	isMediaTransportControlDataCategoryName() bool
+	// IsMediaTransportControlDataCategoryName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataCategoryName()
 }
 
 // _MediaTransportControlDataCategoryName is the data-structure of this message
 type _MediaTransportControlDataCategoryName struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	CategoryName string
 }
+
+var _ MediaTransportControlDataCategoryName = (*_MediaTransportControlDataCategoryName)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataCategoryName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _MediaTransportControlDataCategoryName struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataCategoryName) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataCategoryName) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataCategoryName) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_MediaTransportControlDataCategoryName) GetCategoryName() string {
 // NewMediaTransportControlDataCategoryName factory function for _MediaTransportControlDataCategoryName
 func NewMediaTransportControlDataCategoryName(categoryName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataCategoryName {
 	_result := &_MediaTransportControlDataCategoryName{
-		CategoryName:               categoryName,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		CategoryName:                      categoryName,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_MediaTransportControlDataCategoryName) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataCategoryName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (categoryName)
 	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
@@ -125,39 +120,28 @@ func (m *_MediaTransportControlDataCategoryName) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataCategoryNameParse(ctx context.Context, theBytes []byte, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataCategoryName, error) {
-	return MediaTransportControlDataCategoryNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
-}
-
-func MediaTransportControlDataCategoryNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataCategoryName, error) {
+func (m *_MediaTransportControlDataCategoryName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer) (__mediaTransportControlDataCategoryName MediaTransportControlDataCategoryName, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataCategoryName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataCategoryName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (categoryName)
-	_categoryName, _categoryNameErr := readBuffer.ReadString("categoryName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), "UTF-8")
-	if _categoryNameErr != nil {
-		return nil, errors.Wrap(_categoryNameErr, "Error parsing 'categoryName' field of MediaTransportControlDataCategoryName")
+	categoryName, err := ReadSimpleField(ctx, "categoryName", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'categoryName' field"))
 	}
-	categoryName := _categoryName
+	m.CategoryName = categoryName
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataCategoryName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataCategoryName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataCategoryName{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		CategoryName:               categoryName,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataCategoryName) Serialize() ([]byte, error) {
@@ -178,11 +162,8 @@ func (m *_MediaTransportControlDataCategoryName) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataCategoryName")
 		}
 
-		// Simple Field (categoryName)
-		categoryName := string(m.GetCategoryName())
-		_categoryNameErr := writeBuffer.WriteString("categoryName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), "UTF-8", (categoryName))
-		if _categoryNameErr != nil {
-			return errors.Wrap(_categoryNameErr, "Error serializing 'categoryName' field")
+		if err := WriteSimpleField[string](ctx, "categoryName", m.GetCategoryName(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'categoryName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataCategoryName"); popErr != nil {
@@ -190,12 +171,10 @@ func (m *_MediaTransportControlDataCategoryName) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataCategoryName) isMediaTransportControlDataCategoryName() bool {
-	return true
-}
+func (m *_MediaTransportControlDataCategoryName) IsMediaTransportControlDataCategoryName() {}
 
 func (m *_MediaTransportControlDataCategoryName) String() string {
 	if m == nil {

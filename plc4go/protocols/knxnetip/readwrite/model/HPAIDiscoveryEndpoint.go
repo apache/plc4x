@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type HPAIDiscoveryEndpoint interface {
 	GetIpAddress() IPAddress
 	// GetIpPort returns IpPort (property field)
 	GetIpPort() uint16
-}
-
-// HPAIDiscoveryEndpointExactly can be used when we want exactly this type and not a type which fulfills HPAIDiscoveryEndpoint.
-// This is useful for switch cases.
-type HPAIDiscoveryEndpointExactly interface {
-	HPAIDiscoveryEndpoint
-	isHPAIDiscoveryEndpoint() bool
+	// IsHPAIDiscoveryEndpoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHPAIDiscoveryEndpoint()
 }
 
 // _HPAIDiscoveryEndpoint is the data-structure of this message
@@ -57,6 +54,8 @@ type _HPAIDiscoveryEndpoint struct {
 	IpAddress        IPAddress
 	IpPort           uint16
 }
+
+var _ HPAIDiscoveryEndpoint = (*_HPAIDiscoveryEndpoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,6 +81,9 @@ func (m *_HPAIDiscoveryEndpoint) GetIpPort() uint16 {
 
 // NewHPAIDiscoveryEndpoint factory function for _HPAIDiscoveryEndpoint
 func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDiscoveryEndpoint {
+	if ipAddress == nil {
+		panic("ipAddress of type IPAddress for HPAIDiscoveryEndpoint must not be nil")
+	}
 	return &_HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 
@@ -126,67 +128,58 @@ func HPAIDiscoveryEndpointParse(ctx context.Context, theBytes []byte) (HPAIDisco
 	return HPAIDiscoveryEndpointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HPAIDiscoveryEndpointParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {
+		return HPAIDiscoveryEndpointParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HPAIDiscoveryEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {
+	v, err := (&_HPAIDiscoveryEndpoint{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_HPAIDiscoveryEndpoint) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hPAIDiscoveryEndpoint HPAIDiscoveryEndpoint, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HPAIDiscoveryEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HPAIDiscoveryEndpoint")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
+	}
 	_ = structureLength
-	if _structureLengthErr != nil {
-		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of HPAIDiscoveryEndpoint")
-	}
 
-	// Simple Field (hostProtocolCode)
-	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hostProtocolCode")
+	hostProtocolCode, err := ReadEnumField[HostProtocolCode](ctx, "hostProtocolCode", "HostProtocolCode", ReadEnum(HostProtocolCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hostProtocolCode' field"))
 	}
-	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParseWithBuffer(ctx, readBuffer)
-	if _hostProtocolCodeErr != nil {
-		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field of HPAIDiscoveryEndpoint")
-	}
-	hostProtocolCode := _hostProtocolCode
-	if closeErr := readBuffer.CloseContext("hostProtocolCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hostProtocolCode")
-	}
+	m.HostProtocolCode = hostProtocolCode
 
-	// Simple Field (ipAddress)
-	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
+	ipAddress, err := ReadSimpleField[IPAddress](ctx, "ipAddress", ReadComplex[IPAddress](IPAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipAddress' field"))
 	}
-	_ipAddress, _ipAddressErr := IPAddressParseWithBuffer(ctx, readBuffer)
-	if _ipAddressErr != nil {
-		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of HPAIDiscoveryEndpoint")
-	}
-	ipAddress := _ipAddress.(IPAddress)
-	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
-	}
+	m.IpAddress = ipAddress
 
-	// Simple Field (ipPort)
-	_ipPort, _ipPortErr := readBuffer.ReadUint16("ipPort", 16)
-	if _ipPortErr != nil {
-		return nil, errors.Wrap(_ipPortErr, "Error parsing 'ipPort' field of HPAIDiscoveryEndpoint")
+	ipPort, err := ReadSimpleField(ctx, "ipPort", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipPort' field"))
 	}
-	ipPort := _ipPort
+	m.IpPort = ipPort
 
 	if closeErr := readBuffer.CloseContext("HPAIDiscoveryEndpoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HPAIDiscoveryEndpoint")
 	}
 
-	// Create the instance
-	return &_HPAIDiscoveryEndpoint{
-		HostProtocolCode: hostProtocolCode,
-		IpAddress:        ipAddress,
-		IpPort:           ipPort,
-	}, nil
+	return m, nil
 }
 
 func (m *_HPAIDiscoveryEndpoint) Serialize() ([]byte, error) {
@@ -205,43 +198,21 @@ func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(ctx context.Context, w
 	if pushErr := writeBuffer.PushContext("HPAIDiscoveryEndpoint"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for HPAIDiscoveryEndpoint")
 	}
-
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
-	if _structureLengthErr != nil {
-		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
+	if err := WriteImplicitField(ctx, "structureLength", structureLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (hostProtocolCode)
-	if pushErr := writeBuffer.PushContext("hostProtocolCode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for hostProtocolCode")
-	}
-	_hostProtocolCodeErr := writeBuffer.WriteSerializable(ctx, m.GetHostProtocolCode())
-	if popErr := writeBuffer.PopContext("hostProtocolCode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for hostProtocolCode")
-	}
-	if _hostProtocolCodeErr != nil {
-		return errors.Wrap(_hostProtocolCodeErr, "Error serializing 'hostProtocolCode' field")
+	if err := WriteSimpleEnumField[HostProtocolCode](ctx, "hostProtocolCode", "HostProtocolCode", m.GetHostProtocolCode(), WriteEnum[HostProtocolCode, uint8](HostProtocolCode.GetValue, HostProtocolCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'hostProtocolCode' field")
 	}
 
-	// Simple Field (ipAddress)
-	if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ipAddress")
-	}
-	_ipAddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpAddress())
-	if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ipAddress")
-	}
-	if _ipAddressErr != nil {
-		return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
+	if err := WriteSimpleField[IPAddress](ctx, "ipAddress", m.GetIpAddress(), WriteComplex[IPAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ipAddress' field")
 	}
 
-	// Simple Field (ipPort)
-	ipPort := uint16(m.GetIpPort())
-	_ipPortErr := writeBuffer.WriteUint16("ipPort", 16, uint16((ipPort)))
-	if _ipPortErr != nil {
-		return errors.Wrap(_ipPortErr, "Error serializing 'ipPort' field")
+	if err := WriteSimpleField[uint16](ctx, "ipPort", m.GetIpPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ipPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("HPAIDiscoveryEndpoint"); popErr != nil {
@@ -250,9 +221,7 @@ func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-func (m *_HPAIDiscoveryEndpoint) isHPAIDiscoveryEndpoint() bool {
-	return true
-}
+func (m *_HPAIDiscoveryEndpoint) IsHPAIDiscoveryEndpoint() {}
 
 func (m *_HPAIDiscoveryEndpoint) String() string {
 	if m == nil {

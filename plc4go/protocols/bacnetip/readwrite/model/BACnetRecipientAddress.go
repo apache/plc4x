@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetRecipientAddress interface {
 	BACnetRecipient
 	// GetAddressValue returns AddressValue (property field)
 	GetAddressValue() BACnetAddressEnclosed
-}
-
-// BACnetRecipientAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientAddress.
-// This is useful for switch cases.
-type BACnetRecipientAddressExactly interface {
-	BACnetRecipientAddress
-	isBACnetRecipientAddress() bool
+	// IsBACnetRecipientAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientAddress()
 }
 
 // _BACnetRecipientAddress is the data-structure of this message
 type _BACnetRecipientAddress struct {
-	*_BACnetRecipient
+	BACnetRecipientContract
 	AddressValue BACnetAddressEnclosed
 }
+
+var _ BACnetRecipientAddress = (*_BACnetRecipientAddress)(nil)
+var _ BACnetRecipientRequirements = (*_BACnetRecipientAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetRecipientAddress struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetRecipientAddress) InitializeParent(parent BACnetRecipient, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetRecipientAddress) GetParent() BACnetRecipient {
-	return m._BACnetRecipient
+func (m *_BACnetRecipientAddress) GetParent() BACnetRecipientContract {
+	return m.BACnetRecipientContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetRecipientAddress) GetAddressValue() BACnetAddressEnclosed {
 
 // NewBACnetRecipientAddress factory function for _BACnetRecipientAddress
 func NewBACnetRecipientAddress(addressValue BACnetAddressEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetRecipientAddress {
-	_result := &_BACnetRecipientAddress{
-		AddressValue:     addressValue,
-		_BACnetRecipient: NewBACnetRecipient(peekedTagHeader),
+	if addressValue == nil {
+		panic("addressValue of type BACnetAddressEnclosed for BACnetRecipientAddress must not be nil")
 	}
-	_result._BACnetRecipient._BACnetRecipientChildRequirements = _result
+	_result := &_BACnetRecipientAddress{
+		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
+		AddressValue:            addressValue,
+	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetRecipientAddress) GetTypeName() string {
 }
 
 func (m *_BACnetRecipientAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetRecipientContract.(*_BACnetRecipient).getLengthInBits(ctx))
 
 	// Simple field (addressValue)
 	lengthInBits += m.AddressValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetRecipientAddress) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRecipientAddressParse(ctx context.Context, theBytes []byte) (BACnetRecipientAddress, error) {
-	return BACnetRecipientAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetRecipientAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientAddress, error) {
+func (m *_BACnetRecipientAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetRecipient) (__bACnetRecipientAddress BACnetRecipientAddress, err error) {
+	m.BACnetRecipientContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRecipientAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRecipientAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (addressValue)
-	if pullErr := readBuffer.PullContext("addressValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addressValue")
+	addressValue, err := ReadSimpleField[BACnetAddressEnclosed](ctx, "addressValue", ReadComplex[BACnetAddressEnclosed](BACnetAddressEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addressValue' field"))
 	}
-	_addressValue, _addressValueErr := BACnetAddressEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _addressValueErr != nil {
-		return nil, errors.Wrap(_addressValueErr, "Error parsing 'addressValue' field of BACnetRecipientAddress")
-	}
-	addressValue := _addressValue.(BACnetAddressEnclosed)
-	if closeErr := readBuffer.CloseContext("addressValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addressValue")
-	}
+	m.AddressValue = addressValue
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipientAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRecipientAddress")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetRecipientAddress{
-		_BACnetRecipient: &_BACnetRecipient{},
-		AddressValue:     addressValue,
-	}
-	_child._BACnetRecipient._BACnetRecipientChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetRecipientAddress) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetRecipientAddress) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetRecipientAddress")
 		}
 
-		// Simple Field (addressValue)
-		if pushErr := writeBuffer.PushContext("addressValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addressValue")
-		}
-		_addressValueErr := writeBuffer.WriteSerializable(ctx, m.GetAddressValue())
-		if popErr := writeBuffer.PopContext("addressValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addressValue")
-		}
-		if _addressValueErr != nil {
-			return errors.Wrap(_addressValueErr, "Error serializing 'addressValue' field")
+		if err := WriteSimpleField[BACnetAddressEnclosed](ctx, "addressValue", m.GetAddressValue(), WriteComplex[BACnetAddressEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'addressValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetRecipientAddress"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetRecipientAddress) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetRecipientContract.(*_BACnetRecipient).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetRecipientAddress) isBACnetRecipientAddress() bool {
-	return true
-}
+func (m *_BACnetRecipientAddress) IsBACnetRecipientAddress() {}
 
 func (m *_BACnetRecipientAddress) String() string {
 	if m == nil {

@@ -83,13 +83,13 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfCovReferences)
     writeComplexTypeArrayField("listOfCovReferences", listOfCovReferences, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences");
@@ -134,7 +134,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<
@@ -142,7 +142,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
         listOfCovReferences =
             readTerminatedArrayField(
                 "listOfCovReferences",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
                             .staticParse(readBuffer),
@@ -155,7 +155,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext(

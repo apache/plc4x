@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,21 +45,19 @@ type ModbusRtuADU interface {
 	GetAddress() uint8
 	// GetPdu returns Pdu (property field)
 	GetPdu() ModbusPDU
-}
-
-// ModbusRtuADUExactly can be used when we want exactly this type and not a type which fulfills ModbusRtuADU.
-// This is useful for switch cases.
-type ModbusRtuADUExactly interface {
-	ModbusRtuADU
-	isModbusRtuADU() bool
+	// IsModbusRtuADU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusRtuADU()
 }
 
 // _ModbusRtuADU is the data-structure of this message
 type _ModbusRtuADU struct {
-	*_ModbusADU
+	ModbusADUContract
 	Address uint8
 	Pdu     ModbusPDU
 }
+
+var _ ModbusRtuADU = (*_ModbusRtuADU)(nil)
+var _ ModbusADURequirements = (*_ModbusRtuADU)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +73,8 @@ func (m *_ModbusRtuADU) GetDriverType() DriverType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusRtuADU) InitializeParent(parent ModbusADU) {}
-
-func (m *_ModbusRtuADU) GetParent() ModbusADU {
-	return m._ModbusADU
+func (m *_ModbusRtuADU) GetParent() ModbusADUContract {
+	return m.ModbusADUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,12 +97,15 @@ func (m *_ModbusRtuADU) GetPdu() ModbusPDU {
 
 // NewModbusRtuADU factory function for _ModbusRtuADU
 func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU {
-	_result := &_ModbusRtuADU{
-		Address:    address,
-		Pdu:        pdu,
-		_ModbusADU: NewModbusADU(response),
+	if pdu == nil {
+		panic("pdu of type ModbusPDU for ModbusRtuADU must not be nil")
 	}
-	_result._ModbusADU._ModbusADUChildRequirements = _result
+	_result := &_ModbusRtuADU{
+		ModbusADUContract: NewModbusADU(response),
+		Address:           address,
+		Pdu:               pdu,
+	}
+	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
 	return _result
 }
 
@@ -123,7 +125,7 @@ func (m *_ModbusRtuADU) GetTypeName() string {
 }
 
 func (m *_ModbusRtuADU) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusADUContract.(*_ModbusADU).getLengthInBits(ctx))
 
 	// Simple field (address)
 	lengthInBits += 8
@@ -141,70 +143,40 @@ func (m *_ModbusRtuADU) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusRtuADUParse(ctx context.Context, theBytes []byte, driverType DriverType, response bool) (ModbusRtuADU, error) {
-	return ModbusRtuADUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
-}
-
-func ModbusRtuADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusRtuADU, error) {
+func (m *_ModbusRtuADU) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusADU, driverType DriverType, response bool) (__modbusRtuADU ModbusRtuADU, err error) {
+	m.ModbusADUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusRtuADU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusRtuADU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadUint8("address", 8)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ModbusRtuADU")
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
+	m.Address = address
 
-	// Simple Field (pdu)
-	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pdu")
+	pdu, err := ReadSimpleField[ModbusPDU](ctx, "pdu", ReadComplex[ModbusPDU](ModbusPDUParseWithBufferProducer[ModbusPDU]((bool)(response)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pdu' field"))
 	}
-	_pdu, _pduErr := ModbusPDUParseWithBuffer(ctx, readBuffer, bool(response))
-	if _pduErr != nil {
-		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field of ModbusRtuADU")
-	}
-	pdu := _pdu.(ModbusPDU)
-	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pdu")
-	}
+	m.Pdu = pdu
 
-	// Checksum Field (checksum)
-	{
-		checksumRef, _checksumRefErr := readBuffer.ReadUint16("checksum", 16)
-		if _checksumRefErr != nil {
-			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of ModbusRtuADU")
-		}
-		checksum, _checksumErr := RtuCrcCheck(ctx, address, pdu)
-		if _checksumErr != nil {
-			return nil, errors.Wrap(_checksumErr, "Checksum verification failed")
-		}
-		if checksum != checksumRef {
-			return nil, errors.Errorf("Checksum verification failed. Expected %x but got %x", checksumRef, checksum)
-		}
+	crc, err := ReadChecksumField[uint16](ctx, "crc", ReadUnsignedShort(readBuffer, uint8(16)), RtuCrcCheck(ctx, address, pdu), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
 	}
+	_ = crc
 
 	if closeErr := readBuffer.CloseContext("ModbusRtuADU"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusRtuADU")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusRtuADU{
-		_ModbusADU: &_ModbusADU{
-			Response: response,
-		},
-		Address: address,
-		Pdu:     pdu,
-	}
-	_child._ModbusADU._ModbusADUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusRtuADU) Serialize() ([]byte, error) {
@@ -225,35 +197,16 @@ func (m *_ModbusRtuADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for ModbusRtuADU")
 		}
 
-		// Simple Field (address)
-		address := uint8(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint8("address", 8, uint8((address)))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[uint8](ctx, "address", m.GetAddress(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
-		// Simple Field (pdu)
-		if pushErr := writeBuffer.PushContext("pdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pdu")
-		}
-		_pduErr := writeBuffer.WriteSerializable(ctx, m.GetPdu())
-		if popErr := writeBuffer.PopContext("pdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pdu")
-		}
-		if _pduErr != nil {
-			return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
+		if err := WriteSimpleField[ModbusPDU](ctx, "pdu", m.GetPdu(), WriteComplex[ModbusPDU](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pdu' field")
 		}
 
-		// Checksum Field (checksum) (Calculated)
-		{
-			_checksum, _checksumErr := RtuCrcCheck(ctx, m.GetAddress(), m.GetPdu())
-			if _checksumErr != nil {
-				return errors.Wrap(_checksumErr, "Checksum calculation failed")
-			}
-			_checksumWriteErr := writeBuffer.WriteUint16("checksum", 16, uint16((_checksum)))
-			if _checksumWriteErr != nil {
-				return errors.Wrap(_checksumWriteErr, "Error serializing 'checksum' field")
-			}
+		if err := WriteChecksumField[uint16](ctx, "crc", RtuCrcCheck(ctx, m.GetAddress(), m.GetPdu()), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'crc' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusRtuADU"); popErr != nil {
@@ -261,12 +214,10 @@ func (m *_ModbusRtuADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusADUContract.(*_ModbusADU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusRtuADU) isModbusRtuADU() bool {
-	return true
-}
+func (m *_ModbusRtuADU) IsModbusRtuADU() {}
 
 func (m *_ModbusRtuADU) String() string {
 	if m == nil {

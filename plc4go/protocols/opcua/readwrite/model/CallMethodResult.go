@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -51,18 +53,13 @@ type CallMethodResult interface {
 	GetNoOfOutputArguments() int32
 	// GetOutputArguments returns OutputArguments (property field)
 	GetOutputArguments() []Variant
-}
-
-// CallMethodResultExactly can be used when we want exactly this type and not a type which fulfills CallMethodResult.
-// This is useful for switch cases.
-type CallMethodResultExactly interface {
-	CallMethodResult
-	isCallMethodResult() bool
+	// IsCallMethodResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCallMethodResult()
 }
 
 // _CallMethodResult is the data-structure of this message
 type _CallMethodResult struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	StatusCode                       StatusCode
 	NoOfInputArgumentResults         int32
 	InputArgumentResults             []StatusCode
@@ -71,6 +68,9 @@ type _CallMethodResult struct {
 	NoOfOutputArguments              int32
 	OutputArguments                  []Variant
 }
+
+var _ CallMethodResult = (*_CallMethodResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CallMethodResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -86,10 +86,8 @@ func (m *_CallMethodResult) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CallMethodResult) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CallMethodResult) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CallMethodResult) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,17 +130,20 @@ func (m *_CallMethodResult) GetOutputArguments() []Variant {
 
 // NewCallMethodResult factory function for _CallMethodResult
 func NewCallMethodResult(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) *_CallMethodResult {
-	_result := &_CallMethodResult{
-		StatusCode:                       statusCode,
-		NoOfInputArgumentResults:         noOfInputArgumentResults,
-		InputArgumentResults:             inputArgumentResults,
-		NoOfInputArgumentDiagnosticInfos: noOfInputArgumentDiagnosticInfos,
-		InputArgumentDiagnosticInfos:     inputArgumentDiagnosticInfos,
-		NoOfOutputArguments:              noOfOutputArguments,
-		OutputArguments:                  outputArguments,
-		_ExtensionObjectDefinition:       NewExtensionObjectDefinition(),
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for CallMethodResult must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_CallMethodResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfInputArgumentResults:          noOfInputArgumentResults,
+		InputArgumentResults:              inputArgumentResults,
+		NoOfInputArgumentDiagnosticInfos:  noOfInputArgumentDiagnosticInfos,
+		InputArgumentDiagnosticInfos:      inputArgumentDiagnosticInfos,
+		NoOfOutputArguments:               noOfOutputArguments,
+		OutputArguments:                   outputArguments,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -162,7 +163,7 @@ func (m *_CallMethodResult) GetTypeName() string {
 }
 
 func (m *_CallMethodResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -213,153 +214,64 @@ func (m *_CallMethodResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CallMethodResultParse(ctx context.Context, theBytes []byte, identifier string) (CallMethodResult, error) {
-	return CallMethodResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CallMethodResult, error) {
+func (m *_CallMethodResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__callMethodResult CallMethodResult, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CallMethodResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CallMethodResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of CallMethodResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
-	}
+	m.StatusCode = statusCode
 
-	// Simple Field (noOfInputArgumentResults)
-	_noOfInputArgumentResults, _noOfInputArgumentResultsErr := readBuffer.ReadInt32("noOfInputArgumentResults", 32)
-	if _noOfInputArgumentResultsErr != nil {
-		return nil, errors.Wrap(_noOfInputArgumentResultsErr, "Error parsing 'noOfInputArgumentResults' field of CallMethodResult")
+	noOfInputArgumentResults, err := ReadSimpleField(ctx, "noOfInputArgumentResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArgumentResults' field"))
 	}
-	noOfInputArgumentResults := _noOfInputArgumentResults
+	m.NoOfInputArgumentResults = noOfInputArgumentResults
 
-	// Array field (inputArgumentResults)
-	if pullErr := readBuffer.PullContext("inputArgumentResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for inputArgumentResults")
+	inputArgumentResults, err := ReadCountArrayField[StatusCode](ctx, "inputArgumentResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfInputArgumentResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inputArgumentResults' field"))
 	}
-	// Count array
-	inputArgumentResults := make([]StatusCode, max(noOfInputArgumentResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(inputArgumentResults) == 0 {
-		inputArgumentResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfInputArgumentResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'inputArgumentResults' field of CallMethodResult")
-			}
-			inputArgumentResults[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("inputArgumentResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for inputArgumentResults")
-	}
+	m.InputArgumentResults = inputArgumentResults
 
-	// Simple Field (noOfInputArgumentDiagnosticInfos)
-	_noOfInputArgumentDiagnosticInfos, _noOfInputArgumentDiagnosticInfosErr := readBuffer.ReadInt32("noOfInputArgumentDiagnosticInfos", 32)
-	if _noOfInputArgumentDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfInputArgumentDiagnosticInfosErr, "Error parsing 'noOfInputArgumentDiagnosticInfos' field of CallMethodResult")
+	noOfInputArgumentDiagnosticInfos, err := ReadSimpleField(ctx, "noOfInputArgumentDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArgumentDiagnosticInfos' field"))
 	}
-	noOfInputArgumentDiagnosticInfos := _noOfInputArgumentDiagnosticInfos
+	m.NoOfInputArgumentDiagnosticInfos = noOfInputArgumentDiagnosticInfos
 
-	// Array field (inputArgumentDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("inputArgumentDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for inputArgumentDiagnosticInfos")
+	inputArgumentDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "inputArgumentDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfInputArgumentDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inputArgumentDiagnosticInfos' field"))
 	}
-	// Count array
-	inputArgumentDiagnosticInfos := make([]DiagnosticInfo, max(noOfInputArgumentDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(inputArgumentDiagnosticInfos) == 0 {
-		inputArgumentDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfInputArgumentDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'inputArgumentDiagnosticInfos' field of CallMethodResult")
-			}
-			inputArgumentDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("inputArgumentDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for inputArgumentDiagnosticInfos")
-	}
+	m.InputArgumentDiagnosticInfos = inputArgumentDiagnosticInfos
 
-	// Simple Field (noOfOutputArguments)
-	_noOfOutputArguments, _noOfOutputArgumentsErr := readBuffer.ReadInt32("noOfOutputArguments", 32)
-	if _noOfOutputArgumentsErr != nil {
-		return nil, errors.Wrap(_noOfOutputArgumentsErr, "Error parsing 'noOfOutputArguments' field of CallMethodResult")
+	noOfOutputArguments, err := ReadSimpleField(ctx, "noOfOutputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOutputArguments' field"))
 	}
-	noOfOutputArguments := _noOfOutputArguments
+	m.NoOfOutputArguments = noOfOutputArguments
 
-	// Array field (outputArguments)
-	if pullErr := readBuffer.PullContext("outputArguments", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for outputArguments")
+	outputArguments, err := ReadCountArrayField[Variant](ctx, "outputArguments", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfOutputArguments))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'outputArguments' field"))
 	}
-	// Count array
-	outputArguments := make([]Variant, max(noOfOutputArguments, 0))
-	// This happens when the size is set conditional to 0
-	if len(outputArguments) == 0 {
-		outputArguments = nil
-	}
-	{
-		_numItems := uint16(max(noOfOutputArguments, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := VariantParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'outputArguments' field of CallMethodResult")
-			}
-			outputArguments[_curItem] = _item.(Variant)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("outputArguments", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for outputArguments")
-	}
+	m.OutputArguments = outputArguments
 
 	if closeErr := readBuffer.CloseContext("CallMethodResult"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CallMethodResult")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CallMethodResult{
-		_ExtensionObjectDefinition:       &_ExtensionObjectDefinition{},
-		StatusCode:                       statusCode,
-		NoOfInputArgumentResults:         noOfInputArgumentResults,
-		InputArgumentResults:             inputArgumentResults,
-		NoOfInputArgumentDiagnosticInfos: noOfInputArgumentDiagnosticInfos,
-		InputArgumentDiagnosticInfos:     inputArgumentDiagnosticInfos,
-		NoOfOutputArguments:              noOfOutputArguments,
-		OutputArguments:                  outputArguments,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CallMethodResult) Serialize() ([]byte, error) {
@@ -380,88 +292,32 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for CallMethodResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (noOfInputArgumentResults)
-		noOfInputArgumentResults := int32(m.GetNoOfInputArgumentResults())
-		_noOfInputArgumentResultsErr := writeBuffer.WriteInt32("noOfInputArgumentResults", 32, int32((noOfInputArgumentResults)))
-		if _noOfInputArgumentResultsErr != nil {
-			return errors.Wrap(_noOfInputArgumentResultsErr, "Error serializing 'noOfInputArgumentResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfInputArgumentResults", m.GetNoOfInputArgumentResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfInputArgumentResults' field")
 		}
 
-		// Array Field (inputArgumentResults)
-		if pushErr := writeBuffer.PushContext("inputArgumentResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inputArgumentResults")
-		}
-		for _curItem, _element := range m.GetInputArgumentResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetInputArgumentResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'inputArgumentResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("inputArgumentResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inputArgumentResults")
+		if err := WriteComplexTypeArrayField(ctx, "inputArgumentResults", m.GetInputArgumentResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'inputArgumentResults' field")
 		}
 
-		// Simple Field (noOfInputArgumentDiagnosticInfos)
-		noOfInputArgumentDiagnosticInfos := int32(m.GetNoOfInputArgumentDiagnosticInfos())
-		_noOfInputArgumentDiagnosticInfosErr := writeBuffer.WriteInt32("noOfInputArgumentDiagnosticInfos", 32, int32((noOfInputArgumentDiagnosticInfos)))
-		if _noOfInputArgumentDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfInputArgumentDiagnosticInfosErr, "Error serializing 'noOfInputArgumentDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfInputArgumentDiagnosticInfos", m.GetNoOfInputArgumentDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfInputArgumentDiagnosticInfos' field")
 		}
 
-		// Array Field (inputArgumentDiagnosticInfos)
-		if pushErr := writeBuffer.PushContext("inputArgumentDiagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inputArgumentDiagnosticInfos")
-		}
-		for _curItem, _element := range m.GetInputArgumentDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetInputArgumentDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'inputArgumentDiagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("inputArgumentDiagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inputArgumentDiagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "inputArgumentDiagnosticInfos", m.GetInputArgumentDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'inputArgumentDiagnosticInfos' field")
 		}
 
-		// Simple Field (noOfOutputArguments)
-		noOfOutputArguments := int32(m.GetNoOfOutputArguments())
-		_noOfOutputArgumentsErr := writeBuffer.WriteInt32("noOfOutputArguments", 32, int32((noOfOutputArguments)))
-		if _noOfOutputArgumentsErr != nil {
-			return errors.Wrap(_noOfOutputArgumentsErr, "Error serializing 'noOfOutputArguments' field")
+		if err := WriteSimpleField[int32](ctx, "noOfOutputArguments", m.GetNoOfOutputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfOutputArguments' field")
 		}
 
-		// Array Field (outputArguments)
-		if pushErr := writeBuffer.PushContext("outputArguments", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for outputArguments")
-		}
-		for _curItem, _element := range m.GetOutputArguments() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetOutputArguments()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'outputArguments' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("outputArguments", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for outputArguments")
+		if err := WriteComplexTypeArrayField(ctx, "outputArguments", m.GetOutputArguments(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'outputArguments' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CallMethodResult"); popErr != nil {
@@ -469,12 +325,10 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CallMethodResult) isCallMethodResult() bool {
-	return true
-}
+func (m *_CallMethodResult) IsCallMethodResult() {}
 
 func (m *_CallMethodResult) String() string {
 	if m == nil {

@@ -91,30 +91,24 @@ class InformationObjectWithTreeByteTime_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PRO
 
     // Simple Field (oci)
     writeSimpleField(
-        "oci",
-        oci,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "oci", oci, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qdp)
     writeSimpleField(
-        "qdp",
-        qdp,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qdp", qdp, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp16Time2a)
     writeSimpleField(
         "cp16Time2a",
         cp16Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp24Time2a)
     writeSimpleField(
         "cp24Time2a",
         cp24Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
@@ -160,14 +154,13 @@ class InformationObjectWithTreeByteTime_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PRO
     OutputCircuitInformation oci =
         readSimpleField(
             "oci",
-            new DataReaderComplexDefault<>(
-                () -> OutputCircuitInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> OutputCircuitInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptorForPointsOfProtectionEquipment qdp =
         readSimpleField(
             "qdp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> QualityDescriptorForPointsOfProtectionEquipment.staticParse(readBuffer),
                 readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
@@ -175,15 +168,13 @@ class InformationObjectWithTreeByteTime_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PRO
     TwoOctetBinaryTime cp16Time2a =
         readSimpleField(
             "cp16Time2a",
-            new DataReaderComplexDefault<>(
-                () -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     ThreeOctetBinaryTime cp24Time2a =
         readSimpleField(
             "cp24Time2a",
-            new DataReaderComplexDefault<>(
-                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext(

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,22 +41,20 @@ type CBusPointToPointCommandDirect interface {
 	CBusPointToPointCommand
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
-}
-
-// CBusPointToPointCommandDirectExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommandDirect.
-// This is useful for switch cases.
-type CBusPointToPointCommandDirectExactly interface {
-	CBusPointToPointCommandDirect
-	isCBusPointToPointCommandDirect() bool
+	// IsCBusPointToPointCommandDirect is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToPointCommandDirect()
 }
 
 // _CBusPointToPointCommandDirect is the data-structure of this message
 type _CBusPointToPointCommandDirect struct {
-	*_CBusPointToPointCommand
+	CBusPointToPointCommandContract
 	UnitAddress UnitAddress
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ CBusPointToPointCommandDirect = (*_CBusPointToPointCommandDirect)(nil)
+var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandDirect)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,13 +66,8 @@ type _CBusPointToPointCommandDirect struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointCommandDirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData) {
-	m.BridgeAddressCountPeek = bridgeAddressCountPeek
-	m.CalData = calData
-}
-
-func (m *_CBusPointToPointCommandDirect) GetParent() CBusPointToPointCommand {
-	return m._CBusPointToPointCommand
+func (m *_CBusPointToPointCommandDirect) GetParent() CBusPointToPointCommandContract {
+	return m.CBusPointToPointCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,11 +86,14 @@ func (m *_CBusPointToPointCommandDirect) GetUnitAddress() UnitAddress {
 
 // NewCBusPointToPointCommandDirect factory function for _CBusPointToPointCommandDirect
 func NewCBusPointToPointCommandDirect(unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommandDirect {
-	_result := &_CBusPointToPointCommandDirect{
-		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for CBusPointToPointCommandDirect must not be nil")
 	}
-	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result
+	_result := &_CBusPointToPointCommandDirect{
+		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+		UnitAddress:                     unitAddress,
+	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
 	return _result
 }
 
@@ -115,7 +113,7 @@ func (m *_CBusPointToPointCommandDirect) GetTypeName() string {
 }
 
 func (m *_CBusPointToPointCommandDirect) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).getLengthInBits(ctx))
 
 	// Simple field (unitAddress)
 	lengthInBits += m.UnitAddress.GetLengthInBits(ctx)
@@ -130,65 +128,34 @@ func (m *_CBusPointToPointCommandDirect) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusPointToPointCommandDirectParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
-	return CBusPointToPointCommandDirectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
-}
-
-func CBusPointToPointCommandDirectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
+func (m *_CBusPointToPointCommandDirect) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusPointToPointCommand, cBusOptions CBusOptions) (__cBusPointToPointCommandDirect CBusPointToPointCommandDirect, err error) {
+	m.CBusPointToPointCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandDirect"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToPointCommandDirect")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unitAddress)
-	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
+	unitAddress, err := ReadSimpleField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitAddress' field"))
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(ctx, readBuffer)
-	if _unitAddressErr != nil {
-		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandDirect")
-	}
-	unitAddress := _unitAddress.(UnitAddress)
-	if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
-	}
+	m.UnitAddress = unitAddress
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToPointCommandDirect")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointCommandDirect"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointCommandDirect")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CBusPointToPointCommandDirect{
-		_CBusPointToPointCommand: &_CBusPointToPointCommand{
-			CBusOptions: cBusOptions,
-		},
-		UnitAddress:    unitAddress,
-		reservedField0: reservedField0,
-	}
-	_child._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CBusPointToPointCommandDirect) Serialize() ([]byte, error) {
@@ -209,32 +176,12 @@ func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointCommandDirect")
 		}
 
-		// Simple Field (unitAddress)
-		if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unitAddress")
-		}
-		_unitAddressErr := writeBuffer.WriteSerializable(ctx, m.GetUnitAddress())
-		if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unitAddress")
-		}
-		if _unitAddressErr != nil {
-			return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
+		if err := WriteSimpleField[UnitAddress](ctx, "unitAddress", m.GetUnitAddress(), WriteComplex[UnitAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitAddress' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToPointCommandDirect"); popErr != nil {
@@ -242,12 +189,10 @@ func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CBusPointToPointCommandDirect) isCBusPointToPointCommandDirect() bool {
-	return true
-}
+func (m *_CBusPointToPointCommandDirect) IsCBusPointToPointCommandDirect() {}
 
 func (m *_CBusPointToPointCommandDirect) String() string {
 	if m == nil {

@@ -26,6 +26,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,13 +55,8 @@ type DateAndTime interface {
 	GetMsec() uint16
 	// GetDow returns Dow (property field)
 	GetDow() uint8
-}
-
-// DateAndTimeExactly can be used when we want exactly this type and not a type which fulfills DateAndTime.
-// This is useful for switch cases.
-type DateAndTimeExactly interface {
-	DateAndTime
-	isDateAndTime() bool
+	// IsDateAndTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDateAndTime()
 }
 
 // _DateAndTime is the data-structure of this message
@@ -72,6 +70,8 @@ type _DateAndTime struct {
 	Msec    uint16
 	Dow     uint8
 }
+
+var _ DateAndTime = (*_DateAndTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -173,88 +173,82 @@ func DateAndTimeParse(ctx context.Context, theBytes []byte) (DateAndTime, error)
 	return DateAndTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DateAndTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {
+		return DateAndTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {
+	v, err := (&_DateAndTime{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_DateAndTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dateAndTime DateAndTime, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DateAndTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DateAndTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (year)
-	_year, _yearErr := readBuffer.ReadUint8("year", 8)
-	if _yearErr != nil {
-		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field of DateAndTime")
+	year, err := ReadSimpleField(ctx, "year", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'year' field"))
 	}
-	year := _year
+	m.Year = year
 
-	// Simple Field (month)
-	_month, _monthErr := readBuffer.ReadUint8("month", 8)
-	if _monthErr != nil {
-		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of DateAndTime")
+	month, err := ReadSimpleField(ctx, "month", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'month' field"))
 	}
-	month := _month
+	m.Month = month
 
-	// Simple Field (day)
-	_day, _dayErr := readBuffer.ReadUint8("day", 8)
-	if _dayErr != nil {
-		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of DateAndTime")
+	day, err := ReadSimpleField(ctx, "day", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'day' field"))
 	}
-	day := _day
+	m.Day = day
 
-	// Simple Field (hour)
-	_hour, _hourErr := readBuffer.ReadUint8("hour", 8)
-	if _hourErr != nil {
-		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of DateAndTime")
+	hour, err := ReadSimpleField(ctx, "hour", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hour' field"))
 	}
-	hour := _hour
+	m.Hour = hour
 
-	// Simple Field (minutes)
-	_minutes, _minutesErr := readBuffer.ReadUint8("minutes", 8)
-	if _minutesErr != nil {
-		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field of DateAndTime")
+	minutes, err := ReadSimpleField(ctx, "minutes", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minutes' field"))
 	}
-	minutes := _minutes
+	m.Minutes = minutes
 
-	// Simple Field (seconds)
-	_seconds, _secondsErr := readBuffer.ReadUint8("seconds", 8)
-	if _secondsErr != nil {
-		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field of DateAndTime")
+	seconds, err := ReadSimpleField(ctx, "seconds", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'seconds' field"))
 	}
-	seconds := _seconds
+	m.Seconds = seconds
 
-	// Simple Field (msec)
-	_msec, _msecErr := readBuffer.ReadUint16("msec", 12)
-	if _msecErr != nil {
-		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field of DateAndTime")
+	msec, err := ReadSimpleField(ctx, "msec", ReadUnsignedShort(readBuffer, uint8(12)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msec' field"))
 	}
-	msec := _msec
+	m.Msec = msec
 
-	// Simple Field (dow)
-	_dow, _dowErr := readBuffer.ReadUint8("dow", 4)
-	if _dowErr != nil {
-		return nil, errors.Wrap(_dowErr, "Error parsing 'dow' field of DateAndTime")
+	dow, err := ReadSimpleField(ctx, "dow", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dow' field"))
 	}
-	dow := _dow
+	m.Dow = dow
 
 	if closeErr := readBuffer.CloseContext("DateAndTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DateAndTime")
 	}
 
-	// Create the instance
-	return &_DateAndTime{
-		Year:    year,
-		Month:   month,
-		Day:     day,
-		Hour:    hour,
-		Minutes: minutes,
-		Seconds: seconds,
-		Msec:    msec,
-		Dow:     dow,
-	}, nil
+	return m, nil
 }
 
 func (m *_DateAndTime) Serialize() ([]byte, error) {
@@ -274,60 +268,36 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for DateAndTime")
 	}
 
-	// Simple Field (year)
-	year := uint8(m.GetYear())
-	_yearErr := writeBuffer.WriteUint8("year", 8, uint8((year)))
-	if _yearErr != nil {
-		return errors.Wrap(_yearErr, "Error serializing 'year' field")
+	if err := WriteSimpleField[uint8](ctx, "year", m.GetYear(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'year' field")
 	}
 
-	// Simple Field (month)
-	month := uint8(m.GetMonth())
-	_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
-	if _monthErr != nil {
-		return errors.Wrap(_monthErr, "Error serializing 'month' field")
+	if err := WriteSimpleField[uint8](ctx, "month", m.GetMonth(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'month' field")
 	}
 
-	// Simple Field (day)
-	day := uint8(m.GetDay())
-	_dayErr := writeBuffer.WriteUint8("day", 8, uint8((day)))
-	if _dayErr != nil {
-		return errors.Wrap(_dayErr, "Error serializing 'day' field")
+	if err := WriteSimpleField[uint8](ctx, "day", m.GetDay(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'day' field")
 	}
 
-	// Simple Field (hour)
-	hour := uint8(m.GetHour())
-	_hourErr := writeBuffer.WriteUint8("hour", 8, uint8((hour)))
-	if _hourErr != nil {
-		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
+	if err := WriteSimpleField[uint8](ctx, "hour", m.GetHour(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'hour' field")
 	}
 
-	// Simple Field (minutes)
-	minutes := uint8(m.GetMinutes())
-	_minutesErr := writeBuffer.WriteUint8("minutes", 8, uint8((minutes)))
-	if _minutesErr != nil {
-		return errors.Wrap(_minutesErr, "Error serializing 'minutes' field")
+	if err := WriteSimpleField[uint8](ctx, "minutes", m.GetMinutes(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'minutes' field")
 	}
 
-	// Simple Field (seconds)
-	seconds := uint8(m.GetSeconds())
-	_secondsErr := writeBuffer.WriteUint8("seconds", 8, uint8((seconds)))
-	if _secondsErr != nil {
-		return errors.Wrap(_secondsErr, "Error serializing 'seconds' field")
+	if err := WriteSimpleField[uint8](ctx, "seconds", m.GetSeconds(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'seconds' field")
 	}
 
-	// Simple Field (msec)
-	msec := uint16(m.GetMsec())
-	_msecErr := writeBuffer.WriteUint16("msec", 12, uint16((msec)))
-	if _msecErr != nil {
-		return errors.Wrap(_msecErr, "Error serializing 'msec' field")
+	if err := WriteSimpleField[uint16](ctx, "msec", m.GetMsec(), WriteUnsignedShort(writeBuffer, 12), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'msec' field")
 	}
 
-	// Simple Field (dow)
-	dow := uint8(m.GetDow())
-	_dowErr := writeBuffer.WriteUint8("dow", 4, uint8((dow)))
-	if _dowErr != nil {
-		return errors.Wrap(_dowErr, "Error serializing 'dow' field")
+	if err := WriteSimpleField[uint8](ctx, "dow", m.GetDow(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'dow' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DateAndTime"); popErr != nil {
@@ -336,9 +306,7 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	return nil
 }
 
-func (m *_DateAndTime) isDateAndTime() bool {
-	return true
-}
+func (m *_DateAndTime) IsDateAndTime() {}
 
 func (m *_DateAndTime) String() string {
 	if m == nil {

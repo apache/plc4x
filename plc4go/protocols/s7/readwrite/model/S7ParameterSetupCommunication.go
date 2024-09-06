@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,24 +45,22 @@ type S7ParameterSetupCommunication interface {
 	GetMaxAmqCallee() uint16
 	// GetPduLength returns PduLength (property field)
 	GetPduLength() uint16
-}
-
-// S7ParameterSetupCommunicationExactly can be used when we want exactly this type and not a type which fulfills S7ParameterSetupCommunication.
-// This is useful for switch cases.
-type S7ParameterSetupCommunicationExactly interface {
-	S7ParameterSetupCommunication
-	isS7ParameterSetupCommunication() bool
+	// IsS7ParameterSetupCommunication is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterSetupCommunication()
 }
 
 // _S7ParameterSetupCommunication is the data-structure of this message
 type _S7ParameterSetupCommunication struct {
-	*_S7Parameter
+	S7ParameterContract
 	MaxAmqCaller uint16
 	MaxAmqCallee uint16
 	PduLength    uint16
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ S7ParameterSetupCommunication = (*_S7ParameterSetupCommunication)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterSetupCommunication)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_S7ParameterSetupCommunication) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7ParameterSetupCommunication) InitializeParent(parent S7Parameter) {}
-
-func (m *_S7ParameterSetupCommunication) GetParent() S7Parameter {
-	return m._S7Parameter
+func (m *_S7ParameterSetupCommunication) GetParent() S7ParameterContract {
+	return m.S7ParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,12 +109,12 @@ func (m *_S7ParameterSetupCommunication) GetPduLength() uint16 {
 // NewS7ParameterSetupCommunication factory function for _S7ParameterSetupCommunication
 func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *_S7ParameterSetupCommunication {
 	_result := &_S7ParameterSetupCommunication{
-		MaxAmqCaller: maxAmqCaller,
-		MaxAmqCallee: maxAmqCallee,
-		PduLength:    pduLength,
-		_S7Parameter: NewS7Parameter(),
+		S7ParameterContract: NewS7Parameter(),
+		MaxAmqCaller:        maxAmqCaller,
+		MaxAmqCallee:        maxAmqCallee,
+		PduLength:           pduLength,
 	}
-	_result._S7Parameter._S7ParameterChildRequirements = _result
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 
@@ -136,7 +134,7 @@ func (m *_S7ParameterSetupCommunication) GetTypeName() string {
 }
 
 func (m *_S7ParameterSetupCommunication) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -157,73 +155,46 @@ func (m *_S7ParameterSetupCommunication) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterSetupCommunicationParse(ctx context.Context, theBytes []byte, messageType uint8) (S7ParameterSetupCommunication, error) {
-	return S7ParameterSetupCommunicationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
-}
-
-func S7ParameterSetupCommunicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
+func (m *_S7ParameterSetupCommunication) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterSetupCommunication S7ParameterSetupCommunication, err error) {
+	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterSetupCommunication")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7ParameterSetupCommunication")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (maxAmqCaller)
-	_maxAmqCaller, _maxAmqCallerErr := readBuffer.ReadUint16("maxAmqCaller", 16)
-	if _maxAmqCallerErr != nil {
-		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field of S7ParameterSetupCommunication")
+	maxAmqCaller, err := ReadSimpleField(ctx, "maxAmqCaller", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxAmqCaller' field"))
 	}
-	maxAmqCaller := _maxAmqCaller
+	m.MaxAmqCaller = maxAmqCaller
 
-	// Simple Field (maxAmqCallee)
-	_maxAmqCallee, _maxAmqCalleeErr := readBuffer.ReadUint16("maxAmqCallee", 16)
-	if _maxAmqCalleeErr != nil {
-		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field of S7ParameterSetupCommunication")
+	maxAmqCallee, err := ReadSimpleField(ctx, "maxAmqCallee", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxAmqCallee' field"))
 	}
-	maxAmqCallee := _maxAmqCallee
+	m.MaxAmqCallee = maxAmqCallee
 
-	// Simple Field (pduLength)
-	_pduLength, _pduLengthErr := readBuffer.ReadUint16("pduLength", 16)
-	if _pduLengthErr != nil {
-		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field of S7ParameterSetupCommunication")
+	pduLength, err := ReadSimpleField(ctx, "pduLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pduLength' field"))
 	}
-	pduLength := _pduLength
+	m.PduLength = pduLength
 
 	if closeErr := readBuffer.CloseContext("S7ParameterSetupCommunication"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterSetupCommunication")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7ParameterSetupCommunication{
-		_S7Parameter:   &_S7Parameter{},
-		MaxAmqCaller:   maxAmqCaller,
-		MaxAmqCallee:   maxAmqCallee,
-		PduLength:      pduLength,
-		reservedField0: reservedField0,
-	}
-	_child._S7Parameter._S7ParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7ParameterSetupCommunication) Serialize() ([]byte, error) {
@@ -244,41 +215,20 @@ func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for S7ParameterSetupCommunication")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (maxAmqCaller)
-		maxAmqCaller := uint16(m.GetMaxAmqCaller())
-		_maxAmqCallerErr := writeBuffer.WriteUint16("maxAmqCaller", 16, uint16((maxAmqCaller)))
-		if _maxAmqCallerErr != nil {
-			return errors.Wrap(_maxAmqCallerErr, "Error serializing 'maxAmqCaller' field")
+		if err := WriteSimpleField[uint16](ctx, "maxAmqCaller", m.GetMaxAmqCaller(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxAmqCaller' field")
 		}
 
-		// Simple Field (maxAmqCallee)
-		maxAmqCallee := uint16(m.GetMaxAmqCallee())
-		_maxAmqCalleeErr := writeBuffer.WriteUint16("maxAmqCallee", 16, uint16((maxAmqCallee)))
-		if _maxAmqCalleeErr != nil {
-			return errors.Wrap(_maxAmqCalleeErr, "Error serializing 'maxAmqCallee' field")
+		if err := WriteSimpleField[uint16](ctx, "maxAmqCallee", m.GetMaxAmqCallee(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxAmqCallee' field")
 		}
 
-		// Simple Field (pduLength)
-		pduLength := uint16(m.GetPduLength())
-		_pduLengthErr := writeBuffer.WriteUint16("pduLength", 16, uint16((pduLength)))
-		if _pduLengthErr != nil {
-			return errors.Wrap(_pduLengthErr, "Error serializing 'pduLength' field")
+		if err := WriteSimpleField[uint16](ctx, "pduLength", m.GetPduLength(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pduLength' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterSetupCommunication"); popErr != nil {
@@ -286,12 +236,10 @@ func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7ParameterContract.(*_S7Parameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7ParameterSetupCommunication) isS7ParameterSetupCommunication() bool {
-	return true
-}
+func (m *_S7ParameterSetupCommunication) IsS7ParameterSetupCommunication() {}
 
 func (m *_S7ParameterSetupCommunication) String() string {
 	if m == nil {

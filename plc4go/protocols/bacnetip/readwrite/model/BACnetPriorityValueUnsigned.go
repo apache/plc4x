@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPriorityValueUnsigned interface {
 	BACnetPriorityValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetPriorityValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueUnsigned.
-// This is useful for switch cases.
-type BACnetPriorityValueUnsignedExactly interface {
-	BACnetPriorityValueUnsigned
-	isBACnetPriorityValueUnsigned() bool
+	// IsBACnetPriorityValueUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueUnsigned()
 }
 
 // _BACnetPriorityValueUnsigned is the data-structure of this message
 type _BACnetPriorityValueUnsigned struct {
-	*_BACnetPriorityValue
+	BACnetPriorityValueContract
 	UnsignedValue BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetPriorityValueUnsigned = (*_BACnetPriorityValueUnsigned)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueUnsigned)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPriorityValueUnsigned struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPriorityValueUnsigned) InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPriorityValueUnsigned) GetParent() BACnetPriorityValue {
-	return m._BACnetPriorityValue
+func (m *_BACnetPriorityValueUnsigned) GetParent() BACnetPriorityValueContract {
+	return m.BACnetPriorityValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPriorityValueUnsigned) GetUnsignedValue() BACnetApplicationTagUn
 
 // NewBACnetPriorityValueUnsigned factory function for _BACnetPriorityValueUnsigned
 func NewBACnetPriorityValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueUnsigned {
-	_result := &_BACnetPriorityValueUnsigned{
-		UnsignedValue:        unsignedValue,
-		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetPriorityValueUnsigned must not be nil")
 	}
-	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result
+	_result := &_BACnetPriorityValueUnsigned{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		UnsignedValue:               unsignedValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPriorityValueUnsigned) GetTypeName() string {
 }
 
 func (m *_BACnetPriorityValueUnsigned) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
 	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetPriorityValueUnsigned) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueUnsignedParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueUnsigned, error) {
-	return BACnetPriorityValueUnsignedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetPriorityValueUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueUnsigned, error) {
+func (m *_BACnetPriorityValueUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueUnsigned BACnetPriorityValueUnsigned, err error) {
+	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueUnsigned"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueUnsigned")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unsignedValue)
-	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
+	unsignedValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unsignedValue' field"))
 	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _unsignedValueErr != nil {
-		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetPriorityValueUnsigned")
-	}
-	unsignedValue := _unsignedValue.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
-	}
+	m.UnsignedValue = unsignedValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueUnsigned"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueUnsigned")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPriorityValueUnsigned{
-		_BACnetPriorityValue: &_BACnetPriorityValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		UnsignedValue: unsignedValue,
-	}
-	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPriorityValueUnsigned) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetPriorityValueUnsigned) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueUnsigned")
 		}
 
-		// Simple Field (unsignedValue)
-		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
-		}
-		_unsignedValueErr := writeBuffer.WriteSerializable(ctx, m.GetUnsignedValue())
-		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unsignedValue")
-		}
-		if _unsignedValueErr != nil {
-			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", m.GetUnsignedValue(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unsignedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueUnsigned"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetPriorityValueUnsigned) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPriorityValueContract.(*_BACnetPriorityValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPriorityValueUnsigned) isBACnetPriorityValueUnsigned() bool {
-	return true
-}
+func (m *_BACnetPriorityValueUnsigned) IsBACnetPriorityValueUnsigned() {}
 
 func (m *_BACnetPriorityValueUnsigned) String() string {
 	if m == nil {

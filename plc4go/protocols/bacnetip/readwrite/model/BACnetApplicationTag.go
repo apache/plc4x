@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,49 +35,42 @@ import (
 
 // BACnetApplicationTag is the corresponding interface of BACnetApplicationTag
 type BACnetApplicationTag interface {
+	BACnetApplicationTagContract
+	BACnetApplicationTagRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetApplicationTag is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTag()
+}
+
+// BACnetApplicationTagContract provides a set of functions which can be overwritten by a sub struct
+type BACnetApplicationTagContract interface {
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetActualTagNumber returns ActualTagNumber (virtual field)
 	GetActualTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
+	// IsBACnetApplicationTag is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTag()
 }
 
-// BACnetApplicationTagExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTag.
-// This is useful for switch cases.
-type BACnetApplicationTagExactly interface {
-	BACnetApplicationTag
-	isBACnetApplicationTag() bool
+// BACnetApplicationTagRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetApplicationTagRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetActualTagNumber returns ActualTagNumber (discriminator field)
+	GetActualTagNumber() uint8
 }
 
 // _BACnetApplicationTag is the data-structure of this message
 type _BACnetApplicationTag struct {
-	_BACnetApplicationTagChildRequirements
-	Header BACnetTagHeader
+	_SubType BACnetApplicationTag
+	Header   BACnetTagHeader
 }
 
-type _BACnetApplicationTagChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetActualTagNumber() uint8
-}
-
-type BACnetApplicationTagParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetApplicationTag, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetApplicationTagChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetApplicationTag, header BACnetTagHeader)
-	GetParent() *BACnetApplicationTag
-
-	GetTypeName() string
-	BACnetApplicationTag
-}
+var _ BACnetApplicationTagContract = (*_BACnetApplicationTag)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,13 +90,15 @@ func (m *_BACnetApplicationTag) GetHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetApplicationTag) GetActualTagNumber() uint8 {
+func (pm *_BACnetApplicationTag) GetActualTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetApplicationTag) GetActualLength() uint32 {
+func (pm *_BACnetApplicationTag) GetActualLength() uint32 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint32(m.GetHeader().GetActualLength())
@@ -114,6 +111,9 @@ func (m *_BACnetApplicationTag) GetActualLength() uint32 {
 
 // NewBACnetApplicationTag factory function for _BACnetApplicationTag
 func NewBACnetApplicationTag(header BACnetTagHeader) *_BACnetApplicationTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetApplicationTag must not be nil")
+	}
 	return &_BACnetApplicationTag{Header: header}
 }
 
@@ -132,7 +132,7 @@ func (m *_BACnetApplicationTag) GetTypeName() string {
 	return "BACnetApplicationTag"
 }
 
-func (m *_BACnetApplicationTag) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetApplicationTag) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
@@ -146,106 +146,132 @@ func (m *_BACnetApplicationTag) GetParentLengthInBits(ctx context.Context) uint1
 }
 
 func (m *_BACnetApplicationTag) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagParse(ctx context.Context, theBytes []byte) (BACnetApplicationTag, error) {
-	return BACnetApplicationTagParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func BACnetApplicationTagParse[T BACnetApplicationTag](ctx context.Context, theBytes []byte) (T, error) {
+	return BACnetApplicationTagParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetApplicationTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTag, error) {
+func BACnetApplicationTagParseWithBufferProducer[T BACnetApplicationTag]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetApplicationTagParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetApplicationTagParseWithBuffer[T BACnetApplicationTag](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_BACnetApplicationTag{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetApplicationTag) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetApplicationTag BACnetApplicationTag, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTag")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetApplicationTag")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
-	}
+	m.Header = header
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"should be a application tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "should be a application tag"})
 	}
 
-	// Virtual field
-	_actualTagNumber := header.GetActualTagNumber()
-	actualTagNumber := uint8(_actualTagNumber)
+	actualTagNumber, err := ReadVirtualField[uint8](ctx, "actualTagNumber", (*uint8)(nil), header.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualTagNumber' field"))
+	}
 	_ = actualTagNumber
 
-	// Virtual field
-	_actualLength := header.GetActualLength()
-	actualLength := uint32(_actualLength)
+	actualLength, err := ReadVirtualField[uint32](ctx, "actualLength", (*uint32)(nil), header.GetActualLength())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLength' field"))
+	}
 	_ = actualLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetApplicationTagChildSerializeRequirement interface {
-		BACnetApplicationTag
-		InitializeParent(BACnetApplicationTag, BACnetTagHeader)
-		GetParent() BACnetApplicationTag
-	}
-	var _childTemp any
-	var _child BACnetApplicationTagChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetApplicationTag
 	switch {
 	case actualTagNumber == 0x0: // BACnetApplicationTagNull
-		_childTemp, typeSwitchError = BACnetApplicationTagNullParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetApplicationTagNull{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagNull for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x1: // BACnetApplicationTagBoolean
-		_childTemp, typeSwitchError = BACnetApplicationTagBooleanParseWithBuffer(ctx, readBuffer, header)
+		if _child, err = (&_BACnetApplicationTagBoolean{}).parse(ctx, readBuffer, m, header); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagBoolean for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
-		_childTemp, typeSwitchError = BACnetApplicationTagUnsignedIntegerParseWithBuffer(ctx, readBuffer, header)
+		if _child, err = (&_BACnetApplicationTagUnsignedInteger{}).parse(ctx, readBuffer, m, header); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagUnsignedInteger for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x3: // BACnetApplicationTagSignedInteger
-		_childTemp, typeSwitchError = BACnetApplicationTagSignedIntegerParseWithBuffer(ctx, readBuffer, header)
+		if _child, err = (&_BACnetApplicationTagSignedInteger{}).parse(ctx, readBuffer, m, header); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagSignedInteger for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x4: // BACnetApplicationTagReal
-		_childTemp, typeSwitchError = BACnetApplicationTagRealParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetApplicationTagReal{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagReal for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x5: // BACnetApplicationTagDouble
-		_childTemp, typeSwitchError = BACnetApplicationTagDoubleParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetApplicationTagDouble{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagDouble for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x6: // BACnetApplicationTagOctetString
-		_childTemp, typeSwitchError = BACnetApplicationTagOctetStringParseWithBuffer(ctx, readBuffer, header)
+		if _child, err = (&_BACnetApplicationTagOctetString{}).parse(ctx, readBuffer, m, header); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagOctetString for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x7: // BACnetApplicationTagCharacterString
-		_childTemp, typeSwitchError = BACnetApplicationTagCharacterStringParseWithBuffer(ctx, readBuffer, header)
+		if _child, err = (&_BACnetApplicationTagCharacterString{}).parse(ctx, readBuffer, m, header); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagCharacterString for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x8: // BACnetApplicationTagBitString
-		_childTemp, typeSwitchError = BACnetApplicationTagBitStringParseWithBuffer(ctx, readBuffer, header)
+		if _child, err = (&_BACnetApplicationTagBitString{}).parse(ctx, readBuffer, m, header); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagBitString for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0x9: // BACnetApplicationTagEnumerated
-		_childTemp, typeSwitchError = BACnetApplicationTagEnumeratedParseWithBuffer(ctx, readBuffer, header)
+		if _child, err = (&_BACnetApplicationTagEnumerated{}).parse(ctx, readBuffer, m, header); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagEnumerated for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0xA: // BACnetApplicationTagDate
-		_childTemp, typeSwitchError = BACnetApplicationTagDateParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetApplicationTagDate{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagDate for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0xB: // BACnetApplicationTagTime
-		_childTemp, typeSwitchError = BACnetApplicationTagTimeParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetApplicationTagTime{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagTime for type-switch of BACnetApplicationTag")
+		}
 	case actualTagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
-		_childTemp, typeSwitchError = BACnetApplicationTagObjectIdentifierParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetApplicationTagObjectIdentifier{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagObjectIdentifier for type-switch of BACnetApplicationTag")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [actualTagNumber=%v]", actualTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [actualTagNumber=%v]", actualTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetApplicationTag")
-	}
-	_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTag")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, header)
 	return _child, nil
 }
 
-func (pm *_BACnetApplicationTag) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetApplicationTag, serializeChildFunction func() error) error {
+func (pm *_BACnetApplicationTag) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetApplicationTag, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -257,16 +283,8 @@ func (pm *_BACnetApplicationTag) SerializeParent(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for BACnetApplicationTag")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 	// Virtual field
 	actualTagNumber := m.GetActualTagNumber()
@@ -292,17 +310,4 @@ func (pm *_BACnetApplicationTag) SerializeParent(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_BACnetApplicationTag) isBACnetApplicationTag() bool {
-	return true
-}
-
-func (m *_BACnetApplicationTag) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetApplicationTag) IsBACnetApplicationTag() {}

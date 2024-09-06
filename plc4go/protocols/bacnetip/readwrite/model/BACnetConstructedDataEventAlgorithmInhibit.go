@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataEventAlgorithmInhibit interface {
 	GetEventAlgorithmInhibit() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataEventAlgorithmInhibitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventAlgorithmInhibit.
-// This is useful for switch cases.
-type BACnetConstructedDataEventAlgorithmInhibitExactly interface {
-	BACnetConstructedDataEventAlgorithmInhibit
-	isBACnetConstructedDataEventAlgorithmInhibit() bool
+	// IsBACnetConstructedDataEventAlgorithmInhibit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventAlgorithmInhibit()
 }
 
 // _BACnetConstructedDataEventAlgorithmInhibit is the data-structure of this message
 type _BACnetConstructedDataEventAlgorithmInhibit struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	EventAlgorithmInhibit BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataEventAlgorithmInhibit = (*_BACnetConstructedDataEventAlgorithmInhibit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventAlgorithmInhibit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibit) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetActualValue() BACnetApp
 
 // NewBACnetConstructedDataEventAlgorithmInhibit factory function for _BACnetConstructedDataEventAlgorithmInhibit
 func NewBACnetConstructedDataEventAlgorithmInhibit(eventAlgorithmInhibit BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibit {
-	_result := &_BACnetConstructedDataEventAlgorithmInhibit{
-		EventAlgorithmInhibit:  eventAlgorithmInhibit,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if eventAlgorithmInhibit == nil {
+		panic("eventAlgorithmInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataEventAlgorithmInhibit must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataEventAlgorithmInhibit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventAlgorithmInhibit:         eventAlgorithmInhibit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (eventAlgorithmInhibit)
 	lengthInBits += m.EventAlgorithmInhibit.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataEventAlgorithmInhibitParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibit, error) {
-	return BACnetConstructedDataEventAlgorithmInhibitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataEventAlgorithmInhibitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibit, error) {
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEventAlgorithmInhibit BACnetConstructedDataEventAlgorithmInhibit, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventAlgorithmInhibit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEventAlgorithmInhibit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eventAlgorithmInhibit)
-	if pullErr := readBuffer.PullContext("eventAlgorithmInhibit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventAlgorithmInhibit")
+	eventAlgorithmInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "eventAlgorithmInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventAlgorithmInhibit' field"))
 	}
-	_eventAlgorithmInhibit, _eventAlgorithmInhibitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _eventAlgorithmInhibitErr != nil {
-		return nil, errors.Wrap(_eventAlgorithmInhibitErr, "Error parsing 'eventAlgorithmInhibit' field of BACnetConstructedDataEventAlgorithmInhibit")
-	}
-	eventAlgorithmInhibit := _eventAlgorithmInhibit.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("eventAlgorithmInhibit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventAlgorithmInhibit")
-	}
+	m.EventAlgorithmInhibit = eventAlgorithmInhibit
 
-	// Virtual field
-	_actualValue := eventAlgorithmInhibit
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), eventAlgorithmInhibit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventAlgorithmInhibit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventAlgorithmInhibit")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataEventAlgorithmInhibit{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		EventAlgorithmInhibit: eventAlgorithmInhibit,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventAlgorithmInhibit")
 		}
 
-		// Simple Field (eventAlgorithmInhibit)
-		if pushErr := writeBuffer.PushContext("eventAlgorithmInhibit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventAlgorithmInhibit")
-		}
-		_eventAlgorithmInhibitErr := writeBuffer.WriteSerializable(ctx, m.GetEventAlgorithmInhibit())
-		if popErr := writeBuffer.PopContext("eventAlgorithmInhibit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventAlgorithmInhibit")
-		}
-		if _eventAlgorithmInhibitErr != nil {
-			return errors.Wrap(_eventAlgorithmInhibitErr, "Error serializing 'eventAlgorithmInhibit' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "eventAlgorithmInhibit", m.GetEventAlgorithmInhibit(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventAlgorithmInhibit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibit) isBACnetConstructedDataEventAlgorithmInhibit() bool {
-	return true
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) IsBACnetConstructedDataEventAlgorithmInhibit() {
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) String() string {

@@ -37,19 +37,17 @@ type OpcuaVector interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// OpcuaVectorExactly can be used when we want exactly this type and not a type which fulfills OpcuaVector.
-// This is useful for switch cases.
-type OpcuaVectorExactly interface {
-	OpcuaVector
-	isOpcuaVector() bool
+	// IsOpcuaVector is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaVector()
 }
 
 // _OpcuaVector is the data-structure of this message
 type _OpcuaVector struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ OpcuaVector = (*_OpcuaVector)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_OpcuaVector)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_OpcuaVector) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaVector) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_OpcuaVector) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_OpcuaVector) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewOpcuaVector factory function for _OpcuaVector
 func NewOpcuaVector() *_OpcuaVector {
 	_result := &_OpcuaVector{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_OpcuaVector) GetTypeName() string {
 }
 
 func (m *_OpcuaVector) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_OpcuaVector) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpcuaVectorParse(ctx context.Context, theBytes []byte, identifier string) (OpcuaVector, error) {
-	return OpcuaVectorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func OpcuaVectorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (OpcuaVector, error) {
+func (m *_OpcuaVector) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__opcuaVector OpcuaVector, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaVector"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaVector")
 	}
@@ -124,12 +116,7 @@ func OpcuaVectorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaVector")
 	}
 
-	// Create a partially initialized instance
-	_child := &_OpcuaVector{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_OpcuaVector) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_OpcuaVector) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_OpcuaVector) isOpcuaVector() bool {
-	return true
-}
+func (m *_OpcuaVector) IsOpcuaVector() {}
 
 func (m *_OpcuaVector) String() string {
 	if m == nil {

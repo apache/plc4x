@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetServiceAckAtomicWriteFile interface {
 	BACnetServiceAck
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetContextTagSignedInteger
-}
-
-// BACnetServiceAckAtomicWriteFileExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicWriteFile.
-// This is useful for switch cases.
-type BACnetServiceAckAtomicWriteFileExactly interface {
-	BACnetServiceAckAtomicWriteFile
-	isBACnetServiceAckAtomicWriteFile() bool
+	// IsBACnetServiceAckAtomicWriteFile is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAtomicWriteFile()
 }
 
 // _BACnetServiceAckAtomicWriteFile is the data-structure of this message
 type _BACnetServiceAckAtomicWriteFile struct {
-	*_BACnetServiceAck
+	BACnetServiceAckContract
 	FileStartPosition BACnetContextTagSignedInteger
 }
+
+var _ BACnetServiceAckAtomicWriteFile = (*_BACnetServiceAckAtomicWriteFile)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicWriteFile)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetServiceChoice() BACnetConfirmedSer
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetServiceAckAtomicWriteFile) InitializeParent(parent BACnetServiceAck) {}
-
-func (m *_BACnetServiceAckAtomicWriteFile) GetParent() BACnetServiceAck {
-	return m._BACnetServiceAck
+func (m *_BACnetServiceAckAtomicWriteFile) GetParent() BACnetServiceAckContract {
+	return m.BACnetServiceAckContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetFileStartPosition() BACnetContextT
 
 // NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
 func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
-	_result := &_BACnetServiceAckAtomicWriteFile{
-		FileStartPosition: fileStartPosition,
-		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetContextTagSignedInteger for BACnetServiceAckAtomicWriteFile must not be nil")
 	}
-	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
+	_result := &_BACnetServiceAckAtomicWriteFile{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		FileStartPosition:        fileStartPosition,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (fileStartPosition)
 	lengthInBits += m.FileStartPosition.GetLengthInBits(ctx)
@@ -126,47 +127,28 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
-	return BACnetServiceAckAtomicWriteFileParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
-}
-
-func BACnetServiceAckAtomicWriteFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
+func (m *_BACnetServiceAckAtomicWriteFile) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckAtomicWriteFile BACnetServiceAckAtomicWriteFile, err error) {
+	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckAtomicWriteFile")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileStartPosition)
-	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
+	fileStartPosition, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "fileStartPosition", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagSignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileStartPosition' field"))
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
-	if _fileStartPositionErr != nil {
-		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetServiceAckAtomicWriteFile")
-	}
-	fileStartPosition := _fileStartPosition.(BACnetContextTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileStartPosition")
-	}
+	m.FileStartPosition = fileStartPosition
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAtomicWriteFile"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckAtomicWriteFile")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetServiceAckAtomicWriteFile{
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
-		FileStartPosition: fileStartPosition,
-	}
-	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetServiceAckAtomicWriteFile) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicWriteFile")
 		}
 
-		// Simple Field (fileStartPosition)
-		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
-		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
-		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartPosition")
-		}
-		if _fileStartPositionErr != nil {
-			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
+		if err := WriteSimpleField[BACnetContextTagSignedInteger](ctx, "fileStartPosition", m.GetFileStartPosition(), WriteComplex[BACnetContextTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartPosition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicWriteFile"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetServiceAckContract.(*_BACnetServiceAck).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) isBACnetServiceAckAtomicWriteFile() bool {
-	return true
-}
+func (m *_BACnetServiceAckAtomicWriteFile) IsBACnetServiceAckAtomicWriteFile() {}
 
 func (m *_BACnetServiceAckAtomicWriteFile) String() string {
 	if m == nil {

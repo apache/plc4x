@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ModbusPDUReportServerIdResponse interface {
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
-}
-
-// ModbusPDUReportServerIdResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReportServerIdResponse.
-// This is useful for switch cases.
-type ModbusPDUReportServerIdResponseExactly interface {
-	ModbusPDUReportServerIdResponse
-	isModbusPDUReportServerIdResponse() bool
+	// IsModbusPDUReportServerIdResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReportServerIdResponse()
 }
 
 // _ModbusPDUReportServerIdResponse is the data-structure of this message
 type _ModbusPDUReportServerIdResponse struct {
-	*_ModbusPDU
+	ModbusPDUContract
 	Value []byte
 }
+
+var _ ModbusPDUReportServerIdResponse = (*_ModbusPDUReportServerIdResponse)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReportServerIdResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,10 +76,8 @@ func (m *_ModbusPDUReportServerIdResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUReportServerIdResponse) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUReportServerIdResponse) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUReportServerIdResponse) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +97,10 @@ func (m *_ModbusPDUReportServerIdResponse) GetValue() []byte {
 // NewModbusPDUReportServerIdResponse factory function for _ModbusPDUReportServerIdResponse
 func NewModbusPDUReportServerIdResponse(value []byte) *_ModbusPDUReportServerIdResponse {
 	_result := &_ModbusPDUReportServerIdResponse{
-		Value:      value,
-		_ModbusPDU: NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
+		Value:             value,
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_ModbusPDUReportServerIdResponse) GetTypeName() string {
 }
 
 func (m *_ModbusPDUReportServerIdResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -139,45 +137,34 @@ func (m *_ModbusPDUReportServerIdResponse) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReportServerIdResponseParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReportServerIdResponse, error) {
-	return ModbusPDUReportServerIdResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUReportServerIdResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReportServerIdResponse, error) {
+func (m *_ModbusPDUReportServerIdResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReportServerIdResponse ModbusPDUReportServerIdResponse, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReportServerIdResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
+	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
+	}
 	_ = byteCount
-	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUReportServerIdResponse")
+
+	value, err := readBuffer.ReadByteArray("value", int(byteCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	// Byte Array field (value)
-	numberOfBytesvalue := int(byteCount)
-	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field of ModbusPDUReportServerIdResponse")
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReportServerIdResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReportServerIdResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUReportServerIdResponse{
-		_ModbusPDU: &_ModbusPDU{},
-		Value:      value,
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUReportServerIdResponse) Serialize() ([]byte, error) {
@@ -197,17 +184,12 @@ func (m *_ModbusPDUReportServerIdResponse) SerializeWithWriteBuffer(ctx context.
 		if pushErr := writeBuffer.PushContext("ModbusPDUReportServerIdResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReportServerIdResponse")
 		}
-
-		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.GetValue())))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
-		if _byteCountErr != nil {
-			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
+		if err := WriteImplicitField(ctx, "byteCount", byteCount, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'byteCount' field")
 		}
 
-		// Array Field (value)
-		// Byte Array field (value)
-		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+		if err := WriteByteArrayField(ctx, "value", m.GetValue(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
@@ -216,12 +198,10 @@ func (m *_ModbusPDUReportServerIdResponse) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUReportServerIdResponse) isModbusPDUReportServerIdResponse() bool {
-	return true
-}
+func (m *_ModbusPDUReportServerIdResponse) IsModbusPDUReportServerIdResponse() {}
 
 func (m *_ModbusPDUReportServerIdResponse) String() string {
 	if m == nil {

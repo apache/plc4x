@@ -37,19 +37,17 @@ type AdsReadDeviceInfoRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
-}
-
-// AdsReadDeviceInfoRequestExactly can be used when we want exactly this type and not a type which fulfills AdsReadDeviceInfoRequest.
-// This is useful for switch cases.
-type AdsReadDeviceInfoRequestExactly interface {
-	AdsReadDeviceInfoRequest
-	isAdsReadDeviceInfoRequest() bool
+	// IsAdsReadDeviceInfoRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadDeviceInfoRequest()
 }
 
 // _AdsReadDeviceInfoRequest is the data-structure of this message
 type _AdsReadDeviceInfoRequest struct {
-	*_AmsPacket
+	AmsPacketContract
 }
+
+var _ AdsReadDeviceInfoRequest = (*_AdsReadDeviceInfoRequest)(nil)
+var _ AmsPacketRequirements = (*_AdsReadDeviceInfoRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,25 +67,16 @@ func (m *_AdsReadDeviceInfoRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsReadDeviceInfoRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
-	m.TargetAmsNetId = targetAmsNetId
-	m.TargetAmsPort = targetAmsPort
-	m.SourceAmsNetId = sourceAmsNetId
-	m.SourceAmsPort = sourceAmsPort
-	m.ErrorCode = errorCode
-	m.InvokeId = invokeId
-}
-
-func (m *_AdsReadDeviceInfoRequest) GetParent() AmsPacket {
-	return m._AmsPacket
+func (m *_AdsReadDeviceInfoRequest) GetParent() AmsPacketContract {
+	return m.AmsPacketContract
 }
 
 // NewAdsReadDeviceInfoRequest factory function for _AdsReadDeviceInfoRequest
 func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadDeviceInfoRequest {
 	_result := &_AdsReadDeviceInfoRequest{
-		_AmsPacket: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AmsPacket._AmsPacketChildRequirements = _result
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 
@@ -107,7 +96,7 @@ func (m *_AdsReadDeviceInfoRequest) GetTypeName() string {
 }
 
 func (m *_AdsReadDeviceInfoRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -116,15 +105,11 @@ func (m *_AdsReadDeviceInfoRequest) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsReadDeviceInfoRequestParse(ctx context.Context, theBytes []byte) (AdsReadDeviceInfoRequest, error) {
-	return AdsReadDeviceInfoRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsReadDeviceInfoRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoRequest, error) {
+func (m *_AdsReadDeviceInfoRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsReadDeviceInfoRequest AdsReadDeviceInfoRequest, err error) {
+	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsReadDeviceInfoRequest")
 	}
@@ -135,12 +120,7 @@ func AdsReadDeviceInfoRequestParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(closeErr, "Error closing for AdsReadDeviceInfoRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsReadDeviceInfoRequest{
-		_AmsPacket: &_AmsPacket{},
-	}
-	_child._AmsPacket._AmsPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsReadDeviceInfoRequest) Serialize() ([]byte, error) {
@@ -166,12 +146,10 @@ func (m *_AdsReadDeviceInfoRequest) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AmsPacketContract.(*_AmsPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsReadDeviceInfoRequest) isAdsReadDeviceInfoRequest() bool {
-	return true
-}
+func (m *_AdsReadDeviceInfoRequest) IsAdsReadDeviceInfoRequest() {}
 
 func (m *_AdsReadDeviceInfoRequest) String() string {
 	if m == nil {

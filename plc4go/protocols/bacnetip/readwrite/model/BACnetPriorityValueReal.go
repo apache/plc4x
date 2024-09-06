@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPriorityValueReal interface {
 	BACnetPriorityValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-}
-
-// BACnetPriorityValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueReal.
-// This is useful for switch cases.
-type BACnetPriorityValueRealExactly interface {
-	BACnetPriorityValueReal
-	isBACnetPriorityValueReal() bool
+	// IsBACnetPriorityValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueReal()
 }
 
 // _BACnetPriorityValueReal is the data-structure of this message
 type _BACnetPriorityValueReal struct {
-	*_BACnetPriorityValue
+	BACnetPriorityValueContract
 	RealValue BACnetApplicationTagReal
 }
+
+var _ BACnetPriorityValueReal = (*_BACnetPriorityValueReal)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueReal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPriorityValueReal struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPriorityValueReal) InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPriorityValueReal) GetParent() BACnetPriorityValue {
-	return m._BACnetPriorityValue
+func (m *_BACnetPriorityValueReal) GetParent() BACnetPriorityValueContract {
+	return m.BACnetPriorityValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPriorityValueReal) GetRealValue() BACnetApplicationTagReal {
 
 // NewBACnetPriorityValueReal factory function for _BACnetPriorityValueReal
 func NewBACnetPriorityValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueReal {
-	_result := &_BACnetPriorityValueReal{
-		RealValue:            realValue,
-		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetPriorityValueReal must not be nil")
 	}
-	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result
+	_result := &_BACnetPriorityValueReal{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		RealValue:                   realValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPriorityValueReal) GetTypeName() string {
 }
 
 func (m *_BACnetPriorityValueReal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetPriorityValueReal) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueRealParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueReal, error) {
-	return BACnetPriorityValueRealParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetPriorityValueRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueReal, error) {
+func (m *_BACnetPriorityValueReal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueReal BACnetPriorityValueReal, err error) {
+	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueReal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueReal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (realValue)
-	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
+	realValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "realValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realValue' field"))
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _realValueErr != nil {
-		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetPriorityValueReal")
-	}
-	realValue := _realValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for realValue")
-	}
+	m.RealValue = realValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueReal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueReal")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPriorityValueReal{
-		_BACnetPriorityValue: &_BACnetPriorityValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		RealValue: realValue,
-	}
-	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPriorityValueReal) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetPriorityValueReal) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueReal")
 		}
 
-		// Simple Field (realValue)
-		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for realValue")
-		}
-		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
-		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for realValue")
-		}
-		if _realValueErr != nil {
-			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "realValue", m.GetRealValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'realValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueReal"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetPriorityValueReal) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPriorityValueContract.(*_BACnetPriorityValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPriorityValueReal) isBACnetPriorityValueReal() bool {
-	return true
-}
+func (m *_BACnetPriorityValueReal) IsBACnetPriorityValueReal() {}
 
 func (m *_BACnetPriorityValueReal) String() string {
 	if m == nil {

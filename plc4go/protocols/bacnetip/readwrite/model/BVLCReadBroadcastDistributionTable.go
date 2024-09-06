@@ -38,19 +38,17 @@ type BVLCReadBroadcastDistributionTable interface {
 	utils.LengthAware
 	utils.Serializable
 	BVLC
-}
-
-// BVLCReadBroadcastDistributionTableExactly can be used when we want exactly this type and not a type which fulfills BVLCReadBroadcastDistributionTable.
-// This is useful for switch cases.
-type BVLCReadBroadcastDistributionTableExactly interface {
-	BVLCReadBroadcastDistributionTable
-	isBVLCReadBroadcastDistributionTable() bool
+	// IsBVLCReadBroadcastDistributionTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCReadBroadcastDistributionTable()
 }
 
 // _BVLCReadBroadcastDistributionTable is the data-structure of this message
 type _BVLCReadBroadcastDistributionTable struct {
-	*_BVLC
+	BVLCContract
 }
+
+var _ BVLCReadBroadcastDistributionTable = (*_BVLCReadBroadcastDistributionTable)(nil)
+var _ BVLCRequirements = (*_BVLCReadBroadcastDistributionTable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,18 +64,16 @@ func (m *_BVLCReadBroadcastDistributionTable) GetBvlcFunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BVLCReadBroadcastDistributionTable) InitializeParent(parent BVLC) {}
-
-func (m *_BVLCReadBroadcastDistributionTable) GetParent() BVLC {
-	return m._BVLC
+func (m *_BVLCReadBroadcastDistributionTable) GetParent() BVLCContract {
+	return m.BVLCContract
 }
 
 // NewBVLCReadBroadcastDistributionTable factory function for _BVLCReadBroadcastDistributionTable
 func NewBVLCReadBroadcastDistributionTable() *_BVLCReadBroadcastDistributionTable {
 	_result := &_BVLCReadBroadcastDistributionTable{
-		_BVLC: NewBVLC(),
+		BVLCContract: NewBVLC(),
 	}
-	_result._BVLC._BVLCChildRequirements = _result
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 
@@ -97,7 +93,7 @@ func (m *_BVLCReadBroadcastDistributionTable) GetTypeName() string {
 }
 
 func (m *_BVLCReadBroadcastDistributionTable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -106,15 +102,11 @@ func (m *_BVLCReadBroadcastDistributionTable) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCReadBroadcastDistributionTableParse(ctx context.Context, theBytes []byte) (BVLCReadBroadcastDistributionTable, error) {
-	return BVLCReadBroadcastDistributionTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func BVLCReadBroadcastDistributionTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTable, error) {
+func (m *_BVLCReadBroadcastDistributionTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCReadBroadcastDistributionTable BVLCReadBroadcastDistributionTable, err error) {
+	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCReadBroadcastDistributionTable")
 	}
@@ -125,12 +117,7 @@ func BVLCReadBroadcastDistributionTableParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCReadBroadcastDistributionTable")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BVLCReadBroadcastDistributionTable{
-		_BVLC: &_BVLC{},
-	}
-	_child._BVLC._BVLCChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BVLCReadBroadcastDistributionTable) Serialize() ([]byte, error) {
@@ -156,12 +143,10 @@ func (m *_BVLCReadBroadcastDistributionTable) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BVLCReadBroadcastDistributionTable) isBVLCReadBroadcastDistributionTable() bool {
-	return true
-}
+func (m *_BVLCReadBroadcastDistributionTable) IsBVLCReadBroadcastDistributionTable() {}
 
 func (m *_BVLCReadBroadcastDistributionTable) String() string {
 	if m == nil {

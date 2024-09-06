@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,20 +43,18 @@ type FirmataMessageCommand interface {
 	FirmataMessage
 	// GetCommand returns Command (property field)
 	GetCommand() FirmataCommand
-}
-
-// FirmataMessageCommandExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageCommand.
-// This is useful for switch cases.
-type FirmataMessageCommandExactly interface {
-	FirmataMessageCommand
-	isFirmataMessageCommand() bool
+	// IsFirmataMessageCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataMessageCommand()
 }
 
 // _FirmataMessageCommand is the data-structure of this message
 type _FirmataMessageCommand struct {
-	*_FirmataMessage
+	FirmataMessageContract
 	Command FirmataCommand
 }
+
+var _ FirmataMessageCommand = (*_FirmataMessageCommand)(nil)
+var _ FirmataMessageRequirements = (*_FirmataMessageCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,10 +70,8 @@ func (m *_FirmataMessageCommand) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FirmataMessageCommand) InitializeParent(parent FirmataMessage) {}
-
-func (m *_FirmataMessageCommand) GetParent() FirmataMessage {
-	return m._FirmataMessage
+func (m *_FirmataMessageCommand) GetParent() FirmataMessageContract {
+	return m.FirmataMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,11 +90,14 @@ func (m *_FirmataMessageCommand) GetCommand() FirmataCommand {
 
 // NewFirmataMessageCommand factory function for _FirmataMessageCommand
 func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMessageCommand {
-	_result := &_FirmataMessageCommand{
-		Command:         command,
-		_FirmataMessage: NewFirmataMessage(response),
+	if command == nil {
+		panic("command of type FirmataCommand for FirmataMessageCommand must not be nil")
 	}
-	_result._FirmataMessage._FirmataMessageChildRequirements = _result
+	_result := &_FirmataMessageCommand{
+		FirmataMessageContract: NewFirmataMessage(response),
+		Command:                command,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
 	return _result
 }
 
@@ -115,7 +117,7 @@ func (m *_FirmataMessageCommand) GetTypeName() string {
 }
 
 func (m *_FirmataMessageCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataMessageContract.(*_FirmataMessage).getLengthInBits(ctx))
 
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits(ctx)
@@ -127,47 +129,28 @@ func (m *_FirmataMessageCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataMessageCommandParse(ctx context.Context, theBytes []byte, response bool) (FirmataMessageCommand, error) {
-	return FirmataMessageCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
-}
-
-func FirmataMessageCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageCommand, error) {
+func (m *_FirmataMessageCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataMessage, response bool) (__firmataMessageCommand FirmataMessageCommand, err error) {
+	m.FirmataMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataMessageCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataMessageCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
+	command, err := ReadSimpleField[FirmataCommand](ctx, "command", ReadComplex[FirmataCommand](FirmataCommandParseWithBufferProducer[FirmataCommand]((bool)(response)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
-	_command, _commandErr := FirmataCommandParseWithBuffer(ctx, readBuffer, bool(response))
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of FirmataMessageCommand")
-	}
-	command := _command.(FirmataCommand)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
-	}
+	m.Command = command
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessageCommand")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FirmataMessageCommand{
-		_FirmataMessage: &_FirmataMessage{
-			Response: response,
-		},
-		Command: command,
-	}
-	_child._FirmataMessage._FirmataMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FirmataMessageCommand) Serialize() ([]byte, error) {
@@ -188,16 +171,8 @@ func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for FirmataMessageCommand")
 		}
 
-		// Simple Field (command)
-		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for command")
-		}
-		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
-		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for command")
-		}
-		if _commandErr != nil {
-			return errors.Wrap(_commandErr, "Error serializing 'command' field")
+		if err := WriteSimpleField[FirmataCommand](ctx, "command", m.GetCommand(), WriteComplex[FirmataCommand](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'command' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageCommand"); popErr != nil {
@@ -205,12 +180,10 @@ func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.FirmataMessageContract.(*_FirmataMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FirmataMessageCommand) isFirmataMessageCommand() bool {
-	return true
-}
+func (m *_FirmataMessageCommand) IsFirmataMessageCommand() {}
 
 func (m *_FirmataMessageCommand) String() string {
 	if m == nil {

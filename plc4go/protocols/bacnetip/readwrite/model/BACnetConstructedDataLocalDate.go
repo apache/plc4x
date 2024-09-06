@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLocalDate interface {
 	GetLocalDate() BACnetApplicationTagDate
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDate
-}
-
-// BACnetConstructedDataLocalDateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocalDate.
-// This is useful for switch cases.
-type BACnetConstructedDataLocalDateExactly interface {
-	BACnetConstructedDataLocalDate
-	isBACnetConstructedDataLocalDate() bool
+	// IsBACnetConstructedDataLocalDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLocalDate()
 }
 
 // _BACnetConstructedDataLocalDate is the data-structure of this message
 type _BACnetConstructedDataLocalDate struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LocalDate BACnetApplicationTagDate
 }
+
+var _ BACnetConstructedDataLocalDate = (*_BACnetConstructedDataLocalDate)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalDate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLocalDate) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLocalDate) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLocalDate) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLocalDate) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLocalDate) GetActualValue() BACnetApplicationTagD
 
 // NewBACnetConstructedDataLocalDate factory function for _BACnetConstructedDataLocalDate
 func NewBACnetConstructedDataLocalDate(localDate BACnetApplicationTagDate, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalDate {
-	_result := &_BACnetConstructedDataLocalDate{
-		LocalDate:              localDate,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if localDate == nil {
+		panic("localDate of type BACnetApplicationTagDate for BACnetConstructedDataLocalDate must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLocalDate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LocalDate:                     localDate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLocalDate) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLocalDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (localDate)
 	lengthInBits += m.LocalDate.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLocalDate) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLocalDateParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalDate, error) {
-	return BACnetConstructedDataLocalDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLocalDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalDate, error) {
+func (m *_BACnetConstructedDataLocalDate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLocalDate BACnetConstructedDataLocalDate, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLocalDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (localDate)
-	if pullErr := readBuffer.PullContext("localDate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localDate")
+	localDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "localDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localDate' field"))
 	}
-	_localDate, _localDateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _localDateErr != nil {
-		return nil, errors.Wrap(_localDateErr, "Error parsing 'localDate' field of BACnetConstructedDataLocalDate")
-	}
-	localDate := _localDate.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("localDate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localDate")
-	}
+	m.LocalDate = localDate
 
-	// Virtual field
-	_actualValue := localDate
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagDate](ctx, "actualValue", (*BACnetApplicationTagDate)(nil), localDate)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLocalDate")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLocalDate{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LocalDate: localDate,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLocalDate) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLocalDate) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocalDate")
 		}
 
-		// Simple Field (localDate)
-		if pushErr := writeBuffer.PushContext("localDate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localDate")
-		}
-		_localDateErr := writeBuffer.WriteSerializable(ctx, m.GetLocalDate())
-		if popErr := writeBuffer.PopContext("localDate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localDate")
-		}
-		if _localDateErr != nil {
-			return errors.Wrap(_localDateErr, "Error serializing 'localDate' field")
+		if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "localDate", m.GetLocalDate(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'localDate' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataLocalDate) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLocalDate) isBACnetConstructedDataLocalDate() bool {
-	return true
-}
+func (m *_BACnetConstructedDataLocalDate) IsBACnetConstructedDataLocalDate() {}
 
 func (m *_BACnetConstructedDataLocalDate) String() string {
 	if m == nil {

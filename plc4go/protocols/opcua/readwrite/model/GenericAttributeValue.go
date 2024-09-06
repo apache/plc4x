@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type GenericAttributeValue interface {
 	GetAttributeId() uint32
 	// GetValue returns Value (property field)
 	GetValue() Variant
-}
-
-// GenericAttributeValueExactly can be used when we want exactly this type and not a type which fulfills GenericAttributeValue.
-// This is useful for switch cases.
-type GenericAttributeValueExactly interface {
-	GenericAttributeValue
-	isGenericAttributeValue() bool
+	// IsGenericAttributeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGenericAttributeValue()
 }
 
 // _GenericAttributeValue is the data-structure of this message
 type _GenericAttributeValue struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	AttributeId uint32
 	Value       Variant
 }
+
+var _ GenericAttributeValue = (*_GenericAttributeValue)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_GenericAttributeValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_GenericAttributeValue) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_GenericAttributeValue) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_GenericAttributeValue) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_GenericAttributeValue) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,15 @@ func (m *_GenericAttributeValue) GetValue() Variant {
 
 // NewGenericAttributeValue factory function for _GenericAttributeValue
 func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttributeValue {
-	_result := &_GenericAttributeValue{
-		AttributeId:                attributeId,
-		Value:                      value,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if value == nil {
+		panic("value of type Variant for GenericAttributeValue must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_GenericAttributeValue{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		AttributeId:                       attributeId,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +123,7 @@ func (m *_GenericAttributeValue) GetTypeName() string {
 }
 
 func (m *_GenericAttributeValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (attributeId)
 	lengthInBits += 32
@@ -137,53 +138,34 @@ func (m *_GenericAttributeValue) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func GenericAttributeValueParse(ctx context.Context, theBytes []byte, identifier string) (GenericAttributeValue, error) {
-	return GenericAttributeValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func GenericAttributeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (GenericAttributeValue, error) {
+func (m *_GenericAttributeValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__genericAttributeValue GenericAttributeValue, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GenericAttributeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GenericAttributeValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of GenericAttributeValue")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
-	attributeId := _attributeId
+	m.AttributeId = attributeId
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
+	value, err := ReadSimpleField[Variant](ctx, "value", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	_value, _valueErr := VariantParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of GenericAttributeValue")
-	}
-	value := _value.(Variant)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
-	}
+	m.Value = value
 
 	if closeErr := readBuffer.CloseContext("GenericAttributeValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for GenericAttributeValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_GenericAttributeValue{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		AttributeId:                attributeId,
-		Value:                      value,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_GenericAttributeValue) Serialize() ([]byte, error) {
@@ -204,23 +186,12 @@ func (m *_GenericAttributeValue) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for GenericAttributeValue")
 		}
 
-		// Simple Field (attributeId)
-		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
-		if _attributeIdErr != nil {
-			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		// Simple Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[Variant](ctx, "value", m.GetValue(), WriteComplex[Variant](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("GenericAttributeValue"); popErr != nil {
@@ -228,12 +199,10 @@ func (m *_GenericAttributeValue) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_GenericAttributeValue) isGenericAttributeValue() bool {
-	return true
-}
+func (m *_GenericAttributeValue) IsGenericAttributeValue() {}
 
 func (m *_GenericAttributeValue) String() string {
 	if m == nil {

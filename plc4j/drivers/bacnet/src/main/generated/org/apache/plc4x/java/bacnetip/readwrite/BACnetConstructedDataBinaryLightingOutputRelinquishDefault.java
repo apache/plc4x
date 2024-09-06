@@ -83,8 +83,7 @@ public class BACnetConstructedDataBinaryLightingOutputRelinquishDefault
     writeBuffer.pushContext("BACnetConstructedDataBinaryLightingOutputRelinquishDefault");
 
     // Simple Field (relinquishDefault)
-    writeSimpleField(
-        "relinquishDefault", relinquishDefault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relinquishDefault", relinquishDefault, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetBinaryLightingPVTagged actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataBinaryLightingOutputRelinquishDefault
     BACnetBinaryLightingPVTagged relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryLightingPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

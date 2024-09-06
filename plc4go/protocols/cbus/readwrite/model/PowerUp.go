@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,18 +42,15 @@ type PowerUp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// PowerUpExactly can be used when we want exactly this type and not a type which fulfills PowerUp.
-// This is useful for switch cases.
-type PowerUpExactly interface {
-	PowerUp
-	isPowerUp() bool
+	// IsPowerUp is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPowerUp()
 }
 
 // _PowerUp is the data-structure of this message
 type _PowerUp struct {
 }
+
+var _ PowerUp = (*_PowerUp)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -111,41 +110,46 @@ func PowerUpParse(ctx context.Context, theBytes []byte) (PowerUp, error) {
 	return PowerUpParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PowerUpParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {
+		return PowerUpParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {
+	v, err := (&_PowerUp{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_PowerUp) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__powerUp PowerUp, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PowerUp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PowerUp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (powerUpIndicator1)
-	powerUpIndicator1, _powerUpIndicator1Err := readBuffer.ReadByte("powerUpIndicator1")
-	if _powerUpIndicator1Err != nil {
-		return nil, errors.Wrap(_powerUpIndicator1Err, "Error parsing 'powerUpIndicator1' field of PowerUp")
+	powerUpIndicator1, err := ReadConstField[byte](ctx, "powerUpIndicator1", ReadByte(readBuffer, 8), PowerUp_POWERUPINDICATOR1)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'powerUpIndicator1' field"))
 	}
-	if powerUpIndicator1 != PowerUp_POWERUPINDICATOR1 {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", PowerUp_POWERUPINDICATOR1) + " but got " + fmt.Sprintf("%d", powerUpIndicator1))
-	}
+	_ = powerUpIndicator1
 
-	// Const Field (powerUpIndicator2)
-	powerUpIndicator2, _powerUpIndicator2Err := readBuffer.ReadByte("powerUpIndicator2")
-	if _powerUpIndicator2Err != nil {
-		return nil, errors.Wrap(_powerUpIndicator2Err, "Error parsing 'powerUpIndicator2' field of PowerUp")
+	powerUpIndicator2, err := ReadConstField[byte](ctx, "powerUpIndicator2", ReadByte(readBuffer, 8), PowerUp_POWERUPINDICATOR2)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'powerUpIndicator2' field"))
 	}
-	if powerUpIndicator2 != PowerUp_POWERUPINDICATOR2 {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", PowerUp_POWERUPINDICATOR2) + " but got " + fmt.Sprintf("%d", powerUpIndicator2))
-	}
+	_ = powerUpIndicator2
 
 	if closeErr := readBuffer.CloseContext("PowerUp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PowerUp")
 	}
 
-	// Create the instance
-	return &_PowerUp{}, nil
+	return m, nil
 }
 
 func (m *_PowerUp) Serialize() ([]byte, error) {
@@ -165,16 +169,12 @@ func (m *_PowerUp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for PowerUp")
 	}
 
-	// Const Field (powerUpIndicator1)
-	_powerUpIndicator1Err := writeBuffer.WriteByte("powerUpIndicator1", 0x2B)
-	if _powerUpIndicator1Err != nil {
-		return errors.Wrap(_powerUpIndicator1Err, "Error serializing 'powerUpIndicator1' field")
+	if err := WriteConstField(ctx, "powerUpIndicator1", PowerUp_POWERUPINDICATOR1, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'powerUpIndicator1' field")
 	}
 
-	// Const Field (powerUpIndicator2)
-	_powerUpIndicator2Err := writeBuffer.WriteByte("powerUpIndicator2", 0x2B)
-	if _powerUpIndicator2Err != nil {
-		return errors.Wrap(_powerUpIndicator2Err, "Error serializing 'powerUpIndicator2' field")
+	if err := WriteConstField(ctx, "powerUpIndicator2", PowerUp_POWERUPINDICATOR2, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'powerUpIndicator2' field")
 	}
 
 	if popErr := writeBuffer.PopContext("PowerUp"); popErr != nil {
@@ -183,9 +183,7 @@ func (m *_PowerUp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	return nil
 }
 
-func (m *_PowerUp) isPowerUp() bool {
-	return true
-}
+func (m *_PowerUp) IsPowerUp() {}
 
 func (m *_PowerUp) String() string {
 	if m == nil {

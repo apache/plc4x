@@ -776,7 +776,16 @@ func Test_extractMMIAndSAL(t *testing.T) {
 					readWriteModel.NewReplyOrConfirmationReply(
 						readWriteModel.NewReplyEncodedReply(
 							readWriteModel.NewMonitoredSALReply(
-								nil,
+								readWriteModel.NewMonitoredSALShortFormBasicMode(
+									0,
+									nil,
+									nil,
+									nil,
+									readWriteModel.ApplicationIdContainer_RESERVED_00,
+									nil,
+									0,
+									nil,
+								),
 								0,
 								nil,
 								nil,
@@ -786,7 +795,7 @@ func Test_extractMMIAndSAL(t *testing.T) {
 							nil,
 							nil,
 						),
-						nil,
+						readWriteModel.NewResponseTermination(),
 						0,
 						nil,
 						nil,

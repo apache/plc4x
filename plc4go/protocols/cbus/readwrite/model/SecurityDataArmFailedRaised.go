@@ -37,19 +37,17 @@ type SecurityDataArmFailedRaised interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataArmFailedRaisedExactly can be used when we want exactly this type and not a type which fulfills SecurityDataArmFailedRaised.
-// This is useful for switch cases.
-type SecurityDataArmFailedRaisedExactly interface {
-	SecurityDataArmFailedRaised
-	isSecurityDataArmFailedRaised() bool
+	// IsSecurityDataArmFailedRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataArmFailedRaised()
 }
 
 // _SecurityDataArmFailedRaised is the data-structure of this message
 type _SecurityDataArmFailedRaised struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataArmFailedRaised = (*_SecurityDataArmFailedRaised)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataArmFailedRaised)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataArmFailedRaised struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataArmFailedRaised) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataArmFailedRaised) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataArmFailedRaised) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataArmFailedRaised factory function for _SecurityDataArmFailedRaised
 func NewSecurityDataArmFailedRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataArmFailedRaised {
 	_result := &_SecurityDataArmFailedRaised{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataArmFailedRaised) GetTypeName() string {
 }
 
 func (m *_SecurityDataArmFailedRaised) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataArmFailedRaised) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataArmFailedRaisedParse(ctx context.Context, theBytes []byte) (SecurityDataArmFailedRaised, error) {
-	return SecurityDataArmFailedRaisedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataArmFailedRaisedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmFailedRaised, error) {
+func (m *_SecurityDataArmFailedRaised) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataArmFailedRaised SecurityDataArmFailedRaised, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataArmFailedRaised"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataArmFailedRaised")
 	}
@@ -123,12 +112,7 @@ func SecurityDataArmFailedRaisedParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataArmFailedRaised")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataArmFailedRaised{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataArmFailedRaised) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataArmFailedRaised) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataArmFailedRaised) isSecurityDataArmFailedRaised() bool {
-	return true
-}
+func (m *_SecurityDataArmFailedRaised) IsSecurityDataArmFailedRaised() {}
 
 func (m *_SecurityDataArmFailedRaised) String() string {
 	if m == nil {

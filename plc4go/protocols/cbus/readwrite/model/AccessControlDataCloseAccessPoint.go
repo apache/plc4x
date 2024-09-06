@@ -37,19 +37,17 @@ type AccessControlDataCloseAccessPoint interface {
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
-}
-
-// AccessControlDataCloseAccessPointExactly can be used when we want exactly this type and not a type which fulfills AccessControlDataCloseAccessPoint.
-// This is useful for switch cases.
-type AccessControlDataCloseAccessPointExactly interface {
-	AccessControlDataCloseAccessPoint
-	isAccessControlDataCloseAccessPoint() bool
+	// IsAccessControlDataCloseAccessPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataCloseAccessPoint()
 }
 
 // _AccessControlDataCloseAccessPoint is the data-structure of this message
 type _AccessControlDataCloseAccessPoint struct {
-	*_AccessControlData
+	AccessControlDataContract
 }
+
+var _ AccessControlDataCloseAccessPoint = (*_AccessControlDataCloseAccessPoint)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataCloseAccessPoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,22 +59,16 @@ type _AccessControlDataCloseAccessPoint struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AccessControlDataCloseAccessPoint) InitializeParent(parent AccessControlData, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.NetworkId = networkId
-	m.AccessPointId = accessPointId
-}
-
-func (m *_AccessControlDataCloseAccessPoint) GetParent() AccessControlData {
-	return m._AccessControlData
+func (m *_AccessControlDataCloseAccessPoint) GetParent() AccessControlDataContract {
+	return m.AccessControlDataContract
 }
 
 // NewAccessControlDataCloseAccessPoint factory function for _AccessControlDataCloseAccessPoint
 func NewAccessControlDataCloseAccessPoint(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataCloseAccessPoint {
 	_result := &_AccessControlDataCloseAccessPoint{
-		_AccessControlData: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
 	}
-	_result._AccessControlData._AccessControlDataChildRequirements = _result
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 
@@ -96,7 +88,7 @@ func (m *_AccessControlDataCloseAccessPoint) GetTypeName() string {
 }
 
 func (m *_AccessControlDataCloseAccessPoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +97,11 @@ func (m *_AccessControlDataCloseAccessPoint) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataCloseAccessPointParse(ctx context.Context, theBytes []byte) (AccessControlDataCloseAccessPoint, error) {
-	return AccessControlDataCloseAccessPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AccessControlDataCloseAccessPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataCloseAccessPoint, error) {
+func (m *_AccessControlDataCloseAccessPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData) (__accessControlDataCloseAccessPoint AccessControlDataCloseAccessPoint, err error) {
+	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlDataCloseAccessPoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlDataCloseAccessPoint")
 	}
@@ -124,12 +112,7 @@ func AccessControlDataCloseAccessPointParseWithBuffer(ctx context.Context, readB
 		return nil, errors.Wrap(closeErr, "Error closing for AccessControlDataCloseAccessPoint")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AccessControlDataCloseAccessPoint{
-		_AccessControlData: &_AccessControlData{},
-	}
-	_child._AccessControlData._AccessControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AccessControlDataCloseAccessPoint) Serialize() ([]byte, error) {
@@ -155,12 +138,10 @@ func (m *_AccessControlDataCloseAccessPoint) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AccessControlDataContract.(*_AccessControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AccessControlDataCloseAccessPoint) isAccessControlDataCloseAccessPoint() bool {
-	return true
-}
+func (m *_AccessControlDataCloseAccessPoint) IsAccessControlDataCloseAccessPoint() {}
 
 func (m *_AccessControlDataCloseAccessPoint) String() string {
 	if m == nil {

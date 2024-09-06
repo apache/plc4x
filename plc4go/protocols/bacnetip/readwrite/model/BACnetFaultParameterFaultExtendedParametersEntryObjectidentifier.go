@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier interface 
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
-}
-
-// BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierExactly interface {
-	BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
-	isBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() bool
+	// IsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier struct {
-	*_BACnetFaultParameterFaultExtendedParametersEntry
+	BACnetFaultParameterFaultExtendedParametersEntryContract
 	ObjectidentifierValue BACnetApplicationTagObjectIdentifier
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier = (*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetParent() BACnetFaultParameterFaultExtendedParametersEntry {
-	return m._BACnetFaultParameterFaultExtendedParametersEntry
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetParent() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetO
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier factory function for _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 func NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(objectidentifierValue BACnetApplicationTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{
-		ObjectidentifierValue:                             objectidentifierValue,
-		_BACnetFaultParameterFaultExtendedParametersEntry: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier must not be nil")
 	}
-	_result._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		ObjectidentifierValue: objectidentifierValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetT
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (objectidentifierValue)
 	lengthInBits += m.ObjectidentifierValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetL
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryObjectidentifier BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, err error) {
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectidentifierValue)
-	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
+	objectidentifierValue, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectidentifierValue", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectidentifierValue' field"))
 	}
-	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _objectidentifierValueErr != nil {
-		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field of BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier")
-	}
-	objectidentifierValue := _objectidentifierValue.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectidentifierValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectidentifierValue")
-	}
+	m.ObjectidentifierValue = objectidentifierValue
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{
-		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
-		ObjectidentifierValue:                             objectidentifierValue,
-	}
-	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) Seri
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier")
 		}
 
-		// Simple Field (objectidentifierValue)
-		if pushErr := writeBuffer.PushContext("objectidentifierValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectidentifierValue")
-		}
-		_objectidentifierValueErr := writeBuffer.WriteSerializable(ctx, m.GetObjectidentifierValue())
-		if popErr := writeBuffer.PopContext("objectidentifierValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectidentifierValue")
-		}
-		if _objectidentifierValueErr != nil {
-			return errors.Wrap(_objectidentifierValueErr, "Error serializing 'objectidentifierValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectidentifierValue", m.GetObjectidentifierValue(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectidentifierValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) Seri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) isBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() bool {
-	return true
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) IsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() {
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) String() string {

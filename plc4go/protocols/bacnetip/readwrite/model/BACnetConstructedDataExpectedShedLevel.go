@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataExpectedShedLevel interface {
 	GetExpectedShedLevel() BACnetShedLevel
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetShedLevel
-}
-
-// BACnetConstructedDataExpectedShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExpectedShedLevel.
-// This is useful for switch cases.
-type BACnetConstructedDataExpectedShedLevelExactly interface {
-	BACnetConstructedDataExpectedShedLevel
-	isBACnetConstructedDataExpectedShedLevel() bool
+	// IsBACnetConstructedDataExpectedShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataExpectedShedLevel()
 }
 
 // _BACnetConstructedDataExpectedShedLevel is the data-structure of this message
 type _BACnetConstructedDataExpectedShedLevel struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ExpectedShedLevel BACnetShedLevel
 }
+
+var _ BACnetConstructedDataExpectedShedLevel = (*_BACnetConstructedDataExpectedShedLevel)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExpectedShedLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataExpectedShedLevel) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataExpectedShedLevel) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataExpectedShedLevel) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataExpectedShedLevel) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataExpectedShedLevel) GetActualValue() BACnetShedLev
 
 // NewBACnetConstructedDataExpectedShedLevel factory function for _BACnetConstructedDataExpectedShedLevel
 func NewBACnetConstructedDataExpectedShedLevel(expectedShedLevel BACnetShedLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExpectedShedLevel {
-	_result := &_BACnetConstructedDataExpectedShedLevel{
-		ExpectedShedLevel:      expectedShedLevel,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if expectedShedLevel == nil {
+		panic("expectedShedLevel of type BACnetShedLevel for BACnetConstructedDataExpectedShedLevel must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataExpectedShedLevel{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ExpectedShedLevel:             expectedShedLevel,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataExpectedShedLevel) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataExpectedShedLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (expectedShedLevel)
 	lengthInBits += m.ExpectedShedLevel.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataExpectedShedLevel) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataExpectedShedLevelParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExpectedShedLevel, error) {
-	return BACnetConstructedDataExpectedShedLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataExpectedShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExpectedShedLevel, error) {
+func (m *_BACnetConstructedDataExpectedShedLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataExpectedShedLevel BACnetConstructedDataExpectedShedLevel, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExpectedShedLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataExpectedShedLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (expectedShedLevel)
-	if pullErr := readBuffer.PullContext("expectedShedLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for expectedShedLevel")
+	expectedShedLevel, err := ReadSimpleField[BACnetShedLevel](ctx, "expectedShedLevel", ReadComplex[BACnetShedLevel](BACnetShedLevelParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expectedShedLevel' field"))
 	}
-	_expectedShedLevel, _expectedShedLevelErr := BACnetShedLevelParseWithBuffer(ctx, readBuffer)
-	if _expectedShedLevelErr != nil {
-		return nil, errors.Wrap(_expectedShedLevelErr, "Error parsing 'expectedShedLevel' field of BACnetConstructedDataExpectedShedLevel")
-	}
-	expectedShedLevel := _expectedShedLevel.(BACnetShedLevel)
-	if closeErr := readBuffer.CloseContext("expectedShedLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for expectedShedLevel")
-	}
+	m.ExpectedShedLevel = expectedShedLevel
 
-	// Virtual field
-	_actualValue := expectedShedLevel
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetShedLevel](ctx, "actualValue", (*BACnetShedLevel)(nil), expectedShedLevel)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExpectedShedLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExpectedShedLevel")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataExpectedShedLevel{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ExpectedShedLevel: expectedShedLevel,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataExpectedShedLevel) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataExpectedShedLevel) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataExpectedShedLevel")
 		}
 
-		// Simple Field (expectedShedLevel)
-		if pushErr := writeBuffer.PushContext("expectedShedLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for expectedShedLevel")
-		}
-		_expectedShedLevelErr := writeBuffer.WriteSerializable(ctx, m.GetExpectedShedLevel())
-		if popErr := writeBuffer.PopContext("expectedShedLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for expectedShedLevel")
-		}
-		if _expectedShedLevelErr != nil {
-			return errors.Wrap(_expectedShedLevelErr, "Error serializing 'expectedShedLevel' field")
+		if err := WriteSimpleField[BACnetShedLevel](ctx, "expectedShedLevel", m.GetExpectedShedLevel(), WriteComplex[BACnetShedLevel](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'expectedShedLevel' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataExpectedShedLevel) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataExpectedShedLevel) isBACnetConstructedDataExpectedShedLevel() bool {
-	return true
-}
+func (m *_BACnetConstructedDataExpectedShedLevel) IsBACnetConstructedDataExpectedShedLevel() {}
 
 func (m *_BACnetConstructedDataExpectedShedLevel) String() string {
 	if m == nil {

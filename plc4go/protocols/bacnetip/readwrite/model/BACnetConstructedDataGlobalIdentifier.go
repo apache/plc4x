@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataGlobalIdentifier interface {
 	GetGlobalIdentifier() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataGlobalIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGlobalIdentifier.
-// This is useful for switch cases.
-type BACnetConstructedDataGlobalIdentifierExactly interface {
-	BACnetConstructedDataGlobalIdentifier
-	isBACnetConstructedDataGlobalIdentifier() bool
+	// IsBACnetConstructedDataGlobalIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGlobalIdentifier()
 }
 
 // _BACnetConstructedDataGlobalIdentifier is the data-structure of this message
 type _BACnetConstructedDataGlobalIdentifier struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	GlobalIdentifier BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataGlobalIdentifier = (*_BACnetConstructedDataGlobalIdentifier)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalIdentifier)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataGlobalIdentifier) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataGlobalIdentifier) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataGlobalIdentifier) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataGlobalIdentifier factory function for _BACnetConstructedDataGlobalIdentifier
 func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalIdentifier {
-	_result := &_BACnetConstructedDataGlobalIdentifier{
-		GlobalIdentifier:       globalIdentifier,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if globalIdentifier == nil {
+		panic("globalIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGlobalIdentifier must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataGlobalIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		GlobalIdentifier:              globalIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataGlobalIdentifier) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (globalIdentifier)
 	lengthInBits += m.GlobalIdentifier.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataGlobalIdentifierParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalIdentifier, error) {
-	return BACnetConstructedDataGlobalIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataGlobalIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalIdentifier, error) {
+func (m *_BACnetConstructedDataGlobalIdentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataGlobalIdentifier BACnetConstructedDataGlobalIdentifier, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataGlobalIdentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (globalIdentifier)
-	if pullErr := readBuffer.PullContext("globalIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for globalIdentifier")
+	globalIdentifier, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "globalIdentifier", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'globalIdentifier' field"))
 	}
-	_globalIdentifier, _globalIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _globalIdentifierErr != nil {
-		return nil, errors.Wrap(_globalIdentifierErr, "Error parsing 'globalIdentifier' field of BACnetConstructedDataGlobalIdentifier")
-	}
-	globalIdentifier := _globalIdentifier.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("globalIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for globalIdentifier")
-	}
+	m.GlobalIdentifier = globalIdentifier
 
-	// Virtual field
-	_actualValue := globalIdentifier
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), globalIdentifier)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGlobalIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataGlobalIdentifier")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataGlobalIdentifier{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		GlobalIdentifier: globalIdentifier,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataGlobalIdentifier) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataGlobalIdentifier) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataGlobalIdentifier")
 		}
 
-		// Simple Field (globalIdentifier)
-		if pushErr := writeBuffer.PushContext("globalIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for globalIdentifier")
-		}
-		_globalIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetGlobalIdentifier())
-		if popErr := writeBuffer.PopContext("globalIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for globalIdentifier")
-		}
-		if _globalIdentifierErr != nil {
-			return errors.Wrap(_globalIdentifierErr, "Error serializing 'globalIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "globalIdentifier", m.GetGlobalIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'globalIdentifier' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataGlobalIdentifier) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifier) isBACnetConstructedDataGlobalIdentifier() bool {
-	return true
-}
+func (m *_BACnetConstructedDataGlobalIdentifier) IsBACnetConstructedDataGlobalIdentifier() {}
 
 func (m *_BACnetConstructedDataGlobalIdentifier) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type S7PayloadAlarmAckInd interface {
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessageAckPushType
-}
-
-// S7PayloadAlarmAckIndExactly can be used when we want exactly this type and not a type which fulfills S7PayloadAlarmAckInd.
-// This is useful for switch cases.
-type S7PayloadAlarmAckIndExactly interface {
-	S7PayloadAlarmAckInd
-	isS7PayloadAlarmAckInd() bool
+	// IsS7PayloadAlarmAckInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadAlarmAckInd()
 }
 
 // _S7PayloadAlarmAckInd is the data-structure of this message
 type _S7PayloadAlarmAckInd struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 	AlarmMessage AlarmMessageAckPushType
 }
+
+var _ S7PayloadAlarmAckInd = (*_S7PayloadAlarmAckInd)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadAlarmAckInd)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,14 +76,8 @@ func (m *_S7PayloadAlarmAckInd) GetCpuSubfunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadAlarmAckInd) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadAlarmAckInd) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadAlarmAckInd) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,11 +96,14 @@ func (m *_S7PayloadAlarmAckInd) GetAlarmMessage() AlarmMessageAckPushType {
 
 // NewS7PayloadAlarmAckInd factory function for _S7PayloadAlarmAckInd
 func NewS7PayloadAlarmAckInd(alarmMessage AlarmMessageAckPushType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadAlarmAckInd {
-	_result := &_S7PayloadAlarmAckInd{
-		AlarmMessage:           alarmMessage,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	if alarmMessage == nil {
+		panic("alarmMessage of type AlarmMessageAckPushType for S7PayloadAlarmAckInd must not be nil")
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result := &_S7PayloadAlarmAckInd{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		AlarmMessage:                  alarmMessage,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -126,7 +123,7 @@ func (m *_S7PayloadAlarmAckInd) GetTypeName() string {
 }
 
 func (m *_S7PayloadAlarmAckInd) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Simple field (alarmMessage)
 	lengthInBits += m.AlarmMessage.GetLengthInBits(ctx)
@@ -138,45 +135,28 @@ func (m *_S7PayloadAlarmAckInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadAlarmAckIndParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
-	return S7PayloadAlarmAckIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadAlarmAckIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
+func (m *_S7PayloadAlarmAckInd) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadAlarmAckInd S7PayloadAlarmAckInd, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmAckInd"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadAlarmAckInd")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (alarmMessage)
-	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alarmMessage")
+	alarmMessage, err := ReadSimpleField[AlarmMessageAckPushType](ctx, "alarmMessage", ReadComplex[AlarmMessageAckPushType](AlarmMessageAckPushTypeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmMessage' field"))
 	}
-	_alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParseWithBuffer(ctx, readBuffer)
-	if _alarmMessageErr != nil {
-		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field of S7PayloadAlarmAckInd")
-	}
-	alarmMessage := _alarmMessage.(AlarmMessageAckPushType)
-	if closeErr := readBuffer.CloseContext("alarmMessage"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alarmMessage")
-	}
+	m.AlarmMessage = alarmMessage
 
 	if closeErr := readBuffer.CloseContext("S7PayloadAlarmAckInd"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadAlarmAckInd")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadAlarmAckInd{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		AlarmMessage:           alarmMessage,
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadAlarmAckInd) Serialize() ([]byte, error) {
@@ -197,16 +177,8 @@ func (m *_S7PayloadAlarmAckInd) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadAlarmAckInd")
 		}
 
-		// Simple Field (alarmMessage)
-		if pushErr := writeBuffer.PushContext("alarmMessage"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmMessage")
-		}
-		_alarmMessageErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmMessage())
-		if popErr := writeBuffer.PopContext("alarmMessage"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmMessage")
-		}
-		if _alarmMessageErr != nil {
-			return errors.Wrap(_alarmMessageErr, "Error serializing 'alarmMessage' field")
+		if err := WriteSimpleField[AlarmMessageAckPushType](ctx, "alarmMessage", m.GetAlarmMessage(), WriteComplex[AlarmMessageAckPushType](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmMessage' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadAlarmAckInd"); popErr != nil {
@@ -214,12 +186,10 @@ func (m *_S7PayloadAlarmAckInd) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadAlarmAckInd) isS7PayloadAlarmAckInd() bool {
-	return true
-}
+func (m *_S7PayloadAlarmAckInd) IsS7PayloadAlarmAckInd() {}
 
 func (m *_S7PayloadAlarmAckInd) String() string {
 	if m == nil {

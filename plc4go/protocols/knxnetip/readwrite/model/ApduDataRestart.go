@@ -37,19 +37,17 @@ type ApduDataRestart interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
-}
-
-// ApduDataRestartExactly can be used when we want exactly this type and not a type which fulfills ApduDataRestart.
-// This is useful for switch cases.
-type ApduDataRestartExactly interface {
-	ApduDataRestart
-	isApduDataRestart() bool
+	// IsApduDataRestart is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataRestart()
 }
 
 // _ApduDataRestart is the data-structure of this message
 type _ApduDataRestart struct {
-	*_ApduData
+	ApduDataContract
 }
+
+var _ ApduDataRestart = (*_ApduDataRestart)(nil)
+var _ ApduDataRequirements = (*_ApduDataRestart)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataRestart) GetApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataRestart) InitializeParent(parent ApduData) {}
-
-func (m *_ApduDataRestart) GetParent() ApduData {
-	return m._ApduData
+func (m *_ApduDataRestart) GetParent() ApduDataContract {
+	return m.ApduDataContract
 }
 
 // NewApduDataRestart factory function for _ApduDataRestart
 func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
 	_result := &_ApduDataRestart{
-		_ApduData: NewApduData(dataLength),
+		ApduDataContract: NewApduData(dataLength),
 	}
-	_result._ApduData._ApduDataChildRequirements = _result
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataRestart) GetTypeName() string {
 }
 
 func (m *_ApduDataRestart) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataRestart) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataRestartParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataRestart, error) {
-	return ApduDataRestartParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
-}
-
-func ApduDataRestartParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataRestart, error) {
+func (m *_ApduDataRestart) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataRestart ApduDataRestart, err error) {
+	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataRestart")
 	}
@@ -124,14 +116,7 @@ func ApduDataRestartParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataRestart")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataRestart{
-		_ApduData: &_ApduData{
-			DataLength: dataLength,
-		},
-	}
-	_child._ApduData._ApduDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataRestart) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataRestart) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataContract.(*_ApduData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataRestart) isApduDataRestart() bool {
-	return true
-}
+func (m *_ApduDataRestart) IsApduDataRestart() {}
 
 func (m *_ApduDataRestart) String() string {
 	if m == nil {

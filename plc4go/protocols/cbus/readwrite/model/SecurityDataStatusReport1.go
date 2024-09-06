@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type SecurityDataStatusReport1 interface {
 	GetPanicStatus() PanicStatus
 	// GetZoneStatus returns ZoneStatus (property field)
 	GetZoneStatus() []ZoneStatus
-}
-
-// SecurityDataStatusReport1Exactly can be used when we want exactly this type and not a type which fulfills SecurityDataStatusReport1.
-// This is useful for switch cases.
-type SecurityDataStatusReport1Exactly interface {
-	SecurityDataStatusReport1
-	isSecurityDataStatusReport1() bool
+	// IsSecurityDataStatusReport1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataStatusReport1()
 }
 
 // _SecurityDataStatusReport1 is the data-structure of this message
 type _SecurityDataStatusReport1 struct {
-	*_SecurityData
+	SecurityDataContract
 	ArmCodeType  SecurityArmCode
 	TamperStatus TamperStatus
 	PanicStatus  PanicStatus
 	ZoneStatus   []ZoneStatus
 }
+
+var _ SecurityDataStatusReport1 = (*_SecurityDataStatusReport1)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataStatusReport1)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,13 +73,8 @@ type _SecurityDataStatusReport1 struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataStatusReport1) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataStatusReport1) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataStatusReport1) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,14 +105,23 @@ func (m *_SecurityDataStatusReport1) GetZoneStatus() []ZoneStatus {
 
 // NewSecurityDataStatusReport1 factory function for _SecurityDataStatusReport1
 func NewSecurityDataStatusReport1(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatusReport1 {
-	_result := &_SecurityDataStatusReport1{
-		ArmCodeType:   armCodeType,
-		TamperStatus:  tamperStatus,
-		PanicStatus:   panicStatus,
-		ZoneStatus:    zoneStatus,
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+	if armCodeType == nil {
+		panic("armCodeType of type SecurityArmCode for SecurityDataStatusReport1 must not be nil")
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	if tamperStatus == nil {
+		panic("tamperStatus of type TamperStatus for SecurityDataStatusReport1 must not be nil")
+	}
+	if panicStatus == nil {
+		panic("panicStatus of type PanicStatus for SecurityDataStatusReport1 must not be nil")
+	}
+	_result := &_SecurityDataStatusReport1{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ArmCodeType:          armCodeType,
+		TamperStatus:         tamperStatus,
+		PanicStatus:          panicStatus,
+		ZoneStatus:           zoneStatus,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -137,7 +141,7 @@ func (m *_SecurityDataStatusReport1) GetTypeName() string {
 }
 
 func (m *_SecurityDataStatusReport1) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (armCodeType)
 	lengthInBits += m.ArmCodeType.GetLengthInBits(ctx)
@@ -165,101 +169,46 @@ func (m *_SecurityDataStatusReport1) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataStatusReport1Parse(ctx context.Context, theBytes []byte) (SecurityDataStatusReport1, error) {
-	return SecurityDataStatusReport1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataStatusReport1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
+func (m *_SecurityDataStatusReport1) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataStatusReport1 SecurityDataStatusReport1, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataStatusReport1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataStatusReport1")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (armCodeType)
-	if pullErr := readBuffer.PullContext("armCodeType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for armCodeType")
+	armCodeType, err := ReadSimpleField[SecurityArmCode](ctx, "armCodeType", ReadComplex[SecurityArmCode](SecurityArmCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'armCodeType' field"))
 	}
-	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(ctx, readBuffer)
-	if _armCodeTypeErr != nil {
-		return nil, errors.Wrap(_armCodeTypeErr, "Error parsing 'armCodeType' field of SecurityDataStatusReport1")
-	}
-	armCodeType := _armCodeType.(SecurityArmCode)
-	if closeErr := readBuffer.CloseContext("armCodeType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for armCodeType")
-	}
+	m.ArmCodeType = armCodeType
 
-	// Simple Field (tamperStatus)
-	if pullErr := readBuffer.PullContext("tamperStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tamperStatus")
+	tamperStatus, err := ReadSimpleField[TamperStatus](ctx, "tamperStatus", ReadComplex[TamperStatus](TamperStatusParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tamperStatus' field"))
 	}
-	_tamperStatus, _tamperStatusErr := TamperStatusParseWithBuffer(ctx, readBuffer)
-	if _tamperStatusErr != nil {
-		return nil, errors.Wrap(_tamperStatusErr, "Error parsing 'tamperStatus' field of SecurityDataStatusReport1")
-	}
-	tamperStatus := _tamperStatus.(TamperStatus)
-	if closeErr := readBuffer.CloseContext("tamperStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tamperStatus")
-	}
+	m.TamperStatus = tamperStatus
 
-	// Simple Field (panicStatus)
-	if pullErr := readBuffer.PullContext("panicStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for panicStatus")
+	panicStatus, err := ReadSimpleField[PanicStatus](ctx, "panicStatus", ReadComplex[PanicStatus](PanicStatusParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'panicStatus' field"))
 	}
-	_panicStatus, _panicStatusErr := PanicStatusParseWithBuffer(ctx, readBuffer)
-	if _panicStatusErr != nil {
-		return nil, errors.Wrap(_panicStatusErr, "Error parsing 'panicStatus' field of SecurityDataStatusReport1")
-	}
-	panicStatus := _panicStatus.(PanicStatus)
-	if closeErr := readBuffer.CloseContext("panicStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for panicStatus")
-	}
+	m.PanicStatus = panicStatus
 
-	// Array field (zoneStatus)
-	if pullErr := readBuffer.PullContext("zoneStatus", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneStatus")
+	zoneStatus, err := ReadCountArrayField[ZoneStatus](ctx, "zoneStatus", ReadComplex[ZoneStatus](ZoneStatusParseWithBuffer, readBuffer), uint64(int32(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneStatus' field"))
 	}
-	// Count array
-	zoneStatus := make([]ZoneStatus, max(uint16(32), 0))
-	// This happens when the size is set conditional to 0
-	if len(zoneStatus) == 0 {
-		zoneStatus = nil
-	}
-	{
-		_numItems := uint16(max(uint16(32), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ZoneStatusParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'zoneStatus' field of SecurityDataStatusReport1")
-			}
-			zoneStatus[_curItem] = _item.(ZoneStatus)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("zoneStatus", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneStatus")
-	}
+	m.ZoneStatus = zoneStatus
 
 	if closeErr := readBuffer.CloseContext("SecurityDataStatusReport1"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataStatusReport1")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataStatusReport1{
-		_SecurityData: &_SecurityData{},
-		ArmCodeType:   armCodeType,
-		TamperStatus:  tamperStatus,
-		PanicStatus:   panicStatus,
-		ZoneStatus:    zoneStatus,
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataStatusReport1) Serialize() ([]byte, error) {
@@ -280,57 +229,20 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataStatusReport1")
 		}
 
-		// Simple Field (armCodeType)
-		if pushErr := writeBuffer.PushContext("armCodeType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for armCodeType")
-		}
-		_armCodeTypeErr := writeBuffer.WriteSerializable(ctx, m.GetArmCodeType())
-		if popErr := writeBuffer.PopContext("armCodeType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for armCodeType")
-		}
-		if _armCodeTypeErr != nil {
-			return errors.Wrap(_armCodeTypeErr, "Error serializing 'armCodeType' field")
+		if err := WriteSimpleField[SecurityArmCode](ctx, "armCodeType", m.GetArmCodeType(), WriteComplex[SecurityArmCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'armCodeType' field")
 		}
 
-		// Simple Field (tamperStatus)
-		if pushErr := writeBuffer.PushContext("tamperStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tamperStatus")
-		}
-		_tamperStatusErr := writeBuffer.WriteSerializable(ctx, m.GetTamperStatus())
-		if popErr := writeBuffer.PopContext("tamperStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tamperStatus")
-		}
-		if _tamperStatusErr != nil {
-			return errors.Wrap(_tamperStatusErr, "Error serializing 'tamperStatus' field")
+		if err := WriteSimpleField[TamperStatus](ctx, "tamperStatus", m.GetTamperStatus(), WriteComplex[TamperStatus](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tamperStatus' field")
 		}
 
-		// Simple Field (panicStatus)
-		if pushErr := writeBuffer.PushContext("panicStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for panicStatus")
-		}
-		_panicStatusErr := writeBuffer.WriteSerializable(ctx, m.GetPanicStatus())
-		if popErr := writeBuffer.PopContext("panicStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for panicStatus")
-		}
-		if _panicStatusErr != nil {
-			return errors.Wrap(_panicStatusErr, "Error serializing 'panicStatus' field")
+		if err := WriteSimpleField[PanicStatus](ctx, "panicStatus", m.GetPanicStatus(), WriteComplex[PanicStatus](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'panicStatus' field")
 		}
 
-		// Array Field (zoneStatus)
-		if pushErr := writeBuffer.PushContext("zoneStatus", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneStatus")
-		}
-		for _curItem, _element := range m.GetZoneStatus() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetZoneStatus()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'zoneStatus' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("zoneStatus", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneStatus")
+		if err := WriteComplexTypeArrayField(ctx, "zoneStatus", m.GetZoneStatus(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityDataStatusReport1"); popErr != nil {
@@ -338,12 +250,10 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataStatusReport1) isSecurityDataStatusReport1() bool {
-	return true
-}
+func (m *_SecurityDataStatusReport1) IsSecurityDataStatusReport1() {}
 
 func (m *_SecurityDataStatusReport1) String() string {
 	if m == nil {

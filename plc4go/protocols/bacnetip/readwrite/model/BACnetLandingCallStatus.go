@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,13 +44,8 @@ type BACnetLandingCallStatus interface {
 	GetCommand() BACnetLandingCallStatusCommand
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() BACnetContextTagCharacterString
-}
-
-// BACnetLandingCallStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatus.
-// This is useful for switch cases.
-type BACnetLandingCallStatusExactly interface {
-	BACnetLandingCallStatus
-	isBACnetLandingCallStatus() bool
+	// IsBACnetLandingCallStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingCallStatus()
 }
 
 // _BACnetLandingCallStatus is the data-structure of this message
@@ -58,6 +54,8 @@ type _BACnetLandingCallStatus struct {
 	Command     BACnetLandingCallStatusCommand
 	FloorText   BACnetContextTagCharacterString
 }
+
+var _ BACnetLandingCallStatus = (*_BACnetLandingCallStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,6 +81,12 @@ func (m *_BACnetLandingCallStatus) GetFloorText() BACnetContextTagCharacterStrin
 
 // NewBACnetLandingCallStatus factory function for _BACnetLandingCallStatus
 func NewBACnetLandingCallStatus(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand, floorText BACnetContextTagCharacterString) *_BACnetLandingCallStatus {
+	if floorNumber == nil {
+		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatus must not be nil")
+	}
+	if command == nil {
+		panic("command of type BACnetLandingCallStatusCommand for BACnetLandingCallStatus must not be nil")
+	}
 	return &_BACnetLandingCallStatus{FloorNumber: floorNumber, Command: command, FloorText: floorText}
 }
 
@@ -126,75 +130,56 @@ func BACnetLandingCallStatusParse(ctx context.Context, theBytes []byte) (BACnetL
 	return BACnetLandingCallStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLandingCallStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
+		return BACnetLandingCallStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLandingCallStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
+	v, err := (&_BACnetLandingCallStatus{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetLandingCallStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetLandingCallStatus BACnetLandingCallStatus, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingCallStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (floorNumber)
-	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
+	floorNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorNumber' field"))
 	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _floorNumberErr != nil {
-		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetLandingCallStatus")
-	}
-	floorNumber := _floorNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("floorNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for floorNumber")
-	}
+	m.FloorNumber = floorNumber
 
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
+	command, err := ReadSimpleField[BACnetLandingCallStatusCommand](ctx, "command", ReadComplex[BACnetLandingCallStatusCommand](BACnetLandingCallStatusCommandParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
-	_command, _commandErr := BACnetLandingCallStatusCommandParseWithBuffer(ctx, readBuffer)
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of BACnetLandingCallStatus")
-	}
-	command := _command.(BACnetLandingCallStatusCommand)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
-	}
+	m.Command = command
 
-	// Optional Field (floorText) (Can be skipped, if a given expression evaluates to false)
-	var floorText BACnetContextTagCharacterString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("floorText"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for floorText")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_CHARACTER_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetLandingCallStatus")
-		default:
-			floorText = _val.(BACnetContextTagCharacterString)
-			if closeErr := readBuffer.CloseContext("floorText"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for floorText")
-			}
-		}
+	var floorText BACnetContextTagCharacterString
+	_floorText, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "floorText", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorText' field"))
+	}
+	if _floorText != nil {
+		floorText = *_floorText
+		m.FloorText = floorText
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingCallStatus")
 	}
 
-	// Create the instance
-	return &_BACnetLandingCallStatus{
-		FloorNumber: floorNumber,
-		Command:     command,
-		FloorText:   floorText,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetLandingCallStatus) Serialize() ([]byte, error) {
@@ -214,44 +199,16 @@ func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatus")
 	}
 
-	// Simple Field (floorNumber)
-	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for floorNumber")
-	}
-	_floorNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFloorNumber())
-	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for floorNumber")
-	}
-	if _floorNumberErr != nil {
-		return errors.Wrap(_floorNumberErr, "Error serializing 'floorNumber' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", m.GetFloorNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'floorNumber' field")
 	}
 
-	// Simple Field (command)
-	if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for command")
-	}
-	_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
-	if popErr := writeBuffer.PopContext("command"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for command")
-	}
-	if _commandErr != nil {
-		return errors.Wrap(_commandErr, "Error serializing 'command' field")
+	if err := WriteSimpleField[BACnetLandingCallStatusCommand](ctx, "command", m.GetCommand(), WriteComplex[BACnetLandingCallStatusCommand](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'command' field")
 	}
 
-	// Optional Field (floorText) (Can be skipped, if the value is null)
-	var floorText BACnetContextTagCharacterString = nil
-	if m.GetFloorText() != nil {
-		if pushErr := writeBuffer.PushContext("floorText"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for floorText")
-		}
-		floorText = m.GetFloorText()
-		_floorTextErr := writeBuffer.WriteSerializable(ctx, floorText)
-		if popErr := writeBuffer.PopContext("floorText"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for floorText")
-		}
-		if _floorTextErr != nil {
-			return errors.Wrap(_floorTextErr, "Error serializing 'floorText' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "floorText", GetRef(m.GetFloorText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'floorText' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLandingCallStatus"); popErr != nil {
@@ -260,9 +217,7 @@ func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-func (m *_BACnetLandingCallStatus) isBACnetLandingCallStatus() bool {
-	return true
-}
+func (m *_BACnetLandingCallStatus) IsBACnetLandingCallStatus() {}
 
 func (m *_BACnetLandingCallStatus) String() string {
 	if m == nil {

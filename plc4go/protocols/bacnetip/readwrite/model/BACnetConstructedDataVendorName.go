@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataVendorName interface {
 	GetVendorName() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataVendorNameExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVendorName.
-// This is useful for switch cases.
-type BACnetConstructedDataVendorNameExactly interface {
-	BACnetConstructedDataVendorName
-	isBACnetConstructedDataVendorName() bool
+	// IsBACnetConstructedDataVendorName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataVendorName()
 }
 
 // _BACnetConstructedDataVendorName is the data-structure of this message
 type _BACnetConstructedDataVendorName struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	VendorName BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataVendorName = (*_BACnetConstructedDataVendorName)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVendorName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataVendorName) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataVendorName) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataVendorName) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataVendorName) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataVendorName) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataVendorName factory function for _BACnetConstructedDataVendorName
 func NewBACnetConstructedDataVendorName(vendorName BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorName {
-	_result := &_BACnetConstructedDataVendorName{
-		VendorName:             vendorName,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if vendorName == nil {
+		panic("vendorName of type BACnetApplicationTagCharacterString for BACnetConstructedDataVendorName must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataVendorName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VendorName:                    vendorName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataVendorName) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataVendorName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (vendorName)
 	lengthInBits += m.VendorName.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataVendorName) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataVendorNameParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVendorName, error) {
-	return BACnetConstructedDataVendorNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataVendorNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVendorName, error) {
+func (m *_BACnetConstructedDataVendorName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataVendorName BACnetConstructedDataVendorName, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVendorName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataVendorName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (vendorName)
-	if pullErr := readBuffer.PullContext("vendorName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vendorName")
+	vendorName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "vendorName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorName' field"))
 	}
-	_vendorName, _vendorNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _vendorNameErr != nil {
-		return nil, errors.Wrap(_vendorNameErr, "Error parsing 'vendorName' field of BACnetConstructedDataVendorName")
-	}
-	vendorName := _vendorName.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("vendorName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vendorName")
-	}
+	m.VendorName = vendorName
 
-	// Virtual field
-	_actualValue := vendorName
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), vendorName)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVendorName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVendorName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataVendorName{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		VendorName: vendorName,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataVendorName) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataVendorName) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVendorName")
 		}
 
-		// Simple Field (vendorName)
-		if pushErr := writeBuffer.PushContext("vendorName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorName")
-		}
-		_vendorNameErr := writeBuffer.WriteSerializable(ctx, m.GetVendorName())
-		if popErr := writeBuffer.PopContext("vendorName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorName")
-		}
-		if _vendorNameErr != nil {
-			return errors.Wrap(_vendorNameErr, "Error serializing 'vendorName' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "vendorName", m.GetVendorName(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorName' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataVendorName) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataVendorName) isBACnetConstructedDataVendorName() bool {
-	return true
-}
+func (m *_BACnetConstructedDataVendorName) IsBACnetConstructedDataVendorName() {}
 
 func (m *_BACnetConstructedDataVendorName) String() string {
 	if m == nil {

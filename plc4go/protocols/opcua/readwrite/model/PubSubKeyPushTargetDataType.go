@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -61,18 +63,13 @@ type PubSubKeyPushTargetDataType interface {
 	GetNoOfSecurityGroups() int32
 	// GetSecurityGroups returns SecurityGroups (property field)
 	GetSecurityGroups() []PascalString
-}
-
-// PubSubKeyPushTargetDataTypeExactly can be used when we want exactly this type and not a type which fulfills PubSubKeyPushTargetDataType.
-// This is useful for switch cases.
-type PubSubKeyPushTargetDataTypeExactly interface {
-	PubSubKeyPushTargetDataType
-	isPubSubKeyPushTargetDataType() bool
+	// IsPubSubKeyPushTargetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPubSubKeyPushTargetDataType()
 }
 
 // _PubSubKeyPushTargetDataType is the data-structure of this message
 type _PubSubKeyPushTargetDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ApplicationUri           PascalString
 	NoOfPushTargetFolder     int32
 	PushTargetFolder         []PascalString
@@ -86,6 +83,9 @@ type _PubSubKeyPushTargetDataType struct {
 	NoOfSecurityGroups       int32
 	SecurityGroups           []PascalString
 }
+
+var _ PubSubKeyPushTargetDataType = (*_PubSubKeyPushTargetDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PubSubKeyPushTargetDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,10 +101,8 @@ func (m *_PubSubKeyPushTargetDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PubSubKeyPushTargetDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_PubSubKeyPushTargetDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_PubSubKeyPushTargetDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -167,22 +165,34 @@ func (m *_PubSubKeyPushTargetDataType) GetSecurityGroups() []PascalString {
 
 // NewPubSubKeyPushTargetDataType factory function for _PubSubKeyPushTargetDataType
 func NewPubSubKeyPushTargetDataType(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) *_PubSubKeyPushTargetDataType {
-	_result := &_PubSubKeyPushTargetDataType{
-		ApplicationUri:             applicationUri,
-		NoOfPushTargetFolder:       noOfPushTargetFolder,
-		PushTargetFolder:           pushTargetFolder,
-		EndpointUrl:                endpointUrl,
-		SecurityPolicyUri:          securityPolicyUri,
-		UserTokenType:              userTokenType,
-		RequestedKeyCount:          requestedKeyCount,
-		RetryInterval:              retryInterval,
-		NoOfPushTargetProperties:   noOfPushTargetProperties,
-		PushTargetProperties:       pushTargetProperties,
-		NoOfSecurityGroups:         noOfSecurityGroups,
-		SecurityGroups:             securityGroups,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if applicationUri == nil {
+		panic("applicationUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if userTokenType == nil {
+		panic("userTokenType of type ExtensionObjectDefinition for PubSubKeyPushTargetDataType must not be nil")
+	}
+	_result := &_PubSubKeyPushTargetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ApplicationUri:                    applicationUri,
+		NoOfPushTargetFolder:              noOfPushTargetFolder,
+		PushTargetFolder:                  pushTargetFolder,
+		EndpointUrl:                       endpointUrl,
+		SecurityPolicyUri:                 securityPolicyUri,
+		UserTokenType:                     userTokenType,
+		RequestedKeyCount:                 requestedKeyCount,
+		RetryInterval:                     retryInterval,
+		NoOfPushTargetProperties:          noOfPushTargetProperties,
+		PushTargetProperties:              pushTargetProperties,
+		NoOfSecurityGroups:                noOfSecurityGroups,
+		SecurityGroups:                    securityGroups,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -202,7 +212,7 @@ func (m *_PubSubKeyPushTargetDataType) GetTypeName() string {
 }
 
 func (m *_PubSubKeyPushTargetDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (applicationUri)
 	lengthInBits += m.ApplicationUri.GetLengthInBits(ctx)
@@ -268,211 +278,94 @@ func (m *_PubSubKeyPushTargetDataType) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PubSubKeyPushTargetDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (PubSubKeyPushTargetDataType, error) {
-	return PubSubKeyPushTargetDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubKeyPushTargetDataType, error) {
+func (m *_PubSubKeyPushTargetDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubKeyPushTargetDataType PubSubKeyPushTargetDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PubSubKeyPushTargetDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PubSubKeyPushTargetDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (applicationUri)
-	if pullErr := readBuffer.PullContext("applicationUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for applicationUri")
+	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationUri' field"))
 	}
-	_applicationUri, _applicationUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _applicationUriErr != nil {
-		return nil, errors.Wrap(_applicationUriErr, "Error parsing 'applicationUri' field of PubSubKeyPushTargetDataType")
-	}
-	applicationUri := _applicationUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("applicationUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for applicationUri")
-	}
+	m.ApplicationUri = applicationUri
 
-	// Simple Field (noOfPushTargetFolder)
-	_noOfPushTargetFolder, _noOfPushTargetFolderErr := readBuffer.ReadInt32("noOfPushTargetFolder", 32)
-	if _noOfPushTargetFolderErr != nil {
-		return nil, errors.Wrap(_noOfPushTargetFolderErr, "Error parsing 'noOfPushTargetFolder' field of PubSubKeyPushTargetDataType")
+	noOfPushTargetFolder, err := ReadSimpleField(ctx, "noOfPushTargetFolder", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPushTargetFolder' field"))
 	}
-	noOfPushTargetFolder := _noOfPushTargetFolder
+	m.NoOfPushTargetFolder = noOfPushTargetFolder
 
-	// Array field (pushTargetFolder)
-	if pullErr := readBuffer.PullContext("pushTargetFolder", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pushTargetFolder")
+	pushTargetFolder, err := ReadCountArrayField[PascalString](ctx, "pushTargetFolder", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfPushTargetFolder))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pushTargetFolder' field"))
 	}
-	// Count array
-	pushTargetFolder := make([]PascalString, max(noOfPushTargetFolder, 0))
-	// This happens when the size is set conditional to 0
-	if len(pushTargetFolder) == 0 {
-		pushTargetFolder = nil
-	}
-	{
-		_numItems := uint16(max(noOfPushTargetFolder, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'pushTargetFolder' field of PubSubKeyPushTargetDataType")
-			}
-			pushTargetFolder[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("pushTargetFolder", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pushTargetFolder")
-	}
+	m.PushTargetFolder = pushTargetFolder
 
-	// Simple Field (endpointUrl)
-	if pullErr := readBuffer.PullContext("endpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrl")
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
-	_endpointUrl, _endpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointUrlErr != nil {
-		return nil, errors.Wrap(_endpointUrlErr, "Error parsing 'endpointUrl' field of PubSubKeyPushTargetDataType")
-	}
-	endpointUrl := _endpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrl")
-	}
+	m.EndpointUrl = endpointUrl
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of PubSubKeyPushTargetDataType")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
-	}
+	m.SecurityPolicyUri = securityPolicyUri
 
-	// Simple Field (userTokenType)
-	if pullErr := readBuffer.PullContext("userTokenType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userTokenType")
+	userTokenType, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "userTokenType", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("306")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userTokenType' field"))
 	}
-	_userTokenType, _userTokenTypeErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("306"))
-	if _userTokenTypeErr != nil {
-		return nil, errors.Wrap(_userTokenTypeErr, "Error parsing 'userTokenType' field of PubSubKeyPushTargetDataType")
-	}
-	userTokenType := _userTokenType.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("userTokenType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userTokenType")
-	}
+	m.UserTokenType = userTokenType
 
-	// Simple Field (requestedKeyCount)
-	_requestedKeyCount, _requestedKeyCountErr := readBuffer.ReadUint16("requestedKeyCount", 16)
-	if _requestedKeyCountErr != nil {
-		return nil, errors.Wrap(_requestedKeyCountErr, "Error parsing 'requestedKeyCount' field of PubSubKeyPushTargetDataType")
+	requestedKeyCount, err := ReadSimpleField(ctx, "requestedKeyCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedKeyCount' field"))
 	}
-	requestedKeyCount := _requestedKeyCount
+	m.RequestedKeyCount = requestedKeyCount
 
-	// Simple Field (retryInterval)
-	_retryInterval, _retryIntervalErr := readBuffer.ReadFloat64("retryInterval", 64)
-	if _retryIntervalErr != nil {
-		return nil, errors.Wrap(_retryIntervalErr, "Error parsing 'retryInterval' field of PubSubKeyPushTargetDataType")
+	retryInterval, err := ReadSimpleField(ctx, "retryInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'retryInterval' field"))
 	}
-	retryInterval := _retryInterval
+	m.RetryInterval = retryInterval
 
-	// Simple Field (noOfPushTargetProperties)
-	_noOfPushTargetProperties, _noOfPushTargetPropertiesErr := readBuffer.ReadInt32("noOfPushTargetProperties", 32)
-	if _noOfPushTargetPropertiesErr != nil {
-		return nil, errors.Wrap(_noOfPushTargetPropertiesErr, "Error parsing 'noOfPushTargetProperties' field of PubSubKeyPushTargetDataType")
+	noOfPushTargetProperties, err := ReadSimpleField(ctx, "noOfPushTargetProperties", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPushTargetProperties' field"))
 	}
-	noOfPushTargetProperties := _noOfPushTargetProperties
+	m.NoOfPushTargetProperties = noOfPushTargetProperties
 
-	// Array field (pushTargetProperties)
-	if pullErr := readBuffer.PullContext("pushTargetProperties", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pushTargetProperties")
+	pushTargetProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "pushTargetProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfPushTargetProperties))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pushTargetProperties' field"))
 	}
-	// Count array
-	pushTargetProperties := make([]ExtensionObjectDefinition, max(noOfPushTargetProperties, 0))
-	// This happens when the size is set conditional to 0
-	if len(pushTargetProperties) == 0 {
-		pushTargetProperties = nil
-	}
-	{
-		_numItems := uint16(max(noOfPushTargetProperties, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'pushTargetProperties' field of PubSubKeyPushTargetDataType")
-			}
-			pushTargetProperties[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("pushTargetProperties", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pushTargetProperties")
-	}
+	m.PushTargetProperties = pushTargetProperties
 
-	// Simple Field (noOfSecurityGroups)
-	_noOfSecurityGroups, _noOfSecurityGroupsErr := readBuffer.ReadInt32("noOfSecurityGroups", 32)
-	if _noOfSecurityGroupsErr != nil {
-		return nil, errors.Wrap(_noOfSecurityGroupsErr, "Error parsing 'noOfSecurityGroups' field of PubSubKeyPushTargetDataType")
+	noOfSecurityGroups, err := ReadSimpleField(ctx, "noOfSecurityGroups", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityGroups' field"))
 	}
-	noOfSecurityGroups := _noOfSecurityGroups
+	m.NoOfSecurityGroups = noOfSecurityGroups
 
-	// Array field (securityGroups)
-	if pullErr := readBuffer.PullContext("securityGroups", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityGroups")
+	securityGroups, err := ReadCountArrayField[PascalString](ctx, "securityGroups", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityGroups))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityGroups' field"))
 	}
-	// Count array
-	securityGroups := make([]PascalString, max(noOfSecurityGroups, 0))
-	// This happens when the size is set conditional to 0
-	if len(securityGroups) == 0 {
-		securityGroups = nil
-	}
-	{
-		_numItems := uint16(max(noOfSecurityGroups, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'securityGroups' field of PubSubKeyPushTargetDataType")
-			}
-			securityGroups[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("securityGroups", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityGroups")
-	}
+	m.SecurityGroups = securityGroups
 
 	if closeErr := readBuffer.CloseContext("PubSubKeyPushTargetDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PubSubKeyPushTargetDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_PubSubKeyPushTargetDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ApplicationUri:             applicationUri,
-		NoOfPushTargetFolder:       noOfPushTargetFolder,
-		PushTargetFolder:           pushTargetFolder,
-		EndpointUrl:                endpointUrl,
-		SecurityPolicyUri:          securityPolicyUri,
-		UserTokenType:              userTokenType,
-		RequestedKeyCount:          requestedKeyCount,
-		RetryInterval:              retryInterval,
-		NoOfPushTargetProperties:   noOfPushTargetProperties,
-		PushTargetProperties:       pushTargetProperties,
-		NoOfSecurityGroups:         noOfSecurityGroups,
-		SecurityGroups:             securityGroups,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_PubSubKeyPushTargetDataType) Serialize() ([]byte, error) {
@@ -493,138 +386,52 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for PubSubKeyPushTargetDataType")
 		}
 
-		// Simple Field (applicationUri)
-		if pushErr := writeBuffer.PushContext("applicationUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for applicationUri")
-		}
-		_applicationUriErr := writeBuffer.WriteSerializable(ctx, m.GetApplicationUri())
-		if popErr := writeBuffer.PopContext("applicationUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for applicationUri")
-		}
-		if _applicationUriErr != nil {
-			return errors.Wrap(_applicationUriErr, "Error serializing 'applicationUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "applicationUri", m.GetApplicationUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'applicationUri' field")
 		}
 
-		// Simple Field (noOfPushTargetFolder)
-		noOfPushTargetFolder := int32(m.GetNoOfPushTargetFolder())
-		_noOfPushTargetFolderErr := writeBuffer.WriteInt32("noOfPushTargetFolder", 32, int32((noOfPushTargetFolder)))
-		if _noOfPushTargetFolderErr != nil {
-			return errors.Wrap(_noOfPushTargetFolderErr, "Error serializing 'noOfPushTargetFolder' field")
+		if err := WriteSimpleField[int32](ctx, "noOfPushTargetFolder", m.GetNoOfPushTargetFolder(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfPushTargetFolder' field")
 		}
 
-		// Array Field (pushTargetFolder)
-		if pushErr := writeBuffer.PushContext("pushTargetFolder", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pushTargetFolder")
-		}
-		for _curItem, _element := range m.GetPushTargetFolder() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPushTargetFolder()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'pushTargetFolder' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("pushTargetFolder", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pushTargetFolder")
+		if err := WriteComplexTypeArrayField(ctx, "pushTargetFolder", m.GetPushTargetFolder(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'pushTargetFolder' field")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
-		// Simple Field (userTokenType)
-		if pushErr := writeBuffer.PushContext("userTokenType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userTokenType")
-		}
-		_userTokenTypeErr := writeBuffer.WriteSerializable(ctx, m.GetUserTokenType())
-		if popErr := writeBuffer.PopContext("userTokenType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userTokenType")
-		}
-		if _userTokenTypeErr != nil {
-			return errors.Wrap(_userTokenTypeErr, "Error serializing 'userTokenType' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "userTokenType", m.GetUserTokenType(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userTokenType' field")
 		}
 
-		// Simple Field (requestedKeyCount)
-		requestedKeyCount := uint16(m.GetRequestedKeyCount())
-		_requestedKeyCountErr := writeBuffer.WriteUint16("requestedKeyCount", 16, uint16((requestedKeyCount)))
-		if _requestedKeyCountErr != nil {
-			return errors.Wrap(_requestedKeyCountErr, "Error serializing 'requestedKeyCount' field")
+		if err := WriteSimpleField[uint16](ctx, "requestedKeyCount", m.GetRequestedKeyCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestedKeyCount' field")
 		}
 
-		// Simple Field (retryInterval)
-		retryInterval := float64(m.GetRetryInterval())
-		_retryIntervalErr := writeBuffer.WriteFloat64("retryInterval", 64, (retryInterval))
-		if _retryIntervalErr != nil {
-			return errors.Wrap(_retryIntervalErr, "Error serializing 'retryInterval' field")
+		if err := WriteSimpleField[float64](ctx, "retryInterval", m.GetRetryInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'retryInterval' field")
 		}
 
-		// Simple Field (noOfPushTargetProperties)
-		noOfPushTargetProperties := int32(m.GetNoOfPushTargetProperties())
-		_noOfPushTargetPropertiesErr := writeBuffer.WriteInt32("noOfPushTargetProperties", 32, int32((noOfPushTargetProperties)))
-		if _noOfPushTargetPropertiesErr != nil {
-			return errors.Wrap(_noOfPushTargetPropertiesErr, "Error serializing 'noOfPushTargetProperties' field")
+		if err := WriteSimpleField[int32](ctx, "noOfPushTargetProperties", m.GetNoOfPushTargetProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfPushTargetProperties' field")
 		}
 
-		// Array Field (pushTargetProperties)
-		if pushErr := writeBuffer.PushContext("pushTargetProperties", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pushTargetProperties")
-		}
-		for _curItem, _element := range m.GetPushTargetProperties() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPushTargetProperties()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'pushTargetProperties' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("pushTargetProperties", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pushTargetProperties")
+		if err := WriteComplexTypeArrayField(ctx, "pushTargetProperties", m.GetPushTargetProperties(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'pushTargetProperties' field")
 		}
 
-		// Simple Field (noOfSecurityGroups)
-		noOfSecurityGroups := int32(m.GetNoOfSecurityGroups())
-		_noOfSecurityGroupsErr := writeBuffer.WriteInt32("noOfSecurityGroups", 32, int32((noOfSecurityGroups)))
-		if _noOfSecurityGroupsErr != nil {
-			return errors.Wrap(_noOfSecurityGroupsErr, "Error serializing 'noOfSecurityGroups' field")
+		if err := WriteSimpleField[int32](ctx, "noOfSecurityGroups", m.GetNoOfSecurityGroups(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfSecurityGroups' field")
 		}
 
-		// Array Field (securityGroups)
-		if pushErr := writeBuffer.PushContext("securityGroups", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityGroups")
-		}
-		for _curItem, _element := range m.GetSecurityGroups() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSecurityGroups()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'securityGroups' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("securityGroups", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityGroups")
+		if err := WriteComplexTypeArrayField(ctx, "securityGroups", m.GetSecurityGroups(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityGroups' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PubSubKeyPushTargetDataType"); popErr != nil {
@@ -632,12 +439,10 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_PubSubKeyPushTargetDataType) isPubSubKeyPushTargetDataType() bool {
-	return true
-}
+func (m *_PubSubKeyPushTargetDataType) IsPubSubKeyPushTargetDataType() {}
 
 func (m *_PubSubKeyPushTargetDataType) String() string {
 	if m == nil {

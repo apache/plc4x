@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesReasonForHalt interface {
 	BACnetPropertyStates
 	// GetReasonForHalt returns ReasonForHalt (property field)
 	GetReasonForHalt() BACnetProgramErrorTagged
-}
-
-// BACnetPropertyStatesReasonForHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesReasonForHalt.
-// This is useful for switch cases.
-type BACnetPropertyStatesReasonForHaltExactly interface {
-	BACnetPropertyStatesReasonForHalt
-	isBACnetPropertyStatesReasonForHalt() bool
+	// IsBACnetPropertyStatesReasonForHalt is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesReasonForHalt()
 }
 
 // _BACnetPropertyStatesReasonForHalt is the data-structure of this message
 type _BACnetPropertyStatesReasonForHalt struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	ReasonForHalt BACnetProgramErrorTagged
 }
+
+var _ BACnetPropertyStatesReasonForHalt = (*_BACnetPropertyStatesReasonForHalt)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesReasonForHalt)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesReasonForHalt struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesReasonForHalt) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesReasonForHalt) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesReasonForHalt) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetReasonForHalt() BACnetProgramErr
 
 // NewBACnetPropertyStatesReasonForHalt factory function for _BACnetPropertyStatesReasonForHalt
 func NewBACnetPropertyStatesReasonForHalt(reasonForHalt BACnetProgramErrorTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesReasonForHalt {
-	_result := &_BACnetPropertyStatesReasonForHalt{
-		ReasonForHalt:         reasonForHalt,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if reasonForHalt == nil {
+		panic("reasonForHalt of type BACnetProgramErrorTagged for BACnetPropertyStatesReasonForHalt must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesReasonForHalt{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ReasonForHalt:                reasonForHalt,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesReasonForHalt) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (reasonForHalt)
 	lengthInBits += m.ReasonForHalt.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesReasonForHaltParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {
-	return BACnetPropertyStatesReasonForHaltParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesReasonForHaltParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {
+func (m *_BACnetPropertyStatesReasonForHalt) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesReasonForHalt BACnetPropertyStatesReasonForHalt, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesReasonForHalt"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesReasonForHalt")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reasonForHalt)
-	if pullErr := readBuffer.PullContext("reasonForHalt"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reasonForHalt")
+	reasonForHalt, err := ReadSimpleField[BACnetProgramErrorTagged](ctx, "reasonForHalt", ReadComplex[BACnetProgramErrorTagged](BACnetProgramErrorTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reasonForHalt' field"))
 	}
-	_reasonForHalt, _reasonForHaltErr := BACnetProgramErrorTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _reasonForHaltErr != nil {
-		return nil, errors.Wrap(_reasonForHaltErr, "Error parsing 'reasonForHalt' field of BACnetPropertyStatesReasonForHalt")
-	}
-	reasonForHalt := _reasonForHalt.(BACnetProgramErrorTagged)
-	if closeErr := readBuffer.CloseContext("reasonForHalt"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reasonForHalt")
-	}
+	m.ReasonForHalt = reasonForHalt
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesReasonForHalt"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesReasonForHalt")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesReasonForHalt{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		ReasonForHalt:         reasonForHalt,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesReasonForHalt) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesReasonForHalt) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesReasonForHalt")
 		}
 
-		// Simple Field (reasonForHalt)
-		if pushErr := writeBuffer.PushContext("reasonForHalt"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reasonForHalt")
-		}
-		_reasonForHaltErr := writeBuffer.WriteSerializable(ctx, m.GetReasonForHalt())
-		if popErr := writeBuffer.PopContext("reasonForHalt"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reasonForHalt")
-		}
-		if _reasonForHaltErr != nil {
-			return errors.Wrap(_reasonForHaltErr, "Error serializing 'reasonForHalt' field")
+		if err := WriteSimpleField[BACnetProgramErrorTagged](ctx, "reasonForHalt", m.GetReasonForHalt(), WriteComplex[BACnetProgramErrorTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reasonForHalt' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesReasonForHalt"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesReasonForHalt) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesReasonForHalt) isBACnetPropertyStatesReasonForHalt() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesReasonForHalt) IsBACnetPropertyStatesReasonForHalt() {}
 
 func (m *_BACnetPropertyStatesReasonForHalt) String() string {
 	if m == nil {

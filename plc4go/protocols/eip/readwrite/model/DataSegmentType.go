@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,44 +35,35 @@ import (
 
 // DataSegmentType is the corresponding interface of DataSegmentType
 type DataSegmentType interface {
+	DataSegmentTypeContract
+	DataSegmentTypeRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsDataSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSegmentType()
+}
+
+// DataSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
+type DataSegmentTypeContract interface {
+	// IsDataSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSegmentType()
+}
+
+// DataSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
+type DataSegmentTypeRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetDataSegmentType returns DataSegmentType (discriminator field)
 	GetDataSegmentType() uint8
 }
 
-// DataSegmentTypeExactly can be used when we want exactly this type and not a type which fulfills DataSegmentType.
-// This is useful for switch cases.
-type DataSegmentTypeExactly interface {
-	DataSegmentType
-	isDataSegmentType() bool
-}
-
 // _DataSegmentType is the data-structure of this message
 type _DataSegmentType struct {
-	_DataSegmentTypeChildRequirements
+	_SubType DataSegmentType
 }
 
-type _DataSegmentTypeChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetDataSegmentType() uint8
-}
-
-type DataSegmentTypeParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DataSegmentType, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type DataSegmentTypeChild interface {
-	utils.Serializable
-	InitializeParent(parent DataSegmentType)
-	GetParent() *DataSegmentType
-
-	GetTypeName() string
-	DataSegmentType
-}
+var _ DataSegmentTypeContract = (*_DataSegmentType)(nil)
 
 // NewDataSegmentType factory function for _DataSegmentType
 func NewDataSegmentType() *_DataSegmentType {
@@ -92,7 +85,7 @@ func (m *_DataSegmentType) GetTypeName() string {
 	return "DataSegmentType"
 }
 
-func (m *_DataSegmentType) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_DataSegmentType) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (dataSegmentType)
 	lengthInBits += 5
@@ -101,60 +94,66 @@ func (m *_DataSegmentType) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_DataSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func DataSegmentTypeParse(ctx context.Context, theBytes []byte) (DataSegmentType, error) {
-	return DataSegmentTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func DataSegmentTypeParse[T DataSegmentType](ctx context.Context, theBytes []byte) (T, error) {
+	return DataSegmentTypeParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataSegmentType, error) {
+func DataSegmentTypeParseWithBufferProducer[T DataSegmentType]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := DataSegmentTypeParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func DataSegmentTypeParseWithBuffer[T DataSegmentType](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_DataSegmentType{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_DataSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dataSegmentType DataSegmentType, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DataSegmentType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DataSegmentType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (dataSegmentType) (Used as input to a switch field)
-	dataSegmentType, _dataSegmentTypeErr := readBuffer.ReadUint8("dataSegmentType", 5)
-	if _dataSegmentTypeErr != nil {
-		return nil, errors.Wrap(_dataSegmentTypeErr, "Error parsing 'dataSegmentType' field of DataSegmentType")
+	dataSegmentType, err := ReadDiscriminatorField[uint8](ctx, "dataSegmentType", ReadUnsignedByte(readBuffer, uint8(5)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSegmentType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type DataSegmentTypeChildSerializeRequirement interface {
-		DataSegmentType
-		InitializeParent(DataSegmentType)
-		GetParent() DataSegmentType
-	}
-	var _childTemp any
-	var _child DataSegmentTypeChildSerializeRequirement
-	var typeSwitchError error
+	var _child DataSegmentType
 	switch {
 	case dataSegmentType == 0x11: // AnsiExtendedSymbolSegment
-		_childTemp, typeSwitchError = AnsiExtendedSymbolSegmentParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AnsiExtendedSymbolSegment{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AnsiExtendedSymbolSegment for type-switch of DataSegmentType")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [dataSegmentType=%v]", dataSegmentType)
+		return nil, errors.Errorf("Unmapped type for parameters [dataSegmentType=%v]", dataSegmentType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DataSegmentType")
-	}
-	_child = _childTemp.(DataSegmentTypeChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("DataSegmentType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DataSegmentType")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_DataSegmentType) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DataSegmentType, serializeChildFunction func() error) error {
+func (pm *_DataSegmentType) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child DataSegmentType, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -166,12 +165,8 @@ func (pm *_DataSegmentType) SerializeParent(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for DataSegmentType")
 	}
 
-	// Discriminator Field (dataSegmentType) (Used as input to a switch field)
-	dataSegmentType := uint8(child.GetDataSegmentType())
-	_dataSegmentTypeErr := writeBuffer.WriteUint8("dataSegmentType", 5, uint8((dataSegmentType)))
-
-	if _dataSegmentTypeErr != nil {
-		return errors.Wrap(_dataSegmentTypeErr, "Error serializing 'dataSegmentType' field")
+	if err := WriteDiscriminatorField(ctx, "dataSegmentType", m.GetDataSegmentType(), WriteUnsignedByte(writeBuffer, 5)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataSegmentType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -185,17 +180,4 @@ func (pm *_DataSegmentType) SerializeParent(ctx context.Context, writeBuffer uti
 	return nil
 }
 
-func (m *_DataSegmentType) isDataSegmentType() bool {
-	return true
-}
-
-func (m *_DataSegmentType) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_DataSegmentType) IsDataSegmentType() {}

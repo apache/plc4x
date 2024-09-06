@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataProtocolVersion interface {
 	GetProtocolVersion() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataProtocolVersionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolVersion.
-// This is useful for switch cases.
-type BACnetConstructedDataProtocolVersionExactly interface {
-	BACnetConstructedDataProtocolVersion
-	isBACnetConstructedDataProtocolVersion() bool
+	// IsBACnetConstructedDataProtocolVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProtocolVersion()
 }
 
 // _BACnetConstructedDataProtocolVersion is the data-structure of this message
 type _BACnetConstructedDataProtocolVersion struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ProtocolVersion BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataProtocolVersion = (*_BACnetConstructedDataProtocolVersion)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolVersion)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataProtocolVersion) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataProtocolVersion) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataProtocolVersion) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataProtocolVersion) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataProtocolVersion) GetActualValue() BACnetApplicati
 
 // NewBACnetConstructedDataProtocolVersion factory function for _BACnetConstructedDataProtocolVersion
 func NewBACnetConstructedDataProtocolVersion(protocolVersion BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolVersion {
-	_result := &_BACnetConstructedDataProtocolVersion{
-		ProtocolVersion:        protocolVersion,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if protocolVersion == nil {
+		panic("protocolVersion of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolVersion must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataProtocolVersion{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolVersion:               protocolVersion,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataProtocolVersion) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (protocolVersion)
 	lengthInBits += m.ProtocolVersion.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataProtocolVersion) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataProtocolVersionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolVersion, error) {
-	return BACnetConstructedDataProtocolVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataProtocolVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolVersion, error) {
+func (m *_BACnetConstructedDataProtocolVersion) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProtocolVersion BACnetConstructedDataProtocolVersion, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolVersion"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProtocolVersion")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolVersion)
-	if pullErr := readBuffer.PullContext("protocolVersion"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolVersion")
+	protocolVersion, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "protocolVersion", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}
-	_protocolVersion, _protocolVersionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _protocolVersionErr != nil {
-		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of BACnetConstructedDataProtocolVersion")
-	}
-	protocolVersion := _protocolVersion.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("protocolVersion"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolVersion")
-	}
+	m.ProtocolVersion = protocolVersion
 
-	// Virtual field
-	_actualValue := protocolVersion
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), protocolVersion)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolVersion")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataProtocolVersion{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ProtocolVersion: protocolVersion,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataProtocolVersion) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolVersion")
 		}
 
-		// Simple Field (protocolVersion)
-		if pushErr := writeBuffer.PushContext("protocolVersion"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolVersion")
-		}
-		_protocolVersionErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolVersion())
-		if popErr := writeBuffer.PopContext("protocolVersion"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolVersion")
-		}
-		if _protocolVersionErr != nil {
-			return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "protocolVersion", m.GetProtocolVersion(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataProtocolVersion) isBACnetConstructedDataProtocolVersion() bool {
-	return true
-}
+func (m *_BACnetConstructedDataProtocolVersion) IsBACnetConstructedDataProtocolVersion() {}
 
 func (m *_BACnetConstructedDataProtocolVersion) String() string {
 	if m == nil {

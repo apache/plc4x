@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,13 +42,8 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry interf
 	GetMonitoredObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfCovReferences returns ListOfCovReferences (property field)
 	GetListOfCovReferences() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
-}
-
-// BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry.
-// This is useful for switch cases.
-type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryExactly interface {
-	BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
-	isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry() bool
+	// IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry()
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is the data-structure of this message
@@ -54,6 +51,8 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry struc
 	MonitoredObjectIdentifier BACnetContextTagObjectIdentifier
 	ListOfCovReferences       BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
 }
+
+var _ BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,6 +74,12 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 
 // NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry factory function for _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
 func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, listOfCovReferences BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry {
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry must not be nil")
+	}
+	if listOfCovReferences == nil {
+		panic("listOfCovReferences of type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry must not be nil")
+	}
 	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry{MonitoredObjectIdentifier: monitoredObjectIdentifier, ListOfCovReferences: listOfCovReferences}
 }
 
@@ -113,52 +118,46 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(c
 	return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
+		return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
+	v, err := (&_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (monitoredObjectIdentifier)
-	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
+	monitoredObjectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "monitoredObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredObjectIdentifier' field"))
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _monitoredObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
-	}
-	monitoredObjectIdentifier := _monitoredObjectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoredObjectIdentifier")
-	}
+	m.MonitoredObjectIdentifier = monitoredObjectIdentifier
 
-	// Simple Field (listOfCovReferences)
-	if pullErr := readBuffer.PullContext("listOfCovReferences"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovReferences")
+	listOfCovReferences, err := ReadSimpleField[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](ctx, "listOfCovReferences", ReadComplex[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfCovReferences' field"))
 	}
-	_listOfCovReferences, _listOfCovReferencesErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _listOfCovReferencesErr != nil {
-		return nil, errors.Wrap(_listOfCovReferencesErr, "Error parsing 'listOfCovReferences' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
-	}
-	listOfCovReferences := _listOfCovReferences.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences)
-	if closeErr := readBuffer.CloseContext("listOfCovReferences"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfCovReferences")
-	}
+	m.ListOfCovReferences = listOfCovReferences
 
 	if closeErr := readBuffer.CloseContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
 
-	// Create the instance
-	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry{
-		MonitoredObjectIdentifier: monitoredObjectIdentifier,
-		ListOfCovReferences:       listOfCovReferences,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) Serialize() ([]byte, error) {
@@ -178,28 +177,12 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 		return errors.Wrap(pushErr, "Error pushing for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
 
-	// Simple Field (monitoredObjectIdentifier)
-	if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
-	}
-	_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredObjectIdentifier())
-	if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
-	}
-	if _monitoredObjectIdentifierErr != nil {
-		return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
+	if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "monitoredObjectIdentifier", m.GetMonitoredObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitoredObjectIdentifier' field")
 	}
 
-	// Simple Field (listOfCovReferences)
-	if pushErr := writeBuffer.PushContext("listOfCovReferences"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfCovReferences")
-	}
-	_listOfCovReferencesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfCovReferences())
-	if popErr := writeBuffer.PopContext("listOfCovReferences"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfCovReferences")
-	}
-	if _listOfCovReferencesErr != nil {
-		return errors.Wrap(_listOfCovReferencesErr, "Error serializing 'listOfCovReferences' field")
+	if err := WriteSimpleField[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](ctx, "listOfCovReferences", m.GetListOfCovReferences(), WriteComplex[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfCovReferences' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry"); popErr != nil {
@@ -208,8 +191,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 	return nil
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry() bool {
-	return true
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry() {
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) String() string {

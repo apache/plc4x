@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,9 +35,17 @@ import (
 
 // AccessControlData is the corresponding interface of AccessControlData
 type AccessControlData interface {
+	AccessControlDataContract
+	AccessControlDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsAccessControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlData()
+}
+
+// AccessControlDataContract provides a set of functions which can be overwritten by a sub struct
+type AccessControlDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() AccessControlCommandTypeContainer
 	// GetNetworkId returns NetworkId (property field)
@@ -44,42 +54,27 @@ type AccessControlData interface {
 	GetAccessPointId() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() AccessControlCommandType
+	// IsAccessControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlData()
 }
 
-// AccessControlDataExactly can be used when we want exactly this type and not a type which fulfills AccessControlData.
-// This is useful for switch cases.
-type AccessControlDataExactly interface {
-	AccessControlData
-	isAccessControlData() bool
+// AccessControlDataRequirements provides a set of functions which need to be implemented by a sub struct
+type AccessControlDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() AccessControlCommandType
 }
 
 // _AccessControlData is the data-structure of this message
 type _AccessControlData struct {
-	_AccessControlDataChildRequirements
+	_SubType             AccessControlData
 	CommandTypeContainer AccessControlCommandTypeContainer
 	NetworkId            byte
 	AccessPointId        byte
 }
 
-type _AccessControlDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() AccessControlCommandType
-}
-
-type AccessControlDataParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AccessControlData, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type AccessControlDataChild interface {
-	utils.Serializable
-	InitializeParent(parent AccessControlData, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte)
-	GetParent() *AccessControlData
-
-	GetTypeName() string
-	AccessControlData
-}
+var _ AccessControlDataContract = (*_AccessControlData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,7 +102,8 @@ func (m *_AccessControlData) GetAccessPointId() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_AccessControlData) GetCommandType() AccessControlCommandType {
+func (pm *_AccessControlData) GetCommandType() AccessControlCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastAccessControlCommandType(m.GetCommandTypeContainer().CommandType())
@@ -138,7 +134,7 @@ func (m *_AccessControlData) GetTypeName() string {
 	return "AccessControlData"
 }
 
-func (m *_AccessControlData) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_AccessControlData) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -156,18 +152,36 @@ func (m *_AccessControlData) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_AccessControlData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataParse(ctx context.Context, theBytes []byte) (AccessControlData, error) {
-	return AccessControlDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func AccessControlDataParse[T AccessControlData](ctx context.Context, theBytes []byte) (T, error) {
+	return AccessControlDataParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlData, error) {
+func AccessControlDataParseWithBufferProducer[T AccessControlData]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := AccessControlDataParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func AccessControlDataParseWithBuffer[T AccessControlData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_AccessControlData{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_AccessControlData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__accessControlData AccessControlData, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlData")
 	}
@@ -176,85 +190,80 @@ func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 
 	// Validation
 	if !(KnowsAccessControlCommandTypeContainer(ctx, readBuffer)) {
-		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[AccessControlCommandTypeContainer](ctx, "commandTypeContainer", "AccessControlCommandTypeContainer", ReadEnum(AccessControlCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
-	_commandTypeContainer, _commandTypeContainerErr := AccessControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of AccessControlData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
-	}
+	m.CommandTypeContainer = commandTypeContainer
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := AccessControlCommandType(_commandType)
+	commandType, err := ReadVirtualField[AccessControlCommandType](ctx, "commandType", (*AccessControlCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 	_ = commandType
 
-	// Simple Field (networkId)
-	_networkId, _networkIdErr := readBuffer.ReadByte("networkId")
-	if _networkIdErr != nil {
-		return nil, errors.Wrap(_networkIdErr, "Error parsing 'networkId' field of AccessControlData")
+	networkId, err := ReadSimpleField(ctx, "networkId", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkId' field"))
 	}
-	networkId := _networkId
+	m.NetworkId = networkId
 
-	// Simple Field (accessPointId)
-	_accessPointId, _accessPointIdErr := readBuffer.ReadByte("accessPointId")
-	if _accessPointIdErr != nil {
-		return nil, errors.Wrap(_accessPointIdErr, "Error parsing 'accessPointId' field of AccessControlData")
+	accessPointId, err := ReadSimpleField(ctx, "accessPointId", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessPointId' field"))
 	}
-	accessPointId := _accessPointId
+	m.AccessPointId = accessPointId
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type AccessControlDataChildSerializeRequirement interface {
-		AccessControlData
-		InitializeParent(AccessControlData, AccessControlCommandTypeContainer, byte, byte)
-		GetParent() AccessControlData
-	}
-	var _childTemp any
-	var _child AccessControlDataChildSerializeRequirement
-	var typeSwitchError error
+	var _child AccessControlData
 	switch {
 	case commandType == AccessControlCommandType_VALID_ACCESS: // AccessControlDataValidAccessRequest
-		_childTemp, typeSwitchError = AccessControlDataValidAccessRequestParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+		if _child, err = (&_AccessControlDataValidAccessRequest{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataValidAccessRequest for type-switch of AccessControlData")
+		}
 	case commandType == AccessControlCommandType_INVALID_ACCESS: // AccessControlDataInvalidAccessRequest
-		_childTemp, typeSwitchError = AccessControlDataInvalidAccessRequestParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+		if _child, err = (&_AccessControlDataInvalidAccessRequest{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataInvalidAccessRequest for type-switch of AccessControlData")
+		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_LEFT_OPEN: // AccessControlDataAccessPointLeftOpen
-		_childTemp, typeSwitchError = AccessControlDataAccessPointLeftOpenParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AccessControlDataAccessPointLeftOpen{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointLeftOpen for type-switch of AccessControlData")
+		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_FORCED_OPEN: // AccessControlDataAccessPointForcedOpen
-		_childTemp, typeSwitchError = AccessControlDataAccessPointForcedOpenParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AccessControlDataAccessPointForcedOpen{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointForcedOpen for type-switch of AccessControlData")
+		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_CLOSED: // AccessControlDataAccessPointClosed
-		_childTemp, typeSwitchError = AccessControlDataAccessPointClosedParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AccessControlDataAccessPointClosed{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointClosed for type-switch of AccessControlData")
+		}
 	case commandType == AccessControlCommandType_REQUEST_TO_EXIT: // AccessControlDataRequestToExit
-		_childTemp, typeSwitchError = AccessControlDataRequestToExitParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AccessControlDataRequestToExit{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataRequestToExit for type-switch of AccessControlData")
+		}
 	case commandType == AccessControlCommandType_CLOSE_ACCESS_POINT: // AccessControlDataCloseAccessPoint
-		_childTemp, typeSwitchError = AccessControlDataCloseAccessPointParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AccessControlDataCloseAccessPoint{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataCloseAccessPoint for type-switch of AccessControlData")
+		}
 	case commandType == AccessControlCommandType_LOCK_ACCESS_POINT: // AccessControlDataLockAccessPoint
-		_childTemp, typeSwitchError = AccessControlDataLockAccessPointParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_AccessControlDataLockAccessPoint{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataLockAccessPoint for type-switch of AccessControlData")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
+		return nil, errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AccessControlData")
-	}
-	_child = _childTemp.(AccessControlDataChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("AccessControlData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AccessControlData")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, commandTypeContainer, networkId, accessPointId)
 	return _child, nil
 }
 
-func (pm *_AccessControlData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AccessControlData, serializeChildFunction func() error) error {
+func (pm *_AccessControlData) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AccessControlData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -266,16 +275,8 @@ func (pm *_AccessControlData) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for AccessControlData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[AccessControlCommandTypeContainer](ctx, "commandTypeContainer", "AccessControlCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[AccessControlCommandTypeContainer, uint8](AccessControlCommandTypeContainer.GetValue, AccessControlCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
@@ -284,18 +285,12 @@ func (pm *_AccessControlData) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
-	// Simple Field (networkId)
-	networkId := byte(m.GetNetworkId())
-	_networkIdErr := writeBuffer.WriteByte("networkId", (networkId))
-	if _networkIdErr != nil {
-		return errors.Wrap(_networkIdErr, "Error serializing 'networkId' field")
+	if err := WriteSimpleField[byte](ctx, "networkId", m.GetNetworkId(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkId' field")
 	}
 
-	// Simple Field (accessPointId)
-	accessPointId := byte(m.GetAccessPointId())
-	_accessPointIdErr := writeBuffer.WriteByte("accessPointId", (accessPointId))
-	if _accessPointIdErr != nil {
-		return errors.Wrap(_accessPointIdErr, "Error serializing 'accessPointId' field")
+	if err := WriteSimpleField[byte](ctx, "accessPointId", m.GetAccessPointId(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'accessPointId' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -309,17 +304,4 @@ func (pm *_AccessControlData) SerializeParent(ctx context.Context, writeBuffer u
 	return nil
 }
 
-func (m *_AccessControlData) isAccessControlData() bool {
-	return true
-}
-
-func (m *_AccessControlData) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_AccessControlData) IsAccessControlData() {}

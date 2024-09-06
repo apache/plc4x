@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,23 +43,21 @@ type FirmataCommandSetDigitalPinValue interface {
 	GetPin() uint8
 	// GetOn returns On (property field)
 	GetOn() bool
-}
-
-// FirmataCommandSetDigitalPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSetDigitalPinValue.
-// This is useful for switch cases.
-type FirmataCommandSetDigitalPinValueExactly interface {
-	FirmataCommandSetDigitalPinValue
-	isFirmataCommandSetDigitalPinValue() bool
+	// IsFirmataCommandSetDigitalPinValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommandSetDigitalPinValue()
 }
 
 // _FirmataCommandSetDigitalPinValue is the data-structure of this message
 type _FirmataCommandSetDigitalPinValue struct {
-	*_FirmataCommand
+	FirmataCommandContract
 	Pin uint8
 	On  bool
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ FirmataCommandSetDigitalPinValue = (*_FirmataCommandSetDigitalPinValue)(nil)
+var _ FirmataCommandRequirements = (*_FirmataCommandSetDigitalPinValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,10 +73,8 @@ func (m *_FirmataCommandSetDigitalPinValue) GetCommandCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FirmataCommandSetDigitalPinValue) InitializeParent(parent FirmataCommand) {}
-
-func (m *_FirmataCommandSetDigitalPinValue) GetParent() FirmataCommand {
-	return m._FirmataCommand
+func (m *_FirmataCommandSetDigitalPinValue) GetParent() FirmataCommandContract {
+	return m.FirmataCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,11 +98,11 @@ func (m *_FirmataCommandSetDigitalPinValue) GetOn() bool {
 // NewFirmataCommandSetDigitalPinValue factory function for _FirmataCommandSetDigitalPinValue
 func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_FirmataCommandSetDigitalPinValue {
 	_result := &_FirmataCommandSetDigitalPinValue{
-		Pin:             pin,
-		On:              on,
-		_FirmataCommand: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(response),
+		Pin:                    pin,
+		On:                     on,
 	}
-	_result._FirmataCommand._FirmataCommandChildRequirements = _result
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
 
@@ -124,7 +122,7 @@ func (m *_FirmataCommandSetDigitalPinValue) GetTypeName() string {
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -142,67 +140,40 @@ func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataCommandSetDigitalPinValueParse(ctx context.Context, theBytes []byte, response bool) (FirmataCommandSetDigitalPinValue, error) {
-	return FirmataCommandSetDigitalPinValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func FirmataCommandSetDigitalPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetDigitalPinValue, error) {
+func (m *_FirmataCommandSetDigitalPinValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataCommand, response bool) (__firmataCommandSetDigitalPinValue FirmataCommandSetDigitalPinValue, err error) {
+	m.FirmataCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataCommandSetDigitalPinValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommandSetDigitalPinValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataCommandSetDigitalPinValue")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
+	m.Pin = pin
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of FirmataCommandSetDigitalPinValue")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (on)
-	_on, _onErr := readBuffer.ReadBit("on")
-	if _onErr != nil {
-		return nil, errors.Wrap(_onErr, "Error parsing 'on' field of FirmataCommandSetDigitalPinValue")
+	on, err := ReadSimpleField(ctx, "on", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'on' field"))
 	}
-	on := _on
+	m.On = on
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSetDigitalPinValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandSetDigitalPinValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FirmataCommandSetDigitalPinValue{
-		_FirmataCommand: &_FirmataCommand{
-			Response: response,
-		},
-		Pin:            pin,
-		On:             on,
-		reservedField0: reservedField0,
-	}
-	_child._FirmataCommand._FirmataCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) Serialize() ([]byte, error) {
@@ -223,34 +194,16 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for FirmataCommandSetDigitalPinValue")
 		}
 
-		// Simple Field (pin)
-		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
-		if _pinErr != nil {
-			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
+		if err := WriteSimpleField[uint8](ctx, "pin", m.GetPin(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pin' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (on)
-		on := bool(m.GetOn())
-		_onErr := writeBuffer.WriteBit("on", (on))
-		if _onErr != nil {
-			return errors.Wrap(_onErr, "Error serializing 'on' field")
+		if err := WriteSimpleField[bool](ctx, "on", m.GetOn(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'on' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSetDigitalPinValue"); popErr != nil {
@@ -258,12 +211,10 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.FirmataCommandContract.(*_FirmataCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FirmataCommandSetDigitalPinValue) isFirmataCommandSetDigitalPinValue() bool {
-	return true
-}
+func (m *_FirmataCommandSetDigitalPinValue) IsFirmataCommandSetDigitalPinValue() {}
 
 func (m *_FirmataCommandSetDigitalPinValue) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type UserIdentityToken interface {
 	GetPolicyId() PascalString
 	// GetUserIdentityTokenDefinition returns UserIdentityTokenDefinition (property field)
 	GetUserIdentityTokenDefinition() UserIdentityTokenDefinition
-}
-
-// UserIdentityTokenExactly can be used when we want exactly this type and not a type which fulfills UserIdentityToken.
-// This is useful for switch cases.
-type UserIdentityTokenExactly interface {
-	UserIdentityToken
-	isUserIdentityToken() bool
+	// IsUserIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUserIdentityToken()
 }
 
 // _UserIdentityToken is the data-structure of this message
 type _UserIdentityToken struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	PolicyId                    PascalString
 	UserIdentityTokenDefinition UserIdentityTokenDefinition
 }
+
+var _ UserIdentityToken = (*_UserIdentityToken)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UserIdentityToken)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_UserIdentityToken) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_UserIdentityToken) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_UserIdentityToken) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_UserIdentityToken) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_UserIdentityToken) GetUserIdentityTokenDefinition() UserIdentityTokenD
 
 // NewUserIdentityToken factory function for _UserIdentityToken
 func NewUserIdentityToken(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) *_UserIdentityToken {
-	_result := &_UserIdentityToken{
-		PolicyId:                    policyId,
-		UserIdentityTokenDefinition: userIdentityTokenDefinition,
-		_ExtensionObjectDefinition:  NewExtensionObjectDefinition(),
+	if policyId == nil {
+		panic("policyId of type PascalString for UserIdentityToken must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if userIdentityTokenDefinition == nil {
+		panic("userIdentityTokenDefinition of type UserIdentityTokenDefinition for UserIdentityToken must not be nil")
+	}
+	_result := &_UserIdentityToken{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		UserIdentityTokenDefinition:       userIdentityTokenDefinition,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_UserIdentityToken) GetTypeName() string {
 }
 
 func (m *_UserIdentityToken) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (policyLength)
 	lengthInBits += 32
@@ -140,66 +144,40 @@ func (m *_UserIdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func UserIdentityTokenParse(ctx context.Context, theBytes []byte, identifier string) (UserIdentityToken, error) {
-	return UserIdentityTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func UserIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserIdentityToken, error) {
+func (m *_UserIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__userIdentityToken UserIdentityToken, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UserIdentityToken"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UserIdentityToken")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (policyLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	policyLength, _policyLengthErr := readBuffer.ReadInt32("policyLength", 32)
+	policyLength, err := ReadImplicitField[int32](ctx, "policyLength", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyLength' field"))
+	}
 	_ = policyLength
-	if _policyLengthErr != nil {
-		return nil, errors.Wrap(_policyLengthErr, "Error parsing 'policyLength' field of UserIdentityToken")
-	}
 
-	// Simple Field (policyId)
-	if pullErr := readBuffer.PullContext("policyId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for policyId")
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
 	}
-	_policyId, _policyIdErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _policyIdErr != nil {
-		return nil, errors.Wrap(_policyIdErr, "Error parsing 'policyId' field of UserIdentityToken")
-	}
-	policyId := _policyId.(PascalString)
-	if closeErr := readBuffer.CloseContext("policyId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for policyId")
-	}
+	m.PolicyId = policyId
 
-	// Simple Field (userIdentityTokenDefinition)
-	if pullErr := readBuffer.PullContext("userIdentityTokenDefinition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userIdentityTokenDefinition")
+	userIdentityTokenDefinition, err := ReadSimpleField[UserIdentityTokenDefinition](ctx, "userIdentityTokenDefinition", ReadComplex[UserIdentityTokenDefinition](UserIdentityTokenDefinitionParseWithBufferProducer[UserIdentityTokenDefinition]((string)(policyId.GetStringValue())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userIdentityTokenDefinition' field"))
 	}
-	_userIdentityTokenDefinition, _userIdentityTokenDefinitionErr := UserIdentityTokenDefinitionParseWithBuffer(ctx, readBuffer, string(policyId.GetStringValue()))
-	if _userIdentityTokenDefinitionErr != nil {
-		return nil, errors.Wrap(_userIdentityTokenDefinitionErr, "Error parsing 'userIdentityTokenDefinition' field of UserIdentityToken")
-	}
-	userIdentityTokenDefinition := _userIdentityTokenDefinition.(UserIdentityTokenDefinition)
-	if closeErr := readBuffer.CloseContext("userIdentityTokenDefinition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userIdentityTokenDefinition")
-	}
+	m.UserIdentityTokenDefinition = userIdentityTokenDefinition
 
 	if closeErr := readBuffer.CloseContext("UserIdentityToken"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for UserIdentityToken")
 	}
 
-	// Create a partially initialized instance
-	_child := &_UserIdentityToken{
-		_ExtensionObjectDefinition:  &_ExtensionObjectDefinition{},
-		PolicyId:                    policyId,
-		UserIdentityTokenDefinition: userIdentityTokenDefinition,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_UserIdentityToken) Serialize() ([]byte, error) {
@@ -219,36 +197,17 @@ func (m *_UserIdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 		if pushErr := writeBuffer.PushContext("UserIdentityToken"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for UserIdentityToken")
 		}
-
-		// Implicit Field (policyLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		policyLength := int32(int32(m.GetPolicyId().GetLengthInBytes(ctx)) + int32(m.GetUserIdentityTokenDefinition().GetLengthInBytes(ctx)))
-		_policyLengthErr := writeBuffer.WriteInt32("policyLength", 32, int32((policyLength)))
-		if _policyLengthErr != nil {
-			return errors.Wrap(_policyLengthErr, "Error serializing 'policyLength' field")
+		if err := WriteImplicitField(ctx, "policyLength", policyLength, WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyLength' field")
 		}
 
-		// Simple Field (policyId)
-		if pushErr := writeBuffer.PushContext("policyId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for policyId")
-		}
-		_policyIdErr := writeBuffer.WriteSerializable(ctx, m.GetPolicyId())
-		if popErr := writeBuffer.PopContext("policyId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for policyId")
-		}
-		if _policyIdErr != nil {
-			return errors.Wrap(_policyIdErr, "Error serializing 'policyId' field")
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyId' field")
 		}
 
-		// Simple Field (userIdentityTokenDefinition)
-		if pushErr := writeBuffer.PushContext("userIdentityTokenDefinition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userIdentityTokenDefinition")
-		}
-		_userIdentityTokenDefinitionErr := writeBuffer.WriteSerializable(ctx, m.GetUserIdentityTokenDefinition())
-		if popErr := writeBuffer.PopContext("userIdentityTokenDefinition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userIdentityTokenDefinition")
-		}
-		if _userIdentityTokenDefinitionErr != nil {
-			return errors.Wrap(_userIdentityTokenDefinitionErr, "Error serializing 'userIdentityTokenDefinition' field")
+		if err := WriteSimpleField[UserIdentityTokenDefinition](ctx, "userIdentityTokenDefinition", m.GetUserIdentityTokenDefinition(), WriteComplex[UserIdentityTokenDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userIdentityTokenDefinition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UserIdentityToken"); popErr != nil {
@@ -256,12 +215,10 @@ func (m *_UserIdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_UserIdentityToken) isUserIdentityToken() bool {
-	return true
-}
+func (m *_UserIdentityToken) IsUserIdentityToken() {}
 
 func (m *_UserIdentityToken) String() string {
 	if m == nil {

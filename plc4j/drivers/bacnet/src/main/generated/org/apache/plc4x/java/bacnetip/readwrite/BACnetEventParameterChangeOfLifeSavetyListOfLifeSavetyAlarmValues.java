@@ -75,14 +75,14 @@ public class BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues i
     writeBuffer.pushContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfLifeSavetyAlarmValues)
     writeComplexTypeArrayField(
         "listOfLifeSavetyAlarmValues", listOfLifeSavetyAlarmValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues");
   }
@@ -123,13 +123,13 @@ public class BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues i
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetLifeSafetyStateTagged> listOfLifeSavetyAlarmValues =
         readTerminatedArrayField(
             "listOfLifeSavetyAlarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -142,7 +142,7 @@ public class BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues i
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues");

@@ -36,18 +36,15 @@ type Counter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// CounterExactly can be used when we want exactly this type and not a type which fulfills Counter.
-// This is useful for switch cases.
-type CounterExactly interface {
-	Counter
-	isCounter() bool
+	// IsCounter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCounter()
 }
 
 // _Counter is the data-structure of this message
 type _Counter struct {
 }
+
+var _ Counter = (*_Counter)(nil)
 
 // NewCounter factory function for _Counter
 func NewCounter() *_Counter {
@@ -83,11 +80,23 @@ func CounterParse(ctx context.Context, theBytes []byte) (Counter, error) {
 	return CounterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CounterParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
+		return CounterParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CounterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
+	v, err := (&_Counter{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_Counter) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__counter Counter, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Counter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Counter")
 	}
@@ -98,8 +107,7 @@ func CounterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (C
 		return nil, errors.Wrap(closeErr, "Error closing for Counter")
 	}
 
-	// Create the instance
-	return &_Counter{}, nil
+	return m, nil
 }
 
 func (m *_Counter) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_Counter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	return nil
 }
 
-func (m *_Counter) isCounter() bool {
-	return true
-}
+func (m *_Counter) IsCounter() {}
 
 func (m *_Counter) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,21 +45,19 @@ type NodeIdNumeric interface {
 	GetId() uint32
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
-}
-
-// NodeIdNumericExactly can be used when we want exactly this type and not a type which fulfills NodeIdNumeric.
-// This is useful for switch cases.
-type NodeIdNumericExactly interface {
-	NodeIdNumeric
-	isNodeIdNumeric() bool
+	// IsNodeIdNumeric is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdNumeric()
 }
 
 // _NodeIdNumeric is the data-structure of this message
 type _NodeIdNumeric struct {
-	*_NodeIdTypeDefinition
+	NodeIdTypeDefinitionContract
 	NamespaceIndex uint16
 	Id             uint32
 }
+
+var _ NodeIdNumeric = (*_NodeIdNumeric)(nil)
+var _ NodeIdTypeDefinitionRequirements = (*_NodeIdNumeric)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,10 +73,8 @@ func (m *_NodeIdNumeric) GetNodeType() NodeIdType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NodeIdNumeric) InitializeParent(parent NodeIdTypeDefinition) {}
-
-func (m *_NodeIdNumeric) GetParent() NodeIdTypeDefinition {
-	return m._NodeIdTypeDefinition
+func (m *_NodeIdNumeric) GetParent() NodeIdTypeDefinitionContract {
+	return m.NodeIdTypeDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +113,11 @@ func (m *_NodeIdNumeric) GetIdentifier() string {
 // NewNodeIdNumeric factory function for _NodeIdNumeric
 func NewNodeIdNumeric(namespaceIndex uint16, id uint32) *_NodeIdNumeric {
 	_result := &_NodeIdNumeric{
-		NamespaceIndex:        namespaceIndex,
-		Id:                    id,
-		_NodeIdTypeDefinition: NewNodeIdTypeDefinition(),
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
 	}
-	_result._NodeIdTypeDefinition._NodeIdTypeDefinitionChildRequirements = _result
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
 
@@ -139,7 +137,7 @@ func (m *_NodeIdNumeric) GetTypeName() string {
 }
 
 func (m *_NodeIdNumeric) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).getLengthInBits(ctx))
 
 	// Simple field (namespaceIndex)
 	lengthInBits += 16
@@ -156,52 +154,40 @@ func (m *_NodeIdNumeric) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NodeIdNumericParse(ctx context.Context, theBytes []byte) (NodeIdNumeric, error) {
-	return NodeIdNumericParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func NodeIdNumericParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdNumeric, error) {
+func (m *_NodeIdNumeric) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NodeIdTypeDefinition) (__nodeIdNumeric NodeIdNumeric, err error) {
+	m.NodeIdTypeDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NodeIdNumeric"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NodeIdNumeric")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := readBuffer.ReadUint16("namespaceIndex", 16)
-	if _namespaceIndexErr != nil {
-		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of NodeIdNumeric")
+	namespaceIndex, err := ReadSimpleField(ctx, "namespaceIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceIndex' field"))
 	}
-	namespaceIndex := _namespaceIndex
+	m.NamespaceIndex = namespaceIndex
 
-	// Simple Field (id)
-	_id, _idErr := readBuffer.ReadUint32("id", 32)
-	if _idErr != nil {
-		return nil, errors.Wrap(_idErr, "Error parsing 'id' field of NodeIdNumeric")
+	id, err := ReadSimpleField(ctx, "id", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}
-	id := _id
+	m.Id = id
 
-	// Virtual field
-	_identifier := id
-	identifier := fmt.Sprintf("%v", _identifier)
+	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), id)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
+	}
 	_ = identifier
 
 	if closeErr := readBuffer.CloseContext("NodeIdNumeric"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeIdNumeric")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NodeIdNumeric{
-		_NodeIdTypeDefinition: &_NodeIdTypeDefinition{},
-		NamespaceIndex:        namespaceIndex,
-		Id:                    id,
-	}
-	_child._NodeIdTypeDefinition._NodeIdTypeDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NodeIdNumeric) Serialize() ([]byte, error) {
@@ -222,18 +208,12 @@ func (m *_NodeIdNumeric) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for NodeIdNumeric")
 		}
 
-		// Simple Field (namespaceIndex)
-		namespaceIndex := uint16(m.GetNamespaceIndex())
-		_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
-		if _namespaceIndexErr != nil {
-			return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
+		if err := WriteSimpleField[uint16](ctx, "namespaceIndex", m.GetNamespaceIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'namespaceIndex' field")
 		}
 
-		// Simple Field (id)
-		id := uint32(m.GetId())
-		_idErr := writeBuffer.WriteUint32("id", 32, uint32((id)))
-		if _idErr != nil {
-			return errors.Wrap(_idErr, "Error serializing 'id' field")
+		if err := WriteSimpleField[uint32](ctx, "id", m.GetId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'id' field")
 		}
 		// Virtual field
 		identifier := m.GetIdentifier()
@@ -247,12 +227,10 @@ func (m *_NodeIdNumeric) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NodeIdNumeric) isNodeIdNumeric() bool {
-	return true
-}
+func (m *_NodeIdNumeric) IsNodeIdNumeric() {}
 
 func (m *_NodeIdNumeric) String() string {
 	if m == nil {

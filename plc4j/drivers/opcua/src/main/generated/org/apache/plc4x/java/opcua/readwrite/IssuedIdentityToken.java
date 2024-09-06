@@ -68,11 +68,10 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
     writeBuffer.pushContext("IssuedIdentityToken");
 
     // Simple Field (tokenData)
-    writeSimpleField("tokenData", tokenData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tokenData", tokenData, writeComplex(writeBuffer));
 
     // Simple Field (encryptionAlgorithm)
-    writeSimpleField(
-        "encryptionAlgorithm", encryptionAlgorithm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("encryptionAlgorithm", encryptionAlgorithm, writeComplex(writeBuffer));
 
     writeBuffer.popContext("IssuedIdentityToken");
   }
@@ -105,14 +104,12 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
 
     PascalByteString tokenData =
         readSimpleField(
-            "tokenData",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "tokenData", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalString encryptionAlgorithm =
         readSimpleField(
             "encryptionAlgorithm",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("IssuedIdentityToken");
     // Create the instance

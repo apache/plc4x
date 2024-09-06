@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ApduDataContainer interface {
 	Apdu
 	// GetDataApdu returns DataApdu (property field)
 	GetDataApdu() ApduData
-}
-
-// ApduDataContainerExactly can be used when we want exactly this type and not a type which fulfills ApduDataContainer.
-// This is useful for switch cases.
-type ApduDataContainerExactly interface {
-	ApduDataContainer
-	isApduDataContainer() bool
+	// IsApduDataContainer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataContainer()
 }
 
 // _ApduDataContainer is the data-structure of this message
 type _ApduDataContainer struct {
-	*_Apdu
+	ApduContract
 	DataApdu ApduData
 }
+
+var _ ApduDataContainer = (*_ApduDataContainer)(nil)
+var _ ApduRequirements = (*_ApduDataContainer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,13 +68,8 @@ func (m *_ApduDataContainer) GetControl() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataContainer) InitializeParent(parent Apdu, numbered bool, counter uint8) {
-	m.Numbered = numbered
-	m.Counter = counter
-}
-
-func (m *_ApduDataContainer) GetParent() Apdu {
-	return m._Apdu
+func (m *_ApduDataContainer) GetParent() ApduContract {
+	return m.ApduContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,11 +88,14 @@ func (m *_ApduDataContainer) GetDataApdu() ApduData {
 
 // NewApduDataContainer factory function for _ApduDataContainer
 func NewApduDataContainer(dataApdu ApduData, numbered bool, counter uint8, dataLength uint8) *_ApduDataContainer {
-	_result := &_ApduDataContainer{
-		DataApdu: dataApdu,
-		_Apdu:    NewApdu(numbered, counter, dataLength),
+	if dataApdu == nil {
+		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
 	}
-	_result._Apdu._ApduChildRequirements = _result
+	_result := &_ApduDataContainer{
+		ApduContract: NewApdu(numbered, counter, dataLength),
+		DataApdu:     dataApdu,
+	}
+	_result.ApduContract.(*_Apdu)._SubType = _result
 	return _result
 }
 
@@ -117,7 +115,7 @@ func (m *_ApduDataContainer) GetTypeName() string {
 }
 
 func (m *_ApduDataContainer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduContract.(*_Apdu).getLengthInBits(ctx))
 
 	// Simple field (dataApdu)
 	lengthInBits += m.DataApdu.GetLengthInBits(ctx)
@@ -129,47 +127,28 @@ func (m *_ApduDataContainer) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataContainerParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataContainer, error) {
-	return ApduDataContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
-}
-
-func ApduDataContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataContainer, error) {
+func (m *_ApduDataContainer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Apdu, dataLength uint8) (__apduDataContainer ApduDataContainer, err error) {
+	m.ApduContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataContainer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataApdu)
-	if pullErr := readBuffer.PullContext("dataApdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataApdu")
+	dataApdu, err := ReadSimpleField[ApduData](ctx, "dataApdu", ReadComplex[ApduData](ApduDataParseWithBufferProducer[ApduData]((uint8)(dataLength)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataApdu' field"))
 	}
-	_dataApdu, _dataApduErr := ApduDataParseWithBuffer(ctx, readBuffer, uint8(dataLength))
-	if _dataApduErr != nil {
-		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field of ApduDataContainer")
-	}
-	dataApdu := _dataApdu.(ApduData)
-	if closeErr := readBuffer.CloseContext("dataApdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataApdu")
-	}
+	m.DataApdu = dataApdu
 
 	if closeErr := readBuffer.CloseContext("ApduDataContainer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataContainer")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataContainer{
-		_Apdu: &_Apdu{
-			DataLength: dataLength,
-		},
-		DataApdu: dataApdu,
-	}
-	_child._Apdu._ApduChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataContainer) Serialize() ([]byte, error) {
@@ -190,16 +169,8 @@ func (m *_ApduDataContainer) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ApduDataContainer")
 		}
 
-		// Simple Field (dataApdu)
-		if pushErr := writeBuffer.PushContext("dataApdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataApdu")
-		}
-		_dataApduErr := writeBuffer.WriteSerializable(ctx, m.GetDataApdu())
-		if popErr := writeBuffer.PopContext("dataApdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataApdu")
-		}
-		if _dataApduErr != nil {
-			return errors.Wrap(_dataApduErr, "Error serializing 'dataApdu' field")
+		if err := WriteSimpleField[ApduData](ctx, "dataApdu", m.GetDataApdu(), WriteComplex[ApduData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataApdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataContainer"); popErr != nil {
@@ -207,12 +178,10 @@ func (m *_ApduDataContainer) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduContract.(*_Apdu).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataContainer) isApduDataContainer() bool {
-	return true
-}
+func (m *_ApduDataContainer) IsApduDataContainer() {}
 
 func (m *_ApduDataContainer) String() string {
 	if m == nil {

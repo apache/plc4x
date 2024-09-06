@@ -43,12 +43,12 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 	switch {
 	case plcValueType == PlcValueType_BOOL: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadBit("value")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("value")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -57,7 +57,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcBOOL(value), nil
 	case plcValueType == PlcValueType_BYTE: // BYTE
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -66,7 +66,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcBYTE(value), nil
 	case plcValueType == PlcValueType_WORD: // WORD
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -75,7 +75,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcWORD(value), nil
 	case plcValueType == PlcValueType_DWORD: // DWORD
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -84,7 +84,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcDWORD(value), nil
 	case plcValueType == PlcValueType_LWORD: // LWORD
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -93,7 +93,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcLWORD(value), nil
 	case plcValueType == PlcValueType_SINT: // SINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -102,7 +102,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcSINT(value), nil
 	case plcValueType == PlcValueType_USINT: // USINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -111,7 +111,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcUSINT(value), nil
 	case plcValueType == PlcValueType_INT: // INT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -120,7 +120,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcINT(value), nil
 	case plcValueType == PlcValueType_UINT: // UINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -129,7 +129,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcUINT(value), nil
 	case plcValueType == PlcValueType_DINT: // DINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -138,7 +138,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcDINT(value), nil
 	case plcValueType == PlcValueType_UDINT: // UDINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -147,7 +147,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcUDINT(value), nil
 	case plcValueType == PlcValueType_LINT: // LINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -156,7 +156,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcLINT(value), nil
 	case plcValueType == PlcValueType_ULINT: // ULINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -165,7 +165,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcULINT(value), nil
 	case plcValueType == PlcValueType_REAL: // REAL
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -174,7 +174,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcREAL(value), nil
 	case plcValueType == PlcValueType_LREAL: // LREAL
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -183,7 +183,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcLREAL(value), nil
 	case plcValueType == PlcValueType_CHAR: // CHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(8), "Windows-1252")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("Windows-1252"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -192,7 +192,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcCHAR(value), nil
 	case plcValueType == PlcValueType_WCHAR: // WCHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(16), "UTF-16LE")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF-16LE"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -201,35 +201,35 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcWCHAR(value), nil
 	case plcValueType == PlcValueType_STRING: // STRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((stringLength)*(8)), "Windows-1252")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32((stringLength)*(8)), utils.WithEncoding("Windows-1252"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	case plcValueType == PlcValueType_WSTRING: // WSTRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(((stringLength)*(8))*(2)), "UTF-16LE")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(((stringLength)*(8))*(2)), utils.WithEncoding("UTF-16LE"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint16("reserved", 16); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWSTRING(value), nil
 	case plcValueType == PlcValueType_TIME: // TIME
 		// Simple Field (milliseconds)
-		milliseconds, _millisecondsErr := readBuffer.ReadUint32("milliseconds", 32)
+		milliseconds, _millisecondsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("milliseconds", 32)
 		if _millisecondsErr != nil {
 			return nil, errors.Wrap(_millisecondsErr, "Error parsing 'milliseconds' field")
 		}
@@ -238,7 +238,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcTIMEFromMilliseconds(int64(milliseconds)), nil
 	case plcValueType == PlcValueType_LTIME: // LTIME
 		// Simple Field (nanoseconds)
-		nanoseconds, _nanosecondsErr := readBuffer.ReadUint64("nanoseconds", 64)
+		nanoseconds, _nanosecondsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("nanoseconds", 64)
 		if _nanosecondsErr != nil {
 			return nil, errors.Wrap(_nanosecondsErr, "Error parsing 'nanoseconds' field")
 		}
@@ -247,7 +247,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcLTIMEFromNanoseconds(nanoseconds), nil
 	case plcValueType == PlcValueType_DATE: // DATE
 		// Simple Field (secondsSinceEpoch)
-		secondsSinceEpoch, _secondsSinceEpochErr := readBuffer.ReadUint32("secondsSinceEpoch", 32)
+		secondsSinceEpoch, _secondsSinceEpochErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("secondsSinceEpoch", 32)
 		if _secondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_secondsSinceEpochErr, "Error parsing 'secondsSinceEpoch' field")
 		}
@@ -256,7 +256,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcDATEFromSecondsSinceEpoch(uint32(secondsSinceEpoch)), nil
 	case plcValueType == PlcValueType_LDATE: // LDATE
 		// Simple Field (nanosecondsSinceEpoch)
-		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
+		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
@@ -265,7 +265,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcLDATEFromNanosecondsSinceEpoch(uint64(nanosecondsSinceEpoch)), nil
 	case plcValueType == PlcValueType_TIME_OF_DAY: // TIME_OF_DAY
 		// Simple Field (millisecondsSinceMidnight)
-		millisecondsSinceMidnight, _millisecondsSinceMidnightErr := readBuffer.ReadUint32("millisecondsSinceMidnight", 32)
+		millisecondsSinceMidnight, _millisecondsSinceMidnightErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("millisecondsSinceMidnight", 32)
 		if _millisecondsSinceMidnightErr != nil {
 			return nil, errors.Wrap(_millisecondsSinceMidnightErr, "Error parsing 'millisecondsSinceMidnight' field")
 		}
@@ -274,7 +274,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcTIME_OF_DAYFromMillisecondsSinceMidnight(millisecondsSinceMidnight), nil
 	case plcValueType == PlcValueType_LTIME_OF_DAY: // LTIME_OF_DAY
 		// Simple Field (nanosecondsSinceMidnight)
-		nanosecondsSinceMidnight, _nanosecondsSinceMidnightErr := readBuffer.ReadUint64("nanosecondsSinceMidnight", 64)
+		nanosecondsSinceMidnight, _nanosecondsSinceMidnightErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("nanosecondsSinceMidnight", 64)
 		if _nanosecondsSinceMidnightErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceMidnightErr, "Error parsing 'nanosecondsSinceMidnight' field")
 		}
@@ -283,7 +283,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight), nil
 	case plcValueType == PlcValueType_DATE_AND_TIME: // DATE_AND_TIME
 		// Simple Field (secondsSinceEpoch)
-		secondsSinceEpoch, _secondsSinceEpochErr := readBuffer.ReadUint32("secondsSinceEpoch", 32)
+		secondsSinceEpoch, _secondsSinceEpochErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("secondsSinceEpoch", 32)
 		if _secondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_secondsSinceEpochErr, "Error parsing 'secondsSinceEpoch' field")
 		}
@@ -292,7 +292,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch), nil
 	case plcValueType == PlcValueType_LDATE_AND_TIME: // LDATE_AND_TIME
 		// Simple Field (nanosecondsSinceEpoch)
-		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
+		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
@@ -312,13 +312,23 @@ func DataItemSerialize(value api.PlcValue, plcValueType PlcValueType, stringLeng
 	return wb.GetBytes(), nil
 }
 
+type _DataItem struct {
+	PlcValueType PlcValueType
+	StringLength int32
+}
+
+func (m _DataItem) GetPlcValueType() PlcValueType {
+	return m.PlcValueType
+}
+
+func (m _DataItem) GetStringLength() int32 {
+	return m.StringLength
+}
+
 func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer, value api.PlcValue, plcValueType PlcValueType, stringLength int32) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	m := struct {
-		PlcValueType PlcValueType
-		StringLength int32
-	}{
+	m := _DataItem{
 		PlcValueType: plcValueType,
 		StringLength: stringLength,
 	}
@@ -327,152 +337,152 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 	switch {
 	case plcValueType == PlcValueType_BOOL: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_BYTE: // BYTE
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_WORD: // WORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_DWORD: // DWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_LWORD: // LWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_SINT: // SINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_USINT: // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_INT: // INT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_UINT: // UINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_DINT: // DINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_UDINT: // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_LINT: // LINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_ULINT: // ULINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_REAL: // REAL
 		// Simple Field (value)
-		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_LREAL: // LREAL
 		// Simple Field (value)
-		if _err := writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_CHAR: // CHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(8), "Windows-1252", value.GetString()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("Windows-1252)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_WCHAR: // WCHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16LE", value.GetString()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF-16LE)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_STRING: // STRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32((stringLength)*(8)), "Windows-1252", value.GetString()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32((stringLength)*(8)), value.GetString(), utils.WithEncoding("Windows-1252)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case plcValueType == PlcValueType_WSTRING: // WSTRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(((stringLength)*(8))*(2)), "UTF-16LE", value.GetString()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(((stringLength)*(8))*(2)), value.GetString(), utils.WithEncoding("UTF-16LE)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint16("reserved", 16, uint16(uint16(0x0000))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(uint16(0x0000))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case plcValueType == PlcValueType_TIME: // TIME
 		// Simple Field (milliseconds)
-		if _err := writeBuffer.WriteUint32("milliseconds", 32, uint32(value.(values.PlcTIME).GetMilliseconds())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("milliseconds", 32, uint32(value.(values.PlcTIME).GetMilliseconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'milliseconds' field")
 		}
 	case plcValueType == PlcValueType_LTIME: // LTIME
 		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint64("nanoseconds", 64, uint64(value.(values.PlcLTIME).GetNanoseconds())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint64("nanoseconds", 64, uint64(value.(values.PlcLTIME).GetNanoseconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	case plcValueType == PlcValueType_DATE: // DATE
 		// Simple Field (secondsSinceEpoch)
-		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, uint32(value.(values.PlcDATE).GetSecondsSinceEpoch())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("secondsSinceEpoch", 32, uint32(value.(values.PlcDATE).GetSecondsSinceEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'secondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_LDATE: // LDATE
 		// Simple Field (nanosecondsSinceEpoch)
-		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, uint64(value.(values.PlcLDATE).GetNanosecondsSinceEpoch())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, uint64(value.(values.PlcLDATE).GetNanosecondsSinceEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_TIME_OF_DAY: // TIME_OF_DAY
 		// Simple Field (millisecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, uint32(value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, uint32(value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'millisecondsSinceMidnight' field")
 		}
 	case plcValueType == PlcValueType_LTIME_OF_DAY: // LTIME_OF_DAY
 		// Simple Field (nanosecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint64("nanosecondsSinceMidnight", 64, uint64(value.(values.PlcLTIME_OF_DAY).GetNanosecondsSinceMidnight())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint64("nanosecondsSinceMidnight", 64, uint64(value.(values.PlcLTIME_OF_DAY).GetNanosecondsSinceMidnight())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceMidnight' field")
 		}
 	case plcValueType == PlcValueType_DATE_AND_TIME: // DATE_AND_TIME
 		// Simple Field (secondsSinceEpoch)
-		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, uint32(value.(values.PlcDATE_AND_TIME).GetSecondsSinceEpoch())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("secondsSinceEpoch", 32, uint32(value.(values.PlcDATE_AND_TIME).GetSecondsSinceEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'secondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_LDATE_AND_TIME: // LDATE_AND_TIME
 		// Simple Field (nanosecondsSinceEpoch)
-		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, uint64(value.(values.PlcLDATE_AND_TIME).GetNanosecondsSinceEpoch())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, uint64(value.(values.PlcLDATE_AND_TIME).GetNanosecondsSinceEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceEpoch' field")
 		}
 	default:

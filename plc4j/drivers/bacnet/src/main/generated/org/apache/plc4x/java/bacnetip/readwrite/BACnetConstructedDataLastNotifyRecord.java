@@ -83,8 +83,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataLastNotifyRecord");
 
     // Simple Field (lastNotifyRecord)
-    writeSimpleField(
-        "lastNotifyRecord", lastNotifyRecord, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastNotifyRecord", lastNotifyRecord, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger lastNotifyRecord =
         readSimpleField(
             "lastNotifyRecord",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,21 +45,19 @@ type BVLCDeleteForeignDeviceTableEntry interface {
 	GetIp() []uint8
 	// GetPort returns Port (property field)
 	GetPort() uint16
-}
-
-// BVLCDeleteForeignDeviceTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCDeleteForeignDeviceTableEntry.
-// This is useful for switch cases.
-type BVLCDeleteForeignDeviceTableEntryExactly interface {
-	BVLCDeleteForeignDeviceTableEntry
-	isBVLCDeleteForeignDeviceTableEntry() bool
+	// IsBVLCDeleteForeignDeviceTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCDeleteForeignDeviceTableEntry()
 }
 
 // _BVLCDeleteForeignDeviceTableEntry is the data-structure of this message
 type _BVLCDeleteForeignDeviceTableEntry struct {
-	*_BVLC
+	BVLCContract
 	Ip   []uint8
 	Port uint16
 }
+
+var _ BVLCDeleteForeignDeviceTableEntry = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
+var _ BVLCRequirements = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +73,8 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetBvlcFunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent BVLC) {}
-
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetParent() BVLC {
-	return m._BVLC
+func (m *_BVLCDeleteForeignDeviceTableEntry) GetParent() BVLCContract {
+	return m.BVLCContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,11 +98,11 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetPort() uint16 {
 // NewBVLCDeleteForeignDeviceTableEntry factory function for _BVLCDeleteForeignDeviceTableEntry
 func NewBVLCDeleteForeignDeviceTableEntry(ip []uint8, port uint16) *_BVLCDeleteForeignDeviceTableEntry {
 	_result := &_BVLCDeleteForeignDeviceTableEntry{
-		Ip:    ip,
-		Port:  port,
-		_BVLC: NewBVLC(),
+		BVLCContract: NewBVLC(),
+		Ip:           ip,
+		Port:         port,
 	}
-	_result._BVLC._BVLCChildRequirements = _result
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 
@@ -123,7 +122,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetTypeName() string {
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Ip) > 0 {
@@ -140,67 +139,34 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCDeleteForeignDeviceTableEntryParse(ctx context.Context, theBytes []byte) (BVLCDeleteForeignDeviceTableEntry, error) {
-	return BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
+func (m *_BVLCDeleteForeignDeviceTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCDeleteForeignDeviceTableEntry BVLCDeleteForeignDeviceTableEntry, err error) {
+	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCDeleteForeignDeviceTableEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCDeleteForeignDeviceTableEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (ip)
-	if pullErr := readBuffer.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ip")
+	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ip' field"))
 	}
-	// Count array
-	ip := make([]uint8, max(uint16(4), 0))
-	// This happens when the size is set conditional to 0
-	if len(ip) == 0 {
-		ip = nil
-	}
-	{
-		_numItems := uint16(max(uint16(4), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCDeleteForeignDeviceTableEntry")
-			}
-			ip[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ip")
-	}
+	m.Ip = ip
 
-	// Simple Field (port)
-	_port, _portErr := readBuffer.ReadUint16("port", 16)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCDeleteForeignDeviceTableEntry")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
+	m.Port = port
 
 	if closeErr := readBuffer.CloseContext("BVLCDeleteForeignDeviceTableEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCDeleteForeignDeviceTableEntry")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BVLCDeleteForeignDeviceTableEntry{
-		_BVLC: &_BVLC{},
-		Ip:    ip,
-		Port:  port,
-	}
-	_child._BVLC._BVLCChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) Serialize() ([]byte, error) {
@@ -221,26 +187,12 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BVLCDeleteForeignDeviceTableEntry")
 		}
 
-		// Array Field (ip)
-		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ip")
-		}
-		for _curItem, _element := range m.GetIp() {
-			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ip")
+		if err := WriteSimpleTypeArrayField(ctx, "ip", m.GetIp(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ip' field")
 		}
 
-		// Simple Field (port)
-		port := uint16(m.GetPort())
-		_portErr := writeBuffer.WriteUint16("port", 16, uint16((port)))
-		if _portErr != nil {
-			return errors.Wrap(_portErr, "Error serializing 'port' field")
+		if err := WriteSimpleField[uint16](ctx, "port", m.GetPort(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'port' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCDeleteForeignDeviceTableEntry"); popErr != nil {
@@ -248,12 +200,10 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) isBVLCDeleteForeignDeviceTableEntry() bool {
-	return true
-}
+func (m *_BVLCDeleteForeignDeviceTableEntry) IsBVLCDeleteForeignDeviceTableEntry() {}
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) String() string {
 	if m == nil {

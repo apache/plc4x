@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetFaultParameterFaultExtendedParametersEntryReference interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetReference returns Reference (property field)
 	GetReference() BACnetDeviceObjectPropertyReferenceEnclosed
-}
-
-// BACnetFaultParameterFaultExtendedParametersEntryReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryReference.
-// This is useful for switch cases.
-type BACnetFaultParameterFaultExtendedParametersEntryReferenceExactly interface {
-	BACnetFaultParameterFaultExtendedParametersEntryReference
-	isBACnetFaultParameterFaultExtendedParametersEntryReference() bool
+	// IsBACnetFaultParameterFaultExtendedParametersEntryReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryReference()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryReference is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryReference struct {
-	*_BACnetFaultParameterFaultExtendedParametersEntry
+	BACnetFaultParameterFaultExtendedParametersEntryContract
 	Reference BACnetDeviceObjectPropertyReferenceEnclosed
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryReference = (*_BACnetFaultParameterFaultExtendedParametersEntryReference)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryReference)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryReference struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetParent() BACnetFaultParameterFaultExtendedParametersEntry {
-	return m._BACnetFaultParameterFaultExtendedParametersEntry
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetParent() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetReferenc
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryReference factory function for _BACnetFaultParameterFaultExtendedParametersEntryReference
 func NewBACnetFaultParameterFaultExtendedParametersEntryReference(reference BACnetDeviceObjectPropertyReferenceEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryReference {
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
-		Reference: reference,
-		_BACnetFaultParameterFaultExtendedParametersEntry: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+	if reference == nil {
+		panic("reference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultExtendedParametersEntryReference must not be nil")
 	}
-	_result._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _result
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		Reference: reference,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetTypeName
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
 
 	// Simple field (reference)
 	lengthInBits += m.Reference.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetLengthIn
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryReference BACnetFaultParameterFaultExtendedParametersEntryReference, err error) {
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reference)
-	if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reference")
+	reference, err := ReadSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reference' field"))
 	}
-	_reference, _referenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _referenceErr != nil {
-		return nil, errors.Wrap(_referenceErr, "Error parsing 'reference' field of BACnetFaultParameterFaultExtendedParametersEntryReference")
-	}
-	reference := _reference.(BACnetDeviceObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("reference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reference")
-	}
+	m.Reference = reference
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryReference")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
-		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
-		Reference: reference,
-	}
-	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWi
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryReference")
 		}
 
-		// Simple Field (reference)
-		if pushErr := writeBuffer.PushContext("reference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reference")
-		}
-		_referenceErr := writeBuffer.WriteSerializable(ctx, m.GetReference())
-		if popErr := writeBuffer.PopContext("reference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reference")
-		}
-		if _referenceErr != nil {
-			return errors.Wrap(_referenceErr, "Error serializing 'reference' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", m.GetReference(), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWi
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) isBACnetFaultParameterFaultExtendedParametersEntryReference() bool {
-	return true
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) IsBACnetFaultParameterFaultExtendedParametersEntryReference() {
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) String() string {

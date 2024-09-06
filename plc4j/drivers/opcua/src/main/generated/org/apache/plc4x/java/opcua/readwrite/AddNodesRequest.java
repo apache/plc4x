@@ -77,7 +77,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("AddNodesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToAdd)
     writeSimpleField("noOfNodesToAdd", noOfNodesToAdd, writeSignedInt(writeBuffer, 32));
@@ -126,7 +126,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     List<ExtensionObjectDefinition> nodesToAdd =
         readCountArrayField(
             "nodesToAdd",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("378")),
                 readBuffer),
             noOfNodesToAdd);

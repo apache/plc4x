@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type NLMChallengeRequest interface {
 	GetOriginalMessageId() uint32
 	// GetOriginalTimestamp returns OriginalTimestamp (property field)
 	GetOriginalTimestamp() uint32
-}
-
-// NLMChallengeRequestExactly can be used when we want exactly this type and not a type which fulfills NLMChallengeRequest.
-// This is useful for switch cases.
-type NLMChallengeRequestExactly interface {
-	NLMChallengeRequest
-	isNLMChallengeRequest() bool
+	// IsNLMChallengeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMChallengeRequest()
 }
 
 // _NLMChallengeRequest is the data-structure of this message
 type _NLMChallengeRequest struct {
-	*_NLM
+	NLMContract
 	MessageChallenge  byte
 	OriginalMessageId uint32
 	OriginalTimestamp uint32
 }
+
+var _ NLMChallengeRequest = (*_NLMChallengeRequest)(nil)
+var _ NLMRequirements = (*_NLMChallengeRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_NLMChallengeRequest) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMChallengeRequest) InitializeParent(parent NLM) {}
-
-func (m *_NLMChallengeRequest) GetParent() NLM {
-	return m._NLM
+func (m *_NLMChallengeRequest) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,12 +103,12 @@ func (m *_NLMChallengeRequest) GetOriginalTimestamp() uint32 {
 // NewNLMChallengeRequest factory function for _NLMChallengeRequest
 func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32, apduLength uint16) *_NLMChallengeRequest {
 	_result := &_NLMChallengeRequest{
+		NLMContract:       NewNLM(apduLength),
 		MessageChallenge:  messageChallenge,
 		OriginalMessageId: originalMessageId,
 		OriginalTimestamp: originalTimestamp,
-		_NLM:              NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -130,7 +128,7 @@ func (m *_NLMChallengeRequest) GetTypeName() string {
 }
 
 func (m *_NLMChallengeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (messageChallenge)
 	lengthInBits += 8
@@ -148,57 +146,40 @@ func (m *_NLMChallengeRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMChallengeRequestParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMChallengeRequest, error) {
-	return NLMChallengeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMChallengeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMChallengeRequest, error) {
+func (m *_NLMChallengeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMChallengeRequest NLMChallengeRequest, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMChallengeRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMChallengeRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (messageChallenge)
-	_messageChallenge, _messageChallengeErr := readBuffer.ReadByte("messageChallenge")
-	if _messageChallengeErr != nil {
-		return nil, errors.Wrap(_messageChallengeErr, "Error parsing 'messageChallenge' field of NLMChallengeRequest")
+	messageChallenge, err := ReadSimpleField(ctx, "messageChallenge", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageChallenge' field"))
 	}
-	messageChallenge := _messageChallenge
+	m.MessageChallenge = messageChallenge
 
-	// Simple Field (originalMessageId)
-	_originalMessageId, _originalMessageIdErr := readBuffer.ReadUint32("originalMessageId", 32)
-	if _originalMessageIdErr != nil {
-		return nil, errors.Wrap(_originalMessageIdErr, "Error parsing 'originalMessageId' field of NLMChallengeRequest")
+	originalMessageId, err := ReadSimpleField(ctx, "originalMessageId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalMessageId' field"))
 	}
-	originalMessageId := _originalMessageId
+	m.OriginalMessageId = originalMessageId
 
-	// Simple Field (originalTimestamp)
-	_originalTimestamp, _originalTimestampErr := readBuffer.ReadUint32("originalTimestamp", 32)
-	if _originalTimestampErr != nil {
-		return nil, errors.Wrap(_originalTimestampErr, "Error parsing 'originalTimestamp' field of NLMChallengeRequest")
+	originalTimestamp, err := ReadSimpleField(ctx, "originalTimestamp", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalTimestamp' field"))
 	}
-	originalTimestamp := _originalTimestamp
+	m.OriginalTimestamp = originalTimestamp
 
 	if closeErr := readBuffer.CloseContext("NLMChallengeRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMChallengeRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMChallengeRequest{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		MessageChallenge:  messageChallenge,
-		OriginalMessageId: originalMessageId,
-		OriginalTimestamp: originalTimestamp,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMChallengeRequest) Serialize() ([]byte, error) {
@@ -219,25 +200,16 @@ func (m *_NLMChallengeRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NLMChallengeRequest")
 		}
 
-		// Simple Field (messageChallenge)
-		messageChallenge := byte(m.GetMessageChallenge())
-		_messageChallengeErr := writeBuffer.WriteByte("messageChallenge", (messageChallenge))
-		if _messageChallengeErr != nil {
-			return errors.Wrap(_messageChallengeErr, "Error serializing 'messageChallenge' field")
+		if err := WriteSimpleField[byte](ctx, "messageChallenge", m.GetMessageChallenge(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageChallenge' field")
 		}
 
-		// Simple Field (originalMessageId)
-		originalMessageId := uint32(m.GetOriginalMessageId())
-		_originalMessageIdErr := writeBuffer.WriteUint32("originalMessageId", 32, uint32((originalMessageId)))
-		if _originalMessageIdErr != nil {
-			return errors.Wrap(_originalMessageIdErr, "Error serializing 'originalMessageId' field")
+		if err := WriteSimpleField[uint32](ctx, "originalMessageId", m.GetOriginalMessageId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalMessageId' field")
 		}
 
-		// Simple Field (originalTimestamp)
-		originalTimestamp := uint32(m.GetOriginalTimestamp())
-		_originalTimestampErr := writeBuffer.WriteUint32("originalTimestamp", 32, uint32((originalTimestamp)))
-		if _originalTimestampErr != nil {
-			return errors.Wrap(_originalTimestampErr, "Error serializing 'originalTimestamp' field")
+		if err := WriteSimpleField[uint32](ctx, "originalTimestamp", m.GetOriginalTimestamp(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalTimestamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMChallengeRequest"); popErr != nil {
@@ -245,12 +217,10 @@ func (m *_NLMChallengeRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMChallengeRequest) isNLMChallengeRequest() bool {
-	return true
-}
+func (m *_NLMChallengeRequest) IsNLMChallengeRequest() {}
 
 func (m *_NLMChallengeRequest) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type NodeIdTwoByte interface {
 	GetId() uint8
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
-}
-
-// NodeIdTwoByteExactly can be used when we want exactly this type and not a type which fulfills NodeIdTwoByte.
-// This is useful for switch cases.
-type NodeIdTwoByteExactly interface {
-	NodeIdTwoByte
-	isNodeIdTwoByte() bool
+	// IsNodeIdTwoByte is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdTwoByte()
 }
 
 // _NodeIdTwoByte is the data-structure of this message
 type _NodeIdTwoByte struct {
-	*_NodeIdTypeDefinition
+	NodeIdTypeDefinitionContract
 	Id uint8
 }
+
+var _ NodeIdTwoByte = (*_NodeIdTwoByte)(nil)
+var _ NodeIdTypeDefinitionRequirements = (*_NodeIdTwoByte)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -70,10 +70,8 @@ func (m *_NodeIdTwoByte) GetNodeType() NodeIdType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NodeIdTwoByte) InitializeParent(parent NodeIdTypeDefinition) {}
-
-func (m *_NodeIdTwoByte) GetParent() NodeIdTypeDefinition {
-	return m._NodeIdTypeDefinition
+func (m *_NodeIdTwoByte) GetParent() NodeIdTypeDefinitionContract {
+	return m.NodeIdTypeDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -108,10 +106,10 @@ func (m *_NodeIdTwoByte) GetIdentifier() string {
 // NewNodeIdTwoByte factory function for _NodeIdTwoByte
 func NewNodeIdTwoByte(id uint8) *_NodeIdTwoByte {
 	_result := &_NodeIdTwoByte{
-		Id:                    id,
-		_NodeIdTypeDefinition: NewNodeIdTypeDefinition(),
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		Id:                           id,
 	}
-	_result._NodeIdTypeDefinition._NodeIdTypeDefinitionChildRequirements = _result
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
 
@@ -131,7 +129,7 @@ func (m *_NodeIdTwoByte) GetTypeName() string {
 }
 
 func (m *_NodeIdTwoByte) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).getLengthInBits(ctx))
 
 	// Simple field (id)
 	lengthInBits += 8
@@ -145,44 +143,34 @@ func (m *_NodeIdTwoByte) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NodeIdTwoByteParse(ctx context.Context, theBytes []byte) (NodeIdTwoByte, error) {
-	return NodeIdTwoByteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func NodeIdTwoByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdTwoByte, error) {
+func (m *_NodeIdTwoByte) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NodeIdTypeDefinition) (__nodeIdTwoByte NodeIdTwoByte, err error) {
+	m.NodeIdTypeDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NodeIdTwoByte"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NodeIdTwoByte")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (id)
-	_id, _idErr := readBuffer.ReadUint8("id", 8)
-	if _idErr != nil {
-		return nil, errors.Wrap(_idErr, "Error parsing 'id' field of NodeIdTwoByte")
+	id, err := ReadSimpleField(ctx, "id", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}
-	id := _id
+	m.Id = id
 
-	// Virtual field
-	_identifier := id
-	identifier := fmt.Sprintf("%v", _identifier)
+	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), id)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
+	}
 	_ = identifier
 
 	if closeErr := readBuffer.CloseContext("NodeIdTwoByte"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeIdTwoByte")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NodeIdTwoByte{
-		_NodeIdTypeDefinition: &_NodeIdTypeDefinition{},
-		Id:                    id,
-	}
-	_child._NodeIdTypeDefinition._NodeIdTypeDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NodeIdTwoByte) Serialize() ([]byte, error) {
@@ -203,11 +191,8 @@ func (m *_NodeIdTwoByte) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for NodeIdTwoByte")
 		}
 
-		// Simple Field (id)
-		id := uint8(m.GetId())
-		_idErr := writeBuffer.WriteUint8("id", 8, uint8((id)))
-		if _idErr != nil {
-			return errors.Wrap(_idErr, "Error serializing 'id' field")
+		if err := WriteSimpleField[uint8](ctx, "id", m.GetId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'id' field")
 		}
 		// Virtual field
 		identifier := m.GetIdentifier()
@@ -221,12 +206,10 @@ func (m *_NodeIdTwoByte) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NodeIdTwoByte) isNodeIdTwoByte() bool {
-	return true
-}
+func (m *_NodeIdTwoByte) IsNodeIdTwoByte() {}
 
 func (m *_NodeIdTwoByte) String() string {
 	if m == nil {

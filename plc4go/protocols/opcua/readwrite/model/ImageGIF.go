@@ -36,18 +36,15 @@ type ImageGIF interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// ImageGIFExactly can be used when we want exactly this type and not a type which fulfills ImageGIF.
-// This is useful for switch cases.
-type ImageGIFExactly interface {
-	ImageGIF
-	isImageGIF() bool
+	// IsImageGIF is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsImageGIF()
 }
 
 // _ImageGIF is the data-structure of this message
 type _ImageGIF struct {
 }
+
+var _ ImageGIF = (*_ImageGIF)(nil)
 
 // NewImageGIF factory function for _ImageGIF
 func NewImageGIF() *_ImageGIF {
@@ -83,11 +80,23 @@ func ImageGIFParse(ctx context.Context, theBytes []byte) (ImageGIF, error) {
 	return ImageGIFParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ImageGIFParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ImageGIF, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ImageGIF, error) {
+		return ImageGIFParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ImageGIFParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageGIF, error) {
+	v, err := (&_ImageGIF{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_ImageGIF) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__imageGIF ImageGIF, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ImageGIF"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ImageGIF")
 	}
@@ -98,8 +107,7 @@ func ImageGIFParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 		return nil, errors.Wrap(closeErr, "Error closing for ImageGIF")
 	}
 
-	// Create the instance
-	return &_ImageGIF{}, nil
+	return m, nil
 }
 
 func (m *_ImageGIF) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_ImageGIF) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-func (m *_ImageGIF) isImageGIF() bool {
-	return true
-}
+func (m *_ImageGIF) IsImageGIF() {}
 
 func (m *_ImageGIF) String() string {
 	if m == nil {

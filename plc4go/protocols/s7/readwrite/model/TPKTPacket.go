@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +45,8 @@ type TPKTPacket interface {
 	utils.Serializable
 	// GetPayload returns Payload (property field)
 	GetPayload() COTPPacket
-}
-
-// TPKTPacketExactly can be used when we want exactly this type and not a type which fulfills TPKTPacket.
-// This is useful for switch cases.
-type TPKTPacketExactly interface {
-	TPKTPacket
-	isTPKTPacket() bool
+	// IsTPKTPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTPKTPacket()
 }
 
 // _TPKTPacket is the data-structure of this message
@@ -57,6 +55,8 @@ type _TPKTPacket struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ TPKTPacket = (*_TPKTPacket)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,6 +87,9 @@ func (m *_TPKTPacket) GetProtocolId() uint8 {
 
 // NewTPKTPacket factory function for _TPKTPacket
 func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
+	if payload == nil {
+		panic("payload of type COTPPacket for TPKTPacket must not be nil")
+	}
 	return &_TPKTPacket{Payload: payload}
 }
 
@@ -131,72 +134,58 @@ func TPKTPacketParse(ctx context.Context, theBytes []byte) (TPKTPacket, error) {
 	return TPKTPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func TPKTPacketParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TPKTPacket, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TPKTPacket, error) {
+		return TPKTPacketParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TPKTPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TPKTPacket, error) {
+	v, err := (&_TPKTPacket{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_TPKTPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__tPKTPacket TPKTPacket, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TPKTPacket"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TPKTPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (protocolId)
-	protocolId, _protocolIdErr := readBuffer.ReadUint8("protocolId", 8)
-	if _protocolIdErr != nil {
-		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field of TPKTPacket")
+	protocolId, err := ReadConstField[uint8](ctx, "protocolId", ReadUnsignedByte(readBuffer, uint8(8)), TPKTPacket_PROTOCOLID, codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolId' field"))
 	}
-	if protocolId != TPKTPacket_PROTOCOLID {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", TPKTPacket_PROTOCOLID) + " but got " + fmt.Sprintf("%d", protocolId))
-	}
+	_ = protocolId
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TPKTPacket")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	len, _lenErr := readBuffer.ReadUint16("len", 16)
+	len, err := ReadImplicitField[uint16](ctx, "len", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'len' field"))
+	}
 	_ = len
-	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of TPKTPacket")
-	}
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	payload, err := ReadSimpleField[COTPPacket](ctx, "payload", ReadComplex[COTPPacket](COTPPacketParseWithBufferProducer[COTPPacket]((uint16)(uint16(len)-uint16(uint16(4)))), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
-	_payload, _payloadErr := COTPPacketParseWithBuffer(ctx, readBuffer, uint16(uint16(len)-uint16(uint16(4))))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of TPKTPacket")
-	}
-	payload := _payload.(COTPPacket)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
-	}
+	m.Payload = payload
 
 	if closeErr := readBuffer.CloseContext("TPKTPacket"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TPKTPacket")
 	}
 
-	// Create the instance
-	return &_TPKTPacket{
-		Payload:        payload,
-		reservedField0: reservedField0,
-	}, nil
+	return m, nil
 }
 
 func (m *_TPKTPacket) Serialize() ([]byte, error) {
@@ -216,45 +205,20 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for TPKTPacket")
 	}
 
-	// Const Field (protocolId)
-	_protocolIdErr := writeBuffer.WriteUint8("protocolId", 8, uint8(0x03))
-	if _protocolIdErr != nil {
-		return errors.Wrap(_protocolIdErr, "Error serializing 'protocolId' field")
+	if err := WriteConstField(ctx, "protocolId", TPKTPacket_PROTOCOLID, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'protocolId' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0x00)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
-
-	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	len := uint16(uint16(m.GetPayload().GetLengthInBytes(ctx)) + uint16(uint16(4)))
-	_lenErr := writeBuffer.WriteUint16("len", 16, uint16((len)))
-	if _lenErr != nil {
-		return errors.Wrap(_lenErr, "Error serializing 'len' field")
+	if err := WriteImplicitField(ctx, "len", len, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'len' field")
 	}
 
-	// Simple Field (payload)
-	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for payload")
-	}
-	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for payload")
-	}
-	if _payloadErr != nil {
-		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+	if err := WriteSimpleField[COTPPacket](ctx, "payload", m.GetPayload(), WriteComplex[COTPPacket](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 
 	if popErr := writeBuffer.PopContext("TPKTPacket"); popErr != nil {
@@ -263,9 +227,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	return nil
 }
 
-func (m *_TPKTPacket) isTPKTPacket() bool {
-	return true
-}
+func (m *_TPKTPacket) IsTPKTPacket() {}
 
 func (m *_TPKTPacket) String() string {
 	if m == nil {

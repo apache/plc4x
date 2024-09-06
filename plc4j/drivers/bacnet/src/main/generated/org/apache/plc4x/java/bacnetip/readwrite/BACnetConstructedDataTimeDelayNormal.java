@@ -82,8 +82,7 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataTimeDelayNormal");
 
     // Simple Field (timeDelayNormal)
-    writeSimpleField(
-        "timeDelayNormal", timeDelayNormal, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelayNormal", timeDelayNormal, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +124,7 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger timeDelayNormal =
         readSimpleField(
             "timeDelayNormal",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

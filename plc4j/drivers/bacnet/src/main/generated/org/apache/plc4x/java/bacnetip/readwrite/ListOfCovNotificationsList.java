@@ -75,13 +75,13 @@ public class ListOfCovNotificationsList implements Message {
     writeBuffer.pushContext("ListOfCovNotificationsList");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (specifications)
     writeComplexTypeArrayField("specifications", specifications, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ListOfCovNotificationsList");
   }
@@ -122,14 +122,13 @@ public class ListOfCovNotificationsList implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<ListOfCovNotifications> specifications =
         readTerminatedArrayField(
             "specifications",
-            new DataReaderComplexDefault<>(
-                () -> ListOfCovNotifications.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ListOfCovNotifications.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -138,7 +137,7 @@ public class ListOfCovNotificationsList implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("ListOfCovNotificationsList");

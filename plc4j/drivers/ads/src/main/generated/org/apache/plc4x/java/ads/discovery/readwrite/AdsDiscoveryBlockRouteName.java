@@ -62,7 +62,7 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
     writeBuffer.pushContext("AdsDiscoveryBlockRouteName");
 
     // Simple Field (routeName)
-    writeSimpleField("routeName", routeName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("routeName", routeName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AdsDiscoveryBlockRouteName");
   }
@@ -92,8 +92,7 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
 
     AmsString routeName =
         readSimpleField(
-            "routeName",
-            new DataReaderComplexDefault<>(() -> AmsString.staticParse(readBuffer), readBuffer));
+            "routeName", readComplex(() -> AmsString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AdsDiscoveryBlockRouteName");
     // Create the instance

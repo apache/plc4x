@@ -60,7 +60,7 @@ public class BACnetRecipientAddress extends BACnetRecipient implements Message {
     writeBuffer.pushContext("BACnetRecipientAddress");
 
     // Simple Field (addressValue)
-    writeSimpleField("addressValue", addressValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("addressValue", addressValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetRecipientAddress");
   }
@@ -91,7 +91,7 @@ public class BACnetRecipientAddress extends BACnetRecipient implements Message {
     BACnetAddressEnclosed addressValue =
         readSimpleField(
             "addressValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAddressEnclosed.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetRecipientAddress");

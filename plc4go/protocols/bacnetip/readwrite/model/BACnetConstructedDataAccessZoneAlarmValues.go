@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConstructedDataAccessZoneAlarmValues interface {
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetAccessZoneOccupancyStateTagged
-}
-
-// BACnetConstructedDataAccessZoneAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessZoneAlarmValues.
-// This is useful for switch cases.
-type BACnetConstructedDataAccessZoneAlarmValuesExactly interface {
-	BACnetConstructedDataAccessZoneAlarmValues
-	isBACnetConstructedDataAccessZoneAlarmValues() bool
+	// IsBACnetConstructedDataAccessZoneAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessZoneAlarmValues()
 }
 
 // _BACnetConstructedDataAccessZoneAlarmValues is the data-structure of this message
 type _BACnetConstructedDataAccessZoneAlarmValues struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AlarmValues []BACnetAccessZoneOccupancyStateTagged
 }
+
+var _ BACnetConstructedDataAccessZoneAlarmValues = (*_BACnetConstructedDataAccessZoneAlarmValues)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessZoneAlarmValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,14 +72,8 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAccessZoneAlarmValues) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +93,10 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetAlarmValues() []BACnetA
 // NewBACnetConstructedDataAccessZoneAlarmValues factory function for _BACnetConstructedDataAccessZoneAlarmValues
 func NewBACnetConstructedDataAccessZoneAlarmValues(alarmValues []BACnetAccessZoneOccupancyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAlarmValues {
 	_result := &_BACnetConstructedDataAccessZoneAlarmValues{
-		AlarmValues:            alarmValues,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AlarmValues:                   alarmValues,
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -122,7 +116,7 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.AlarmValues) > 0 {
@@ -138,54 +132,28 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAccessZoneAlarmValuesParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessZoneAlarmValues, error) {
-	return BACnetConstructedDataAccessZoneAlarmValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAccessZoneAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessZoneAlarmValues, error) {
+func (m *_BACnetConstructedDataAccessZoneAlarmValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAccessZoneAlarmValues BACnetConstructedDataAccessZoneAlarmValues, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessZoneAlarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessZoneAlarmValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (alarmValues)
-	if pullErr := readBuffer.PullContext("alarmValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
+	alarmValues, err := ReadTerminatedArrayField[BACnetAccessZoneOccupancyStateTagged](ctx, "alarmValues", ReadComplex[BACnetAccessZoneOccupancyStateTagged](BACnetAccessZoneOccupancyStateTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmValues' field"))
 	}
-	// Terminated array
-	var alarmValues []BACnetAccessZoneOccupancyStateTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetConstructedDataAccessZoneAlarmValues")
-			}
-			alarmValues = append(alarmValues, _item.(BACnetAccessZoneOccupancyStateTagged))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("alarmValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alarmValues")
-	}
+	m.AlarmValues = alarmValues
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessZoneAlarmValues"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessZoneAlarmValues")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAccessZoneAlarmValues{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AlarmValues: alarmValues,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAccessZoneAlarmValues) Serialize() ([]byte, error) {
@@ -206,21 +174,8 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessZoneAlarmValues")
 		}
 
-		// Array Field (alarmValues)
-		if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmValues")
-		}
-		for _curItem, _element := range m.GetAlarmValues() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAlarmValues()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmValues")
+		if err := WriteComplexTypeArrayField(ctx, "alarmValues", m.GetAlarmValues(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessZoneAlarmValues"); popErr != nil {
@@ -228,11 +183,10 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAccessZoneAlarmValues) isBACnetConstructedDataAccessZoneAlarmValues() bool {
-	return true
+func (m *_BACnetConstructedDataAccessZoneAlarmValues) IsBACnetConstructedDataAccessZoneAlarmValues() {
 }
 
 func (m *_BACnetConstructedDataAccessZoneAlarmValues) String() string {

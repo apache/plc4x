@@ -36,18 +36,15 @@ type EncodedTicket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// EncodedTicketExactly can be used when we want exactly this type and not a type which fulfills EncodedTicket.
-// This is useful for switch cases.
-type EncodedTicketExactly interface {
-	EncodedTicket
-	isEncodedTicket() bool
+	// IsEncodedTicket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEncodedTicket()
 }
 
 // _EncodedTicket is the data-structure of this message
 type _EncodedTicket struct {
 }
+
+var _ EncodedTicket = (*_EncodedTicket)(nil)
 
 // NewEncodedTicket factory function for _EncodedTicket
 func NewEncodedTicket() *_EncodedTicket {
@@ -83,11 +80,23 @@ func EncodedTicketParse(ctx context.Context, theBytes []byte) (EncodedTicket, er
 	return EncodedTicketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func EncodedTicketParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedTicket, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedTicket, error) {
+		return EncodedTicketParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func EncodedTicketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedTicket, error) {
+	v, err := (&_EncodedTicket{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_EncodedTicket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__encodedTicket EncodedTicket, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EncodedTicket"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EncodedTicket")
 	}
@@ -98,8 +107,7 @@ func EncodedTicketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(closeErr, "Error closing for EncodedTicket")
 	}
 
-	// Create the instance
-	return &_EncodedTicket{}, nil
+	return m, nil
 }
 
 func (m *_EncodedTicket) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_EncodedTicket) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_EncodedTicket) isEncodedTicket() bool {
-	return true
-}
+func (m *_EncodedTicket) IsEncodedTicket() {}
 
 func (m *_EncodedTicket) String() string {
 	if m == nil {

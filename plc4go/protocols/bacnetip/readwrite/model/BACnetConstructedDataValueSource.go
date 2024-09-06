@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataValueSource interface {
 	GetValueSource() BACnetValueSource
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetValueSource
-}
-
-// BACnetConstructedDataValueSourceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataValueSource.
-// This is useful for switch cases.
-type BACnetConstructedDataValueSourceExactly interface {
-	BACnetConstructedDataValueSource
-	isBACnetConstructedDataValueSource() bool
+	// IsBACnetConstructedDataValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataValueSource()
 }
 
 // _BACnetConstructedDataValueSource is the data-structure of this message
 type _BACnetConstructedDataValueSource struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ValueSource BACnetValueSource
 }
+
+var _ BACnetConstructedDataValueSource = (*_BACnetConstructedDataValueSource)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSource)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataValueSource) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataValueSource) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataValueSource) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataValueSource) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataValueSource) GetActualValue() BACnetValueSource {
 
 // NewBACnetConstructedDataValueSource factory function for _BACnetConstructedDataValueSource
 func NewBACnetConstructedDataValueSource(valueSource BACnetValueSource, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSource {
-	_result := &_BACnetConstructedDataValueSource{
-		ValueSource:            valueSource,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if valueSource == nil {
+		panic("valueSource of type BACnetValueSource for BACnetConstructedDataValueSource must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataValueSource{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValueSource:                   valueSource,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataValueSource) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataValueSource) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (valueSource)
 	lengthInBits += m.ValueSource.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataValueSource) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataValueSourceParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSource, error) {
-	return BACnetConstructedDataValueSourceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataValueSourceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSource, error) {
+func (m *_BACnetConstructedDataValueSource) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataValueSource BACnetConstructedDataValueSource, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSource"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValueSource")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (valueSource)
-	if pullErr := readBuffer.PullContext("valueSource"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valueSource")
+	valueSource, err := ReadSimpleField[BACnetValueSource](ctx, "valueSource", ReadComplex[BACnetValueSource](BACnetValueSourceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueSource' field"))
 	}
-	_valueSource, _valueSourceErr := BACnetValueSourceParseWithBuffer(ctx, readBuffer)
-	if _valueSourceErr != nil {
-		return nil, errors.Wrap(_valueSourceErr, "Error parsing 'valueSource' field of BACnetConstructedDataValueSource")
-	}
-	valueSource := _valueSource.(BACnetValueSource)
-	if closeErr := readBuffer.CloseContext("valueSource"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valueSource")
-	}
+	m.ValueSource = valueSource
 
-	// Virtual field
-	_actualValue := valueSource
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetValueSource](ctx, "actualValue", (*BACnetValueSource)(nil), valueSource)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSource"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSource")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataValueSource{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ValueSource: valueSource,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataValueSource) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataValueSource) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueSource")
 		}
 
-		// Simple Field (valueSource)
-		if pushErr := writeBuffer.PushContext("valueSource"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for valueSource")
-		}
-		_valueSourceErr := writeBuffer.WriteSerializable(ctx, m.GetValueSource())
-		if popErr := writeBuffer.PopContext("valueSource"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for valueSource")
-		}
-		if _valueSourceErr != nil {
-			return errors.Wrap(_valueSourceErr, "Error serializing 'valueSource' field")
+		if err := WriteSimpleField[BACnetValueSource](ctx, "valueSource", m.GetValueSource(), WriteComplex[BACnetValueSource](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'valueSource' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataValueSource) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataValueSource) isBACnetConstructedDataValueSource() bool {
-	return true
-}
+func (m *_BACnetConstructedDataValueSource) IsBACnetConstructedDataValueSource() {}
 
 func (m *_BACnetConstructedDataValueSource) String() string {
 	if m == nil {

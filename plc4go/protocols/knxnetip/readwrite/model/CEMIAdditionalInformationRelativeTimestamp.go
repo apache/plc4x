@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,20 +44,18 @@ type CEMIAdditionalInformationRelativeTimestamp interface {
 	CEMIAdditionalInformation
 	// GetRelativeTimestamp returns RelativeTimestamp (property field)
 	GetRelativeTimestamp() RelativeTimestamp
-}
-
-// CEMIAdditionalInformationRelativeTimestampExactly can be used when we want exactly this type and not a type which fulfills CEMIAdditionalInformationRelativeTimestamp.
-// This is useful for switch cases.
-type CEMIAdditionalInformationRelativeTimestampExactly interface {
-	CEMIAdditionalInformationRelativeTimestamp
-	isCEMIAdditionalInformationRelativeTimestamp() bool
+	// IsCEMIAdditionalInformationRelativeTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCEMIAdditionalInformationRelativeTimestamp()
 }
 
 // _CEMIAdditionalInformationRelativeTimestamp is the data-structure of this message
 type _CEMIAdditionalInformationRelativeTimestamp struct {
-	*_CEMIAdditionalInformation
+	CEMIAdditionalInformationContract
 	RelativeTimestamp RelativeTimestamp
 }
+
+var _ CEMIAdditionalInformationRelativeTimestamp = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
+var _ CEMIAdditionalInformationRequirements = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +71,8 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetAdditionalInformationTy
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CEMIAdditionalInformationRelativeTimestamp) InitializeParent(parent CEMIAdditionalInformation) {
-}
-
-func (m *_CEMIAdditionalInformationRelativeTimestamp) GetParent() CEMIAdditionalInformation {
-	return m._CEMIAdditionalInformation
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetParent() CEMIAdditionalInformationContract {
+	return m.CEMIAdditionalInformationContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -107,11 +104,14 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLen() uint8 {
 
 // NewCEMIAdditionalInformationRelativeTimestamp factory function for _CEMIAdditionalInformationRelativeTimestamp
 func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTimestamp) *_CEMIAdditionalInformationRelativeTimestamp {
-	_result := &_CEMIAdditionalInformationRelativeTimestamp{
-		RelativeTimestamp:          relativeTimestamp,
-		_CEMIAdditionalInformation: NewCEMIAdditionalInformation(),
+	if relativeTimestamp == nil {
+		panic("relativeTimestamp of type RelativeTimestamp for CEMIAdditionalInformationRelativeTimestamp must not be nil")
 	}
-	_result._CEMIAdditionalInformation._CEMIAdditionalInformationChildRequirements = _result
+	_result := &_CEMIAdditionalInformationRelativeTimestamp{
+		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
+		RelativeTimestamp:                 relativeTimestamp,
+	}
+	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
 	return _result
 }
 
@@ -131,7 +131,7 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).getLengthInBits(ctx))
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -146,54 +146,34 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CEMIAdditionalInformationRelativeTimestampParse(ctx context.Context, theBytes []byte) (CEMIAdditionalInformationRelativeTimestamp, error) {
-	return CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMIAdditionalInformation) (__cEMIAdditionalInformationRelativeTimestamp CEMIAdditionalInformationRelativeTimestamp, err error) {
+	m.CEMIAdditionalInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CEMIAdditionalInformationRelativeTimestamp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (len)
-	len, _lenErr := readBuffer.ReadUint8("len", 8)
-	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of CEMIAdditionalInformationRelativeTimestamp")
+	len, err := ReadConstField[uint8](ctx, "len", ReadUnsignedByte(readBuffer, uint8(8)), CEMIAdditionalInformationRelativeTimestamp_LEN)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'len' field"))
 	}
-	if len != CEMIAdditionalInformationRelativeTimestamp_LEN {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CEMIAdditionalInformationRelativeTimestamp_LEN) + " but got " + fmt.Sprintf("%d", len))
-	}
+	_ = len
 
-	// Simple Field (relativeTimestamp)
-	if pullErr := readBuffer.PullContext("relativeTimestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relativeTimestamp")
+	relativeTimestamp, err := ReadSimpleField[RelativeTimestamp](ctx, "relativeTimestamp", ReadComplex[RelativeTimestamp](RelativeTimestampParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativeTimestamp' field"))
 	}
-	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParseWithBuffer(ctx, readBuffer)
-	if _relativeTimestampErr != nil {
-		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field of CEMIAdditionalInformationRelativeTimestamp")
-	}
-	relativeTimestamp := _relativeTimestamp.(RelativeTimestamp)
-	if closeErr := readBuffer.CloseContext("relativeTimestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relativeTimestamp")
-	}
+	m.RelativeTimestamp = relativeTimestamp
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformationRelativeTimestamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CEMIAdditionalInformationRelativeTimestamp")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CEMIAdditionalInformationRelativeTimestamp{
-		_CEMIAdditionalInformation: &_CEMIAdditionalInformation{},
-		RelativeTimestamp:          relativeTimestamp,
-	}
-	_child._CEMIAdditionalInformation._CEMIAdditionalInformationChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) Serialize() ([]byte, error) {
@@ -214,22 +194,12 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for CEMIAdditionalInformationRelativeTimestamp")
 		}
 
-		// Const Field (len)
-		_lenErr := writeBuffer.WriteUint8("len", 8, uint8(2))
-		if _lenErr != nil {
-			return errors.Wrap(_lenErr, "Error serializing 'len' field")
+		if err := WriteConstField(ctx, "len", CEMIAdditionalInformationRelativeTimestamp_LEN, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'len' field")
 		}
 
-		// Simple Field (relativeTimestamp)
-		if pushErr := writeBuffer.PushContext("relativeTimestamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relativeTimestamp")
-		}
-		_relativeTimestampErr := writeBuffer.WriteSerializable(ctx, m.GetRelativeTimestamp())
-		if popErr := writeBuffer.PopContext("relativeTimestamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relativeTimestamp")
-		}
-		if _relativeTimestampErr != nil {
-			return errors.Wrap(_relativeTimestampErr, "Error serializing 'relativeTimestamp' field")
+		if err := WriteSimpleField[RelativeTimestamp](ctx, "relativeTimestamp", m.GetRelativeTimestamp(), WriteComplex[RelativeTimestamp](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relativeTimestamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CEMIAdditionalInformationRelativeTimestamp"); popErr != nil {
@@ -237,11 +207,10 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CEMIAdditionalInformationRelativeTimestamp) isCEMIAdditionalInformationRelativeTimestamp() bool {
-	return true
+func (m *_CEMIAdditionalInformationRelativeTimestamp) IsCEMIAdditionalInformationRelativeTimestamp() {
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) String() string {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,24 +49,22 @@ type BACnetConfirmedServiceRequestWriteProperty interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
-}
-
-// BACnetConfirmedServiceRequestWritePropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestWriteProperty.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestWritePropertyExactly interface {
-	BACnetConfirmedServiceRequestWriteProperty
-	isBACnetConfirmedServiceRequestWriteProperty() bool
+	// IsBACnetConfirmedServiceRequestWriteProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestWriteProperty()
 }
 
 // _BACnetConfirmedServiceRequestWriteProperty is the data-structure of this message
 type _BACnetConfirmedServiceRequestWriteProperty struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	ObjectIdentifier   BACnetContextTagObjectIdentifier
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	PropertyValue      BACnetConstructedData
 	Priority           BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetConfirmedServiceRequestWriteProperty = (*_BACnetConfirmedServiceRequestWriteProperty)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestWriteProperty)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +80,8 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) GetServiceChoice() BACnetC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestWriteProperty) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestWriteProperty) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestWriteProperty) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -120,15 +116,24 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) GetPriority() BACnetContex
 
 // NewBACnetConfirmedServiceRequestWriteProperty factory function for _BACnetConfirmedServiceRequestWriteProperty
 func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestWriteProperty {
-	_result := &_BACnetConfirmedServiceRequestWriteProperty{
-		ObjectIdentifier:               objectIdentifier,
-		PropertyIdentifier:             propertyIdentifier,
-		ArrayIndex:                     arrayIndex,
-		PropertyValue:                  propertyValue,
-		Priority:                       priority,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestWriteProperty must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetConfirmedServiceRequestWriteProperty must not be nil")
+	}
+	if propertyValue == nil {
+		panic("propertyValue of type BACnetConstructedData for BACnetConfirmedServiceRequestWriteProperty must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestWriteProperty{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ObjectIdentifier:                      objectIdentifier,
+		PropertyIdentifier:                    propertyIdentifier,
+		ArrayIndex:                            arrayIndex,
+		PropertyValue:                         propertyValue,
+		Priority:                              priority,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -148,7 +153,7 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -176,121 +181,60 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestWriteProperty, error) {
-	return BACnetConfirmedServiceRequestWritePropertyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestWritePropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestWriteProperty, error) {
+func (m *_BACnetConfirmedServiceRequestWriteProperty) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestWriteProperty BACnetConfirmedServiceRequestWriteProperty, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWriteProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestWriteProperty")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIdentifier)
-	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
+	objectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestWriteProperty")
+	m.ObjectIdentifier = objectIdentifier
+
+	propertyIdentifier, err := ReadSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", ReadComplex[BACnetPropertyIdentifierTagged](BACnetPropertyIdentifierTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyIdentifier' field"))
 	}
-	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
+	m.PropertyIdentifier = propertyIdentifier
+
+	var arrayIndex BACnetContextTagUnsignedInteger
+	_arrayIndex, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayIndex' field"))
+	}
+	if _arrayIndex != nil {
+		arrayIndex = *_arrayIndex
+		m.ArrayIndex = arrayIndex
 	}
 
-	// Simple Field (propertyIdentifier)
-	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
+	propertyValue, err := ReadSimpleField[BACnetConstructedData](ctx, "propertyValue", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(3)), (BACnetObjectType)(objectIdentifier.GetObjectType()), (BACnetPropertyIdentifier)(propertyIdentifier.GetValue()), (BACnetTagPayloadUnsignedInteger)((CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyValue' field"))
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _propertyIdentifierErr != nil {
-		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetConfirmedServiceRequestWriteProperty")
-	}
-	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifierTagged)
-	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
-	}
+	m.PropertyValue = propertyValue
 
-	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
-	var arrayIndex BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetConfirmedServiceRequestWriteProperty")
-		default:
-			arrayIndex = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
-			}
-		}
+	var priority BACnetContextTagUnsignedInteger
+	_priority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}
-
-	// Simple Field (propertyValue)
-	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
-	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetObjectType(objectIdentifier.GetObjectType()), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
-	if _propertyValueErr != nil {
-		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field of BACnetConfirmedServiceRequestWriteProperty")
-	}
-	propertyValue := _propertyValue.(BACnetConstructedData)
-	if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
-	}
-
-	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
-	var priority BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for priority")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'priority' field of BACnetConfirmedServiceRequestWriteProperty")
-		default:
-			priority = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for priority")
-			}
-		}
+	if _priority != nil {
+		priority = *_priority
+		m.Priority = priority
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestWriteProperty"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestWriteProperty")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestWriteProperty{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		ObjectIdentifier:   objectIdentifier,
-		PropertyIdentifier: propertyIdentifier,
-		ArrayIndex:         arrayIndex,
-		PropertyValue:      propertyValue,
-		Priority:           priority,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestWriteProperty) Serialize() ([]byte, error) {
@@ -311,72 +255,24 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestWriteProperty")
 		}
 
-		// Simple Field (objectIdentifier)
-		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
-		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectIdentifier")
-		}
-		if _objectIdentifierErr != nil {
-			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", m.GetObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 
-		// Simple Field (propertyIdentifier)
-		if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
-		}
-		_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
-		if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyIdentifier")
-		}
-		if _propertyIdentifierErr != nil {
-			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
+		if err := WriteSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", m.GetPropertyIdentifier(), WriteComplex[BACnetPropertyIdentifierTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		// Optional Field (arrayIndex) (Can be skipped, if the value is null)
-		var arrayIndex BACnetContextTagUnsignedInteger = nil
-		if m.GetArrayIndex() != nil {
-			if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for arrayIndex")
-			}
-			arrayIndex = m.GetArrayIndex()
-			_arrayIndexErr := writeBuffer.WriteSerializable(ctx, arrayIndex)
-			if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for arrayIndex")
-			}
-			if _arrayIndexErr != nil {
-				return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 		}
 
-		// Simple Field (propertyValue)
-		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyValue")
-		}
-		_propertyValueErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyValue())
-		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyValue")
-		}
-		if _propertyValueErr != nil {
-			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
+		if err := WriteSimpleField[BACnetConstructedData](ctx, "propertyValue", m.GetPropertyValue(), WriteComplex[BACnetConstructedData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyValue' field")
 		}
 
-		// Optional Field (priority) (Can be skipped, if the value is null)
-		var priority BACnetContextTagUnsignedInteger = nil
-		if m.GetPriority() != nil {
-			if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for priority")
-			}
-			priority = m.GetPriority()
-			_priorityErr := writeBuffer.WriteSerializable(ctx, priority)
-			if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for priority")
-			}
-			if _priorityErr != nil {
-				return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", GetRef(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'priority' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestWriteProperty"); popErr != nil {
@@ -384,11 +280,10 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestWriteProperty) isBACnetConfirmedServiceRequestWriteProperty() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestWriteProperty) IsBACnetConfirmedServiceRequestWriteProperty() {
 }
 
 func (m *_BACnetConfirmedServiceRequestWriteProperty) String() string {

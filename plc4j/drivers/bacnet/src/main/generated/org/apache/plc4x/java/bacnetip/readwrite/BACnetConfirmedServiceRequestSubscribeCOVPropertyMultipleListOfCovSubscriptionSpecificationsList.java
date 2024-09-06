@@ -85,13 +85,13 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (specifications)
     writeComplexTypeArrayField("specifications", specifications, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList");
@@ -136,7 +136,7 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<
@@ -144,7 +144,7 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
         specifications =
             readTerminatedArrayField(
                 "specifications",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications
                             .staticParse(readBuffer),
@@ -157,7 +157,7 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext(

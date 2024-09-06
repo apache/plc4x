@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type CancelRequest interface {
 	GetRequestHeader() ExtensionObjectDefinition
 	// GetRequestHandle returns RequestHandle (property field)
 	GetRequestHandle() uint32
-}
-
-// CancelRequestExactly can be used when we want exactly this type and not a type which fulfills CancelRequest.
-// This is useful for switch cases.
-type CancelRequestExactly interface {
-	CancelRequest
-	isCancelRequest() bool
+	// IsCancelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCancelRequest()
 }
 
 // _CancelRequest is the data-structure of this message
 type _CancelRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader ExtensionObjectDefinition
 	RequestHandle uint32
 }
+
+var _ CancelRequest = (*_CancelRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CancelRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_CancelRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CancelRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CancelRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CancelRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,15 @@ func (m *_CancelRequest) GetRequestHandle() uint32 {
 
 // NewCancelRequest factory function for _CancelRequest
 func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uint32) *_CancelRequest {
-	_result := &_CancelRequest{
-		RequestHeader:              requestHeader,
-		RequestHandle:              requestHandle,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CancelRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_CancelRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		RequestHandle:                     requestHandle,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +123,7 @@ func (m *_CancelRequest) GetTypeName() string {
 }
 
 func (m *_CancelRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -137,53 +138,34 @@ func (m *_CancelRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CancelRequestParse(ctx context.Context, theBytes []byte, identifier string) (CancelRequest, error) {
-	return CancelRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CancelRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CancelRequest, error) {
+func (m *_CancelRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__cancelRequest CancelRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CancelRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CancelRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of CancelRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (requestHandle)
-	_requestHandle, _requestHandleErr := readBuffer.ReadUint32("requestHandle", 32)
-	if _requestHandleErr != nil {
-		return nil, errors.Wrap(_requestHandleErr, "Error parsing 'requestHandle' field of CancelRequest")
+	requestHandle, err := ReadSimpleField(ctx, "requestHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHandle' field"))
 	}
-	requestHandle := _requestHandle
+	m.RequestHandle = requestHandle
 
 	if closeErr := readBuffer.CloseContext("CancelRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CancelRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CancelRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		RequestHandle:              requestHandle,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CancelRequest) Serialize() ([]byte, error) {
@@ -204,23 +186,12 @@ func (m *_CancelRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for CancelRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (requestHandle)
-		requestHandle := uint32(m.GetRequestHandle())
-		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
-		if _requestHandleErr != nil {
-			return errors.Wrap(_requestHandleErr, "Error serializing 'requestHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "requestHandle", m.GetRequestHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHandle' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CancelRequest"); popErr != nil {
@@ -228,12 +199,10 @@ func (m *_CancelRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CancelRequest) isCancelRequest() bool {
-	return true
-}
+func (m *_CancelRequest) IsCancelRequest() {}
 
 func (m *_CancelRequest) String() string {
 	if m == nil {

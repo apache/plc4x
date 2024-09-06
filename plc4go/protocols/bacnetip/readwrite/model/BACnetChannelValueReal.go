@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetChannelValueReal interface {
 	BACnetChannelValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-}
-
-// BACnetChannelValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueReal.
-// This is useful for switch cases.
-type BACnetChannelValueRealExactly interface {
-	BACnetChannelValueReal
-	isBACnetChannelValueReal() bool
+	// IsBACnetChannelValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueReal()
 }
 
 // _BACnetChannelValueReal is the data-structure of this message
 type _BACnetChannelValueReal struct {
-	*_BACnetChannelValue
+	BACnetChannelValueContract
 	RealValue BACnetApplicationTagReal
 }
+
+var _ BACnetChannelValueReal = (*_BACnetChannelValueReal)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueReal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetChannelValueReal struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetChannelValueReal) InitializeParent(parent BACnetChannelValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetChannelValueReal) GetParent() BACnetChannelValue {
-	return m._BACnetChannelValue
+func (m *_BACnetChannelValueReal) GetParent() BACnetChannelValueContract {
+	return m.BACnetChannelValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetChannelValueReal) GetRealValue() BACnetApplicationTagReal {
 
 // NewBACnetChannelValueReal factory function for _BACnetChannelValueReal
 func NewBACnetChannelValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueReal {
-	_result := &_BACnetChannelValueReal{
-		RealValue:           realValue,
-		_BACnetChannelValue: NewBACnetChannelValue(peekedTagHeader),
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetChannelValueReal must not be nil")
 	}
-	_result._BACnetChannelValue._BACnetChannelValueChildRequirements = _result
+	_result := &_BACnetChannelValueReal{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		RealValue:                  realValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetChannelValueReal) GetTypeName() string {
 }
 
 func (m *_BACnetChannelValueReal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetChannelValueReal) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueRealParse(ctx context.Context, theBytes []byte) (BACnetChannelValueReal, error) {
-	return BACnetChannelValueRealParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetChannelValueRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueReal, error) {
+func (m *_BACnetChannelValueReal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueReal BACnetChannelValueReal, err error) {
+	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueReal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueReal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (realValue)
-	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
+	realValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "realValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realValue' field"))
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _realValueErr != nil {
-		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetChannelValueReal")
-	}
-	realValue := _realValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for realValue")
-	}
+	m.RealValue = realValue
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueReal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueReal")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetChannelValueReal{
-		_BACnetChannelValue: &_BACnetChannelValue{},
-		RealValue:           realValue,
-	}
-	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetChannelValueReal) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueReal")
 		}
 
-		// Simple Field (realValue)
-		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for realValue")
-		}
-		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
-		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for realValue")
-		}
-		if _realValueErr != nil {
-			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "realValue", m.GetRealValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'realValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueReal"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetChannelValueContract.(*_BACnetChannelValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetChannelValueReal) isBACnetChannelValueReal() bool {
-	return true
-}
+func (m *_BACnetChannelValueReal) IsBACnetChannelValueReal() {}
 
 func (m *_BACnetChannelValueReal) String() string {
 	if m == nil {

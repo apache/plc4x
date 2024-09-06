@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,18 +49,13 @@ type MonitoringParameters interface {
 	GetQueueSize() uint32
 	// GetDiscardOldest returns DiscardOldest (property field)
 	GetDiscardOldest() bool
-}
-
-// MonitoringParametersExactly can be used when we want exactly this type and not a type which fulfills MonitoringParameters.
-// This is useful for switch cases.
-type MonitoringParametersExactly interface {
-	MonitoringParameters
-	isMonitoringParameters() bool
+	// IsMonitoringParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoringParameters()
 }
 
 // _MonitoringParameters is the data-structure of this message
 type _MonitoringParameters struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ClientHandle     uint32
 	SamplingInterval float64
 	Filter           ExtensionObject
@@ -67,6 +64,9 @@ type _MonitoringParameters struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ MonitoringParameters = (*_MonitoringParameters)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_MonitoringParameters)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,10 +82,8 @@ func (m *_MonitoringParameters) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoringParameters) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_MonitoringParameters) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_MonitoringParameters) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -120,15 +118,18 @@ func (m *_MonitoringParameters) GetDiscardOldest() bool {
 
 // NewMonitoringParameters factory function for _MonitoringParameters
 func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) *_MonitoringParameters {
-	_result := &_MonitoringParameters{
-		ClientHandle:               clientHandle,
-		SamplingInterval:           samplingInterval,
-		Filter:                     filter,
-		QueueSize:                  queueSize,
-		DiscardOldest:              discardOldest,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if filter == nil {
+		panic("filter of type ExtensionObject for MonitoringParameters must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_MonitoringParameters{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ClientHandle:                      clientHandle,
+		SamplingInterval:                  samplingInterval,
+		Filter:                            filter,
+		QueueSize:                         queueSize,
+		DiscardOldest:                     discardOldest,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -148,7 +149,7 @@ func (m *_MonitoringParameters) GetTypeName() string {
 }
 
 func (m *_MonitoringParameters) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (clientHandle)
 	lengthInBits += 32
@@ -175,95 +176,58 @@ func (m *_MonitoringParameters) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MonitoringParametersParse(ctx context.Context, theBytes []byte, identifier string) (MonitoringParameters, error) {
-	return MonitoringParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func MonitoringParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoringParameters, error) {
+func (m *_MonitoringParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoringParameters MonitoringParameters, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoringParameters"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoringParameters")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (clientHandle)
-	_clientHandle, _clientHandleErr := readBuffer.ReadUint32("clientHandle", 32)
-	if _clientHandleErr != nil {
-		return nil, errors.Wrap(_clientHandleErr, "Error parsing 'clientHandle' field of MonitoringParameters")
+	clientHandle, err := ReadSimpleField(ctx, "clientHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientHandle' field"))
 	}
-	clientHandle := _clientHandle
+	m.ClientHandle = clientHandle
 
-	// Simple Field (samplingInterval)
-	_samplingInterval, _samplingIntervalErr := readBuffer.ReadFloat64("samplingInterval", 64)
-	if _samplingIntervalErr != nil {
-		return nil, errors.Wrap(_samplingIntervalErr, "Error parsing 'samplingInterval' field of MonitoringParameters")
+	samplingInterval, err := ReadSimpleField(ctx, "samplingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'samplingInterval' field"))
 	}
-	samplingInterval := _samplingInterval
+	m.SamplingInterval = samplingInterval
 
-	// Simple Field (filter)
-	if pullErr := readBuffer.PullContext("filter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filter")
+	filter, err := ReadSimpleField[ExtensionObject](ctx, "filter", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filter' field"))
 	}
-	_filter, _filterErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _filterErr != nil {
-		return nil, errors.Wrap(_filterErr, "Error parsing 'filter' field of MonitoringParameters")
-	}
-	filter := _filter.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("filter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filter")
-	}
+	m.Filter = filter
 
-	// Simple Field (queueSize)
-	_queueSize, _queueSizeErr := readBuffer.ReadUint32("queueSize", 32)
-	if _queueSizeErr != nil {
-		return nil, errors.Wrap(_queueSizeErr, "Error parsing 'queueSize' field of MonitoringParameters")
+	queueSize, err := ReadSimpleField(ctx, "queueSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queueSize' field"))
 	}
-	queueSize := _queueSize
+	m.QueueSize = queueSize
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MonitoringParameters")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (discardOldest)
-	_discardOldest, _discardOldestErr := readBuffer.ReadBit("discardOldest")
-	if _discardOldestErr != nil {
-		return nil, errors.Wrap(_discardOldestErr, "Error parsing 'discardOldest' field of MonitoringParameters")
+	discardOldest, err := ReadSimpleField(ctx, "discardOldest", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discardOldest' field"))
 	}
-	discardOldest := _discardOldest
+	m.DiscardOldest = discardOldest
 
 	if closeErr := readBuffer.CloseContext("MonitoringParameters"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoringParameters")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MonitoringParameters{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ClientHandle:               clientHandle,
-		SamplingInterval:           samplingInterval,
-		Filter:                     filter,
-		QueueSize:                  queueSize,
-		DiscardOldest:              discardOldest,
-		reservedField0:             reservedField0,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MonitoringParameters) Serialize() ([]byte, error) {
@@ -284,60 +248,28 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for MonitoringParameters")
 		}
 
-		// Simple Field (clientHandle)
-		clientHandle := uint32(m.GetClientHandle())
-		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
-		if _clientHandleErr != nil {
-			return errors.Wrap(_clientHandleErr, "Error serializing 'clientHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "clientHandle", m.GetClientHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientHandle' field")
 		}
 
-		// Simple Field (samplingInterval)
-		samplingInterval := float64(m.GetSamplingInterval())
-		_samplingIntervalErr := writeBuffer.WriteFloat64("samplingInterval", 64, (samplingInterval))
-		if _samplingIntervalErr != nil {
-			return errors.Wrap(_samplingIntervalErr, "Error serializing 'samplingInterval' field")
+		if err := WriteSimpleField[float64](ctx, "samplingInterval", m.GetSamplingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'samplingInterval' field")
 		}
 
-		// Simple Field (filter)
-		if pushErr := writeBuffer.PushContext("filter"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filter")
-		}
-		_filterErr := writeBuffer.WriteSerializable(ctx, m.GetFilter())
-		if popErr := writeBuffer.PopContext("filter"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filter")
-		}
-		if _filterErr != nil {
-			return errors.Wrap(_filterErr, "Error serializing 'filter' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "filter", m.GetFilter(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'filter' field")
 		}
 
-		// Simple Field (queueSize)
-		queueSize := uint32(m.GetQueueSize())
-		_queueSizeErr := writeBuffer.WriteUint32("queueSize", 32, uint32((queueSize)))
-		if _queueSizeErr != nil {
-			return errors.Wrap(_queueSizeErr, "Error serializing 'queueSize' field")
+		if err := WriteSimpleField[uint32](ctx, "queueSize", m.GetQueueSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'queueSize' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (discardOldest)
-		discardOldest := bool(m.GetDiscardOldest())
-		_discardOldestErr := writeBuffer.WriteBit("discardOldest", (discardOldest))
-		if _discardOldestErr != nil {
-			return errors.Wrap(_discardOldestErr, "Error serializing 'discardOldest' field")
+		if err := WriteSimpleField[bool](ctx, "discardOldest", m.GetDiscardOldest(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'discardOldest' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoringParameters"); popErr != nil {
@@ -345,12 +277,10 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MonitoringParameters) isMonitoringParameters() bool {
-	return true
-}
+func (m *_MonitoringParameters) IsMonitoringParameters() {}
 
 func (m *_MonitoringParameters) String() string {
 	if m == nil {

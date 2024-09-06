@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,13 +46,8 @@ type AssociatedQueryValueType interface {
 	GetValueLength() uint16
 	// GetData returns Data (property field)
 	GetData() []uint8
-}
-
-// AssociatedQueryValueTypeExactly can be used when we want exactly this type and not a type which fulfills AssociatedQueryValueType.
-// This is useful for switch cases.
-type AssociatedQueryValueTypeExactly interface {
-	AssociatedQueryValueType
-	isAssociatedQueryValueType() bool
+	// IsAssociatedQueryValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAssociatedQueryValueType()
 }
 
 // _AssociatedQueryValueType is the data-structure of this message
@@ -60,6 +57,8 @@ type _AssociatedQueryValueType struct {
 	ValueLength   uint16
 	Data          []uint8
 }
+
+var _ AssociatedQueryValueType = (*_AssociatedQueryValueType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -135,88 +134,58 @@ func AssociatedQueryValueTypeParse(ctx context.Context, theBytes []byte) (Associ
 	return AssociatedQueryValueTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AssociatedQueryValueTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {
+		return AssociatedQueryValueTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {
+	v, err := (&_AssociatedQueryValueType{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_AssociatedQueryValueType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__associatedQueryValueType AssociatedQueryValueType, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AssociatedQueryValueType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AssociatedQueryValueType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (returnCode)
-	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
+	returnCode, err := ReadEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", ReadEnum(DataTransportErrorCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnCode' field"))
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
-	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of AssociatedQueryValueType")
-	}
-	returnCode := _returnCode
-	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
-	}
+	m.ReturnCode = returnCode
 
-	// Simple Field (transportSize)
-	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
+	transportSize, err := ReadEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", ReadEnum(DataTransportSizeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
-	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of AssociatedQueryValueType")
-	}
-	transportSize := _transportSize
-	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
-	}
+	m.TransportSize = transportSize
 
-	// Simple Field (valueLength)
-	_valueLength, _valueLengthErr := readBuffer.ReadUint16("valueLength", 16)
-	if _valueLengthErr != nil {
-		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field of AssociatedQueryValueType")
+	valueLength, err := ReadSimpleField(ctx, "valueLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueLength' field"))
 	}
-	valueLength := _valueLength
+	m.ValueLength = valueLength
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
+	data, err := ReadCountArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, uint8(8)), uint64(valueLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Count array
-	data := make([]uint8, max(valueLength, 0))
-	// This happens when the size is set conditional to 0
-	if len(data) == 0 {
-		data = nil
-	}
-	{
-		_numItems := uint16(max(valueLength, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of AssociatedQueryValueType")
-			}
-			data[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("AssociatedQueryValueType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AssociatedQueryValueType")
 	}
 
-	// Create the instance
-	return &_AssociatedQueryValueType{
-		ReturnCode:    returnCode,
-		TransportSize: transportSize,
-		ValueLength:   valueLength,
-		Data:          data,
-	}, nil
+	return m, nil
 }
 
 func (m *_AssociatedQueryValueType) Serialize() ([]byte, error) {
@@ -236,50 +205,20 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(pushErr, "Error pushing for AssociatedQueryValueType")
 	}
 
-	// Simple Field (returnCode)
-	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for returnCode")
-	}
-	_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
-	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for returnCode")
-	}
-	if _returnCodeErr != nil {
-		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
+	if err := WriteSimpleEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", m.GetReturnCode(), WriteEnum[DataTransportErrorCode, uint8](DataTransportErrorCode.GetValue, DataTransportErrorCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'returnCode' field")
 	}
 
-	// Simple Field (transportSize)
-	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for transportSize")
-	}
-	_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
-	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for transportSize")
-	}
-	if _transportSizeErr != nil {
-		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+	if err := WriteSimpleEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", m.GetTransportSize(), WriteEnum[DataTransportSize, uint8](DataTransportSize.GetValue, DataTransportSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'transportSize' field")
 	}
 
-	// Simple Field (valueLength)
-	valueLength := uint16(m.GetValueLength())
-	_valueLengthErr := writeBuffer.WriteUint16("valueLength", 16, uint16((valueLength)))
-	if _valueLengthErr != nil {
-		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
+	if err := WriteSimpleField[uint16](ctx, "valueLength", m.GetValueLength(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueLength' field")
 	}
 
-	// Array Field (data)
-	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for data")
-	}
-	for _curItem, _element := range m.GetData() {
-		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'data' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for data")
+	if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AssociatedQueryValueType"); popErr != nil {
@@ -288,9 +227,7 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 	return nil
 }
 
-func (m *_AssociatedQueryValueType) isAssociatedQueryValueType() bool {
-	return true
-}
+func (m *_AssociatedQueryValueType) IsAssociatedQueryValueType() {}
 
 func (m *_AssociatedQueryValueType) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,19 +42,16 @@ type PascalString interface {
 	GetStringValue() string
 	// GetStringLength returns StringLength (virtual field)
 	GetStringLength() int32
-}
-
-// PascalStringExactly can be used when we want exactly this type and not a type which fulfills PascalString.
-// This is useful for switch cases.
-type PascalStringExactly interface {
-	PascalString
-	isPascalString() bool
+	// IsPascalString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPascalString()
 }
 
 // _PascalString is the data-structure of this message
 type _PascalString struct {
 	StringValue string
 }
+
+var _ PascalString = (*_PascalString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,44 +124,52 @@ func PascalStringParse(ctx context.Context, theBytes []byte) (PascalString, erro
 	return PascalStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PascalStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PascalString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PascalString, error) {
+		return PascalStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PascalString, error) {
+	v, err := (&_PascalString{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_PascalString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__pascalString PascalString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PascalString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PascalString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (sLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	sLength, _sLengthErr := readBuffer.ReadInt32("sLength", 32)
-	_ = sLength
-	if _sLengthErr != nil {
-		return nil, errors.Wrap(_sLengthErr, "Error parsing 'sLength' field of PascalString")
+	sLength, err := ReadImplicitField[int32](ctx, "sLength", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sLength' field"))
 	}
+	_ = sLength
 
-	// Virtual field
-	_stringLength := PascalLengthToUtf8Length(ctx, sLength)
-	stringLength := int32(_stringLength)
+	stringLength, err := ReadVirtualField[int32](ctx, "stringLength", (*int32)(nil), PascalLengthToUtf8Length(ctx, sLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringLength' field"))
+	}
 	_ = stringLength
 
-	// Simple Field (stringValue)
-	_stringValue, _stringValueErr := readBuffer.ReadString("stringValue", uint32((stringLength)*(8)), "UTF-8")
-	if _stringValueErr != nil {
-		return nil, errors.Wrap(_stringValueErr, "Error parsing 'stringValue' field of PascalString")
+	stringValue, err := ReadSimpleField(ctx, "stringValue", ReadString(readBuffer, uint32(int32(stringLength)*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringValue' field"))
 	}
-	stringValue := _stringValue
+	m.StringValue = stringValue
 
 	if closeErr := readBuffer.CloseContext("PascalString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PascalString")
 	}
 
-	// Create the instance
-	return &_PascalString{
-		StringValue: stringValue,
-	}, nil
+	return m, nil
 }
 
 func (m *_PascalString) Serialize() ([]byte, error) {
@@ -181,12 +188,9 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if pushErr := writeBuffer.PushContext("PascalString"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for PascalString")
 	}
-
-	// Implicit Field (sLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	sLength := int32(Utf8LengthToPascalLength(ctx, m.GetStringValue()))
-	_sLengthErr := writeBuffer.WriteInt32("sLength", 32, int32((sLength)))
-	if _sLengthErr != nil {
-		return errors.Wrap(_sLengthErr, "Error serializing 'sLength' field")
+	if err := WriteImplicitField(ctx, "sLength", sLength, WriteSignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sLength' field")
 	}
 	// Virtual field
 	stringLength := m.GetStringLength()
@@ -195,11 +199,8 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
 	}
 
-	// Simple Field (stringValue)
-	stringValue := string(m.GetStringValue())
-	_stringValueErr := writeBuffer.WriteString("stringValue", uint32((stringLength)*(8)), "UTF-8", (stringValue))
-	if _stringValueErr != nil {
-		return errors.Wrap(_stringValueErr, "Error serializing 'stringValue' field")
+	if err := WriteSimpleField[string](ctx, "stringValue", m.GetStringValue(), WriteString(writeBuffer, int32(int32(m.GetStringLength())*int32(int32(8))))); err != nil {
+		return errors.Wrap(err, "Error serializing 'stringValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("PascalString"); popErr != nil {
@@ -208,9 +209,7 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_PascalString) isPascalString() bool {
-	return true
-}
+func (m *_PascalString) IsPascalString() {}
 
 func (m *_PascalString) String() string {
 	if m == nil {

@@ -160,7 +160,7 @@ public class BACnetPriorityArray implements Message {
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (data)
@@ -319,7 +319,7 @@ public class BACnetPriorityArray implements Message {
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -329,7 +329,7 @@ public class BACnetPriorityArray implements Message {
     List<BACnetPriorityValue> data =
         readTerminatedArrayField(
             "data",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPriorityValue.staticParse(
                         readBuffer, (BACnetObjectType) (objectTypeArgument)),

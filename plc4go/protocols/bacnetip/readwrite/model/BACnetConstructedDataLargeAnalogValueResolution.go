@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLargeAnalogValueResolution interface {
 	GetResolution() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
-}
-
-// BACnetConstructedDataLargeAnalogValueResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueResolution.
-// This is useful for switch cases.
-type BACnetConstructedDataLargeAnalogValueResolutionExactly interface {
-	BACnetConstructedDataLargeAnalogValueResolution
-	isBACnetConstructedDataLargeAnalogValueResolution() bool
+	// IsBACnetConstructedDataLargeAnalogValueResolution is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueResolution()
 }
 
 // _BACnetConstructedDataLargeAnalogValueResolution is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueResolution struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Resolution BACnetApplicationTagDouble
 }
+
+var _ BACnetConstructedDataLargeAnalogValueResolution = (*_BACnetConstructedDataLargeAnalogValueResolution)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueResolution)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetPropertyIdentifier
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolution) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetActualValue() BACn
 
 // NewBACnetConstructedDataLargeAnalogValueResolution factory function for _BACnetConstructedDataLargeAnalogValueResolution
 func NewBACnetConstructedDataLargeAnalogValueResolution(resolution BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueResolution {
-	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
-		Resolution:             resolution,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueResolution must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Resolution:                    resolution,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetTypeName() string 
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (resolution)
 	lengthInBits += m.Resolution.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLargeAnalogValueResolutionParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueResolution, error) {
-	return BACnetConstructedDataLargeAnalogValueResolutionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLargeAnalogValueResolutionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueResolution, error) {
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLargeAnalogValueResolution BACnetConstructedDataLargeAnalogValueResolution, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueResolution"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLargeAnalogValueResolution")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (resolution)
-	if pullErr := readBuffer.PullContext("resolution"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for resolution")
+	resolution, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "resolution", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resolution' field"))
 	}
-	_resolution, _resolutionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _resolutionErr != nil {
-		return nil, errors.Wrap(_resolutionErr, "Error parsing 'resolution' field of BACnetConstructedDataLargeAnalogValueResolution")
-	}
-	resolution := _resolution.(BACnetApplicationTagDouble)
-	if closeErr := readBuffer.CloseContext("resolution"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for resolution")
-	}
+	m.Resolution = resolution
 
-	// Virtual field
-	_actualValue := resolution
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagDouble](ctx, "actualValue", (*BACnetApplicationTagDouble)(nil), resolution)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueResolution"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueResolution")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLargeAnalogValueResolution{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Resolution: resolution,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLargeAnalogValueResolution")
 		}
 
-		// Simple Field (resolution)
-		if pushErr := writeBuffer.PushContext("resolution"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for resolution")
-		}
-		_resolutionErr := writeBuffer.WriteSerializable(ctx, m.GetResolution())
-		if popErr := writeBuffer.PopContext("resolution"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for resolution")
-		}
-		if _resolutionErr != nil {
-			return errors.Wrap(_resolutionErr, "Error serializing 'resolution' field")
+		if err := WriteSimpleField[BACnetApplicationTagDouble](ctx, "resolution", m.GetResolution(), WriteComplex[BACnetApplicationTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'resolution' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolution) isBACnetConstructedDataLargeAnalogValueResolution() bool {
-	return true
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) IsBACnetConstructedDataLargeAnalogValueResolution() {
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) String() string {

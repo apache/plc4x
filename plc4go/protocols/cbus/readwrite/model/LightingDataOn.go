@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type LightingDataOn interface {
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
-}
-
-// LightingDataOnExactly can be used when we want exactly this type and not a type which fulfills LightingDataOn.
-// This is useful for switch cases.
-type LightingDataOnExactly interface {
-	LightingDataOn
-	isLightingDataOn() bool
+	// IsLightingDataOn is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingDataOn()
 }
 
 // _LightingDataOn is the data-structure of this message
 type _LightingDataOn struct {
-	*_LightingData
+	LightingDataContract
 	Group byte
 }
+
+var _ LightingDataOn = (*_LightingDataOn)(nil)
+var _ LightingDataRequirements = (*_LightingDataOn)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _LightingDataOn struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_LightingDataOn) InitializeParent(parent LightingData, commandTypeContainer LightingCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_LightingDataOn) GetParent() LightingData {
-	return m._LightingData
+func (m *_LightingDataOn) GetParent() LightingDataContract {
+	return m.LightingDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,10 +85,10 @@ func (m *_LightingDataOn) GetGroup() byte {
 // NewLightingDataOn factory function for _LightingDataOn
 func NewLightingDataOn(group byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataOn {
 	_result := &_LightingDataOn{
-		Group:         group,
-		_LightingData: NewLightingData(commandTypeContainer),
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
 	}
-	_result._LightingData._LightingDataChildRequirements = _result
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
 
@@ -112,7 +108,7 @@ func (m *_LightingDataOn) GetTypeName() string {
 }
 
 func (m *_LightingDataOn) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8
@@ -124,39 +120,28 @@ func (m *_LightingDataOn) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingDataOnParse(ctx context.Context, theBytes []byte) (LightingDataOn, error) {
-	return LightingDataOnParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func LightingDataOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataOn, error) {
+func (m *_LightingDataOn) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LightingData) (__lightingDataOn LightingDataOn, err error) {
+	m.LightingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LightingDataOn"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LightingDataOn")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (group)
-	_group, _groupErr := readBuffer.ReadByte("group")
-	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataOn")
+	group, err := ReadSimpleField(ctx, "group", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'group' field"))
 	}
-	group := _group
+	m.Group = group
 
 	if closeErr := readBuffer.CloseContext("LightingDataOn"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LightingDataOn")
 	}
 
-	// Create a partially initialized instance
-	_child := &_LightingDataOn{
-		_LightingData: &_LightingData{},
-		Group:         group,
-	}
-	_child._LightingData._LightingDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_LightingDataOn) Serialize() ([]byte, error) {
@@ -177,11 +162,8 @@ func (m *_LightingDataOn) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for LightingDataOn")
 		}
 
-		// Simple Field (group)
-		group := byte(m.GetGroup())
-		_groupErr := writeBuffer.WriteByte("group", (group))
-		if _groupErr != nil {
-			return errors.Wrap(_groupErr, "Error serializing 'group' field")
+		if err := WriteSimpleField[byte](ctx, "group", m.GetGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'group' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LightingDataOn"); popErr != nil {
@@ -189,12 +171,10 @@ func (m *_LightingDataOn) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.LightingDataContract.(*_LightingData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_LightingDataOn) isLightingDataOn() bool {
-	return true
-}
+func (m *_LightingDataOn) IsLightingDataOn() {}
 
 func (m *_LightingDataOn) String() string {
 	if m == nil {

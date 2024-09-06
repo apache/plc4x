@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type ComObjectTableRealisationType1 interface {
 	GetRamFlagsTablePointer() uint8
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() []GroupObjectDescriptorRealisationType1
-}
-
-// ComObjectTableRealisationType1Exactly can be used when we want exactly this type and not a type which fulfills ComObjectTableRealisationType1.
-// This is useful for switch cases.
-type ComObjectTableRealisationType1Exactly interface {
-	ComObjectTableRealisationType1
-	isComObjectTableRealisationType1() bool
+	// IsComObjectTableRealisationType1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsComObjectTableRealisationType1()
 }
 
 // _ComObjectTableRealisationType1 is the data-structure of this message
 type _ComObjectTableRealisationType1 struct {
-	*_ComObjectTable
+	ComObjectTableContract
 	NumEntries           uint8
 	RamFlagsTablePointer uint8
 	ComObjectDescriptors []GroupObjectDescriptorRealisationType1
 }
+
+var _ ComObjectTableRealisationType1 = (*_ComObjectTableRealisationType1)(nil)
+var _ ComObjectTableRequirements = (*_ComObjectTableRealisationType1)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_ComObjectTableRealisationType1) GetFirmwareType() FirmwareType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ComObjectTableRealisationType1) InitializeParent(parent ComObjectTable) {}
-
-func (m *_ComObjectTableRealisationType1) GetParent() ComObjectTable {
-	return m._ComObjectTable
+func (m *_ComObjectTableRealisationType1) GetParent() ComObjectTableContract {
+	return m.ComObjectTableContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,12 +103,12 @@ func (m *_ComObjectTableRealisationType1) GetComObjectDescriptors() []GroupObjec
 // NewComObjectTableRealisationType1 factory function for _ComObjectTableRealisationType1
 func NewComObjectTableRealisationType1(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType1) *_ComObjectTableRealisationType1 {
 	_result := &_ComObjectTableRealisationType1{
-		NumEntries:           numEntries,
-		RamFlagsTablePointer: ramFlagsTablePointer,
-		ComObjectDescriptors: comObjectDescriptors,
-		_ComObjectTable:      NewComObjectTable(),
+		ComObjectTableContract: NewComObjectTable(),
+		NumEntries:             numEntries,
+		RamFlagsTablePointer:   ramFlagsTablePointer,
+		ComObjectDescriptors:   comObjectDescriptors,
 	}
-	_result._ComObjectTable._ComObjectTableChildRequirements = _result
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
 	return _result
 }
 
@@ -130,7 +128,7 @@ func (m *_ComObjectTableRealisationType1) GetTypeName() string {
 }
 
 func (m *_ComObjectTableRealisationType1) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ComObjectTableContract.(*_ComObjectTable).getLengthInBits(ctx))
 
 	// Simple field (numEntries)
 	lengthInBits += 8
@@ -155,75 +153,40 @@ func (m *_ComObjectTableRealisationType1) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ComObjectTableRealisationType1Parse(ctx context.Context, theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {
-	return ComObjectTableRealisationType1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
-}
-
-func ComObjectTableRealisationType1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {
+func (m *_ComObjectTableRealisationType1) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ComObjectTable, firmwareType FirmwareType) (__comObjectTableRealisationType1 ComObjectTableRealisationType1, err error) {
+	m.ComObjectTableContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ComObjectTableRealisationType1")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numEntries)
-	_numEntries, _numEntriesErr := readBuffer.ReadUint8("numEntries", 8)
-	if _numEntriesErr != nil {
-		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field of ComObjectTableRealisationType1")
+	numEntries, err := ReadSimpleField(ctx, "numEntries", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numEntries' field"))
 	}
-	numEntries := _numEntries
+	m.NumEntries = numEntries
 
-	// Simple Field (ramFlagsTablePointer)
-	_ramFlagsTablePointer, _ramFlagsTablePointerErr := readBuffer.ReadUint8("ramFlagsTablePointer", 8)
-	if _ramFlagsTablePointerErr != nil {
-		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field of ComObjectTableRealisationType1")
+	ramFlagsTablePointer, err := ReadSimpleField(ctx, "ramFlagsTablePointer", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ramFlagsTablePointer' field"))
 	}
-	ramFlagsTablePointer := _ramFlagsTablePointer
+	m.RamFlagsTablePointer = ramFlagsTablePointer
 
-	// Array field (comObjectDescriptors)
-	if pullErr := readBuffer.PullContext("comObjectDescriptors", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for comObjectDescriptors")
+	comObjectDescriptors, err := ReadCountArrayField[GroupObjectDescriptorRealisationType1](ctx, "comObjectDescriptors", ReadComplex[GroupObjectDescriptorRealisationType1](GroupObjectDescriptorRealisationType1ParseWithBuffer, readBuffer), uint64(numEntries))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'comObjectDescriptors' field"))
 	}
-	// Count array
-	comObjectDescriptors := make([]GroupObjectDescriptorRealisationType1, max(numEntries, 0))
-	// This happens when the size is set conditional to 0
-	if len(comObjectDescriptors) == 0 {
-		comObjectDescriptors = nil
-	}
-	{
-		_numItems := uint16(max(numEntries, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := GroupObjectDescriptorRealisationType1ParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType1")
-			}
-			comObjectDescriptors[_curItem] = _item.(GroupObjectDescriptorRealisationType1)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("comObjectDescriptors", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for comObjectDescriptors")
-	}
+	m.ComObjectDescriptors = comObjectDescriptors
 
 	if closeErr := readBuffer.CloseContext("ComObjectTableRealisationType1"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ComObjectTableRealisationType1")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ComObjectTableRealisationType1{
-		_ComObjectTable:      &_ComObjectTable{},
-		NumEntries:           numEntries,
-		RamFlagsTablePointer: ramFlagsTablePointer,
-		ComObjectDescriptors: comObjectDescriptors,
-	}
-	_child._ComObjectTable._ComObjectTableChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ComObjectTableRealisationType1) Serialize() ([]byte, error) {
@@ -244,35 +207,16 @@ func (m *_ComObjectTableRealisationType1) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for ComObjectTableRealisationType1")
 		}
 
-		// Simple Field (numEntries)
-		numEntries := uint8(m.GetNumEntries())
-		_numEntriesErr := writeBuffer.WriteUint8("numEntries", 8, uint8((numEntries)))
-		if _numEntriesErr != nil {
-			return errors.Wrap(_numEntriesErr, "Error serializing 'numEntries' field")
+		if err := WriteSimpleField[uint8](ctx, "numEntries", m.GetNumEntries(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numEntries' field")
 		}
 
-		// Simple Field (ramFlagsTablePointer)
-		ramFlagsTablePointer := uint8(m.GetRamFlagsTablePointer())
-		_ramFlagsTablePointerErr := writeBuffer.WriteUint8("ramFlagsTablePointer", 8, uint8((ramFlagsTablePointer)))
-		if _ramFlagsTablePointerErr != nil {
-			return errors.Wrap(_ramFlagsTablePointerErr, "Error serializing 'ramFlagsTablePointer' field")
+		if err := WriteSimpleField[uint8](ctx, "ramFlagsTablePointer", m.GetRamFlagsTablePointer(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ramFlagsTablePointer' field")
 		}
 
-		// Array Field (comObjectDescriptors)
-		if pushErr := writeBuffer.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
-		}
-		for _curItem, _element := range m.GetComObjectDescriptors() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetComObjectDescriptors()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("comObjectDescriptors", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
+		if err := WriteComplexTypeArrayField(ctx, "comObjectDescriptors", m.GetComObjectDescriptors(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'comObjectDescriptors' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ComObjectTableRealisationType1"); popErr != nil {
@@ -280,12 +224,10 @@ func (m *_ComObjectTableRealisationType1) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ComObjectTableContract.(*_ComObjectTable).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ComObjectTableRealisationType1) isComObjectTableRealisationType1() bool {
-	return true
-}
+func (m *_ComObjectTableRealisationType1) IsComObjectTableRealisationType1() {}
 
 func (m *_ComObjectTableRealisationType1) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,18 +42,15 @@ type EipConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// EipConstantsExactly can be used when we want exactly this type and not a type which fulfills EipConstants.
-// This is useful for switch cases.
-type EipConstantsExactly interface {
-	EipConstants
-	isEipConstants() bool
+	// IsEipConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEipConstants()
 }
 
 // _EipConstants is the data-structure of this message
 type _EipConstants struct {
 }
+
+var _ EipConstants = (*_EipConstants)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -111,41 +110,46 @@ func EipConstantsParse(ctx context.Context, theBytes []byte) (EipConstants, erro
 	return EipConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func EipConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (EipConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EipConstants, error) {
+		return EipConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func EipConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipConstants, error) {
+	v, err := (&_EipConstants{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_EipConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__eipConstants EipConstants, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EipConstants"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EipConstants")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (eipUdpDiscoveryDefaultPort)
-	eipUdpDiscoveryDefaultPort, _eipUdpDiscoveryDefaultPortErr := readBuffer.ReadUint16("eipUdpDiscoveryDefaultPort", 16)
-	if _eipUdpDiscoveryDefaultPortErr != nil {
-		return nil, errors.Wrap(_eipUdpDiscoveryDefaultPortErr, "Error parsing 'eipUdpDiscoveryDefaultPort' field of EipConstants")
+	eipUdpDiscoveryDefaultPort, err := ReadConstField[uint16](ctx, "eipUdpDiscoveryDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), EipConstants_EIPUDPDISCOVERYDEFAULTPORT)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eipUdpDiscoveryDefaultPort' field"))
 	}
-	if eipUdpDiscoveryDefaultPort != EipConstants_EIPUDPDISCOVERYDEFAULTPORT {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", EipConstants_EIPUDPDISCOVERYDEFAULTPORT) + " but got " + fmt.Sprintf("%d", eipUdpDiscoveryDefaultPort))
-	}
+	_ = eipUdpDiscoveryDefaultPort
 
-	// Const Field (eipTcpDefaultPort)
-	eipTcpDefaultPort, _eipTcpDefaultPortErr := readBuffer.ReadUint16("eipTcpDefaultPort", 16)
-	if _eipTcpDefaultPortErr != nil {
-		return nil, errors.Wrap(_eipTcpDefaultPortErr, "Error parsing 'eipTcpDefaultPort' field of EipConstants")
+	eipTcpDefaultPort, err := ReadConstField[uint16](ctx, "eipTcpDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), EipConstants_EIPTCPDEFAULTPORT)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eipTcpDefaultPort' field"))
 	}
-	if eipTcpDefaultPort != EipConstants_EIPTCPDEFAULTPORT {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", EipConstants_EIPTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", eipTcpDefaultPort))
-	}
+	_ = eipTcpDefaultPort
 
 	if closeErr := readBuffer.CloseContext("EipConstants"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EipConstants")
 	}
 
-	// Create the instance
-	return &_EipConstants{}, nil
+	return m, nil
 }
 
 func (m *_EipConstants) Serialize() ([]byte, error) {
@@ -165,16 +169,12 @@ func (m *_EipConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for EipConstants")
 	}
 
-	// Const Field (eipUdpDiscoveryDefaultPort)
-	_eipUdpDiscoveryDefaultPortErr := writeBuffer.WriteUint16("eipUdpDiscoveryDefaultPort", 16, uint16(44818))
-	if _eipUdpDiscoveryDefaultPortErr != nil {
-		return errors.Wrap(_eipUdpDiscoveryDefaultPortErr, "Error serializing 'eipUdpDiscoveryDefaultPort' field")
+	if err := WriteConstField(ctx, "eipUdpDiscoveryDefaultPort", EipConstants_EIPUDPDISCOVERYDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eipUdpDiscoveryDefaultPort' field")
 	}
 
-	// Const Field (eipTcpDefaultPort)
-	_eipTcpDefaultPortErr := writeBuffer.WriteUint16("eipTcpDefaultPort", 16, uint16(44818))
-	if _eipTcpDefaultPortErr != nil {
-		return errors.Wrap(_eipTcpDefaultPortErr, "Error serializing 'eipTcpDefaultPort' field")
+	if err := WriteConstField(ctx, "eipTcpDefaultPort", EipConstants_EIPTCPDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eipTcpDefaultPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("EipConstants"); popErr != nil {
@@ -183,9 +183,7 @@ func (m *_EipConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return nil
 }
 
-func (m *_EipConstants) isEipConstants() bool {
-	return true
-}
+func (m *_EipConstants) IsEipConstants() {}
 
 func (m *_EipConstants) String() string {
 	if m == nil {

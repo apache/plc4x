@@ -33,44 +33,35 @@ import (
 
 // AdsMultiRequestItem is the corresponding interface of AdsMultiRequestItem
 type AdsMultiRequestItem interface {
+	AdsMultiRequestItemContract
+	AdsMultiRequestItemRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsAdsMultiRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsMultiRequestItem()
+}
+
+// AdsMultiRequestItemContract provides a set of functions which can be overwritten by a sub struct
+type AdsMultiRequestItemContract interface {
+	// IsAdsMultiRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsMultiRequestItem()
+}
+
+// AdsMultiRequestItemRequirements provides a set of functions which need to be implemented by a sub struct
+type AdsMultiRequestItemRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetIndexGroup returns IndexGroup (discriminator field)
 	GetIndexGroup() uint32
 }
 
-// AdsMultiRequestItemExactly can be used when we want exactly this type and not a type which fulfills AdsMultiRequestItem.
-// This is useful for switch cases.
-type AdsMultiRequestItemExactly interface {
-	AdsMultiRequestItem
-	isAdsMultiRequestItem() bool
-}
-
 // _AdsMultiRequestItem is the data-structure of this message
 type _AdsMultiRequestItem struct {
-	_AdsMultiRequestItemChildRequirements
+	_SubType AdsMultiRequestItem
 }
 
-type _AdsMultiRequestItemChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIndexGroup() uint32
-}
-
-type AdsMultiRequestItemParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsMultiRequestItem, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type AdsMultiRequestItemChild interface {
-	utils.Serializable
-	InitializeParent(parent AdsMultiRequestItem)
-	GetParent() *AdsMultiRequestItem
-
-	GetTypeName() string
-	AdsMultiRequestItem
-}
+var _ AdsMultiRequestItemContract = (*_AdsMultiRequestItem)(nil)
 
 // NewAdsMultiRequestItem factory function for _AdsMultiRequestItem
 func NewAdsMultiRequestItem() *_AdsMultiRequestItem {
@@ -92,25 +83,43 @@ func (m *_AdsMultiRequestItem) GetTypeName() string {
 	return "AdsMultiRequestItem"
 }
 
-func (m *_AdsMultiRequestItem) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsMultiRequestItem) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
 func (m *_AdsMultiRequestItem) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func AdsMultiRequestItemParse(ctx context.Context, theBytes []byte, indexGroup uint32) (AdsMultiRequestItem, error) {
-	return AdsMultiRequestItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), indexGroup)
+func AdsMultiRequestItemParse[T AdsMultiRequestItem](ctx context.Context, theBytes []byte, indexGroup uint32) (T, error) {
+	return AdsMultiRequestItemParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), indexGroup)
 }
 
-func AdsMultiRequestItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItem, error) {
+func AdsMultiRequestItemParseWithBufferProducer[T AdsMultiRequestItem](indexGroup uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := AdsMultiRequestItemParseWithBuffer[T](ctx, readBuffer, indexGroup)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func AdsMultiRequestItemParseWithBuffer[T AdsMultiRequestItem](ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (T, error) {
+	v, err := (&_AdsMultiRequestItem{}).parse(ctx, readBuffer, indexGroup)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_AdsMultiRequestItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (__adsMultiRequestItem AdsMultiRequestItem, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsMultiRequestItem")
 	}
@@ -118,39 +127,32 @@ func AdsMultiRequestItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type AdsMultiRequestItemChildSerializeRequirement interface {
-		AdsMultiRequestItem
-		InitializeParent(AdsMultiRequestItem)
-		GetParent() AdsMultiRequestItem
-	}
-	var _childTemp any
-	var _child AdsMultiRequestItemChildSerializeRequirement
-	var typeSwitchError error
+	var _child AdsMultiRequestItem
 	switch {
 	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
-		_childTemp, typeSwitchError = AdsMultiRequestItemReadParseWithBuffer(ctx, readBuffer, indexGroup)
+		if _child, err = (&_AdsMultiRequestItemRead{}).parse(ctx, readBuffer, m, indexGroup); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemRead for type-switch of AdsMultiRequestItem")
+		}
 	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
-		_childTemp, typeSwitchError = AdsMultiRequestItemWriteParseWithBuffer(ctx, readBuffer, indexGroup)
+		if _child, err = (&_AdsMultiRequestItemWrite{}).parse(ctx, readBuffer, m, indexGroup); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemWrite for type-switch of AdsMultiRequestItem")
+		}
 	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
-		_childTemp, typeSwitchError = AdsMultiRequestItemReadWriteParseWithBuffer(ctx, readBuffer, indexGroup)
+		if _child, err = (&_AdsMultiRequestItemReadWrite{}).parse(ctx, readBuffer, m, indexGroup); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemReadWrite for type-switch of AdsMultiRequestItem")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [indexGroup=%v]", indexGroup)
+		return nil, errors.Errorf("Unmapped type for parameters [indexGroup=%v]", indexGroup)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AdsMultiRequestItem")
-	}
-	_child = _childTemp.(AdsMultiRequestItemChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("AdsMultiRequestItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsMultiRequestItem")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_AdsMultiRequestItem) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsMultiRequestItem, serializeChildFunction func() error) error {
+func (pm *_AdsMultiRequestItem) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AdsMultiRequestItem, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -173,17 +175,4 @@ func (pm *_AdsMultiRequestItem) SerializeParent(ctx context.Context, writeBuffer
 	return nil
 }
 
-func (m *_AdsMultiRequestItem) isAdsMultiRequestItem() bool {
-	return true
-}
-
-func (m *_AdsMultiRequestItem) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_AdsMultiRequestItem) IsAdsMultiRequestItem() {}

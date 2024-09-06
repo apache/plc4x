@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogRecordLogDatumFailure interface {
 	BACnetLogRecordLogDatum
 	// GetFailure returns Failure (property field)
 	GetFailure() ErrorEnclosed
-}
-
-// BACnetLogRecordLogDatumFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumFailure.
-// This is useful for switch cases.
-type BACnetLogRecordLogDatumFailureExactly interface {
-	BACnetLogRecordLogDatumFailure
-	isBACnetLogRecordLogDatumFailure() bool
+	// IsBACnetLogRecordLogDatumFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumFailure()
 }
 
 // _BACnetLogRecordLogDatumFailure is the data-structure of this message
 type _BACnetLogRecordLogDatumFailure struct {
-	*_BACnetLogRecordLogDatum
+	BACnetLogRecordLogDatumContract
 	Failure ErrorEnclosed
 }
+
+var _ BACnetLogRecordLogDatumFailure = (*_BACnetLogRecordLogDatumFailure)(nil)
+var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumFailure)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetLogRecordLogDatumFailure struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogRecordLogDatumFailure) InitializeParent(parent BACnetLogRecordLogDatum, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetLogRecordLogDatumFailure) GetParent() BACnetLogRecordLogDatum {
-	return m._BACnetLogRecordLogDatum
+func (m *_BACnetLogRecordLogDatumFailure) GetParent() BACnetLogRecordLogDatumContract {
+	return m.BACnetLogRecordLogDatumContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetLogRecordLogDatumFailure) GetFailure() ErrorEnclosed {
 
 // NewBACnetLogRecordLogDatumFailure factory function for _BACnetLogRecordLogDatumFailure
 func NewBACnetLogRecordLogDatumFailure(failure ErrorEnclosed, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumFailure {
-	_result := &_BACnetLogRecordLogDatumFailure{
-		Failure:                  failure,
-		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if failure == nil {
+		panic("failure of type ErrorEnclosed for BACnetLogRecordLogDatumFailure must not be nil")
 	}
-	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result
+	_result := &_BACnetLogRecordLogDatumFailure{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		Failure:                         failure,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetLogRecordLogDatumFailure) GetTypeName() string {
 }
 
 func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (failure)
 	lengthInBits += m.Failure.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogRecordLogDatumFailureParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
-	return BACnetLogRecordLogDatumFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetLogRecordLogDatumFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
+func (m *_BACnetLogRecordLogDatumFailure) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogRecordLogDatum, tagNumber uint8) (__bACnetLogRecordLogDatumFailure BACnetLogRecordLogDatumFailure, err error) {
+	m.BACnetLogRecordLogDatumContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumFailure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumFailure")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (failure)
-	if pullErr := readBuffer.PullContext("failure"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for failure")
+	failure, err := ReadSimpleField[ErrorEnclosed](ctx, "failure", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(8))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'failure' field"))
 	}
-	_failure, _failureErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(8)))
-	if _failureErr != nil {
-		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogRecordLogDatumFailure")
-	}
-	failure := _failure.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("failure"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for failure")
-	}
+	m.Failure = failure
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumFailure"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumFailure")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogRecordLogDatumFailure{
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
-			TagNumber: tagNumber,
-		},
-		Failure: failure,
-	}
-	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogRecordLogDatumFailure) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetLogRecordLogDatumFailure) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumFailure")
 		}
 
-		// Simple Field (failure)
-		if pushErr := writeBuffer.PushContext("failure"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for failure")
-		}
-		_failureErr := writeBuffer.WriteSerializable(ctx, m.GetFailure())
-		if popErr := writeBuffer.PopContext("failure"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for failure")
-		}
-		if _failureErr != nil {
-			return errors.Wrap(_failureErr, "Error serializing 'failure' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "failure", m.GetFailure(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'failure' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumFailure"); popErr != nil {
@@ -204,12 +174,10 @@ func (m *_BACnetLogRecordLogDatumFailure) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogRecordLogDatumFailure) isBACnetLogRecordLogDatumFailure() bool {
-	return true
-}
+func (m *_BACnetLogRecordLogDatumFailure) IsBACnetLogRecordLogDatumFailure() {}
 
 func (m *_BACnetLogRecordLogDatumFailure) String() string {
 	if m == nil {

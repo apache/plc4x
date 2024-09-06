@@ -82,7 +82,7 @@ public class TemperatureBroadcastData implements Message {
         "commandTypeContainer",
         "TemperatureBroadcastCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TemperatureBroadcastCommandTypeContainer::getValue,
             TemperatureBroadcastCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -145,7 +145,7 @@ public class TemperatureBroadcastData implements Message {
         readEnumField(
             "commandTypeContainer",
             "TemperatureBroadcastCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 TemperatureBroadcastCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     TemperatureBroadcastCommandType commandType =

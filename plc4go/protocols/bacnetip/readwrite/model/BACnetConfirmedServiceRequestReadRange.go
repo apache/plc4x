@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,23 +47,21 @@ type BACnetConfirmedServiceRequestReadRange interface {
 	GetPropertyArrayIndex() BACnetContextTagUnsignedInteger
 	// GetReadRange returns ReadRange (property field)
 	GetReadRange() BACnetConfirmedServiceRequestReadRangeRange
-}
-
-// BACnetConfirmedServiceRequestReadRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRange.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestReadRangeExactly interface {
-	BACnetConfirmedServiceRequestReadRange
-	isBACnetConfirmedServiceRequestReadRange() bool
+	// IsBACnetConfirmedServiceRequestReadRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRange()
 }
 
 // _BACnetConfirmedServiceRequestReadRange is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRange struct {
-	*_BACnetConfirmedServiceRequest
+	BACnetConfirmedServiceRequestContract
 	ObjectIdentifier   BACnetContextTagObjectIdentifier
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	PropertyArrayIndex BACnetContextTagUnsignedInteger
 	ReadRange          BACnetConfirmedServiceRequestReadRangeRange
 }
+
+var _ BACnetConfirmedServiceRequestReadRange = (*_BACnetConfirmedServiceRequestReadRange)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReadRange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +77,8 @@ func (m *_BACnetConfirmedServiceRequestReadRange) GetServiceChoice() BACnetConfi
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestReadRange) InitializeParent(parent BACnetConfirmedServiceRequest) {
-}
-
-func (m *_BACnetConfirmedServiceRequestReadRange) GetParent() BACnetConfirmedServiceRequest {
-	return m._BACnetConfirmedServiceRequest
+func (m *_BACnetConfirmedServiceRequestReadRange) GetParent() BACnetConfirmedServiceRequestContract {
+	return m.BACnetConfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,14 +109,20 @@ func (m *_BACnetConfirmedServiceRequestReadRange) GetReadRange() BACnetConfirmed
 
 // NewBACnetConfirmedServiceRequestReadRange factory function for _BACnetConfirmedServiceRequestReadRange
 func NewBACnetConfirmedServiceRequestReadRange(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, readRange BACnetConfirmedServiceRequestReadRangeRange, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadRange {
-	_result := &_BACnetConfirmedServiceRequestReadRange{
-		ObjectIdentifier:               objectIdentifier,
-		PropertyIdentifier:             propertyIdentifier,
-		PropertyArrayIndex:             propertyArrayIndex,
-		ReadRange:                      readRange,
-		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestReadRange must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetConfirmedServiceRequestReadRange must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestReadRange{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ObjectIdentifier:                      objectIdentifier,
+		PropertyIdentifier:                    propertyIdentifier,
+		PropertyArrayIndex:                    propertyArrayIndex,
+		ReadRange:                             readRange,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -140,7 +142,7 @@ func (m *_BACnetConfirmedServiceRequestReadRange) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -165,107 +167,54 @@ func (m *_BACnetConfirmedServiceRequestReadRange) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadRange, error) {
-	return BACnetConfirmedServiceRequestReadRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetConfirmedServiceRequestReadRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadRange, error) {
+func (m *_BACnetConfirmedServiceRequestReadRange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestReadRange BACnetConfirmedServiceRequestReadRange, err error) {
+	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadRange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIdentifier)
-	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
+	objectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestReadRange")
+	m.ObjectIdentifier = objectIdentifier
+
+	propertyIdentifier, err := ReadSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", ReadComplex[BACnetPropertyIdentifierTagged](BACnetPropertyIdentifierTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyIdentifier' field"))
 	}
-	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
+	m.PropertyIdentifier = propertyIdentifier
+
+	var propertyArrayIndex BACnetContextTagUnsignedInteger
+	_propertyArrayIndex, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyArrayIndex' field"))
+	}
+	if _propertyArrayIndex != nil {
+		propertyArrayIndex = *_propertyArrayIndex
+		m.PropertyArrayIndex = propertyArrayIndex
 	}
 
-	// Simple Field (propertyIdentifier)
-	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
+	var readRange BACnetConfirmedServiceRequestReadRangeRange
+	_readRange, err := ReadOptionalField[BACnetConfirmedServiceRequestReadRangeRange](ctx, "readRange", ReadComplex[BACnetConfirmedServiceRequestReadRangeRange](BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readRange' field"))
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _propertyIdentifierErr != nil {
-		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetConfirmedServiceRequestReadRange")
-	}
-	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifierTagged)
-	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
-	}
-
-	// Optional Field (propertyArrayIndex) (Can be skipped, if a given expression evaluates to false)
-	var propertyArrayIndex BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for propertyArrayIndex")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field of BACnetConfirmedServiceRequestReadRange")
-		default:
-			propertyArrayIndex = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("propertyArrayIndex"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for propertyArrayIndex")
-			}
-		}
-	}
-
-	// Optional Field (readRange) (Can be skipped, if a given expression evaluates to false)
-	var readRange BACnetConfirmedServiceRequestReadRangeRange = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("readRange"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for readRange")
-		}
-		_val, _err := BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'readRange' field of BACnetConfirmedServiceRequestReadRange")
-		default:
-			readRange = _val.(BACnetConfirmedServiceRequestReadRangeRange)
-			if closeErr := readBuffer.CloseContext("readRange"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for readRange")
-			}
-		}
+	if _readRange != nil {
+		readRange = *_readRange
+		m.ReadRange = readRange
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReadRange")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestReadRange{
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		ObjectIdentifier:   objectIdentifier,
-		PropertyIdentifier: propertyIdentifier,
-		PropertyArrayIndex: propertyArrayIndex,
-		ReadRange:          readRange,
-	}
-	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRange) Serialize() ([]byte, error) {
@@ -286,60 +235,20 @@ func (m *_BACnetConfirmedServiceRequestReadRange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadRange")
 		}
 
-		// Simple Field (objectIdentifier)
-		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
-		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectIdentifier")
-		}
-		if _objectIdentifierErr != nil {
-			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", m.GetObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 
-		// Simple Field (propertyIdentifier)
-		if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
-		}
-		_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
-		if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyIdentifier")
-		}
-		if _propertyIdentifierErr != nil {
-			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
+		if err := WriteSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", m.GetPropertyIdentifier(), WriteComplex[BACnetPropertyIdentifierTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		// Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-		var propertyArrayIndex BACnetContextTagUnsignedInteger = nil
-		if m.GetPropertyArrayIndex() != nil {
-			if pushErr := writeBuffer.PushContext("propertyArrayIndex"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
-			}
-			propertyArrayIndex = m.GetPropertyArrayIndex()
-			_propertyArrayIndexErr := writeBuffer.WriteSerializable(ctx, propertyArrayIndex)
-			if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
-			}
-			if _propertyArrayIndexErr != nil {
-				return errors.Wrap(_propertyArrayIndexErr, "Error serializing 'propertyArrayIndex' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", GetRef(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyArrayIndex' field")
 		}
 
-		// Optional Field (readRange) (Can be skipped, if the value is null)
-		var readRange BACnetConfirmedServiceRequestReadRangeRange = nil
-		if m.GetReadRange() != nil {
-			if pushErr := writeBuffer.PushContext("readRange"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for readRange")
-			}
-			readRange = m.GetReadRange()
-			_readRangeErr := writeBuffer.WriteSerializable(ctx, readRange)
-			if popErr := writeBuffer.PopContext("readRange"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for readRange")
-			}
-			if _readRangeErr != nil {
-				return errors.Wrap(_readRangeErr, "Error serializing 'readRange' field")
-			}
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestReadRangeRange](ctx, "readRange", GetRef(m.GetReadRange()), WriteComplex[BACnetConfirmedServiceRequestReadRangeRange](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'readRange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadRange"); popErr != nil {
@@ -347,12 +256,10 @@ func (m *_BACnetConfirmedServiceRequestReadRange) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRange) isBACnetConfirmedServiceRequestReadRange() bool {
-	return true
-}
+func (m *_BACnetConfirmedServiceRequestReadRange) IsBACnetConfirmedServiceRequestReadRange() {}
 
 func (m *_BACnetConfirmedServiceRequestReadRange) String() string {
 	if m == nil {

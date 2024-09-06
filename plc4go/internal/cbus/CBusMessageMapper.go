@@ -228,6 +228,9 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 }
 
 func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAddresses []readWriteModel.BridgeAddress, calData readWriteModel.CALData, cbusOptions readWriteModel.CBusOptions) (readWriteModel.CBusCommand, error) {
+	if calData == nil {
+		return nil, errors.New("cal data required")
+	}
 	var command readWriteModel.CBusPointToPointCommand
 	numberOfBridgeAddresses := len(bridgeAddresses)
 	if numberOfBridgeAddresses > 0 {
@@ -280,11 +283,11 @@ func producePointToMultiPointCommandNormal(bridgeAddresses []readWriteModel.Brid
 
 func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTransaction, encodedReply readWriteModel.EncodedReply, tagName string, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), addPlcValue func(name string, plcValue apiValues.PlcValue)) error {
 	switch reply := encodedReply.(type) {
-	case readWriteModel.EncodedReplyCALReplyExactly:
+	case readWriteModel.EncodedReplyCALReply:
 		calData := reply.GetCalReply().GetCalData()
 		addResponseCode(tagName, apiModel.PlcResponseCode_OK)
 		switch calData := calData.(type) {
-		case readWriteModel.CALDataStatusExactly:
+		case readWriteModel.CALDataStatus:
 			application := calData.GetApplication()
 			// TODO: verify application... this should be the same
 			_ = application
@@ -305,7 +308,7 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				"blockStart":  spiValues.NewPlcBYTE(blockStart),
 				"values":      spiValues.NewPlcList(plcListValues),
 			}))
-		case readWriteModel.CALDataStatusExtendedExactly:
+		case readWriteModel.CALDataStatusExtended:
 			coding := calData.GetCoding()
 			// TODO: verify coding... this should be the same
 			_ = coding
@@ -341,11 +344,11 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				plcListValues := make([]apiValues.PlcValue, len(levelInformation))
 				for i, levelInformation := range levelInformation {
 					switch levelInformation := levelInformation.(type) {
-					case readWriteModel.LevelInformationAbsentExactly:
+					case readWriteModel.LevelInformationAbsent:
 						plcListValues[i] = spiValues.NewPlcSTRING("is absent")
-					case readWriteModel.LevelInformationCorruptedExactly:
+					case readWriteModel.LevelInformationCorrupted:
 						plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
-					case readWriteModel.LevelInformationNormalExactly:
+					case readWriteModel.LevelInformationNormal:
 						plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
 					default:
 						return transaction.FailRequest(errors.Errorf("Impossible case %v", levelInformation))
@@ -353,16 +356,16 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				}
 				addPlcValue(tagName, spiValues.NewPlcList(plcListValues))
 			}
-		case readWriteModel.CALDataIdentifyReplyExactly:
+		case readWriteModel.CALDataIdentifyReply:
 			switch identifyReplyCommand := calData.GetIdentifyReplyCommand().(type) {
-			case readWriteModel.IdentifyReplyCommandCurrentSenseLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandCurrentSenseLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
-			case readWriteModel.IdentifyReplyCommandDelaysExactly:
+			case readWriteModel.IdentifyReplyCommandDelays:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"reStrikeDelay": spiValues.NewPlcUSINT(identifyReplyCommand.GetReStrikeDelay()),
 					"terminalLevel": spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()),
 				}))
-			case readWriteModel.IdentifyReplyCommandDSIStatusExactly:
+			case readWriteModel.IdentifyReplyCommandDSIStatus:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"channelStatus1":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus1().String()),
 					"channelStatus2":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus2().String()),
@@ -375,7 +378,7 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					"unitStatus":              spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitStatus().String()),
 					"dimmingUCRevisionNumber": spiValues.NewPlcUSINT(identifyReplyCommand.GetDimmingUCRevisionNumber()),
 				}))
-			case readWriteModel.IdentifyReplyCommandExtendedDiagnosticSummaryExactly:
+			case readWriteModel.IdentifyReplyCommandExtendedDiagnosticSummary:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"lowApplication":         spiValues.NewPlcSTRING(identifyReplyCommand.GetLowApplication().String()),
 					"highApplication":        spiValues.NewPlcSTRING(identifyReplyCommand.GetHighApplication().String()),
@@ -397,21 +400,21 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					"internalStackOverflow":  spiValues.NewPlcBOOL(identifyReplyCommand.GetInternalStackOverflow()),
 					"microPowerReset":        spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroPowerReset()),
 				}))
-			case readWriteModel.IdentifyReplyCommandSummaryExactly:
+			case readWriteModel.IdentifyReplyCommandSummary:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"partName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
 					"unitServiceType": spiValues.NewPlcUSINT(identifyReplyCommand.GetUnitServiceType()),
 					"version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
 				}))
-			case readWriteModel.IdentifyReplyCommandFirmwareVersionExactly:
+			case readWriteModel.IdentifyReplyCommandFirmwareVersion:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetFirmwareVersion()))
-			case readWriteModel.IdentifyReplyCommandGAVPhysicalAddressesExactly:
+			case readWriteModel.IdentifyReplyCommandGAVPhysicalAddresses:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
-			case readWriteModel.IdentifyReplyCommandGAVValuesCurrentExactly:
+			case readWriteModel.IdentifyReplyCommandGAVValuesCurrent:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
-			case readWriteModel.IdentifyReplyCommandGAVValuesStoredExactly:
+			case readWriteModel.IdentifyReplyCommandGAVValuesStored:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
-			case readWriteModel.IdentifyReplyCommandLogicalAssignmentExactly:
+			case readWriteModel.IdentifyReplyCommandLogicalAssignment:
 				var plcValues []apiValues.PlcValue
 				for _, logicAssigment := range identifyReplyCommand.GetLogicAssigment() {
 					plcValues = append(plcValues, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
@@ -424,15 +427,15 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					}))
 				}
 				addPlcValue(tagName, spiValues.NewPlcList(plcValues))
-			case readWriteModel.IdentifyReplyCommandManufacturerExactly:
+			case readWriteModel.IdentifyReplyCommandManufacturer:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetManufacturerName()))
-			case readWriteModel.IdentifyReplyCommandMaximumLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandMaximumLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetMaximumLevels()))
-			case readWriteModel.IdentifyReplyCommandMinimumLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandMinimumLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetMinimumLevels()))
-			case readWriteModel.IdentifyReplyCommandNetworkTerminalLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandNetworkTerminalLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetNetworkTerminalLevels()))
-			case readWriteModel.IdentifyReplyCommandNetworkVoltageExactly:
+			case readWriteModel.IdentifyReplyCommandNetworkVoltage:
 				volts := identifyReplyCommand.GetVolts()
 				voltsFloat, err := strconv.ParseFloat(volts, 0)
 				if err != nil {
@@ -447,7 +450,7 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				}
 				voltsFloat += voltsDecimalPlaceFloat / 10
 				addPlcValue(tagName, spiValues.NewPlcLREAL(voltsFloat))
-			case readWriteModel.IdentifyReplyCommandOutputUnitSummaryExactly:
+			case readWriteModel.IdentifyReplyCommandOutputUnitSummary:
 				unitFlags := identifyReplyCommand.GetUnitFlags()
 				structContent := map[string]apiValues.PlcValue{
 					"unitFlags": spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
@@ -469,9 +472,9 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					structContent["gavStoreEnabledByte2"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte2)
 				}
 				addPlcValue(tagName, spiValues.NewPlcStruct(structContent))
-			case readWriteModel.IdentifyReplyCommandTerminalLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandTerminalLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()))
-			case readWriteModel.IdentifyReplyCommandTypeExactly:
+			case readWriteModel.IdentifyReplyCommandType:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
 			default:
 				addResponseCode(tagName, apiModel.PlcResponseCode_INVALID_DATA)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogRecordLogDatumLogStatus interface {
 	BACnetLogRecordLogDatum
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
-}
-
-// BACnetLogRecordLogDatumLogStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumLogStatus.
-// This is useful for switch cases.
-type BACnetLogRecordLogDatumLogStatusExactly interface {
-	BACnetLogRecordLogDatumLogStatus
-	isBACnetLogRecordLogDatumLogStatus() bool
+	// IsBACnetLogRecordLogDatumLogStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumLogStatus()
 }
 
 // _BACnetLogRecordLogDatumLogStatus is the data-structure of this message
 type _BACnetLogRecordLogDatumLogStatus struct {
-	*_BACnetLogRecordLogDatum
+	BACnetLogRecordLogDatumContract
 	LogStatus BACnetLogStatusTagged
 }
+
+var _ BACnetLogRecordLogDatumLogStatus = (*_BACnetLogRecordLogDatumLogStatus)(nil)
+var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumLogStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetLogRecordLogDatumLogStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogRecordLogDatumLogStatus) InitializeParent(parent BACnetLogRecordLogDatum, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetLogRecordLogDatumLogStatus) GetParent() BACnetLogRecordLogDatum {
-	return m._BACnetLogRecordLogDatum
+func (m *_BACnetLogRecordLogDatumLogStatus) GetParent() BACnetLogRecordLogDatumContract {
+	return m.BACnetLogRecordLogDatumContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetLogRecordLogDatumLogStatus) GetLogStatus() BACnetLogStatusTagged
 
 // NewBACnetLogRecordLogDatumLogStatus factory function for _BACnetLogRecordLogDatumLogStatus
 func NewBACnetLogRecordLogDatumLogStatus(logStatus BACnetLogStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumLogStatus {
-	_result := &_BACnetLogRecordLogDatumLogStatus{
-		LogStatus:                logStatus,
-		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if logStatus == nil {
+		panic("logStatus of type BACnetLogStatusTagged for BACnetLogRecordLogDatumLogStatus must not be nil")
 	}
-	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result
+	_result := &_BACnetLogRecordLogDatumLogStatus{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		LogStatus:                       logStatus,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetLogRecordLogDatumLogStatus) GetTypeName() string {
 }
 
 func (m *_BACnetLogRecordLogDatumLogStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (logStatus)
 	lengthInBits += m.LogStatus.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetLogRecordLogDatumLogStatus) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogRecordLogDatumLogStatusParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumLogStatus, error) {
-	return BACnetLogRecordLogDatumLogStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetLogRecordLogDatumLogStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumLogStatus, error) {
+func (m *_BACnetLogRecordLogDatumLogStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogRecordLogDatum, tagNumber uint8) (__bACnetLogRecordLogDatumLogStatus BACnetLogRecordLogDatumLogStatus, err error) {
+	m.BACnetLogRecordLogDatumContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumLogStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumLogStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (logStatus)
-	if pullErr := readBuffer.PullContext("logStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for logStatus")
+	logStatus, err := ReadSimpleField[BACnetLogStatusTagged](ctx, "logStatus", ReadComplex[BACnetLogStatusTagged](BACnetLogStatusTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logStatus' field"))
 	}
-	_logStatus, _logStatusErr := BACnetLogStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _logStatusErr != nil {
-		return nil, errors.Wrap(_logStatusErr, "Error parsing 'logStatus' field of BACnetLogRecordLogDatumLogStatus")
-	}
-	logStatus := _logStatus.(BACnetLogStatusTagged)
-	if closeErr := readBuffer.CloseContext("logStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for logStatus")
-	}
+	m.LogStatus = logStatus
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumLogStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumLogStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogRecordLogDatumLogStatus{
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
-			TagNumber: tagNumber,
-		},
-		LogStatus: logStatus,
-	}
-	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogRecordLogDatumLogStatus) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetLogRecordLogDatumLogStatus) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumLogStatus")
 		}
 
-		// Simple Field (logStatus)
-		if pushErr := writeBuffer.PushContext("logStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for logStatus")
-		}
-		_logStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLogStatus())
-		if popErr := writeBuffer.PopContext("logStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for logStatus")
-		}
-		if _logStatusErr != nil {
-			return errors.Wrap(_logStatusErr, "Error serializing 'logStatus' field")
+		if err := WriteSimpleField[BACnetLogStatusTagged](ctx, "logStatus", m.GetLogStatus(), WriteComplex[BACnetLogStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'logStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumLogStatus"); popErr != nil {
@@ -204,12 +174,10 @@ func (m *_BACnetLogRecordLogDatumLogStatus) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogRecordLogDatumLogStatus) isBACnetLogRecordLogDatumLogStatus() bool {
-	return true
-}
+func (m *_BACnetLogRecordLogDatumLogStatus) IsBACnetLogRecordLogDatumLogStatus() {}
 
 func (m *_BACnetLogRecordLogDatumLogStatus) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataTimeSynchronizationInterval interface {
 	GetTimeSynchronization() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataTimeSynchronizationIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeSynchronizationInterval.
-// This is useful for switch cases.
-type BACnetConstructedDataTimeSynchronizationIntervalExactly interface {
-	BACnetConstructedDataTimeSynchronizationInterval
-	isBACnetConstructedDataTimeSynchronizationInterval() bool
+	// IsBACnetConstructedDataTimeSynchronizationInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeSynchronizationInterval()
 }
 
 // _BACnetConstructedDataTimeSynchronizationInterval is the data-structure of this message
 type _BACnetConstructedDataTimeSynchronizationInterval struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	TimeSynchronization BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataTimeSynchronizationInterval = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetPropertyIdentifie
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetActualValue() BAC
 
 // NewBACnetConstructedDataTimeSynchronizationInterval factory function for _BACnetConstructedDataTimeSynchronizationInterval
 func NewBACnetConstructedDataTimeSynchronizationInterval(timeSynchronization BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
-	_result := &_BACnetConstructedDataTimeSynchronizationInterval{
-		TimeSynchronization:    timeSynchronization,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if timeSynchronization == nil {
+		panic("timeSynchronization of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeSynchronizationInterval must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataTimeSynchronizationInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeSynchronization:           timeSynchronization,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetTypeName() string
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (timeSynchronization)
 	lengthInBits += m.TimeSynchronization.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBytes(ctx
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataTimeSynchronizationIntervalParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
-	return BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimeSynchronizationInterval BACnetConstructedDataTimeSynchronizationInterval, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeSynchronizationInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeSynchronizationInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeSynchronization)
-	if pullErr := readBuffer.PullContext("timeSynchronization"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeSynchronization")
+	timeSynchronization, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeSynchronization", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeSynchronization' field"))
 	}
-	_timeSynchronization, _timeSynchronizationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timeSynchronizationErr != nil {
-		return nil, errors.Wrap(_timeSynchronizationErr, "Error parsing 'timeSynchronization' field of BACnetConstructedDataTimeSynchronizationInterval")
-	}
-	timeSynchronization := _timeSynchronization.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeSynchronization"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeSynchronization")
-	}
+	m.TimeSynchronization = timeSynchronization
 
-	// Virtual field
-	_actualValue := timeSynchronization
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), timeSynchronization)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeSynchronizationInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeSynchronizationInterval")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataTimeSynchronizationInterval{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		TimeSynchronization: timeSynchronization,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeSynchronizationInterval")
 		}
 
-		// Simple Field (timeSynchronization)
-		if pushErr := writeBuffer.PushContext("timeSynchronization"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeSynchronization")
-		}
-		_timeSynchronizationErr := writeBuffer.WriteSerializable(ctx, m.GetTimeSynchronization())
-		if popErr := writeBuffer.PopContext("timeSynchronization"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeSynchronization")
-		}
-		if _timeSynchronizationErr != nil {
-			return errors.Wrap(_timeSynchronizationErr, "Error serializing 'timeSynchronization' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeSynchronization", m.GetTimeSynchronization(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeSynchronization' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) SerializeWithWriteBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) isBACnetConstructedDataTimeSynchronizationInterval() bool {
-	return true
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) IsBACnetConstructedDataTimeSynchronizationInterval() {
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) String() string {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ServiceCounterDataType interface {
 	GetTotalCount() uint32
 	// GetErrorCount returns ErrorCount (property field)
 	GetErrorCount() uint32
-}
-
-// ServiceCounterDataTypeExactly can be used when we want exactly this type and not a type which fulfills ServiceCounterDataType.
-// This is useful for switch cases.
-type ServiceCounterDataTypeExactly interface {
-	ServiceCounterDataType
-	isServiceCounterDataType() bool
+	// IsServiceCounterDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServiceCounterDataType()
 }
 
 // _ServiceCounterDataType is the data-structure of this message
 type _ServiceCounterDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	TotalCount uint32
 	ErrorCount uint32
 }
+
+var _ ServiceCounterDataType = (*_ServiceCounterDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ServiceCounterDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_ServiceCounterDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServiceCounterDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_ServiceCounterDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_ServiceCounterDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_ServiceCounterDataType) GetErrorCount() uint32 {
 // NewServiceCounterDataType factory function for _ServiceCounterDataType
 func NewServiceCounterDataType(totalCount uint32, errorCount uint32) *_ServiceCounterDataType {
 	_result := &_ServiceCounterDataType{
-		TotalCount:                 totalCount,
-		ErrorCount:                 errorCount,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TotalCount:                        totalCount,
+		ErrorCount:                        errorCount,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_ServiceCounterDataType) GetTypeName() string {
 }
 
 func (m *_ServiceCounterDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (totalCount)
 	lengthInBits += 32
@@ -137,47 +135,34 @@ func (m *_ServiceCounterDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ServiceCounterDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (ServiceCounterDataType, error) {
-	return ServiceCounterDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func ServiceCounterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ServiceCounterDataType, error) {
+func (m *_ServiceCounterDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serviceCounterDataType ServiceCounterDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ServiceCounterDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ServiceCounterDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (totalCount)
-	_totalCount, _totalCountErr := readBuffer.ReadUint32("totalCount", 32)
-	if _totalCountErr != nil {
-		return nil, errors.Wrap(_totalCountErr, "Error parsing 'totalCount' field of ServiceCounterDataType")
+	totalCount, err := ReadSimpleField(ctx, "totalCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalCount' field"))
 	}
-	totalCount := _totalCount
+	m.TotalCount = totalCount
 
-	// Simple Field (errorCount)
-	_errorCount, _errorCountErr := readBuffer.ReadUint32("errorCount", 32)
-	if _errorCountErr != nil {
-		return nil, errors.Wrap(_errorCountErr, "Error parsing 'errorCount' field of ServiceCounterDataType")
+	errorCount, err := ReadSimpleField(ctx, "errorCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorCount' field"))
 	}
-	errorCount := _errorCount
+	m.ErrorCount = errorCount
 
 	if closeErr := readBuffer.CloseContext("ServiceCounterDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ServiceCounterDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ServiceCounterDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		TotalCount:                 totalCount,
-		ErrorCount:                 errorCount,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ServiceCounterDataType) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_ServiceCounterDataType) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for ServiceCounterDataType")
 		}
 
-		// Simple Field (totalCount)
-		totalCount := uint32(m.GetTotalCount())
-		_totalCountErr := writeBuffer.WriteUint32("totalCount", 32, uint32((totalCount)))
-		if _totalCountErr != nil {
-			return errors.Wrap(_totalCountErr, "Error serializing 'totalCount' field")
+		if err := WriteSimpleField[uint32](ctx, "totalCount", m.GetTotalCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalCount' field")
 		}
 
-		// Simple Field (errorCount)
-		errorCount := uint32(m.GetErrorCount())
-		_errorCountErr := writeBuffer.WriteUint32("errorCount", 32, uint32((errorCount)))
-		if _errorCountErr != nil {
-			return errors.Wrap(_errorCountErr, "Error serializing 'errorCount' field")
+		if err := WriteSimpleField[uint32](ctx, "errorCount", m.GetErrorCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ServiceCounterDataType"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_ServiceCounterDataType) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ServiceCounterDataType) isServiceCounterDataType() bool {
-	return true
-}
+func (m *_ServiceCounterDataType) IsServiceCounterDataType() {}
 
 func (m *_ServiceCounterDataType) String() string {
 	if m == nil {

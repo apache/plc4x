@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataBinaryOutputInterfaceValue interface {
 	GetInterfaceValue() BACnetOptionalBinaryPV
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetOptionalBinaryPV
-}
-
-// BACnetConstructedDataBinaryOutputInterfaceValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryOutputInterfaceValue.
-// This is useful for switch cases.
-type BACnetConstructedDataBinaryOutputInterfaceValueExactly interface {
-	BACnetConstructedDataBinaryOutputInterfaceValue
-	isBACnetConstructedDataBinaryOutputInterfaceValue() bool
+	// IsBACnetConstructedDataBinaryOutputInterfaceValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBinaryOutputInterfaceValue()
 }
 
 // _BACnetConstructedDataBinaryOutputInterfaceValue is the data-structure of this message
 type _BACnetConstructedDataBinaryOutputInterfaceValue struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	InterfaceValue BACnetOptionalBinaryPV
 }
+
+var _ BACnetConstructedDataBinaryOutputInterfaceValue = (*_BACnetConstructedDataBinaryOutputInterfaceValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputInterfaceValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetPropertyIdentifier
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetActualValue() BACn
 
 // NewBACnetConstructedDataBinaryOutputInterfaceValue factory function for _BACnetConstructedDataBinaryOutputInterfaceValue
 func NewBACnetConstructedDataBinaryOutputInterfaceValue(interfaceValue BACnetOptionalBinaryPV, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputInterfaceValue {
-	_result := &_BACnetConstructedDataBinaryOutputInterfaceValue{
-		InterfaceValue:         interfaceValue,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if interfaceValue == nil {
+		panic("interfaceValue of type BACnetOptionalBinaryPV for BACnetConstructedDataBinaryOutputInterfaceValue must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataBinaryOutputInterfaceValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InterfaceValue:                interfaceValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetTypeName() string 
 }
 
 func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (interfaceValue)
 	lengthInBits += m.InterfaceValue.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataBinaryOutputInterfaceValueParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputInterfaceValue, error) {
-	return BACnetConstructedDataBinaryOutputInterfaceValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataBinaryOutputInterfaceValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryOutputInterfaceValue, error) {
+func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBinaryOutputInterfaceValue BACnetConstructedDataBinaryOutputInterfaceValue, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryOutputInterfaceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBinaryOutputInterfaceValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (interfaceValue)
-	if pullErr := readBuffer.PullContext("interfaceValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for interfaceValue")
+	interfaceValue, err := ReadSimpleField[BACnetOptionalBinaryPV](ctx, "interfaceValue", ReadComplex[BACnetOptionalBinaryPV](BACnetOptionalBinaryPVParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceValue' field"))
 	}
-	_interfaceValue, _interfaceValueErr := BACnetOptionalBinaryPVParseWithBuffer(ctx, readBuffer)
-	if _interfaceValueErr != nil {
-		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field of BACnetConstructedDataBinaryOutputInterfaceValue")
-	}
-	interfaceValue := _interfaceValue.(BACnetOptionalBinaryPV)
-	if closeErr := readBuffer.CloseContext("interfaceValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for interfaceValue")
-	}
+	m.InterfaceValue = interfaceValue
 
-	// Virtual field
-	_actualValue := interfaceValue
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetOptionalBinaryPV](ctx, "actualValue", (*BACnetOptionalBinaryPV)(nil), interfaceValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryOutputInterfaceValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryOutputInterfaceValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataBinaryOutputInterfaceValue{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		InterfaceValue: interfaceValue,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBinaryOutputInterfaceValue")
 		}
 
-		// Simple Field (interfaceValue)
-		if pushErr := writeBuffer.PushContext("interfaceValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for interfaceValue")
-		}
-		_interfaceValueErr := writeBuffer.WriteSerializable(ctx, m.GetInterfaceValue())
-		if popErr := writeBuffer.PopContext("interfaceValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for interfaceValue")
-		}
-		if _interfaceValueErr != nil {
-			return errors.Wrap(_interfaceValueErr, "Error serializing 'interfaceValue' field")
+		if err := WriteSimpleField[BACnetOptionalBinaryPV](ctx, "interfaceValue", m.GetInterfaceValue(), WriteComplex[BACnetOptionalBinaryPV](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'interfaceValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) isBACnetConstructedDataBinaryOutputInterfaceValue() bool {
-	return true
+func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) IsBACnetConstructedDataBinaryOutputInterfaceValue() {
 }
 
 func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) String() string {

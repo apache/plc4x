@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,13 +44,8 @@ type BACnetTagPayloadBitString interface {
 	GetData() []bool
 	// GetUnused returns Unused (property field)
 	GetUnused() []bool
-}
-
-// BACnetTagPayloadBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadBitString.
-// This is useful for switch cases.
-type BACnetTagPayloadBitStringExactly interface {
-	BACnetTagPayloadBitString
-	isBACnetTagPayloadBitString() bool
+	// IsBACnetTagPayloadBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadBitString()
 }
 
 // _BACnetTagPayloadBitString is the data-structure of this message
@@ -60,6 +57,8 @@ type _BACnetTagPayloadBitString struct {
 	// Arguments.
 	ActualLength uint32
 }
+
+var _ BACnetTagPayloadBitString = (*_BACnetTagPayloadBitString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,89 +129,52 @@ func BACnetTagPayloadBitStringParse(ctx context.Context, theBytes []byte, actual
 	return BACnetTagPayloadBitStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetTagPayloadBitStringParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadBitString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadBitString, error) {
+		return BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBitString, error) {
+	v, err := (&_BACnetTagPayloadBitString{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetTagPayloadBitString) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadBitString BACnetTagPayloadBitString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBitString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadBitString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unusedBits)
-	_unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
-	if _unusedBitsErr != nil {
-		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field of BACnetTagPayloadBitString")
+	unusedBits, err := ReadSimpleField(ctx, "unusedBits", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unusedBits' field"))
 	}
-	unusedBits := _unusedBits
+	m.UnusedBits = unusedBits
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
+	data, err := ReadCountArrayField[bool](ctx, "data", ReadBoolean(readBuffer), uint64(int32((int32((int32(actualLength)-int32(int32(1))))*int32(int32(8))))-int32(unusedBits)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Count array
-	data := make([]bool, max(uint16((uint16((uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits), 0))
-	// This happens when the size is set conditional to 0
-	if len(data) == 0 {
-		data = nil
-	}
-	{
-		_numItems := uint16(max(uint16((uint16((uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadBit("")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetTagPayloadBitString")
-			}
-			data[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
-	}
+	m.Data = data
 
-	// Array field (unused)
-	if pullErr := readBuffer.PullContext("unused", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unused")
+	unused, err := ReadCountArrayField[bool](ctx, "unused", ReadBoolean(readBuffer), uint64(unusedBits))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unused' field"))
 	}
-	// Count array
-	unused := make([]bool, max(unusedBits, 0))
-	// This happens when the size is set conditional to 0
-	if len(unused) == 0 {
-		unused = nil
-	}
-	{
-		_numItems := uint16(max(unusedBits, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadBit("")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'unused' field of BACnetTagPayloadBitString")
-			}
-			unused[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("unused", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unused")
-	}
+	m.Unused = unused
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadBitString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadBitString")
 	}
 
-	// Create the instance
-	return &_BACnetTagPayloadBitString{
-		ActualLength: actualLength,
-		UnusedBits:   unusedBits,
-		Data:         data,
-		Unused:       unused,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetTagPayloadBitString) Serialize() ([]byte, error) {
@@ -232,41 +194,16 @@ func (m *_BACnetTagPayloadBitString) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadBitString")
 	}
 
-	// Simple Field (unusedBits)
-	unusedBits := uint8(m.GetUnusedBits())
-	_unusedBitsErr := writeBuffer.WriteUint8("unusedBits", 8, uint8((unusedBits)))
-	if _unusedBitsErr != nil {
-		return errors.Wrap(_unusedBitsErr, "Error serializing 'unusedBits' field")
+	if err := WriteSimpleField[uint8](ctx, "unusedBits", m.GetUnusedBits(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'unusedBits' field")
 	}
 
-	// Array Field (data)
-	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for data")
-	}
-	for _curItem, _element := range m.GetData() {
-		_ = _curItem
-		_elementErr := writeBuffer.WriteBit("", _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'data' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for data")
+	if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
-	// Array Field (unused)
-	if pushErr := writeBuffer.PushContext("unused", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for unused")
-	}
-	for _curItem, _element := range m.GetUnused() {
-		_ = _curItem
-		_elementErr := writeBuffer.WriteBit("", _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'unused' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("unused", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for unused")
+	if err := WriteSimpleTypeArrayField(ctx, "unused", m.GetUnused(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'unused' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadBitString"); popErr != nil {
@@ -285,9 +222,7 @@ func (m *_BACnetTagPayloadBitString) GetActualLength() uint32 {
 //
 ////
 
-func (m *_BACnetTagPayloadBitString) isBACnetTagPayloadBitString() bool {
-	return true
-}
+func (m *_BACnetTagPayloadBitString) IsBACnetTagPayloadBitString() {}
 
 func (m *_BACnetTagPayloadBitString) String() string {
 	if m == nil {

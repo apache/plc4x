@@ -31,3 +31,4 @@ packages:
       - .idea
       - .git
       - protocols
+      - target

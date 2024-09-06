@@ -75,13 +75,13 @@ public class BACnetSpecialEventListOfTimeValues implements Message {
     writeBuffer.pushContext("BACnetSpecialEventListOfTimeValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfTimeValues)
     writeComplexTypeArrayField("listOfTimeValues", listOfTimeValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSpecialEventListOfTimeValues");
   }
@@ -122,14 +122,13 @@ public class BACnetSpecialEventListOfTimeValues implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetTimeValue> listOfTimeValues =
         readTerminatedArrayField(
             "listOfTimeValues",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetTimeValue.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -138,7 +137,7 @@ public class BACnetSpecialEventListOfTimeValues implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetSpecialEventListOfTimeValues");

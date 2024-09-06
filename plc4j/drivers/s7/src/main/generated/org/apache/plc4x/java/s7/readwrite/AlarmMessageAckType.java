@@ -120,8 +120,7 @@ public class AlarmMessageAckType implements Message {
     List<AlarmMessageObjectAckType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageObjectAckType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageObjectAckType.staticParse(readBuffer), readBuffer),
             numberOfObjects);
 
     readBuffer.closeContext("AlarmMessageAckType");

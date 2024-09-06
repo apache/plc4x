@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataMinimumOffTime interface {
 	GetMinimumOffTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataMinimumOffTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumOffTime.
-// This is useful for switch cases.
-type BACnetConstructedDataMinimumOffTimeExactly interface {
-	BACnetConstructedDataMinimumOffTime
-	isBACnetConstructedDataMinimumOffTime() bool
+	// IsBACnetConstructedDataMinimumOffTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMinimumOffTime()
 }
 
 // _BACnetConstructedDataMinimumOffTime is the data-structure of this message
 type _BACnetConstructedDataMinimumOffTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MinimumOffTime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataMinimumOffTime = (*_BACnetConstructedDataMinimumOffTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumOffTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataMinimumOffTime) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMinimumOffTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMinimumOffTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMinimumOffTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataMinimumOffTime) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataMinimumOffTime factory function for _BACnetConstructedDataMinimumOffTime
 func NewBACnetConstructedDataMinimumOffTime(minimumOffTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOffTime {
-	_result := &_BACnetConstructedDataMinimumOffTime{
-		MinimumOffTime:         minimumOffTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if minimumOffTime == nil {
+		panic("minimumOffTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOffTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataMinimumOffTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumOffTime:                minimumOffTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataMinimumOffTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMinimumOffTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (minimumOffTime)
 	lengthInBits += m.MinimumOffTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataMinimumOffTime) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataMinimumOffTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOffTime, error) {
-	return BACnetConstructedDataMinimumOffTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataMinimumOffTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOffTime, error) {
+func (m *_BACnetConstructedDataMinimumOffTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMinimumOffTime BACnetConstructedDataMinimumOffTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOffTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMinimumOffTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minimumOffTime)
-	if pullErr := readBuffer.PullContext("minimumOffTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minimumOffTime")
+	minimumOffTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "minimumOffTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumOffTime' field"))
 	}
-	_minimumOffTime, _minimumOffTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _minimumOffTimeErr != nil {
-		return nil, errors.Wrap(_minimumOffTimeErr, "Error parsing 'minimumOffTime' field of BACnetConstructedDataMinimumOffTime")
-	}
-	minimumOffTime := _minimumOffTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("minimumOffTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minimumOffTime")
-	}
+	m.MinimumOffTime = minimumOffTime
 
-	// Virtual field
-	_actualValue := minimumOffTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), minimumOffTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumOffTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumOffTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMinimumOffTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MinimumOffTime: minimumOffTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMinimumOffTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataMinimumOffTime) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumOffTime")
 		}
 
-		// Simple Field (minimumOffTime)
-		if pushErr := writeBuffer.PushContext("minimumOffTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minimumOffTime")
-		}
-		_minimumOffTimeErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumOffTime())
-		if popErr := writeBuffer.PopContext("minimumOffTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minimumOffTime")
-		}
-		if _minimumOffTimeErr != nil {
-			return errors.Wrap(_minimumOffTimeErr, "Error serializing 'minimumOffTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "minimumOffTime", m.GetMinimumOffTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minimumOffTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataMinimumOffTime) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMinimumOffTime) isBACnetConstructedDataMinimumOffTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataMinimumOffTime) IsBACnetConstructedDataMinimumOffTime() {}
 
 func (m *_BACnetConstructedDataMinimumOffTime) String() string {
 	if m == nil {

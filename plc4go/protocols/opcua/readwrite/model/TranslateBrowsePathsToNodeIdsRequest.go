@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type TranslateBrowsePathsToNodeIdsRequest interface {
 	GetNoOfBrowsePaths() int32
 	// GetBrowsePaths returns BrowsePaths (property field)
 	GetBrowsePaths() []ExtensionObjectDefinition
-}
-
-// TranslateBrowsePathsToNodeIdsRequestExactly can be used when we want exactly this type and not a type which fulfills TranslateBrowsePathsToNodeIdsRequest.
-// This is useful for switch cases.
-type TranslateBrowsePathsToNodeIdsRequestExactly interface {
-	TranslateBrowsePathsToNodeIdsRequest
-	isTranslateBrowsePathsToNodeIdsRequest() bool
+	// IsTranslateBrowsePathsToNodeIdsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTranslateBrowsePathsToNodeIdsRequest()
 }
 
 // _TranslateBrowsePathsToNodeIdsRequest is the data-structure of this message
 type _TranslateBrowsePathsToNodeIdsRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader   ExtensionObjectDefinition
 	NoOfBrowsePaths int32
 	BrowsePaths     []ExtensionObjectDefinition
 }
+
+var _ TranslateBrowsePathsToNodeIdsRequest = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TranslateBrowsePathsToNodeIdsRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_TranslateBrowsePathsToNodeIdsRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_TranslateBrowsePathsToNodeIdsRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetBrowsePaths() []ExtensionObje
 
 // NewTranslateBrowsePathsToNodeIdsRequest factory function for _TranslateBrowsePathsToNodeIdsRequest
 func NewTranslateBrowsePathsToNodeIdsRequest(requestHeader ExtensionObjectDefinition, noOfBrowsePaths int32, browsePaths []ExtensionObjectDefinition) *_TranslateBrowsePathsToNodeIdsRequest {
-	_result := &_TranslateBrowsePathsToNodeIdsRequest{
-		RequestHeader:              requestHeader,
-		NoOfBrowsePaths:            noOfBrowsePaths,
-		BrowsePaths:                browsePaths,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_TranslateBrowsePathsToNodeIdsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfBrowsePaths:                   noOfBrowsePaths,
+		BrowsePaths:                       browsePaths,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetTypeName() string {
 }
 
 func (m *_TranslateBrowsePathsToNodeIdsRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -155,81 +156,40 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TranslateBrowsePathsToNodeIdsRequestParse(ctx context.Context, theBytes []byte, identifier string) (TranslateBrowsePathsToNodeIdsRequest, error) {
-	return TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TranslateBrowsePathsToNodeIdsRequest, error) {
+func (m *_TranslateBrowsePathsToNodeIdsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__translateBrowsePathsToNodeIdsRequest TranslateBrowsePathsToNodeIdsRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TranslateBrowsePathsToNodeIdsRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TranslateBrowsePathsToNodeIdsRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of TranslateBrowsePathsToNodeIdsRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (noOfBrowsePaths)
-	_noOfBrowsePaths, _noOfBrowsePathsErr := readBuffer.ReadInt32("noOfBrowsePaths", 32)
-	if _noOfBrowsePathsErr != nil {
-		return nil, errors.Wrap(_noOfBrowsePathsErr, "Error parsing 'noOfBrowsePaths' field of TranslateBrowsePathsToNodeIdsRequest")
+	noOfBrowsePaths, err := ReadSimpleField(ctx, "noOfBrowsePaths", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfBrowsePaths' field"))
 	}
-	noOfBrowsePaths := _noOfBrowsePaths
+	m.NoOfBrowsePaths = noOfBrowsePaths
 
-	// Array field (browsePaths)
-	if pullErr := readBuffer.PullContext("browsePaths", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for browsePaths")
+	browsePaths, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "browsePaths", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("545")), readBuffer), uint64(noOfBrowsePaths))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browsePaths' field"))
 	}
-	// Count array
-	browsePaths := make([]ExtensionObjectDefinition, max(noOfBrowsePaths, 0))
-	// This happens when the size is set conditional to 0
-	if len(browsePaths) == 0 {
-		browsePaths = nil
-	}
-	{
-		_numItems := uint16(max(noOfBrowsePaths, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "545")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'browsePaths' field of TranslateBrowsePathsToNodeIdsRequest")
-			}
-			browsePaths[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("browsePaths", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for browsePaths")
-	}
+	m.BrowsePaths = browsePaths
 
 	if closeErr := readBuffer.CloseContext("TranslateBrowsePathsToNodeIdsRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TranslateBrowsePathsToNodeIdsRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TranslateBrowsePathsToNodeIdsRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		NoOfBrowsePaths:            noOfBrowsePaths,
-		BrowsePaths:                browsePaths,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TranslateBrowsePathsToNodeIdsRequest) Serialize() ([]byte, error) {
@@ -250,40 +210,16 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for TranslateBrowsePathsToNodeIdsRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfBrowsePaths)
-		noOfBrowsePaths := int32(m.GetNoOfBrowsePaths())
-		_noOfBrowsePathsErr := writeBuffer.WriteInt32("noOfBrowsePaths", 32, int32((noOfBrowsePaths)))
-		if _noOfBrowsePathsErr != nil {
-			return errors.Wrap(_noOfBrowsePathsErr, "Error serializing 'noOfBrowsePaths' field")
+		if err := WriteSimpleField[int32](ctx, "noOfBrowsePaths", m.GetNoOfBrowsePaths(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfBrowsePaths' field")
 		}
 
-		// Array Field (browsePaths)
-		if pushErr := writeBuffer.PushContext("browsePaths", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for browsePaths")
-		}
-		for _curItem, _element := range m.GetBrowsePaths() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetBrowsePaths()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'browsePaths' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("browsePaths", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for browsePaths")
+		if err := WriteComplexTypeArrayField(ctx, "browsePaths", m.GetBrowsePaths(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'browsePaths' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TranslateBrowsePathsToNodeIdsRequest"); popErr != nil {
@@ -291,12 +227,10 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsRequest) isTranslateBrowsePathsToNodeIdsRequest() bool {
-	return true
-}
+func (m *_TranslateBrowsePathsToNodeIdsRequest) IsTranslateBrowsePathsToNodeIdsRequest() {}
 
 func (m *_TranslateBrowsePathsToNodeIdsRequest) String() string {
 	if m == nil {

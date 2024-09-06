@@ -83,7 +83,7 @@ public class BACnetConstructedDataAccumulatorMinPresValue extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataAccumulatorMinPresValue");
 
     // Simple Field (minPresValue)
-    writeSimpleField("minPresValue", minPresValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minPresValue", minPresValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataAccumulatorMinPresValue extends BACnetConstruc
     BACnetApplicationTagUnsignedInteger minPresValue =
         readSimpleField(
             "minPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

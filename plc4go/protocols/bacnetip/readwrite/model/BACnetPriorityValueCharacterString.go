@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPriorityValueCharacterString interface {
 	BACnetPriorityValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetPriorityValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueCharacterString.
-// This is useful for switch cases.
-type BACnetPriorityValueCharacterStringExactly interface {
-	BACnetPriorityValueCharacterString
-	isBACnetPriorityValueCharacterString() bool
+	// IsBACnetPriorityValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueCharacterString()
 }
 
 // _BACnetPriorityValueCharacterString is the data-structure of this message
 type _BACnetPriorityValueCharacterString struct {
-	*_BACnetPriorityValue
+	BACnetPriorityValueContract
 	CharacterStringValue BACnetApplicationTagCharacterString
 }
+
+var _ BACnetPriorityValueCharacterString = (*_BACnetPriorityValueCharacterString)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueCharacterString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPriorityValueCharacterString struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPriorityValueCharacterString) InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPriorityValueCharacterString) GetParent() BACnetPriorityValue {
-	return m._BACnetPriorityValue
+func (m *_BACnetPriorityValueCharacterString) GetParent() BACnetPriorityValueContract {
+	return m.BACnetPriorityValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPriorityValueCharacterString) GetCharacterStringValue() BACnetAp
 
 // NewBACnetPriorityValueCharacterString factory function for _BACnetPriorityValueCharacterString
 func NewBACnetPriorityValueCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueCharacterString {
-	_result := &_BACnetPriorityValueCharacterString{
-		CharacterStringValue: characterStringValue,
-		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetPriorityValueCharacterString must not be nil")
 	}
-	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result
+	_result := &_BACnetPriorityValueCharacterString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		CharacterStringValue:        characterStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPriorityValueCharacterString) GetTypeName() string {
 }
 
 func (m *_BACnetPriorityValueCharacterString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPriorityValueContract.(*_BACnetPriorityValue).getLengthInBits(ctx))
 
 	// Simple field (characterStringValue)
 	lengthInBits += m.CharacterStringValue.GetLengthInBits(ctx)
@@ -124,47 +123,28 @@ func (m *_BACnetPriorityValueCharacterString) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueCharacterStringParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueCharacterString, error) {
-	return BACnetPriorityValueCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
-}
-
-func BACnetPriorityValueCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueCharacterString, error) {
+func (m *_BACnetPriorityValueCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueCharacterString BACnetPriorityValueCharacterString, err error) {
+	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueCharacterString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueCharacterString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (characterStringValue)
-	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
+	characterStringValue, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterStringValue' field"))
 	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _characterStringValueErr != nil {
-		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetPriorityValueCharacterString")
-	}
-	characterStringValue := _characterStringValue.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for characterStringValue")
-	}
+	m.CharacterStringValue = characterStringValue
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueCharacterString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueCharacterString")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPriorityValueCharacterString{
-		_BACnetPriorityValue: &_BACnetPriorityValue{
-			ObjectTypeArgument: objectTypeArgument,
-		},
-		CharacterStringValue: characterStringValue,
-	}
-	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPriorityValueCharacterString) Serialize() ([]byte, error) {
@@ -185,16 +165,8 @@ func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueCharacterString")
 		}
 
-		// Simple Field (characterStringValue)
-		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
-		}
-		_characterStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterStringValue())
-		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for characterStringValue")
-		}
-		if _characterStringValueErr != nil {
-			return errors.Wrap(_characterStringValueErr, "Error serializing 'characterStringValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", m.GetCharacterStringValue(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'characterStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueCharacterString"); popErr != nil {
@@ -202,12 +174,10 @@ func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPriorityValueContract.(*_BACnetPriorityValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPriorityValueCharacterString) isBACnetPriorityValueCharacterString() bool {
-	return true
-}
+func (m *_BACnetPriorityValueCharacterString) IsBACnetPriorityValueCharacterString() {}
 
 func (m *_BACnetPriorityValueCharacterString) String() string {
 	if m == nil {

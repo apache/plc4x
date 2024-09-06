@@ -102,7 +102,7 @@ public class S7PayloadUserData extends S7Payload implements Message {
     List<S7PayloadUserDataItem> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     S7PayloadUserDataItem.staticParse(
                         readBuffer,

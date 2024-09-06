@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type CycServiceItemDbReadType interface {
 	GetNumberOfAreas() uint8
 	// GetItems returns Items (property field)
 	GetItems() []SubItem
-}
-
-// CycServiceItemDbReadTypeExactly can be used when we want exactly this type and not a type which fulfills CycServiceItemDbReadType.
-// This is useful for switch cases.
-type CycServiceItemDbReadTypeExactly interface {
-	CycServiceItemDbReadType
-	isCycServiceItemDbReadType() bool
+	// IsCycServiceItemDbReadType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCycServiceItemDbReadType()
 }
 
 // _CycServiceItemDbReadType is the data-structure of this message
 type _CycServiceItemDbReadType struct {
-	*_CycServiceItemType
+	CycServiceItemTypeContract
 	NumberOfAreas uint8
 	Items         []SubItem
 }
+
+var _ CycServiceItemDbReadType = (*_CycServiceItemDbReadType)(nil)
+var _ CycServiceItemTypeRequirements = (*_CycServiceItemDbReadType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,13 +67,8 @@ type _CycServiceItemDbReadType struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CycServiceItemDbReadType) InitializeParent(parent CycServiceItemType, byteLength uint8, syntaxId uint8) {
-	m.ByteLength = byteLength
-	m.SyntaxId = syntaxId
-}
-
-func (m *_CycServiceItemDbReadType) GetParent() CycServiceItemType {
-	return m._CycServiceItemType
+func (m *_CycServiceItemDbReadType) GetParent() CycServiceItemTypeContract {
+	return m.CycServiceItemTypeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,11 +92,11 @@ func (m *_CycServiceItemDbReadType) GetItems() []SubItem {
 // NewCycServiceItemDbReadType factory function for _CycServiceItemDbReadType
 func NewCycServiceItemDbReadType(numberOfAreas uint8, items []SubItem, byteLength uint8, syntaxId uint8) *_CycServiceItemDbReadType {
 	_result := &_CycServiceItemDbReadType{
-		NumberOfAreas:       numberOfAreas,
-		Items:               items,
-		_CycServiceItemType: NewCycServiceItemType(byteLength, syntaxId),
+		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
+		NumberOfAreas:              numberOfAreas,
+		Items:                      items,
 	}
-	_result._CycServiceItemType._CycServiceItemTypeChildRequirements = _result
+	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
 	return _result
 }
 
@@ -121,7 +116,7 @@ func (m *_CycServiceItemDbReadType) GetTypeName() string {
 }
 
 func (m *_CycServiceItemDbReadType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CycServiceItemTypeContract.(*_CycServiceItemType).getLengthInBits(ctx))
 
 	// Simple field (numberOfAreas)
 	lengthInBits += 8
@@ -143,67 +138,34 @@ func (m *_CycServiceItemDbReadType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CycServiceItemDbReadTypeParse(ctx context.Context, theBytes []byte) (CycServiceItemDbReadType, error) {
-	return CycServiceItemDbReadTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func CycServiceItemDbReadTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemDbReadType, error) {
+func (m *_CycServiceItemDbReadType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CycServiceItemType) (__cycServiceItemDbReadType CycServiceItemDbReadType, err error) {
+	m.CycServiceItemTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CycServiceItemDbReadType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CycServiceItemDbReadType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfAreas)
-	_numberOfAreas, _numberOfAreasErr := readBuffer.ReadUint8("numberOfAreas", 8)
-	if _numberOfAreasErr != nil {
-		return nil, errors.Wrap(_numberOfAreasErr, "Error parsing 'numberOfAreas' field of CycServiceItemDbReadType")
+	numberOfAreas, err := ReadSimpleField(ctx, "numberOfAreas", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfAreas' field"))
 	}
-	numberOfAreas := _numberOfAreas
+	m.NumberOfAreas = numberOfAreas
 
-	// Array field (items)
-	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for items")
+	items, err := ReadCountArrayField[SubItem](ctx, "items", ReadComplex[SubItem](SubItemParseWithBuffer, readBuffer), uint64(numberOfAreas))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
-	// Count array
-	items := make([]SubItem, max(numberOfAreas, 0))
-	// This happens when the size is set conditional to 0
-	if len(items) == 0 {
-		items = nil
-	}
-	{
-		_numItems := uint16(max(numberOfAreas, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := SubItemParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field of CycServiceItemDbReadType")
-			}
-			items[_curItem] = _item.(SubItem)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for items")
-	}
+	m.Items = items
 
 	if closeErr := readBuffer.CloseContext("CycServiceItemDbReadType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CycServiceItemDbReadType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CycServiceItemDbReadType{
-		_CycServiceItemType: &_CycServiceItemType{},
-		NumberOfAreas:       numberOfAreas,
-		Items:               items,
-	}
-	_child._CycServiceItemType._CycServiceItemTypeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CycServiceItemDbReadType) Serialize() ([]byte, error) {
@@ -224,28 +186,12 @@ func (m *_CycServiceItemDbReadType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for CycServiceItemDbReadType")
 		}
 
-		// Simple Field (numberOfAreas)
-		numberOfAreas := uint8(m.GetNumberOfAreas())
-		_numberOfAreasErr := writeBuffer.WriteUint8("numberOfAreas", 8, uint8((numberOfAreas)))
-		if _numberOfAreasErr != nil {
-			return errors.Wrap(_numberOfAreasErr, "Error serializing 'numberOfAreas' field")
+		if err := WriteSimpleField[uint8](ctx, "numberOfAreas", m.GetNumberOfAreas(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfAreas' field")
 		}
 
-		// Array Field (items)
-		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for items")
-		}
-		for _curItem, _element := range m.GetItems() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'items' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for items")
+		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'items' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CycServiceItemDbReadType"); popErr != nil {
@@ -253,12 +199,10 @@ func (m *_CycServiceItemDbReadType) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CycServiceItemTypeContract.(*_CycServiceItemType).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CycServiceItemDbReadType) isCycServiceItemDbReadType() bool {
-	return true
-}
+func (m *_CycServiceItemDbReadType) IsCycServiceItemDbReadType() {}
 
 func (m *_CycServiceItemDbReadType) String() string {
 	if m == nil {

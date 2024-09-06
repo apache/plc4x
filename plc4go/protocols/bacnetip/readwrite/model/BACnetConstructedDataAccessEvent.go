@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAccessEvent interface {
 	GetAccessEvent() BACnetAccessEventTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessEventTagged
-}
-
-// BACnetConstructedDataAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEvent.
-// This is useful for switch cases.
-type BACnetConstructedDataAccessEventExactly interface {
-	BACnetConstructedDataAccessEvent
-	isBACnetConstructedDataAccessEvent() bool
+	// IsBACnetConstructedDataAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessEvent()
 }
 
 // _BACnetConstructedDataAccessEvent is the data-structure of this message
 type _BACnetConstructedDataAccessEvent struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AccessEvent BACnetAccessEventTagged
 }
+
+var _ BACnetConstructedDataAccessEvent = (*_BACnetConstructedDataAccessEvent)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEvent)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAccessEvent) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAccessEvent) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAccessEvent) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAccessEvent) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAccessEvent) GetActualValue() BACnetAccessEventTa
 
 // NewBACnetConstructedDataAccessEvent factory function for _BACnetConstructedDataAccessEvent
 func NewBACnetConstructedDataAccessEvent(accessEvent BACnetAccessEventTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEvent {
-	_result := &_BACnetConstructedDataAccessEvent{
-		AccessEvent:            accessEvent,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if accessEvent == nil {
+		panic("accessEvent of type BACnetAccessEventTagged for BACnetConstructedDataAccessEvent must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAccessEvent{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessEvent:                   accessEvent,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAccessEvent) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAccessEvent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (accessEvent)
 	lengthInBits += m.AccessEvent.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAccessEvent) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAccessEventParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEvent, error) {
-	return BACnetConstructedDataAccessEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAccessEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEvent, error) {
+func (m *_BACnetConstructedDataAccessEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAccessEvent BACnetConstructedDataAccessEvent, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEvent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessEvent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessEvent)
-	if pullErr := readBuffer.PullContext("accessEvent"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessEvent")
+	accessEvent, err := ReadSimpleField[BACnetAccessEventTagged](ctx, "accessEvent", ReadComplex[BACnetAccessEventTagged](BACnetAccessEventTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEvent' field"))
 	}
-	_accessEvent, _accessEventErr := BACnetAccessEventTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _accessEventErr != nil {
-		return nil, errors.Wrap(_accessEventErr, "Error parsing 'accessEvent' field of BACnetConstructedDataAccessEvent")
-	}
-	accessEvent := _accessEvent.(BACnetAccessEventTagged)
-	if closeErr := readBuffer.CloseContext("accessEvent"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessEvent")
-	}
+	m.AccessEvent = accessEvent
 
-	// Virtual field
-	_actualValue := accessEvent
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetAccessEventTagged](ctx, "actualValue", (*BACnetAccessEventTagged)(nil), accessEvent)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEvent"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEvent")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAccessEvent{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AccessEvent: accessEvent,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAccessEvent) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAccessEvent) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEvent")
 		}
 
-		// Simple Field (accessEvent)
-		if pushErr := writeBuffer.PushContext("accessEvent"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessEvent")
-		}
-		_accessEventErr := writeBuffer.WriteSerializable(ctx, m.GetAccessEvent())
-		if popErr := writeBuffer.PopContext("accessEvent"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessEvent")
-		}
-		if _accessEventErr != nil {
-			return errors.Wrap(_accessEventErr, "Error serializing 'accessEvent' field")
+		if err := WriteSimpleField[BACnetAccessEventTagged](ctx, "accessEvent", m.GetAccessEvent(), WriteComplex[BACnetAccessEventTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessEvent' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAccessEvent) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAccessEvent) isBACnetConstructedDataAccessEvent() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAccessEvent) IsBACnetConstructedDataAccessEvent() {}
 
 func (m *_BACnetConstructedDataAccessEvent) String() string {
 	if m == nil {

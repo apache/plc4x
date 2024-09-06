@@ -1435,8 +1435,9 @@
     ['683' M_VITRUM_DESIGN ['741', '"Vitrum Design"']]
     ['684' M_DETRONS ['742', '"DETRONS"']]
     ['685' M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD ['743', '"Zhejiang FORICK, Intelligent Technology Co., LTD"']]
-    ['686' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['687' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['686' M_VARNI_DIGITAL_PRIVATE_LIMITED ['744', '"Varni Digital Private Limited"']]
+    ['687' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['688' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

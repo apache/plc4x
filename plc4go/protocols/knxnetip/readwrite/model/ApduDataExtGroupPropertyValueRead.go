@@ -37,19 +37,17 @@ type ApduDataExtGroupPropertyValueRead interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
-}
-
-// ApduDataExtGroupPropertyValueReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtGroupPropertyValueRead.
-// This is useful for switch cases.
-type ApduDataExtGroupPropertyValueReadExactly interface {
-	ApduDataExtGroupPropertyValueRead
-	isApduDataExtGroupPropertyValueRead() bool
+	// IsApduDataExtGroupPropertyValueRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtGroupPropertyValueRead()
 }
 
 // _ApduDataExtGroupPropertyValueRead is the data-structure of this message
 type _ApduDataExtGroupPropertyValueRead struct {
-	*_ApduDataExt
+	ApduDataExtContract
 }
+
+var _ ApduDataExtGroupPropertyValueRead = (*_ApduDataExtGroupPropertyValueRead)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtGroupPropertyValueRead)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataExtGroupPropertyValueRead) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtGroupPropertyValueRead) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtGroupPropertyValueRead) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtGroupPropertyValueRead) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 // NewApduDataExtGroupPropertyValueRead factory function for _ApduDataExtGroupPropertyValueRead
 func NewApduDataExtGroupPropertyValueRead(length uint8) *_ApduDataExtGroupPropertyValueRead {
 	_result := &_ApduDataExtGroupPropertyValueRead{
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataExtGroupPropertyValueRead) GetTypeName() string {
 }
 
 func (m *_ApduDataExtGroupPropertyValueRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataExtGroupPropertyValueRead) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtGroupPropertyValueReadParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtGroupPropertyValueRead, error) {
-	return ApduDataExtGroupPropertyValueReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtGroupPropertyValueReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtGroupPropertyValueRead, error) {
+func (m *_ApduDataExtGroupPropertyValueRead) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtGroupPropertyValueRead ApduDataExtGroupPropertyValueRead, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueRead"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtGroupPropertyValueRead")
 	}
@@ -124,14 +116,7 @@ func ApduDataExtGroupPropertyValueReadParseWithBuffer(ctx context.Context, readB
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtGroupPropertyValueRead")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtGroupPropertyValueRead{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtGroupPropertyValueRead) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataExtGroupPropertyValueRead) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtGroupPropertyValueRead) isApduDataExtGroupPropertyValueRead() bool {
-	return true
-}
+func (m *_ApduDataExtGroupPropertyValueRead) IsApduDataExtGroupPropertyValueRead() {}
 
 func (m *_ApduDataExtGroupPropertyValueRead) String() string {
 	if m == nil {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,23 +47,21 @@ type BACnetServiceAckReadProperty interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetValues returns Values (property field)
 	GetValues() BACnetConstructedData
-}
-
-// BACnetServiceAckReadPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadProperty.
-// This is useful for switch cases.
-type BACnetServiceAckReadPropertyExactly interface {
-	BACnetServiceAckReadProperty
-	isBACnetServiceAckReadProperty() bool
+	// IsBACnetServiceAckReadProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckReadProperty()
 }
 
 // _BACnetServiceAckReadProperty is the data-structure of this message
 type _BACnetServiceAckReadProperty struct {
-	*_BACnetServiceAck
+	BACnetServiceAckContract
 	ObjectIdentifier   BACnetContextTagObjectIdentifier
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	Values             BACnetConstructedData
 }
+
+var _ BACnetServiceAckReadProperty = (*_BACnetServiceAckReadProperty)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadProperty)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,10 +77,8 @@ func (m *_BACnetServiceAckReadProperty) GetServiceChoice() BACnetConfirmedServic
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetServiceAckReadProperty) InitializeParent(parent BACnetServiceAck) {}
-
-func (m *_BACnetServiceAckReadProperty) GetParent() BACnetServiceAck {
-	return m._BACnetServiceAck
+func (m *_BACnetServiceAckReadProperty) GetParent() BACnetServiceAckContract {
+	return m.BACnetServiceAckContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,14 +109,20 @@ func (m *_BACnetServiceAckReadProperty) GetValues() BACnetConstructedData {
 
 // NewBACnetServiceAckReadProperty factory function for _BACnetServiceAckReadProperty
 func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckReadProperty {
-	_result := &_BACnetServiceAckReadProperty{
-		ObjectIdentifier:   objectIdentifier,
-		PropertyIdentifier: propertyIdentifier,
-		ArrayIndex:         arrayIndex,
-		Values:             values,
-		_BACnetServiceAck:  NewBACnetServiceAck(serviceAckLength),
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadProperty must not be nil")
 	}
-	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetServiceAckReadProperty must not be nil")
+	}
+	_result := &_BACnetServiceAckReadProperty{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ObjectIdentifier:         objectIdentifier,
+		PropertyIdentifier:       propertyIdentifier,
+		ArrayIndex:               arrayIndex,
+		Values:                   values,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 
@@ -139,7 +142,7 @@ func (m *_BACnetServiceAckReadProperty) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckReadProperty) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
@@ -164,107 +167,54 @@ func (m *_BACnetServiceAckReadProperty) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckReadPropertyParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckReadProperty, error) {
-	return BACnetServiceAckReadPropertyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
-}
-
-func BACnetServiceAckReadPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckReadProperty, error) {
+func (m *_BACnetServiceAckReadProperty) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckReadProperty BACnetServiceAckReadProperty, err error) {
+	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckReadProperty")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIdentifier)
-	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
+	objectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckReadProperty")
+	m.ObjectIdentifier = objectIdentifier
+
+	propertyIdentifier, err := ReadSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", ReadComplex[BACnetPropertyIdentifierTagged](BACnetPropertyIdentifierTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyIdentifier' field"))
 	}
-	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
+	m.PropertyIdentifier = propertyIdentifier
+
+	var arrayIndex BACnetContextTagUnsignedInteger
+	_arrayIndex, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayIndex' field"))
+	}
+	if _arrayIndex != nil {
+		arrayIndex = *_arrayIndex
+		m.ArrayIndex = arrayIndex
 	}
 
-	// Simple Field (propertyIdentifier)
-	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
+	var values BACnetConstructedData
+	_values, err := ReadOptionalField[BACnetConstructedData](ctx, "values", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(3)), (BACnetObjectType)(objectIdentifier.GetObjectType()), (BACnetPropertyIdentifier)(propertyIdentifier.GetValue()), (BACnetTagPayloadUnsignedInteger)((CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'values' field"))
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _propertyIdentifierErr != nil {
-		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetServiceAckReadProperty")
-	}
-	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifierTagged)
-	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
-	}
-
-	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
-	var arrayIndex BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetServiceAckReadProperty")
-		default:
-			arrayIndex = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
-			}
-		}
-	}
-
-	// Optional Field (values) (Can be skipped, if a given expression evaluates to false)
-	var values BACnetConstructedData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("values"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for values")
-		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'values' field of BACnetServiceAckReadProperty")
-		default:
-			values = _val.(BACnetConstructedData)
-			if closeErr := readBuffer.CloseContext("values"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for values")
-			}
-		}
+	if _values != nil {
+		values = *_values
+		m.Values = values
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadProperty"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckReadProperty")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetServiceAckReadProperty{
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
-		ObjectIdentifier:   objectIdentifier,
-		PropertyIdentifier: propertyIdentifier,
-		ArrayIndex:         arrayIndex,
-		Values:             values,
-	}
-	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetServiceAckReadProperty) Serialize() ([]byte, error) {
@@ -285,60 +235,20 @@ func (m *_BACnetServiceAckReadProperty) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckReadProperty")
 		}
 
-		// Simple Field (objectIdentifier)
-		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
-		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectIdentifier")
-		}
-		if _objectIdentifierErr != nil {
-			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", m.GetObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 
-		// Simple Field (propertyIdentifier)
-		if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
-		}
-		_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
-		if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyIdentifier")
-		}
-		if _propertyIdentifierErr != nil {
-			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
+		if err := WriteSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", m.GetPropertyIdentifier(), WriteComplex[BACnetPropertyIdentifierTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		// Optional Field (arrayIndex) (Can be skipped, if the value is null)
-		var arrayIndex BACnetContextTagUnsignedInteger = nil
-		if m.GetArrayIndex() != nil {
-			if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for arrayIndex")
-			}
-			arrayIndex = m.GetArrayIndex()
-			_arrayIndexErr := writeBuffer.WriteSerializable(ctx, arrayIndex)
-			if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for arrayIndex")
-			}
-			if _arrayIndexErr != nil {
-				return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 		}
 
-		// Optional Field (values) (Can be skipped, if the value is null)
-		var values BACnetConstructedData = nil
-		if m.GetValues() != nil {
-			if pushErr := writeBuffer.PushContext("values"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for values")
-			}
-			values = m.GetValues()
-			_valuesErr := writeBuffer.WriteSerializable(ctx, values)
-			if popErr := writeBuffer.PopContext("values"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for values")
-			}
-			if _valuesErr != nil {
-				return errors.Wrap(_valuesErr, "Error serializing 'values' field")
-			}
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "values", GetRef(m.GetValues()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckReadProperty"); popErr != nil {
@@ -346,12 +256,10 @@ func (m *_BACnetServiceAckReadProperty) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetServiceAckContract.(*_BACnetServiceAck).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetServiceAckReadProperty) isBACnetServiceAckReadProperty() bool {
-	return true
-}
+func (m *_BACnetServiceAckReadProperty) IsBACnetServiceAckReadProperty() {}
 
 func (m *_BACnetServiceAckReadProperty) String() string {
 	if m == nil {

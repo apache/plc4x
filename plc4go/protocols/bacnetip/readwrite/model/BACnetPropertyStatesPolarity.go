@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesPolarity interface {
 	BACnetPropertyStates
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() BACnetPolarityTagged
-}
-
-// BACnetPropertyStatesPolarityExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesPolarity.
-// This is useful for switch cases.
-type BACnetPropertyStatesPolarityExactly interface {
-	BACnetPropertyStatesPolarity
-	isBACnetPropertyStatesPolarity() bool
+	// IsBACnetPropertyStatesPolarity is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesPolarity()
 }
 
 // _BACnetPropertyStatesPolarity is the data-structure of this message
 type _BACnetPropertyStatesPolarity struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	Polarity BACnetPolarityTagged
 }
+
+var _ BACnetPropertyStatesPolarity = (*_BACnetPropertyStatesPolarity)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesPolarity)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesPolarity struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesPolarity) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesPolarity) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesPolarity) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesPolarity) GetPolarity() BACnetPolarityTagged {
 
 // NewBACnetPropertyStatesPolarity factory function for _BACnetPropertyStatesPolarity
 func NewBACnetPropertyStatesPolarity(polarity BACnetPolarityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesPolarity {
-	_result := &_BACnetPropertyStatesPolarity{
-		Polarity:              polarity,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if polarity == nil {
+		panic("polarity of type BACnetPolarityTagged for BACnetPropertyStatesPolarity must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesPolarity{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Polarity:                     polarity,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesPolarity) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesPolarity) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (polarity)
 	lengthInBits += m.Polarity.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesPolarity) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesPolarityParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesPolarity, error) {
-	return BACnetPropertyStatesPolarityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesPolarityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesPolarity, error) {
+func (m *_BACnetPropertyStatesPolarity) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesPolarity BACnetPropertyStatesPolarity, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesPolarity"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesPolarity")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (polarity)
-	if pullErr := readBuffer.PullContext("polarity"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for polarity")
+	polarity, err := ReadSimpleField[BACnetPolarityTagged](ctx, "polarity", ReadComplex[BACnetPolarityTagged](BACnetPolarityTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'polarity' field"))
 	}
-	_polarity, _polarityErr := BACnetPolarityTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _polarityErr != nil {
-		return nil, errors.Wrap(_polarityErr, "Error parsing 'polarity' field of BACnetPropertyStatesPolarity")
-	}
-	polarity := _polarity.(BACnetPolarityTagged)
-	if closeErr := readBuffer.CloseContext("polarity"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for polarity")
-	}
+	m.Polarity = polarity
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesPolarity"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesPolarity")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesPolarity{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		Polarity:              polarity,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesPolarity) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesPolarity")
 		}
 
-		// Simple Field (polarity)
-		if pushErr := writeBuffer.PushContext("polarity"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for polarity")
-		}
-		_polarityErr := writeBuffer.WriteSerializable(ctx, m.GetPolarity())
-		if popErr := writeBuffer.PopContext("polarity"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for polarity")
-		}
-		if _polarityErr != nil {
-			return errors.Wrap(_polarityErr, "Error serializing 'polarity' field")
+		if err := WriteSimpleField[BACnetPolarityTagged](ctx, "polarity", m.GetPolarity(), WriteComplex[BACnetPolarityTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'polarity' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesPolarity"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesPolarity) isBACnetPropertyStatesPolarity() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesPolarity) IsBACnetPropertyStatesPolarity() {}
 
 func (m *_BACnetPropertyStatesPolarity) String() string {
 	if m == nil {

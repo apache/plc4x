@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetChannelValueTime interface {
 	BACnetChannelValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
-}
-
-// BACnetChannelValueTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueTime.
-// This is useful for switch cases.
-type BACnetChannelValueTimeExactly interface {
-	BACnetChannelValueTime
-	isBACnetChannelValueTime() bool
+	// IsBACnetChannelValueTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueTime()
 }
 
 // _BACnetChannelValueTime is the data-structure of this message
 type _BACnetChannelValueTime struct {
-	*_BACnetChannelValue
+	BACnetChannelValueContract
 	TimeValue BACnetApplicationTagTime
 }
+
+var _ BACnetChannelValueTime = (*_BACnetChannelValueTime)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetChannelValueTime struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetChannelValueTime) InitializeParent(parent BACnetChannelValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetChannelValueTime) GetParent() BACnetChannelValue {
-	return m._BACnetChannelValue
+func (m *_BACnetChannelValueTime) GetParent() BACnetChannelValueContract {
+	return m.BACnetChannelValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetChannelValueTime) GetTimeValue() BACnetApplicationTagTime {
 
 // NewBACnetChannelValueTime factory function for _BACnetChannelValueTime
 func NewBACnetChannelValueTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueTime {
-	_result := &_BACnetChannelValueTime{
-		TimeValue:           timeValue,
-		_BACnetChannelValue: NewBACnetChannelValue(peekedTagHeader),
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetChannelValueTime must not be nil")
 	}
-	_result._BACnetChannelValue._BACnetChannelValueChildRequirements = _result
+	_result := &_BACnetChannelValueTime{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		TimeValue:                  timeValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetChannelValueTime) GetTypeName() string {
 }
 
 func (m *_BACnetChannelValueTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (timeValue)
 	lengthInBits += m.TimeValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetChannelValueTime) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueTimeParse(ctx context.Context, theBytes []byte) (BACnetChannelValueTime, error) {
-	return BACnetChannelValueTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetChannelValueTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueTime, error) {
+func (m *_BACnetChannelValueTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueTime BACnetChannelValueTime, err error) {
+	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeValue)
-	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
+	timeValue, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "timeValue", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeValue' field"))
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timeValueErr != nil {
-		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetChannelValueTime")
-	}
-	timeValue := _timeValue.(BACnetApplicationTagTime)
-	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeValue")
-	}
+	m.TimeValue = timeValue
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetChannelValueTime{
-		_BACnetChannelValue: &_BACnetChannelValue{},
-		TimeValue:           timeValue,
-	}
-	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetChannelValueTime) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetChannelValueTime) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueTime")
 		}
 
-		// Simple Field (timeValue)
-		if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeValue")
-		}
-		_timeValueErr := writeBuffer.WriteSerializable(ctx, m.GetTimeValue())
-		if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeValue")
-		}
-		if _timeValueErr != nil {
-			return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "timeValue", m.GetTimeValue(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueTime"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetChannelValueTime) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetChannelValueContract.(*_BACnetChannelValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetChannelValueTime) isBACnetChannelValueTime() bool {
-	return true
-}
+func (m *_BACnetChannelValueTime) IsBACnetChannelValueTime() {}
 
 func (m *_BACnetChannelValueTime) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,23 +43,21 @@ type DeleteNodesItem interface {
 	GetNodeId() NodeId
 	// GetDeleteTargetReferences returns DeleteTargetReferences (property field)
 	GetDeleteTargetReferences() bool
-}
-
-// DeleteNodesItemExactly can be used when we want exactly this type and not a type which fulfills DeleteNodesItem.
-// This is useful for switch cases.
-type DeleteNodesItemExactly interface {
-	DeleteNodesItem
-	isDeleteNodesItem() bool
+	// IsDeleteNodesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteNodesItem()
 }
 
 // _DeleteNodesItem is the data-structure of this message
 type _DeleteNodesItem struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NodeId                 NodeId
 	DeleteTargetReferences bool
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ DeleteNodesItem = (*_DeleteNodesItem)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,10 +73,8 @@ func (m *_DeleteNodesItem) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DeleteNodesItem) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_DeleteNodesItem) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_DeleteNodesItem) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,12 +97,15 @@ func (m *_DeleteNodesItem) GetDeleteTargetReferences() bool {
 
 // NewDeleteNodesItem factory function for _DeleteNodesItem
 func NewDeleteNodesItem(nodeId NodeId, deleteTargetReferences bool) *_DeleteNodesItem {
-	_result := &_DeleteNodesItem{
-		NodeId:                     nodeId,
-		DeleteTargetReferences:     deleteTargetReferences,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if nodeId == nil {
+		panic("nodeId of type NodeId for DeleteNodesItem must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_DeleteNodesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		DeleteTargetReferences:            deleteTargetReferences,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -124,7 +125,7 @@ func (m *_DeleteNodesItem) GetTypeName() string {
 }
 
 func (m *_DeleteNodesItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -142,71 +143,40 @@ func (m *_DeleteNodesItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeleteNodesItemParse(ctx context.Context, theBytes []byte, identifier string) (DeleteNodesItem, error) {
-	return DeleteNodesItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func DeleteNodesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteNodesItem, error) {
+func (m *_DeleteNodesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteNodesItem DeleteNodesItem, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeleteNodesItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeleteNodesItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
-	_nodeId, _nodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of DeleteNodesItem")
-	}
-	nodeId := _nodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
-	}
+	m.NodeId = nodeId
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DeleteNodesItem")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (deleteTargetReferences)
-	_deleteTargetReferences, _deleteTargetReferencesErr := readBuffer.ReadBit("deleteTargetReferences")
-	if _deleteTargetReferencesErr != nil {
-		return nil, errors.Wrap(_deleteTargetReferencesErr, "Error parsing 'deleteTargetReferences' field of DeleteNodesItem")
+	deleteTargetReferences, err := ReadSimpleField(ctx, "deleteTargetReferences", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteTargetReferences' field"))
 	}
-	deleteTargetReferences := _deleteTargetReferences
+	m.DeleteTargetReferences = deleteTargetReferences
 
 	if closeErr := readBuffer.CloseContext("DeleteNodesItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeleteNodesItem")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DeleteNodesItem{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NodeId:                     nodeId,
-		DeleteTargetReferences:     deleteTargetReferences,
-		reservedField0:             reservedField0,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DeleteNodesItem) Serialize() ([]byte, error) {
@@ -227,39 +197,16 @@ func (m *_DeleteNodesItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for DeleteNodesItem")
 		}
 
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (deleteTargetReferences)
-		deleteTargetReferences := bool(m.GetDeleteTargetReferences())
-		_deleteTargetReferencesErr := writeBuffer.WriteBit("deleteTargetReferences", (deleteTargetReferences))
-		if _deleteTargetReferencesErr != nil {
-			return errors.Wrap(_deleteTargetReferencesErr, "Error serializing 'deleteTargetReferences' field")
+		if err := WriteSimpleField[bool](ctx, "deleteTargetReferences", m.GetDeleteTargetReferences(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteTargetReferences' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeleteNodesItem"); popErr != nil {
@@ -267,12 +214,10 @@ func (m *_DeleteNodesItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DeleteNodesItem) isDeleteNodesItem() bool {
-	return true
-}
+func (m *_DeleteNodesItem) IsDeleteNodesItem() {}
 
 func (m *_DeleteNodesItem) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,53 +35,49 @@ import (
 
 // BACnetPriorityValue is the corresponding interface of BACnetPriorityValue
 type BACnetPriorityValue interface {
+	BACnetPriorityValueContract
+	BACnetPriorityValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValue()
+}
+
+// BACnetPriorityValueContract provides a set of functions which can be overwritten by a sub struct
+type BACnetPriorityValueContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
+	// GetObjectTypeArgument() returns a parser argument
+	GetObjectTypeArgument() BACnetObjectType
+	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValue()
 }
 
-// BACnetPriorityValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValue.
-// This is useful for switch cases.
-type BACnetPriorityValueExactly interface {
-	BACnetPriorityValue
-	isBACnetPriorityValue() bool
+// BACnetPriorityValueRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetPriorityValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
+	GetPeekedIsContextTag() bool
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetPriorityValue is the data-structure of this message
 type _BACnetPriorityValue struct {
-	_BACnetPriorityValueChildRequirements
+	_SubType        BACnetPriorityValue
 	PeekedTagHeader BACnetTagHeader
 
 	// Arguments.
 	ObjectTypeArgument BACnetObjectType
 }
 
-type _BACnetPriorityValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedIsContextTag() bool
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetPriorityValueParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetPriorityValue, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetPriorityValueChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader)
-	GetParent() *BACnetPriorityValue
-
-	GetTypeName() string
-	BACnetPriorityValue
-}
+var _ BACnetPriorityValueContract = (*_BACnetPriorityValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,13 +97,15 @@ func (m *_BACnetPriorityValue) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetPriorityValue) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetPriorityValue) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetPriorityValue) GetPeekedIsContextTag() bool {
+func (pm *_BACnetPriorityValue) GetPeekedIsContextTag() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
@@ -118,6 +118,9 @@ func (m *_BACnetPriorityValue) GetPeekedIsContextTag() bool {
 
 // NewBACnetPriorityValue factory function for _BACnetPriorityValue
 func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetPriorityValue must not be nil")
+	}
 	return &_BACnetPriorityValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
 }
 
@@ -136,7 +139,7 @@ func (m *_BACnetPriorityValue) GetTypeName() string {
 	return "BACnetPriorityValue"
 }
 
-func (m *_BACnetPriorityValue) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -147,105 +150,140 @@ func (m *_BACnetPriorityValue) GetParentLengthInBits(ctx context.Context) uint16
 }
 
 func (m *_BACnetPriorityValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValue, error) {
-	return BACnetPriorityValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+func BACnetPriorityValueParse[T BACnetPriorityValue](ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (T, error) {
+	return BACnetPriorityValueParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetPriorityValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValue, error) {
+func BACnetPriorityValueParseWithBufferProducer[T BACnetPriorityValue](objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetPriorityValueParseWithBuffer[T](ctx, readBuffer, objectTypeArgument)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetPriorityValueParseWithBuffer[T BACnetPriorityValue](ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (T, error) {
+	v, err := (&_BACnetPriorityValue{ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, objectTypeArgument)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetPriorityValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__bACnetPriorityValue BACnetPriorityValue, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
-	// Virtual field
-	_peekedIsContextTag := bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))
-	peekedIsContextTag := bool(_peekedIsContextTag)
+	peekedIsContextTag, err := ReadVirtualField[bool](ctx, "peekedIsContextTag", (*bool)(nil), bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedIsContextTag' field"))
+	}
 	_ = peekedIsContextTag
 
 	// Validation
 	if !(bool((!(peekedIsContextTag))) || bool((bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"unexpected opening or closing tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "unexpected opening or closing tag"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetPriorityValueChildSerializeRequirement interface {
-		BACnetPriorityValue
-		InitializeParent(BACnetPriorityValue, BACnetTagHeader)
-		GetParent() BACnetPriorityValue
-	}
-	var _childTemp any
-	var _child BACnetPriorityValueChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetPriorityValue
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetPriorityValueNull
-		_childTemp, typeSwitchError = BACnetPriorityValueNullParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueNull{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueNull for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetPriorityValueReal
-		_childTemp, typeSwitchError = BACnetPriorityValueRealParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueReal{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueReal for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetPriorityValueEnumerated
-		_childTemp, typeSwitchError = BACnetPriorityValueEnumeratedParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueEnumerated{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueEnumerated for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetPriorityValueUnsigned
-		_childTemp, typeSwitchError = BACnetPriorityValueUnsignedParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueUnsigned{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueUnsigned for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetPriorityValueBoolean
-		_childTemp, typeSwitchError = BACnetPriorityValueBooleanParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueBoolean{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueBoolean for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetPriorityValueInteger
-		_childTemp, typeSwitchError = BACnetPriorityValueIntegerParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueInteger{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueInteger for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetPriorityValueDouble
-		_childTemp, typeSwitchError = BACnetPriorityValueDoubleParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueDouble{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueDouble for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetPriorityValueTime
-		_childTemp, typeSwitchError = BACnetPriorityValueTimeParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueTime{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueTime for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetPriorityValueCharacterString
-		_childTemp, typeSwitchError = BACnetPriorityValueCharacterStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueCharacterString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueCharacterString for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetPriorityValueOctetString
-		_childTemp, typeSwitchError = BACnetPriorityValueOctetStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueOctetString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueOctetString for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetPriorityValueBitString
-		_childTemp, typeSwitchError = BACnetPriorityValueBitStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueBitString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueBitString for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetPriorityValueDate
-		_childTemp, typeSwitchError = BACnetPriorityValueDateParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueDate{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueDate for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetPriorityValueObjectidentifier
-		_childTemp, typeSwitchError = BACnetPriorityValueObjectidentifierParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueObjectidentifier{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueObjectidentifier for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetPriorityValueConstructedValue
-		_childTemp, typeSwitchError = BACnetPriorityValueConstructedValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueConstructedValue{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueConstructedValue for type-switch of BACnetPriorityValue")
+		}
 	case peekedTagNumber == uint8(1) && peekedIsContextTag == bool(true): // BACnetPriorityValueDateTime
-		_childTemp, typeSwitchError = BACnetPriorityValueDateTimeParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if _child, err = (&_BACnetPriorityValueDateTime{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueDateTime for type-switch of BACnetPriorityValue")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetPriorityValue")
-	}
-	_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValue")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
 }
 
-func (pm *_BACnetPriorityValue) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetPriorityValue, serializeChildFunction func() error) error {
+func (pm *_BACnetPriorityValue) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetPriorityValue, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -290,17 +328,4 @@ func (m *_BACnetPriorityValue) GetObjectTypeArgument() BACnetObjectType {
 //
 ////
 
-func (m *_BACnetPriorityValue) isBACnetPriorityValue() bool {
-	return true
-}
-
-func (m *_BACnetPriorityValue) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetPriorityValue) IsBACnetPriorityValue() {}

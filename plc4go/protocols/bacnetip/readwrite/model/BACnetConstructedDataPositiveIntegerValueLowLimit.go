@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataPositiveIntegerValueLowLimit interface {
 	GetLowLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataPositiveIntegerValueLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueLowLimit.
-// This is useful for switch cases.
-type BACnetConstructedDataPositiveIntegerValueLowLimitExactly interface {
-	BACnetConstructedDataPositiveIntegerValueLowLimit
-	isBACnetConstructedDataPositiveIntegerValueLowLimit() bool
+	// IsBACnetConstructedDataPositiveIntegerValueLowLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPositiveIntegerValueLowLimit()
 }
 
 // _BACnetConstructedDataPositiveIntegerValueLowLimit is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueLowLimit struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LowLimit BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataPositiveIntegerValueLowLimit = (*_BACnetConstructedDataPositiveIntegerValueLowLimit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueLowLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetPropertyIdentifi
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetActualValue() BA
 
 // NewBACnetConstructedDataPositiveIntegerValueLowLimit factory function for _BACnetConstructedDataPositiveIntegerValueLowLimit
 func NewBACnetConstructedDataPositiveIntegerValueLowLimit(lowLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueLowLimit {
-	_result := &_BACnetConstructedDataPositiveIntegerValueLowLimit{
-		LowLimit:               lowLimit,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueLowLimit must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataPositiveIntegerValueLowLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LowLimit:                      lowLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetTypeName() strin
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lowLimit)
 	lengthInBits += m.LowLimit.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueLowLimitParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueLowLimit, error) {
-	return BACnetConstructedDataPositiveIntegerValueLowLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataPositiveIntegerValueLowLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueLowLimit, error) {
+func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPositiveIntegerValueLowLimit BACnetConstructedDataPositiveIntegerValueLowLimit, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueLowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPositiveIntegerValueLowLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lowLimit)
-	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
+	lowLimit, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lowLimit", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowLimit' field"))
 	}
-	_lowLimit, _lowLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _lowLimitErr != nil {
-		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field of BACnetConstructedDataPositiveIntegerValueLowLimit")
-	}
-	lowLimit := _lowLimit.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("lowLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lowLimit")
-	}
+	m.LowLimit = lowLimit
 
-	// Virtual field
-	_actualValue := lowLimit
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), lowLimit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueLowLimit")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataPositiveIntegerValueLowLimit{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LowLimit: lowLimit,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPositiveIntegerValueLowLimit")
 		}
 
-		// Simple Field (lowLimit)
-		if pushErr := writeBuffer.PushContext("lowLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lowLimit")
-		}
-		_lowLimitErr := writeBuffer.WriteSerializable(ctx, m.GetLowLimit())
-		if popErr := writeBuffer.PopContext("lowLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lowLimit")
-		}
-		if _lowLimitErr != nil {
-			return errors.Wrap(_lowLimitErr, "Error serializing 'lowLimit' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lowLimit", m.GetLowLimit(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lowLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) SerializeWithWriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) isBACnetConstructedDataPositiveIntegerValueLowLimit() bool {
-	return true
+func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) IsBACnetConstructedDataPositiveIntegerValueLowLimit() {
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) String() string {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type KnxNetRemoteConfigurationAndDiagnosis interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
-}
-
-// KnxNetRemoteConfigurationAndDiagnosisExactly can be used when we want exactly this type and not a type which fulfills KnxNetRemoteConfigurationAndDiagnosis.
-// This is useful for switch cases.
-type KnxNetRemoteConfigurationAndDiagnosisExactly interface {
-	KnxNetRemoteConfigurationAndDiagnosis
-	isKnxNetRemoteConfigurationAndDiagnosis() bool
+	// IsKnxNetRemoteConfigurationAndDiagnosis is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetRemoteConfigurationAndDiagnosis()
 }
 
 // _KnxNetRemoteConfigurationAndDiagnosis is the data-structure of this message
 type _KnxNetRemoteConfigurationAndDiagnosis struct {
-	*_ServiceId
+	ServiceIdContract
 	Version uint8
 }
+
+var _ KnxNetRemoteConfigurationAndDiagnosis = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
+var _ ServiceIdRequirements = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetServiceType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosis) InitializeParent(parent ServiceId) {}
-
-func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetParent() ServiceId {
-	return m._ServiceId
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetParent() ServiceIdContract {
+	return m.ServiceIdContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetVersion() uint8 {
 // NewKnxNetRemoteConfigurationAndDiagnosis factory function for _KnxNetRemoteConfigurationAndDiagnosis
 func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *_KnxNetRemoteConfigurationAndDiagnosis {
 	_result := &_KnxNetRemoteConfigurationAndDiagnosis{
-		Version:    version,
-		_ServiceId: NewServiceId(),
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
 	}
-	_result._ServiceId._ServiceIdChildRequirements = _result
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetTypeName() string {
 }
 
 func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ServiceIdContract.(*_ServiceId).getLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -126,39 +124,28 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetRemoteConfigurationAndDiagnosisParse(ctx context.Context, theBytes []byte) (KnxNetRemoteConfigurationAndDiagnosis, error) {
-	return KnxNetRemoteConfigurationAndDiagnosisParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func KnxNetRemoteConfigurationAndDiagnosisParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetRemoteConfigurationAndDiagnosis, error) {
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetRemoteConfigurationAndDiagnosis KnxNetRemoteConfigurationAndDiagnosis, err error) {
+	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxNetRemoteConfigurationAndDiagnosis"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetRemoteConfigurationAndDiagnosis")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint8("version", 8)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of KnxNetRemoteConfigurationAndDiagnosis")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
+	m.Version = version
 
 	if closeErr := readBuffer.CloseContext("KnxNetRemoteConfigurationAndDiagnosis"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxNetRemoteConfigurationAndDiagnosis")
 	}
 
-	// Create a partially initialized instance
-	_child := &_KnxNetRemoteConfigurationAndDiagnosis{
-		_ServiceId: &_ServiceId{},
-		Version:    version,
-	}
-	_child._ServiceId._ServiceIdChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_KnxNetRemoteConfigurationAndDiagnosis) Serialize() ([]byte, error) {
@@ -179,11 +166,8 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for KnxNetRemoteConfigurationAndDiagnosis")
 		}
 
-		// Simple Field (version)
-		version := uint8(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
-		if _versionErr != nil {
-			return errors.Wrap(_versionErr, "Error serializing 'version' field")
+		if err := WriteSimpleField[uint8](ctx, "version", m.GetVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 
 		if popErr := writeBuffer.PopContext("KnxNetRemoteConfigurationAndDiagnosis"); popErr != nil {
@@ -191,12 +175,10 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ServiceIdContract.(*_ServiceId).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosis) isKnxNetRemoteConfigurationAndDiagnosis() bool {
-	return true
-}
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) IsKnxNetRemoteConfigurationAndDiagnosis() {}
 
 func (m *_KnxNetRemoteConfigurationAndDiagnosis) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataProcessIdentifierFilter interface {
 	GetProcessIdentifierFilter() BACnetProcessIdSelection
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProcessIdSelection
-}
-
-// BACnetConstructedDataProcessIdentifierFilterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProcessIdentifierFilter.
-// This is useful for switch cases.
-type BACnetConstructedDataProcessIdentifierFilterExactly interface {
-	BACnetConstructedDataProcessIdentifierFilter
-	isBACnetConstructedDataProcessIdentifierFilter() bool
+	// IsBACnetConstructedDataProcessIdentifierFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProcessIdentifierFilter()
 }
 
 // _BACnetConstructedDataProcessIdentifierFilter is the data-structure of this message
 type _BACnetConstructedDataProcessIdentifierFilter struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ProcessIdentifierFilter BACnetProcessIdSelection
 }
+
+var _ BACnetConstructedDataProcessIdentifierFilter = (*_BACnetConstructedDataProcessIdentifierFilter)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProcessIdentifierFilter)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataProcessIdentifierFilter) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataProcessIdentifierFilter) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetActualValue() BACnetP
 
 // NewBACnetConstructedDataProcessIdentifierFilter factory function for _BACnetConstructedDataProcessIdentifierFilter
 func NewBACnetConstructedDataProcessIdentifierFilter(processIdentifierFilter BACnetProcessIdSelection, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifierFilter {
-	_result := &_BACnetConstructedDataProcessIdentifierFilter{
-		ProcessIdentifierFilter: processIdentifierFilter,
-		_BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if processIdentifierFilter == nil {
+		panic("processIdentifierFilter of type BACnetProcessIdSelection for BACnetConstructedDataProcessIdentifierFilter must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataProcessIdentifierFilter{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProcessIdentifierFilter:       processIdentifierFilter,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (processIdentifierFilter)
 	lengthInBits += m.ProcessIdentifierFilter.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataProcessIdentifierFilterParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
-	return BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
+func (m *_BACnetConstructedDataProcessIdentifierFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProcessIdentifierFilter BACnetConstructedDataProcessIdentifierFilter, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifierFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProcessIdentifierFilter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (processIdentifierFilter)
-	if pullErr := readBuffer.PullContext("processIdentifierFilter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifierFilter")
+	processIdentifierFilter, err := ReadSimpleField[BACnetProcessIdSelection](ctx, "processIdentifierFilter", ReadComplex[BACnetProcessIdSelection](BACnetProcessIdSelectionParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'processIdentifierFilter' field"))
 	}
-	_processIdentifierFilter, _processIdentifierFilterErr := BACnetProcessIdSelectionParseWithBuffer(ctx, readBuffer)
-	if _processIdentifierFilterErr != nil {
-		return nil, errors.Wrap(_processIdentifierFilterErr, "Error parsing 'processIdentifierFilter' field of BACnetConstructedDataProcessIdentifierFilter")
-	}
-	processIdentifierFilter := _processIdentifierFilter.(BACnetProcessIdSelection)
-	if closeErr := readBuffer.CloseContext("processIdentifierFilter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for processIdentifierFilter")
-	}
+	m.ProcessIdentifierFilter = processIdentifierFilter
 
-	// Virtual field
-	_actualValue := processIdentifierFilter
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetProcessIdSelection](ctx, "actualValue", (*BACnetProcessIdSelection)(nil), processIdentifierFilter)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProcessIdentifierFilter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProcessIdentifierFilter")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataProcessIdentifierFilter{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ProcessIdentifierFilter: processIdentifierFilter,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProcessIdentifierFilter")
 		}
 
-		// Simple Field (processIdentifierFilter)
-		if pushErr := writeBuffer.PushContext("processIdentifierFilter"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for processIdentifierFilter")
-		}
-		_processIdentifierFilterErr := writeBuffer.WriteSerializable(ctx, m.GetProcessIdentifierFilter())
-		if popErr := writeBuffer.PopContext("processIdentifierFilter"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for processIdentifierFilter")
-		}
-		if _processIdentifierFilterErr != nil {
-			return errors.Wrap(_processIdentifierFilterErr, "Error serializing 'processIdentifierFilter' field")
+		if err := WriteSimpleField[BACnetProcessIdSelection](ctx, "processIdentifierFilter", m.GetProcessIdentifierFilter(), WriteComplex[BACnetProcessIdSelection](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'processIdentifierFilter' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) isBACnetConstructedDataProcessIdentifierFilter() bool {
-	return true
+func (m *_BACnetConstructedDataProcessIdentifierFilter) IsBACnetConstructedDataProcessIdentifierFilter() {
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) String() string {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type ErrorReportingSystemCategoryTypeClimateControllers interface {
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForClimateControllers
-}
-
-// ErrorReportingSystemCategoryTypeClimateControllersExactly can be used when we want exactly this type and not a type which fulfills ErrorReportingSystemCategoryTypeClimateControllers.
-// This is useful for switch cases.
-type ErrorReportingSystemCategoryTypeClimateControllersExactly interface {
-	ErrorReportingSystemCategoryTypeClimateControllers
-	isErrorReportingSystemCategoryTypeClimateControllers() bool
+	// IsErrorReportingSystemCategoryTypeClimateControllers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingSystemCategoryTypeClimateControllers()
 }
 
 // _ErrorReportingSystemCategoryTypeClimateControllers is the data-structure of this message
 type _ErrorReportingSystemCategoryTypeClimateControllers struct {
-	*_ErrorReportingSystemCategoryType
+	ErrorReportingSystemCategoryTypeContract
 	CategoryForType ErrorReportingSystemCategoryTypeForClimateControllers
 }
+
+var _ ErrorReportingSystemCategoryTypeClimateControllers = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
+var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,11 +68,8 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetErrorReportingS
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllers) InitializeParent(parent ErrorReportingSystemCategoryType) {
-}
-
-func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetParent() ErrorReportingSystemCategoryType {
-	return m._ErrorReportingSystemCategoryType
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetParent() ErrorReportingSystemCategoryTypeContract {
+	return m.ErrorReportingSystemCategoryTypeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,10 +89,10 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetCategoryForType
 // NewErrorReportingSystemCategoryTypeClimateControllers factory function for _ErrorReportingSystemCategoryTypeClimateControllers
 func NewErrorReportingSystemCategoryTypeClimateControllers(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) *_ErrorReportingSystemCategoryTypeClimateControllers {
 	_result := &_ErrorReportingSystemCategoryTypeClimateControllers{
-		CategoryForType:                   categoryForType,
-		_ErrorReportingSystemCategoryType: NewErrorReportingSystemCategoryType(),
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
 	}
-	_result._ErrorReportingSystemCategoryType._ErrorReportingSystemCategoryTypeChildRequirements = _result
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
 	return _result
 }
 
@@ -115,7 +112,7 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetTypeName() stri
 }
 
 func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).getLengthInBits(ctx))
 
 	// Simple field (categoryForType)
 	lengthInBits += 4
@@ -127,45 +124,28 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetLengthInBytes(c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingSystemCategoryTypeClimateControllersParse(ctx context.Context, theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
-	return ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
-}
-
-func ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ErrorReportingSystemCategoryType, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (__errorReportingSystemCategoryTypeClimateControllers ErrorReportingSystemCategoryTypeClimateControllers, err error) {
+	m.ErrorReportingSystemCategoryTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeClimateControllers"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ErrorReportingSystemCategoryTypeClimateControllers")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (categoryForType)
-	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
+	categoryForType, err := ReadEnumField[ErrorReportingSystemCategoryTypeForClimateControllers](ctx, "categoryForType", "ErrorReportingSystemCategoryTypeForClimateControllers", ReadEnum(ErrorReportingSystemCategoryTypeForClimateControllersByValue, ReadUnsignedByte(readBuffer, uint8(4))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'categoryForType' field"))
 	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(ctx, readBuffer)
-	if _categoryForTypeErr != nil {
-		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeClimateControllers")
-	}
-	categoryForType := _categoryForType
-	if closeErr := readBuffer.CloseContext("categoryForType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for categoryForType")
-	}
+	m.CategoryForType = categoryForType
 
 	if closeErr := readBuffer.CloseContext("ErrorReportingSystemCategoryTypeClimateControllers"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ErrorReportingSystemCategoryTypeClimateControllers")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ErrorReportingSystemCategoryTypeClimateControllers{
-		_ErrorReportingSystemCategoryType: &_ErrorReportingSystemCategoryType{},
-		CategoryForType:                   categoryForType,
-	}
-	_child._ErrorReportingSystemCategoryType._ErrorReportingSystemCategoryTypeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ErrorReportingSystemCategoryTypeClimateControllers) Serialize() ([]byte, error) {
@@ -186,16 +166,8 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) SerializeWithWrite
 			return errors.Wrap(pushErr, "Error pushing for ErrorReportingSystemCategoryTypeClimateControllers")
 		}
 
-		// Simple Field (categoryForType)
-		if pushErr := writeBuffer.PushContext("categoryForType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for categoryForType")
-		}
-		_categoryForTypeErr := writeBuffer.WriteSerializable(ctx, m.GetCategoryForType())
-		if popErr := writeBuffer.PopContext("categoryForType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for categoryForType")
-		}
-		if _categoryForTypeErr != nil {
-			return errors.Wrap(_categoryForTypeErr, "Error serializing 'categoryForType' field")
+		if err := WriteSimpleEnumField[ErrorReportingSystemCategoryTypeForClimateControllers](ctx, "categoryForType", "ErrorReportingSystemCategoryTypeForClimateControllers", m.GetCategoryForType(), WriteEnum[ErrorReportingSystemCategoryTypeForClimateControllers, uint8](ErrorReportingSystemCategoryTypeForClimateControllers.GetValue, ErrorReportingSystemCategoryTypeForClimateControllers.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+			return errors.Wrap(err, "Error serializing 'categoryForType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ErrorReportingSystemCategoryTypeClimateControllers"); popErr != nil {
@@ -203,11 +175,10 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) SerializeWithWrite
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllers) isErrorReportingSystemCategoryTypeClimateControllers() bool {
-	return true
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) IsErrorReportingSystemCategoryTypeClimateControllers() {
 }
 
 func (m *_ErrorReportingSystemCategoryTypeClimateControllers) String() string {

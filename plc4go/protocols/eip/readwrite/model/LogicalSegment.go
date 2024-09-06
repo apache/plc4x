@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type LogicalSegment interface {
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() LogicalSegmentType
-}
-
-// LogicalSegmentExactly can be used when we want exactly this type and not a type which fulfills LogicalSegment.
-// This is useful for switch cases.
-type LogicalSegmentExactly interface {
-	LogicalSegment
-	isLogicalSegment() bool
+	// IsLogicalSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLogicalSegment()
 }
 
 // _LogicalSegment is the data-structure of this message
 type _LogicalSegment struct {
-	*_PathSegment
+	PathSegmentContract
 	SegmentType LogicalSegmentType
 }
+
+var _ LogicalSegment = (*_LogicalSegment)(nil)
+var _ PathSegmentRequirements = (*_LogicalSegment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_LogicalSegment) GetPathSegment() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_LogicalSegment) InitializeParent(parent PathSegment) {}
-
-func (m *_LogicalSegment) GetParent() PathSegment {
-	return m._PathSegment
+func (m *_LogicalSegment) GetParent() PathSegmentContract {
+	return m.PathSegmentContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_LogicalSegment) GetSegmentType() LogicalSegmentType {
 
 // NewLogicalSegment factory function for _LogicalSegment
 func NewLogicalSegment(segmentType LogicalSegmentType) *_LogicalSegment {
-	_result := &_LogicalSegment{
-		SegmentType:  segmentType,
-		_PathSegment: NewPathSegment(),
+	if segmentType == nil {
+		panic("segmentType of type LogicalSegmentType for LogicalSegment must not be nil")
 	}
-	_result._PathSegment._PathSegmentChildRequirements = _result
+	_result := &_LogicalSegment{
+		PathSegmentContract: NewPathSegment(),
+		SegmentType:         segmentType,
+	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_LogicalSegment) GetTypeName() string {
 }
 
 func (m *_LogicalSegment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.PathSegmentContract.(*_PathSegment).getLengthInBits(ctx))
 
 	// Simple field (segmentType)
 	lengthInBits += m.SegmentType.GetLengthInBits(ctx)
@@ -126,45 +127,28 @@ func (m *_LogicalSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LogicalSegmentParse(ctx context.Context, theBytes []byte) (LogicalSegment, error) {
-	return LogicalSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func LogicalSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicalSegment, error) {
+func (m *_LogicalSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_PathSegment) (__logicalSegment LogicalSegment, err error) {
+	m.PathSegmentContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LogicalSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LogicalSegment")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (segmentType)
-	if pullErr := readBuffer.PullContext("segmentType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for segmentType")
+	segmentType, err := ReadSimpleField[LogicalSegmentType](ctx, "segmentType", ReadComplex[LogicalSegmentType](LogicalSegmentTypeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentType' field"))
 	}
-	_segmentType, _segmentTypeErr := LogicalSegmentTypeParseWithBuffer(ctx, readBuffer)
-	if _segmentTypeErr != nil {
-		return nil, errors.Wrap(_segmentTypeErr, "Error parsing 'segmentType' field of LogicalSegment")
-	}
-	segmentType := _segmentType.(LogicalSegmentType)
-	if closeErr := readBuffer.CloseContext("segmentType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for segmentType")
-	}
+	m.SegmentType = segmentType
 
 	if closeErr := readBuffer.CloseContext("LogicalSegment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LogicalSegment")
 	}
 
-	// Create a partially initialized instance
-	_child := &_LogicalSegment{
-		_PathSegment: &_PathSegment{},
-		SegmentType:  segmentType,
-	}
-	_child._PathSegment._PathSegmentChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_LogicalSegment) Serialize() ([]byte, error) {
@@ -185,16 +169,8 @@ func (m *_LogicalSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for LogicalSegment")
 		}
 
-		// Simple Field (segmentType)
-		if pushErr := writeBuffer.PushContext("segmentType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for segmentType")
-		}
-		_segmentTypeErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentType())
-		if popErr := writeBuffer.PopContext("segmentType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for segmentType")
-		}
-		if _segmentTypeErr != nil {
-			return errors.Wrap(_segmentTypeErr, "Error serializing 'segmentType' field")
+		if err := WriteSimpleField[LogicalSegmentType](ctx, "segmentType", m.GetSegmentType(), WriteComplex[LogicalSegmentType](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LogicalSegment"); popErr != nil {
@@ -202,12 +178,10 @@ func (m *_LogicalSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.PathSegmentContract.(*_PathSegment).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_LogicalSegment) isLogicalSegment() bool {
-	return true
-}
+func (m *_LogicalSegment) IsLogicalSegment() {}
 
 func (m *_LogicalSegment) String() string {
 	if m == nil {

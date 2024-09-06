@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAuthorizationMode interface {
 	GetAuthorizationMode() BACnetAuthorizationModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthorizationModeTagged
-}
-
-// BACnetConstructedDataAuthorizationModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAuthorizationMode.
-// This is useful for switch cases.
-type BACnetConstructedDataAuthorizationModeExactly interface {
-	BACnetConstructedDataAuthorizationMode
-	isBACnetConstructedDataAuthorizationMode() bool
+	// IsBACnetConstructedDataAuthorizationMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAuthorizationMode()
 }
 
 // _BACnetConstructedDataAuthorizationMode is the data-structure of this message
 type _BACnetConstructedDataAuthorizationMode struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AuthorizationMode BACnetAuthorizationModeTagged
 }
+
+var _ BACnetConstructedDataAuthorizationMode = (*_BACnetConstructedDataAuthorizationMode)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAuthorizationMode) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAuthorizationMode) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAuthorizationMode) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetActualValue() BACnetAuthori
 
 // NewBACnetConstructedDataAuthorizationMode factory function for _BACnetConstructedDataAuthorizationMode
 func NewBACnetConstructedDataAuthorizationMode(authorizationMode BACnetAuthorizationModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationMode {
-	_result := &_BACnetConstructedDataAuthorizationMode{
-		AuthorizationMode:      authorizationMode,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if authorizationMode == nil {
+		panic("authorizationMode of type BACnetAuthorizationModeTagged for BACnetConstructedDataAuthorizationMode must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAuthorizationMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AuthorizationMode:             authorizationMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (authorizationMode)
 	lengthInBits += m.AuthorizationMode.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAuthorizationModeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
-	return BACnetConstructedDataAuthorizationModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAuthorizationModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
+func (m *_BACnetConstructedDataAuthorizationMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAuthorizationMode BACnetConstructedDataAuthorizationMode, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAuthorizationMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (authorizationMode)
-	if pullErr := readBuffer.PullContext("authorizationMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authorizationMode")
+	authorizationMode, err := ReadSimpleField[BACnetAuthorizationModeTagged](ctx, "authorizationMode", ReadComplex[BACnetAuthorizationModeTagged](BACnetAuthorizationModeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authorizationMode' field"))
 	}
-	_authorizationMode, _authorizationModeErr := BACnetAuthorizationModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _authorizationModeErr != nil {
-		return nil, errors.Wrap(_authorizationModeErr, "Error parsing 'authorizationMode' field of BACnetConstructedDataAuthorizationMode")
-	}
-	authorizationMode := _authorizationMode.(BACnetAuthorizationModeTagged)
-	if closeErr := readBuffer.CloseContext("authorizationMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authorizationMode")
-	}
+	m.AuthorizationMode = authorizationMode
 
-	// Virtual field
-	_actualValue := authorizationMode
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetAuthorizationModeTagged](ctx, "actualValue", (*BACnetAuthorizationModeTagged)(nil), authorizationMode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthorizationMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAuthorizationMode")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAuthorizationMode{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AuthorizationMode: authorizationMode,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAuthorizationMode) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAuthorizationMode")
 		}
 
-		// Simple Field (authorizationMode)
-		if pushErr := writeBuffer.PushContext("authorizationMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authorizationMode")
-		}
-		_authorizationModeErr := writeBuffer.WriteSerializable(ctx, m.GetAuthorizationMode())
-		if popErr := writeBuffer.PopContext("authorizationMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authorizationMode")
-		}
-		if _authorizationModeErr != nil {
-			return errors.Wrap(_authorizationModeErr, "Error serializing 'authorizationMode' field")
+		if err := WriteSimpleField[BACnetAuthorizationModeTagged](ctx, "authorizationMode", m.GetAuthorizationMode(), WriteComplex[BACnetAuthorizationModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'authorizationMode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) isBACnetConstructedDataAuthorizationMode() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAuthorizationMode) IsBACnetConstructedDataAuthorizationMode() {}
 
 func (m *_BACnetConstructedDataAuthorizationMode) String() string {
 	if m == nil {

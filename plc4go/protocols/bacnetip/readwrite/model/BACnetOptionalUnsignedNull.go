@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetOptionalUnsignedNull interface {
 	BACnetOptionalUnsigned
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-}
-
-// BACnetOptionalUnsignedNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalUnsignedNull.
-// This is useful for switch cases.
-type BACnetOptionalUnsignedNullExactly interface {
-	BACnetOptionalUnsignedNull
-	isBACnetOptionalUnsignedNull() bool
+	// IsBACnetOptionalUnsignedNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalUnsignedNull()
 }
 
 // _BACnetOptionalUnsignedNull is the data-structure of this message
 type _BACnetOptionalUnsignedNull struct {
-	*_BACnetOptionalUnsigned
+	BACnetOptionalUnsignedContract
 	NullValue BACnetApplicationTagNull
 }
+
+var _ BACnetOptionalUnsignedNull = (*_BACnetOptionalUnsignedNull)(nil)
+var _ BACnetOptionalUnsignedRequirements = (*_BACnetOptionalUnsignedNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetOptionalUnsignedNull struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetOptionalUnsignedNull) InitializeParent(parent BACnetOptionalUnsigned, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetOptionalUnsignedNull) GetParent() BACnetOptionalUnsigned {
-	return m._BACnetOptionalUnsigned
+func (m *_BACnetOptionalUnsignedNull) GetParent() BACnetOptionalUnsignedContract {
+	return m.BACnetOptionalUnsignedContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetOptionalUnsignedNull) GetNullValue() BACnetApplicationTagNull {
 
 // NewBACnetOptionalUnsignedNull factory function for _BACnetOptionalUnsignedNull
 func NewBACnetOptionalUnsignedNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsignedNull {
-	_result := &_BACnetOptionalUnsignedNull{
-		NullValue:               nullValue,
-		_BACnetOptionalUnsigned: NewBACnetOptionalUnsigned(peekedTagHeader),
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalUnsignedNull must not be nil")
 	}
-	_result._BACnetOptionalUnsigned._BACnetOptionalUnsignedChildRequirements = _result
+	_result := &_BACnetOptionalUnsignedNull{
+		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
+		NullValue:                      nullValue,
+	}
+	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetOptionalUnsignedNull) GetTypeName() string {
 }
 
 func (m *_BACnetOptionalUnsignedNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned).getLengthInBits(ctx))
 
 	// Simple field (nullValue)
 	lengthInBits += m.NullValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetOptionalUnsignedNull) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalUnsignedNullParse(ctx context.Context, theBytes []byte) (BACnetOptionalUnsignedNull, error) {
-	return BACnetOptionalUnsignedNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetOptionalUnsignedNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalUnsignedNull, error) {
+func (m *_BACnetOptionalUnsignedNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetOptionalUnsigned) (__bACnetOptionalUnsignedNull BACnetOptionalUnsignedNull, err error) {
+	m.BACnetOptionalUnsignedContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetOptionalUnsignedNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalUnsignedNull")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nullValue)
-	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
+	nullValue, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "nullValue", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullValue' field"))
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetOptionalUnsignedNull")
-	}
-	nullValue := _nullValue.(BACnetApplicationTagNull)
-	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
-	}
+	m.NullValue = nullValue
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalUnsignedNull"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalUnsignedNull")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetOptionalUnsignedNull{
-		_BACnetOptionalUnsigned: &_BACnetOptionalUnsigned{},
-		NullValue:               nullValue,
-	}
-	_child._BACnetOptionalUnsigned._BACnetOptionalUnsignedChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetOptionalUnsignedNull) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetOptionalUnsignedNull) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalUnsignedNull")
 		}
 
-		// Simple Field (nullValue)
-		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nullValue")
-		}
-		_nullValueErr := writeBuffer.WriteSerializable(ctx, m.GetNullValue())
-		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nullValue")
-		}
-		if _nullValueErr != nil {
-			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagNull](ctx, "nullValue", m.GetNullValue(), WriteComplex[BACnetApplicationTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nullValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalUnsignedNull"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetOptionalUnsignedNull) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetOptionalUnsignedNull) isBACnetOptionalUnsignedNull() bool {
-	return true
-}
+func (m *_BACnetOptionalUnsignedNull) IsBACnetOptionalUnsignedNull() {}
 
 func (m *_BACnetOptionalUnsignedNull) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type AdsReadWriteResponse interface {
 	GetResult() ReturnCode
 	// GetData returns Data (property field)
 	GetData() []byte
-}
-
-// AdsReadWriteResponseExactly can be used when we want exactly this type and not a type which fulfills AdsReadWriteResponse.
-// This is useful for switch cases.
-type AdsReadWriteResponseExactly interface {
-	AdsReadWriteResponse
-	isAdsReadWriteResponse() bool
+	// IsAdsReadWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadWriteResponse()
 }
 
 // _AdsReadWriteResponse is the data-structure of this message
 type _AdsReadWriteResponse struct {
-	*_AmsPacket
+	AmsPacketContract
 	Result ReturnCode
 	Data   []byte
 }
+
+var _ AdsReadWriteResponse = (*_AdsReadWriteResponse)(nil)
+var _ AmsPacketRequirements = (*_AdsReadWriteResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,17 +75,8 @@ func (m *_AdsReadWriteResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsReadWriteResponse) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
-	m.TargetAmsNetId = targetAmsNetId
-	m.TargetAmsPort = targetAmsPort
-	m.SourceAmsNetId = sourceAmsNetId
-	m.SourceAmsPort = sourceAmsPort
-	m.ErrorCode = errorCode
-	m.InvokeId = invokeId
-}
-
-func (m *_AdsReadWriteResponse) GetParent() AmsPacket {
-	return m._AmsPacket
+func (m *_AdsReadWriteResponse) GetParent() AmsPacketContract {
+	return m.AmsPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,11 +100,11 @@ func (m *_AdsReadWriteResponse) GetData() []byte {
 // NewAdsReadWriteResponse factory function for _AdsReadWriteResponse
 func NewAdsReadWriteResponse(result ReturnCode, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadWriteResponse {
 	_result := &_AdsReadWriteResponse{
-		Result:     result,
-		Data:       data,
-		_AmsPacket: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+		Data:              data,
 	}
-	_result._AmsPacket._AmsPacketChildRequirements = _result
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 
@@ -133,7 +124,7 @@ func (m *_AdsReadWriteResponse) GetTypeName() string {
 }
 
 func (m *_AdsReadWriteResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -153,59 +144,40 @@ func (m *_AdsReadWriteResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsReadWriteResponseParse(ctx context.Context, theBytes []byte) (AdsReadWriteResponse, error) {
-	return AdsReadWriteResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsReadWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadWriteResponse, error) {
+func (m *_AdsReadWriteResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsReadWriteResponse AdsReadWriteResponse, err error) {
+	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsReadWriteResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsReadWriteResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (result)
-	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for result")
+	result, err := ReadEnumField[ReturnCode](ctx, "result", "ReturnCode", ReadEnum(ReturnCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'result' field"))
 	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
-	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadWriteResponse")
-	}
-	result := _result
-	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for result")
-	}
+	m.Result = result
 
-	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
+	}
 	_ = length
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsReadWriteResponse")
+
+	data, err := readBuffer.ReadByteArray("data", int(length))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(length)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsReadWriteResponse")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("AdsReadWriteResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsReadWriteResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsReadWriteResponse{
-		_AmsPacket: &_AmsPacket{},
-		Result:     result,
-		Data:       data,
-	}
-	_child._AmsPacket._AmsPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsReadWriteResponse) Serialize() ([]byte, error) {
@@ -226,28 +198,15 @@ func (m *_AdsReadWriteResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for AdsReadWriteResponse")
 		}
 
-		// Simple Field (result)
-		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for result")
+		if err := WriteSimpleEnumField[ReturnCode](ctx, "result", "ReturnCode", m.GetResult(), WriteEnum[ReturnCode, uint32](ReturnCode.GetValue, ReturnCode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'result' field")
 		}
-		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
-		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for result")
-		}
-		if _resultErr != nil {
-			return errors.Wrap(_resultErr, "Error serializing 'result' field")
-		}
-
-		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.GetData())))
-		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
-		if _lengthErr != nil {
-			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+		if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
@@ -256,12 +215,10 @@ func (m *_AdsReadWriteResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AmsPacketContract.(*_AmsPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsReadWriteResponse) isAdsReadWriteResponse() bool {
-	return true
-}
+func (m *_AdsReadWriteResponse) IsAdsReadWriteResponse() {}
 
 func (m *_AdsReadWriteResponse) String() string {
 	if m == nil {

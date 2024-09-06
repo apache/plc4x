@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataNodeSubtype interface {
 	GetNodeSubType() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataNodeSubtypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNodeSubtype.
-// This is useful for switch cases.
-type BACnetConstructedDataNodeSubtypeExactly interface {
-	BACnetConstructedDataNodeSubtype
-	isBACnetConstructedDataNodeSubtype() bool
+	// IsBACnetConstructedDataNodeSubtype is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNodeSubtype()
 }
 
 // _BACnetConstructedDataNodeSubtype is the data-structure of this message
 type _BACnetConstructedDataNodeSubtype struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	NodeSubType BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataNodeSubtype = (*_BACnetConstructedDataNodeSubtype)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNodeSubtype)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataNodeSubtype) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataNodeSubtype) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataNodeSubtype) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataNodeSubtype) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataNodeSubtype) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataNodeSubtype factory function for _BACnetConstructedDataNodeSubtype
 func NewBACnetConstructedDataNodeSubtype(nodeSubType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
-	_result := &_BACnetConstructedDataNodeSubtype{
-		NodeSubType:            nodeSubType,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if nodeSubType == nil {
+		panic("nodeSubType of type BACnetApplicationTagCharacterString for BACnetConstructedDataNodeSubtype must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataNodeSubtype{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NodeSubType:                   nodeSubType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataNodeSubtype) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNodeSubtype) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (nodeSubType)
 	lengthInBits += m.NodeSubType.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataNodeSubtype) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataNodeSubtypeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNodeSubtype, error) {
-	return BACnetConstructedDataNodeSubtypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataNodeSubtypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNodeSubtype, error) {
+func (m *_BACnetConstructedDataNodeSubtype) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNodeSubtype BACnetConstructedDataNodeSubtype, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNodeSubtype"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNodeSubtype")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeSubType)
-	if pullErr := readBuffer.PullContext("nodeSubType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeSubType")
+	nodeSubType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "nodeSubType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeSubType' field"))
 	}
-	_nodeSubType, _nodeSubTypeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _nodeSubTypeErr != nil {
-		return nil, errors.Wrap(_nodeSubTypeErr, "Error parsing 'nodeSubType' field of BACnetConstructedDataNodeSubtype")
-	}
-	nodeSubType := _nodeSubType.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("nodeSubType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeSubType")
-	}
+	m.NodeSubType = nodeSubType
 
-	// Virtual field
-	_actualValue := nodeSubType
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), nodeSubType)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNodeSubtype"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNodeSubtype")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataNodeSubtype{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		NodeSubType: nodeSubType,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataNodeSubtype) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNodeSubtype")
 		}
 
-		// Simple Field (nodeSubType)
-		if pushErr := writeBuffer.PushContext("nodeSubType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeSubType")
-		}
-		_nodeSubTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNodeSubType())
-		if popErr := writeBuffer.PopContext("nodeSubType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeSubType")
-		}
-		if _nodeSubTypeErr != nil {
-			return errors.Wrap(_nodeSubTypeErr, "Error serializing 'nodeSubType' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "nodeSubType", m.GetNodeSubType(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeSubType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataNodeSubtype) isBACnetConstructedDataNodeSubtype() bool {
-	return true
-}
+func (m *_BACnetConstructedDataNodeSubtype) IsBACnetConstructedDataNodeSubtype() {}
 
 func (m *_BACnetConstructedDataNodeSubtype) String() string {
 	if m == nil {

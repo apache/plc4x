@@ -127,13 +127,10 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     writeBuffer.pushContext("SessionSecurityDiagnosticsDataType");
 
     // Simple Field (sessionId)
-    writeSimpleField("sessionId", sessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sessionId", sessionId, writeComplex(writeBuffer));
 
     // Simple Field (clientUserIdOfSession)
-    writeSimpleField(
-        "clientUserIdOfSession",
-        clientUserIdOfSession,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientUserIdOfSession", clientUserIdOfSession, writeComplex(writeBuffer));
 
     // Simple Field (noOfClientUserIdHistory)
     writeSimpleField(
@@ -143,35 +140,29 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     writeComplexTypeArrayField("clientUserIdHistory", clientUserIdHistory, writeBuffer);
 
     // Simple Field (authenticationMechanism)
-    writeSimpleField(
-        "authenticationMechanism",
-        authenticationMechanism,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationMechanism", authenticationMechanism, writeComplex(writeBuffer));
 
     // Simple Field (encoding)
-    writeSimpleField("encoding", encoding, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("encoding", encoding, writeComplex(writeBuffer));
 
     // Simple Field (transportProtocol)
-    writeSimpleField(
-        "transportProtocol", transportProtocol, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportProtocol", transportProtocol, writeComplex(writeBuffer));
 
     // Simple Field (securityMode)
     writeSimpleEnumField(
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (clientCertificate)
-    writeSimpleField(
-        "clientCertificate", clientCertificate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientCertificate", clientCertificate, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SessionSecurityDiagnosticsDataType");
   }
@@ -233,14 +224,12 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
-        readSimpleField(
-            "sessionId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("sessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     PascalString clientUserIdOfSession =
         readSimpleField(
             "clientUserIdOfSession",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfClientUserIdHistory =
         readSimpleField("noOfClientUserIdHistory", readSignedInt(readBuffer, 32));
@@ -248,41 +237,38 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     List<PascalString> clientUserIdHistory =
         readCountArrayField(
             "clientUserIdHistory",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfClientUserIdHistory);
 
     PascalString authenticationMechanism =
         readSimpleField(
             "authenticationMechanism",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString encoding =
         readSimpleField(
-            "encoding",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "encoding", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString transportProtocol =
         readSimpleField(
             "transportProtocol",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     MessageSecurityMode securityMode =
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString clientCertificate =
         readSimpleField(
             "clientCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SessionSecurityDiagnosticsDataType");
     // Create the instance

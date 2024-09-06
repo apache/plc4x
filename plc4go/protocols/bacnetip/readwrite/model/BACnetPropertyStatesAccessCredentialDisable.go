@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesAccessCredentialDisable interface {
 	BACnetPropertyStates
 	// GetAccessCredentialDisable returns AccessCredentialDisable (property field)
 	GetAccessCredentialDisable() BACnetAccessCredentialDisableTagged
-}
-
-// BACnetPropertyStatesAccessCredentialDisableExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAccessCredentialDisable.
-// This is useful for switch cases.
-type BACnetPropertyStatesAccessCredentialDisableExactly interface {
-	BACnetPropertyStatesAccessCredentialDisable
-	isBACnetPropertyStatesAccessCredentialDisable() bool
+	// IsBACnetPropertyStatesAccessCredentialDisable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesAccessCredentialDisable()
 }
 
 // _BACnetPropertyStatesAccessCredentialDisable is the data-structure of this message
 type _BACnetPropertyStatesAccessCredentialDisable struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	AccessCredentialDisable BACnetAccessCredentialDisableTagged
 }
+
+var _ BACnetPropertyStatesAccessCredentialDisable = (*_BACnetPropertyStatesAccessCredentialDisable)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAccessCredentialDisable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesAccessCredentialDisable struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesAccessCredentialDisable) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesAccessCredentialDisable) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesAccessCredentialDisable) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) GetAccessCredentialDisabl
 
 // NewBACnetPropertyStatesAccessCredentialDisable factory function for _BACnetPropertyStatesAccessCredentialDisable
 func NewBACnetPropertyStatesAccessCredentialDisable(accessCredentialDisable BACnetAccessCredentialDisableTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAccessCredentialDisable {
-	_result := &_BACnetPropertyStatesAccessCredentialDisable{
-		AccessCredentialDisable: accessCredentialDisable,
-		_BACnetPropertyStates:   NewBACnetPropertyStates(peekedTagHeader),
+	if accessCredentialDisable == nil {
+		panic("accessCredentialDisable of type BACnetAccessCredentialDisableTagged for BACnetPropertyStatesAccessCredentialDisable must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesAccessCredentialDisable{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		AccessCredentialDisable:      accessCredentialDisable,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (accessCredentialDisable)
 	lengthInBits += m.AccessCredentialDisable.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesAccessCredentialDisableParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
-	return BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
+func (m *_BACnetPropertyStatesAccessCredentialDisable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesAccessCredentialDisable BACnetPropertyStatesAccessCredentialDisable, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessCredentialDisable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesAccessCredentialDisable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessCredentialDisable)
-	if pullErr := readBuffer.PullContext("accessCredentialDisable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessCredentialDisable")
+	accessCredentialDisable, err := ReadSimpleField[BACnetAccessCredentialDisableTagged](ctx, "accessCredentialDisable", ReadComplex[BACnetAccessCredentialDisableTagged](BACnetAccessCredentialDisableTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessCredentialDisable' field"))
 	}
-	_accessCredentialDisable, _accessCredentialDisableErr := BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _accessCredentialDisableErr != nil {
-		return nil, errors.Wrap(_accessCredentialDisableErr, "Error parsing 'accessCredentialDisable' field of BACnetPropertyStatesAccessCredentialDisable")
-	}
-	accessCredentialDisable := _accessCredentialDisable.(BACnetAccessCredentialDisableTagged)
-	if closeErr := readBuffer.CloseContext("accessCredentialDisable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessCredentialDisable")
-	}
+	m.AccessCredentialDisable = accessCredentialDisable
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAccessCredentialDisable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesAccessCredentialDisable")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesAccessCredentialDisable{
-		_BACnetPropertyStates:   &_BACnetPropertyStates{},
-		AccessCredentialDisable: accessCredentialDisable,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisable) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAccessCredentialDisable")
 		}
 
-		// Simple Field (accessCredentialDisable)
-		if pushErr := writeBuffer.PushContext("accessCredentialDisable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessCredentialDisable")
-		}
-		_accessCredentialDisableErr := writeBuffer.WriteSerializable(ctx, m.GetAccessCredentialDisable())
-		if popErr := writeBuffer.PopContext("accessCredentialDisable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessCredentialDisable")
-		}
-		if _accessCredentialDisableErr != nil {
-			return errors.Wrap(_accessCredentialDisableErr, "Error serializing 'accessCredentialDisable' field")
+		if err := WriteSimpleField[BACnetAccessCredentialDisableTagged](ctx, "accessCredentialDisable", m.GetAccessCredentialDisable(), WriteComplex[BACnetAccessCredentialDisableTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessCredentialDisable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAccessCredentialDisable"); popErr != nil {
@@ -200,11 +174,10 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisable) isBACnetPropertyStatesAccessCredentialDisable() bool {
-	return true
+func (m *_BACnetPropertyStatesAccessCredentialDisable) IsBACnetPropertyStatesAccessCredentialDisable() {
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisable) String() string {

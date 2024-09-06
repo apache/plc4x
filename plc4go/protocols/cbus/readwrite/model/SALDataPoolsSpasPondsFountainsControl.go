@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type SALDataPoolsSpasPondsFountainsControl interface {
 	SALData
 	// GetPoolsSpaPondsFountainsData returns PoolsSpaPondsFountainsData (property field)
 	GetPoolsSpaPondsFountainsData() LightingData
-}
-
-// SALDataPoolsSpasPondsFountainsControlExactly can be used when we want exactly this type and not a type which fulfills SALDataPoolsSpasPondsFountainsControl.
-// This is useful for switch cases.
-type SALDataPoolsSpasPondsFountainsControlExactly interface {
-	SALDataPoolsSpasPondsFountainsControl
-	isSALDataPoolsSpasPondsFountainsControl() bool
+	// IsSALDataPoolsSpasPondsFountainsControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataPoolsSpasPondsFountainsControl()
 }
 
 // _SALDataPoolsSpasPondsFountainsControl is the data-structure of this message
 type _SALDataPoolsSpasPondsFountainsControl struct {
-	*_SALData
+	SALDataContract
 	PoolsSpaPondsFountainsData LightingData
 }
+
+var _ SALDataPoolsSpasPondsFountainsControl = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
+var _ SALDataRequirements = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +68,8 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetApplicationId() ApplicationI
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataPoolsSpasPondsFountainsControl) InitializeParent(parent SALData, salData SALData) {
-	m.SalData = salData
-}
-
-func (m *_SALDataPoolsSpasPondsFountainsControl) GetParent() SALData {
-	return m._SALData
+func (m *_SALDataPoolsSpasPondsFountainsControl) GetParent() SALDataContract {
+	return m.SALDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,11 +88,14 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetPoolsSpaPondsFountainsData()
 
 // NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
 func NewSALDataPoolsSpasPondsFountainsControl(poolsSpaPondsFountainsData LightingData, salData SALData) *_SALDataPoolsSpasPondsFountainsControl {
-	_result := &_SALDataPoolsSpasPondsFountainsControl{
-		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
-		_SALData:                   NewSALData(salData),
+	if poolsSpaPondsFountainsData == nil {
+		panic("poolsSpaPondsFountainsData of type LightingData for SALDataPoolsSpasPondsFountainsControl must not be nil")
 	}
-	_result._SALData._SALDataChildRequirements = _result
+	_result := &_SALDataPoolsSpasPondsFountainsControl{
+		SALDataContract:            NewSALData(salData),
+		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 
@@ -116,7 +115,7 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetTypeName() string {
 }
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (poolsSpaPondsFountainsData)
 	lengthInBits += m.PoolsSpaPondsFountainsData.GetLengthInBits(ctx)
@@ -128,45 +127,28 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataPoolsSpasPondsFountainsControlParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
-	return SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
-}
-
-func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
+func (m *_SALDataPoolsSpasPondsFountainsControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataPoolsSpasPondsFountainsControl SALDataPoolsSpasPondsFountainsControl, err error) {
+	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataPoolsSpasPondsFountainsControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataPoolsSpasPondsFountainsControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (poolsSpaPondsFountainsData)
-	if pullErr := readBuffer.PullContext("poolsSpaPondsFountainsData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for poolsSpaPondsFountainsData")
+	poolsSpaPondsFountainsData, err := ReadSimpleField[LightingData](ctx, "poolsSpaPondsFountainsData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'poolsSpaPondsFountainsData' field"))
 	}
-	_poolsSpaPondsFountainsData, _poolsSpaPondsFountainsDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _poolsSpaPondsFountainsDataErr != nil {
-		return nil, errors.Wrap(_poolsSpaPondsFountainsDataErr, "Error parsing 'poolsSpaPondsFountainsData' field of SALDataPoolsSpasPondsFountainsControl")
-	}
-	poolsSpaPondsFountainsData := _poolsSpaPondsFountainsData.(LightingData)
-	if closeErr := readBuffer.CloseContext("poolsSpaPondsFountainsData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for poolsSpaPondsFountainsData")
-	}
+	m.PoolsSpaPondsFountainsData = poolsSpaPondsFountainsData
 
 	if closeErr := readBuffer.CloseContext("SALDataPoolsSpasPondsFountainsControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALDataPoolsSpasPondsFountainsControl")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SALDataPoolsSpasPondsFountainsControl{
-		_SALData:                   &_SALData{},
-		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
-	}
-	_child._SALData._SALDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) Serialize() ([]byte, error) {
@@ -187,16 +169,8 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for SALDataPoolsSpasPondsFountainsControl")
 		}
 
-		// Simple Field (poolsSpaPondsFountainsData)
-		if pushErr := writeBuffer.PushContext("poolsSpaPondsFountainsData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for poolsSpaPondsFountainsData")
-		}
-		_poolsSpaPondsFountainsDataErr := writeBuffer.WriteSerializable(ctx, m.GetPoolsSpaPondsFountainsData())
-		if popErr := writeBuffer.PopContext("poolsSpaPondsFountainsData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for poolsSpaPondsFountainsData")
-		}
-		if _poolsSpaPondsFountainsDataErr != nil {
-			return errors.Wrap(_poolsSpaPondsFountainsDataErr, "Error serializing 'poolsSpaPondsFountainsData' field")
+		if err := WriteSimpleField[LightingData](ctx, "poolsSpaPondsFountainsData", m.GetPoolsSpaPondsFountainsData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'poolsSpaPondsFountainsData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataPoolsSpasPondsFountainsControl"); popErr != nil {
@@ -204,12 +178,10 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SALDataContract.(*_SALData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControl) isSALDataPoolsSpasPondsFountainsControl() bool {
-	return true
-}
+func (m *_SALDataPoolsSpasPondsFountainsControl) IsSALDataPoolsSpasPondsFountainsControl() {}
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) String() string {
 	if m == nil {

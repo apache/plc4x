@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesLiftCarDriveStatus interface {
 	BACnetPropertyStates
 	// GetLiftCarDriveStatus returns LiftCarDriveStatus (property field)
 	GetLiftCarDriveStatus() BACnetLiftCarDriveStatusTagged
-}
-
-// BACnetPropertyStatesLiftCarDriveStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftCarDriveStatus.
-// This is useful for switch cases.
-type BACnetPropertyStatesLiftCarDriveStatusExactly interface {
-	BACnetPropertyStatesLiftCarDriveStatus
-	isBACnetPropertyStatesLiftCarDriveStatus() bool
+	// IsBACnetPropertyStatesLiftCarDriveStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLiftCarDriveStatus()
 }
 
 // _BACnetPropertyStatesLiftCarDriveStatus is the data-structure of this message
 type _BACnetPropertyStatesLiftCarDriveStatus struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	LiftCarDriveStatus BACnetLiftCarDriveStatusTagged
 }
+
+var _ BACnetPropertyStatesLiftCarDriveStatus = (*_BACnetPropertyStatesLiftCarDriveStatus)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftCarDriveStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesLiftCarDriveStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesLiftCarDriveStatus) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesLiftCarDriveStatus) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesLiftCarDriveStatus) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) GetLiftCarDriveStatus() BACnet
 
 // NewBACnetPropertyStatesLiftCarDriveStatus factory function for _BACnetPropertyStatesLiftCarDriveStatus
 func NewBACnetPropertyStatesLiftCarDriveStatus(liftCarDriveStatus BACnetLiftCarDriveStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftCarDriveStatus {
-	_result := &_BACnetPropertyStatesLiftCarDriveStatus{
-		LiftCarDriveStatus:    liftCarDriveStatus,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if liftCarDriveStatus == nil {
+		panic("liftCarDriveStatus of type BACnetLiftCarDriveStatusTagged for BACnetPropertyStatesLiftCarDriveStatus must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesLiftCarDriveStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftCarDriveStatus:           liftCarDriveStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesLiftCarDriveStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (liftCarDriveStatus)
 	lengthInBits += m.LiftCarDriveStatus.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLiftCarDriveStatusParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDriveStatus, error) {
-	return BACnetPropertyStatesLiftCarDriveStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesLiftCarDriveStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDriveStatus, error) {
+func (m *_BACnetPropertyStatesLiftCarDriveStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLiftCarDriveStatus BACnetPropertyStatesLiftCarDriveStatus, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDriveStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftCarDriveStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftCarDriveStatus)
-	if pullErr := readBuffer.PullContext("liftCarDriveStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDriveStatus")
+	liftCarDriveStatus, err := ReadSimpleField[BACnetLiftCarDriveStatusTagged](ctx, "liftCarDriveStatus", ReadComplex[BACnetLiftCarDriveStatusTagged](BACnetLiftCarDriveStatusTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftCarDriveStatus' field"))
 	}
-	_liftCarDriveStatus, _liftCarDriveStatusErr := BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftCarDriveStatusErr != nil {
-		return nil, errors.Wrap(_liftCarDriveStatusErr, "Error parsing 'liftCarDriveStatus' field of BACnetPropertyStatesLiftCarDriveStatus")
-	}
-	liftCarDriveStatus := _liftCarDriveStatus.(BACnetLiftCarDriveStatusTagged)
-	if closeErr := readBuffer.CloseContext("liftCarDriveStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftCarDriveStatus")
-	}
+	m.LiftCarDriveStatus = liftCarDriveStatus
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarDriveStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftCarDriveStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesLiftCarDriveStatus{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		LiftCarDriveStatus:    liftCarDriveStatus,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesLiftCarDriveStatus) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarDriveStatus")
 		}
 
-		// Simple Field (liftCarDriveStatus)
-		if pushErr := writeBuffer.PushContext("liftCarDriveStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftCarDriveStatus")
-		}
-		_liftCarDriveStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLiftCarDriveStatus())
-		if popErr := writeBuffer.PopContext("liftCarDriveStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftCarDriveStatus")
-		}
-		if _liftCarDriveStatusErr != nil {
-			return errors.Wrap(_liftCarDriveStatusErr, "Error serializing 'liftCarDriveStatus' field")
+		if err := WriteSimpleField[BACnetLiftCarDriveStatusTagged](ctx, "liftCarDriveStatus", m.GetLiftCarDriveStatus(), WriteComplex[BACnetLiftCarDriveStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftCarDriveStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarDriveStatus"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesLiftCarDriveStatus) isBACnetPropertyStatesLiftCarDriveStatus() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesLiftCarDriveStatus) IsBACnetPropertyStatesLiftCarDriveStatus() {}
 
 func (m *_BACnetPropertyStatesLiftCarDriveStatus) String() string {
 	if m == nil {

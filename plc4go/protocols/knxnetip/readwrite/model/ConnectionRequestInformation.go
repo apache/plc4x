@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,44 +35,35 @@ import (
 
 // ConnectionRequestInformation is the corresponding interface of ConnectionRequestInformation
 type ConnectionRequestInformation interface {
+	ConnectionRequestInformationContract
+	ConnectionRequestInformationRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsConnectionRequestInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionRequestInformation()
+}
+
+// ConnectionRequestInformationContract provides a set of functions which can be overwritten by a sub struct
+type ConnectionRequestInformationContract interface {
+	// IsConnectionRequestInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionRequestInformation()
+}
+
+// ConnectionRequestInformationRequirements provides a set of functions which need to be implemented by a sub struct
+type ConnectionRequestInformationRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetConnectionType returns ConnectionType (discriminator field)
 	GetConnectionType() uint8
 }
 
-// ConnectionRequestInformationExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequestInformation.
-// This is useful for switch cases.
-type ConnectionRequestInformationExactly interface {
-	ConnectionRequestInformation
-	isConnectionRequestInformation() bool
-}
-
 // _ConnectionRequestInformation is the data-structure of this message
 type _ConnectionRequestInformation struct {
-	_ConnectionRequestInformationChildRequirements
+	_SubType ConnectionRequestInformation
 }
 
-type _ConnectionRequestInformationChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetConnectionType() uint8
-}
-
-type ConnectionRequestInformationParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ConnectionRequestInformation, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type ConnectionRequestInformationChild interface {
-	utils.Serializable
-	InitializeParent(parent ConnectionRequestInformation)
-	GetParent() *ConnectionRequestInformation
-
-	GetTypeName() string
-	ConnectionRequestInformation
-}
+var _ ConnectionRequestInformationContract = (*_ConnectionRequestInformation)(nil)
 
 // NewConnectionRequestInformation factory function for _ConnectionRequestInformation
 func NewConnectionRequestInformation() *_ConnectionRequestInformation {
@@ -92,7 +85,7 @@ func (m *_ConnectionRequestInformation) GetTypeName() string {
 	return "ConnectionRequestInformation"
 }
 
-func (m *_ConnectionRequestInformation) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_ConnectionRequestInformation) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -104,69 +97,76 @@ func (m *_ConnectionRequestInformation) GetParentLengthInBits(ctx context.Contex
 }
 
 func (m *_ConnectionRequestInformation) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionRequestInformationParse(ctx context.Context, theBytes []byte) (ConnectionRequestInformation, error) {
-	return ConnectionRequestInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func ConnectionRequestInformationParse[T ConnectionRequestInformation](ctx context.Context, theBytes []byte) (T, error) {
+	return ConnectionRequestInformationParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformation, error) {
+func ConnectionRequestInformationParseWithBufferProducer[T ConnectionRequestInformation]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := ConnectionRequestInformationParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func ConnectionRequestInformationParseWithBuffer[T ConnectionRequestInformation](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_ConnectionRequestInformation{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_ConnectionRequestInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__connectionRequestInformation ConnectionRequestInformation, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionRequestInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
-	_ = structureLength
-	if _structureLengthErr != nil {
-		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of ConnectionRequestInformation")
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
+	_ = structureLength
 
-	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType, _connectionTypeErr := readBuffer.ReadUint8("connectionType", 8)
-	if _connectionTypeErr != nil {
-		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field of ConnectionRequestInformation")
+	connectionType, err := ReadDiscriminatorField[uint8](ctx, "connectionType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type ConnectionRequestInformationChildSerializeRequirement interface {
-		ConnectionRequestInformation
-		InitializeParent(ConnectionRequestInformation)
-		GetParent() ConnectionRequestInformation
-	}
-	var _childTemp any
-	var _child ConnectionRequestInformationChildSerializeRequirement
-	var typeSwitchError error
+	var _child ConnectionRequestInformation
 	switch {
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
-		_childTemp, typeSwitchError = ConnectionRequestInformationDeviceManagementParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_ConnectionRequestInformationDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequestInformationDeviceManagement for type-switch of ConnectionRequestInformation")
+		}
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
-		_childTemp, typeSwitchError = ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_ConnectionRequestInformationTunnelConnection{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequestInformationTunnelConnection for type-switch of ConnectionRequestInformation")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [connectionType=%v]", connectionType)
+		return nil, errors.Errorf("Unmapped type for parameters [connectionType=%v]", connectionType)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ConnectionRequestInformation")
-	}
-	_child = _childTemp.(ConnectionRequestInformationChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ConnectionRequestInformation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectionRequestInformation")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_ConnectionRequestInformation) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ConnectionRequestInformation, serializeChildFunction func() error) error {
+func (pm *_ConnectionRequestInformation) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ConnectionRequestInformation, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -177,20 +177,13 @@ func (pm *_ConnectionRequestInformation) SerializeParent(ctx context.Context, wr
 	if pushErr := writeBuffer.PushContext("ConnectionRequestInformation"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ConnectionRequestInformation")
 	}
-
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
-	if _structureLengthErr != nil {
-		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
+	if err := WriteImplicitField(ctx, "structureLength", structureLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType := uint8(child.GetConnectionType())
-	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 8, uint8((connectionType)))
-
-	if _connectionTypeErr != nil {
-		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
+	if err := WriteDiscriminatorField(ctx, "connectionType", m.GetConnectionType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'connectionType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -204,17 +197,4 @@ func (pm *_ConnectionRequestInformation) SerializeParent(ctx context.Context, wr
 	return nil
 }
 
-func (m *_ConnectionRequestInformation) isConnectionRequestInformation() bool {
-	return true
-}
-
-func (m *_ConnectionRequestInformation) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_ConnectionRequestInformation) IsConnectionRequestInformation() {}

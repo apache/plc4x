@@ -70,7 +70,7 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
     writeSimpleField(
         "request",
         request,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("CIPEncapsulationReadRequest");
@@ -102,8 +102,7 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
     DF1RequestMessage request =
         readSimpleField(
             "request",
-            new DataReaderComplexDefault<>(
-                () -> DF1RequestMessage.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DF1RequestMessage.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("CIPEncapsulationReadRequest");

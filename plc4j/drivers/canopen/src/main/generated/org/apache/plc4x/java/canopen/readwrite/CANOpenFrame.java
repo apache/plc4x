@@ -85,7 +85,7 @@ public class CANOpenFrame implements Message {
         "service",
         "CANOpenService",
         service,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CANOpenService::getValue, CANOpenService::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -100,7 +100,7 @@ public class CANOpenFrame implements Message {
     writeSimpleField(
         "payload",
         payload,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Padding Field (padding)
@@ -161,8 +161,7 @@ public class CANOpenFrame implements Message {
         readEnumField(
             "service",
             "CANOpenService",
-            new DataReaderEnumDefault<>(
-                CANOpenService::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(CANOpenService::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     byte alignment =
@@ -175,7 +174,7 @@ public class CANOpenFrame implements Message {
     CANOpenPayload payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CANOpenPayload.staticParse(readBuffer, (CANOpenService) (service)),
                 readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));

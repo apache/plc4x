@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetApplicationTagEnumerated interface {
 	GetPayload() BACnetTagPayloadEnumerated
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
-}
-
-// BACnetApplicationTagEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagEnumerated.
-// This is useful for switch cases.
-type BACnetApplicationTagEnumeratedExactly interface {
-	BACnetApplicationTagEnumerated
-	isBACnetApplicationTagEnumerated() bool
+	// IsBACnetApplicationTagEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTagEnumerated()
 }
 
 // _BACnetApplicationTagEnumerated is the data-structure of this message
 type _BACnetApplicationTagEnumerated struct {
-	*_BACnetApplicationTag
+	BACnetApplicationTagContract
 	Payload BACnetTagPayloadEnumerated
 }
+
+var _ BACnetApplicationTagEnumerated = (*_BACnetApplicationTagEnumerated)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,12 +66,8 @@ type _BACnetApplicationTagEnumerated struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetApplicationTagEnumerated) InitializeParent(parent BACnetApplicationTag, header BACnetTagHeader) {
-	m.Header = header
-}
-
-func (m *_BACnetApplicationTagEnumerated) GetParent() BACnetApplicationTag {
-	return m._BACnetApplicationTag
+func (m *_BACnetApplicationTagEnumerated) GetParent() BACnetApplicationTagContract {
+	return m.BACnetApplicationTagContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,11 +101,14 @@ func (m *_BACnetApplicationTagEnumerated) GetActualValue() uint32 {
 
 // NewBACnetApplicationTagEnumerated factory function for _BACnetApplicationTagEnumerated
 func NewBACnetApplicationTagEnumerated(payload BACnetTagPayloadEnumerated, header BACnetTagHeader) *_BACnetApplicationTagEnumerated {
-	_result := &_BACnetApplicationTagEnumerated{
-		Payload:               payload,
-		_BACnetApplicationTag: NewBACnetApplicationTag(header),
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadEnumerated for BACnetApplicationTagEnumerated must not be nil")
 	}
-	_result._BACnetApplicationTag._BACnetApplicationTagChildRequirements = _result
+	_result := &_BACnetApplicationTagEnumerated{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
 	return _result
 }
 
@@ -129,7 +128,7 @@ func (m *_BACnetApplicationTagEnumerated) GetTypeName() string {
 }
 
 func (m *_BACnetApplicationTagEnumerated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetApplicationTagContract.(*_BACnetApplicationTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -143,50 +142,34 @@ func (m *_BACnetApplicationTagEnumerated) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagEnumeratedParse(ctx context.Context, theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagEnumerated, error) {
-	return BACnetApplicationTagEnumeratedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header)
-}
-
-func BACnetApplicationTagEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagEnumerated, error) {
+func (m *_BACnetApplicationTagEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag, header BACnetTagHeader) (__bACnetApplicationTagEnumerated BACnetApplicationTagEnumerated, err error) {
+	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagEnumerated")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadEnumerated](ctx, "payload", ReadComplex[BACnetTagPayloadEnumerated](BACnetTagPayloadEnumeratedParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
-	_payload, _payloadErr := BACnetTagPayloadEnumeratedParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagEnumerated")
-	}
-	payload := _payload.(BACnetTagPayloadEnumerated)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
-	}
+	m.Payload = payload
 
-	// Virtual field
-	_actualValue := payload.GetActualValue()
-	actualValue := uint32(_actualValue)
+	actualValue, err := ReadVirtualField[uint32](ctx, "actualValue", (*uint32)(nil), payload.GetActualValue())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagEnumerated"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagEnumerated")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetApplicationTagEnumerated{
-		_BACnetApplicationTag: &_BACnetApplicationTag{},
-		Payload:               payload,
-	}
-	_child._BACnetApplicationTag._BACnetApplicationTagChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetApplicationTagEnumerated) Serialize() ([]byte, error) {
@@ -207,16 +190,8 @@ func (m *_BACnetApplicationTagEnumerated) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetApplicationTagEnumerated")
 		}
 
-		// Simple Field (payload)
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		if err := WriteSimpleField[BACnetTagPayloadEnumerated](ctx, "payload", m.GetPayload(), WriteComplex[BACnetTagPayloadEnumerated](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -230,12 +205,10 @@ func (m *_BACnetApplicationTagEnumerated) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetApplicationTagContract.(*_BACnetApplicationTag).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetApplicationTagEnumerated) isBACnetApplicationTagEnumerated() bool {
-	return true
-}
+func (m *_BACnetApplicationTagEnumerated) IsBACnetApplicationTagEnumerated() {}
 
 func (m *_BACnetApplicationTagEnumerated) String() string {
 	if m == nil {

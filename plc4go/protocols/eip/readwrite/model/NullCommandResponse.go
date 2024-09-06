@@ -37,19 +37,17 @@ type NullCommandResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
-}
-
-// NullCommandResponseExactly can be used when we want exactly this type and not a type which fulfills NullCommandResponse.
-// This is useful for switch cases.
-type NullCommandResponseExactly interface {
-	NullCommandResponse
-	isNullCommandResponse() bool
+	// IsNullCommandResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullCommandResponse()
 }
 
 // _NullCommandResponse is the data-structure of this message
 type _NullCommandResponse struct {
-	*_EipPacket
+	EipPacketContract
 }
+
+var _ NullCommandResponse = (*_NullCommandResponse)(nil)
+var _ EipPacketRequirements = (*_NullCommandResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,23 +71,16 @@ func (m *_NullCommandResponse) GetPacketLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NullCommandResponse) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
-}
-
-func (m *_NullCommandResponse) GetParent() EipPacket {
-	return m._EipPacket
+func (m *_NullCommandResponse) GetParent() EipPacketContract {
+	return m.EipPacketContract
 }
 
 // NewNullCommandResponse factory function for _NullCommandResponse
 func NewNullCommandResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullCommandResponse {
 	_result := &_NullCommandResponse{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	_result._EipPacket._EipPacketChildRequirements = _result
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 
@@ -109,7 +100,7 @@ func (m *_NullCommandResponse) GetTypeName() string {
 }
 
 func (m *_NullCommandResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -118,15 +109,11 @@ func (m *_NullCommandResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullCommandResponseParse(ctx context.Context, theBytes []byte, response bool) (NullCommandResponse, error) {
-	return NullCommandResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func NullCommandResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullCommandResponse, error) {
+func (m *_NullCommandResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__nullCommandResponse NullCommandResponse, err error) {
+	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NullCommandResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NullCommandResponse")
 	}
@@ -137,12 +124,7 @@ func NullCommandResponseParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for NullCommandResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NullCommandResponse{
-		_EipPacket: &_EipPacket{},
-	}
-	_child._EipPacket._EipPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NullCommandResponse) Serialize() ([]byte, error) {
@@ -168,12 +150,10 @@ func (m *_NullCommandResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.EipPacketContract.(*_EipPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NullCommandResponse) isNullCommandResponse() bool {
-	return true
-}
+func (m *_NullCommandResponse) IsNullCommandResponse() {}
 
 func (m *_NullCommandResponse) String() string {
 	if m == nil {

@@ -37,19 +37,17 @@ type MonitoringFilter interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// MonitoringFilterExactly can be used when we want exactly this type and not a type which fulfills MonitoringFilter.
-// This is useful for switch cases.
-type MonitoringFilterExactly interface {
-	MonitoringFilter
-	isMonitoringFilter() bool
+	// IsMonitoringFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoringFilter()
 }
 
 // _MonitoringFilter is the data-structure of this message
 type _MonitoringFilter struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ MonitoringFilter = (*_MonitoringFilter)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_MonitoringFilter)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_MonitoringFilter) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoringFilter) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_MonitoringFilter) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_MonitoringFilter) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewMonitoringFilter factory function for _MonitoringFilter
 func NewMonitoringFilter() *_MonitoringFilter {
 	_result := &_MonitoringFilter{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_MonitoringFilter) GetTypeName() string {
 }
 
 func (m *_MonitoringFilter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_MonitoringFilter) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MonitoringFilterParse(ctx context.Context, theBytes []byte, identifier string) (MonitoringFilter, error) {
-	return MonitoringFilterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func MonitoringFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoringFilter, error) {
+func (m *_MonitoringFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoringFilter MonitoringFilter, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoringFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoringFilter")
 	}
@@ -124,12 +116,7 @@ func MonitoringFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoringFilter")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MonitoringFilter{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MonitoringFilter) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_MonitoringFilter) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MonitoringFilter) isMonitoringFilter() bool {
-	return true
-}
+func (m *_MonitoringFilter) IsMonitoringFilter() {}
 
 func (m *_MonitoringFilter) String() string {
 	if m == nil {

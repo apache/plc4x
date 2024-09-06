@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataSlaveProxyEnable interface {
 	GetSlaveProxyEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataSlaveProxyEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSlaveProxyEnable.
-// This is useful for switch cases.
-type BACnetConstructedDataSlaveProxyEnableExactly interface {
-	BACnetConstructedDataSlaveProxyEnable
-	isBACnetConstructedDataSlaveProxyEnable() bool
+	// IsBACnetConstructedDataSlaveProxyEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSlaveProxyEnable()
 }
 
 // _BACnetConstructedDataSlaveProxyEnable is the data-structure of this message
 type _BACnetConstructedDataSlaveProxyEnable struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	SlaveProxyEnable BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataSlaveProxyEnable = (*_BACnetConstructedDataSlaveProxyEnable)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSlaveProxyEnable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataSlaveProxyEnable factory function for _BACnetConstructedDataSlaveProxyEnable
 func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveProxyEnable {
-	_result := &_BACnetConstructedDataSlaveProxyEnable{
-		SlaveProxyEnable:       slaveProxyEnable,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if slaveProxyEnable == nil {
+		panic("slaveProxyEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataSlaveProxyEnable must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataSlaveProxyEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SlaveProxyEnable:              slaveProxyEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (slaveProxyEnable)
 	lengthInBits += m.SlaveProxyEnable.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataSlaveProxyEnableParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
-	return BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
+func (m *_BACnetConstructedDataSlaveProxyEnable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataSlaveProxyEnable BACnetConstructedDataSlaveProxyEnable, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveProxyEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSlaveProxyEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (slaveProxyEnable)
-	if pullErr := readBuffer.PullContext("slaveProxyEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for slaveProxyEnable")
+	slaveProxyEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "slaveProxyEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'slaveProxyEnable' field"))
 	}
-	_slaveProxyEnable, _slaveProxyEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _slaveProxyEnableErr != nil {
-		return nil, errors.Wrap(_slaveProxyEnableErr, "Error parsing 'slaveProxyEnable' field of BACnetConstructedDataSlaveProxyEnable")
-	}
-	slaveProxyEnable := _slaveProxyEnable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("slaveProxyEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for slaveProxyEnable")
-	}
+	m.SlaveProxyEnable = slaveProxyEnable
 
-	// Virtual field
-	_actualValue := slaveProxyEnable
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), slaveProxyEnable)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSlaveProxyEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSlaveProxyEnable")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataSlaveProxyEnable{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		SlaveProxyEnable: slaveProxyEnable,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSlaveProxyEnable")
 		}
 
-		// Simple Field (slaveProxyEnable)
-		if pushErr := writeBuffer.PushContext("slaveProxyEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for slaveProxyEnable")
-		}
-		_slaveProxyEnableErr := writeBuffer.WriteSerializable(ctx, m.GetSlaveProxyEnable())
-		if popErr := writeBuffer.PopContext("slaveProxyEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for slaveProxyEnable")
-		}
-		if _slaveProxyEnableErr != nil {
-			return errors.Wrap(_slaveProxyEnableErr, "Error serializing 'slaveProxyEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "slaveProxyEnable", m.GetSlaveProxyEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'slaveProxyEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) isBACnetConstructedDataSlaveProxyEnable() bool {
-	return true
-}
+func (m *_BACnetConstructedDataSlaveProxyEnable) IsBACnetConstructedDataSlaveProxyEnable() {}
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) String() string {
 	if m == nil {

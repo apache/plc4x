@@ -74,14 +74,13 @@ class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOf
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry");
 
     // Simple Field (monitoredProperty)
-    writeSimpleField(
-        "monitoredProperty", monitoredProperty, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("monitoredProperty", monitoredProperty, writeComplex(writeBuffer));
 
     // Optional Field (covIncrement) (Can be skipped, if the value is null)
-    writeOptionalField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     // Simple Field (timestamped)
-    writeSimpleField("timestamped", timestamped, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamped", timestamped, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry");
@@ -124,14 +123,14 @@ class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOf
     BACnetPropertyReferenceEnclosed monitoredProperty =
         readSimpleField(
             "monitoredProperty",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetContextTagReal covIncrement =
         readOptionalField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -141,7 +140,7 @@ class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOf
     BACnetContextTagBoolean timestamped =
         readSimpleField(
             "timestamped",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -55,18 +57,13 @@ type QueryFirstResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// GetFilterResult returns FilterResult (property field)
 	GetFilterResult() ExtensionObjectDefinition
-}
-
-// QueryFirstResponseExactly can be used when we want exactly this type and not a type which fulfills QueryFirstResponse.
-// This is useful for switch cases.
-type QueryFirstResponseExactly interface {
-	QueryFirstResponse
-	isQueryFirstResponse() bool
+	// IsQueryFirstResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQueryFirstResponse()
 }
 
 // _QueryFirstResponse is the data-structure of this message
 type _QueryFirstResponse struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader      ExtensionObjectDefinition
 	NoOfQueryDataSets   int32
 	QueryDataSets       []ExtensionObjectDefinition
@@ -77,6 +74,9 @@ type _QueryFirstResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 	FilterResult        ExtensionObjectDefinition
 }
+
+var _ QueryFirstResponse = (*_QueryFirstResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QueryFirstResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,10 +92,8 @@ func (m *_QueryFirstResponse) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_QueryFirstResponse) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_QueryFirstResponse) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_QueryFirstResponse) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -146,19 +144,28 @@ func (m *_QueryFirstResponse) GetFilterResult() ExtensionObjectDefinition {
 
 // NewQueryFirstResponse factory function for _QueryFirstResponse
 func NewQueryFirstResponse(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, continuationPoint PascalByteString, noOfParsingResults int32, parsingResults []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo, filterResult ExtensionObjectDefinition) *_QueryFirstResponse {
-	_result := &_QueryFirstResponse{
-		ResponseHeader:             responseHeader,
-		NoOfQueryDataSets:          noOfQueryDataSets,
-		QueryDataSets:              queryDataSets,
-		ContinuationPoint:          continuationPoint,
-		NoOfParsingResults:         noOfParsingResults,
-		ParsingResults:             parsingResults,
-		NoOfDiagnosticInfos:        noOfDiagnosticInfos,
-		DiagnosticInfos:            diagnosticInfos,
-		FilterResult:               filterResult,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for QueryFirstResponse must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for QueryFirstResponse must not be nil")
+	}
+	if filterResult == nil {
+		panic("filterResult of type ExtensionObjectDefinition for QueryFirstResponse must not be nil")
+	}
+	_result := &_QueryFirstResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfQueryDataSets:                 noOfQueryDataSets,
+		QueryDataSets:                     queryDataSets,
+		ContinuationPoint:                 continuationPoint,
+		NoOfParsingResults:                noOfParsingResults,
+		ParsingResults:                    parsingResults,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+		FilterResult:                      filterResult,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -178,7 +185,7 @@ func (m *_QueryFirstResponse) GetTypeName() string {
 }
 
 func (m *_QueryFirstResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -235,181 +242,76 @@ func (m *_QueryFirstResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func QueryFirstResponseParse(ctx context.Context, theBytes []byte, identifier string) (QueryFirstResponse, error) {
-	return QueryFirstResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func QueryFirstResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryFirstResponse, error) {
+func (m *_QueryFirstResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryFirstResponse QueryFirstResponse, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QueryFirstResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QueryFirstResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of QueryFirstResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
-	// Simple Field (noOfQueryDataSets)
-	_noOfQueryDataSets, _noOfQueryDataSetsErr := readBuffer.ReadInt32("noOfQueryDataSets", 32)
-	if _noOfQueryDataSetsErr != nil {
-		return nil, errors.Wrap(_noOfQueryDataSetsErr, "Error parsing 'noOfQueryDataSets' field of QueryFirstResponse")
+	noOfQueryDataSets, err := ReadSimpleField(ctx, "noOfQueryDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfQueryDataSets' field"))
 	}
-	noOfQueryDataSets := _noOfQueryDataSets
+	m.NoOfQueryDataSets = noOfQueryDataSets
 
-	// Array field (queryDataSets)
-	if pullErr := readBuffer.PullContext("queryDataSets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for queryDataSets")
+	queryDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "queryDataSets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("579")), readBuffer), uint64(noOfQueryDataSets))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryDataSets' field"))
 	}
-	// Count array
-	queryDataSets := make([]ExtensionObjectDefinition, max(noOfQueryDataSets, 0))
-	// This happens when the size is set conditional to 0
-	if len(queryDataSets) == 0 {
-		queryDataSets = nil
-	}
-	{
-		_numItems := uint16(max(noOfQueryDataSets, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "579")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'queryDataSets' field of QueryFirstResponse")
-			}
-			queryDataSets[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("queryDataSets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for queryDataSets")
-	}
+	m.QueryDataSets = queryDataSets
 
-	// Simple Field (continuationPoint)
-	if pullErr := readBuffer.PullContext("continuationPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for continuationPoint")
+	continuationPoint, err := ReadSimpleField[PascalByteString](ctx, "continuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'continuationPoint' field"))
 	}
-	_continuationPoint, _continuationPointErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _continuationPointErr != nil {
-		return nil, errors.Wrap(_continuationPointErr, "Error parsing 'continuationPoint' field of QueryFirstResponse")
-	}
-	continuationPoint := _continuationPoint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("continuationPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for continuationPoint")
-	}
+	m.ContinuationPoint = continuationPoint
 
-	// Simple Field (noOfParsingResults)
-	_noOfParsingResults, _noOfParsingResultsErr := readBuffer.ReadInt32("noOfParsingResults", 32)
-	if _noOfParsingResultsErr != nil {
-		return nil, errors.Wrap(_noOfParsingResultsErr, "Error parsing 'noOfParsingResults' field of QueryFirstResponse")
+	noOfParsingResults, err := ReadSimpleField(ctx, "noOfParsingResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfParsingResults' field"))
 	}
-	noOfParsingResults := _noOfParsingResults
+	m.NoOfParsingResults = noOfParsingResults
 
-	// Array field (parsingResults)
-	if pullErr := readBuffer.PullContext("parsingResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parsingResults")
+	parsingResults, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "parsingResults", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("612")), readBuffer), uint64(noOfParsingResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parsingResults' field"))
 	}
-	// Count array
-	parsingResults := make([]ExtensionObjectDefinition, max(noOfParsingResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(parsingResults) == 0 {
-		parsingResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfParsingResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "612")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'parsingResults' field of QueryFirstResponse")
-			}
-			parsingResults[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("parsingResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parsingResults")
-	}
+	m.ParsingResults = parsingResults
 
-	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
-	if _noOfDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of QueryFirstResponse")
+	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	noOfDiagnosticInfos := _noOfDiagnosticInfos
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
 
-	// Array field (diagnosticInfos)
-	if pullErr := readBuffer.PullContext("diagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfos")
+	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfos' field"))
 	}
-	// Count array
-	diagnosticInfos := make([]DiagnosticInfo, max(noOfDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(diagnosticInfos) == 0 {
-		diagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'diagnosticInfos' field of QueryFirstResponse")
-			}
-			diagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("diagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for diagnosticInfos")
-	}
+	m.DiagnosticInfos = diagnosticInfos
 
-	// Simple Field (filterResult)
-	if pullErr := readBuffer.PullContext("filterResult"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterResult")
+	filterResult, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "filterResult", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("609")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterResult' field"))
 	}
-	_filterResult, _filterResultErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("609"))
-	if _filterResultErr != nil {
-		return nil, errors.Wrap(_filterResultErr, "Error parsing 'filterResult' field of QueryFirstResponse")
-	}
-	filterResult := _filterResult.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("filterResult"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterResult")
-	}
+	m.FilterResult = filterResult
 
 	if closeErr := readBuffer.CloseContext("QueryFirstResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for QueryFirstResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_QueryFirstResponse{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-		NoOfQueryDataSets:          noOfQueryDataSets,
-		QueryDataSets:              queryDataSets,
-		ContinuationPoint:          continuationPoint,
-		NoOfParsingResults:         noOfParsingResults,
-		ParsingResults:             parsingResults,
-		NoOfDiagnosticInfos:        noOfDiagnosticInfos,
-		DiagnosticInfos:            diagnosticInfos,
-		FilterResult:               filterResult,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_QueryFirstResponse) Serialize() ([]byte, error) {
@@ -430,112 +332,40 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for QueryFirstResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfQueryDataSets)
-		noOfQueryDataSets := int32(m.GetNoOfQueryDataSets())
-		_noOfQueryDataSetsErr := writeBuffer.WriteInt32("noOfQueryDataSets", 32, int32((noOfQueryDataSets)))
-		if _noOfQueryDataSetsErr != nil {
-			return errors.Wrap(_noOfQueryDataSetsErr, "Error serializing 'noOfQueryDataSets' field")
+		if err := WriteSimpleField[int32](ctx, "noOfQueryDataSets", m.GetNoOfQueryDataSets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfQueryDataSets' field")
 		}
 
-		// Array Field (queryDataSets)
-		if pushErr := writeBuffer.PushContext("queryDataSets", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for queryDataSets")
-		}
-		for _curItem, _element := range m.GetQueryDataSets() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetQueryDataSets()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'queryDataSets' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("queryDataSets", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for queryDataSets")
+		if err := WriteComplexTypeArrayField(ctx, "queryDataSets", m.GetQueryDataSets(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'queryDataSets' field")
 		}
 
-		// Simple Field (continuationPoint)
-		if pushErr := writeBuffer.PushContext("continuationPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for continuationPoint")
-		}
-		_continuationPointErr := writeBuffer.WriteSerializable(ctx, m.GetContinuationPoint())
-		if popErr := writeBuffer.PopContext("continuationPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for continuationPoint")
-		}
-		if _continuationPointErr != nil {
-			return errors.Wrap(_continuationPointErr, "Error serializing 'continuationPoint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "continuationPoint", m.GetContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'continuationPoint' field")
 		}
 
-		// Simple Field (noOfParsingResults)
-		noOfParsingResults := int32(m.GetNoOfParsingResults())
-		_noOfParsingResultsErr := writeBuffer.WriteInt32("noOfParsingResults", 32, int32((noOfParsingResults)))
-		if _noOfParsingResultsErr != nil {
-			return errors.Wrap(_noOfParsingResultsErr, "Error serializing 'noOfParsingResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfParsingResults", m.GetNoOfParsingResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfParsingResults' field")
 		}
 
-		// Array Field (parsingResults)
-		if pushErr := writeBuffer.PushContext("parsingResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parsingResults")
-		}
-		for _curItem, _element := range m.GetParsingResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetParsingResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'parsingResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("parsingResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parsingResults")
+		if err := WriteComplexTypeArrayField(ctx, "parsingResults", m.GetParsingResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'parsingResults' field")
 		}
 
-		// Simple Field (noOfDiagnosticInfos)
-		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
-		if _noOfDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
-		// Array Field (diagnosticInfos)
-		if pushErr := writeBuffer.PushContext("diagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for diagnosticInfos")
-		}
-		for _curItem, _element := range m.GetDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'diagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("diagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for diagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "diagnosticInfos", m.GetDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'diagnosticInfos' field")
 		}
 
-		// Simple Field (filterResult)
-		if pushErr := writeBuffer.PushContext("filterResult"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filterResult")
-		}
-		_filterResultErr := writeBuffer.WriteSerializable(ctx, m.GetFilterResult())
-		if popErr := writeBuffer.PopContext("filterResult"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filterResult")
-		}
-		if _filterResultErr != nil {
-			return errors.Wrap(_filterResultErr, "Error serializing 'filterResult' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "filterResult", m.GetFilterResult(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'filterResult' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryFirstResponse"); popErr != nil {
@@ -543,12 +373,10 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_QueryFirstResponse) isQueryFirstResponse() bool {
-	return true
-}
+func (m *_QueryFirstResponse) IsQueryFirstResponse() {}
 
 func (m *_QueryFirstResponse) String() string {
 	if m == nil {

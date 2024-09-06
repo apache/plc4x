@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,23 +43,21 @@ type BVLCOriginalBroadcastNPDU interface {
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
-}
-
-// BVLCOriginalBroadcastNPDUExactly can be used when we want exactly this type and not a type which fulfills BVLCOriginalBroadcastNPDU.
-// This is useful for switch cases.
-type BVLCOriginalBroadcastNPDUExactly interface {
-	BVLCOriginalBroadcastNPDU
-	isBVLCOriginalBroadcastNPDU() bool
+	// IsBVLCOriginalBroadcastNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCOriginalBroadcastNPDU()
 }
 
 // _BVLCOriginalBroadcastNPDU is the data-structure of this message
 type _BVLCOriginalBroadcastNPDU struct {
-	*_BVLC
+	BVLCContract
 	Npdu NPDU
 
 	// Arguments.
 	BvlcPayloadLength uint16
 }
+
+var _ BVLCOriginalBroadcastNPDU = (*_BVLCOriginalBroadcastNPDU)(nil)
+var _ BVLCRequirements = (*_BVLCOriginalBroadcastNPDU)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +73,8 @@ func (m *_BVLCOriginalBroadcastNPDU) GetBvlcFunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BVLCOriginalBroadcastNPDU) InitializeParent(parent BVLC) {}
-
-func (m *_BVLCOriginalBroadcastNPDU) GetParent() BVLC {
-	return m._BVLC
+func (m *_BVLCOriginalBroadcastNPDU) GetParent() BVLCContract {
+	return m.BVLCContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,11 +93,14 @@ func (m *_BVLCOriginalBroadcastNPDU) GetNpdu() NPDU {
 
 // NewBVLCOriginalBroadcastNPDU factory function for _BVLCOriginalBroadcastNPDU
 func NewBVLCOriginalBroadcastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalBroadcastNPDU {
-	_result := &_BVLCOriginalBroadcastNPDU{
-		Npdu:  npdu,
-		_BVLC: NewBVLC(),
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCOriginalBroadcastNPDU must not be nil")
 	}
-	_result._BVLC._BVLCChildRequirements = _result
+	_result := &_BVLCOriginalBroadcastNPDU{
+		BVLCContract: NewBVLC(),
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 
@@ -118,7 +120,7 @@ func (m *_BVLCOriginalBroadcastNPDU) GetTypeName() string {
 }
 
 func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Simple field (npdu)
 	lengthInBits += m.Npdu.GetLengthInBits(ctx)
@@ -130,45 +132,28 @@ func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCOriginalBroadcastNPDUParse(ctx context.Context, theBytes []byte, bvlcPayloadLength uint16) (BVLCOriginalBroadcastNPDU, error) {
-	return BVLCOriginalBroadcastNPDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
-}
-
-func BVLCOriginalBroadcastNPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCOriginalBroadcastNPDU, error) {
+func (m *_BVLCOriginalBroadcastNPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCOriginalBroadcastNPDU BVLCOriginalBroadcastNPDU, err error) {
+	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCOriginalBroadcastNPDU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCOriginalBroadcastNPDU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (npdu)
-	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for npdu")
+	npdu, err := ReadSimpleField[NPDU](ctx, "npdu", ReadComplex[NPDU](NPDUParseWithBufferProducer((uint16)(bvlcPayloadLength)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'npdu' field"))
 	}
-	_npdu, _npduErr := NPDUParseWithBuffer(ctx, readBuffer, uint16(bvlcPayloadLength))
-	if _npduErr != nil {
-		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCOriginalBroadcastNPDU")
-	}
-	npdu := _npdu.(NPDU)
-	if closeErr := readBuffer.CloseContext("npdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for npdu")
-	}
+	m.Npdu = npdu
 
 	if closeErr := readBuffer.CloseContext("BVLCOriginalBroadcastNPDU"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCOriginalBroadcastNPDU")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BVLCOriginalBroadcastNPDU{
-		_BVLC: &_BVLC{},
-		Npdu:  npdu,
-	}
-	_child._BVLC._BVLCChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BVLCOriginalBroadcastNPDU) Serialize() ([]byte, error) {
@@ -189,16 +174,8 @@ func (m *_BVLCOriginalBroadcastNPDU) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BVLCOriginalBroadcastNPDU")
 		}
 
-		// Simple Field (npdu)
-		if pushErr := writeBuffer.PushContext("npdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for npdu")
-		}
-		_npduErr := writeBuffer.WriteSerializable(ctx, m.GetNpdu())
-		if popErr := writeBuffer.PopContext("npdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for npdu")
-		}
-		if _npduErr != nil {
-			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
+		if err := WriteSimpleField[NPDU](ctx, "npdu", m.GetNpdu(), WriteComplex[NPDU](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'npdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCOriginalBroadcastNPDU"); popErr != nil {
@@ -206,7 +183,7 @@ func (m *_BVLCOriginalBroadcastNPDU) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -219,9 +196,7 @@ func (m *_BVLCOriginalBroadcastNPDU) GetBvlcPayloadLength() uint16 {
 //
 ////
 
-func (m *_BVLCOriginalBroadcastNPDU) isBVLCOriginalBroadcastNPDU() bool {
-	return true
-}
+func (m *_BVLCOriginalBroadcastNPDU) IsBVLCOriginalBroadcastNPDU() {}
 
 func (m *_BVLCOriginalBroadcastNPDU) String() string {
 	if m == nil {

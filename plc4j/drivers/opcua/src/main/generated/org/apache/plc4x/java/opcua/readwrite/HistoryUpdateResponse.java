@@ -91,7 +91,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("HistoryUpdateResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfResults)
     writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
@@ -158,7 +158,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -167,7 +167,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     List<ExtensionObjectDefinition> results =
         readCountArrayField(
             "results",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("697")),
                 readBuffer),
             noOfResults);
@@ -177,8 +177,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("HistoryUpdateResponse");

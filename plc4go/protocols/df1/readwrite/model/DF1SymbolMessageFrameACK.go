@@ -38,19 +38,17 @@ type DF1SymbolMessageFrameACK interface {
 	utils.LengthAware
 	utils.Serializable
 	DF1Symbol
-}
-
-// DF1SymbolMessageFrameACKExactly can be used when we want exactly this type and not a type which fulfills DF1SymbolMessageFrameACK.
-// This is useful for switch cases.
-type DF1SymbolMessageFrameACKExactly interface {
-	DF1SymbolMessageFrameACK
-	isDF1SymbolMessageFrameACK() bool
+	// IsDF1SymbolMessageFrameACK is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1SymbolMessageFrameACK()
 }
 
 // _DF1SymbolMessageFrameACK is the data-structure of this message
 type _DF1SymbolMessageFrameACK struct {
-	*_DF1Symbol
+	DF1SymbolContract
 }
+
+var _ DF1SymbolMessageFrameACK = (*_DF1SymbolMessageFrameACK)(nil)
+var _ DF1SymbolRequirements = (*_DF1SymbolMessageFrameACK)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,18 +64,16 @@ func (m *_DF1SymbolMessageFrameACK) GetSymbolType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DF1SymbolMessageFrameACK) InitializeParent(parent DF1Symbol) {}
-
-func (m *_DF1SymbolMessageFrameACK) GetParent() DF1Symbol {
-	return m._DF1Symbol
+func (m *_DF1SymbolMessageFrameACK) GetParent() DF1SymbolContract {
+	return m.DF1SymbolContract
 }
 
 // NewDF1SymbolMessageFrameACK factory function for _DF1SymbolMessageFrameACK
 func NewDF1SymbolMessageFrameACK() *_DF1SymbolMessageFrameACK {
 	_result := &_DF1SymbolMessageFrameACK{
-		_DF1Symbol: NewDF1Symbol(),
+		DF1SymbolContract: NewDF1Symbol(),
 	}
-	_result._DF1Symbol._DF1SymbolChildRequirements = _result
+	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
 	return _result
 }
 
@@ -97,7 +93,7 @@ func (m *_DF1SymbolMessageFrameACK) GetTypeName() string {
 }
 
 func (m *_DF1SymbolMessageFrameACK) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -106,15 +102,11 @@ func (m *_DF1SymbolMessageFrameACK) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1SymbolMessageFrameACKParse(ctx context.Context, theBytes []byte) (DF1SymbolMessageFrameACK, error) {
-	return DF1SymbolMessageFrameACKParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func DF1SymbolMessageFrameACKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameACK, error) {
+func (m *_DF1SymbolMessageFrameACK) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_DF1Symbol) (__dF1SymbolMessageFrameACK DF1SymbolMessageFrameACK, err error) {
+	m.DF1SymbolContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameACK"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1SymbolMessageFrameACK")
 	}
@@ -125,12 +117,7 @@ func DF1SymbolMessageFrameACKParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(closeErr, "Error closing for DF1SymbolMessageFrameACK")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DF1SymbolMessageFrameACK{
-		_DF1Symbol: &_DF1Symbol{},
-	}
-	_child._DF1Symbol._DF1SymbolChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DF1SymbolMessageFrameACK) Serialize() ([]byte, error) {
@@ -156,12 +143,10 @@ func (m *_DF1SymbolMessageFrameACK) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.DF1SymbolContract.(*_DF1Symbol).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DF1SymbolMessageFrameACK) isDF1SymbolMessageFrameACK() bool {
-	return true
-}
+func (m *_DF1SymbolMessageFrameACK) IsDF1SymbolMessageFrameACK() {}
 
 func (m *_DF1SymbolMessageFrameACK) String() string {
 	if m == nil {

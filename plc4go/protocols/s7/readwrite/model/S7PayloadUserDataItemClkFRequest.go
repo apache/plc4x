@@ -37,19 +37,17 @@ type S7PayloadUserDataItemClkFRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
-}
-
-// S7PayloadUserDataItemClkFRequestExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemClkFRequest.
-// This is useful for switch cases.
-type S7PayloadUserDataItemClkFRequestExactly interface {
-	S7PayloadUserDataItemClkFRequest
-	isS7PayloadUserDataItemClkFRequest() bool
+	// IsS7PayloadUserDataItemClkFRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemClkFRequest()
 }
 
 // _S7PayloadUserDataItemClkFRequest is the data-structure of this message
 type _S7PayloadUserDataItemClkFRequest struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 }
+
+var _ S7PayloadUserDataItemClkFRequest = (*_S7PayloadUserDataItemClkFRequest)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemClkFRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,22 +71,16 @@ func (m *_S7PayloadUserDataItemClkFRequest) GetCpuSubfunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemClkFRequest) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadUserDataItemClkFRequest) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemClkFRequest) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 // NewS7PayloadUserDataItemClkFRequest factory function for _S7PayloadUserDataItemClkFRequest
 func NewS7PayloadUserDataItemClkFRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkFRequest {
 	_result := &_S7PayloadUserDataItemClkFRequest{
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -108,7 +100,7 @@ func (m *_S7PayloadUserDataItemClkFRequest) GetTypeName() string {
 }
 
 func (m *_S7PayloadUserDataItemClkFRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -117,15 +109,11 @@ func (m *_S7PayloadUserDataItemClkFRequest) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemClkFRequestParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemClkFRequest, error) {
-	return S7PayloadUserDataItemClkFRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadUserDataItemClkFRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemClkFRequest, error) {
+func (m *_S7PayloadUserDataItemClkFRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemClkFRequest S7PayloadUserDataItemClkFRequest, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemClkFRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemClkFRequest")
 	}
@@ -136,12 +124,7 @@ func S7PayloadUserDataItemClkFRequestParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemClkFRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadUserDataItemClkFRequest{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadUserDataItemClkFRequest) Serialize() ([]byte, error) {
@@ -167,12 +150,10 @@ func (m *_S7PayloadUserDataItemClkFRequest) SerializeWithWriteBuffer(ctx context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadUserDataItemClkFRequest) isS7PayloadUserDataItemClkFRequest() bool {
-	return true
-}
+func (m *_S7PayloadUserDataItemClkFRequest) IsS7PayloadUserDataItemClkFRequest() {}
 
 func (m *_S7PayloadUserDataItemClkFRequest) String() string {
 	if m == nil {

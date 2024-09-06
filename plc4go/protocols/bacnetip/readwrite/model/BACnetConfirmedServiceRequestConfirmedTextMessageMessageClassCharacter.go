@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter inte
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetCharacterValue returns CharacterValue (property field)
 	GetCharacterValue() BACnetContextTagCharacterString
-}
-
-// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterExactly interface {
-	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
-	isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() bool
+	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter()
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter struct {
-	*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract
 	CharacterValue BACnetContextTagCharacterString
 }
+
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)(nil)
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter str
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) InitializeParent(parent BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetParent() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
-	return m._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetParent() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract {
+	return m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(characterValue BACnetContextTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
-	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
-		CharacterValue: characterValue,
-		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if characterValue == nil {
+		panic("characterValue of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter must not be nil")
 	}
-	_result._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements = _result
+	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
+		CharacterValue: characterValue,
+	}
+	_result.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).getLengthInBits(ctx))
 
 	// Simple field (characterValue)
 	lengthInBits += m.CharacterValue.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
-	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, tagNumber uint8) (__bACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, err error) {
+	m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (characterValue)
-	if pullErr := readBuffer.PullContext("characterValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for characterValue")
+	characterValue, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "characterValue", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterValue' field"))
 	}
-	_characterValue, _characterValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
-	if _characterValueErr != nil {
-		return nil, errors.Wrap(_characterValueErr, "Error parsing 'characterValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
-	}
-	characterValue := _characterValue.(BACnetContextTagCharacterString)
-	if closeErr := readBuffer.CloseContext("characterValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for characterValue")
-	}
+	m.CharacterValue = characterValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
-		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{
-			TagNumber: tagNumber,
-		},
-		CharacterValue: characterValue,
-	}
-	_child._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 		}
 
-		// Simple Field (characterValue)
-		if pushErr := writeBuffer.PushContext("characterValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for characterValue")
-		}
-		_characterValueErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterValue())
-		if popErr := writeBuffer.PopContext("characterValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for characterValue")
-		}
-		if _characterValueErr != nil {
-			return errors.Wrap(_characterValueErr, "Error serializing 'characterValue' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "characterValue", m.GetCharacterValue(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'characterValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); popErr != nil {
@@ -204,11 +174,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() {
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) String() string {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesLifeSafetyOperations interface {
 	BACnetPropertyStates
 	// GetLifeSafetyOperations returns LifeSafetyOperations (property field)
 	GetLifeSafetyOperations() BACnetLifeSafetyOperationTagged
-}
-
-// BACnetPropertyStatesLifeSafetyOperationsExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLifeSafetyOperations.
-// This is useful for switch cases.
-type BACnetPropertyStatesLifeSafetyOperationsExactly interface {
-	BACnetPropertyStatesLifeSafetyOperations
-	isBACnetPropertyStatesLifeSafetyOperations() bool
+	// IsBACnetPropertyStatesLifeSafetyOperations is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLifeSafetyOperations()
 }
 
 // _BACnetPropertyStatesLifeSafetyOperations is the data-structure of this message
 type _BACnetPropertyStatesLifeSafetyOperations struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	LifeSafetyOperations BACnetLifeSafetyOperationTagged
 }
+
+var _ BACnetPropertyStatesLifeSafetyOperations = (*_BACnetPropertyStatesLifeSafetyOperations)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLifeSafetyOperations)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesLifeSafetyOperations struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesLifeSafetyOperations) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesLifeSafetyOperations) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesLifeSafetyOperations) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLifeSafetyOperations() BA
 
 // NewBACnetPropertyStatesLifeSafetyOperations factory function for _BACnetPropertyStatesLifeSafetyOperations
 func NewBACnetPropertyStatesLifeSafetyOperations(lifeSafetyOperations BACnetLifeSafetyOperationTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLifeSafetyOperations {
-	_result := &_BACnetPropertyStatesLifeSafetyOperations{
-		LifeSafetyOperations:  lifeSafetyOperations,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if lifeSafetyOperations == nil {
+		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetPropertyStatesLifeSafetyOperations must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesLifeSafetyOperations{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LifeSafetyOperations:         lifeSafetyOperations,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (lifeSafetyOperations)
 	lengthInBits += m.LifeSafetyOperations.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLifeSafetyOperationsParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyOperations, error) {
-	return BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyOperations, error) {
+func (m *_BACnetPropertyStatesLifeSafetyOperations) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLifeSafetyOperations BACnetPropertyStatesLifeSafetyOperations, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLifeSafetyOperations"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLifeSafetyOperations")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lifeSafetyOperations)
-	if pullErr := readBuffer.PullContext("lifeSafetyOperations"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyOperations")
+	lifeSafetyOperations, err := ReadSimpleField[BACnetLifeSafetyOperationTagged](ctx, "lifeSafetyOperations", ReadComplex[BACnetLifeSafetyOperationTagged](BACnetLifeSafetyOperationTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lifeSafetyOperations' field"))
 	}
-	_lifeSafetyOperations, _lifeSafetyOperationsErr := BACnetLifeSafetyOperationTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _lifeSafetyOperationsErr != nil {
-		return nil, errors.Wrap(_lifeSafetyOperationsErr, "Error parsing 'lifeSafetyOperations' field of BACnetPropertyStatesLifeSafetyOperations")
-	}
-	lifeSafetyOperations := _lifeSafetyOperations.(BACnetLifeSafetyOperationTagged)
-	if closeErr := readBuffer.CloseContext("lifeSafetyOperations"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lifeSafetyOperations")
-	}
+	m.LifeSafetyOperations = lifeSafetyOperations
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLifeSafetyOperations"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLifeSafetyOperations")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesLifeSafetyOperations{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		LifeSafetyOperations:  lifeSafetyOperations,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesLifeSafetyOperations) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLifeSafetyOperations")
 		}
 
-		// Simple Field (lifeSafetyOperations)
-		if pushErr := writeBuffer.PushContext("lifeSafetyOperations"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lifeSafetyOperations")
-		}
-		_lifeSafetyOperationsErr := writeBuffer.WriteSerializable(ctx, m.GetLifeSafetyOperations())
-		if popErr := writeBuffer.PopContext("lifeSafetyOperations"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lifeSafetyOperations")
-		}
-		if _lifeSafetyOperationsErr != nil {
-			return errors.Wrap(_lifeSafetyOperationsErr, "Error serializing 'lifeSafetyOperations' field")
+		if err := WriteSimpleField[BACnetLifeSafetyOperationTagged](ctx, "lifeSafetyOperations", m.GetLifeSafetyOperations(), WriteComplex[BACnetLifeSafetyOperationTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lifeSafetyOperations' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLifeSafetyOperations"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyOperations) isBACnetPropertyStatesLifeSafetyOperations() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesLifeSafetyOperations) IsBACnetPropertyStatesLifeSafetyOperations() {}
 
 func (m *_BACnetPropertyStatesLifeSafetyOperations) String() string {
 	if m == nil {

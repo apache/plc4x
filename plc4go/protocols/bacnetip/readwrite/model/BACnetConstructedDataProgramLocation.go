@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataProgramLocation interface {
 	GetProgramLocation() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-}
-
-// BACnetConstructedDataProgramLocationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProgramLocation.
-// This is useful for switch cases.
-type BACnetConstructedDataProgramLocationExactly interface {
-	BACnetConstructedDataProgramLocation
-	isBACnetConstructedDataProgramLocation() bool
+	// IsBACnetConstructedDataProgramLocation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProgramLocation()
 }
 
 // _BACnetConstructedDataProgramLocation is the data-structure of this message
 type _BACnetConstructedDataProgramLocation struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ProgramLocation BACnetApplicationTagCharacterString
 }
+
+var _ BACnetConstructedDataProgramLocation = (*_BACnetConstructedDataProgramLocation)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramLocation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataProgramLocation) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataProgramLocation) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataProgramLocation) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataProgramLocation) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataProgramLocation) GetActualValue() BACnetApplicati
 
 // NewBACnetConstructedDataProgramLocation factory function for _BACnetConstructedDataProgramLocation
 func NewBACnetConstructedDataProgramLocation(programLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
-	_result := &_BACnetConstructedDataProgramLocation{
-		ProgramLocation:        programLocation,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if programLocation == nil {
+		panic("programLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProgramLocation must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataProgramLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramLocation:               programLocation,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataProgramLocation) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataProgramLocation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (programLocation)
 	lengthInBits += m.ProgramLocation.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataProgramLocation) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataProgramLocationParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramLocation, error) {
-	return BACnetConstructedDataProgramLocationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataProgramLocationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramLocation, error) {
+func (m *_BACnetConstructedDataProgramLocation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProgramLocation BACnetConstructedDataProgramLocation, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramLocation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProgramLocation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (programLocation)
-	if pullErr := readBuffer.PullContext("programLocation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for programLocation")
+	programLocation, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "programLocation", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programLocation' field"))
 	}
-	_programLocation, _programLocationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _programLocationErr != nil {
-		return nil, errors.Wrap(_programLocationErr, "Error parsing 'programLocation' field of BACnetConstructedDataProgramLocation")
-	}
-	programLocation := _programLocation.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("programLocation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for programLocation")
-	}
+	m.ProgramLocation = programLocation
 
-	// Virtual field
-	_actualValue := programLocation
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), programLocation)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProgramLocation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProgramLocation")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataProgramLocation{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ProgramLocation: programLocation,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataProgramLocation) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataProgramLocation) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProgramLocation")
 		}
 
-		// Simple Field (programLocation)
-		if pushErr := writeBuffer.PushContext("programLocation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for programLocation")
-		}
-		_programLocationErr := writeBuffer.WriteSerializable(ctx, m.GetProgramLocation())
-		if popErr := writeBuffer.PopContext("programLocation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for programLocation")
-		}
-		if _programLocationErr != nil {
-			return errors.Wrap(_programLocationErr, "Error serializing 'programLocation' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "programLocation", m.GetProgramLocation(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'programLocation' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataProgramLocation) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataProgramLocation) isBACnetConstructedDataProgramLocation() bool {
-	return true
-}
+func (m *_BACnetConstructedDataProgramLocation) IsBACnetConstructedDataProgramLocation() {}
 
 func (m *_BACnetConstructedDataProgramLocation) String() string {
 	if m == nil {

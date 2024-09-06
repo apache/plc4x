@@ -71,10 +71,10 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     writeBuffer.pushContext("OpcuaCloseRequest");
 
     // Simple Field (securityHeader)
-    writeSimpleField("securityHeader", securityHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityHeader", securityHeader, writeComplex(writeBuffer));
 
     // Simple Field (message)
-    writeSimpleField("message", message, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaCloseRequest");
   }
@@ -108,13 +108,12 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     SecurityHeader securityHeader =
         readSimpleField(
             "securityHeader",
-            new DataReaderComplexDefault<>(
-                () -> SecurityHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> SecurityHeader.staticParse(readBuffer), readBuffer));
 
     Payload message =
         readSimpleField(
             "message",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> Payload.staticParse(readBuffer, (boolean) (false), (long) (0L)), readBuffer));
 
     readBuffer.closeContext("OpcuaCloseRequest");

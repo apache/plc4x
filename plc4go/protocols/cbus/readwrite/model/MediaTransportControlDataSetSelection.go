@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type MediaTransportControlDataSetSelection interface {
 	GetSelectionHi() byte
 	// GetSelectionLo returns SelectionLo (property field)
 	GetSelectionLo() byte
-}
-
-// MediaTransportControlDataSetSelectionExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataSetSelection.
-// This is useful for switch cases.
-type MediaTransportControlDataSetSelectionExactly interface {
-	MediaTransportControlDataSetSelection
-	isMediaTransportControlDataSetSelection() bool
+	// IsMediaTransportControlDataSetSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataSetSelection()
 }
 
 // _MediaTransportControlDataSetSelection is the data-structure of this message
 type _MediaTransportControlDataSetSelection struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	SelectionHi byte
 	SelectionLo byte
 }
+
+var _ MediaTransportControlDataSetSelection = (*_MediaTransportControlDataSetSelection)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSetSelection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,13 +67,8 @@ type _MediaTransportControlDataSetSelection struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataSetSelection) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataSetSelection) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataSetSelection) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,11 +92,11 @@ func (m *_MediaTransportControlDataSetSelection) GetSelectionLo() byte {
 // NewMediaTransportControlDataSetSelection factory function for _MediaTransportControlDataSetSelection
 func NewMediaTransportControlDataSetSelection(selectionHi byte, selectionLo byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSetSelection {
 	_result := &_MediaTransportControlDataSetSelection{
-		SelectionHi:                selectionHi,
-		SelectionLo:                selectionLo,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		SelectionHi:                       selectionHi,
+		SelectionLo:                       selectionLo,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -121,7 +116,7 @@ func (m *_MediaTransportControlDataSetSelection) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataSetSelection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (selectionHi)
 	lengthInBits += 8
@@ -136,47 +131,34 @@ func (m *_MediaTransportControlDataSetSelection) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataSetSelectionParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataSetSelection, error) {
-	return MediaTransportControlDataSetSelectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MediaTransportControlDataSetSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
+func (m *_MediaTransportControlDataSetSelection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataSetSelection MediaTransportControlDataSetSelection, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetSelection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataSetSelection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (selectionHi)
-	_selectionHi, _selectionHiErr := readBuffer.ReadByte("selectionHi")
-	if _selectionHiErr != nil {
-		return nil, errors.Wrap(_selectionHiErr, "Error parsing 'selectionHi' field of MediaTransportControlDataSetSelection")
+	selectionHi, err := ReadSimpleField(ctx, "selectionHi", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectionHi' field"))
 	}
-	selectionHi := _selectionHi
+	m.SelectionHi = selectionHi
 
-	// Simple Field (selectionLo)
-	_selectionLo, _selectionLoErr := readBuffer.ReadByte("selectionLo")
-	if _selectionLoErr != nil {
-		return nil, errors.Wrap(_selectionLoErr, "Error parsing 'selectionLo' field of MediaTransportControlDataSetSelection")
+	selectionLo, err := ReadSimpleField(ctx, "selectionLo", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectionLo' field"))
 	}
-	selectionLo := _selectionLo
+	m.SelectionLo = selectionLo
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataSetSelection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataSetSelection")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataSetSelection{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		SelectionHi:                selectionHi,
-		SelectionLo:                selectionLo,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataSetSelection) Serialize() ([]byte, error) {
@@ -197,18 +179,12 @@ func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataSetSelection")
 		}
 
-		// Simple Field (selectionHi)
-		selectionHi := byte(m.GetSelectionHi())
-		_selectionHiErr := writeBuffer.WriteByte("selectionHi", (selectionHi))
-		if _selectionHiErr != nil {
-			return errors.Wrap(_selectionHiErr, "Error serializing 'selectionHi' field")
+		if err := WriteSimpleField[byte](ctx, "selectionHi", m.GetSelectionHi(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'selectionHi' field")
 		}
 
-		// Simple Field (selectionLo)
-		selectionLo := byte(m.GetSelectionLo())
-		_selectionLoErr := writeBuffer.WriteByte("selectionLo", (selectionLo))
-		if _selectionLoErr != nil {
-			return errors.Wrap(_selectionLoErr, "Error serializing 'selectionLo' field")
+		if err := WriteSimpleField[byte](ctx, "selectionLo", m.GetSelectionLo(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'selectionLo' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataSetSelection"); popErr != nil {
@@ -216,12 +192,10 @@ func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(ctx co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataSetSelection) isMediaTransportControlDataSetSelection() bool {
-	return true
-}
+func (m *_MediaTransportControlDataSetSelection) IsMediaTransportControlDataSetSelection() {}
 
 func (m *_MediaTransportControlDataSetSelection) String() string {
 	if m == nil {

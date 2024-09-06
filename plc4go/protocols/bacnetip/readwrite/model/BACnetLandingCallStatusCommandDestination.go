@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLandingCallStatusCommandDestination interface {
 	BACnetLandingCallStatusCommand
 	// GetDestination returns Destination (property field)
 	GetDestination() BACnetContextTagUnsignedInteger
-}
-
-// BACnetLandingCallStatusCommandDestinationExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommandDestination.
-// This is useful for switch cases.
-type BACnetLandingCallStatusCommandDestinationExactly interface {
-	BACnetLandingCallStatusCommandDestination
-	isBACnetLandingCallStatusCommandDestination() bool
+	// IsBACnetLandingCallStatusCommandDestination is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingCallStatusCommandDestination()
 }
 
 // _BACnetLandingCallStatusCommandDestination is the data-structure of this message
 type _BACnetLandingCallStatusCommandDestination struct {
-	*_BACnetLandingCallStatusCommand
+	BACnetLandingCallStatusCommandContract
 	Destination BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetLandingCallStatusCommandDestination = (*_BACnetLandingCallStatusCommandDestination)(nil)
+var _ BACnetLandingCallStatusCommandRequirements = (*_BACnetLandingCallStatusCommandDestination)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetLandingCallStatusCommandDestination struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLandingCallStatusCommandDestination) InitializeParent(parent BACnetLandingCallStatusCommand, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetLandingCallStatusCommandDestination) GetParent() BACnetLandingCallStatusCommand {
-	return m._BACnetLandingCallStatusCommand
+func (m *_BACnetLandingCallStatusCommandDestination) GetParent() BACnetLandingCallStatusCommandContract {
+	return m.BACnetLandingCallStatusCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetDestination() BACnetCont
 
 // NewBACnetLandingCallStatusCommandDestination factory function for _BACnetLandingCallStatusCommandDestination
 func NewBACnetLandingCallStatusCommandDestination(destination BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommandDestination {
-	_result := &_BACnetLandingCallStatusCommandDestination{
-		Destination:                     destination,
-		_BACnetLandingCallStatusCommand: NewBACnetLandingCallStatusCommand(peekedTagHeader),
+	if destination == nil {
+		panic("destination of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatusCommandDestination must not be nil")
 	}
-	_result._BACnetLandingCallStatusCommand._BACnetLandingCallStatusCommandChildRequirements = _result
+	_result := &_BACnetLandingCallStatusCommandDestination{
+		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
+		Destination:                            destination,
+	}
+	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetTypeName() string {
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).getLengthInBits(ctx))
 
 	// Simple field (destination)
 	lengthInBits += m.Destination.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLandingCallStatusCommandDestinationParse(ctx context.Context, theBytes []byte) (BACnetLandingCallStatusCommandDestination, error) {
-	return BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {
+func (m *_BACnetLandingCallStatusCommandDestination) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLandingCallStatusCommand) (__bACnetLandingCallStatusCommandDestination BACnetLandingCallStatusCommandDestination, err error) {
+	m.BACnetLandingCallStatusCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDestination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingCallStatusCommandDestination")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destination)
-	if pullErr := readBuffer.PullContext("destination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for destination")
+	destination, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "destination", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destination' field"))
 	}
-	_destination, _destinationErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _destinationErr != nil {
-		return nil, errors.Wrap(_destinationErr, "Error parsing 'destination' field of BACnetLandingCallStatusCommandDestination")
-	}
-	destination := _destination.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("destination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for destination")
-	}
+	m.Destination = destination
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatusCommandDestination"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingCallStatusCommandDestination")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLandingCallStatusCommandDestination{
-		_BACnetLandingCallStatusCommand: &_BACnetLandingCallStatusCommand{},
-		Destination:                     destination,
-	}
-	_child._BACnetLandingCallStatusCommand._BACnetLandingCallStatusCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatusCommandDestination")
 		}
 
-		// Simple Field (destination)
-		if pushErr := writeBuffer.PushContext("destination"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for destination")
-		}
-		_destinationErr := writeBuffer.WriteSerializable(ctx, m.GetDestination())
-		if popErr := writeBuffer.PopContext("destination"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for destination")
-		}
-		if _destinationErr != nil {
-			return errors.Wrap(_destinationErr, "Error serializing 'destination' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "destination", m.GetDestination(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destination' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLandingCallStatusCommandDestination"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLandingCallStatusCommandDestination) isBACnetLandingCallStatusCommandDestination() bool {
-	return true
-}
+func (m *_BACnetLandingCallStatusCommandDestination) IsBACnetLandingCallStatusCommandDestination() {}
 
 func (m *_BACnetLandingCallStatusCommandDestination) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,18 +51,13 @@ type FindServersRequest interface {
 	GetNoOfServerUris() int32
 	// GetServerUris returns ServerUris (property field)
 	GetServerUris() []PascalString
-}
-
-// FindServersRequestExactly can be used when we want exactly this type and not a type which fulfills FindServersRequest.
-// This is useful for switch cases.
-type FindServersRequestExactly interface {
-	FindServersRequest
-	isFindServersRequest() bool
+	// IsFindServersRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFindServersRequest()
 }
 
 // _FindServersRequest is the data-structure of this message
 type _FindServersRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader  ExtensionObjectDefinition
 	EndpointUrl    PascalString
 	NoOfLocaleIds  int32
@@ -68,6 +65,9 @@ type _FindServersRequest struct {
 	NoOfServerUris int32
 	ServerUris     []PascalString
 }
+
+var _ FindServersRequest = (*_FindServersRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_FindServersRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,10 +83,8 @@ func (m *_FindServersRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_FindServersRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_FindServersRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_FindServersRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,16 +123,22 @@ func (m *_FindServersRequest) GetServerUris() []PascalString {
 
 // NewFindServersRequest factory function for _FindServersRequest
 func NewFindServersRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) *_FindServersRequest {
-	_result := &_FindServersRequest{
-		RequestHeader:              requestHeader,
-		EndpointUrl:                endpointUrl,
-		NoOfLocaleIds:              noOfLocaleIds,
-		LocaleIds:                  localeIds,
-		NoOfServerUris:             noOfServerUris,
-		ServerUris:                 serverUris,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for FindServersRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for FindServersRequest must not be nil")
+	}
+	_result := &_FindServersRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		EndpointUrl:                       endpointUrl,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		NoOfServerUris:                    noOfServerUris,
+		ServerUris:                        serverUris,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -154,7 +158,7 @@ func (m *_FindServersRequest) GetTypeName() string {
 }
 
 func (m *_FindServersRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -195,131 +199,58 @@ func (m *_FindServersRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FindServersRequestParse(ctx context.Context, theBytes []byte, identifier string) (FindServersRequest, error) {
-	return FindServersRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func FindServersRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FindServersRequest, error) {
+func (m *_FindServersRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__findServersRequest FindServersRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FindServersRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FindServersRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of FindServersRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (endpointUrl)
-	if pullErr := readBuffer.PullContext("endpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrl")
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
-	_endpointUrl, _endpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointUrlErr != nil {
-		return nil, errors.Wrap(_endpointUrlErr, "Error parsing 'endpointUrl' field of FindServersRequest")
-	}
-	endpointUrl := _endpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrl")
-	}
+	m.EndpointUrl = endpointUrl
 
-	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
-	if _noOfLocaleIdsErr != nil {
-		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of FindServersRequest")
+	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	noOfLocaleIds := _noOfLocaleIds
+	m.NoOfLocaleIds = noOfLocaleIds
 
-	// Array field (localeIds)
-	if pullErr := readBuffer.PullContext("localeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
+	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeIds' field"))
 	}
-	// Count array
-	localeIds := make([]PascalString, max(noOfLocaleIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(localeIds) == 0 {
-		localeIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfLocaleIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'localeIds' field of FindServersRequest")
-			}
-			localeIds[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("localeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localeIds")
-	}
+	m.LocaleIds = localeIds
 
-	// Simple Field (noOfServerUris)
-	_noOfServerUris, _noOfServerUrisErr := readBuffer.ReadInt32("noOfServerUris", 32)
-	if _noOfServerUrisErr != nil {
-		return nil, errors.Wrap(_noOfServerUrisErr, "Error parsing 'noOfServerUris' field of FindServersRequest")
+	noOfServerUris, err := ReadSimpleField(ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerUris' field"))
 	}
-	noOfServerUris := _noOfServerUris
+	m.NoOfServerUris = noOfServerUris
 
-	// Array field (serverUris)
-	if pullErr := readBuffer.PullContext("serverUris", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverUris")
+	serverUris, err := ReadCountArrayField[PascalString](ctx, "serverUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerUris))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUris' field"))
 	}
-	// Count array
-	serverUris := make([]PascalString, max(noOfServerUris, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverUris) == 0 {
-		serverUris = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerUris, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverUris' field of FindServersRequest")
-			}
-			serverUris[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("serverUris", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverUris")
-	}
+	m.ServerUris = serverUris
 
 	if closeErr := readBuffer.CloseContext("FindServersRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FindServersRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_FindServersRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		EndpointUrl:                endpointUrl,
-		NoOfLocaleIds:              noOfLocaleIds,
-		LocaleIds:                  localeIds,
-		NoOfServerUris:             noOfServerUris,
-		ServerUris:                 serverUris,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_FindServersRequest) Serialize() ([]byte, error) {
@@ -340,76 +271,28 @@ func (m *_FindServersRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for FindServersRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (noOfLocaleIds)
-		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
-		if _noOfLocaleIdsErr != nil {
-			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
-		// Array Field (localeIds)
-		if pushErr := writeBuffer.PushContext("localeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localeIds")
-		}
-		for _curItem, _element := range m.GetLocaleIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLocaleIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'localeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("localeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localeIds")
+		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
 
-		// Simple Field (noOfServerUris)
-		noOfServerUris := int32(m.GetNoOfServerUris())
-		_noOfServerUrisErr := writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
-		if _noOfServerUrisErr != nil {
-			return errors.Wrap(_noOfServerUrisErr, "Error serializing 'noOfServerUris' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerUris", m.GetNoOfServerUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerUris' field")
 		}
 
-		// Array Field (serverUris)
-		if pushErr := writeBuffer.PushContext("serverUris", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUris")
-		}
-		for _curItem, _element := range m.GetServerUris() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerUris()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverUris' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverUris", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUris")
+		if err := WriteComplexTypeArrayField(ctx, "serverUris", m.GetServerUris(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUris' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FindServersRequest"); popErr != nil {
@@ -417,12 +300,10 @@ func (m *_FindServersRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_FindServersRequest) isFindServersRequest() bool {
-	return true
-}
+func (m *_FindServersRequest) IsFindServersRequest() {}
 
 func (m *_FindServersRequest) String() string {
 	if m == nil {

@@ -71,7 +71,7 @@ public class BACnetAccessRuleTimeRangeSpecifierTagged implements Message {
     writeBuffer.pushContext("BACnetAccessRuleTimeRangeSpecifierTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(
@@ -112,9 +112,7 @@ public class BACnetAccessRuleTimeRangeSpecifierTagged implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getTagClass()) == (tagClass))) {
       throw new ParseValidationException("tag class doesn't match");

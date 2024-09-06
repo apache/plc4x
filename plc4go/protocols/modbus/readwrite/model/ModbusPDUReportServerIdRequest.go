@@ -37,19 +37,17 @@ type ModbusPDUReportServerIdRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
-}
-
-// ModbusPDUReportServerIdRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReportServerIdRequest.
-// This is useful for switch cases.
-type ModbusPDUReportServerIdRequestExactly interface {
-	ModbusPDUReportServerIdRequest
-	isModbusPDUReportServerIdRequest() bool
+	// IsModbusPDUReportServerIdRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReportServerIdRequest()
 }
 
 // _ModbusPDUReportServerIdRequest is the data-structure of this message
 type _ModbusPDUReportServerIdRequest struct {
-	*_ModbusPDU
+	ModbusPDUContract
 }
+
+var _ ModbusPDUReportServerIdRequest = (*_ModbusPDUReportServerIdRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReportServerIdRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,18 +71,16 @@ func (m *_ModbusPDUReportServerIdRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ModbusPDUReportServerIdRequest) InitializeParent(parent ModbusPDU) {}
-
-func (m *_ModbusPDUReportServerIdRequest) GetParent() ModbusPDU {
-	return m._ModbusPDU
+func (m *_ModbusPDUReportServerIdRequest) GetParent() ModbusPDUContract {
+	return m.ModbusPDUContract
 }
 
 // NewModbusPDUReportServerIdRequest factory function for _ModbusPDUReportServerIdRequest
 func NewModbusPDUReportServerIdRequest() *_ModbusPDUReportServerIdRequest {
 	_result := &_ModbusPDUReportServerIdRequest{
-		_ModbusPDU: NewModbusPDU(),
+		ModbusPDUContract: NewModbusPDU(),
 	}
-	_result._ModbusPDU._ModbusPDUChildRequirements = _result
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 
@@ -104,7 +100,7 @@ func (m *_ModbusPDUReportServerIdRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUReportServerIdRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +109,11 @@ func (m *_ModbusPDUReportServerIdRequest) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReportServerIdRequest, error) {
-	return ModbusPDUReportServerIdRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func ModbusPDUReportServerIdRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReportServerIdRequest, error) {
+func (m *_ModbusPDUReportServerIdRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReportServerIdRequest ModbusPDUReportServerIdRequest, err error) {
+	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReportServerIdRequest")
 	}
@@ -132,12 +124,7 @@ func ModbusPDUReportServerIdRequestParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReportServerIdRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ModbusPDUReportServerIdRequest{
-		_ModbusPDU: &_ModbusPDU{},
-	}
-	_child._ModbusPDU._ModbusPDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ModbusPDUReportServerIdRequest) Serialize() ([]byte, error) {
@@ -163,12 +150,10 @@ func (m *_ModbusPDUReportServerIdRequest) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ModbusPDUContract.(*_ModbusPDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ModbusPDUReportServerIdRequest) isModbusPDUReportServerIdRequest() bool {
-	return true
-}
+func (m *_ModbusPDUReportServerIdRequest) IsModbusPDUReportServerIdRequest() {}
 
 func (m *_ModbusPDUReportServerIdRequest) String() string {
 	if m == nil {

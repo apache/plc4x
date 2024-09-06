@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type S7PayloadUserDataItemClkFResponse interface {
 	GetYear1() uint8
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
-}
-
-// S7PayloadUserDataItemClkFResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemClkFResponse.
-// This is useful for switch cases.
-type S7PayloadUserDataItemClkFResponseExactly interface {
-	S7PayloadUserDataItemClkFResponse
-	isS7PayloadUserDataItemClkFResponse() bool
+	// IsS7PayloadUserDataItemClkFResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemClkFResponse()
 }
 
 // _S7PayloadUserDataItemClkFResponse is the data-structure of this message
 type _S7PayloadUserDataItemClkFResponse struct {
-	*_S7PayloadUserDataItem
+	S7PayloadUserDataItemContract
 	Res       uint8
 	Year1     uint8
 	TimeStamp DateAndTime
 }
+
+var _ S7PayloadUserDataItemClkFResponse = (*_S7PayloadUserDataItemClkFResponse)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemClkFResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,14 +82,8 @@ func (m *_S7PayloadUserDataItemClkFResponse) GetCpuSubfunction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemClkFResponse) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
-	m.DataLength = dataLength
-}
-
-func (m *_S7PayloadUserDataItemClkFResponse) GetParent() S7PayloadUserDataItem {
-	return m._S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemClkFResponse) GetParent() S7PayloadUserDataItemContract {
+	return m.S7PayloadUserDataItemContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,13 +110,16 @@ func (m *_S7PayloadUserDataItemClkFResponse) GetTimeStamp() DateAndTime {
 
 // NewS7PayloadUserDataItemClkFResponse factory function for _S7PayloadUserDataItemClkFResponse
 func NewS7PayloadUserDataItemClkFResponse(res uint8, year1 uint8, timeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkFResponse {
-	_result := &_S7PayloadUserDataItemClkFResponse{
-		Res:                    res,
-		Year1:                  year1,
-		TimeStamp:              timeStamp,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for S7PayloadUserDataItemClkFResponse must not be nil")
 	}
-	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
+	_result := &_S7PayloadUserDataItemClkFResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Res:                           res,
+		Year1:                         year1,
+		TimeStamp:                     timeStamp,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 
@@ -142,7 +139,7 @@ func (m *_S7PayloadUserDataItemClkFResponse) GetTypeName() string {
 }
 
 func (m *_S7PayloadUserDataItemClkFResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Simple field (res)
 	lengthInBits += 8
@@ -160,61 +157,40 @@ func (m *_S7PayloadUserDataItemClkFResponse) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemClkFResponseParse(ctx context.Context, theBytes []byte, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemClkFResponse, error) {
-	return S7PayloadUserDataItemClkFResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
-}
-
-func S7PayloadUserDataItemClkFResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemClkFResponse, error) {
+func (m *_S7PayloadUserDataItemClkFResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemClkFResponse S7PayloadUserDataItemClkFResponse, err error) {
+	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemClkFResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemClkFResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (res)
-	_res, _resErr := readBuffer.ReadUint8("res", 8)
-	if _resErr != nil {
-		return nil, errors.Wrap(_resErr, "Error parsing 'res' field of S7PayloadUserDataItemClkFResponse")
+	res, err := ReadSimpleField(ctx, "res", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'res' field"))
 	}
-	res := _res
+	m.Res = res
 
-	// Simple Field (year1)
-	_year1, _year1Err := readBuffer.ReadUint8("year1", 8)
-	if _year1Err != nil {
-		return nil, errors.Wrap(_year1Err, "Error parsing 'year1' field of S7PayloadUserDataItemClkFResponse")
+	year1, err := ReadSimpleField(ctx, "year1", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'year1' field"))
 	}
-	year1 := _year1
+	m.Year1 = year1
 
-	// Simple Field (timeStamp)
-	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
+	timeStamp, err := ReadSimpleField[DateAndTime](ctx, "timeStamp", ReadComplex[DateAndTime](DateAndTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeStamp' field"))
 	}
-	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _timeStampErr != nil {
-		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of S7PayloadUserDataItemClkFResponse")
-	}
-	timeStamp := _timeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
-	}
+	m.TimeStamp = timeStamp
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemClkFResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemClkFResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7PayloadUserDataItemClkFResponse{
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		Res:                    res,
-		Year1:                  year1,
-		TimeStamp:              timeStamp,
-	}
-	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7PayloadUserDataItemClkFResponse) Serialize() ([]byte, error) {
@@ -235,30 +211,16 @@ func (m *_S7PayloadUserDataItemClkFResponse) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemClkFResponse")
 		}
 
-		// Simple Field (res)
-		res := uint8(m.GetRes())
-		_resErr := writeBuffer.WriteUint8("res", 8, uint8((res)))
-		if _resErr != nil {
-			return errors.Wrap(_resErr, "Error serializing 'res' field")
+		if err := WriteSimpleField[uint8](ctx, "res", m.GetRes(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'res' field")
 		}
 
-		// Simple Field (year1)
-		year1 := uint8(m.GetYear1())
-		_year1Err := writeBuffer.WriteUint8("year1", 8, uint8((year1)))
-		if _year1Err != nil {
-			return errors.Wrap(_year1Err, "Error serializing 'year1' field")
+		if err := WriteSimpleField[uint8](ctx, "year1", m.GetYear1(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'year1' field")
 		}
 
-		// Simple Field (timeStamp)
-		if pushErr := writeBuffer.PushContext("timeStamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeStamp")
-		}
-		_timeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
-		if popErr := writeBuffer.PopContext("timeStamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeStamp")
-		}
-		if _timeStampErr != nil {
-			return errors.Wrap(_timeStampErr, "Error serializing 'timeStamp' field")
+		if err := WriteSimpleField[DateAndTime](ctx, "timeStamp", m.GetTimeStamp(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeStamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemClkFResponse"); popErr != nil {
@@ -266,12 +228,10 @@ func (m *_S7PayloadUserDataItemClkFResponse) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7PayloadUserDataItemClkFResponse) isS7PayloadUserDataItemClkFResponse() bool {
-	return true
-}
+func (m *_S7PayloadUserDataItemClkFResponse) IsS7PayloadUserDataItemClkFResponse() {}
 
 func (m *_S7PayloadUserDataItemClkFResponse) String() string {
 	if m == nil {

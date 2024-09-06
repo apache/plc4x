@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,19 +40,16 @@ type BridgeAddress interface {
 	utils.Serializable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
-}
-
-// BridgeAddressExactly can be used when we want exactly this type and not a type which fulfills BridgeAddress.
-// This is useful for switch cases.
-type BridgeAddressExactly interface {
-	BridgeAddress
-	isBridgeAddress() bool
+	// IsBridgeAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBridgeAddress()
 }
 
 // _BridgeAddress is the data-structure of this message
 type _BridgeAddress struct {
 	Address byte
 }
+
+var _ BridgeAddress = (*_BridgeAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func BridgeAddressParse(ctx context.Context, theBytes []byte) (BridgeAddress, er
 	return BridgeAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BridgeAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
+		return BridgeAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BridgeAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
+	v, err := (&_BridgeAddress{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BridgeAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bridgeAddress BridgeAddress, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BridgeAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BridgeAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadByte("address")
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of BridgeAddress")
+	address, err := ReadSimpleField(ctx, "address", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
+	m.Address = address
 
 	if closeErr := readBuffer.CloseContext("BridgeAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BridgeAddress")
 	}
 
-	// Create the instance
-	return &_BridgeAddress{
-		Address: address,
-	}, nil
+	return m, nil
 }
 
 func (m *_BridgeAddress) Serialize() ([]byte, error) {
@@ -148,11 +155,8 @@ func (m *_BridgeAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for BridgeAddress")
 	}
 
-	// Simple Field (address)
-	address := byte(m.GetAddress())
-	_addressErr := writeBuffer.WriteByte("address", (address))
-	if _addressErr != nil {
-		return errors.Wrap(_addressErr, "Error serializing 'address' field")
+	if err := WriteSimpleField[byte](ctx, "address", m.GetAddress(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'address' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BridgeAddress"); popErr != nil {
@@ -161,9 +165,7 @@ func (m *_BridgeAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_BridgeAddress) isBridgeAddress() bool {
-	return true
-}
+func (m *_BridgeAddress) IsBridgeAddress() {}
 
 func (m *_BridgeAddress) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type RepublishResponse interface {
 	GetResponseHeader() ExtensionObjectDefinition
 	// GetNotificationMessage returns NotificationMessage (property field)
 	GetNotificationMessage() ExtensionObjectDefinition
-}
-
-// RepublishResponseExactly can be used when we want exactly this type and not a type which fulfills RepublishResponse.
-// This is useful for switch cases.
-type RepublishResponseExactly interface {
-	RepublishResponse
-	isRepublishResponse() bool
+	// IsRepublishResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRepublishResponse()
 }
 
 // _RepublishResponse is the data-structure of this message
 type _RepublishResponse struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ResponseHeader      ExtensionObjectDefinition
 	NotificationMessage ExtensionObjectDefinition
 }
+
+var _ RepublishResponse = (*_RepublishResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RepublishResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_RepublishResponse) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RepublishResponse) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_RepublishResponse) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_RepublishResponse) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +95,18 @@ func (m *_RepublishResponse) GetNotificationMessage() ExtensionObjectDefinition 
 
 // NewRepublishResponse factory function for _RepublishResponse
 func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) *_RepublishResponse {
-	_result := &_RepublishResponse{
-		ResponseHeader:             responseHeader,
-		NotificationMessage:        notificationMessage,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RepublishResponse must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if notificationMessage == nil {
+		panic("notificationMessage of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+	}
+	_result := &_RepublishResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NotificationMessage:               notificationMessage,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +126,7 @@ func (m *_RepublishResponse) GetTypeName() string {
 }
 
 func (m *_RepublishResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -137,59 +141,34 @@ func (m *_RepublishResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RepublishResponseParse(ctx context.Context, theBytes []byte, identifier string) (RepublishResponse, error) {
-	return RepublishResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func RepublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RepublishResponse, error) {
+func (m *_RepublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__republishResponse RepublishResponse, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RepublishResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RepublishResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of RepublishResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
-	}
+	m.ResponseHeader = responseHeader
 
-	// Simple Field (notificationMessage)
-	if pullErr := readBuffer.PullContext("notificationMessage"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notificationMessage")
+	notificationMessage, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("805")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationMessage' field"))
 	}
-	_notificationMessage, _notificationMessageErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("805"))
-	if _notificationMessageErr != nil {
-		return nil, errors.Wrap(_notificationMessageErr, "Error parsing 'notificationMessage' field of RepublishResponse")
-	}
-	notificationMessage := _notificationMessage.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("notificationMessage"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notificationMessage")
-	}
+	m.NotificationMessage = notificationMessage
 
 	if closeErr := readBuffer.CloseContext("RepublishResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RepublishResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RepublishResponse{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ResponseHeader:             responseHeader,
-		NotificationMessage:        notificationMessage,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RepublishResponse) Serialize() ([]byte, error) {
@@ -210,28 +189,12 @@ func (m *_RepublishResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for RepublishResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (notificationMessage)
-		if pushErr := writeBuffer.PushContext("notificationMessage"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notificationMessage")
-		}
-		_notificationMessageErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationMessage())
-		if popErr := writeBuffer.PopContext("notificationMessage"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notificationMessage")
-		}
-		if _notificationMessageErr != nil {
-			return errors.Wrap(_notificationMessageErr, "Error serializing 'notificationMessage' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", m.GetNotificationMessage(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationMessage' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RepublishResponse"); popErr != nil {
@@ -239,12 +202,10 @@ func (m *_RepublishResponse) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RepublishResponse) isRepublishResponse() bool {
-	return true
-}
+func (m *_RepublishResponse) IsRepublishResponse() {}
 
 func (m *_RepublishResponse) String() string {
 	if m == nil {

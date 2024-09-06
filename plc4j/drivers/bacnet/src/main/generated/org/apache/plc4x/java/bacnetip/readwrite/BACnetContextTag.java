@@ -73,7 +73,7 @@ public abstract class BACnetContextTag implements Message {
     writeBuffer.pushContext("BACnetContextTag");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     byte tagNumber = getTagNumber();
@@ -121,9 +121,7 @@ public abstract class BACnetContextTag implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getActualTagNumber()) == (tagNumberArgument))) {
       throw new ParseAssertException("tagnumber doesn't match");

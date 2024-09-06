@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataNetworkPortMaxMaster interface {
 	GetMaxMaster() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataNetworkPortMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkPortMaxMaster.
-// This is useful for switch cases.
-type BACnetConstructedDataNetworkPortMaxMasterExactly interface {
-	BACnetConstructedDataNetworkPortMaxMaster
-	isBACnetConstructedDataNetworkPortMaxMaster() bool
+	// IsBACnetConstructedDataNetworkPortMaxMaster is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNetworkPortMaxMaster()
 }
 
 // _BACnetConstructedDataNetworkPortMaxMaster is the data-structure of this message
 type _BACnetConstructedDataNetworkPortMaxMaster struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MaxMaster BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataNetworkPortMaxMaster = (*_BACnetConstructedDataNetworkPortMaxMaster)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkPortMaxMaster)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataNetworkPortMaxMaster) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataNetworkPortMaxMaster factory function for _BACnetConstructedDataNetworkPortMaxMaster
 func NewBACnetConstructedDataNetworkPortMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxMaster {
-	_result := &_BACnetConstructedDataNetworkPortMaxMaster{
-		MaxMaster:              maxMaster,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if maxMaster == nil {
+		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkPortMaxMaster must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataNetworkPortMaxMaster{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxMaster:                     maxMaster,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxMaster)
 	lengthInBits += m.MaxMaster.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataNetworkPortMaxMasterParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkPortMaxMaster, error) {
-	return BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkPortMaxMaster, error) {
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNetworkPortMaxMaster BACnetConstructedDataNetworkPortMaxMaster, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkPortMaxMaster"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNetworkPortMaxMaster")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxMaster)
-	if pullErr := readBuffer.PullContext("maxMaster"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxMaster")
+	maxMaster, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxMaster", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxMaster' field"))
 	}
-	_maxMaster, _maxMasterErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxMasterErr != nil {
-		return nil, errors.Wrap(_maxMasterErr, "Error parsing 'maxMaster' field of BACnetConstructedDataNetworkPortMaxMaster")
-	}
-	maxMaster := _maxMaster.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxMaster"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxMaster")
-	}
+	m.MaxMaster = maxMaster
 
-	// Virtual field
-	_actualValue := maxMaster
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), maxMaster)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkPortMaxMaster"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkPortMaxMaster")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataNetworkPortMaxMaster{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MaxMaster: maxMaster,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNetworkPortMaxMaster")
 		}
 
-		// Simple Field (maxMaster)
-		if pushErr := writeBuffer.PushContext("maxMaster"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxMaster")
-		}
-		_maxMasterErr := writeBuffer.WriteSerializable(ctx, m.GetMaxMaster())
-		if popErr := writeBuffer.PopContext("maxMaster"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxMaster")
-		}
-		if _maxMasterErr != nil {
-			return errors.Wrap(_maxMasterErr, "Error serializing 'maxMaster' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxMaster", m.GetMaxMaster(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxMaster' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMaster) isBACnetConstructedDataNetworkPortMaxMaster() bool {
-	return true
-}
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) IsBACnetConstructedDataNetworkPortMaxMaster() {}
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) String() string {
 	if m == nil {

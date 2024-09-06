@@ -36,18 +36,15 @@ type SemanticVersionString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// SemanticVersionStringExactly can be used when we want exactly this type and not a type which fulfills SemanticVersionString.
-// This is useful for switch cases.
-type SemanticVersionStringExactly interface {
-	SemanticVersionString
-	isSemanticVersionString() bool
+	// IsSemanticVersionString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSemanticVersionString()
 }
 
 // _SemanticVersionString is the data-structure of this message
 type _SemanticVersionString struct {
 }
+
+var _ SemanticVersionString = (*_SemanticVersionString)(nil)
 
 // NewSemanticVersionString factory function for _SemanticVersionString
 func NewSemanticVersionString() *_SemanticVersionString {
@@ -83,11 +80,23 @@ func SemanticVersionStringParse(ctx context.Context, theBytes []byte) (SemanticV
 	return SemanticVersionStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SemanticVersionStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
+		return SemanticVersionStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SemanticVersionStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
+	v, err := (&_SemanticVersionString{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_SemanticVersionString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__semanticVersionString SemanticVersionString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SemanticVersionString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SemanticVersionString")
 	}
@@ -98,8 +107,7 @@ func SemanticVersionStringParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(closeErr, "Error closing for SemanticVersionString")
 	}
 
-	// Create the instance
-	return &_SemanticVersionString{}, nil
+	return m, nil
 }
 
 func (m *_SemanticVersionString) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_SemanticVersionString) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-func (m *_SemanticVersionString) isSemanticVersionString() bool {
-	return true
-}
+func (m *_SemanticVersionString) IsSemanticVersionString() {}
 
 func (m *_SemanticVersionString) String() string {
 	if m == nil {

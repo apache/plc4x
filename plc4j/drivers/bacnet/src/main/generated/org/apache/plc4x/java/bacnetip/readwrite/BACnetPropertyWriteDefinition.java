@@ -82,17 +82,16 @@ public class BACnetPropertyWriteDefinition implements Message {
     writeBuffer.pushContext("BACnetPropertyWriteDefinition");
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (propertyValue) (Can be skipped, if the value is null)
-    writeOptionalField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (priority) (Can be skipped, if the value is null)
-    writeOptionalField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("priority", priority, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyWriteDefinition");
   }
@@ -138,7 +137,7 @@ public class BACnetPropertyWriteDefinition implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -147,7 +146,7 @@ public class BACnetPropertyWriteDefinition implements Message {
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -159,7 +158,7 @@ public class BACnetPropertyWriteDefinition implements Message {
     BACnetConstructedData propertyValue =
         readOptionalField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -173,7 +172,7 @@ public class BACnetPropertyWriteDefinition implements Message {
     BACnetContextTagUnsignedInteger priority =
         readOptionalField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

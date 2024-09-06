@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type S7ParameterReadVarRequest interface {
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7VarRequestParameterItem
-}
-
-// S7ParameterReadVarRequestExactly can be used when we want exactly this type and not a type which fulfills S7ParameterReadVarRequest.
-// This is useful for switch cases.
-type S7ParameterReadVarRequestExactly interface {
-	S7ParameterReadVarRequest
-	isS7ParameterReadVarRequest() bool
+	// IsS7ParameterReadVarRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterReadVarRequest()
 }
 
 // _S7ParameterReadVarRequest is the data-structure of this message
 type _S7ParameterReadVarRequest struct {
-	*_S7Parameter
+	S7ParameterContract
 	Items []S7VarRequestParameterItem
 }
+
+var _ S7ParameterReadVarRequest = (*_S7ParameterReadVarRequest)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterReadVarRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +72,8 @@ func (m *_S7ParameterReadVarRequest) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7ParameterReadVarRequest) InitializeParent(parent S7Parameter) {}
-
-func (m *_S7ParameterReadVarRequest) GetParent() S7Parameter {
-	return m._S7Parameter
+func (m *_S7ParameterReadVarRequest) GetParent() S7ParameterContract {
+	return m.S7ParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +93,10 @@ func (m *_S7ParameterReadVarRequest) GetItems() []S7VarRequestParameterItem {
 // NewS7ParameterReadVarRequest factory function for _S7ParameterReadVarRequest
 func NewS7ParameterReadVarRequest(items []S7VarRequestParameterItem) *_S7ParameterReadVarRequest {
 	_result := &_S7ParameterReadVarRequest{
-		Items:        items,
-		_S7Parameter: NewS7Parameter(),
+		S7ParameterContract: NewS7Parameter(),
+		Items:               items,
 	}
-	_result._S7Parameter._S7ParameterChildRequirements = _result
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 
@@ -118,7 +116,7 @@ func (m *_S7ParameterReadVarRequest) GetTypeName() string {
 }
 
 func (m *_S7ParameterReadVarRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
@@ -140,66 +138,34 @@ func (m *_S7ParameterReadVarRequest) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterReadVarRequestParse(ctx context.Context, theBytes []byte, messageType uint8) (S7ParameterReadVarRequest, error) {
-	return S7ParameterReadVarRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
-}
-
-func S7ParameterReadVarRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterReadVarRequest, error) {
+func (m *_S7ParameterReadVarRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterReadVarRequest S7ParameterReadVarRequest, err error) {
+	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterReadVarRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
+	numItems, err := ReadImplicitField[uint8](ctx, "numItems", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numItems' field"))
+	}
 	_ = numItems
-	if _numItemsErr != nil {
-		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterReadVarRequest")
-	}
 
-	// Array field (items)
-	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for items")
+	items, err := ReadCountArrayField[S7VarRequestParameterItem](ctx, "items", ReadComplex[S7VarRequestParameterItem](S7VarRequestParameterItemParseWithBuffer, readBuffer), uint64(numItems))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
-	// Count array
-	items := make([]S7VarRequestParameterItem, max(numItems, 0))
-	// This happens when the size is set conditional to 0
-	if len(items) == 0 {
-		items = nil
-	}
-	{
-		_numItems := uint16(max(numItems, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := S7VarRequestParameterItemParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7ParameterReadVarRequest")
-			}
-			items[_curItem] = _item.(S7VarRequestParameterItem)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for items")
-	}
+	m.Items = items
 
 	if closeErr := readBuffer.CloseContext("S7ParameterReadVarRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterReadVarRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7ParameterReadVarRequest{
-		_S7Parameter: &_S7Parameter{},
-		Items:        items,
-	}
-	_child._S7Parameter._S7ParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7ParameterReadVarRequest) Serialize() ([]byte, error) {
@@ -219,29 +185,13 @@ func (m *_S7ParameterReadVarRequest) SerializeWithWriteBuffer(ctx context.Contex
 		if pushErr := writeBuffer.PushContext("S7ParameterReadVarRequest"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for S7ParameterReadVarRequest")
 		}
-
-		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.GetItems())))
-		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
-		if _numItemsErr != nil {
-			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
+		if err := WriteImplicitField(ctx, "numItems", numItems, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numItems' field")
 		}
 
-		// Array Field (items)
-		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for items")
-		}
-		for _curItem, _element := range m.GetItems() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'items' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for items")
+		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'items' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterReadVarRequest"); popErr != nil {
@@ -249,12 +199,10 @@ func (m *_S7ParameterReadVarRequest) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7ParameterContract.(*_S7Parameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7ParameterReadVarRequest) isS7ParameterReadVarRequest() bool {
-	return true
-}
+func (m *_S7ParameterReadVarRequest) IsS7ParameterReadVarRequest() {}
 
 func (m *_S7ParameterReadVarRequest) String() string {
 	if m == nil {

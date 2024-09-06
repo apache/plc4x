@@ -78,15 +78,13 @@ public class BACnetPropertyValues implements Message {
     writeBuffer.pushContext("BACnetPropertyValues");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeComplexTypeArrayField("data", data, writeBuffer);
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyValues");
   }
@@ -128,13 +126,13 @@ public class BACnetPropertyValues implements Message {
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetPropertyValue> data =
         readTerminatedArrayField(
             "data",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyValue.staticParse(
                         readBuffer, (BACnetObjectType) (objectTypeArgument)),
@@ -147,7 +145,7 @@ public class BACnetPropertyValues implements Message {
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetPropertyValues");

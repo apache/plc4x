@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type SysexCommandPinStateResponse interface {
 	GetPinMode() uint8
 	// GetPinState returns PinState (property field)
 	GetPinState() uint8
-}
-
-// SysexCommandPinStateResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandPinStateResponse.
-// This is useful for switch cases.
-type SysexCommandPinStateResponseExactly interface {
-	SysexCommandPinStateResponse
-	isSysexCommandPinStateResponse() bool
+	// IsSysexCommandPinStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandPinStateResponse()
 }
 
 // _SysexCommandPinStateResponse is the data-structure of this message
 type _SysexCommandPinStateResponse struct {
-	*_SysexCommand
+	SysexCommandContract
 	Pin      uint8
 	PinMode  uint8
 	PinState uint8
 }
+
+var _ SysexCommandPinStateResponse = (*_SysexCommandPinStateResponse)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandPinStateResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,10 +78,8 @@ func (m *_SysexCommandPinStateResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SysexCommandPinStateResponse) InitializeParent(parent SysexCommand) {}
-
-func (m *_SysexCommandPinStateResponse) GetParent() SysexCommand {
-	return m._SysexCommand
+func (m *_SysexCommandPinStateResponse) GetParent() SysexCommandContract {
+	return m.SysexCommandContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,12 +107,12 @@ func (m *_SysexCommandPinStateResponse) GetPinState() uint8 {
 // NewSysexCommandPinStateResponse factory function for _SysexCommandPinStateResponse
 func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *_SysexCommandPinStateResponse {
 	_result := &_SysexCommandPinStateResponse{
-		Pin:           pin,
-		PinMode:       pinMode,
-		PinState:      pinState,
-		_SysexCommand: NewSysexCommand(),
+		SysexCommandContract: NewSysexCommand(),
+		Pin:                  pin,
+		PinMode:              pinMode,
+		PinState:             pinState,
 	}
-	_result._SysexCommand._SysexCommandChildRequirements = _result
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 
@@ -134,7 +132,7 @@ func (m *_SysexCommandPinStateResponse) GetTypeName() string {
 }
 
 func (m *_SysexCommandPinStateResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -152,55 +150,40 @@ func (m *_SysexCommandPinStateResponse) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandPinStateResponseParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandPinStateResponse, error) {
-	return SysexCommandPinStateResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func SysexCommandPinStateResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateResponse, error) {
+func (m *_SysexCommandPinStateResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandPinStateResponse SysexCommandPinStateResponse, err error) {
+	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandPinStateResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of SysexCommandPinStateResponse")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
+	m.Pin = pin
 
-	// Simple Field (pinMode)
-	_pinMode, _pinModeErr := readBuffer.ReadUint8("pinMode", 8)
-	if _pinModeErr != nil {
-		return nil, errors.Wrap(_pinModeErr, "Error parsing 'pinMode' field of SysexCommandPinStateResponse")
+	pinMode, err := ReadSimpleField(ctx, "pinMode", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pinMode' field"))
 	}
-	pinMode := _pinMode
+	m.PinMode = pinMode
 
-	// Simple Field (pinState)
-	_pinState, _pinStateErr := readBuffer.ReadUint8("pinState", 8)
-	if _pinStateErr != nil {
-		return nil, errors.Wrap(_pinStateErr, "Error parsing 'pinState' field of SysexCommandPinStateResponse")
+	pinState, err := ReadSimpleField(ctx, "pinState", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pinState' field"))
 	}
-	pinState := _pinState
+	m.PinState = pinState
 
 	if closeErr := readBuffer.CloseContext("SysexCommandPinStateResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandPinStateResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SysexCommandPinStateResponse{
-		_SysexCommand: &_SysexCommand{},
-		Pin:           pin,
-		PinMode:       pinMode,
-		PinState:      pinState,
-	}
-	_child._SysexCommand._SysexCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SysexCommandPinStateResponse) Serialize() ([]byte, error) {
@@ -221,25 +204,16 @@ func (m *_SysexCommandPinStateResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for SysexCommandPinStateResponse")
 		}
 
-		// Simple Field (pin)
-		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
-		if _pinErr != nil {
-			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
+		if err := WriteSimpleField[uint8](ctx, "pin", m.GetPin(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pin' field")
 		}
 
-		// Simple Field (pinMode)
-		pinMode := uint8(m.GetPinMode())
-		_pinModeErr := writeBuffer.WriteUint8("pinMode", 8, uint8((pinMode)))
-		if _pinModeErr != nil {
-			return errors.Wrap(_pinModeErr, "Error serializing 'pinMode' field")
+		if err := WriteSimpleField[uint8](ctx, "pinMode", m.GetPinMode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pinMode' field")
 		}
 
-		// Simple Field (pinState)
-		pinState := uint8(m.GetPinState())
-		_pinStateErr := writeBuffer.WriteUint8("pinState", 8, uint8((pinState)))
-		if _pinStateErr != nil {
-			return errors.Wrap(_pinStateErr, "Error serializing 'pinState' field")
+		if err := WriteSimpleField[uint8](ctx, "pinState", m.GetPinState(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pinState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandPinStateResponse"); popErr != nil {
@@ -247,12 +221,10 @@ func (m *_SysexCommandPinStateResponse) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SysexCommandContract.(*_SysexCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SysexCommandPinStateResponse) isSysexCommandPinStateResponse() bool {
-	return true
-}
+func (m *_SysexCommandPinStateResponse) IsSysexCommandPinStateResponse() {}
 
 func (m *_SysexCommandPinStateResponse) String() string {
 	if m == nil {

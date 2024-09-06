@@ -37,19 +37,17 @@ type MResetReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
-}
-
-// MResetReqExactly can be used when we want exactly this type and not a type which fulfills MResetReq.
-// This is useful for switch cases.
-type MResetReqExactly interface {
-	MResetReq
-	isMResetReq() bool
+	// IsMResetReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMResetReq()
 }
 
 // _MResetReq is the data-structure of this message
 type _MResetReq struct {
-	*_CEMI
+	CEMIContract
 }
+
+var _ MResetReq = (*_MResetReq)(nil)
+var _ CEMIRequirements = (*_MResetReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_MResetReq) GetMessageCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MResetReq) InitializeParent(parent CEMI) {}
-
-func (m *_MResetReq) GetParent() CEMI {
-	return m._CEMI
+func (m *_MResetReq) GetParent() CEMIContract {
+	return m.CEMIContract
 }
 
 // NewMResetReq factory function for _MResetReq
 func NewMResetReq(size uint16) *_MResetReq {
 	_result := &_MResetReq{
-		_CEMI: NewCEMI(size),
+		CEMIContract: NewCEMI(size),
 	}
-	_result._CEMI._CEMIChildRequirements = _result
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_MResetReq) GetTypeName() string {
 }
 
 func (m *_MResetReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_MResetReq) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MResetReqParse(ctx context.Context, theBytes []byte, size uint16) (MResetReq, error) {
-	return MResetReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
-}
-
-func MResetReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MResetReq, error) {
+func (m *_MResetReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mResetReq MResetReq, err error) {
+	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MResetReq"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MResetReq")
 	}
@@ -124,14 +116,7 @@ func MResetReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(closeErr, "Error closing for MResetReq")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MResetReq{
-		_CEMI: &_CEMI{
-			Size: size,
-		},
-	}
-	_child._CEMI._CEMIChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MResetReq) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_MResetReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIContract.(*_CEMI).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MResetReq) isMResetReq() bool {
-	return true
-}
+func (m *_MResetReq) IsMResetReq() {}
 
 func (m *_MResetReq) String() string {
 	if m == nil {

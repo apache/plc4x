@@ -37,19 +37,17 @@ type SysexCommandCapabilityResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
-}
-
-// SysexCommandCapabilityResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandCapabilityResponse.
-// This is useful for switch cases.
-type SysexCommandCapabilityResponseExactly interface {
-	SysexCommandCapabilityResponse
-	isSysexCommandCapabilityResponse() bool
+	// IsSysexCommandCapabilityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandCapabilityResponse()
 }
 
 // _SysexCommandCapabilityResponse is the data-structure of this message
 type _SysexCommandCapabilityResponse struct {
-	*_SysexCommand
+	SysexCommandContract
 }
+
+var _ SysexCommandCapabilityResponse = (*_SysexCommandCapabilityResponse)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandCapabilityResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,18 +67,16 @@ func (m *_SysexCommandCapabilityResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SysexCommandCapabilityResponse) InitializeParent(parent SysexCommand) {}
-
-func (m *_SysexCommandCapabilityResponse) GetParent() SysexCommand {
-	return m._SysexCommand
+func (m *_SysexCommandCapabilityResponse) GetParent() SysexCommandContract {
+	return m.SysexCommandContract
 }
 
 // NewSysexCommandCapabilityResponse factory function for _SysexCommandCapabilityResponse
 func NewSysexCommandCapabilityResponse() *_SysexCommandCapabilityResponse {
 	_result := &_SysexCommandCapabilityResponse{
-		_SysexCommand: NewSysexCommand(),
+		SysexCommandContract: NewSysexCommand(),
 	}
-	_result._SysexCommand._SysexCommandChildRequirements = _result
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 
@@ -100,7 +96,7 @@ func (m *_SysexCommandCapabilityResponse) GetTypeName() string {
 }
 
 func (m *_SysexCommandCapabilityResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -109,15 +105,11 @@ func (m *_SysexCommandCapabilityResponse) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandCapabilityResponseParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandCapabilityResponse, error) {
-	return SysexCommandCapabilityResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func SysexCommandCapabilityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityResponse, error) {
+func (m *_SysexCommandCapabilityResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandCapabilityResponse SysexCommandCapabilityResponse, err error) {
+	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandCapabilityResponse")
 	}
@@ -128,12 +120,7 @@ func SysexCommandCapabilityResponseParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandCapabilityResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SysexCommandCapabilityResponse{
-		_SysexCommand: &_SysexCommand{},
-	}
-	_child._SysexCommand._SysexCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SysexCommandCapabilityResponse) Serialize() ([]byte, error) {
@@ -159,12 +146,10 @@ func (m *_SysexCommandCapabilityResponse) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SysexCommandContract.(*_SysexCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SysexCommandCapabilityResponse) isSysexCommandCapabilityResponse() bool {
-	return true
-}
+func (m *_SysexCommandCapabilityResponse) IsSysexCommandCapabilityResponse() {}
 
 func (m *_SysexCommandCapabilityResponse) String() string {
 	if m == nil {

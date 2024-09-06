@@ -36,18 +36,15 @@ type DateString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// DateStringExactly can be used when we want exactly this type and not a type which fulfills DateString.
-// This is useful for switch cases.
-type DateStringExactly interface {
-	DateString
-	isDateString() bool
+	// IsDateString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDateString()
 }
 
 // _DateString is the data-structure of this message
 type _DateString struct {
 }
+
+var _ DateString = (*_DateString)(nil)
 
 // NewDateString factory function for _DateString
 func NewDateString() *_DateString {
@@ -83,11 +80,23 @@ func DateStringParse(ctx context.Context, theBytes []byte) (DateString, error) {
 	return DateStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DateStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
+		return DateStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DateStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
+	v, err := (&_DateString{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_DateString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dateString DateString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DateString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DateString")
 	}
@@ -98,8 +107,7 @@ func DateStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return nil, errors.Wrap(closeErr, "Error closing for DateString")
 	}
 
-	// Create the instance
-	return &_DateString{}, nil
+	return m, nil
 }
 
 func (m *_DateString) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_DateString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	return nil
 }
 
-func (m *_DateString) isDateString() bool {
-	return true
-}
+func (m *_DateString) IsDateString() {}
 
 func (m *_DateString) String() string {
 	if m == nil {

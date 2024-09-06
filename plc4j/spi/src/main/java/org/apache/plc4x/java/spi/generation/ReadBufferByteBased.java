@@ -34,6 +34,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
     private final MyDefaultBitInput bi;
     private ByteOrder byteOrder;
     private final int totalBytes;
+    private int bitPos; // This is useful when debugging so you can see the actual bit position
 
     public ReadBufferByteBased(byte[] input) {
         this(input, ByteOrder.BIG_ENDIAN);
@@ -56,6 +57,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
     @Override
     public void reset(int pos) {
         bi.reset(pos);
+        bitPos = pos*8;
     }
 
     public byte[] getBytes(int startPos, int endPos) {
@@ -107,6 +109,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos++;
         try {
             return bi.readBoolean();
         } catch (IOException e) {
@@ -116,11 +119,13 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public byte readByte(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=8;
         return readSignedByte(logicalName, 8, readerArgs);
     }
 
     @Override
     public byte[] readByteArray(String logicalName, int numberOfBytes, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=numberOfBytes*8;
         byte[] bytes = new byte[numberOfBytes];
         for (int i = 0; i < numberOfBytes; i++) {
             bytes[i] = readByte();
@@ -130,6 +135,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("unsigned byte must contain at least 1 bit");
         }
@@ -144,11 +150,11 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                 // BCD = Binary Encoded Decimal (A decimal number is represented by a sequence of 4 bit hexadecimal values from 0-9.
                 // https://www.elektronik-kompendium.de/sites/dig/1010311.htm
                 case "BCD":
-                    if(bitLength % 4 != 0) {
+                    if (bitLength % 4 != 0) {
                         throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
                     }
                     byte digit = bi.readByte(true, 4);
-                    if((digit < 0) || (digit > 9)) {
+                    if ((digit < 0) || (digit > 9)) {
                         throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
                     }
                     return digit;
@@ -162,6 +168,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public short readUnsignedShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("unsigned short must contain at least 1 bit");
         }
@@ -185,12 +192,12 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     stringValue = stringValue.trim();
                     return Short.parseShort(stringValue);
                 case "BCD":
-                    if(bitLength % 4 != 0) {
+                    if (bitLength % 4 != 0) {
                         throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
                     }
                     int numDigits = bitLength / 4;
                     short value = 0;
-                    for(int i = numDigits - 1; i >= 0; i--) {
+                    for (int i = numDigits - 1; i >= 0; i--) {
                         byte digit = bi.readByte(true, 4);
                         if ((digit < 0) || (digit > 9)) {
                             throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
@@ -212,6 +219,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public int readUnsignedInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
@@ -235,12 +243,12 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     stringValue = stringValue.trim();
                     return Integer.parseInt(stringValue);
                 case "BCD":
-                    if(bitLength % 4 != 0) {
+                    if (bitLength % 4 != 0) {
                         throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
                     }
                     int numDigits = bitLength / 4;
                     int value = 0;
-                    for(int i = numDigits - 1; i >= 0; i--) {
+                    for (int i = numDigits - 1; i >= 0; i--) {
                         byte digit = bi.readByte(true, 4);
                         if ((digit < 0) || (digit > 9)) {
                             throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
@@ -265,6 +273,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public long readUnsignedLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
@@ -288,12 +297,12 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     stringValue = stringValue.trim();
                     return Long.parseLong(stringValue);
                 case "BCD":
-                    if(bitLength % 4 != 0) {
+                    if (bitLength % 4 != 0) {
                         throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
                     }
                     int numDigits = bitLength / 4;
                     long value = 0;
-                    for(int i = numDigits - 1; i >= 0; i--) {
+                    for (int i = numDigits - 1; i >= 0; i--) {
                         byte digit = bi.readByte(true, 4);
                         if ((digit < 0) || (digit > 9)) {
                             throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
@@ -318,6 +327,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public BigInteger readUnsignedBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         //Support specific case where value less than 64 bits and big endian.
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
@@ -342,12 +352,12 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     stringValue = stringValue.trim();
                     return new BigInteger(stringValue);
                 case "BCD":
-                    if(bitLength % 4 != 0) {
+                    if (bitLength % 4 != 0) {
                         throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
                     }
                     int numDigits = bitLength / 4;
                     BigInteger value = BigInteger.ZERO;
-                    for(int i = numDigits - 1; i >= 0; i--) {
+                    for (int i = numDigits - 1; i >= 0; i--) {
                         byte digit = bi.readByte(true, 4);
                         if ((digit < 0) || (digit > 9)) {
                             throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
@@ -378,6 +388,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public byte readSignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("byte must contain at least 1 bit");
         }
@@ -393,6 +404,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public short readShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("short must contain at least 1 bit");
         }
@@ -411,6 +423,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public int readInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }
@@ -429,6 +442,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public long readLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("long must contain at least 1 bit");
         }
@@ -447,15 +461,17 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public BigInteger readBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public float readFloat(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         String encoding = extractEncoding(readerArgs).orElse("UTF-8");
         try {
             if (bitLength == 16) {
-                if("KNXFloat".equals(encoding)) {
+                if ("KNXFloat".equals(encoding)) {
                     return readKnxFloat16();
                 } else {
                     return readFloat16();
@@ -508,12 +524,14 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
     }
 
     private float readFloat32(String logicalName) throws ParseException {
+        bitPos+=32;
         int intValue = readInt(logicalName, 32);
         return Float.intBitsToFloat(intValue);
     }
 
     @Override
     public double readDouble(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength == 64) {
             long longValue = readLong(logicalName, 64);
             return Double.longBitsToDouble(longValue);
@@ -524,6 +542,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public BigDecimal readBigDecimal(String logicalName, int bitLength, WithReaderArgs... readerArgs) {
+        bitPos+=bitLength;
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -534,6 +553,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
      */
     @Override
     public String readString(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         String encoding = extractEncoding(readerArgs).orElse("UTF-8");
         encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
         encoding = encoding.toUpperCase();

@@ -37,19 +37,17 @@ type PublishedDataSetSourceDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-}
-
-// PublishedDataSetSourceDataTypeExactly can be used when we want exactly this type and not a type which fulfills PublishedDataSetSourceDataType.
-// This is useful for switch cases.
-type PublishedDataSetSourceDataTypeExactly interface {
-	PublishedDataSetSourceDataType
-	isPublishedDataSetSourceDataType() bool
+	// IsPublishedDataSetSourceDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPublishedDataSetSourceDataType()
 }
 
 // _PublishedDataSetSourceDataType is the data-structure of this message
 type _PublishedDataSetSourceDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 }
+
+var _ PublishedDataSetSourceDataType = (*_PublishedDataSetSourceDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PublishedDataSetSourceDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_PublishedDataSetSourceDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PublishedDataSetSourceDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_PublishedDataSetSourceDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_PublishedDataSetSourceDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 // NewPublishedDataSetSourceDataType factory function for _PublishedDataSetSourceDataType
 func NewPublishedDataSetSourceDataType() *_PublishedDataSetSourceDataType {
 	_result := &_PublishedDataSetSourceDataType{
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_PublishedDataSetSourceDataType) GetTypeName() string {
 }
 
 func (m *_PublishedDataSetSourceDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_PublishedDataSetSourceDataType) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PublishedDataSetSourceDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (PublishedDataSetSourceDataType, error) {
-	return PublishedDataSetSourceDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func PublishedDataSetSourceDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PublishedDataSetSourceDataType, error) {
+func (m *_PublishedDataSetSourceDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__publishedDataSetSourceDataType PublishedDataSetSourceDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PublishedDataSetSourceDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PublishedDataSetSourceDataType")
 	}
@@ -124,12 +116,7 @@ func PublishedDataSetSourceDataTypeParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(closeErr, "Error closing for PublishedDataSetSourceDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_PublishedDataSetSourceDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_PublishedDataSetSourceDataType) Serialize() ([]byte, error) {
@@ -155,12 +142,10 @@ func (m *_PublishedDataSetSourceDataType) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_PublishedDataSetSourceDataType) isPublishedDataSetSourceDataType() bool {
-	return true
-}
+func (m *_PublishedDataSetSourceDataType) IsPublishedDataSetSourceDataType() {}
 
 func (m *_PublishedDataSetSourceDataType) String() string {
 	if m == nil {

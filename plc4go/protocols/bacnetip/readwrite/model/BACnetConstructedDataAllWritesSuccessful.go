@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataAllWritesSuccessful interface {
 	GetAllWritesSuccessful() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-}
-
-// BACnetConstructedDataAllWritesSuccessfulExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAllWritesSuccessful.
-// This is useful for switch cases.
-type BACnetConstructedDataAllWritesSuccessfulExactly interface {
-	BACnetConstructedDataAllWritesSuccessful
-	isBACnetConstructedDataAllWritesSuccessful() bool
+	// IsBACnetConstructedDataAllWritesSuccessful is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAllWritesSuccessful()
 }
 
 // _BACnetConstructedDataAllWritesSuccessful is the data-structure of this message
 type _BACnetConstructedDataAllWritesSuccessful struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	AllWritesSuccessful BACnetApplicationTagBoolean
 }
+
+var _ BACnetConstructedDataAllWritesSuccessful = (*_BACnetConstructedDataAllWritesSuccessful)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAllWritesSuccessful)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataAllWritesSuccessful) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataAllWritesSuccessful) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataAllWritesSuccessful factory function for _BACnetConstructedDataAllWritesSuccessful
 func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllWritesSuccessful {
-	_result := &_BACnetConstructedDataAllWritesSuccessful{
-		AllWritesSuccessful:    allWritesSuccessful,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if allWritesSuccessful == nil {
+		panic("allWritesSuccessful of type BACnetApplicationTagBoolean for BACnetConstructedDataAllWritesSuccessful must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataAllWritesSuccessful{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AllWritesSuccessful:           allWritesSuccessful,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (allWritesSuccessful)
 	lengthInBits += m.AllWritesSuccessful.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataAllWritesSuccessfulParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllWritesSuccessful, error) {
-	return BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllWritesSuccessful, error) {
+func (m *_BACnetConstructedDataAllWritesSuccessful) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAllWritesSuccessful BACnetConstructedDataAllWritesSuccessful, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAllWritesSuccessful"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAllWritesSuccessful")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (allWritesSuccessful)
-	if pullErr := readBuffer.PullContext("allWritesSuccessful"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for allWritesSuccessful")
+	allWritesSuccessful, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allWritesSuccessful", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'allWritesSuccessful' field"))
 	}
-	_allWritesSuccessful, _allWritesSuccessfulErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _allWritesSuccessfulErr != nil {
-		return nil, errors.Wrap(_allWritesSuccessfulErr, "Error parsing 'allWritesSuccessful' field of BACnetConstructedDataAllWritesSuccessful")
-	}
-	allWritesSuccessful := _allWritesSuccessful.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("allWritesSuccessful"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for allWritesSuccessful")
-	}
+	m.AllWritesSuccessful = allWritesSuccessful
 
-	// Virtual field
-	_actualValue := allWritesSuccessful
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), allWritesSuccessful)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAllWritesSuccessful"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAllWritesSuccessful")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataAllWritesSuccessful{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		AllWritesSuccessful: allWritesSuccessful,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAllWritesSuccessful")
 		}
 
-		// Simple Field (allWritesSuccessful)
-		if pushErr := writeBuffer.PushContext("allWritesSuccessful"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for allWritesSuccessful")
-		}
-		_allWritesSuccessfulErr := writeBuffer.WriteSerializable(ctx, m.GetAllWritesSuccessful())
-		if popErr := writeBuffer.PopContext("allWritesSuccessful"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for allWritesSuccessful")
-		}
-		if _allWritesSuccessfulErr != nil {
-			return errors.Wrap(_allWritesSuccessfulErr, "Error serializing 'allWritesSuccessful' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "allWritesSuccessful", m.GetAllWritesSuccessful(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'allWritesSuccessful' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) isBACnetConstructedDataAllWritesSuccessful() bool {
-	return true
-}
+func (m *_BACnetConstructedDataAllWritesSuccessful) IsBACnetConstructedDataAllWritesSuccessful() {}
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) String() string {
 	if m == nil {

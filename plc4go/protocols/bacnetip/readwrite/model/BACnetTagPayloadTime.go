@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,13 +56,8 @@ type BACnetTagPayloadTime interface {
 	GetSecondIsWildcard() bool
 	// GetFractionalIsWildcard returns FractionalIsWildcard (virtual field)
 	GetFractionalIsWildcard() bool
-}
-
-// BACnetTagPayloadTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadTime.
-// This is useful for switch cases.
-type BACnetTagPayloadTimeExactly interface {
-	BACnetTagPayloadTime
-	isBACnetTagPayloadTime() bool
+	// IsBACnetTagPayloadTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadTime()
 }
 
 // _BACnetTagPayloadTime is the data-structure of this message
@@ -70,6 +67,8 @@ type _BACnetTagPayloadTime struct {
 	Second     uint8
 	Fractional uint8
 }
+
+var _ BACnetTagPayloadTime = (*_BACnetTagPayloadTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -192,81 +191,88 @@ func BACnetTagPayloadTimeParse(ctx context.Context, theBytes []byte) (BACnetTagP
 	return BACnetTagPayloadTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTagPayloadTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadTime, error) {
+		return BACnetTagPayloadTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadTime, error) {
+	v, err := (&_BACnetTagPayloadTime{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_BACnetTagPayloadTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTagPayloadTime BACnetTagPayloadTime, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_wildcard := 0xFF
-	wildcard := uint8(_wildcard)
+	wildcard, err := ReadVirtualField[uint8](ctx, "wildcard", (*uint8)(nil), 0xFF)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'wildcard' field"))
+	}
 	_ = wildcard
 
-	// Simple Field (hour)
-	_hour, _hourErr := readBuffer.ReadUint8("hour", 8)
-	if _hourErr != nil {
-		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of BACnetTagPayloadTime")
+	hour, err := ReadSimpleField(ctx, "hour", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hour' field"))
 	}
-	hour := _hour
+	m.Hour = hour
 
-	// Virtual field
-	_hourIsWildcard := bool((hour) == (wildcard))
-	hourIsWildcard := bool(_hourIsWildcard)
+	hourIsWildcard, err := ReadVirtualField[bool](ctx, "hourIsWildcard", (*bool)(nil), bool((hour) == (wildcard)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hourIsWildcard' field"))
+	}
 	_ = hourIsWildcard
 
-	// Simple Field (minute)
-	_minute, _minuteErr := readBuffer.ReadUint8("minute", 8)
-	if _minuteErr != nil {
-		return nil, errors.Wrap(_minuteErr, "Error parsing 'minute' field of BACnetTagPayloadTime")
+	minute, err := ReadSimpleField(ctx, "minute", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minute' field"))
 	}
-	minute := _minute
+	m.Minute = minute
 
-	// Virtual field
-	_minuteIsWildcard := bool((minute) == (wildcard))
-	minuteIsWildcard := bool(_minuteIsWildcard)
+	minuteIsWildcard, err := ReadVirtualField[bool](ctx, "minuteIsWildcard", (*bool)(nil), bool((minute) == (wildcard)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minuteIsWildcard' field"))
+	}
 	_ = minuteIsWildcard
 
-	// Simple Field (second)
-	_second, _secondErr := readBuffer.ReadUint8("second", 8)
-	if _secondErr != nil {
-		return nil, errors.Wrap(_secondErr, "Error parsing 'second' field of BACnetTagPayloadTime")
+	second, err := ReadSimpleField(ctx, "second", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'second' field"))
 	}
-	second := _second
+	m.Second = second
 
-	// Virtual field
-	_secondIsWildcard := bool((second) == (wildcard))
-	secondIsWildcard := bool(_secondIsWildcard)
+	secondIsWildcard, err := ReadVirtualField[bool](ctx, "secondIsWildcard", (*bool)(nil), bool((second) == (wildcard)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondIsWildcard' field"))
+	}
 	_ = secondIsWildcard
 
-	// Simple Field (fractional)
-	_fractional, _fractionalErr := readBuffer.ReadUint8("fractional", 8)
-	if _fractionalErr != nil {
-		return nil, errors.Wrap(_fractionalErr, "Error parsing 'fractional' field of BACnetTagPayloadTime")
+	fractional, err := ReadSimpleField(ctx, "fractional", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fractional' field"))
 	}
-	fractional := _fractional
+	m.Fractional = fractional
 
-	// Virtual field
-	_fractionalIsWildcard := bool((fractional) == (wildcard))
-	fractionalIsWildcard := bool(_fractionalIsWildcard)
+	fractionalIsWildcard, err := ReadVirtualField[bool](ctx, "fractionalIsWildcard", (*bool)(nil), bool((fractional) == (wildcard)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fractionalIsWildcard' field"))
+	}
 	_ = fractionalIsWildcard
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadTime")
 	}
 
-	// Create the instance
-	return &_BACnetTagPayloadTime{
-		Hour:       hour,
-		Minute:     minute,
-		Second:     second,
-		Fractional: fractional,
-	}, nil
+	return m, nil
 }
 
 func (m *_BACnetTagPayloadTime) Serialize() ([]byte, error) {
@@ -292,11 +298,8 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
 	}
 
-	// Simple Field (hour)
-	hour := uint8(m.GetHour())
-	_hourErr := writeBuffer.WriteUint8("hour", 8, uint8((hour)))
-	if _hourErr != nil {
-		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
+	if err := WriteSimpleField[uint8](ctx, "hour", m.GetHour(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'hour' field")
 	}
 	// Virtual field
 	hourIsWildcard := m.GetHourIsWildcard()
@@ -305,11 +308,8 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_hourIsWildcardErr, "Error serializing 'hourIsWildcard' field")
 	}
 
-	// Simple Field (minute)
-	minute := uint8(m.GetMinute())
-	_minuteErr := writeBuffer.WriteUint8("minute", 8, uint8((minute)))
-	if _minuteErr != nil {
-		return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
+	if err := WriteSimpleField[uint8](ctx, "minute", m.GetMinute(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'minute' field")
 	}
 	// Virtual field
 	minuteIsWildcard := m.GetMinuteIsWildcard()
@@ -318,11 +318,8 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_minuteIsWildcardErr, "Error serializing 'minuteIsWildcard' field")
 	}
 
-	// Simple Field (second)
-	second := uint8(m.GetSecond())
-	_secondErr := writeBuffer.WriteUint8("second", 8, uint8((second)))
-	if _secondErr != nil {
-		return errors.Wrap(_secondErr, "Error serializing 'second' field")
+	if err := WriteSimpleField[uint8](ctx, "second", m.GetSecond(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'second' field")
 	}
 	// Virtual field
 	secondIsWildcard := m.GetSecondIsWildcard()
@@ -331,11 +328,8 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_secondIsWildcardErr, "Error serializing 'secondIsWildcard' field")
 	}
 
-	// Simple Field (fractional)
-	fractional := uint8(m.GetFractional())
-	_fractionalErr := writeBuffer.WriteUint8("fractional", 8, uint8((fractional)))
-	if _fractionalErr != nil {
-		return errors.Wrap(_fractionalErr, "Error serializing 'fractional' field")
+	if err := WriteSimpleField[uint8](ctx, "fractional", m.GetFractional(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'fractional' field")
 	}
 	// Virtual field
 	fractionalIsWildcard := m.GetFractionalIsWildcard()
@@ -350,9 +344,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-func (m *_BACnetTagPayloadTime) isBACnetTagPayloadTime() bool {
-	return true
-}
+func (m *_BACnetTagPayloadTime) IsBACnetTagPayloadTime() {}
 
 func (m *_BACnetTagPayloadTime) String() string {
 	if m == nil {

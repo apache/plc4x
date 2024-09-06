@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDefaultTimeout interface {
 	GetDefaultTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataDefaultTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultTimeout.
-// This is useful for switch cases.
-type BACnetConstructedDataDefaultTimeoutExactly interface {
-	BACnetConstructedDataDefaultTimeout
-	isBACnetConstructedDataDefaultTimeout() bool
+	// IsBACnetConstructedDataDefaultTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDefaultTimeout()
 }
 
 // _BACnetConstructedDataDefaultTimeout is the data-structure of this message
 type _BACnetConstructedDataDefaultTimeout struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	DefaultTimeout BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataDefaultTimeout = (*_BACnetConstructedDataDefaultTimeout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultTimeout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDefaultTimeout) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDefaultTimeout) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDefaultTimeout) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDefaultTimeout) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDefaultTimeout) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataDefaultTimeout factory function for _BACnetConstructedDataDefaultTimeout
 func NewBACnetConstructedDataDefaultTimeout(defaultTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultTimeout {
-	_result := &_BACnetConstructedDataDefaultTimeout{
-		DefaultTimeout:         defaultTimeout,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if defaultTimeout == nil {
+		panic("defaultTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultTimeout must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDefaultTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultTimeout:                defaultTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDefaultTimeout) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDefaultTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (defaultTimeout)
 	lengthInBits += m.DefaultTimeout.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDefaultTimeout) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDefaultTimeoutParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultTimeout, error) {
-	return BACnetConstructedDataDefaultTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDefaultTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultTimeout, error) {
+func (m *_BACnetConstructedDataDefaultTimeout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDefaultTimeout BACnetConstructedDataDefaultTimeout, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDefaultTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (defaultTimeout)
-	if pullErr := readBuffer.PullContext("defaultTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for defaultTimeout")
+	defaultTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultTimeout' field"))
 	}
-	_defaultTimeout, _defaultTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _defaultTimeoutErr != nil {
-		return nil, errors.Wrap(_defaultTimeoutErr, "Error parsing 'defaultTimeout' field of BACnetConstructedDataDefaultTimeout")
-	}
-	defaultTimeout := _defaultTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("defaultTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for defaultTimeout")
-	}
+	m.DefaultTimeout = defaultTimeout
 
-	// Virtual field
-	_actualValue := defaultTimeout
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), defaultTimeout)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultTimeout")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDefaultTimeout{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		DefaultTimeout: defaultTimeout,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDefaultTimeout) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDefaultTimeout) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultTimeout")
 		}
 
-		// Simple Field (defaultTimeout)
-		if pushErr := writeBuffer.PushContext("defaultTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for defaultTimeout")
-		}
-		_defaultTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultTimeout())
-		if popErr := writeBuffer.PopContext("defaultTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for defaultTimeout")
-		}
-		if _defaultTimeoutErr != nil {
-			return errors.Wrap(_defaultTimeoutErr, "Error serializing 'defaultTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultTimeout", m.GetDefaultTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'defaultTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataDefaultTimeout) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDefaultTimeout) isBACnetConstructedDataDefaultTimeout() bool {
-	return true
-}
+func (m *_BACnetConstructedDataDefaultTimeout) IsBACnetConstructedDataDefaultTimeout() {}
 
 func (m *_BACnetConstructedDataDefaultTimeout) String() string {
 	if m == nil {

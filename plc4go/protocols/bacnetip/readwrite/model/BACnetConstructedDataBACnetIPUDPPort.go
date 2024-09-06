@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataBACnetIPUDPPort interface {
 	GetIpUdpPort() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataBACnetIPUDPPortExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPUDPPort.
-// This is useful for switch cases.
-type BACnetConstructedDataBACnetIPUDPPortExactly interface {
-	BACnetConstructedDataBACnetIPUDPPort
-	isBACnetConstructedDataBACnetIPUDPPort() bool
+	// IsBACnetConstructedDataBACnetIPUDPPort is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBACnetIPUDPPort()
 }
 
 // _BACnetConstructedDataBACnetIPUDPPort is the data-structure of this message
 type _BACnetConstructedDataBACnetIPUDPPort struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	IpUdpPort BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataBACnetIPUDPPort = (*_BACnetConstructedDataBACnetIPUDPPort)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPUDPPort)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataBACnetIPUDPPort) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataBACnetIPUDPPort) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataBACnetIPUDPPort) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetActualValue() BACnetApplicati
 
 // NewBACnetConstructedDataBACnetIPUDPPort factory function for _BACnetConstructedDataBACnetIPUDPPort
 func NewBACnetConstructedDataBACnetIPUDPPort(ipUdpPort BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPUDPPort {
-	_result := &_BACnetConstructedDataBACnetIPUDPPort{
-		IpUdpPort:              ipUdpPort,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if ipUdpPort == nil {
+		panic("ipUdpPort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBACnetIPUDPPort must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataBACnetIPUDPPort{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpUdpPort:                     ipUdpPort,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipUdpPort)
 	lengthInBits += m.IpUdpPort.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataBACnetIPUDPPortParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPUDPPort, error) {
-	return BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPUDPPort, error) {
+func (m *_BACnetConstructedDataBACnetIPUDPPort) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBACnetIPUDPPort BACnetConstructedDataBACnetIPUDPPort, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPUDPPort"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPUDPPort")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipUdpPort)
-	if pullErr := readBuffer.PullContext("ipUdpPort"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipUdpPort")
+	ipUdpPort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipUdpPort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipUdpPort' field"))
 	}
-	_ipUdpPort, _ipUdpPortErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipUdpPortErr != nil {
-		return nil, errors.Wrap(_ipUdpPortErr, "Error parsing 'ipUdpPort' field of BACnetConstructedDataBACnetIPUDPPort")
-	}
-	ipUdpPort := _ipUdpPort.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("ipUdpPort"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipUdpPort")
-	}
+	m.IpUdpPort = ipUdpPort
 
-	// Virtual field
-	_actualValue := ipUdpPort
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), ipUdpPort)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPUDPPort"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPUDPPort")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataBACnetIPUDPPort{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		IpUdpPort: ipUdpPort,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPUDPPort")
 		}
 
-		// Simple Field (ipUdpPort)
-		if pushErr := writeBuffer.PushContext("ipUdpPort"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipUdpPort")
-		}
-		_ipUdpPortErr := writeBuffer.WriteSerializable(ctx, m.GetIpUdpPort())
-		if popErr := writeBuffer.PopContext("ipUdpPort"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipUdpPort")
-		}
-		if _ipUdpPortErr != nil {
-			return errors.Wrap(_ipUdpPortErr, "Error serializing 'ipUdpPort' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipUdpPort", m.GetIpUdpPort(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipUdpPort' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPort) isBACnetConstructedDataBACnetIPUDPPort() bool {
-	return true
-}
+func (m *_BACnetConstructedDataBACnetIPUDPPort) IsBACnetConstructedDataBACnetIPUDPPort() {}
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) String() string {
 	if m == nil {

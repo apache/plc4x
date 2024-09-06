@@ -83,8 +83,7 @@ public class BACnetConstructedDataFailedAttemptsTime extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataFailedAttemptsTime");
 
     // Simple Field (failedAttemptsTime)
-    writeSimpleField(
-        "failedAttemptsTime", failedAttemptsTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("failedAttemptsTime", failedAttemptsTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataFailedAttemptsTime extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger failedAttemptsTime =
         readSimpleField(
             "failedAttemptsTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

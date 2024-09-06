@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataFDSubscriptionLifetime interface {
 	GetFdSubscriptionLifetime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataFDSubscriptionLifetimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFDSubscriptionLifetime.
-// This is useful for switch cases.
-type BACnetConstructedDataFDSubscriptionLifetimeExactly interface {
-	BACnetConstructedDataFDSubscriptionLifetime
-	isBACnetConstructedDataFDSubscriptionLifetime() bool
+	// IsBACnetConstructedDataFDSubscriptionLifetime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFDSubscriptionLifetime()
 }
 
 // _BACnetConstructedDataFDSubscriptionLifetime is the data-structure of this message
 type _BACnetConstructedDataFDSubscriptionLifetime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	FdSubscriptionLifetime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataFDSubscriptionLifetime = (*_BACnetConstructedDataFDSubscriptionLifetime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFDSubscriptionLifetime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetActualValue() BACnetAp
 
 // NewBACnetConstructedDataFDSubscriptionLifetime factory function for _BACnetConstructedDataFDSubscriptionLifetime
 func NewBACnetConstructedDataFDSubscriptionLifetime(fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDSubscriptionLifetime {
-	_result := &_BACnetConstructedDataFDSubscriptionLifetime{
-		FdSubscriptionLifetime: fdSubscriptionLifetime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if fdSubscriptionLifetime == nil {
+		panic("fdSubscriptionLifetime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFDSubscriptionLifetime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataFDSubscriptionLifetime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FdSubscriptionLifetime:        fdSubscriptionLifetime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (fdSubscriptionLifetime)
 	lengthInBits += m.FdSubscriptionLifetime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataFDSubscriptionLifetimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
-	return BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFDSubscriptionLifetime BACnetConstructedDataFDSubscriptionLifetime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDSubscriptionLifetime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFDSubscriptionLifetime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fdSubscriptionLifetime)
-	if pullErr := readBuffer.PullContext("fdSubscriptionLifetime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fdSubscriptionLifetime")
+	fdSubscriptionLifetime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "fdSubscriptionLifetime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fdSubscriptionLifetime' field"))
 	}
-	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fdSubscriptionLifetimeErr != nil {
-		return nil, errors.Wrap(_fdSubscriptionLifetimeErr, "Error parsing 'fdSubscriptionLifetime' field of BACnetConstructedDataFDSubscriptionLifetime")
-	}
-	fdSubscriptionLifetime := _fdSubscriptionLifetime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("fdSubscriptionLifetime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fdSubscriptionLifetime")
-	}
+	m.FdSubscriptionLifetime = fdSubscriptionLifetime
 
-	// Virtual field
-	_actualValue := fdSubscriptionLifetime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), fdSubscriptionLifetime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDSubscriptionLifetime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFDSubscriptionLifetime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataFDSubscriptionLifetime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		FdSubscriptionLifetime: fdSubscriptionLifetime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFDSubscriptionLifetime")
 		}
 
-		// Simple Field (fdSubscriptionLifetime)
-		if pushErr := writeBuffer.PushContext("fdSubscriptionLifetime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fdSubscriptionLifetime")
-		}
-		_fdSubscriptionLifetimeErr := writeBuffer.WriteSerializable(ctx, m.GetFdSubscriptionLifetime())
-		if popErr := writeBuffer.PopContext("fdSubscriptionLifetime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fdSubscriptionLifetime")
-		}
-		if _fdSubscriptionLifetimeErr != nil {
-			return errors.Wrap(_fdSubscriptionLifetimeErr, "Error serializing 'fdSubscriptionLifetime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "fdSubscriptionLifetime", m.GetFdSubscriptionLifetime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fdSubscriptionLifetime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) isBACnetConstructedDataFDSubscriptionLifetime() bool {
-	return true
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) IsBACnetConstructedDataFDSubscriptionLifetime() {
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) String() string {

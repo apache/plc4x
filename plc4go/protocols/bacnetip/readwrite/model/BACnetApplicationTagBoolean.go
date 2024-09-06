@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetApplicationTagBoolean interface {
 	GetPayload() BACnetTagPayloadBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() bool
-}
-
-// BACnetApplicationTagBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagBoolean.
-// This is useful for switch cases.
-type BACnetApplicationTagBooleanExactly interface {
-	BACnetApplicationTagBoolean
-	isBACnetApplicationTagBoolean() bool
+	// IsBACnetApplicationTagBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTagBoolean()
 }
 
 // _BACnetApplicationTagBoolean is the data-structure of this message
 type _BACnetApplicationTagBoolean struct {
-	*_BACnetApplicationTag
+	BACnetApplicationTagContract
 	Payload BACnetTagPayloadBoolean
 }
+
+var _ BACnetApplicationTagBoolean = (*_BACnetApplicationTagBoolean)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagBoolean)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,12 +66,8 @@ type _BACnetApplicationTagBoolean struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetApplicationTagBoolean) InitializeParent(parent BACnetApplicationTag, header BACnetTagHeader) {
-	m.Header = header
-}
-
-func (m *_BACnetApplicationTagBoolean) GetParent() BACnetApplicationTag {
-	return m._BACnetApplicationTag
+func (m *_BACnetApplicationTagBoolean) GetParent() BACnetApplicationTagContract {
+	return m.BACnetApplicationTagContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,11 +101,14 @@ func (m *_BACnetApplicationTagBoolean) GetActualValue() bool {
 
 // NewBACnetApplicationTagBoolean factory function for _BACnetApplicationTagBoolean
 func NewBACnetApplicationTagBoolean(payload BACnetTagPayloadBoolean, header BACnetTagHeader) *_BACnetApplicationTagBoolean {
-	_result := &_BACnetApplicationTagBoolean{
-		Payload:               payload,
-		_BACnetApplicationTag: NewBACnetApplicationTag(header),
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBoolean for BACnetApplicationTagBoolean must not be nil")
 	}
-	_result._BACnetApplicationTag._BACnetApplicationTagChildRequirements = _result
+	_result := &_BACnetApplicationTagBoolean{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
 	return _result
 }
 
@@ -129,7 +128,7 @@ func (m *_BACnetApplicationTagBoolean) GetTypeName() string {
 }
 
 func (m *_BACnetApplicationTagBoolean) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetApplicationTagContract.(*_BACnetApplicationTag).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -143,50 +142,34 @@ func (m *_BACnetApplicationTagBoolean) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagBooleanParse(ctx context.Context, theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagBoolean, error) {
-	return BACnetApplicationTagBooleanParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header)
-}
-
-func BACnetApplicationTagBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagBoolean, error) {
+func (m *_BACnetApplicationTagBoolean) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag, header BACnetTagHeader) (__bACnetApplicationTagBoolean BACnetApplicationTagBoolean, err error) {
+	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBoolean"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagBoolean")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadBoolean](ctx, "payload", ReadComplex[BACnetTagPayloadBoolean](BACnetTagPayloadBooleanParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
-	_payload, _payloadErr := BACnetTagPayloadBooleanParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagBoolean")
-	}
-	payload := _payload.(BACnetTagPayloadBoolean)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
-	}
+	m.Payload = payload
 
-	// Virtual field
-	_actualValue := payload.GetValue()
-	actualValue := bool(_actualValue)
+	actualValue, err := ReadVirtualField[bool](ctx, "actualValue", (*bool)(nil), payload.GetValue())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagBoolean"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagBoolean")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetApplicationTagBoolean{
-		_BACnetApplicationTag: &_BACnetApplicationTag{},
-		Payload:               payload,
-	}
-	_child._BACnetApplicationTag._BACnetApplicationTagChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetApplicationTagBoolean) Serialize() ([]byte, error) {
@@ -207,16 +190,8 @@ func (m *_BACnetApplicationTagBoolean) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetApplicationTagBoolean")
 		}
 
-		// Simple Field (payload)
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		if err := WriteSimpleField[BACnetTagPayloadBoolean](ctx, "payload", m.GetPayload(), WriteComplex[BACnetTagPayloadBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -230,12 +205,10 @@ func (m *_BACnetApplicationTagBoolean) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetApplicationTagContract.(*_BACnetApplicationTag).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetApplicationTagBoolean) isBACnetApplicationTagBoolean() bool {
-	return true
-}
+func (m *_BACnetApplicationTagBoolean) IsBACnetApplicationTagBoolean() {}
 
 func (m *_BACnetApplicationTagBoolean) String() string {
 	if m == nil {

@@ -37,19 +37,17 @@ type TDataIndividualInd interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
-}
-
-// TDataIndividualIndExactly can be used when we want exactly this type and not a type which fulfills TDataIndividualInd.
-// This is useful for switch cases.
-type TDataIndividualIndExactly interface {
-	TDataIndividualInd
-	isTDataIndividualInd() bool
+	// IsTDataIndividualInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTDataIndividualInd()
 }
 
 // _TDataIndividualInd is the data-structure of this message
 type _TDataIndividualInd struct {
-	*_CEMI
+	CEMIContract
 }
+
+var _ TDataIndividualInd = (*_TDataIndividualInd)(nil)
+var _ CEMIRequirements = (*_TDataIndividualInd)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_TDataIndividualInd) GetMessageCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_TDataIndividualInd) InitializeParent(parent CEMI) {}
-
-func (m *_TDataIndividualInd) GetParent() CEMI {
-	return m._CEMI
+func (m *_TDataIndividualInd) GetParent() CEMIContract {
+	return m.CEMIContract
 }
 
 // NewTDataIndividualInd factory function for _TDataIndividualInd
 func NewTDataIndividualInd(size uint16) *_TDataIndividualInd {
 	_result := &_TDataIndividualInd{
-		_CEMI: NewCEMI(size),
+		CEMIContract: NewCEMI(size),
 	}
-	_result._CEMI._CEMIChildRequirements = _result
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_TDataIndividualInd) GetTypeName() string {
 }
 
 func (m *_TDataIndividualInd) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_TDataIndividualInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TDataIndividualIndParse(ctx context.Context, theBytes []byte, size uint16) (TDataIndividualInd, error) {
-	return TDataIndividualIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
-}
-
-func TDataIndividualIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataIndividualInd, error) {
+func (m *_TDataIndividualInd) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__tDataIndividualInd TDataIndividualInd, err error) {
+	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TDataIndividualInd")
 	}
@@ -124,14 +116,7 @@ func TDataIndividualIndParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(closeErr, "Error closing for TDataIndividualInd")
 	}
 
-	// Create a partially initialized instance
-	_child := &_TDataIndividualInd{
-		_CEMI: &_CEMI{
-			Size: size,
-		},
-	}
-	_child._CEMI._CEMIChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_TDataIndividualInd) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_TDataIndividualInd) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIContract.(*_CEMI).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_TDataIndividualInd) isTDataIndividualInd() bool {
-	return true
-}
+func (m *_TDataIndividualInd) IsTDataIndividualInd() {}
 
 func (m *_TDataIndividualInd) String() string {
 	if m == nil {

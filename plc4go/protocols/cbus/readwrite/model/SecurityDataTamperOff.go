@@ -37,19 +37,17 @@ type SecurityDataTamperOff interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
-}
-
-// SecurityDataTamperOffExactly can be used when we want exactly this type and not a type which fulfills SecurityDataTamperOff.
-// This is useful for switch cases.
-type SecurityDataTamperOffExactly interface {
-	SecurityDataTamperOff
-	isSecurityDataTamperOff() bool
+	// IsSecurityDataTamperOff is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataTamperOff()
 }
 
 // _SecurityDataTamperOff is the data-structure of this message
 type _SecurityDataTamperOff struct {
-	*_SecurityData
+	SecurityDataContract
 }
+
+var _ SecurityDataTamperOff = (*_SecurityDataTamperOff)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataTamperOff)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _SecurityDataTamperOff struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataTamperOff) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataTamperOff) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataTamperOff) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 // NewSecurityDataTamperOff factory function for _SecurityDataTamperOff
 func NewSecurityDataTamperOff(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataTamperOff {
 	_result := &_SecurityDataTamperOff{
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_SecurityDataTamperOff) GetTypeName() string {
 }
 
 func (m *_SecurityDataTamperOff) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_SecurityDataTamperOff) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataTamperOffParse(ctx context.Context, theBytes []byte) (SecurityDataTamperOff, error) {
-	return SecurityDataTamperOffParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataTamperOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataTamperOff, error) {
+func (m *_SecurityDataTamperOff) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataTamperOff SecurityDataTamperOff, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataTamperOff"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataTamperOff")
 	}
@@ -123,12 +112,7 @@ func SecurityDataTamperOffParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataTamperOff")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataTamperOff{
-		_SecurityData: &_SecurityData{},
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataTamperOff) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_SecurityDataTamperOff) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataTamperOff) isSecurityDataTamperOff() bool {
-	return true
-}
+func (m *_SecurityDataTamperOff) IsSecurityDataTamperOff() {}
 
 func (m *_SecurityDataTamperOff) String() string {
 	if m == nil {

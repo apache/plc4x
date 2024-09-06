@@ -95,6 +95,7 @@ public class AsciiBoxWriter {
         Objects.requireNonNull(data);
         // Convert dos2unix as that messes with box rendering
         data = data.replaceAll("\r\n", "\n");
+        data = data.replaceAll("\t", "  ");
         AsciiBox rawBox = new AsciiBox(this, data);
         int longestLine = rawBox.width();
         if (charWidth < longestLine) {

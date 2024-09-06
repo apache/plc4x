@@ -38,7 +38,7 @@ func Test_writerArg_isWriterArgs(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wr := writerArg{}
-			assert.Equalf(t, tt.want, wr.isWriterArgs(), "isWriterArgs()")
+			assert.Equalf(t, tt.want, wr.isWriterArgs(), "IsWriterArgs()")
 		})
 	}
 }

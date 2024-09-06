@@ -75,13 +75,13 @@ public class BACnetTimeStampEnclosed implements Message {
     writeBuffer.pushContext("BACnetTimeStampEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimeStampEnclosed");
   }
@@ -118,19 +118,17 @@ public class BACnetTimeStampEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetTimeStamp timestamp =
         readSimpleField(
-            "timestamp",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            "timestamp", readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetTimeStampEnclosed");

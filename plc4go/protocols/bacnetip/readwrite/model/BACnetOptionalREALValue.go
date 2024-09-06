@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetOptionalREALValue interface {
 	BACnetOptionalREAL
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-}
-
-// BACnetOptionalREALValueExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalREALValue.
-// This is useful for switch cases.
-type BACnetOptionalREALValueExactly interface {
-	BACnetOptionalREALValue
-	isBACnetOptionalREALValue() bool
+	// IsBACnetOptionalREALValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalREALValue()
 }
 
 // _BACnetOptionalREALValue is the data-structure of this message
 type _BACnetOptionalREALValue struct {
-	*_BACnetOptionalREAL
+	BACnetOptionalREALContract
 	RealValue BACnetApplicationTagReal
 }
+
+var _ BACnetOptionalREALValue = (*_BACnetOptionalREALValue)(nil)
+var _ BACnetOptionalREALRequirements = (*_BACnetOptionalREALValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetOptionalREALValue struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetOptionalREALValue) InitializeParent(parent BACnetOptionalREAL, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetOptionalREALValue) GetParent() BACnetOptionalREAL {
-	return m._BACnetOptionalREAL
+func (m *_BACnetOptionalREALValue) GetParent() BACnetOptionalREALContract {
+	return m.BACnetOptionalREALContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetOptionalREALValue) GetRealValue() BACnetApplicationTagReal {
 
 // NewBACnetOptionalREALValue factory function for _BACnetOptionalREALValue
 func NewBACnetOptionalREALValue(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetOptionalREALValue {
-	_result := &_BACnetOptionalREALValue{
-		RealValue:           realValue,
-		_BACnetOptionalREAL: NewBACnetOptionalREAL(peekedTagHeader),
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetOptionalREALValue must not be nil")
 	}
-	_result._BACnetOptionalREAL._BACnetOptionalREALChildRequirements = _result
+	_result := &_BACnetOptionalREALValue{
+		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
+		RealValue:                  realValue,
+	}
+	_result.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetOptionalREALValue) GetTypeName() string {
 }
 
 func (m *_BACnetOptionalREALValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetOptionalREALContract.(*_BACnetOptionalREAL).getLengthInBits(ctx))
 
 	// Simple field (realValue)
 	lengthInBits += m.RealValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetOptionalREALValue) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalREALValueParse(ctx context.Context, theBytes []byte) (BACnetOptionalREALValue, error) {
-	return BACnetOptionalREALValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetOptionalREALValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalREALValue, error) {
+func (m *_BACnetOptionalREALValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetOptionalREAL) (__bACnetOptionalREALValue BACnetOptionalREALValue, err error) {
+	m.BACnetOptionalREALContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetOptionalREALValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalREALValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (realValue)
-	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
+	realValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "realValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realValue' field"))
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _realValueErr != nil {
-		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetOptionalREALValue")
-	}
-	realValue := _realValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for realValue")
-	}
+	m.RealValue = realValue
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalREALValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalREALValue")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetOptionalREALValue{
-		_BACnetOptionalREAL: &_BACnetOptionalREAL{},
-		RealValue:           realValue,
-	}
-	_child._BACnetOptionalREAL._BACnetOptionalREALChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetOptionalREALValue) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetOptionalREALValue) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalREALValue")
 		}
 
-		// Simple Field (realValue)
-		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for realValue")
-		}
-		_realValueErr := writeBuffer.WriteSerializable(ctx, m.GetRealValue())
-		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for realValue")
-		}
-		if _realValueErr != nil {
-			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "realValue", m.GetRealValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'realValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalREALValue"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetOptionalREALValue) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetOptionalREALContract.(*_BACnetOptionalREAL).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetOptionalREALValue) isBACnetOptionalREALValue() bool {
-	return true
-}
+func (m *_BACnetOptionalREALValue) IsBACnetOptionalREALValue() {}
 
 func (m *_BACnetOptionalREALValue) String() string {
 	if m == nil {

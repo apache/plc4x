@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesTimerTransition interface {
 	BACnetPropertyStates
 	// GetTimerTransition returns TimerTransition (property field)
 	GetTimerTransition() BACnetTimerTransitionTagged
-}
-
-// BACnetPropertyStatesTimerTransitionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesTimerTransition.
-// This is useful for switch cases.
-type BACnetPropertyStatesTimerTransitionExactly interface {
-	BACnetPropertyStatesTimerTransition
-	isBACnetPropertyStatesTimerTransition() bool
+	// IsBACnetPropertyStatesTimerTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesTimerTransition()
 }
 
 // _BACnetPropertyStatesTimerTransition is the data-structure of this message
 type _BACnetPropertyStatesTimerTransition struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	TimerTransition BACnetTimerTransitionTagged
 }
+
+var _ BACnetPropertyStatesTimerTransition = (*_BACnetPropertyStatesTimerTransition)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesTimerTransition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesTimerTransition struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesTimerTransition) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesTimerTransition) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesTimerTransition) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesTimerTransition) GetTimerTransition() BACnetTimerT
 
 // NewBACnetPropertyStatesTimerTransition factory function for _BACnetPropertyStatesTimerTransition
 func NewBACnetPropertyStatesTimerTransition(timerTransition BACnetTimerTransitionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesTimerTransition {
-	_result := &_BACnetPropertyStatesTimerTransition{
-		TimerTransition:       timerTransition,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if timerTransition == nil {
+		panic("timerTransition of type BACnetTimerTransitionTagged for BACnetPropertyStatesTimerTransition must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesTimerTransition{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		TimerTransition:              timerTransition,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesTimerTransition) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesTimerTransition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (timerTransition)
 	lengthInBits += m.TimerTransition.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesTimerTransition) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesTimerTransitionParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {
-	return BACnetPropertyStatesTimerTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesTimerTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {
+func (m *_BACnetPropertyStatesTimerTransition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesTimerTransition BACnetPropertyStatesTimerTransition, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesTimerTransition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesTimerTransition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timerTransition)
-	if pullErr := readBuffer.PullContext("timerTransition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timerTransition")
+	timerTransition, err := ReadSimpleField[BACnetTimerTransitionTagged](ctx, "timerTransition", ReadComplex[BACnetTimerTransitionTagged](BACnetTimerTransitionTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timerTransition' field"))
 	}
-	_timerTransition, _timerTransitionErr := BACnetTimerTransitionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _timerTransitionErr != nil {
-		return nil, errors.Wrap(_timerTransitionErr, "Error parsing 'timerTransition' field of BACnetPropertyStatesTimerTransition")
-	}
-	timerTransition := _timerTransition.(BACnetTimerTransitionTagged)
-	if closeErr := readBuffer.CloseContext("timerTransition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timerTransition")
-	}
+	m.TimerTransition = timerTransition
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesTimerTransition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesTimerTransition")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesTimerTransition{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		TimerTransition:       timerTransition,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesTimerTransition) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesTimerTransition) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesTimerTransition")
 		}
 
-		// Simple Field (timerTransition)
-		if pushErr := writeBuffer.PushContext("timerTransition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timerTransition")
-		}
-		_timerTransitionErr := writeBuffer.WriteSerializable(ctx, m.GetTimerTransition())
-		if popErr := writeBuffer.PopContext("timerTransition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timerTransition")
-		}
-		if _timerTransitionErr != nil {
-			return errors.Wrap(_timerTransitionErr, "Error serializing 'timerTransition' field")
+		if err := WriteSimpleField[BACnetTimerTransitionTagged](ctx, "timerTransition", m.GetTimerTransition(), WriteComplex[BACnetTimerTransitionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timerTransition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesTimerTransition"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesTimerTransition) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesTimerTransition) isBACnetPropertyStatesTimerTransition() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesTimerTransition) IsBACnetPropertyStatesTimerTransition() {}
 
 func (m *_BACnetPropertyStatesTimerTransition) String() string {
 	if m == nil {

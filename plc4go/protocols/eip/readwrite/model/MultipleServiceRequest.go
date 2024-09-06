@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,20 +45,18 @@ type MultipleServiceRequest interface {
 	CipService
 	// GetData returns Data (property field)
 	GetData() Services
-}
-
-// MultipleServiceRequestExactly can be used when we want exactly this type and not a type which fulfills MultipleServiceRequest.
-// This is useful for switch cases.
-type MultipleServiceRequestExactly interface {
-	MultipleServiceRequest
-	isMultipleServiceRequest() bool
+	// IsMultipleServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMultipleServiceRequest()
 }
 
 // _MultipleServiceRequest is the data-structure of this message
 type _MultipleServiceRequest struct {
-	*_CipService
+	CipServiceContract
 	Data Services
 }
+
+var _ MultipleServiceRequest = (*_MultipleServiceRequest)(nil)
+var _ CipServiceRequirements = (*_MultipleServiceRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,10 +80,8 @@ func (m *_MultipleServiceRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MultipleServiceRequest) InitializeParent(parent CipService) {}
-
-func (m *_MultipleServiceRequest) GetParent() CipService {
-	return m._CipService
+func (m *_MultipleServiceRequest) GetParent() CipServiceContract {
+	return m.CipServiceContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -119,11 +117,14 @@ func (m *_MultipleServiceRequest) GetRequestPath() uint32 {
 
 // NewMultipleServiceRequest factory function for _MultipleServiceRequest
 func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
-	_result := &_MultipleServiceRequest{
-		Data:        data,
-		_CipService: NewCipService(serviceLen),
+	if data == nil {
+		panic("data of type Services for MultipleServiceRequest must not be nil")
 	}
-	_result._CipService._CipServiceChildRequirements = _result
+	_result := &_MultipleServiceRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		Data:               data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 
@@ -143,7 +144,7 @@ func (m *_MultipleServiceRequest) GetTypeName() string {
 }
 
 func (m *_MultipleServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Const Field (requestPathSize)
 	lengthInBits += 8
@@ -161,65 +162,40 @@ func (m *_MultipleServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MultipleServiceRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (MultipleServiceRequest, error) {
-	return MultipleServiceRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
-}
-
-func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (MultipleServiceRequest, error) {
+func (m *_MultipleServiceRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__multipleServiceRequest MultipleServiceRequest, err error) {
+	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MultipleServiceRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Const Field (requestPathSize)
-	requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
-	if _requestPathSizeErr != nil {
-		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of MultipleServiceRequest")
+	requestPathSize, err := ReadConstField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, uint8(8)), MultipleServiceRequest_REQUESTPATHSIZE)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
 	}
-	if requestPathSize != MultipleServiceRequest_REQUESTPATHSIZE {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATHSIZE) + " but got " + fmt.Sprintf("%d", requestPathSize))
-	}
+	_ = requestPathSize
 
-	// Const Field (requestPath)
-	requestPath, _requestPathErr := readBuffer.ReadUint32("requestPath", 32)
-	if _requestPathErr != nil {
-		return nil, errors.Wrap(_requestPathErr, "Error parsing 'requestPath' field of MultipleServiceRequest")
+	requestPath, err := ReadConstField[uint32](ctx, "requestPath", ReadUnsignedInt(readBuffer, uint8(32)), MultipleServiceRequest_REQUESTPATH)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPath' field"))
 	}
-	if requestPath != MultipleServiceRequest_REQUESTPATH {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATH) + " but got " + fmt.Sprintf("%d", requestPath))
-	}
+	_ = requestPath
 
-	// Simple Field (data)
-	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
+	data, err := ReadSimpleField[Services](ctx, "data", ReadComplex[Services](ServicesParseWithBufferProducer((uint16)(uint16(serviceLen)-uint16(uint16(6)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	_data, _dataErr := ServicesParseWithBuffer(ctx, readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
-	if _dataErr != nil {
-		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MultipleServiceRequest")
-	}
-	data := _data.(Services)
-	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
-	}
+	m.Data = data
 
 	if closeErr := readBuffer.CloseContext("MultipleServiceRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MultipleServiceRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MultipleServiceRequest{
-		_CipService: &_CipService{
-			ServiceLen: serviceLen,
-		},
-		Data: data,
-	}
-	_child._CipService._CipServiceChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MultipleServiceRequest) Serialize() ([]byte, error) {
@@ -240,28 +216,16 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for MultipleServiceRequest")
 		}
 
-		// Const Field (requestPathSize)
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8(0x02))
-		if _requestPathSizeErr != nil {
-			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
+		if err := WriteConstField(ctx, "requestPathSize", MultipleServiceRequest_REQUESTPATHSIZE, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestPathSize' field")
 		}
 
-		// Const Field (requestPath)
-		_requestPathErr := writeBuffer.WriteUint32("requestPath", 32, uint32(0x01240220))
-		if _requestPathErr != nil {
-			return errors.Wrap(_requestPathErr, "Error serializing 'requestPath' field")
+		if err := WriteConstField(ctx, "requestPath", MultipleServiceRequest_REQUESTPATH, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestPath' field")
 		}
 
-		// Simple Field (data)
-		if pushErr := writeBuffer.PushContext("data"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
-		}
-		_dataErr := writeBuffer.WriteSerializable(ctx, m.GetData())
-		if popErr := writeBuffer.PopContext("data"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
-		}
-		if _dataErr != nil {
-			return errors.Wrap(_dataErr, "Error serializing 'data' field")
+		if err := WriteSimpleField[Services](ctx, "data", m.GetData(), WriteComplex[Services](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MultipleServiceRequest"); popErr != nil {
@@ -269,12 +233,10 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MultipleServiceRequest) isMultipleServiceRequest() bool {
-	return true
-}
+func (m *_MultipleServiceRequest) IsMultipleServiceRequest() {}
 
 func (m *_MultipleServiceRequest) String() string {
 	if m == nil {

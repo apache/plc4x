@@ -37,19 +37,17 @@ type MeteringDataMeasureOil interface {
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
-}
-
-// MeteringDataMeasureOilExactly can be used when we want exactly this type and not a type which fulfills MeteringDataMeasureOil.
-// This is useful for switch cases.
-type MeteringDataMeasureOilExactly interface {
-	MeteringDataMeasureOil
-	isMeteringDataMeasureOil() bool
+	// IsMeteringDataMeasureOil is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataMeasureOil()
 }
 
 // _MeteringDataMeasureOil is the data-structure of this message
 type _MeteringDataMeasureOil struct {
-	*_MeteringData
+	MeteringDataContract
 }
+
+var _ MeteringDataMeasureOil = (*_MeteringDataMeasureOil)(nil)
+var _ MeteringDataRequirements = (*_MeteringDataMeasureOil)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,21 +59,16 @@ type _MeteringDataMeasureOil struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MeteringDataMeasureOil) InitializeParent(parent MeteringData, commandTypeContainer MeteringCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_MeteringDataMeasureOil) GetParent() MeteringData {
-	return m._MeteringData
+func (m *_MeteringDataMeasureOil) GetParent() MeteringDataContract {
+	return m.MeteringDataContract
 }
 
 // NewMeteringDataMeasureOil factory function for _MeteringDataMeasureOil
 func NewMeteringDataMeasureOil(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureOil {
 	_result := &_MeteringDataMeasureOil{
-		_MeteringData: NewMeteringData(commandTypeContainer, argument),
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 	}
-	_result._MeteringData._MeteringDataChildRequirements = _result
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 
@@ -95,7 +88,7 @@ func (m *_MeteringDataMeasureOil) GetTypeName() string {
 }
 
 func (m *_MeteringDataMeasureOil) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -104,15 +97,11 @@ func (m *_MeteringDataMeasureOil) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataMeasureOilParse(ctx context.Context, theBytes []byte) (MeteringDataMeasureOil, error) {
-	return MeteringDataMeasureOilParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MeteringDataMeasureOilParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureOil, error) {
+func (m *_MeteringDataMeasureOil) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeteringData) (__meteringDataMeasureOil MeteringDataMeasureOil, err error) {
+	m.MeteringDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeteringDataMeasureOil"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeteringDataMeasureOil")
 	}
@@ -123,12 +112,7 @@ func MeteringDataMeasureOilParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(closeErr, "Error closing for MeteringDataMeasureOil")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MeteringDataMeasureOil{
-		_MeteringData: &_MeteringData{},
-	}
-	_child._MeteringData._MeteringDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MeteringDataMeasureOil) Serialize() ([]byte, error) {
@@ -154,12 +138,10 @@ func (m *_MeteringDataMeasureOil) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MeteringDataContract.(*_MeteringData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MeteringDataMeasureOil) isMeteringDataMeasureOil() bool {
-	return true
-}
+func (m *_MeteringDataMeasureOil) IsMeteringDataMeasureOil() {}
 
 func (m *_MeteringDataMeasureOil) String() string {
 	if m == nil {

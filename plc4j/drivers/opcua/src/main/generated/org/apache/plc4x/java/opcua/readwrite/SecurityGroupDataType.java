@@ -140,7 +140,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("SecurityGroupDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Simple Field (noOfSecurityGroupFolder)
     writeSimpleField(
@@ -153,8 +153,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("keyLifetime", keyLifetime, writeDouble(writeBuffer, 64));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (maxFutureKeyCount)
     writeSimpleField("maxFutureKeyCount", maxFutureKeyCount, writeUnsignedLong(writeBuffer, 32));
@@ -163,8 +162,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("maxPastKeyCount", maxPastKeyCount, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (securityGroupId)
-    writeSimpleField(
-        "securityGroupId", securityGroupId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityGroupId", securityGroupId, writeComplex(writeBuffer));
 
     // Simple Field (noOfRolePermissions)
     writeSimpleField("noOfRolePermissions", noOfRolePermissions, writeSignedInt(writeBuffer, 32));
@@ -257,8 +255,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfSecurityGroupFolder =
         readSimpleField("noOfSecurityGroupFolder", readSignedInt(readBuffer, 32));
@@ -266,7 +263,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     List<PascalString> securityGroupFolder =
         readCountArrayField(
             "securityGroupFolder",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfSecurityGroupFolder);
 
     double keyLifetime = readSimpleField("keyLifetime", readDouble(readBuffer, 64));
@@ -274,7 +271,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long maxFutureKeyCount = readSimpleField("maxFutureKeyCount", readUnsignedLong(readBuffer, 32));
 
@@ -282,15 +279,14 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
 
     PascalString securityGroupId =
         readSimpleField(
-            "securityGroupId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "securityGroupId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfRolePermissions = readSimpleField("noOfRolePermissions", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> rolePermissions =
         readCountArrayField(
             "rolePermissions",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("98")),
                 readBuffer),
             noOfRolePermissions);
@@ -300,7 +296,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     List<ExtensionObjectDefinition> groupProperties =
         readCountArrayField(
             "groupProperties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfGroupProperties);

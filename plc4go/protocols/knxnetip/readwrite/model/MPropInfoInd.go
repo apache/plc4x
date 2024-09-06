@@ -37,19 +37,17 @@ type MPropInfoInd interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
-}
-
-// MPropInfoIndExactly can be used when we want exactly this type and not a type which fulfills MPropInfoInd.
-// This is useful for switch cases.
-type MPropInfoIndExactly interface {
-	MPropInfoInd
-	isMPropInfoInd() bool
+	// IsMPropInfoInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMPropInfoInd()
 }
 
 // _MPropInfoInd is the data-structure of this message
 type _MPropInfoInd struct {
-	*_CEMI
+	CEMIContract
 }
+
+var _ MPropInfoInd = (*_MPropInfoInd)(nil)
+var _ CEMIRequirements = (*_MPropInfoInd)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_MPropInfoInd) GetMessageCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MPropInfoInd) InitializeParent(parent CEMI) {}
-
-func (m *_MPropInfoInd) GetParent() CEMI {
-	return m._CEMI
+func (m *_MPropInfoInd) GetParent() CEMIContract {
+	return m.CEMIContract
 }
 
 // NewMPropInfoInd factory function for _MPropInfoInd
 func NewMPropInfoInd(size uint16) *_MPropInfoInd {
 	_result := &_MPropInfoInd{
-		_CEMI: NewCEMI(size),
+		CEMIContract: NewCEMI(size),
 	}
-	_result._CEMI._CEMIChildRequirements = _result
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_MPropInfoInd) GetTypeName() string {
 }
 
 func (m *_MPropInfoInd) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_MPropInfoInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MPropInfoIndParse(ctx context.Context, theBytes []byte, size uint16) (MPropInfoInd, error) {
-	return MPropInfoIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
-}
-
-func MPropInfoIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropInfoInd, error) {
+func (m *_MPropInfoInd) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mPropInfoInd MPropInfoInd, err error) {
+	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MPropInfoInd"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MPropInfoInd")
 	}
@@ -124,14 +116,7 @@ func MPropInfoIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for MPropInfoInd")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MPropInfoInd{
-		_CEMI: &_CEMI{
-			Size: size,
-		},
-	}
-	_child._CEMI._CEMIChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MPropInfoInd) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_MPropInfoInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIContract.(*_CEMI).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MPropInfoInd) isMPropInfoInd() bool {
-	return true
-}
+func (m *_MPropInfoInd) IsMPropInfoInd() {}
 
 func (m *_MPropInfoInd) String() string {
 	if m == nil {

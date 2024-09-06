@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataUpdateKeySetTimeout interface {
 	GetUpdateKeySetTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataUpdateKeySetTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUpdateKeySetTimeout.
-// This is useful for switch cases.
-type BACnetConstructedDataUpdateKeySetTimeoutExactly interface {
-	BACnetConstructedDataUpdateKeySetTimeout
-	isBACnetConstructedDataUpdateKeySetTimeout() bool
+	// IsBACnetConstructedDataUpdateKeySetTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataUpdateKeySetTimeout()
 }
 
 // _BACnetConstructedDataUpdateKeySetTimeout is the data-structure of this message
 type _BACnetConstructedDataUpdateKeySetTimeout struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	UpdateKeySetTimeout BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataUpdateKeySetTimeout = (*_BACnetConstructedDataUpdateKeySetTimeout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUpdateKeySetTimeout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataUpdateKeySetTimeout factory function for _BACnetConstructedDataUpdateKeySetTimeout
 func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateKeySetTimeout {
-	_result := &_BACnetConstructedDataUpdateKeySetTimeout{
-		UpdateKeySetTimeout:    updateKeySetTimeout,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if updateKeySetTimeout == nil {
+		panic("updateKeySetTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateKeySetTimeout must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataUpdateKeySetTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UpdateKeySetTimeout:           updateKeySetTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (updateKeySetTimeout)
 	lengthInBits += m.UpdateKeySetTimeout.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataUpdateKeySetTimeoutParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
-	return BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataUpdateKeySetTimeout BACnetConstructedDataUpdateKeySetTimeout, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateKeySetTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUpdateKeySetTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (updateKeySetTimeout)
-	if pullErr := readBuffer.PullContext("updateKeySetTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for updateKeySetTimeout")
+	updateKeySetTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "updateKeySetTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateKeySetTimeout' field"))
 	}
-	_updateKeySetTimeout, _updateKeySetTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _updateKeySetTimeoutErr != nil {
-		return nil, errors.Wrap(_updateKeySetTimeoutErr, "Error parsing 'updateKeySetTimeout' field of BACnetConstructedDataUpdateKeySetTimeout")
-	}
-	updateKeySetTimeout := _updateKeySetTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("updateKeySetTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for updateKeySetTimeout")
-	}
+	m.UpdateKeySetTimeout = updateKeySetTimeout
 
-	// Virtual field
-	_actualValue := updateKeySetTimeout
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), updateKeySetTimeout)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUpdateKeySetTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUpdateKeySetTimeout")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataUpdateKeySetTimeout{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		UpdateKeySetTimeout: updateKeySetTimeout,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUpdateKeySetTimeout")
 		}
 
-		// Simple Field (updateKeySetTimeout)
-		if pushErr := writeBuffer.PushContext("updateKeySetTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for updateKeySetTimeout")
-		}
-		_updateKeySetTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateKeySetTimeout())
-		if popErr := writeBuffer.PopContext("updateKeySetTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for updateKeySetTimeout")
-		}
-		if _updateKeySetTimeoutErr != nil {
-			return errors.Wrap(_updateKeySetTimeoutErr, "Error serializing 'updateKeySetTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "updateKeySetTimeout", m.GetUpdateKeySetTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'updateKeySetTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) isBACnetConstructedDataUpdateKeySetTimeout() bool {
-	return true
-}
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) IsBACnetConstructedDataUpdateKeySetTimeout() {}
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) String() string {
 	if m == nil {

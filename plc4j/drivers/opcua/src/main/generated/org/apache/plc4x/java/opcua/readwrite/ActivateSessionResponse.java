@@ -98,10 +98,10 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     writeBuffer.pushContext("ActivateSessionResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (serverNonce)
-    writeSimpleField("serverNonce", serverNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverNonce", serverNonce, writeComplex(writeBuffer));
 
     // Simple Field (noOfResults)
     writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
@@ -171,22 +171,20 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
     PascalByteString serverNonce =
         readSimpleField(
-            "serverNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "serverNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     int noOfResults = readSimpleField("noOfResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> results =
         readCountArrayField(
             "results",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfResults);
 
     int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
@@ -194,8 +192,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("ActivateSessionResponse");

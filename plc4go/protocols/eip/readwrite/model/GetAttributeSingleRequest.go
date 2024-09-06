@@ -37,19 +37,17 @@ type GetAttributeSingleRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
-}
-
-// GetAttributeSingleRequestExactly can be used when we want exactly this type and not a type which fulfills GetAttributeSingleRequest.
-// This is useful for switch cases.
-type GetAttributeSingleRequestExactly interface {
-	GetAttributeSingleRequest
-	isGetAttributeSingleRequest() bool
+	// IsGetAttributeSingleRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGetAttributeSingleRequest()
 }
 
 // _GetAttributeSingleRequest is the data-structure of this message
 type _GetAttributeSingleRequest struct {
-	*_CipService
+	CipServiceContract
 }
+
+var _ GetAttributeSingleRequest = (*_GetAttributeSingleRequest)(nil)
+var _ CipServiceRequirements = (*_GetAttributeSingleRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,18 +71,16 @@ func (m *_GetAttributeSingleRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_GetAttributeSingleRequest) InitializeParent(parent CipService) {}
-
-func (m *_GetAttributeSingleRequest) GetParent() CipService {
-	return m._CipService
+func (m *_GetAttributeSingleRequest) GetParent() CipServiceContract {
+	return m.CipServiceContract
 }
 
 // NewGetAttributeSingleRequest factory function for _GetAttributeSingleRequest
 func NewGetAttributeSingleRequest(serviceLen uint16) *_GetAttributeSingleRequest {
 	_result := &_GetAttributeSingleRequest{
-		_CipService: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(serviceLen),
 	}
-	_result._CipService._CipServiceChildRequirements = _result
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 
@@ -104,7 +100,7 @@ func (m *_GetAttributeSingleRequest) GetTypeName() string {
 }
 
 func (m *_GetAttributeSingleRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -113,15 +109,11 @@ func (m *_GetAttributeSingleRequest) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func GetAttributeSingleRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (GetAttributeSingleRequest, error) {
-	return GetAttributeSingleRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
-}
-
-func GetAttributeSingleRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeSingleRequest, error) {
+func (m *_GetAttributeSingleRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__getAttributeSingleRequest GetAttributeSingleRequest, err error) {
+	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GetAttributeSingleRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GetAttributeSingleRequest")
 	}
@@ -132,14 +124,7 @@ func GetAttributeSingleRequestParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(closeErr, "Error closing for GetAttributeSingleRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_GetAttributeSingleRequest{
-		_CipService: &_CipService{
-			ServiceLen: serviceLen,
-		},
-	}
-	_child._CipService._CipServiceChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_GetAttributeSingleRequest) Serialize() ([]byte, error) {
@@ -165,12 +150,10 @@ func (m *_GetAttributeSingleRequest) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_GetAttributeSingleRequest) isGetAttributeSingleRequest() bool {
-	return true
-}
+func (m *_GetAttributeSingleRequest) IsGetAttributeSingleRequest() {}
 
 func (m *_GetAttributeSingleRequest) String() string {
 	if m == nil {

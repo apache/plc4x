@@ -82,7 +82,7 @@ public class BACnetConstructedDataAPDUTimeout extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataAPDUTimeout");
 
     // Simple Field (apduTimeout)
-    writeSimpleField("apduTimeout", apduTimeout, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("apduTimeout", apduTimeout, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataAPDUTimeout extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger apduTimeout =
         readSimpleField(
             "apduTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

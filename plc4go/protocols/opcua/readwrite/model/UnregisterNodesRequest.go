@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,22 +45,20 @@ type UnregisterNodesRequest interface {
 	GetNoOfNodesToUnregister() int32
 	// GetNodesToUnregister returns NodesToUnregister (property field)
 	GetNodesToUnregister() []NodeId
-}
-
-// UnregisterNodesRequestExactly can be used when we want exactly this type and not a type which fulfills UnregisterNodesRequest.
-// This is useful for switch cases.
-type UnregisterNodesRequestExactly interface {
-	UnregisterNodesRequest
-	isUnregisterNodesRequest() bool
+	// IsUnregisterNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnregisterNodesRequest()
 }
 
 // _UnregisterNodesRequest is the data-structure of this message
 type _UnregisterNodesRequest struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	RequestHeader         ExtensionObjectDefinition
 	NoOfNodesToUnregister int32
 	NodesToUnregister     []NodeId
 }
+
+var _ UnregisterNodesRequest = (*_UnregisterNodesRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UnregisterNodesRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +74,8 @@ func (m *_UnregisterNodesRequest) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_UnregisterNodesRequest) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_UnregisterNodesRequest) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_UnregisterNodesRequest) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,13 +102,16 @@ func (m *_UnregisterNodesRequest) GetNodesToUnregister() []NodeId {
 
 // NewUnregisterNodesRequest factory function for _UnregisterNodesRequest
 func NewUnregisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) *_UnregisterNodesRequest {
-	_result := &_UnregisterNodesRequest{
-		RequestHeader:              requestHeader,
-		NoOfNodesToUnregister:      noOfNodesToUnregister,
-		NodesToUnregister:          nodesToUnregister,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for UnregisterNodesRequest must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result := &_UnregisterNodesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToUnregister:             noOfNodesToUnregister,
+		NodesToUnregister:                 nodesToUnregister,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -130,7 +131,7 @@ func (m *_UnregisterNodesRequest) GetTypeName() string {
 }
 
 func (m *_UnregisterNodesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -155,81 +156,40 @@ func (m *_UnregisterNodesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func UnregisterNodesRequestParse(ctx context.Context, theBytes []byte, identifier string) (UnregisterNodesRequest, error) {
-	return UnregisterNodesRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func UnregisterNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UnregisterNodesRequest, error) {
+func (m *_UnregisterNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__unregisterNodesRequest UnregisterNodesRequest, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UnregisterNodesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UnregisterNodesRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of UnregisterNodesRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
-	}
+	m.RequestHeader = requestHeader
 
-	// Simple Field (noOfNodesToUnregister)
-	_noOfNodesToUnregister, _noOfNodesToUnregisterErr := readBuffer.ReadInt32("noOfNodesToUnregister", 32)
-	if _noOfNodesToUnregisterErr != nil {
-		return nil, errors.Wrap(_noOfNodesToUnregisterErr, "Error parsing 'noOfNodesToUnregister' field of UnregisterNodesRequest")
+	noOfNodesToUnregister, err := ReadSimpleField(ctx, "noOfNodesToUnregister", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToUnregister' field"))
 	}
-	noOfNodesToUnregister := _noOfNodesToUnregister
+	m.NoOfNodesToUnregister = noOfNodesToUnregister
 
-	// Array field (nodesToUnregister)
-	if pullErr := readBuffer.PullContext("nodesToUnregister", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodesToUnregister")
+	nodesToUnregister, err := ReadCountArrayField[NodeId](ctx, "nodesToUnregister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToUnregister))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToUnregister' field"))
 	}
-	// Count array
-	nodesToUnregister := make([]NodeId, max(noOfNodesToUnregister, 0))
-	// This happens when the size is set conditional to 0
-	if len(nodesToUnregister) == 0 {
-		nodesToUnregister = nil
-	}
-	{
-		_numItems := uint16(max(noOfNodesToUnregister, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NodeIdParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'nodesToUnregister' field of UnregisterNodesRequest")
-			}
-			nodesToUnregister[_curItem] = _item.(NodeId)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("nodesToUnregister", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodesToUnregister")
-	}
+	m.NodesToUnregister = nodesToUnregister
 
 	if closeErr := readBuffer.CloseContext("UnregisterNodesRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for UnregisterNodesRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_UnregisterNodesRequest{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		RequestHeader:              requestHeader,
-		NoOfNodesToUnregister:      noOfNodesToUnregister,
-		NodesToUnregister:          nodesToUnregister,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_UnregisterNodesRequest) Serialize() ([]byte, error) {
@@ -250,40 +210,16 @@ func (m *_UnregisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UnregisterNodesRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfNodesToUnregister)
-		noOfNodesToUnregister := int32(m.GetNoOfNodesToUnregister())
-		_noOfNodesToUnregisterErr := writeBuffer.WriteInt32("noOfNodesToUnregister", 32, int32((noOfNodesToUnregister)))
-		if _noOfNodesToUnregisterErr != nil {
-			return errors.Wrap(_noOfNodesToUnregisterErr, "Error serializing 'noOfNodesToUnregister' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNodesToUnregister", m.GetNoOfNodesToUnregister(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNodesToUnregister' field")
 		}
 
-		// Array Field (nodesToUnregister)
-		if pushErr := writeBuffer.PushContext("nodesToUnregister", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodesToUnregister")
-		}
-		for _curItem, _element := range m.GetNodesToUnregister() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNodesToUnregister()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'nodesToUnregister' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("nodesToUnregister", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodesToUnregister")
+		if err := WriteComplexTypeArrayField(ctx, "nodesToUnregister", m.GetNodesToUnregister(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodesToUnregister' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UnregisterNodesRequest"); popErr != nil {
@@ -291,12 +227,10 @@ func (m *_UnregisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_UnregisterNodesRequest) isUnregisterNodesRequest() bool {
-	return true
-}
+func (m *_UnregisterNodesRequest) IsUnregisterNodesRequest() {}
 
 func (m *_UnregisterNodesRequest) String() string {
 	if m == nil {

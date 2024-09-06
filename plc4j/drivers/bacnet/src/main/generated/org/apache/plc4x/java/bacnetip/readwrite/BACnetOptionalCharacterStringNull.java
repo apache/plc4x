@@ -61,7 +61,7 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
     writeBuffer.pushContext("BACnetOptionalCharacterStringNull");
 
     // Simple Field (nullValue)
-    writeSimpleField("nullValue", nullValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nullValue", nullValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetOptionalCharacterStringNull");
   }
@@ -92,7 +92,7 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

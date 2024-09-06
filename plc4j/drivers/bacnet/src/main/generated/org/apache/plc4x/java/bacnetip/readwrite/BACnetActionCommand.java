@@ -112,35 +112,31 @@ public class BACnetActionCommand implements Message {
     writeBuffer.pushContext("BACnetActionCommand");
 
     // Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (propertyValue) (Can be skipped, if the value is null)
-    writeOptionalField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (priority) (Can be skipped, if the value is null)
-    writeOptionalField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("priority", priority, writeComplex(writeBuffer));
 
     // Optional Field (postDelay) (Can be skipped, if the value is null)
-    writeOptionalField("postDelay", postDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("postDelay", postDelay, writeComplex(writeBuffer));
 
     // Simple Field (quitOnFailure)
-    writeSimpleField("quitOnFailure", quitOnFailure, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("quitOnFailure", quitOnFailure, writeComplex(writeBuffer));
 
     // Simple Field (writeSuccessful)
-    writeSimpleField(
-        "writeSuccessful", writeSuccessful, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("writeSuccessful", writeSuccessful, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetActionCommand");
   }
@@ -204,7 +200,7 @@ public class BACnetActionCommand implements Message {
     BACnetContextTagObjectIdentifier deviceIdentifier =
         readOptionalField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -216,7 +212,7 @@ public class BACnetActionCommand implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -228,7 +224,7 @@ public class BACnetActionCommand implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -237,7 +233,7 @@ public class BACnetActionCommand implements Message {
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -249,7 +245,7 @@ public class BACnetActionCommand implements Message {
     BACnetConstructedData propertyValue =
         readOptionalField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -263,7 +259,7 @@ public class BACnetActionCommand implements Message {
     BACnetContextTagUnsignedInteger priority =
         readOptionalField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -275,7 +271,7 @@ public class BACnetActionCommand implements Message {
     BACnetContextTagBoolean postDelay =
         readOptionalField(
             "postDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -285,7 +281,7 @@ public class BACnetActionCommand implements Message {
     BACnetContextTagBoolean quitOnFailure =
         readSimpleField(
             "quitOnFailure",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -295,7 +291,7 @@ public class BACnetActionCommand implements Message {
     BACnetContextTagBoolean writeSuccessful =
         readSimpleField(
             "writeSuccessful",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

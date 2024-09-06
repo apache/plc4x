@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -38,19 +40,16 @@ type StatusCode interface {
 	utils.Serializable
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() uint32
-}
-
-// StatusCodeExactly can be used when we want exactly this type and not a type which fulfills StatusCode.
-// This is useful for switch cases.
-type StatusCodeExactly interface {
-	StatusCode
-	isStatusCode() bool
+	// IsStatusCode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusCode()
 }
 
 // _StatusCode is the data-structure of this message
 type _StatusCode struct {
 	StatusCode uint32
 }
+
+var _ StatusCode = (*_StatusCode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,32 +102,40 @@ func StatusCodeParse(ctx context.Context, theBytes []byte) (StatusCode, error) {
 	return StatusCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StatusCodeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCode, error) {
+		return StatusCodeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StatusCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCode, error) {
+	v, err := (&_StatusCode{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_StatusCode) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__statusCode StatusCode, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StatusCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StatusCode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	_statusCode, _statusCodeErr := readBuffer.ReadUint32("statusCode", 32)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of StatusCode")
+	statusCode, err := ReadSimpleField(ctx, "statusCode", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
-	statusCode := _statusCode
+	m.StatusCode = statusCode
 
 	if closeErr := readBuffer.CloseContext("StatusCode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StatusCode")
 	}
 
-	// Create the instance
-	return &_StatusCode{
-		StatusCode: statusCode,
-	}, nil
+	return m, nil
 }
 
 func (m *_StatusCode) Serialize() ([]byte, error) {
@@ -148,11 +155,8 @@ func (m *_StatusCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for StatusCode")
 	}
 
-	// Simple Field (statusCode)
-	statusCode := uint32(m.GetStatusCode())
-	_statusCodeErr := writeBuffer.WriteUint32("statusCode", 32, uint32((statusCode)))
-	if _statusCodeErr != nil {
-		return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+	if err := WriteSimpleField[uint32](ctx, "statusCode", m.GetStatusCode(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'statusCode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("StatusCode"); popErr != nil {
@@ -161,9 +165,7 @@ func (m *_StatusCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	return nil
 }
 
-func (m *_StatusCode) isStatusCode() bool {
-	return true
-}
+func (m *_StatusCode) IsStatusCode() {}
 
 func (m *_StatusCode) String() string {
 	if m == nil {

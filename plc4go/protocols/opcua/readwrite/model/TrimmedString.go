@@ -36,18 +36,15 @@ type TrimmedString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// TrimmedStringExactly can be used when we want exactly this type and not a type which fulfills TrimmedString.
-// This is useful for switch cases.
-type TrimmedStringExactly interface {
-	TrimmedString
-	isTrimmedString() bool
+	// IsTrimmedString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTrimmedString()
 }
 
 // _TrimmedString is the data-structure of this message
 type _TrimmedString struct {
 }
+
+var _ TrimmedString = (*_TrimmedString)(nil)
 
 // NewTrimmedString factory function for _TrimmedString
 func NewTrimmedString() *_TrimmedString {
@@ -83,11 +80,23 @@ func TrimmedStringParse(ctx context.Context, theBytes []byte) (TrimmedString, er
 	return TrimmedStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TrimmedStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TrimmedString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TrimmedString, error) {
+		return TrimmedStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TrimmedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TrimmedString, error) {
+	v, err := (&_TrimmedString{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_TrimmedString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__trimmedString TrimmedString, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TrimmedString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TrimmedString")
 	}
@@ -98,8 +107,7 @@ func TrimmedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(closeErr, "Error closing for TrimmedString")
 	}
 
-	// Create the instance
-	return &_TrimmedString{}, nil
+	return m, nil
 }
 
 func (m *_TrimmedString) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_TrimmedString) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_TrimmedString) isTrimmedString() bool {
-	return true
-}
+func (m *_TrimmedString) IsTrimmedString() {}
 
 func (m *_TrimmedString) String() string {
 	if m == nil {

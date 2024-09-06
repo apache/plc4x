@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,18 +47,13 @@ type RelativePathElement interface {
 	GetIsInverse() bool
 	// GetTargetName returns TargetName (property field)
 	GetTargetName() QualifiedName
-}
-
-// RelativePathElementExactly can be used when we want exactly this type and not a type which fulfills RelativePathElement.
-// This is useful for switch cases.
-type RelativePathElementExactly interface {
-	RelativePathElement
-	isRelativePathElement() bool
+	// IsRelativePathElement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRelativePathElement()
 }
 
 // _RelativePathElement is the data-structure of this message
 type _RelativePathElement struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ReferenceTypeId NodeId
 	IncludeSubtypes bool
 	IsInverse       bool
@@ -64,6 +61,9 @@ type _RelativePathElement struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ RelativePathElement = (*_RelativePathElement)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RelativePathElement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -79,10 +79,8 @@ func (m *_RelativePathElement) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RelativePathElement) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_RelativePathElement) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_RelativePathElement) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,14 +111,20 @@ func (m *_RelativePathElement) GetTargetName() QualifiedName {
 
 // NewRelativePathElement factory function for _RelativePathElement
 func NewRelativePathElement(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) *_RelativePathElement {
-	_result := &_RelativePathElement{
-		ReferenceTypeId:            referenceTypeId,
-		IncludeSubtypes:            includeSubtypes,
-		IsInverse:                  isInverse,
-		TargetName:                 targetName,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for RelativePathElement must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if targetName == nil {
+		panic("targetName of type QualifiedName for RelativePathElement must not be nil")
+	}
+	_result := &_RelativePathElement{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceTypeId:                   referenceTypeId,
+		IncludeSubtypes:                   includeSubtypes,
+		IsInverse:                         isInverse,
+		TargetName:                        targetName,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -140,7 +144,7 @@ func (m *_RelativePathElement) GetTypeName() string {
 }
 
 func (m *_RelativePathElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (referenceTypeId)
 	lengthInBits += m.ReferenceTypeId.GetLengthInBits(ctx)
@@ -164,93 +168,52 @@ func (m *_RelativePathElement) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RelativePathElementParse(ctx context.Context, theBytes []byte, identifier string) (RelativePathElement, error) {
-	return RelativePathElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func RelativePathElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RelativePathElement, error) {
+func (m *_RelativePathElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__relativePathElement RelativePathElement, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RelativePathElement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RelativePathElement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of RelativePathElement")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
-	}
+	m.ReferenceTypeId = referenceTypeId
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 6)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of RelativePathElement")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(6)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (includeSubtypes)
-	_includeSubtypes, _includeSubtypesErr := readBuffer.ReadBit("includeSubtypes")
-	if _includeSubtypesErr != nil {
-		return nil, errors.Wrap(_includeSubtypesErr, "Error parsing 'includeSubtypes' field of RelativePathElement")
+	includeSubtypes, err := ReadSimpleField(ctx, "includeSubtypes", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'includeSubtypes' field"))
 	}
-	includeSubtypes := _includeSubtypes
+	m.IncludeSubtypes = includeSubtypes
 
-	// Simple Field (isInverse)
-	_isInverse, _isInverseErr := readBuffer.ReadBit("isInverse")
-	if _isInverseErr != nil {
-		return nil, errors.Wrap(_isInverseErr, "Error parsing 'isInverse' field of RelativePathElement")
+	isInverse, err := ReadSimpleField(ctx, "isInverse", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isInverse' field"))
 	}
-	isInverse := _isInverse
+	m.IsInverse = isInverse
 
-	// Simple Field (targetName)
-	if pullErr := readBuffer.PullContext("targetName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetName")
+	targetName, err := ReadSimpleField[QualifiedName](ctx, "targetName", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetName' field"))
 	}
-	_targetName, _targetNameErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _targetNameErr != nil {
-		return nil, errors.Wrap(_targetNameErr, "Error parsing 'targetName' field of RelativePathElement")
-	}
-	targetName := _targetName.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("targetName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetName")
-	}
+	m.TargetName = targetName
 
 	if closeErr := readBuffer.CloseContext("RelativePathElement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RelativePathElement")
 	}
 
-	// Create a partially initialized instance
-	_child := &_RelativePathElement{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ReferenceTypeId:            referenceTypeId,
-		IncludeSubtypes:            includeSubtypes,
-		IsInverse:                  isInverse,
-		TargetName:                 targetName,
-		reservedField0:             reservedField0,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_RelativePathElement) Serialize() ([]byte, error) {
@@ -271,58 +234,24 @@ func (m *_RelativePathElement) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for RelativePathElement")
 		}
 
-		// Simple Field (referenceTypeId)
-		if pushErr := writeBuffer.PushContext("referenceTypeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceTypeId")
-		}
-		_referenceTypeIdErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTypeId())
-		if popErr := writeBuffer.PopContext("referenceTypeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceTypeId")
-		}
-		if _referenceTypeIdErr != nil {
-			return errors.Wrap(_referenceTypeIdErr, "Error serializing 'referenceTypeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceTypeId' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (includeSubtypes)
-		includeSubtypes := bool(m.GetIncludeSubtypes())
-		_includeSubtypesErr := writeBuffer.WriteBit("includeSubtypes", (includeSubtypes))
-		if _includeSubtypesErr != nil {
-			return errors.Wrap(_includeSubtypesErr, "Error serializing 'includeSubtypes' field")
+		if err := WriteSimpleField[bool](ctx, "includeSubtypes", m.GetIncludeSubtypes(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'includeSubtypes' field")
 		}
 
-		// Simple Field (isInverse)
-		isInverse := bool(m.GetIsInverse())
-		_isInverseErr := writeBuffer.WriteBit("isInverse", (isInverse))
-		if _isInverseErr != nil {
-			return errors.Wrap(_isInverseErr, "Error serializing 'isInverse' field")
+		if err := WriteSimpleField[bool](ctx, "isInverse", m.GetIsInverse(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isInverse' field")
 		}
 
-		// Simple Field (targetName)
-		if pushErr := writeBuffer.PushContext("targetName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetName")
-		}
-		_targetNameErr := writeBuffer.WriteSerializable(ctx, m.GetTargetName())
-		if popErr := writeBuffer.PopContext("targetName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetName")
-		}
-		if _targetNameErr != nil {
-			return errors.Wrap(_targetNameErr, "Error serializing 'targetName' field")
+		if err := WriteSimpleField[QualifiedName](ctx, "targetName", m.GetTargetName(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RelativePathElement"); popErr != nil {
@@ -330,12 +259,10 @@ func (m *_RelativePathElement) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_RelativePathElement) isRelativePathElement() bool {
-	return true
-}
+func (m *_RelativePathElement) IsRelativePathElement() {}
 
 func (m *_RelativePathElement) String() string {
 	if m == nil {

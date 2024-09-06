@@ -82,7 +82,7 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataNodeSubtype");
 
     // Simple Field (nodeSubType)
-    writeSimpleField("nodeSubType", nodeSubType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeSubType", nodeSubType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
     BACnetApplicationTagCharacterString nodeSubType =
         readSimpleField(
             "nodeSubType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

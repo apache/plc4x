@@ -75,14 +75,13 @@ public class BACnetAuthenticationFactorEnclosed implements Message {
     writeBuffer.pushContext("BACnetAuthenticationFactorEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (authenticationFactor)
-    writeSimpleField(
-        "authenticationFactor", authenticationFactor, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationFactor", authenticationFactor, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationFactorEnclosed");
   }
@@ -119,19 +118,18 @@ public class BACnetAuthenticationFactorEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetAuthenticationFactor authenticationFactor =
         readSimpleField(
             "authenticationFactor",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetAuthenticationFactorEnclosed");

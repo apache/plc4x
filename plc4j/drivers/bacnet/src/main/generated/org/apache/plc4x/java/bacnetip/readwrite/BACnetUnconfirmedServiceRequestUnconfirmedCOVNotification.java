@@ -98,28 +98,21 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
 
     // Simple Field (subscriberProcessIdentifier)
     writeSimpleField(
-        "subscriberProcessIdentifier",
-        subscriberProcessIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "subscriberProcessIdentifier", subscriberProcessIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (initiatingDeviceIdentifier)
     writeSimpleField(
-        "initiatingDeviceIdentifier",
-        initiatingDeviceIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "initiatingDeviceIdentifier", initiatingDeviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (monitoredObjectIdentifier)
     writeSimpleField(
-        "monitoredObjectIdentifier",
-        monitoredObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredObjectIdentifier", monitoredObjectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (lifetimeInSeconds)
-    writeSimpleField(
-        "lifetimeInSeconds", lifetimeInSeconds, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lifetimeInSeconds", lifetimeInSeconds, writeComplex(writeBuffer));
 
     // Simple Field (listOfValues)
-    writeSimpleField("listOfValues", listOfValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfValues", listOfValues, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification");
   }
@@ -163,7 +156,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
             "subscriberProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -175,7 +168,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetContextTagObjectIdentifier initiatingDeviceIdentifier =
         readSimpleField(
             "initiatingDeviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -187,7 +180,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(
             "monitoredObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -199,7 +192,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetContextTagUnsignedInteger lifetimeInSeconds =
         readSimpleField(
             "lifetimeInSeconds",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -211,7 +204,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetPropertyValues listOfValues =
         readSimpleField(
             "listOfValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyValues.staticParse(
                         readBuffer,

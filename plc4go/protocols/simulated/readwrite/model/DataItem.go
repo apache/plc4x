@@ -43,7 +43,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 	switch {
 	case dataType == "BOOL" && numberOfValues == uint16(1): // BOOL
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadBit("value")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("value")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -54,7 +54,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -65,7 +65,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "BYTE" && numberOfValues == uint16(1): // BYTE
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -76,7 +76,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -87,7 +87,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "WORD" && numberOfValues == uint16(1): // WORD
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -98,7 +98,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint16("value", 16)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -109,7 +109,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "DWORD" && numberOfValues == uint16(1): // DWORD
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -120,7 +120,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint32("value", 32)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -131,7 +131,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "LWORD" && numberOfValues == uint16(1): // LWORD
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -142,7 +142,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint64("value", 64)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("value", 64)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -153,7 +153,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "SINT" && numberOfValues == uint16(1): // SINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -164,7 +164,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadInt8("value", 8)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("value", 8)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -175,7 +175,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "INT" && numberOfValues == uint16(1): // INT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -186,7 +186,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadInt16("value", 16)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt16("value", 16)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -197,7 +197,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "DINT" && numberOfValues == uint16(1): // DINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -208,7 +208,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadInt32("value", 32)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("value", 32)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -219,7 +219,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "LINT" && numberOfValues == uint16(1): // LINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -230,7 +230,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadInt64("value", 64)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("value", 64)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -241,7 +241,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "USINT" && numberOfValues == uint16(1): // USINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -252,7 +252,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -263,7 +263,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "UINT" && numberOfValues == uint16(1): // UINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -274,7 +274,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint16("value", 16)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -285,7 +285,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "UDINT" && numberOfValues == uint16(1): // UDINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -296,7 +296,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint32("value", 32)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -307,7 +307,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "ULINT" && numberOfValues == uint16(1): // ULINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -318,7 +318,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint64("value", 64)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("value", 64)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -329,7 +329,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "REAL" && numberOfValues == uint16(1): // REAL
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -340,7 +340,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadFloat32("value", 32)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 32)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -351,7 +351,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "LREAL" && numberOfValues == uint16(1): // LREAL
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -362,7 +362,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadFloat64("value", 64)
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat64("value", 64)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -373,7 +373,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "CHAR" && numberOfValues == uint16(1): // CHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(8), "UTF-8")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF-8"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -384,7 +384,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadString("value", uint32(8), "UTF-8")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF-8"))
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -395,7 +395,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "WCHAR" && numberOfValues == uint16(1): // WCHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(16), "UTF-16")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF-16"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -406,7 +406,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadString("value", uint32(16), "UTF-16")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF-16"))
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -417,7 +417,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "STRING": // STRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(255), "UTF-8")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(255), utils.WithEncoding("UTF-8"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -426,7 +426,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcSTRING(value), nil
 	case dataType == "WSTRING": // STRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(255), "UTF-16")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(255), utils.WithEncoding("UTF-16"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -446,13 +446,23 @@ func DataItemSerialize(value api.PlcValue, dataType string, numberOfValues uint1
 	return wb.GetBytes(), nil
 }
 
+type _DataItem struct {
+	DataType       string
+	NumberOfValues uint16
+}
+
+func (m _DataItem) GetDataType() string {
+	return m.DataType
+}
+
+func (m _DataItem) GetNumberOfValues() uint16 {
+	return m.NumberOfValues
+}
+
 func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer, value api.PlcValue, dataType string, numberOfValues uint16) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	m := struct {
-		DataType       string
-		NumberOfValues uint16
-	}{
+	m := _DataItem{
 		DataType:       dataType,
 		NumberOfValues: numberOfValues,
 	}
@@ -461,233 +471,233 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 	switch {
 	case dataType == "BOOL" && numberOfValues == uint16(1): // BOOL
 		// Simple Field (value)
-		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "BOOL": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "BYTE" && numberOfValues == uint16(1): // BYTE
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "BYTE": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, uint8(value.GetIndex(i).GetUint8()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(value.GetIndex(i).GetUint8()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "WORD" && numberOfValues == uint16(1): // WORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WORD": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint16("", 16, uint16(value.GetIndex(i).GetUint16()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(value.GetIndex(i).GetUint16()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "DWORD" && numberOfValues == uint16(1): // DWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "DWORD": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint32("", 32, uint32(value.GetIndex(i).GetUint32()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(value.GetIndex(i).GetUint32()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "LWORD" && numberOfValues == uint16(1): // LWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "LWORD": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint64("", 64, uint64(value.GetIndex(i).GetUint64()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteUint64("", 64, uint64(value.GetIndex(i).GetUint64()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "SINT" && numberOfValues == uint16(1): // SINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "SINT": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt8("", 8, int8(value.GetIndex(i).GetInt8()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("", 8, int8(value.GetIndex(i).GetInt8()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "INT" && numberOfValues == uint16(1): // INT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "INT": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt16("", 16, int16(value.GetIndex(i).GetInt16()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("", 16, int16(value.GetIndex(i).GetInt16()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "DINT" && numberOfValues == uint16(1): // DINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "DINT": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt32("", 32, int32(value.GetIndex(i).GetInt32()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("", 32, int32(value.GetIndex(i).GetInt32()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "LINT" && numberOfValues == uint16(1): // LINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "LINT": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt64("", 64, int64(value.GetIndex(i).GetInt64()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("", 64, int64(value.GetIndex(i).GetInt64()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "USINT" && numberOfValues == uint16(1): // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "USINT": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, uint8(value.GetIndex(i).GetUint8()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(value.GetIndex(i).GetUint8()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "UINT" && numberOfValues == uint16(1): // UINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "UINT": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint16("", 16, uint16(value.GetIndex(i).GetUint16()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(value.GetIndex(i).GetUint16()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "UDINT" && numberOfValues == uint16(1): // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "UDINT": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint32("", 32, uint32(value.GetIndex(i).GetUint32()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(value.GetIndex(i).GetUint32()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "ULINT" && numberOfValues == uint16(1): // ULINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "ULINT": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint64("", 64, uint64(value.GetIndex(i).GetUint64()))
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteUint64("", 64, uint64(value.GetIndex(i).GetUint64()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "REAL" && numberOfValues == uint16(1): // REAL
 		// Simple Field (value)
-		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "REAL": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteFloat32("", 32, value.GetIndex(i).GetFloat32())
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("", 32, value.GetIndex(i).GetFloat32())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "LREAL" && numberOfValues == uint16(1): // LREAL
 		// Simple Field (value)
-		if _err := writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "LREAL": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteFloat64("", 64, value.GetIndex(i).GetFloat64())
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("", 64, value.GetIndex(i).GetFloat64())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "CHAR" && numberOfValues == uint16(1): // CHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(8), "UTF-8", value.GetString()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF-8)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "CHAR": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteString("", uint32(8), "UTF-8", value.GetIndex(i).GetString())
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(8), value.GetIndex(i).GetString(), utils.WithEncoding("UTF-8)"))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "WCHAR" && numberOfValues == uint16(1): // WCHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16", value.GetString()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF-16)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WCHAR": // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteString("", uint32(16), "UTF-16", value.GetIndex(i).GetString())
+		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(16), value.GetIndex(i).GetString(), utils.WithEncoding("UTF-16)"))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "STRING": // STRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(255), "UTF-8", value.GetString()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(255), value.GetString(), utils.WithEncoding("UTF-8)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WSTRING": // STRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(255), "UTF-16", value.GetString()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(255), value.GetString(), utils.WithEncoding("UTF-16)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default:

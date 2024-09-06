@@ -37,19 +37,17 @@ type MFuncPropCommandReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
-}
-
-// MFuncPropCommandReqExactly can be used when we want exactly this type and not a type which fulfills MFuncPropCommandReq.
-// This is useful for switch cases.
-type MFuncPropCommandReqExactly interface {
-	MFuncPropCommandReq
-	isMFuncPropCommandReq() bool
+	// IsMFuncPropCommandReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMFuncPropCommandReq()
 }
 
 // _MFuncPropCommandReq is the data-structure of this message
 type _MFuncPropCommandReq struct {
-	*_CEMI
+	CEMIContract
 }
+
+var _ MFuncPropCommandReq = (*_MFuncPropCommandReq)(nil)
+var _ CEMIRequirements = (*_MFuncPropCommandReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_MFuncPropCommandReq) GetMessageCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MFuncPropCommandReq) InitializeParent(parent CEMI) {}
-
-func (m *_MFuncPropCommandReq) GetParent() CEMI {
-	return m._CEMI
+func (m *_MFuncPropCommandReq) GetParent() CEMIContract {
+	return m.CEMIContract
 }
 
 // NewMFuncPropCommandReq factory function for _MFuncPropCommandReq
 func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
 	_result := &_MFuncPropCommandReq{
-		_CEMI: NewCEMI(size),
+		CEMIContract: NewCEMI(size),
 	}
-	_result._CEMI._CEMIChildRequirements = _result
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_MFuncPropCommandReq) GetTypeName() string {
 }
 
 func (m *_MFuncPropCommandReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_MFuncPropCommandReq) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MFuncPropCommandReqParse(ctx context.Context, theBytes []byte, size uint16) (MFuncPropCommandReq, error) {
-	return MFuncPropCommandReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
-}
-
-func MFuncPropCommandReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MFuncPropCommandReq, error) {
+func (m *_MFuncPropCommandReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mFuncPropCommandReq MFuncPropCommandReq, err error) {
+	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MFuncPropCommandReq"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MFuncPropCommandReq")
 	}
@@ -124,14 +116,7 @@ func MFuncPropCommandReqParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for MFuncPropCommandReq")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MFuncPropCommandReq{
-		_CEMI: &_CEMI{
-			Size: size,
-		},
-	}
-	_child._CEMI._CEMIChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MFuncPropCommandReq) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_MFuncPropCommandReq) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIContract.(*_CEMI).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MFuncPropCommandReq) isMFuncPropCommandReq() bool {
-	return true
-}
+func (m *_MFuncPropCommandReq) IsMFuncPropCommandReq() {}
 
 func (m *_MFuncPropCommandReq) String() string {
 	if m == nil {

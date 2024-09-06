@@ -37,19 +37,17 @@ type ApduDataExtReadRouterMemoryRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
-}
-
-// ApduDataExtReadRouterMemoryRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtReadRouterMemoryRequest.
-// This is useful for switch cases.
-type ApduDataExtReadRouterMemoryRequestExactly interface {
-	ApduDataExtReadRouterMemoryRequest
-	isApduDataExtReadRouterMemoryRequest() bool
+	// IsApduDataExtReadRouterMemoryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtReadRouterMemoryRequest()
 }
 
 // _ApduDataExtReadRouterMemoryRequest is the data-structure of this message
 type _ApduDataExtReadRouterMemoryRequest struct {
-	*_ApduDataExt
+	ApduDataExtContract
 }
+
+var _ ApduDataExtReadRouterMemoryRequest = (*_ApduDataExtReadRouterMemoryRequest)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtReadRouterMemoryRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_ApduDataExtReadRouterMemoryRequest) GetExtApciType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ApduDataExtReadRouterMemoryRequest) InitializeParent(parent ApduDataExt) {}
-
-func (m *_ApduDataExtReadRouterMemoryRequest) GetParent() ApduDataExt {
-	return m._ApduDataExt
+func (m *_ApduDataExtReadRouterMemoryRequest) GetParent() ApduDataExtContract {
+	return m.ApduDataExtContract
 }
 
 // NewApduDataExtReadRouterMemoryRequest factory function for _ApduDataExtReadRouterMemoryRequest
 func NewApduDataExtReadRouterMemoryRequest(length uint8) *_ApduDataExtReadRouterMemoryRequest {
 	_result := &_ApduDataExtReadRouterMemoryRequest{
-		_ApduDataExt: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(length),
 	}
-	_result._ApduDataExt._ApduDataExtChildRequirements = _result
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_ApduDataExtReadRouterMemoryRequest) GetTypeName() string {
 }
 
 func (m *_ApduDataExtReadRouterMemoryRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_ApduDataExtReadRouterMemoryRequest) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtReadRouterMemoryRequestParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtReadRouterMemoryRequest, error) {
-	return ApduDataExtReadRouterMemoryRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
-}
-
-func ApduDataExtReadRouterMemoryRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtReadRouterMemoryRequest, error) {
+func (m *_ApduDataExtReadRouterMemoryRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtReadRouterMemoryRequest ApduDataExtReadRouterMemoryRequest, err error) {
+	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRouterMemoryRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtReadRouterMemoryRequest")
 	}
@@ -124,14 +116,7 @@ func ApduDataExtReadRouterMemoryRequestParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtReadRouterMemoryRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ApduDataExtReadRouterMemoryRequest{
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
-	}
-	_child._ApduDataExt._ApduDataExtChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ApduDataExtReadRouterMemoryRequest) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_ApduDataExtReadRouterMemoryRequest) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ApduDataExtContract.(*_ApduDataExt).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ApduDataExtReadRouterMemoryRequest) isApduDataExtReadRouterMemoryRequest() bool {
-	return true
-}
+func (m *_ApduDataExtReadRouterMemoryRequest) IsApduDataExtReadRouterMemoryRequest() {}
 
 func (m *_ApduDataExtReadRouterMemoryRequest) String() string {
 	if m == nil {

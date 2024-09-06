@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataLastCredentialAdded interface {
 	GetLastCredentialAdded() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-}
-
-// BACnetConstructedDataLastCredentialAddedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastCredentialAdded.
-// This is useful for switch cases.
-type BACnetConstructedDataLastCredentialAddedExactly interface {
-	BACnetConstructedDataLastCredentialAdded
-	isBACnetConstructedDataLastCredentialAdded() bool
+	// IsBACnetConstructedDataLastCredentialAdded is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastCredentialAdded()
 }
 
 // _BACnetConstructedDataLastCredentialAdded is the data-structure of this message
 type _BACnetConstructedDataLastCredentialAdded struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	LastCredentialAdded BACnetDeviceObjectReference
 }
+
+var _ BACnetConstructedDataLastCredentialAdded = (*_BACnetConstructedDataLastCredentialAdded)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCredentialAdded)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataLastCredentialAdded) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataLastCredentialAdded) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataLastCredentialAdded) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetActualValue() BACnetDevic
 
 // NewBACnetConstructedDataLastCredentialAdded factory function for _BACnetConstructedDataLastCredentialAdded
 func NewBACnetConstructedDataLastCredentialAdded(lastCredentialAdded BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAdded {
-	_result := &_BACnetConstructedDataLastCredentialAdded{
-		LastCredentialAdded:    lastCredentialAdded,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if lastCredentialAdded == nil {
+		panic("lastCredentialAdded of type BACnetDeviceObjectReference for BACnetConstructedDataLastCredentialAdded must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataLastCredentialAdded{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastCredentialAdded:           lastCredentialAdded,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLastCredentialAdded) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lastCredentialAdded)
 	lengthInBits += m.LastCredentialAdded.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataLastCredentialAddedParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAdded, error) {
-	return BACnetConstructedDataLastCredentialAddedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataLastCredentialAddedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAdded, error) {
+func (m *_BACnetConstructedDataLastCredentialAdded) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLastCredentialAdded BACnetConstructedDataLastCredentialAdded, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialAdded"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastCredentialAdded")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastCredentialAdded)
-	if pullErr := readBuffer.PullContext("lastCredentialAdded"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialAdded")
+	lastCredentialAdded, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "lastCredentialAdded", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastCredentialAdded' field"))
 	}
-	_lastCredentialAdded, _lastCredentialAddedErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _lastCredentialAddedErr != nil {
-		return nil, errors.Wrap(_lastCredentialAddedErr, "Error parsing 'lastCredentialAdded' field of BACnetConstructedDataLastCredentialAdded")
-	}
-	lastCredentialAdded := _lastCredentialAdded.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("lastCredentialAdded"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastCredentialAdded")
-	}
+	m.LastCredentialAdded = lastCredentialAdded
 
-	// Virtual field
-	_actualValue := lastCredentialAdded
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectReference](ctx, "actualValue", (*BACnetDeviceObjectReference)(nil), lastCredentialAdded)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCredentialAdded"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCredentialAdded")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataLastCredentialAdded{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		LastCredentialAdded: lastCredentialAdded,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataLastCredentialAdded) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataLastCredentialAdded) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastCredentialAdded")
 		}
 
-		// Simple Field (lastCredentialAdded)
-		if pushErr := writeBuffer.PushContext("lastCredentialAdded"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastCredentialAdded")
-		}
-		_lastCredentialAddedErr := writeBuffer.WriteSerializable(ctx, m.GetLastCredentialAdded())
-		if popErr := writeBuffer.PopContext("lastCredentialAdded"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastCredentialAdded")
-		}
-		if _lastCredentialAddedErr != nil {
-			return errors.Wrap(_lastCredentialAddedErr, "Error serializing 'lastCredentialAdded' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "lastCredentialAdded", m.GetLastCredentialAdded(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastCredentialAdded' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataLastCredentialAdded) SerializeWithWriteBuffer(ctx
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataLastCredentialAdded) isBACnetConstructedDataLastCredentialAdded() bool {
-	return true
-}
+func (m *_BACnetConstructedDataLastCredentialAdded) IsBACnetConstructedDataLastCredentialAdded() {}
 
 func (m *_BACnetConstructedDataLastCredentialAdded) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,57 +35,52 @@ import (
 
 // NLM is the corresponding interface of NLM
 type NLM interface {
+	NLMContract
+	NLMRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetMessageType returns MessageType (discriminator field)
-	GetMessageType() uint8
-	// GetIsVendorProprietaryMessage returns IsVendorProprietaryMessage (virtual field)
-	GetIsVendorProprietaryMessage() bool
+	// IsNLM is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLM()
 }
 
-// NLMExactly can be used when we want exactly this type and not a type which fulfills NLM.
-// This is useful for switch cases.
-type NLMExactly interface {
-	NLM
-	isNLM() bool
+// NLMContract provides a set of functions which can be overwritten by a sub struct
+type NLMContract interface {
+	// GetIsVendorProprietaryMessage returns IsVendorProprietaryMessage (virtual field)
+	GetIsVendorProprietaryMessage() bool
+	// GetApduLength() returns a parser argument
+	GetApduLength() uint16
+	// IsNLM is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLM()
+}
+
+// NLMRequirements provides a set of functions which need to be implemented by a sub struct
+type NLMRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetIsVendorProprietaryMessage returns IsVendorProprietaryMessage (discriminator field)
+	GetIsVendorProprietaryMessage() bool
+	// GetMessageType returns MessageType (discriminator field)
+	GetMessageType() uint8
 }
 
 // _NLM is the data-structure of this message
 type _NLM struct {
-	_NLMChildRequirements
+	_SubType NLM
 
 	// Arguments.
 	ApduLength uint16
 }
 
-type _NLMChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsVendorProprietaryMessage() bool
-	GetMessageType() uint8
-}
-
-type NLMParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child NLM, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type NLMChild interface {
-	utils.Serializable
-	InitializeParent(parent NLM)
-	GetParent() *NLM
-
-	GetTypeName() string
-	NLM
-}
+var _ NLMContract = (*_NLM)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_NLM) GetIsVendorProprietaryMessage() bool {
+func (pm *_NLM) GetIsVendorProprietaryMessage() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetMessageType()) >= (128)))
@@ -114,7 +111,7 @@ func (m *_NLM) GetTypeName() string {
 	return "NLM"
 }
 
-func (m *_NLM) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_NLM) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 8
@@ -125,107 +122,156 @@ func (m *_NLM) GetParentLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_NLM) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func NLMParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLM, error) {
-	return NLMParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMParse[T NLM](ctx context.Context, theBytes []byte, apduLength uint16) (T, error) {
+	return NLMParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {
+func NLMParseWithBufferProducer[T NLM](apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := NLMParseWithBuffer[T](ctx, readBuffer, apduLength)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func NLMParseWithBuffer[T NLM](ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (T, error) {
+	v, err := (&_NLM{ApduLength: apduLength}).parse(ctx, readBuffer, apduLength)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_NLM) parse(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (__nLM NLM, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLM"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLM")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := readBuffer.ReadUint8("messageType", 8)
-	if _messageTypeErr != nil {
-		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of NLM")
+	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 
-	// Virtual field
-	_isVendorProprietaryMessage := bool((messageType) >= (128))
-	isVendorProprietaryMessage := bool(_isVendorProprietaryMessage)
+	isVendorProprietaryMessage, err := ReadVirtualField[bool](ctx, "isVendorProprietaryMessage", (*bool)(nil), bool((messageType) >= (128)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isVendorProprietaryMessage' field"))
+	}
 	_ = isVendorProprietaryMessage
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type NLMChildSerializeRequirement interface {
-		NLM
-		InitializeParent(NLM)
-		GetParent() NLM
-	}
-	var _childTemp any
-	var _child NLMChildSerializeRequirement
-	var typeSwitchError error
+	var _child NLM
 	switch {
 	case messageType == 0x00: // NLMWhoIsRouterToNetwork
-		_childTemp, typeSwitchError = NLMWhoIsRouterToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMWhoIsRouterToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMWhoIsRouterToNetwork for type-switch of NLM")
+		}
 	case messageType == 0x01: // NLMIAmRouterToNetwork
-		_childTemp, typeSwitchError = NLMIAmRouterToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMIAmRouterToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMIAmRouterToNetwork for type-switch of NLM")
+		}
 	case messageType == 0x02: // NLMICouldBeRouterToNetwork
-		_childTemp, typeSwitchError = NLMICouldBeRouterToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMICouldBeRouterToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMICouldBeRouterToNetwork for type-switch of NLM")
+		}
 	case messageType == 0x03: // NLMRejectMessageToNetwork
-		_childTemp, typeSwitchError = NLMRejectMessageToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMRejectMessageToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMRejectMessageToNetwork for type-switch of NLM")
+		}
 	case messageType == 0x04: // NLMRouterBusyToNetwork
-		_childTemp, typeSwitchError = NLMRouterBusyToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMRouterBusyToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMRouterBusyToNetwork for type-switch of NLM")
+		}
 	case messageType == 0x05: // NLMRouterAvailableToNetwork
-		_childTemp, typeSwitchError = NLMRouterAvailableToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMRouterAvailableToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMRouterAvailableToNetwork for type-switch of NLM")
+		}
 	case messageType == 0x06: // NLMInitializeRoutingTable
-		_childTemp, typeSwitchError = NLMInitializeRoutingTableParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMInitializeRoutingTable{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMInitializeRoutingTable for type-switch of NLM")
+		}
 	case messageType == 0x07: // NLMInitializeRoutingTableAck
-		_childTemp, typeSwitchError = NLMInitializeRoutingTableAckParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMInitializeRoutingTableAck{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMInitializeRoutingTableAck for type-switch of NLM")
+		}
 	case messageType == 0x08: // NLMEstablishConnectionToNetwork
-		_childTemp, typeSwitchError = NLMEstablishConnectionToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMEstablishConnectionToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMEstablishConnectionToNetwork for type-switch of NLM")
+		}
 	case messageType == 0x09: // NLMDisconnectConnectionToNetwork
-		_childTemp, typeSwitchError = NLMDisconnectConnectionToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMDisconnectConnectionToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMDisconnectConnectionToNetwork for type-switch of NLM")
+		}
 	case messageType == 0x0A: // NLMChallengeRequest
-		_childTemp, typeSwitchError = NLMChallengeRequestParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMChallengeRequest{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMChallengeRequest for type-switch of NLM")
+		}
 	case messageType == 0x0B: // NLMSecurityPayload
-		_childTemp, typeSwitchError = NLMSecurityPayloadParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMSecurityPayload{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMSecurityPayload for type-switch of NLM")
+		}
 	case messageType == 0x0C: // NLMSecurityResponse
-		_childTemp, typeSwitchError = NLMSecurityResponseParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMSecurityResponse{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMSecurityResponse for type-switch of NLM")
+		}
 	case messageType == 0x0D: // NLMRequestKeyUpdate
-		_childTemp, typeSwitchError = NLMRequestKeyUpdateParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMRequestKeyUpdate{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMRequestKeyUpdate for type-switch of NLM")
+		}
 	case messageType == 0x0E: // NLMUpdateKeyUpdate
-		_childTemp, typeSwitchError = NLMUpdateKeyUpdateParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMUpdateKeyUpdate{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMUpdateKeyUpdate for type-switch of NLM")
+		}
 	case messageType == 0x0F: // NLMUpdateKeyDistributionKey
-		_childTemp, typeSwitchError = NLMUpdateKeyDistributionKeyParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMUpdateKeyDistributionKey{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMUpdateKeyDistributionKey for type-switch of NLM")
+		}
 	case messageType == 0x10: // NLMRequestMasterKey
-		_childTemp, typeSwitchError = NLMRequestMasterKeyParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMRequestMasterKey{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMRequestMasterKey for type-switch of NLM")
+		}
 	case messageType == 0x11: // NLMSetMasterKey
-		_childTemp, typeSwitchError = NLMSetMasterKeyParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMSetMasterKey{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMSetMasterKey for type-switch of NLM")
+		}
 	case messageType == 0x12: // NLMWhatIsNetworkNumber
-		_childTemp, typeSwitchError = NLMWhatIsNetworkNumberParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMWhatIsNetworkNumber{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMWhatIsNetworkNumber for type-switch of NLM")
+		}
 	case messageType == 0x13: // NLMNetworkNumberIs
-		_childTemp, typeSwitchError = NLMNetworkNumberIsParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMNetworkNumberIs{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMNetworkNumberIs for type-switch of NLM")
+		}
 	case 0 == 0 && isVendorProprietaryMessage == bool(false): // NLMReserved
-		_childTemp, typeSwitchError = NLMReservedParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMReserved{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMReserved for type-switch of NLM")
+		}
 	case 0 == 0: // NLMVendorProprietaryMessage
-		_childTemp, typeSwitchError = NLMVendorProprietaryMessageParseWithBuffer(ctx, readBuffer, apduLength)
+		if _child, err = (&_NLMVendorProprietaryMessage{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NLMVendorProprietaryMessage for type-switch of NLM")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v, isVendorProprietaryMessage=%v]", messageType, isVendorProprietaryMessage)
+		return nil, errors.Errorf("Unmapped type for parameters [messageType=%v, isVendorProprietaryMessage=%v]", messageType, isVendorProprietaryMessage)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of NLM")
-	}
-	_child = _childTemp.(NLMChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("NLM"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLM")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child)
 	return _child, nil
 }
 
-func (pm *_NLM) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child NLM, serializeChildFunction func() error) error {
+func (pm *_NLM) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child NLM, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -237,12 +283,8 @@ func (pm *_NLM) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuff
 		return errors.Wrap(pushErr, "Error pushing for NLM")
 	}
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := uint8(child.GetMessageType())
-	_messageTypeErr := writeBuffer.WriteUint8("messageType", 8, uint8((messageType)))
-
-	if _messageTypeErr != nil {
-		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
+	if err := WriteDiscriminatorField(ctx, "messageType", m.GetMessageType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageType' field")
 	}
 	// Virtual field
 	isVendorProprietaryMessage := m.GetIsVendorProprietaryMessage()
@@ -272,17 +314,4 @@ func (m *_NLM) GetApduLength() uint16 {
 //
 ////
 
-func (m *_NLM) isNLM() bool {
-	return true
-}
-
-func (m *_NLM) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_NLM) IsNLM() {}

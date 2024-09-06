@@ -78,7 +78,7 @@ public class NLMRejectMessageToNetwork extends NLM implements Message {
         "rejectReason",
         "NLMRejectMessageToNetworkRejectReason",
         rejectReason,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             NLMRejectMessageToNetworkRejectReason::getValue,
             NLMRejectMessageToNetworkRejectReason::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -120,7 +120,7 @@ public class NLMRejectMessageToNetwork extends NLM implements Message {
         readEnumField(
             "rejectReason",
             "NLMRejectMessageToNetworkRejectReason",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 NLMRejectMessageToNetworkRejectReason::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
 

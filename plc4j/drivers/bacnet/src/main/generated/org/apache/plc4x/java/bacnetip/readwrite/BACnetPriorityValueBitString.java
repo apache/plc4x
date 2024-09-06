@@ -66,7 +66,7 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
     writeBuffer.pushContext("BACnetPriorityValueBitString");
 
     // Simple Field (bitStringValue)
-    writeSimpleField("bitStringValue", bitStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bitStringValue", bitStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueBitString");
   }
@@ -97,7 +97,7 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
     BACnetApplicationTagBitString bitStringValue =
         readSimpleField(
             "bitStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

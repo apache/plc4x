@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type CurrencyUnitType interface {
 	GetAlphabeticCode() PascalString
 	// GetCurrency returns Currency (property field)
 	GetCurrency() LocalizedText
-}
-
-// CurrencyUnitTypeExactly can be used when we want exactly this type and not a type which fulfills CurrencyUnitType.
-// This is useful for switch cases.
-type CurrencyUnitTypeExactly interface {
-	CurrencyUnitType
-	isCurrencyUnitType() bool
+	// IsCurrencyUnitType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCurrencyUnitType()
 }
 
 // _CurrencyUnitType is the data-structure of this message
 type _CurrencyUnitType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	NumericCode    int16
 	Exponent       int8
 	AlphabeticCode PascalString
 	Currency       LocalizedText
 }
+
+var _ CurrencyUnitType = (*_CurrencyUnitType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CurrencyUnitType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -77,10 +77,8 @@ func (m *_CurrencyUnitType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CurrencyUnitType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_CurrencyUnitType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_CurrencyUnitType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,14 +109,20 @@ func (m *_CurrencyUnitType) GetCurrency() LocalizedText {
 
 // NewCurrencyUnitType factory function for _CurrencyUnitType
 func NewCurrencyUnitType(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) *_CurrencyUnitType {
-	_result := &_CurrencyUnitType{
-		NumericCode:                numericCode,
-		Exponent:                   exponent,
-		AlphabeticCode:             alphabeticCode,
-		Currency:                   currency,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if alphabeticCode == nil {
+		panic("alphabeticCode of type PascalString for CurrencyUnitType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if currency == nil {
+		panic("currency of type LocalizedText for CurrencyUnitType must not be nil")
+	}
+	_result := &_CurrencyUnitType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NumericCode:                       numericCode,
+		Exponent:                          exponent,
+		AlphabeticCode:                    alphabeticCode,
+		Currency:                          currency,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -138,7 +142,7 @@ func (m *_CurrencyUnitType) GetTypeName() string {
 }
 
 func (m *_CurrencyUnitType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (numericCode)
 	lengthInBits += 16
@@ -159,75 +163,46 @@ func (m *_CurrencyUnitType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CurrencyUnitTypeParse(ctx context.Context, theBytes []byte, identifier string) (CurrencyUnitType, error) {
-	return CurrencyUnitTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func CurrencyUnitTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CurrencyUnitType, error) {
+func (m *_CurrencyUnitType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__currencyUnitType CurrencyUnitType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CurrencyUnitType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CurrencyUnitType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numericCode)
-	_numericCode, _numericCodeErr := readBuffer.ReadInt16("numericCode", 16)
-	if _numericCodeErr != nil {
-		return nil, errors.Wrap(_numericCodeErr, "Error parsing 'numericCode' field of CurrencyUnitType")
+	numericCode, err := ReadSimpleField(ctx, "numericCode", ReadSignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numericCode' field"))
 	}
-	numericCode := _numericCode
+	m.NumericCode = numericCode
 
-	// Simple Field (exponent)
-	_exponent, _exponentErr := readBuffer.ReadInt8("exponent", 8)
-	if _exponentErr != nil {
-		return nil, errors.Wrap(_exponentErr, "Error parsing 'exponent' field of CurrencyUnitType")
+	exponent, err := ReadSimpleField(ctx, "exponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exponent' field"))
 	}
-	exponent := _exponent
+	m.Exponent = exponent
 
-	// Simple Field (alphabeticCode)
-	if pullErr := readBuffer.PullContext("alphabeticCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alphabeticCode")
+	alphabeticCode, err := ReadSimpleField[PascalString](ctx, "alphabeticCode", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alphabeticCode' field"))
 	}
-	_alphabeticCode, _alphabeticCodeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _alphabeticCodeErr != nil {
-		return nil, errors.Wrap(_alphabeticCodeErr, "Error parsing 'alphabeticCode' field of CurrencyUnitType")
-	}
-	alphabeticCode := _alphabeticCode.(PascalString)
-	if closeErr := readBuffer.CloseContext("alphabeticCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alphabeticCode")
-	}
+	m.AlphabeticCode = alphabeticCode
 
-	// Simple Field (currency)
-	if pullErr := readBuffer.PullContext("currency"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for currency")
+	currency, err := ReadSimpleField[LocalizedText](ctx, "currency", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currency' field"))
 	}
-	_currency, _currencyErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _currencyErr != nil {
-		return nil, errors.Wrap(_currencyErr, "Error parsing 'currency' field of CurrencyUnitType")
-	}
-	currency := _currency.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("currency"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for currency")
-	}
+	m.Currency = currency
 
 	if closeErr := readBuffer.CloseContext("CurrencyUnitType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CurrencyUnitType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_CurrencyUnitType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NumericCode:                numericCode,
-		Exponent:                   exponent,
-		AlphabeticCode:             alphabeticCode,
-		Currency:                   currency,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_CurrencyUnitType) Serialize() ([]byte, error) {
@@ -248,42 +223,20 @@ func (m *_CurrencyUnitType) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for CurrencyUnitType")
 		}
 
-		// Simple Field (numericCode)
-		numericCode := int16(m.GetNumericCode())
-		_numericCodeErr := writeBuffer.WriteInt16("numericCode", 16, int16((numericCode)))
-		if _numericCodeErr != nil {
-			return errors.Wrap(_numericCodeErr, "Error serializing 'numericCode' field")
+		if err := WriteSimpleField[int16](ctx, "numericCode", m.GetNumericCode(), WriteSignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numericCode' field")
 		}
 
-		// Simple Field (exponent)
-		exponent := int8(m.GetExponent())
-		_exponentErr := writeBuffer.WriteInt8("exponent", 8, int8((exponent)))
-		if _exponentErr != nil {
-			return errors.Wrap(_exponentErr, "Error serializing 'exponent' field")
+		if err := WriteSimpleField[int8](ctx, "exponent", m.GetExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'exponent' field")
 		}
 
-		// Simple Field (alphabeticCode)
-		if pushErr := writeBuffer.PushContext("alphabeticCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alphabeticCode")
-		}
-		_alphabeticCodeErr := writeBuffer.WriteSerializable(ctx, m.GetAlphabeticCode())
-		if popErr := writeBuffer.PopContext("alphabeticCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alphabeticCode")
-		}
-		if _alphabeticCodeErr != nil {
-			return errors.Wrap(_alphabeticCodeErr, "Error serializing 'alphabeticCode' field")
+		if err := WriteSimpleField[PascalString](ctx, "alphabeticCode", m.GetAlphabeticCode(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'alphabeticCode' field")
 		}
 
-		// Simple Field (currency)
-		if pushErr := writeBuffer.PushContext("currency"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for currency")
-		}
-		_currencyErr := writeBuffer.WriteSerializable(ctx, m.GetCurrency())
-		if popErr := writeBuffer.PopContext("currency"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for currency")
-		}
-		if _currencyErr != nil {
-			return errors.Wrap(_currencyErr, "Error serializing 'currency' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "currency", m.GetCurrency(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currency' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CurrencyUnitType"); popErr != nil {
@@ -291,12 +244,10 @@ func (m *_CurrencyUnitType) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_CurrencyUnitType) isCurrencyUnitType() bool {
-	return true
-}
+func (m *_CurrencyUnitType) IsCurrencyUnitType() {}
 
 func (m *_CurrencyUnitType) String() string {
 	if m == nil {

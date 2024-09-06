@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,21 +43,19 @@ type ReplyOrConfirmationConfirmation interface {
 	GetConfirmation() Confirmation
 	// GetEmbeddedReply returns EmbeddedReply (property field)
 	GetEmbeddedReply() ReplyOrConfirmation
-}
-
-// ReplyOrConfirmationConfirmationExactly can be used when we want exactly this type and not a type which fulfills ReplyOrConfirmationConfirmation.
-// This is useful for switch cases.
-type ReplyOrConfirmationConfirmationExactly interface {
-	ReplyOrConfirmationConfirmation
-	isReplyOrConfirmationConfirmation() bool
+	// IsReplyOrConfirmationConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReplyOrConfirmationConfirmation()
 }
 
 // _ReplyOrConfirmationConfirmation is the data-structure of this message
 type _ReplyOrConfirmationConfirmation struct {
-	*_ReplyOrConfirmation
+	ReplyOrConfirmationContract
 	Confirmation  Confirmation
 	EmbeddedReply ReplyOrConfirmation
 }
+
+var _ ReplyOrConfirmationConfirmation = (*_ReplyOrConfirmationConfirmation)(nil)
+var _ ReplyOrConfirmationRequirements = (*_ReplyOrConfirmationConfirmation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,12 +67,8 @@ type _ReplyOrConfirmationConfirmation struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ReplyOrConfirmationConfirmation) InitializeParent(parent ReplyOrConfirmation, peekedByte byte) {
-	m.PeekedByte = peekedByte
-}
-
-func (m *_ReplyOrConfirmationConfirmation) GetParent() ReplyOrConfirmation {
-	return m._ReplyOrConfirmation
+func (m *_ReplyOrConfirmationConfirmation) GetParent() ReplyOrConfirmationContract {
+	return m.ReplyOrConfirmationContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -96,12 +91,15 @@ func (m *_ReplyOrConfirmationConfirmation) GetEmbeddedReply() ReplyOrConfirmatio
 
 // NewReplyOrConfirmationConfirmation factory function for _ReplyOrConfirmationConfirmation
 func NewReplyOrConfirmationConfirmation(confirmation Confirmation, embeddedReply ReplyOrConfirmation, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationConfirmation {
-	_result := &_ReplyOrConfirmationConfirmation{
-		Confirmation:         confirmation,
-		EmbeddedReply:        embeddedReply,
-		_ReplyOrConfirmation: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+	if confirmation == nil {
+		panic("confirmation of type Confirmation for ReplyOrConfirmationConfirmation must not be nil")
 	}
-	_result._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _result
+	_result := &_ReplyOrConfirmationConfirmation{
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+		Confirmation:                confirmation,
+		EmbeddedReply:               embeddedReply,
+	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result
 }
 
@@ -121,7 +119,7 @@ func (m *_ReplyOrConfirmationConfirmation) GetTypeName() string {
 }
 
 func (m *_ReplyOrConfirmationConfirmation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
 
 	// Simple field (confirmation)
 	lengthInBits += m.Confirmation.GetLengthInBits(ctx)
@@ -138,71 +136,38 @@ func (m *_ReplyOrConfirmationConfirmation) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ReplyOrConfirmationConfirmationParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
-	return ReplyOrConfirmationConfirmationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
-}
-
-func ReplyOrConfirmationConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
+func (m *_ReplyOrConfirmationConfirmation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ReplyOrConfirmation, cBusOptions CBusOptions, requestContext RequestContext) (__replyOrConfirmationConfirmation ReplyOrConfirmationConfirmation, err error) {
+	m.ReplyOrConfirmationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmationConfirmation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ReplyOrConfirmationConfirmation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (confirmation)
-	if pullErr := readBuffer.PullContext("confirmation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for confirmation")
+	confirmation, err := ReadSimpleField[Confirmation](ctx, "confirmation", ReadComplex[Confirmation](ConfirmationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmation' field"))
 	}
-	_confirmation, _confirmationErr := ConfirmationParseWithBuffer(ctx, readBuffer)
-	if _confirmationErr != nil {
-		return nil, errors.Wrap(_confirmationErr, "Error parsing 'confirmation' field of ReplyOrConfirmationConfirmation")
-	}
-	confirmation := _confirmation.(Confirmation)
-	if closeErr := readBuffer.CloseContext("confirmation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for confirmation")
-	}
+	m.Confirmation = confirmation
 
-	// Optional Field (embeddedReply) (Can be skipped, if a given expression evaluates to false)
-	var embeddedReply ReplyOrConfirmation = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("embeddedReply"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for embeddedReply")
-		}
-		_val, _err := ReplyOrConfirmationParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'embeddedReply' field of ReplyOrConfirmationConfirmation")
-		default:
-			embeddedReply = _val.(ReplyOrConfirmation)
-			if closeErr := readBuffer.CloseContext("embeddedReply"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for embeddedReply")
-			}
-		}
+	var embeddedReply ReplyOrConfirmation
+	_embeddedReply, err := ReadOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", ReadComplex[ReplyOrConfirmation](ReplyOrConfirmationParseWithBufferProducer[ReplyOrConfirmation]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'embeddedReply' field"))
+	}
+	if _embeddedReply != nil {
+		embeddedReply = *_embeddedReply
+		m.EmbeddedReply = embeddedReply
 	}
 
 	if closeErr := readBuffer.CloseContext("ReplyOrConfirmationConfirmation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReplyOrConfirmationConfirmation")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ReplyOrConfirmationConfirmation{
-		_ReplyOrConfirmation: &_ReplyOrConfirmation{
-			CBusOptions:    cBusOptions,
-			RequestContext: requestContext,
-		},
-		Confirmation:  confirmation,
-		EmbeddedReply: embeddedReply,
-	}
-	_child._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ReplyOrConfirmationConfirmation) Serialize() ([]byte, error) {
@@ -223,32 +188,12 @@ func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for ReplyOrConfirmationConfirmation")
 		}
 
-		// Simple Field (confirmation)
-		if pushErr := writeBuffer.PushContext("confirmation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for confirmation")
-		}
-		_confirmationErr := writeBuffer.WriteSerializable(ctx, m.GetConfirmation())
-		if popErr := writeBuffer.PopContext("confirmation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for confirmation")
-		}
-		if _confirmationErr != nil {
-			return errors.Wrap(_confirmationErr, "Error serializing 'confirmation' field")
+		if err := WriteSimpleField[Confirmation](ctx, "confirmation", m.GetConfirmation(), WriteComplex[Confirmation](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'confirmation' field")
 		}
 
-		// Optional Field (embeddedReply) (Can be skipped, if the value is null)
-		var embeddedReply ReplyOrConfirmation = nil
-		if m.GetEmbeddedReply() != nil {
-			if pushErr := writeBuffer.PushContext("embeddedReply"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for embeddedReply")
-			}
-			embeddedReply = m.GetEmbeddedReply()
-			_embeddedReplyErr := writeBuffer.WriteSerializable(ctx, embeddedReply)
-			if popErr := writeBuffer.PopContext("embeddedReply"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for embeddedReply")
-			}
-			if _embeddedReplyErr != nil {
-				return errors.Wrap(_embeddedReplyErr, "Error serializing 'embeddedReply' field")
-			}
+		if err := WriteOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", GetRef(m.GetEmbeddedReply()), WriteComplex[ReplyOrConfirmation](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'embeddedReply' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReplyOrConfirmationConfirmation"); popErr != nil {
@@ -256,12 +201,10 @@ func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(ctx context.
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ReplyOrConfirmationConfirmation) isReplyOrConfirmationConfirmation() bool {
-	return true
-}
+func (m *_ReplyOrConfirmationConfirmation) IsReplyOrConfirmationConfirmation() {}
 
 func (m *_ReplyOrConfirmationConfirmation) String() string {
 	if m == nil {

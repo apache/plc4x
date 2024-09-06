@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type AdsDeleteDeviceNotificationRequest interface {
 	AmsPacket
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
-}
-
-// AdsDeleteDeviceNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills AdsDeleteDeviceNotificationRequest.
-// This is useful for switch cases.
-type AdsDeleteDeviceNotificationRequestExactly interface {
-	AdsDeleteDeviceNotificationRequest
-	isAdsDeleteDeviceNotificationRequest() bool
+	// IsAdsDeleteDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDeleteDeviceNotificationRequest()
 }
 
 // _AdsDeleteDeviceNotificationRequest is the data-structure of this message
 type _AdsDeleteDeviceNotificationRequest struct {
-	*_AmsPacket
+	AmsPacketContract
 	NotificationHandle uint32
 }
+
+var _ AdsDeleteDeviceNotificationRequest = (*_AdsDeleteDeviceNotificationRequest)(nil)
+var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,17 +72,8 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsDeleteDeviceNotificationRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
-	m.TargetAmsNetId = targetAmsNetId
-	m.TargetAmsPort = targetAmsPort
-	m.SourceAmsNetId = sourceAmsNetId
-	m.SourceAmsPort = sourceAmsPort
-	m.ErrorCode = errorCode
-	m.InvokeId = invokeId
-}
-
-func (m *_AdsDeleteDeviceNotificationRequest) GetParent() AmsPacket {
-	return m._AmsPacket
+func (m *_AdsDeleteDeviceNotificationRequest) GetParent() AmsPacketContract {
+	return m.AmsPacketContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,10 +93,10 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetNotificationHandle() uint32 {
 // NewAdsDeleteDeviceNotificationRequest factory function for _AdsDeleteDeviceNotificationRequest
 func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeleteDeviceNotificationRequest {
 	_result := &_AdsDeleteDeviceNotificationRequest{
+		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		NotificationHandle: notificationHandle,
-		_AmsPacket:         NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AmsPacket._AmsPacketChildRequirements = _result
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 
@@ -125,7 +116,7 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
 
 	// Simple field (notificationHandle)
 	lengthInBits += 32
@@ -137,39 +128,28 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDeleteDeviceNotificationRequestParse(ctx context.Context, theBytes []byte) (AdsDeleteDeviceNotificationRequest, error) {
-	return AdsDeleteDeviceNotificationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func AdsDeleteDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationRequest, error) {
+func (m *_AdsDeleteDeviceNotificationRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsDeleteDeviceNotificationRequest AdsDeleteDeviceNotificationRequest, err error) {
+	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDeleteDeviceNotificationRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDeleteDeviceNotificationRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (notificationHandle)
-	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
-	if _notificationHandleErr != nil {
-		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field of AdsDeleteDeviceNotificationRequest")
+	notificationHandle, err := ReadSimpleField(ctx, "notificationHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationHandle' field"))
 	}
-	notificationHandle := _notificationHandle
+	m.NotificationHandle = notificationHandle
 
 	if closeErr := readBuffer.CloseContext("AdsDeleteDeviceNotificationRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDeleteDeviceNotificationRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_AdsDeleteDeviceNotificationRequest{
-		_AmsPacket:         &_AmsPacket{},
-		NotificationHandle: notificationHandle,
-	}
-	_child._AmsPacket._AmsPacketChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_AdsDeleteDeviceNotificationRequest) Serialize() ([]byte, error) {
@@ -190,11 +170,8 @@ func (m *_AdsDeleteDeviceNotificationRequest) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for AdsDeleteDeviceNotificationRequest")
 		}
 
-		// Simple Field (notificationHandle)
-		notificationHandle := uint32(m.GetNotificationHandle())
-		_notificationHandleErr := writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
-		if _notificationHandleErr != nil {
-			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "notificationHandle", m.GetNotificationHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationHandle' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDeleteDeviceNotificationRequest"); popErr != nil {
@@ -202,12 +179,10 @@ func (m *_AdsDeleteDeviceNotificationRequest) SerializeWithWriteBuffer(ctx conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.AmsPacketContract.(*_AmsPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_AdsDeleteDeviceNotificationRequest) isAdsDeleteDeviceNotificationRequest() bool {
-	return true
-}
+func (m *_AdsDeleteDeviceNotificationRequest) IsAdsDeleteDeviceNotificationRequest() {}
 
 func (m *_AdsDeleteDeviceNotificationRequest) String() string {
 	if m == nil {

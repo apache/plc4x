@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,23 +45,21 @@ type DisconnectRequest interface {
 	GetCommunicationChannelId() uint8
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
-}
-
-// DisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills DisconnectRequest.
-// This is useful for switch cases.
-type DisconnectRequestExactly interface {
-	DisconnectRequest
-	isDisconnectRequest() bool
+	// IsDisconnectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDisconnectRequest()
 }
 
 // _DisconnectRequest is the data-structure of this message
 type _DisconnectRequest struct {
-	*_KnxNetIpMessage
+	KnxNetIpMessageContract
 	CommunicationChannelId uint8
 	HpaiControlEndpoint    HPAIControlEndpoint
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ DisconnectRequest = (*_DisconnectRequest)(nil)
+var _ KnxNetIpMessageRequirements = (*_DisconnectRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,10 +75,8 @@ func (m *_DisconnectRequest) GetMsgType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DisconnectRequest) InitializeParent(parent KnxNetIpMessage) {}
-
-func (m *_DisconnectRequest) GetParent() KnxNetIpMessage {
-	return m._KnxNetIpMessage
+func (m *_DisconnectRequest) GetParent() KnxNetIpMessageContract {
+	return m.KnxNetIpMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,12 +99,15 @@ func (m *_DisconnectRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 
 // NewDisconnectRequest factory function for _DisconnectRequest
 func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_DisconnectRequest {
-	_result := &_DisconnectRequest{
-		CommunicationChannelId: communicationChannelId,
-		HpaiControlEndpoint:    hpaiControlEndpoint,
-		_KnxNetIpMessage:       NewKnxNetIpMessage(),
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DisconnectRequest must not be nil")
 	}
-	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result
+	_result := &_DisconnectRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 
@@ -125,7 +127,7 @@ func (m *_DisconnectRequest) GetTypeName() string {
 }
 
 func (m *_DisconnectRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -143,71 +145,40 @@ func (m *_DisconnectRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DisconnectRequestParse(ctx context.Context, theBytes []byte) (DisconnectRequest, error) {
-	return DisconnectRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func DisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DisconnectRequest, error) {
+func (m *_DisconnectRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__disconnectRequest DisconnectRequest, err error) {
+	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DisconnectRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DisconnectRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
-	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of DisconnectRequest")
+	communicationChannelId, err := ReadSimpleField(ctx, "communicationChannelId", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'communicationChannelId' field"))
 	}
-	communicationChannelId := _communicationChannelId
+	m.CommunicationChannelId = communicationChannelId
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DisconnectRequest")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (hpaiControlEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
+	hpaiControlEndpoint, err := ReadSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", ReadComplex[HPAIControlEndpoint](HPAIControlEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiControlEndpoint' field"))
 	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiControlEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of DisconnectRequest")
-	}
-	hpaiControlEndpoint := _hpaiControlEndpoint.(HPAIControlEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiControlEndpoint")
-	}
+	m.HpaiControlEndpoint = hpaiControlEndpoint
 
 	if closeErr := readBuffer.CloseContext("DisconnectRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DisconnectRequest")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DisconnectRequest{
-		_KnxNetIpMessage:       &_KnxNetIpMessage{},
-		CommunicationChannelId: communicationChannelId,
-		HpaiControlEndpoint:    hpaiControlEndpoint,
-		reservedField0:         reservedField0,
-	}
-	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DisconnectRequest) Serialize() ([]byte, error) {
@@ -228,39 +199,16 @@ func (m *_DisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for DisconnectRequest")
 		}
 
-		// Simple Field (communicationChannelId)
-		communicationChannelId := uint8(m.GetCommunicationChannelId())
-		_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
-		if _communicationChannelIdErr != nil {
-			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
+		if err := WriteSimpleField[uint8](ctx, "communicationChannelId", m.GetCommunicationChannelId(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'communicationChannelId' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (hpaiControlEndpoint)
-		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
-		}
-		_hpaiControlEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiControlEndpoint())
-		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
-		}
-		if _hpaiControlEndpointErr != nil {
-			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
+		if err := WriteSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", m.GetHpaiControlEndpoint(), WriteComplex[HPAIControlEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DisconnectRequest"); popErr != nil {
@@ -268,12 +216,10 @@ func (m *_DisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DisconnectRequest) isDisconnectRequest() bool {
-	return true
-}
+func (m *_DisconnectRequest) IsDisconnectRequest() {}
 
 func (m *_DisconnectRequest) String() string {
 	if m == nil {

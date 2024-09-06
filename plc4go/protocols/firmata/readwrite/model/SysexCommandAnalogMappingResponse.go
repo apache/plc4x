@@ -37,19 +37,17 @@ type SysexCommandAnalogMappingResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
-}
-
-// SysexCommandAnalogMappingResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandAnalogMappingResponse.
-// This is useful for switch cases.
-type SysexCommandAnalogMappingResponseExactly interface {
-	SysexCommandAnalogMappingResponse
-	isSysexCommandAnalogMappingResponse() bool
+	// IsSysexCommandAnalogMappingResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandAnalogMappingResponse()
 }
 
 // _SysexCommandAnalogMappingResponse is the data-structure of this message
 type _SysexCommandAnalogMappingResponse struct {
-	*_SysexCommand
+	SysexCommandContract
 }
+
+var _ SysexCommandAnalogMappingResponse = (*_SysexCommandAnalogMappingResponse)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandAnalogMappingResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,18 +67,16 @@ func (m *_SysexCommandAnalogMappingResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SysexCommandAnalogMappingResponse) InitializeParent(parent SysexCommand) {}
-
-func (m *_SysexCommandAnalogMappingResponse) GetParent() SysexCommand {
-	return m._SysexCommand
+func (m *_SysexCommandAnalogMappingResponse) GetParent() SysexCommandContract {
+	return m.SysexCommandContract
 }
 
 // NewSysexCommandAnalogMappingResponse factory function for _SysexCommandAnalogMappingResponse
 func NewSysexCommandAnalogMappingResponse() *_SysexCommandAnalogMappingResponse {
 	_result := &_SysexCommandAnalogMappingResponse{
-		_SysexCommand: NewSysexCommand(),
+		SysexCommandContract: NewSysexCommand(),
 	}
-	_result._SysexCommand._SysexCommandChildRequirements = _result
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 
@@ -100,7 +96,7 @@ func (m *_SysexCommandAnalogMappingResponse) GetTypeName() string {
 }
 
 func (m *_SysexCommandAnalogMappingResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -109,15 +105,11 @@ func (m *_SysexCommandAnalogMappingResponse) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandAnalogMappingResponseParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandAnalogMappingResponse, error) {
-	return SysexCommandAnalogMappingResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
-}
-
-func SysexCommandAnalogMappingResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingResponse, error) {
+func (m *_SysexCommandAnalogMappingResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandAnalogMappingResponse SysexCommandAnalogMappingResponse, err error) {
+	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandAnalogMappingResponse")
 	}
@@ -128,12 +120,7 @@ func SysexCommandAnalogMappingResponseParseWithBuffer(ctx context.Context, readB
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandAnalogMappingResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SysexCommandAnalogMappingResponse{
-		_SysexCommand: &_SysexCommand{},
-	}
-	_child._SysexCommand._SysexCommandChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SysexCommandAnalogMappingResponse) Serialize() ([]byte, error) {
@@ -159,12 +146,10 @@ func (m *_SysexCommandAnalogMappingResponse) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SysexCommandContract.(*_SysexCommand).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SysexCommandAnalogMappingResponse) isSysexCommandAnalogMappingResponse() bool {
-	return true
-}
+func (m *_SysexCommandAnalogMappingResponse) IsSysexCommandAnalogMappingResponse() {}
 
 func (m *_SysexCommandAnalogMappingResponse) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,21 +51,19 @@ type MediaTransportControlDataEnumerateCategoriesSelectionTracks interface {
 	GetIsListTracks() bool
 	// GetIsReserved returns IsReserved (virtual field)
 	GetIsReserved() bool
-}
-
-// MediaTransportControlDataEnumerateCategoriesSelectionTracksExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlDataEnumerateCategoriesSelectionTracks.
-// This is useful for switch cases.
-type MediaTransportControlDataEnumerateCategoriesSelectionTracksExactly interface {
-	MediaTransportControlDataEnumerateCategoriesSelectionTracks
-	isMediaTransportControlDataEnumerateCategoriesSelectionTracks() bool
+	// IsMediaTransportControlDataEnumerateCategoriesSelectionTracks is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataEnumerateCategoriesSelectionTracks()
 }
 
 // _MediaTransportControlDataEnumerateCategoriesSelectionTracks is the data-structure of this message
 type _MediaTransportControlDataEnumerateCategoriesSelectionTracks struct {
-	*_MediaTransportControlData
+	MediaTransportControlDataContract
 	EnumerateType byte
 	Start         uint8
 }
+
+var _ MediaTransportControlDataEnumerateCategoriesSelectionTracks = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,13 +75,8 @@ type _MediaTransportControlDataEnumerateCategoriesSelectionTracks struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) InitializeParent(parent MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.MediaLinkGroup = mediaLinkGroup
-}
-
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetParent() MediaTransportControlData {
-	return m._MediaTransportControlData
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetParent() MediaTransportControlDataContract {
+	return m.MediaTransportControlDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -138,11 +133,11 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetIsRese
 // NewMediaTransportControlDataEnumerateCategoriesSelectionTracks factory function for _MediaTransportControlDataEnumerateCategoriesSelectionTracks
 func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(enumerateType byte, start uint8, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
 	_result := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
-		EnumerateType:              enumerateType,
-		Start:                      start,
-		_MediaTransportControlData: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		EnumerateType:                     enumerateType,
+		Start:                             start,
 	}
-	_result._MediaTransportControlData._MediaTransportControlDataChildRequirements = _result
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 
@@ -162,7 +157,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetTypeNa
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
 
 	// Simple field (enumerateType)
 	lengthInBits += 8
@@ -185,67 +180,58 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLength
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
-	return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataEnumerateCategoriesSelectionTracks MediaTransportControlDataEnumerateCategoriesSelectionTracks, err error) {
+	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataEnumerateCategoriesSelectionTracks")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (enumerateType)
-	_enumerateType, _enumerateTypeErr := readBuffer.ReadByte("enumerateType")
-	if _enumerateTypeErr != nil {
-		return nil, errors.Wrap(_enumerateTypeErr, "Error parsing 'enumerateType' field of MediaTransportControlDataEnumerateCategoriesSelectionTracks")
+	enumerateType, err := ReadSimpleField(ctx, "enumerateType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumerateType' field"))
 	}
-	enumerateType := _enumerateType
+	m.EnumerateType = enumerateType
 
-	// Virtual field
-	_isListCategories := bool((enumerateType) == (0x00))
-	isListCategories := bool(_isListCategories)
+	isListCategories, err := ReadVirtualField[bool](ctx, "isListCategories", (*bool)(nil), bool((enumerateType) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListCategories' field"))
+	}
 	_ = isListCategories
 
-	// Virtual field
-	_isListSelections := bool((enumerateType) == (0x01))
-	isListSelections := bool(_isListSelections)
+	isListSelections, err := ReadVirtualField[bool](ctx, "isListSelections", (*bool)(nil), bool((enumerateType) == (0x01)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListSelections' field"))
+	}
 	_ = isListSelections
 
-	// Virtual field
-	_isListTracks := bool((enumerateType) == (0x02))
-	isListTracks := bool(_isListTracks)
+	isListTracks, err := ReadVirtualField[bool](ctx, "isListTracks", (*bool)(nil), bool((enumerateType) == (0x02)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListTracks' field"))
+	}
 	_ = isListTracks
 
-	// Virtual field
-	_isReserved := bool(bool(!(isListCategories)) && bool(!(isListSelections))) && bool(!(isListTracks))
-	isReserved := bool(_isReserved)
+	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool(!(isListCategories)) && bool(!(isListSelections))) && bool(!(isListTracks)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
+	}
 	_ = isReserved
 
-	// Simple Field (start)
-	_start, _startErr := readBuffer.ReadUint8("start", 8)
-	if _startErr != nil {
-		return nil, errors.Wrap(_startErr, "Error parsing 'start' field of MediaTransportControlDataEnumerateCategoriesSelectionTracks")
+	start, err := ReadSimpleField(ctx, "start", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'start' field"))
 	}
-	start := _start
+	m.Start = start
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataEnumerateCategoriesSelectionTracks")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
-		_MediaTransportControlData: &_MediaTransportControlData{},
-		EnumerateType:              enumerateType,
-		Start:                      start,
-	}
-	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize() ([]byte, error) {
@@ -266,11 +252,8 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataEnumerateCategoriesSelectionTracks")
 		}
 
-		// Simple Field (enumerateType)
-		enumerateType := byte(m.GetEnumerateType())
-		_enumerateTypeErr := writeBuffer.WriteByte("enumerateType", (enumerateType))
-		if _enumerateTypeErr != nil {
-			return errors.Wrap(_enumerateTypeErr, "Error serializing 'enumerateType' field")
+		if err := WriteSimpleField[byte](ctx, "enumerateType", m.GetEnumerateType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enumerateType' field")
 		}
 		// Virtual field
 		isListCategories := m.GetIsListCategories()
@@ -297,11 +280,8 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
-		// Simple Field (start)
-		start := uint8(m.GetStart())
-		_startErr := writeBuffer.WriteUint8("start", 8, uint8((start)))
-		if _startErr != nil {
-			return errors.Wrap(_startErr, "Error serializing 'start' field")
+		if err := WriteSimpleField[uint8](ctx, "start", m.GetStart(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'start' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); popErr != nil {
@@ -309,11 +289,10 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MediaTransportControlDataContract.(*_MediaTransportControlData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) isMediaTransportControlDataEnumerateCategoriesSelectionTracks() bool {
-	return true
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) IsMediaTransportControlDataEnumerateCategoriesSelectionTracks() {
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) String() string {

@@ -78,13 +78,13 @@ public class BACnetReadAccessResultListOfResults implements Message {
     writeBuffer.pushContext("BACnetReadAccessResultListOfResults");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfReadAccessProperty)
     writeComplexTypeArrayField("listOfReadAccessProperty", listOfReadAccessProperty, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetReadAccessResultListOfResults");
   }
@@ -126,13 +126,13 @@ public class BACnetReadAccessResultListOfResults implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetReadAccessProperty> listOfReadAccessProperty =
         readTerminatedArrayField(
             "listOfReadAccessProperty",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReadAccessProperty.staticParse(
                         readBuffer, (BACnetObjectType) (objectTypeArgument)),
@@ -145,7 +145,7 @@ public class BACnetReadAccessResultListOfResults implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetReadAccessResultListOfResults");

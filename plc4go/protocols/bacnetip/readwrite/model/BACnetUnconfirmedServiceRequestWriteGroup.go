@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -46,23 +47,21 @@ type BACnetUnconfirmedServiceRequestWriteGroup interface {
 	GetChangeList() BACnetGroupChannelValueList
 	// GetInhibitDelay returns InhibitDelay (property field)
 	GetInhibitDelay() BACnetContextTagUnsignedInteger
-}
-
-// BACnetUnconfirmedServiceRequestWriteGroupExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWriteGroup.
-// This is useful for switch cases.
-type BACnetUnconfirmedServiceRequestWriteGroupExactly interface {
-	BACnetUnconfirmedServiceRequestWriteGroup
-	isBACnetUnconfirmedServiceRequestWriteGroup() bool
+	// IsBACnetUnconfirmedServiceRequestWriteGroup is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestWriteGroup()
 }
 
 // _BACnetUnconfirmedServiceRequestWriteGroup is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestWriteGroup struct {
-	*_BACnetUnconfirmedServiceRequest
+	BACnetUnconfirmedServiceRequestContract
 	GroupNumber   BACnetContextTagUnsignedInteger
 	WritePriority BACnetContextTagUnsignedInteger
 	ChangeList    BACnetGroupChannelValueList
 	InhibitDelay  BACnetContextTagUnsignedInteger
 }
+
+var _ BACnetUnconfirmedServiceRequestWriteGroup = (*_BACnetUnconfirmedServiceRequestWriteGroup)(nil)
+var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWriteGroup)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +77,8 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetServiceChoice() BACnetUn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) InitializeParent(parent BACnetUnconfirmedServiceRequest) {
-}
-
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetParent() BACnetUnconfirmedServiceRequest {
-	return m._BACnetUnconfirmedServiceRequest
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetParent() BACnetUnconfirmedServiceRequestContract {
+	return m.BACnetUnconfirmedServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,14 +109,23 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetInhibitDelay() BACnetCon
 
 // NewBACnetUnconfirmedServiceRequestWriteGroup factory function for _BACnetUnconfirmedServiceRequestWriteGroup
 func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUnsignedInteger, writePriority BACnetContextTagUnsignedInteger, changeList BACnetGroupChannelValueList, inhibitDelay BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWriteGroup {
-	_result := &_BACnetUnconfirmedServiceRequestWriteGroup{
-		GroupNumber:                      groupNumber,
-		WritePriority:                    writePriority,
-		ChangeList:                       changeList,
-		InhibitDelay:                     inhibitDelay,
-		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+	if groupNumber == nil {
+		panic("groupNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
 	}
-	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result
+	if writePriority == nil {
+		panic("writePriority of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
+	}
+	if changeList == nil {
+		panic("changeList of type BACnetGroupChannelValueList for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestWriteGroup{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		GroupNumber:                             groupNumber,
+		WritePriority:                           writePriority,
+		ChangeList:                              changeList,
+		InhibitDelay:                            inhibitDelay,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -140,7 +145,7 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetTypeName() string {
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (groupNumber)
 	lengthInBits += m.GroupNumber.GetLengthInBits(ctx)
@@ -163,98 +168,50 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(ctx context.Context, theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
-	return BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
-}
-
-func BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetUnconfirmedServiceRequest, serviceRequestLength uint16) (__bACnetUnconfirmedServiceRequestWriteGroup BACnetUnconfirmedServiceRequestWriteGroup, err error) {
+	m.BACnetUnconfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWriteGroup"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestWriteGroup")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (groupNumber)
-	if pullErr := readBuffer.PullContext("groupNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for groupNumber")
+	groupNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "groupNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupNumber' field"))
 	}
-	_groupNumber, _groupNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _groupNumberErr != nil {
-		return nil, errors.Wrap(_groupNumberErr, "Error parsing 'groupNumber' field of BACnetUnconfirmedServiceRequestWriteGroup")
-	}
-	groupNumber := _groupNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("groupNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for groupNumber")
-	}
+	m.GroupNumber = groupNumber
 
-	// Simple Field (writePriority)
-	if pullErr := readBuffer.PullContext("writePriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for writePriority")
+	writePriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "writePriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writePriority' field"))
 	}
-	_writePriority, _writePriorityErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _writePriorityErr != nil {
-		return nil, errors.Wrap(_writePriorityErr, "Error parsing 'writePriority' field of BACnetUnconfirmedServiceRequestWriteGroup")
-	}
-	writePriority := _writePriority.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("writePriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for writePriority")
-	}
+	m.WritePriority = writePriority
 
-	// Simple Field (changeList)
-	if pullErr := readBuffer.PullContext("changeList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for changeList")
+	changeList, err := ReadSimpleField[BACnetGroupChannelValueList](ctx, "changeList", ReadComplex[BACnetGroupChannelValueList](BACnetGroupChannelValueListParseWithBufferProducer((uint8)(uint8(2))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changeList' field"))
 	}
-	_changeList, _changeListErr := BACnetGroupChannelValueListParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
-	if _changeListErr != nil {
-		return nil, errors.Wrap(_changeListErr, "Error parsing 'changeList' field of BACnetUnconfirmedServiceRequestWriteGroup")
-	}
-	changeList := _changeList.(BACnetGroupChannelValueList)
-	if closeErr := readBuffer.CloseContext("changeList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for changeList")
-	}
+	m.ChangeList = changeList
 
-	// Optional Field (inhibitDelay) (Can be skipped, if a given expression evaluates to false)
-	var inhibitDelay BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("inhibitDelay"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for inhibitDelay")
-		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'inhibitDelay' field of BACnetUnconfirmedServiceRequestWriteGroup")
-		default:
-			inhibitDelay = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("inhibitDelay"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for inhibitDelay")
-			}
-		}
+	var inhibitDelay BACnetContextTagUnsignedInteger
+	_inhibitDelay, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inhibitDelay' field"))
+	}
+	if _inhibitDelay != nil {
+		inhibitDelay = *_inhibitDelay
+		m.InhibitDelay = inhibitDelay
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestWriteGroup"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceRequestWriteGroup")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetUnconfirmedServiceRequestWriteGroup{
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
-		GroupNumber:   groupNumber,
-		WritePriority: writePriority,
-		ChangeList:    changeList,
-		InhibitDelay:  inhibitDelay,
-	}
-	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) Serialize() ([]byte, error) {
@@ -275,56 +232,20 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWriteGroup")
 		}
 
-		// Simple Field (groupNumber)
-		if pushErr := writeBuffer.PushContext("groupNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for groupNumber")
-		}
-		_groupNumberErr := writeBuffer.WriteSerializable(ctx, m.GetGroupNumber())
-		if popErr := writeBuffer.PopContext("groupNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for groupNumber")
-		}
-		if _groupNumberErr != nil {
-			return errors.Wrap(_groupNumberErr, "Error serializing 'groupNumber' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "groupNumber", m.GetGroupNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupNumber' field")
 		}
 
-		// Simple Field (writePriority)
-		if pushErr := writeBuffer.PushContext("writePriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writePriority")
-		}
-		_writePriorityErr := writeBuffer.WriteSerializable(ctx, m.GetWritePriority())
-		if popErr := writeBuffer.PopContext("writePriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writePriority")
-		}
-		if _writePriorityErr != nil {
-			return errors.Wrap(_writePriorityErr, "Error serializing 'writePriority' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "writePriority", m.GetWritePriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writePriority' field")
 		}
 
-		// Simple Field (changeList)
-		if pushErr := writeBuffer.PushContext("changeList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changeList")
-		}
-		_changeListErr := writeBuffer.WriteSerializable(ctx, m.GetChangeList())
-		if popErr := writeBuffer.PopContext("changeList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changeList")
-		}
-		if _changeListErr != nil {
-			return errors.Wrap(_changeListErr, "Error serializing 'changeList' field")
+		if err := WriteSimpleField[BACnetGroupChannelValueList](ctx, "changeList", m.GetChangeList(), WriteComplex[BACnetGroupChannelValueList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changeList' field")
 		}
 
-		// Optional Field (inhibitDelay) (Can be skipped, if the value is null)
-		var inhibitDelay BACnetContextTagUnsignedInteger = nil
-		if m.GetInhibitDelay() != nil {
-			if pushErr := writeBuffer.PushContext("inhibitDelay"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for inhibitDelay")
-			}
-			inhibitDelay = m.GetInhibitDelay()
-			_inhibitDelayErr := writeBuffer.WriteSerializable(ctx, inhibitDelay)
-			if popErr := writeBuffer.PopContext("inhibitDelay"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for inhibitDelay")
-			}
-			if _inhibitDelayErr != nil {
-				return errors.Wrap(_inhibitDelayErr, "Error serializing 'inhibitDelay' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", GetRef(m.GetInhibitDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'inhibitDelay' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestWriteGroup"); popErr != nil {
@@ -332,12 +253,10 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) SerializeWithWriteBuffer(ct
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) isBACnetUnconfirmedServiceRequestWriteGroup() bool {
-	return true
-}
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) IsBACnetUnconfirmedServiceRequestWriteGroup() {}
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) String() string {
 	if m == nil {

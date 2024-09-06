@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataPacketReorderTime interface {
 	GetPacketReorderTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataPacketReorderTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPacketReorderTime.
-// This is useful for switch cases.
-type BACnetConstructedDataPacketReorderTimeExactly interface {
-	BACnetConstructedDataPacketReorderTime
-	isBACnetConstructedDataPacketReorderTime() bool
+	// IsBACnetConstructedDataPacketReorderTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPacketReorderTime()
 }
 
 // _BACnetConstructedDataPacketReorderTime is the data-structure of this message
 type _BACnetConstructedDataPacketReorderTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	PacketReorderTime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataPacketReorderTime = (*_BACnetConstructedDataPacketReorderTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPacketReorderTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataPacketReorderTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataPacketReorderTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataPacketReorderTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataPacketReorderTime factory function for _BACnetConstructedDataPacketReorderTime
 func NewBACnetConstructedDataPacketReorderTime(packetReorderTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPacketReorderTime {
-	_result := &_BACnetConstructedDataPacketReorderTime{
-		PacketReorderTime:      packetReorderTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if packetReorderTime == nil {
+		panic("packetReorderTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPacketReorderTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataPacketReorderTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PacketReorderTime:             packetReorderTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataPacketReorderTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (packetReorderTime)
 	lengthInBits += m.PacketReorderTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataPacketReorderTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPacketReorderTime, error) {
-	return BACnetConstructedDataPacketReorderTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataPacketReorderTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPacketReorderTime, error) {
+func (m *_BACnetConstructedDataPacketReorderTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPacketReorderTime BACnetConstructedDataPacketReorderTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPacketReorderTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPacketReorderTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (packetReorderTime)
-	if pullErr := readBuffer.PullContext("packetReorderTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for packetReorderTime")
+	packetReorderTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "packetReorderTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetReorderTime' field"))
 	}
-	_packetReorderTime, _packetReorderTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _packetReorderTimeErr != nil {
-		return nil, errors.Wrap(_packetReorderTimeErr, "Error parsing 'packetReorderTime' field of BACnetConstructedDataPacketReorderTime")
-	}
-	packetReorderTime := _packetReorderTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("packetReorderTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for packetReorderTime")
-	}
+	m.PacketReorderTime = packetReorderTime
 
-	// Virtual field
-	_actualValue := packetReorderTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), packetReorderTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPacketReorderTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPacketReorderTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataPacketReorderTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		PacketReorderTime: packetReorderTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataPacketReorderTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataPacketReorderTime) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPacketReorderTime")
 		}
 
-		// Simple Field (packetReorderTime)
-		if pushErr := writeBuffer.PushContext("packetReorderTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for packetReorderTime")
-		}
-		_packetReorderTimeErr := writeBuffer.WriteSerializable(ctx, m.GetPacketReorderTime())
-		if popErr := writeBuffer.PopContext("packetReorderTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for packetReorderTime")
-		}
-		if _packetReorderTimeErr != nil {
-			return errors.Wrap(_packetReorderTimeErr, "Error serializing 'packetReorderTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "packetReorderTime", m.GetPacketReorderTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'packetReorderTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataPacketReorderTime) SerializeWithWriteBuffer(ctx c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataPacketReorderTime) isBACnetConstructedDataPacketReorderTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataPacketReorderTime) IsBACnetConstructedDataPacketReorderTime() {}
 
 func (m *_BACnetConstructedDataPacketReorderTime) String() string {
 	if m == nil {

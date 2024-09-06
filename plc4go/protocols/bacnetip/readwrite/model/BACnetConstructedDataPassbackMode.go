@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataPassbackMode interface {
 	GetPassbackMode() BACnetAccessPassbackModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessPassbackModeTagged
-}
-
-// BACnetConstructedDataPassbackModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPassbackMode.
-// This is useful for switch cases.
-type BACnetConstructedDataPassbackModeExactly interface {
-	BACnetConstructedDataPassbackMode
-	isBACnetConstructedDataPassbackMode() bool
+	// IsBACnetConstructedDataPassbackMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPassbackMode()
 }
 
 // _BACnetConstructedDataPassbackMode is the data-structure of this message
 type _BACnetConstructedDataPassbackMode struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	PassbackMode BACnetAccessPassbackModeTagged
 }
+
+var _ BACnetConstructedDataPassbackMode = (*_BACnetConstructedDataPassbackMode)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassbackMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataPassbackMode) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataPassbackMode) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataPassbackMode) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataPassbackMode) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataPassbackMode) GetActualValue() BACnetAccessPassba
 
 // NewBACnetConstructedDataPassbackMode factory function for _BACnetConstructedDataPassbackMode
 func NewBACnetConstructedDataPassbackMode(passbackMode BACnetAccessPassbackModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackMode {
-	_result := &_BACnetConstructedDataPassbackMode{
-		PassbackMode:           passbackMode,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if passbackMode == nil {
+		panic("passbackMode of type BACnetAccessPassbackModeTagged for BACnetConstructedDataPassbackMode must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataPassbackMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PassbackMode:                  passbackMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataPassbackMode) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataPassbackMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (passbackMode)
 	lengthInBits += m.PassbackMode.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataPassbackMode) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataPassbackModeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackMode, error) {
-	return BACnetConstructedDataPassbackModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataPassbackModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackMode, error) {
+func (m *_BACnetConstructedDataPassbackMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPassbackMode BACnetConstructedDataPassbackMode, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassbackMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPassbackMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (passbackMode)
-	if pullErr := readBuffer.PullContext("passbackMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for passbackMode")
+	passbackMode, err := ReadSimpleField[BACnetAccessPassbackModeTagged](ctx, "passbackMode", ReadComplex[BACnetAccessPassbackModeTagged](BACnetAccessPassbackModeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'passbackMode' field"))
 	}
-	_passbackMode, _passbackModeErr := BACnetAccessPassbackModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _passbackModeErr != nil {
-		return nil, errors.Wrap(_passbackModeErr, "Error parsing 'passbackMode' field of BACnetConstructedDataPassbackMode")
-	}
-	passbackMode := _passbackMode.(BACnetAccessPassbackModeTagged)
-	if closeErr := readBuffer.CloseContext("passbackMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for passbackMode")
-	}
+	m.PassbackMode = passbackMode
 
-	// Virtual field
-	_actualValue := passbackMode
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetAccessPassbackModeTagged](ctx, "actualValue", (*BACnetAccessPassbackModeTagged)(nil), passbackMode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassbackMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassbackMode")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataPassbackMode{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		PassbackMode: passbackMode,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataPassbackMode) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataPassbackMode) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPassbackMode")
 		}
 
-		// Simple Field (passbackMode)
-		if pushErr := writeBuffer.PushContext("passbackMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for passbackMode")
-		}
-		_passbackModeErr := writeBuffer.WriteSerializable(ctx, m.GetPassbackMode())
-		if popErr := writeBuffer.PopContext("passbackMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for passbackMode")
-		}
-		if _passbackModeErr != nil {
-			return errors.Wrap(_passbackModeErr, "Error serializing 'passbackMode' field")
+		if err := WriteSimpleField[BACnetAccessPassbackModeTagged](ctx, "passbackMode", m.GetPassbackMode(), WriteComplex[BACnetAccessPassbackModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'passbackMode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataPassbackMode) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataPassbackMode) isBACnetConstructedDataPassbackMode() bool {
-	return true
-}
+func (m *_BACnetConstructedDataPassbackMode) IsBACnetConstructedDataPassbackMode() {}
 
 func (m *_BACnetConstructedDataPassbackMode) String() string {
 	if m == nil {

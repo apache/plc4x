@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,23 +47,21 @@ type PriorityMappingEntryType interface {
 	GetPriorityValue_PCP() uint8
 	// GetPriorityValue_DSCP returns PriorityValue_DSCP (property field)
 	GetPriorityValue_DSCP() uint32
-}
-
-// PriorityMappingEntryTypeExactly can be used when we want exactly this type and not a type which fulfills PriorityMappingEntryType.
-// This is useful for switch cases.
-type PriorityMappingEntryTypeExactly interface {
-	PriorityMappingEntryType
-	isPriorityMappingEntryType() bool
+	// IsPriorityMappingEntryType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPriorityMappingEntryType()
 }
 
 // _PriorityMappingEntryType is the data-structure of this message
 type _PriorityMappingEntryType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	MappingUri         PascalString
 	PriorityLabel      PascalString
 	PriorityValue_PCP  uint8
 	PriorityValue_DSCP uint32
 }
+
+var _ PriorityMappingEntryType = (*_PriorityMappingEntryType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PriorityMappingEntryType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -77,10 +77,8 @@ func (m *_PriorityMappingEntryType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PriorityMappingEntryType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_PriorityMappingEntryType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_PriorityMappingEntryType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,14 +109,20 @@ func (m *_PriorityMappingEntryType) GetPriorityValue_DSCP() uint32 {
 
 // NewPriorityMappingEntryType factory function for _PriorityMappingEntryType
 func NewPriorityMappingEntryType(mappingUri PascalString, priorityLabel PascalString, priorityValue_PCP uint8, priorityValue_DSCP uint32) *_PriorityMappingEntryType {
-	_result := &_PriorityMappingEntryType{
-		MappingUri:                 mappingUri,
-		PriorityLabel:              priorityLabel,
-		PriorityValue_PCP:          priorityValue_PCP,
-		PriorityValue_DSCP:         priorityValue_DSCP,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if mappingUri == nil {
+		panic("mappingUri of type PascalString for PriorityMappingEntryType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if priorityLabel == nil {
+		panic("priorityLabel of type PascalString for PriorityMappingEntryType must not be nil")
+	}
+	_result := &_PriorityMappingEntryType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MappingUri:                        mappingUri,
+		PriorityLabel:                     priorityLabel,
+		PriorityValue_PCP:                 priorityValue_PCP,
+		PriorityValue_DSCP:                priorityValue_DSCP,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -138,7 +142,7 @@ func (m *_PriorityMappingEntryType) GetTypeName() string {
 }
 
 func (m *_PriorityMappingEntryType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (mappingUri)
 	lengthInBits += m.MappingUri.GetLengthInBits(ctx)
@@ -159,75 +163,46 @@ func (m *_PriorityMappingEntryType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PriorityMappingEntryTypeParse(ctx context.Context, theBytes []byte, identifier string) (PriorityMappingEntryType, error) {
-	return PriorityMappingEntryTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func PriorityMappingEntryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PriorityMappingEntryType, error) {
+func (m *_PriorityMappingEntryType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__priorityMappingEntryType PriorityMappingEntryType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PriorityMappingEntryType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PriorityMappingEntryType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (mappingUri)
-	if pullErr := readBuffer.PullContext("mappingUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for mappingUri")
+	mappingUri, err := ReadSimpleField[PascalString](ctx, "mappingUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mappingUri' field"))
 	}
-	_mappingUri, _mappingUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _mappingUriErr != nil {
-		return nil, errors.Wrap(_mappingUriErr, "Error parsing 'mappingUri' field of PriorityMappingEntryType")
-	}
-	mappingUri := _mappingUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("mappingUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for mappingUri")
-	}
+	m.MappingUri = mappingUri
 
-	// Simple Field (priorityLabel)
-	if pullErr := readBuffer.PullContext("priorityLabel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priorityLabel")
+	priorityLabel, err := ReadSimpleField[PascalString](ctx, "priorityLabel", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityLabel' field"))
 	}
-	_priorityLabel, _priorityLabelErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _priorityLabelErr != nil {
-		return nil, errors.Wrap(_priorityLabelErr, "Error parsing 'priorityLabel' field of PriorityMappingEntryType")
-	}
-	priorityLabel := _priorityLabel.(PascalString)
-	if closeErr := readBuffer.CloseContext("priorityLabel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priorityLabel")
-	}
+	m.PriorityLabel = priorityLabel
 
-	// Simple Field (priorityValue_PCP)
-	_priorityValue_PCP, _priorityValue_PCPErr := readBuffer.ReadUint8("priorityValue_PCP", 8)
-	if _priorityValue_PCPErr != nil {
-		return nil, errors.Wrap(_priorityValue_PCPErr, "Error parsing 'priorityValue_PCP' field of PriorityMappingEntryType")
+	priorityValue_PCP, err := ReadSimpleField(ctx, "priorityValue_PCP", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue_PCP' field"))
 	}
-	priorityValue_PCP := _priorityValue_PCP
+	m.PriorityValue_PCP = priorityValue_PCP
 
-	// Simple Field (priorityValue_DSCP)
-	_priorityValue_DSCP, _priorityValue_DSCPErr := readBuffer.ReadUint32("priorityValue_DSCP", 32)
-	if _priorityValue_DSCPErr != nil {
-		return nil, errors.Wrap(_priorityValue_DSCPErr, "Error parsing 'priorityValue_DSCP' field of PriorityMappingEntryType")
+	priorityValue_DSCP, err := ReadSimpleField(ctx, "priorityValue_DSCP", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue_DSCP' field"))
 	}
-	priorityValue_DSCP := _priorityValue_DSCP
+	m.PriorityValue_DSCP = priorityValue_DSCP
 
 	if closeErr := readBuffer.CloseContext("PriorityMappingEntryType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PriorityMappingEntryType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_PriorityMappingEntryType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		MappingUri:                 mappingUri,
-		PriorityLabel:              priorityLabel,
-		PriorityValue_PCP:          priorityValue_PCP,
-		PriorityValue_DSCP:         priorityValue_DSCP,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_PriorityMappingEntryType) Serialize() ([]byte, error) {
@@ -248,42 +223,20 @@ func (m *_PriorityMappingEntryType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for PriorityMappingEntryType")
 		}
 
-		// Simple Field (mappingUri)
-		if pushErr := writeBuffer.PushContext("mappingUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for mappingUri")
-		}
-		_mappingUriErr := writeBuffer.WriteSerializable(ctx, m.GetMappingUri())
-		if popErr := writeBuffer.PopContext("mappingUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for mappingUri")
-		}
-		if _mappingUriErr != nil {
-			return errors.Wrap(_mappingUriErr, "Error serializing 'mappingUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "mappingUri", m.GetMappingUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mappingUri' field")
 		}
 
-		// Simple Field (priorityLabel)
-		if pushErr := writeBuffer.PushContext("priorityLabel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for priorityLabel")
-		}
-		_priorityLabelErr := writeBuffer.WriteSerializable(ctx, m.GetPriorityLabel())
-		if popErr := writeBuffer.PopContext("priorityLabel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for priorityLabel")
-		}
-		if _priorityLabelErr != nil {
-			return errors.Wrap(_priorityLabelErr, "Error serializing 'priorityLabel' field")
+		if err := WriteSimpleField[PascalString](ctx, "priorityLabel", m.GetPriorityLabel(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityLabel' field")
 		}
 
-		// Simple Field (priorityValue_PCP)
-		priorityValue_PCP := uint8(m.GetPriorityValue_PCP())
-		_priorityValue_PCPErr := writeBuffer.WriteUint8("priorityValue_PCP", 8, uint8((priorityValue_PCP)))
-		if _priorityValue_PCPErr != nil {
-			return errors.Wrap(_priorityValue_PCPErr, "Error serializing 'priorityValue_PCP' field")
+		if err := WriteSimpleField[uint8](ctx, "priorityValue_PCP", m.GetPriorityValue_PCP(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityValue_PCP' field")
 		}
 
-		// Simple Field (priorityValue_DSCP)
-		priorityValue_DSCP := uint32(m.GetPriorityValue_DSCP())
-		_priorityValue_DSCPErr := writeBuffer.WriteUint32("priorityValue_DSCP", 32, uint32((priorityValue_DSCP)))
-		if _priorityValue_DSCPErr != nil {
-			return errors.Wrap(_priorityValue_DSCPErr, "Error serializing 'priorityValue_DSCP' field")
+		if err := WriteSimpleField[uint32](ctx, "priorityValue_DSCP", m.GetPriorityValue_DSCP(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityValue_DSCP' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PriorityMappingEntryType"); popErr != nil {
@@ -291,12 +244,10 @@ func (m *_PriorityMappingEntryType) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_PriorityMappingEntryType) isPriorityMappingEntryType() bool {
-	return true
-}
+func (m *_PriorityMappingEntryType) IsPriorityMappingEntryType() {}
 
 func (m *_PriorityMappingEntryType) String() string {
 	if m == nil {

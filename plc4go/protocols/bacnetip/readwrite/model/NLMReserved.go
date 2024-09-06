@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type NLMReserved interface {
 	NLM
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
-}
-
-// NLMReservedExactly can be used when we want exactly this type and not a type which fulfills NLMReserved.
-// This is useful for switch cases.
-type NLMReservedExactly interface {
-	NLMReserved
-	isNLMReserved() bool
+	// IsNLMReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMReserved()
 }
 
 // _NLMReserved is the data-structure of this message
 type _NLMReserved struct {
-	*_NLM
+	NLMContract
 	UnknownBytes []byte
 }
+
+var _ NLMReserved = (*_NLMReserved)(nil)
+var _ NLMRequirements = (*_NLMReserved)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_NLMReserved) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMReserved) InitializeParent(parent NLM) {}
-
-func (m *_NLMReserved) GetParent() NLM {
-	return m._NLM
+func (m *_NLMReserved) GetParent() NLMContract {
+	return m.NLMContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_NLMReserved) GetUnknownBytes() []byte {
 // NewNLMReserved factory function for _NLMReserved
 func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
 	_result := &_NLMReserved{
+		NLMContract:  NewNLM(apduLength),
 		UnknownBytes: unknownBytes,
-		_NLM:         NewNLM(apduLength),
 	}
-	_result._NLM._NLMChildRequirements = _result
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_NLMReserved) GetTypeName() string {
 }
 
 func (m *_NLMReserved) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {
@@ -128,40 +126,28 @@ func (m *_NLMReserved) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMReservedParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMReserved, error) {
-	return NLMReservedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func NLMReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMReserved, error) {
+func (m *_NLMReserved) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMReserved NLMReserved, err error) {
+	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMReserved"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMReserved")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16((uint16(apduLength) - uint16(uint16(1)))) }, func() any { return uint16(uint16(0)) }).(uint16))
-	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of NLMReserved")
+
+	unknownBytes, err := readBuffer.ReadByteArray("unknownBytes", int(utils.InlineIf((bool((apduLength) > (0))), func() any { return int32((int32(apduLength) - int32(int32(1)))) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownBytes' field"))
 	}
+	m.UnknownBytes = unknownBytes
 
 	if closeErr := readBuffer.CloseContext("NLMReserved"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMReserved")
 	}
 
-	// Create a partially initialized instance
-	_child := &_NLMReserved{
-		_NLM: &_NLM{
-			ApduLength: apduLength,
-		},
-		UnknownBytes: unknownBytes,
-	}
-	_child._NLM._NLMChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_NLMReserved) Serialize() ([]byte, error) {
@@ -182,9 +168,7 @@ func (m *_NLMReserved) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for NLMReserved")
 		}
 
-		// Array Field (unknownBytes)
-		// Byte Array field (unknownBytes)
-		if err := writeBuffer.WriteByteArray("unknownBytes", m.GetUnknownBytes()); err != nil {
+		if err := WriteByteArrayField(ctx, "unknownBytes", m.GetUnknownBytes(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unknownBytes' field")
 		}
 
@@ -193,12 +177,10 @@ func (m *_NLMReserved) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.NLMContract.(*_NLM).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_NLMReserved) isNLMReserved() bool {
-	return true
-}
+func (m *_NLMReserved) IsNLMReserved() {}
 
 func (m *_NLMReserved) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,20 +45,18 @@ type SecurityDataLowBatteryCharging interface {
 	GetChargeStopped() bool
 	// GetChargeStarted returns ChargeStarted (virtual field)
 	GetChargeStarted() bool
-}
-
-// SecurityDataLowBatteryChargingExactly can be used when we want exactly this type and not a type which fulfills SecurityDataLowBatteryCharging.
-// This is useful for switch cases.
-type SecurityDataLowBatteryChargingExactly interface {
-	SecurityDataLowBatteryCharging
-	isSecurityDataLowBatteryCharging() bool
+	// IsSecurityDataLowBatteryCharging is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataLowBatteryCharging()
 }
 
 // _SecurityDataLowBatteryCharging is the data-structure of this message
 type _SecurityDataLowBatteryCharging struct {
-	*_SecurityData
+	SecurityDataContract
 	StartStop byte
 }
+
+var _ SecurityDataLowBatteryCharging = (*_SecurityDataLowBatteryCharging)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataLowBatteryCharging)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,13 +68,8 @@ type _SecurityDataLowBatteryCharging struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataLowBatteryCharging) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataLowBatteryCharging) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataLowBatteryCharging) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,10 +110,10 @@ func (m *_SecurityDataLowBatteryCharging) GetChargeStarted() bool {
 // NewSecurityDataLowBatteryCharging factory function for _SecurityDataLowBatteryCharging
 func NewSecurityDataLowBatteryCharging(startStop byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLowBatteryCharging {
 	_result := &_SecurityDataLowBatteryCharging{
-		StartStop:     startStop,
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		StartStop:            startStop,
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -138,7 +133,7 @@ func (m *_SecurityDataLowBatteryCharging) GetTypeName() string {
 }
 
 func (m *_SecurityDataLowBatteryCharging) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (startStop)
 	lengthInBits += 8
@@ -154,49 +149,40 @@ func (m *_SecurityDataLowBatteryCharging) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataLowBatteryChargingParse(ctx context.Context, theBytes []byte) (SecurityDataLowBatteryCharging, error) {
-	return SecurityDataLowBatteryChargingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataLowBatteryChargingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
+func (m *_SecurityDataLowBatteryCharging) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataLowBatteryCharging SecurityDataLowBatteryCharging, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataLowBatteryCharging"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataLowBatteryCharging")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (startStop)
-	_startStop, _startStopErr := readBuffer.ReadByte("startStop")
-	if _startStopErr != nil {
-		return nil, errors.Wrap(_startStopErr, "Error parsing 'startStop' field of SecurityDataLowBatteryCharging")
+	startStop, err := ReadSimpleField(ctx, "startStop", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startStop' field"))
 	}
-	startStop := _startStop
+	m.StartStop = startStop
 
-	// Virtual field
-	_chargeStopped := bool((startStop) == (0x00))
-	chargeStopped := bool(_chargeStopped)
+	chargeStopped, err := ReadVirtualField[bool](ctx, "chargeStopped", (*bool)(nil), bool((startStop) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chargeStopped' field"))
+	}
 	_ = chargeStopped
 
-	// Virtual field
-	_chargeStarted := bool((startStop) > (0xFE))
-	chargeStarted := bool(_chargeStarted)
+	chargeStarted, err := ReadVirtualField[bool](ctx, "chargeStarted", (*bool)(nil), bool((startStop) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chargeStarted' field"))
+	}
 	_ = chargeStarted
 
 	if closeErr := readBuffer.CloseContext("SecurityDataLowBatteryCharging"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataLowBatteryCharging")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataLowBatteryCharging{
-		_SecurityData: &_SecurityData{},
-		StartStop:     startStop,
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataLowBatteryCharging) Serialize() ([]byte, error) {
@@ -217,11 +203,8 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataLowBatteryCharging")
 		}
 
-		// Simple Field (startStop)
-		startStop := byte(m.GetStartStop())
-		_startStopErr := writeBuffer.WriteByte("startStop", (startStop))
-		if _startStopErr != nil {
-			return errors.Wrap(_startStopErr, "Error serializing 'startStop' field")
+		if err := WriteSimpleField[byte](ctx, "startStop", m.GetStartStop(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startStop' field")
 		}
 		// Virtual field
 		chargeStopped := m.GetChargeStopped()
@@ -241,12 +224,10 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.C
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataLowBatteryCharging) isSecurityDataLowBatteryCharging() bool {
-	return true
-}
+func (m *_SecurityDataLowBatteryCharging) IsSecurityDataLowBatteryCharging() {}
 
 func (m *_SecurityDataLowBatteryCharging) String() string {
 	if m == nil {

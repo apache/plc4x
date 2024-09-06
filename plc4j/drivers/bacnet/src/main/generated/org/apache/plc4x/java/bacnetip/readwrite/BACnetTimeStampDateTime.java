@@ -60,7 +60,7 @@ public class BACnetTimeStampDateTime extends BACnetTimeStamp implements Message 
     writeBuffer.pushContext("BACnetTimeStampDateTime");
 
     // Simple Field (dateTimeValue)
-    writeSimpleField("dateTimeValue", dateTimeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateTimeValue", dateTimeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimeStampDateTime");
   }
@@ -91,7 +91,7 @@ public class BACnetTimeStampDateTime extends BACnetTimeStamp implements Message 
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
             "dateTimeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     readBuffer.closeContext("BACnetTimeStampDateTime");

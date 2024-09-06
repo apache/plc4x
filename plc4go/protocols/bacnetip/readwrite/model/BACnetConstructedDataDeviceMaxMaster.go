@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataDeviceMaxMaster interface {
 	GetMaxMaster() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataDeviceMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceMaxMaster.
-// This is useful for switch cases.
-type BACnetConstructedDataDeviceMaxMasterExactly interface {
-	BACnetConstructedDataDeviceMaxMaster
-	isBACnetConstructedDataDeviceMaxMaster() bool
+	// IsBACnetConstructedDataDeviceMaxMaster is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDeviceMaxMaster()
 }
 
 // _BACnetConstructedDataDeviceMaxMaster is the data-structure of this message
 type _BACnetConstructedDataDeviceMaxMaster struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	MaxMaster BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataDeviceMaxMaster = (*_BACnetConstructedDataDeviceMaxMaster)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceMaxMaster)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataDeviceMaxMaster) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataDeviceMaxMaster) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataDeviceMaxMaster) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetActualValue() BACnetApplicati
 
 // NewBACnetConstructedDataDeviceMaxMaster factory function for _BACnetConstructedDataDeviceMaxMaster
 func NewBACnetConstructedDataDeviceMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxMaster {
-	_result := &_BACnetConstructedDataDeviceMaxMaster{
-		MaxMaster:              maxMaster,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if maxMaster == nil {
+		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDeviceMaxMaster must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataDeviceMaxMaster{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxMaster:                     maxMaster,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDeviceMaxMaster) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxMaster)
 	lengthInBits += m.MaxMaster.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataDeviceMaxMasterParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxMaster, error) {
-	return BACnetConstructedDataDeviceMaxMasterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataDeviceMaxMasterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxMaster, error) {
+func (m *_BACnetConstructedDataDeviceMaxMaster) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDeviceMaxMaster BACnetConstructedDataDeviceMaxMaster, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceMaxMaster"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDeviceMaxMaster")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxMaster)
-	if pullErr := readBuffer.PullContext("maxMaster"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxMaster")
+	maxMaster, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxMaster", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxMaster' field"))
 	}
-	_maxMaster, _maxMasterErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxMasterErr != nil {
-		return nil, errors.Wrap(_maxMasterErr, "Error parsing 'maxMaster' field of BACnetConstructedDataDeviceMaxMaster")
-	}
-	maxMaster := _maxMaster.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxMaster"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxMaster")
-	}
+	m.MaxMaster = maxMaster
 
-	// Virtual field
-	_actualValue := maxMaster
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), maxMaster)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceMaxMaster"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceMaxMaster")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataDeviceMaxMaster{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		MaxMaster: maxMaster,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataDeviceMaxMaster) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeviceMaxMaster")
 		}
 
-		// Simple Field (maxMaster)
-		if pushErr := writeBuffer.PushContext("maxMaster"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxMaster")
-		}
-		_maxMasterErr := writeBuffer.WriteSerializable(ctx, m.GetMaxMaster())
-		if popErr := writeBuffer.PopContext("maxMaster"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxMaster")
-		}
-		if _maxMasterErr != nil {
-			return errors.Wrap(_maxMasterErr, "Error serializing 'maxMaster' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxMaster", m.GetMaxMaster(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxMaster' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) SerializeWithWriteBuffer(ctx con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMaster) isBACnetConstructedDataDeviceMaxMaster() bool {
-	return true
-}
+func (m *_BACnetConstructedDataDeviceMaxMaster) IsBACnetConstructedDataDeviceMaxMaster() {}
 
 func (m *_BACnetConstructedDataDeviceMaxMaster) String() string {
 	if m == nil {

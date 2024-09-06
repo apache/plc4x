@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataExpirationTime interface {
 	GetExpirationTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-}
-
-// BACnetConstructedDataExpirationTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExpirationTime.
-// This is useful for switch cases.
-type BACnetConstructedDataExpirationTimeExactly interface {
-	BACnetConstructedDataExpirationTime
-	isBACnetConstructedDataExpirationTime() bool
+	// IsBACnetConstructedDataExpirationTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataExpirationTime()
 }
 
 // _BACnetConstructedDataExpirationTime is the data-structure of this message
 type _BACnetConstructedDataExpirationTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	ExpirationTime BACnetDateTime
 }
+
+var _ BACnetConstructedDataExpirationTime = (*_BACnetConstructedDataExpirationTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExpirationTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataExpirationTime) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataExpirationTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataExpirationTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataExpirationTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataExpirationTime) GetActualValue() BACnetDateTime {
 
 // NewBACnetConstructedDataExpirationTime factory function for _BACnetConstructedDataExpirationTime
 func NewBACnetConstructedDataExpirationTime(expirationTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExpirationTime {
-	_result := &_BACnetConstructedDataExpirationTime{
-		ExpirationTime:         expirationTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if expirationTime == nil {
+		panic("expirationTime of type BACnetDateTime for BACnetConstructedDataExpirationTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataExpirationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ExpirationTime:                expirationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataExpirationTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataExpirationTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (expirationTime)
 	lengthInBits += m.ExpirationTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataExpirationTime) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataExpirationTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExpirationTime, error) {
-	return BACnetConstructedDataExpirationTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataExpirationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExpirationTime, error) {
+func (m *_BACnetConstructedDataExpirationTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataExpirationTime BACnetConstructedDataExpirationTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExpirationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataExpirationTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (expirationTime)
-	if pullErr := readBuffer.PullContext("expirationTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for expirationTime")
+	expirationTime, err := ReadSimpleField[BACnetDateTime](ctx, "expirationTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expirationTime' field"))
 	}
-	_expirationTime, _expirationTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _expirationTimeErr != nil {
-		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field of BACnetConstructedDataExpirationTime")
-	}
-	expirationTime := _expirationTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for expirationTime")
-	}
+	m.ExpirationTime = expirationTime
 
-	// Virtual field
-	_actualValue := expirationTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), expirationTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExpirationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExpirationTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataExpirationTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		ExpirationTime: expirationTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataExpirationTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataExpirationTime) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataExpirationTime")
 		}
 
-		// Simple Field (expirationTime)
-		if pushErr := writeBuffer.PushContext("expirationTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for expirationTime")
-		}
-		_expirationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetExpirationTime())
-		if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for expirationTime")
-		}
-		if _expirationTimeErr != nil {
-			return errors.Wrap(_expirationTimeErr, "Error serializing 'expirationTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "expirationTime", m.GetExpirationTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'expirationTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataExpirationTime) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataExpirationTime) isBACnetConstructedDataExpirationTime() bool {
-	return true
-}
+func (m *_BACnetConstructedDataExpirationTime) IsBACnetConstructedDataExpirationTime() {}
 
 func (m *_BACnetConstructedDataExpirationTime) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -43,24 +45,22 @@ type ReferenceListEntryDataType interface {
 	GetIsForward() bool
 	// GetTargetNode returns TargetNode (property field)
 	GetTargetNode() ExpandedNodeId
-}
-
-// ReferenceListEntryDataTypeExactly can be used when we want exactly this type and not a type which fulfills ReferenceListEntryDataType.
-// This is useful for switch cases.
-type ReferenceListEntryDataTypeExactly interface {
-	ReferenceListEntryDataType
-	isReferenceListEntryDataType() bool
+	// IsReferenceListEntryDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReferenceListEntryDataType()
 }
 
 // _ReferenceListEntryDataType is the data-structure of this message
 type _ReferenceListEntryDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	ReferenceType NodeId
 	IsForward     bool
 	TargetNode    ExpandedNodeId
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ ReferenceListEntryDataType = (*_ReferenceListEntryDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ReferenceListEntryDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,10 +76,8 @@ func (m *_ReferenceListEntryDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ReferenceListEntryDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_ReferenceListEntryDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_ReferenceListEntryDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,13 +104,19 @@ func (m *_ReferenceListEntryDataType) GetTargetNode() ExpandedNodeId {
 
 // NewReferenceListEntryDataType factory function for _ReferenceListEntryDataType
 func NewReferenceListEntryDataType(referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceListEntryDataType {
-	_result := &_ReferenceListEntryDataType{
-		ReferenceType:              referenceType,
-		IsForward:                  isForward,
-		TargetNode:                 targetNode,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if referenceType == nil {
+		panic("referenceType of type NodeId for ReferenceListEntryDataType must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if targetNode == nil {
+		panic("targetNode of type ExpandedNodeId for ReferenceListEntryDataType must not be nil")
+	}
+	_result := &_ReferenceListEntryDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceType:                     referenceType,
+		IsForward:                         isForward,
+		TargetNode:                        targetNode,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -132,7 +136,7 @@ func (m *_ReferenceListEntryDataType) GetTypeName() string {
 }
 
 func (m *_ReferenceListEntryDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (referenceType)
 	lengthInBits += m.ReferenceType.GetLengthInBits(ctx)
@@ -153,85 +157,46 @@ func (m *_ReferenceListEntryDataType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ReferenceListEntryDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (ReferenceListEntryDataType, error) {
-	return ReferenceListEntryDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func ReferenceListEntryDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReferenceListEntryDataType, error) {
+func (m *_ReferenceListEntryDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__referenceListEntryDataType ReferenceListEntryDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ReferenceListEntryDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ReferenceListEntryDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceType)
-	if pullErr := readBuffer.PullContext("referenceType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceType")
+	referenceType, err := ReadSimpleField[NodeId](ctx, "referenceType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceType' field"))
 	}
-	_referenceType, _referenceTypeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeErr != nil {
-		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ReferenceListEntryDataType")
-	}
-	referenceType := _referenceType.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceType")
-	}
+	m.ReferenceType = referenceType
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ReferenceListEntryDataType")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of ReferenceListEntryDataType")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
-	isForward := _isForward
+	m.IsForward = isForward
 
-	// Simple Field (targetNode)
-	if pullErr := readBuffer.PullContext("targetNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNode")
+	targetNode, err := ReadSimpleField[ExpandedNodeId](ctx, "targetNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNode' field"))
 	}
-	_targetNode, _targetNodeErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeErr != nil {
-		return nil, errors.Wrap(_targetNodeErr, "Error parsing 'targetNode' field of ReferenceListEntryDataType")
-	}
-	targetNode := _targetNode.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNode")
-	}
+	m.TargetNode = targetNode
 
 	if closeErr := readBuffer.CloseContext("ReferenceListEntryDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReferenceListEntryDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ReferenceListEntryDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		ReferenceType:              referenceType,
-		IsForward:                  isForward,
-		TargetNode:                 targetNode,
-		reservedField0:             reservedField0,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ReferenceListEntryDataType) Serialize() ([]byte, error) {
@@ -252,51 +217,20 @@ func (m *_ReferenceListEntryDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for ReferenceListEntryDataType")
 		}
 
-		// Simple Field (referenceType)
-		if pushErr := writeBuffer.PushContext("referenceType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceType")
-		}
-		_referenceTypeErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceType())
-		if popErr := writeBuffer.PopContext("referenceType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceType")
-		}
-		if _referenceTypeErr != nil {
-			return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceType", m.GetReferenceType(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceType' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (isForward)
-		isForward := bool(m.GetIsForward())
-		_isForwardErr := writeBuffer.WriteBit("isForward", (isForward))
-		if _isForwardErr != nil {
-			return errors.Wrap(_isForwardErr, "Error serializing 'isForward' field")
+		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isForward' field")
 		}
 
-		// Simple Field (targetNode)
-		if pushErr := writeBuffer.PushContext("targetNode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetNode")
-		}
-		_targetNodeErr := writeBuffer.WriteSerializable(ctx, m.GetTargetNode())
-		if popErr := writeBuffer.PopContext("targetNode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetNode")
-		}
-		if _targetNodeErr != nil {
-			return errors.Wrap(_targetNodeErr, "Error serializing 'targetNode' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "targetNode", m.GetTargetNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetNode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReferenceListEntryDataType"); popErr != nil {
@@ -304,12 +238,10 @@ func (m *_ReferenceListEntryDataType) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ReferenceListEntryDataType) isReferenceListEntryDataType() bool {
-	return true
-}
+func (m *_ReferenceListEntryDataType) IsReferenceListEntryDataType() {}
 
 func (m *_ReferenceListEntryDataType) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetLogDataLogStatus interface {
 	BACnetLogData
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
-}
-
-// BACnetLogDataLogStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogStatus.
-// This is useful for switch cases.
-type BACnetLogDataLogStatusExactly interface {
-	BACnetLogDataLogStatus
-	isBACnetLogDataLogStatus() bool
+	// IsBACnetLogDataLogStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogStatus()
 }
 
 // _BACnetLogDataLogStatus is the data-structure of this message
 type _BACnetLogDataLogStatus struct {
-	*_BACnetLogData
+	BACnetLogDataContract
 	LogStatus BACnetLogStatusTagged
 }
+
+var _ BACnetLogDataLogStatus = (*_BACnetLogDataLogStatus)(nil)
+var _ BACnetLogDataRequirements = (*_BACnetLogDataLogStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +64,8 @@ type _BACnetLogDataLogStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetLogDataLogStatus) InitializeParent(parent BACnetLogData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetLogDataLogStatus) GetParent() BACnetLogData {
-	return m._BACnetLogData
+func (m *_BACnetLogDataLogStatus) GetParent() BACnetLogDataContract {
+	return m.BACnetLogDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +84,14 @@ func (m *_BACnetLogDataLogStatus) GetLogStatus() BACnetLogStatusTagged {
 
 // NewBACnetLogDataLogStatus factory function for _BACnetLogDataLogStatus
 func NewBACnetLogDataLogStatus(logStatus BACnetLogStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogStatus {
-	_result := &_BACnetLogDataLogStatus{
-		LogStatus:      logStatus,
-		_BACnetLogData: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+	if logStatus == nil {
+		panic("logStatus of type BACnetLogStatusTagged for BACnetLogDataLogStatus must not be nil")
 	}
-	_result._BACnetLogData._BACnetLogDataChildRequirements = _result
+	_result := &_BACnetLogDataLogStatus{
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		LogStatus:             logStatus,
+	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
 	return _result
 }
 
@@ -114,7 +111,7 @@ func (m *_BACnetLogDataLogStatus) GetTypeName() string {
 }
 
 func (m *_BACnetLogDataLogStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
 
 	// Simple field (logStatus)
 	lengthInBits += m.LogStatus.GetLengthInBits(ctx)
@@ -126,47 +123,28 @@ func (m *_BACnetLogDataLogStatus) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogDataLogStatusParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLogDataLogStatus, error) {
-	return BACnetLogDataLogStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
-}
-
-func BACnetLogDataLogStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogStatus, error) {
+func (m *_BACnetLogDataLogStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogData, tagNumber uint8) (__bACnetLogDataLogStatus BACnetLogDataLogStatus, err error) {
+	m.BACnetLogDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (logStatus)
-	if pullErr := readBuffer.PullContext("logStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for logStatus")
+	logStatus, err := ReadSimpleField[BACnetLogStatusTagged](ctx, "logStatus", ReadComplex[BACnetLogStatusTagged](BACnetLogStatusTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logStatus' field"))
 	}
-	_logStatus, _logStatusErr := BACnetLogStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _logStatusErr != nil {
-		return nil, errors.Wrap(_logStatusErr, "Error parsing 'logStatus' field of BACnetLogDataLogStatus")
-	}
-	logStatus := _logStatus.(BACnetLogStatusTagged)
-	if closeErr := readBuffer.CloseContext("logStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for logStatus")
-	}
+	m.LogStatus = logStatus
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogStatus")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetLogDataLogStatus{
-		_BACnetLogData: &_BACnetLogData{
-			TagNumber: tagNumber,
-		},
-		LogStatus: logStatus,
-	}
-	_child._BACnetLogData._BACnetLogDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetLogDataLogStatus) Serialize() ([]byte, error) {
@@ -187,16 +165,8 @@ func (m *_BACnetLogDataLogStatus) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogStatus")
 		}
 
-		// Simple Field (logStatus)
-		if pushErr := writeBuffer.PushContext("logStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for logStatus")
-		}
-		_logStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLogStatus())
-		if popErr := writeBuffer.PopContext("logStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for logStatus")
-		}
-		if _logStatusErr != nil {
-			return errors.Wrap(_logStatusErr, "Error serializing 'logStatus' field")
+		if err := WriteSimpleField[BACnetLogStatusTagged](ctx, "logStatus", m.GetLogStatus(), WriteComplex[BACnetLogStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'logStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogStatus"); popErr != nil {
@@ -204,12 +174,10 @@ func (m *_BACnetLogDataLogStatus) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetLogDataContract.(*_BACnetLogData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetLogDataLogStatus) isBACnetLogDataLogStatus() bool {
-	return true
-}
+func (m *_BACnetLogDataLogStatus) IsBACnetLogDataLogStatus() {}
 
 func (m *_BACnetLogDataLogStatus) String() string {
 	if m == nil {

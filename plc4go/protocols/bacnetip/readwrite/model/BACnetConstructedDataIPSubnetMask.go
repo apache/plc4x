@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataIPSubnetMask interface {
 	GetIpSubnetMask() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-}
-
-// BACnetConstructedDataIPSubnetMaskExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPSubnetMask.
-// This is useful for switch cases.
-type BACnetConstructedDataIPSubnetMaskExactly interface {
-	BACnetConstructedDataIPSubnetMask
-	isBACnetConstructedDataIPSubnetMask() bool
+	// IsBACnetConstructedDataIPSubnetMask is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPSubnetMask()
 }
 
 // _BACnetConstructedDataIPSubnetMask is the data-structure of this message
 type _BACnetConstructedDataIPSubnetMask struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	IpSubnetMask BACnetApplicationTagOctetString
 }
+
+var _ BACnetConstructedDataIPSubnetMask = (*_BACnetConstructedDataIPSubnetMask)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPSubnetMask)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataIPSubnetMask) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataIPSubnetMask) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataIPSubnetMask) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataIPSubnetMask) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataIPSubnetMask) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataIPSubnetMask factory function for _BACnetConstructedDataIPSubnetMask
 func NewBACnetConstructedDataIPSubnetMask(ipSubnetMask BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPSubnetMask {
-	_result := &_BACnetConstructedDataIPSubnetMask{
-		IpSubnetMask:           ipSubnetMask,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if ipSubnetMask == nil {
+		panic("ipSubnetMask of type BACnetApplicationTagOctetString for BACnetConstructedDataIPSubnetMask must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataIPSubnetMask{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpSubnetMask:                  ipSubnetMask,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataIPSubnetMask) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIPSubnetMask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipSubnetMask)
 	lengthInBits += m.IpSubnetMask.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataIPSubnetMask) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataIPSubnetMaskParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPSubnetMask, error) {
-	return BACnetConstructedDataIPSubnetMaskParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataIPSubnetMaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPSubnetMask, error) {
+func (m *_BACnetConstructedDataIPSubnetMask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPSubnetMask BACnetConstructedDataIPSubnetMask, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPSubnetMask"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPSubnetMask")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipSubnetMask)
-	if pullErr := readBuffer.PullContext("ipSubnetMask"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipSubnetMask")
+	ipSubnetMask, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipSubnetMask", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipSubnetMask' field"))
 	}
-	_ipSubnetMask, _ipSubnetMaskErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipSubnetMaskErr != nil {
-		return nil, errors.Wrap(_ipSubnetMaskErr, "Error parsing 'ipSubnetMask' field of BACnetConstructedDataIPSubnetMask")
-	}
-	ipSubnetMask := _ipSubnetMask.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipSubnetMask"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipSubnetMask")
-	}
+	m.IpSubnetMask = ipSubnetMask
 
-	// Virtual field
-	_actualValue := ipSubnetMask
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagOctetString](ctx, "actualValue", (*BACnetApplicationTagOctetString)(nil), ipSubnetMask)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPSubnetMask"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPSubnetMask")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataIPSubnetMask{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		IpSubnetMask: ipSubnetMask,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataIPSubnetMask) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataIPSubnetMask) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPSubnetMask")
 		}
 
-		// Simple Field (ipSubnetMask)
-		if pushErr := writeBuffer.PushContext("ipSubnetMask"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipSubnetMask")
-		}
-		_ipSubnetMaskErr := writeBuffer.WriteSerializable(ctx, m.GetIpSubnetMask())
-		if popErr := writeBuffer.PopContext("ipSubnetMask"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipSubnetMask")
-		}
-		if _ipSubnetMaskErr != nil {
-			return errors.Wrap(_ipSubnetMaskErr, "Error serializing 'ipSubnetMask' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "ipSubnetMask", m.GetIpSubnetMask(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipSubnetMask' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataIPSubnetMask) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataIPSubnetMask) isBACnetConstructedDataIPSubnetMask() bool {
-	return true
-}
+func (m *_BACnetConstructedDataIPSubnetMask) IsBACnetConstructedDataIPSubnetMask() {}
 
 func (m *_BACnetConstructedDataIPSubnetMask) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type SecurityDataZoneName interface {
 	GetZoneNumber() uint8
 	// GetZoneName returns ZoneName (property field)
 	GetZoneName() string
-}
-
-// SecurityDataZoneNameExactly can be used when we want exactly this type and not a type which fulfills SecurityDataZoneName.
-// This is useful for switch cases.
-type SecurityDataZoneNameExactly interface {
-	SecurityDataZoneName
-	isSecurityDataZoneName() bool
+	// IsSecurityDataZoneName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataZoneName()
 }
 
 // _SecurityDataZoneName is the data-structure of this message
 type _SecurityDataZoneName struct {
-	*_SecurityData
+	SecurityDataContract
 	ZoneNumber uint8
 	ZoneName   string
 }
+
+var _ SecurityDataZoneName = (*_SecurityDataZoneName)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataZoneName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,13 +67,8 @@ type _SecurityDataZoneName struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SecurityDataZoneName) InitializeParent(parent SecurityData, commandTypeContainer SecurityCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_SecurityDataZoneName) GetParent() SecurityData {
-	return m._SecurityData
+func (m *_SecurityDataZoneName) GetParent() SecurityDataContract {
+	return m.SecurityDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,11 +92,11 @@ func (m *_SecurityDataZoneName) GetZoneName() string {
 // NewSecurityDataZoneName factory function for _SecurityDataZoneName
 func NewSecurityDataZoneName(zoneNumber uint8, zoneName string, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneName {
 	_result := &_SecurityDataZoneName{
-		ZoneNumber:    zoneNumber,
-		ZoneName:      zoneName,
-		_SecurityData: NewSecurityData(commandTypeContainer, argument),
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+		ZoneName:             zoneName,
 	}
-	_result._SecurityData._SecurityDataChildRequirements = _result
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 
@@ -121,7 +116,7 @@ func (m *_SecurityDataZoneName) GetTypeName() string {
 }
 
 func (m *_SecurityDataZoneName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (zoneNumber)
 	lengthInBits += 8
@@ -136,47 +131,34 @@ func (m *_SecurityDataZoneName) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataZoneNameParse(ctx context.Context, theBytes []byte) (SecurityDataZoneName, error) {
-	return SecurityDataZoneNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func SecurityDataZoneNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneName, error) {
+func (m *_SecurityDataZoneName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataZoneName SecurityDataZoneName, err error) {
+	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataZoneName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataZoneName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneNumber)
-	_zoneNumber, _zoneNumberErr := readBuffer.ReadUint8("zoneNumber", 8)
-	if _zoneNumberErr != nil {
-		return nil, errors.Wrap(_zoneNumberErr, "Error parsing 'zoneNumber' field of SecurityDataZoneName")
+	zoneNumber, err := ReadSimpleField(ctx, "zoneNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneNumber' field"))
 	}
-	zoneNumber := _zoneNumber
+	m.ZoneNumber = zoneNumber
 
-	// Simple Field (zoneName)
-	_zoneName, _zoneNameErr := readBuffer.ReadString("zoneName", uint32(88), "UTF-8")
-	if _zoneNameErr != nil {
-		return nil, errors.Wrap(_zoneNameErr, "Error parsing 'zoneName' field of SecurityDataZoneName")
+	zoneName, err := ReadSimpleField(ctx, "zoneName", ReadString(readBuffer, uint32(88)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneName' field"))
 	}
-	zoneName := _zoneName
+	m.ZoneName = zoneName
 
 	if closeErr := readBuffer.CloseContext("SecurityDataZoneName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataZoneName")
 	}
 
-	// Create a partially initialized instance
-	_child := &_SecurityDataZoneName{
-		_SecurityData: &_SecurityData{},
-		ZoneNumber:    zoneNumber,
-		ZoneName:      zoneName,
-	}
-	_child._SecurityData._SecurityDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_SecurityDataZoneName) Serialize() ([]byte, error) {
@@ -197,18 +179,12 @@ func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataZoneName")
 		}
 
-		// Simple Field (zoneNumber)
-		zoneNumber := uint8(m.GetZoneNumber())
-		_zoneNumberErr := writeBuffer.WriteUint8("zoneNumber", 8, uint8((zoneNumber)))
-		if _zoneNumberErr != nil {
-			return errors.Wrap(_zoneNumberErr, "Error serializing 'zoneNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "zoneNumber", m.GetZoneNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneNumber' field")
 		}
 
-		// Simple Field (zoneName)
-		zoneName := string(m.GetZoneName())
-		_zoneNameErr := writeBuffer.WriteString("zoneName", uint32(88), "UTF-8", (zoneName))
-		if _zoneNameErr != nil {
-			return errors.Wrap(_zoneNameErr, "Error serializing 'zoneName' field")
+		if err := WriteSimpleField[string](ctx, "zoneName", m.GetZoneName(), WriteString(writeBuffer, 88)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityDataZoneName"); popErr != nil {
@@ -216,12 +192,10 @@ func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.SecurityDataContract.(*_SecurityData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_SecurityDataZoneName) isSecurityDataZoneName() bool {
-	return true
-}
+func (m *_SecurityDataZoneName) IsSecurityDataZoneName() {}
 
 func (m *_SecurityDataZoneName) String() string {
 	if m == nil {

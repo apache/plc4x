@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -45,13 +46,8 @@ type LocalizedText interface {
 	GetLocale() PascalString
 	// GetText returns Text (property field)
 	GetText() PascalString
-}
-
-// LocalizedTextExactly can be used when we want exactly this type and not a type which fulfills LocalizedText.
-// This is useful for switch cases.
-type LocalizedTextExactly interface {
-	LocalizedText
-	isLocalizedText() bool
+	// IsLocalizedText is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLocalizedText()
 }
 
 // _LocalizedText is the data-structure of this message
@@ -63,6 +59,8 @@ type _LocalizedText struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ LocalizedText = (*_LocalizedText)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -143,104 +141,72 @@ func LocalizedTextParse(ctx context.Context, theBytes []byte) (LocalizedText, er
 	return LocalizedTextParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LocalizedTextParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LocalizedText, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LocalizedText, error) {
+		return LocalizedTextParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LocalizedText, error) {
+	v, err := (&_LocalizedText{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_LocalizedText) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__localizedText LocalizedText, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LocalizedText"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LocalizedText")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 6)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LocalizedText")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(6)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
+	}
+	m.reservedField0 = reservedField0
+
+	textSpecified, err := ReadSimpleField(ctx, "textSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'textSpecified' field"))
+	}
+	m.TextSpecified = textSpecified
+
+	localeSpecified, err := ReadSimpleField(ctx, "localeSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeSpecified' field"))
+	}
+	m.LocaleSpecified = localeSpecified
+
+	var locale PascalString
+	_locale, err := ReadOptionalField[PascalString](ctx, "locale", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), localeSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'locale' field"))
+	}
+	if _locale != nil {
+		locale = *_locale
+		m.Locale = locale
 	}
 
-	// Simple Field (textSpecified)
-	_textSpecified, _textSpecifiedErr := readBuffer.ReadBit("textSpecified")
-	if _textSpecifiedErr != nil {
-		return nil, errors.Wrap(_textSpecifiedErr, "Error parsing 'textSpecified' field of LocalizedText")
+	var text PascalString
+	_text, err := ReadOptionalField[PascalString](ctx, "text", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), textSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'text' field"))
 	}
-	textSpecified := _textSpecified
-
-	// Simple Field (localeSpecified)
-	_localeSpecified, _localeSpecifiedErr := readBuffer.ReadBit("localeSpecified")
-	if _localeSpecifiedErr != nil {
-		return nil, errors.Wrap(_localeSpecifiedErr, "Error parsing 'localeSpecified' field of LocalizedText")
-	}
-	localeSpecified := _localeSpecified
-
-	// Optional Field (locale) (Can be skipped, if a given expression evaluates to false)
-	var locale PascalString = nil
-	if localeSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("locale"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for locale")
-		}
-		_val, _err := PascalStringParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'locale' field of LocalizedText")
-		default:
-			locale = _val.(PascalString)
-			if closeErr := readBuffer.CloseContext("locale"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for locale")
-			}
-		}
-	}
-
-	// Optional Field (text) (Can be skipped, if a given expression evaluates to false)
-	var text PascalString = nil
-	if textSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("text"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for text")
-		}
-		_val, _err := PascalStringParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'text' field of LocalizedText")
-		default:
-			text = _val.(PascalString)
-			if closeErr := readBuffer.CloseContext("text"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for text")
-			}
-		}
+	if _text != nil {
+		text = *_text
+		m.Text = text
 	}
 
 	if closeErr := readBuffer.CloseContext("LocalizedText"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LocalizedText")
 	}
 
-	// Create the instance
-	return &_LocalizedText{
-		TextSpecified:   textSpecified,
-		LocaleSpecified: localeSpecified,
-		Locale:          locale,
-		Text:            text,
-		reservedField0:  reservedField0,
-	}, nil
+	return m, nil
 }
 
 func (m *_LocalizedText) Serialize() ([]byte, error) {
@@ -260,66 +226,24 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for LocalizedText")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0x00)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (textSpecified)
-	textSpecified := bool(m.GetTextSpecified())
-	_textSpecifiedErr := writeBuffer.WriteBit("textSpecified", (textSpecified))
-	if _textSpecifiedErr != nil {
-		return errors.Wrap(_textSpecifiedErr, "Error serializing 'textSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "textSpecified", m.GetTextSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'textSpecified' field")
 	}
 
-	// Simple Field (localeSpecified)
-	localeSpecified := bool(m.GetLocaleSpecified())
-	_localeSpecifiedErr := writeBuffer.WriteBit("localeSpecified", (localeSpecified))
-	if _localeSpecifiedErr != nil {
-		return errors.Wrap(_localeSpecifiedErr, "Error serializing 'localeSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "localeSpecified", m.GetLocaleSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localeSpecified' field")
 	}
 
-	// Optional Field (locale) (Can be skipped, if the value is null)
-	var locale PascalString = nil
-	if m.GetLocale() != nil {
-		if pushErr := writeBuffer.PushContext("locale"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for locale")
-		}
-		locale = m.GetLocale()
-		_localeErr := writeBuffer.WriteSerializable(ctx, locale)
-		if popErr := writeBuffer.PopContext("locale"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for locale")
-		}
-		if _localeErr != nil {
-			return errors.Wrap(_localeErr, "Error serializing 'locale' field")
-		}
+	if err := WriteOptionalField[PascalString](ctx, "locale", GetRef(m.GetLocale()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'locale' field")
 	}
 
-	// Optional Field (text) (Can be skipped, if the value is null)
-	var text PascalString = nil
-	if m.GetText() != nil {
-		if pushErr := writeBuffer.PushContext("text"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for text")
-		}
-		text = m.GetText()
-		_textErr := writeBuffer.WriteSerializable(ctx, text)
-		if popErr := writeBuffer.PopContext("text"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for text")
-		}
-		if _textErr != nil {
-			return errors.Wrap(_textErr, "Error serializing 'text' field")
-		}
+	if err := WriteOptionalField[PascalString](ctx, "text", GetRef(m.GetText()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'text' field")
 	}
 
 	if popErr := writeBuffer.PopContext("LocalizedText"); popErr != nil {
@@ -328,9 +252,7 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (m *_LocalizedText) isLocalizedText() bool {
-	return true
-}
+func (m *_LocalizedText) IsLocalizedText() {}
 
 func (m *_LocalizedText) String() string {
 	if m == nil {

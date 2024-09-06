@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,47 +35,40 @@ import (
 
 // BACnetOptionalUnsigned is the corresponding interface of BACnetOptionalUnsigned
 type BACnetOptionalUnsigned interface {
+	BACnetOptionalUnsignedContract
+	BACnetOptionalUnsignedRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalUnsigned()
+}
+
+// BACnetOptionalUnsignedContract provides a set of functions which can be overwritten by a sub struct
+type BACnetOptionalUnsignedContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalUnsigned()
 }
 
-// BACnetOptionalUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalUnsigned.
-// This is useful for switch cases.
-type BACnetOptionalUnsignedExactly interface {
-	BACnetOptionalUnsigned
-	isBACnetOptionalUnsigned() bool
+// BACnetOptionalUnsignedRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetOptionalUnsignedRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // _BACnetOptionalUnsigned is the data-structure of this message
 type _BACnetOptionalUnsigned struct {
-	_BACnetOptionalUnsignedChildRequirements
+	_SubType        BACnetOptionalUnsigned
 	PeekedTagHeader BACnetTagHeader
 }
 
-type _BACnetOptionalUnsignedChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
-
-type BACnetOptionalUnsignedParent interface {
-	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetOptionalUnsigned, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type BACnetOptionalUnsignedChild interface {
-	utils.Serializable
-	InitializeParent(parent BACnetOptionalUnsigned, peekedTagHeader BACnetTagHeader)
-	GetParent() *BACnetOptionalUnsigned
-
-	GetTypeName() string
-	BACnetOptionalUnsigned
-}
+var _ BACnetOptionalUnsignedContract = (*_BACnetOptionalUnsigned)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,7 +88,8 @@ func (m *_BACnetOptionalUnsigned) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetOptionalUnsigned) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetOptionalUnsigned) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -106,6 +102,9 @@ func (m *_BACnetOptionalUnsigned) GetPeekedTagNumber() uint8 {
 
 // NewBACnetOptionalUnsigned factory function for _BACnetOptionalUnsigned
 func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsigned {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalUnsigned must not be nil")
+	}
 	return &_BACnetOptionalUnsigned{PeekedTagHeader: peekedTagHeader}
 }
 
@@ -124,7 +123,7 @@ func (m *_BACnetOptionalUnsigned) GetTypeName() string {
 	return "BACnetOptionalUnsigned"
 }
 
-func (m *_BACnetOptionalUnsigned) GetParentLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetOptionalUnsigned) getLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -133,69 +132,77 @@ func (m *_BACnetOptionalUnsigned) GetParentLengthInBits(ctx context.Context) uin
 }
 
 func (m *_BACnetOptionalUnsigned) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalUnsignedParse(ctx context.Context, theBytes []byte) (BACnetOptionalUnsigned, error) {
-	return BACnetOptionalUnsignedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+func BACnetOptionalUnsignedParse[T BACnetOptionalUnsigned](ctx context.Context, theBytes []byte) (T, error) {
+	return BACnetOptionalUnsignedParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetOptionalUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalUnsigned, error) {
+func BACnetOptionalUnsignedParseWithBufferProducer[T BACnetOptionalUnsigned]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		v, err := BACnetOptionalUnsignedParseWithBuffer[T](ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return v, err
+	}
+}
+
+func BACnetOptionalUnsignedParseWithBuffer[T BACnetOptionalUnsigned](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	v, err := (&_BACnetOptionalUnsigned{}).parse(ctx, readBuffer)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	return v.(T), err
+}
+
+func (m *_BACnetOptionalUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetOptionalUnsigned BACnetOptionalUnsigned, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetOptionalUnsigned"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalUnsigned")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedTagHeader)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
+	peekedTagHeader, err := ReadPeekField[BACnetTagHeader](ctx, "peekedTagHeader", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagHeader' field"))
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	readBuffer.Reset(currentPos)
+	m.PeekedTagHeader = peekedTagHeader
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type BACnetOptionalUnsignedChildSerializeRequirement interface {
-		BACnetOptionalUnsigned
-		InitializeParent(BACnetOptionalUnsigned, BACnetTagHeader)
-		GetParent() BACnetOptionalUnsigned
-	}
-	var _childTemp any
-	var _child BACnetOptionalUnsignedChildSerializeRequirement
-	var typeSwitchError error
+	var _child BACnetOptionalUnsigned
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalUnsignedNull
-		_childTemp, typeSwitchError = BACnetOptionalUnsignedNullParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetOptionalUnsignedNull{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalUnsignedNull for type-switch of BACnetOptionalUnsigned")
+		}
 	case 0 == 0: // BACnetOptionalUnsignedValue
-		_childTemp, typeSwitchError = BACnetOptionalUnsignedValueParseWithBuffer(ctx, readBuffer)
+		if _child, err = (&_BACnetOptionalUnsignedValue{}).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalUnsignedValue for type-switch of BACnetOptionalUnsigned")
+		}
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
+		return nil, errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetOptionalUnsigned")
-	}
-	_child = _childTemp.(BACnetOptionalUnsignedChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalUnsigned"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalUnsigned")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
 }
 
-func (pm *_BACnetOptionalUnsigned) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetOptionalUnsigned, serializeChildFunction func() error) error {
+func (pm *_BACnetOptionalUnsigned) serializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetOptionalUnsigned, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -224,17 +231,4 @@ func (pm *_BACnetOptionalUnsigned) SerializeParent(ctx context.Context, writeBuf
 	return nil
 }
 
-func (m *_BACnetOptionalUnsigned) isBACnetOptionalUnsigned() bool {
-	return true
-}
-
-func (m *_BACnetOptionalUnsigned) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
+func (m *_BACnetOptionalUnsigned) IsBACnetOptionalUnsigned() {}

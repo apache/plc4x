@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataRestoreCompletionTime interface {
 	GetCompletionTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataRestoreCompletionTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestoreCompletionTime.
-// This is useful for switch cases.
-type BACnetConstructedDataRestoreCompletionTimeExactly interface {
-	BACnetConstructedDataRestoreCompletionTime
-	isBACnetConstructedDataRestoreCompletionTime() bool
+	// IsBACnetConstructedDataRestoreCompletionTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRestoreCompletionTime()
 }
 
 // _BACnetConstructedDataRestoreCompletionTime is the data-structure of this message
 type _BACnetConstructedDataRestoreCompletionTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	CompletionTime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataRestoreCompletionTime = (*_BACnetConstructedDataRestoreCompletionTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestoreCompletionTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataRestoreCompletionTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataRestoreCompletionTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataRestoreCompletionTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetActualValue() BACnetApp
 
 // NewBACnetConstructedDataRestoreCompletionTime factory function for _BACnetConstructedDataRestoreCompletionTime
 func NewBACnetConstructedDataRestoreCompletionTime(completionTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestoreCompletionTime {
-	_result := &_BACnetConstructedDataRestoreCompletionTime{
-		CompletionTime:         completionTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if completionTime == nil {
+		panic("completionTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRestoreCompletionTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataRestoreCompletionTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CompletionTime:                completionTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (completionTime)
 	lengthInBits += m.CompletionTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataRestoreCompletionTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestoreCompletionTime, error) {
-	return BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestoreCompletionTime, error) {
+func (m *_BACnetConstructedDataRestoreCompletionTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataRestoreCompletionTime BACnetConstructedDataRestoreCompletionTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestoreCompletionTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRestoreCompletionTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (completionTime)
-	if pullErr := readBuffer.PullContext("completionTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for completionTime")
+	completionTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "completionTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'completionTime' field"))
 	}
-	_completionTime, _completionTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _completionTimeErr != nil {
-		return nil, errors.Wrap(_completionTimeErr, "Error parsing 'completionTime' field of BACnetConstructedDataRestoreCompletionTime")
-	}
-	completionTime := _completionTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("completionTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for completionTime")
-	}
+	m.CompletionTime = completionTime
 
-	// Virtual field
-	_actualValue := completionTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), completionTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestoreCompletionTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRestoreCompletionTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataRestoreCompletionTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		CompletionTime: completionTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRestoreCompletionTime")
 		}
 
-		// Simple Field (completionTime)
-		if pushErr := writeBuffer.PushContext("completionTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for completionTime")
-		}
-		_completionTimeErr := writeBuffer.WriteSerializable(ctx, m.GetCompletionTime())
-		if popErr := writeBuffer.PopContext("completionTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for completionTime")
-		}
-		if _completionTimeErr != nil {
-			return errors.Wrap(_completionTimeErr, "Error serializing 'completionTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "completionTime", m.GetCompletionTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'completionTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(c
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataRestoreCompletionTime) isBACnetConstructedDataRestoreCompletionTime() bool {
-	return true
+func (m *_BACnetConstructedDataRestoreCompletionTime) IsBACnetConstructedDataRestoreCompletionTime() {
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) String() string {

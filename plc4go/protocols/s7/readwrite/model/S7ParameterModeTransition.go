@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,18 +49,13 @@ type S7ParameterModeTransition interface {
 	GetCurrentMode() uint8
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
-}
-
-// S7ParameterModeTransitionExactly can be used when we want exactly this type and not a type which fulfills S7ParameterModeTransition.
-// This is useful for switch cases.
-type S7ParameterModeTransitionExactly interface {
-	S7ParameterModeTransition
-	isS7ParameterModeTransition() bool
+	// IsS7ParameterModeTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterModeTransition()
 }
 
 // _S7ParameterModeTransition is the data-structure of this message
 type _S7ParameterModeTransition struct {
-	*_S7Parameter
+	S7ParameterContract
 	Method           uint8
 	CpuFunctionType  uint8
 	CpuFunctionGroup uint8
@@ -67,6 +64,9 @@ type _S7ParameterModeTransition struct {
 	// Reserved Fields
 	reservedField0 *uint16
 }
+
+var _ S7ParameterModeTransition = (*_S7ParameterModeTransition)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterModeTransition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -86,10 +86,8 @@ func (m *_S7ParameterModeTransition) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7ParameterModeTransition) InitializeParent(parent S7Parameter) {}
-
-func (m *_S7ParameterModeTransition) GetParent() S7Parameter {
-	return m._S7Parameter
+func (m *_S7ParameterModeTransition) GetParent() S7ParameterContract {
+	return m.S7ParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,14 +123,14 @@ func (m *_S7ParameterModeTransition) GetSequenceNumber() uint8 {
 // NewS7ParameterModeTransition factory function for _S7ParameterModeTransition
 func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *_S7ParameterModeTransition {
 	_result := &_S7ParameterModeTransition{
-		Method:           method,
-		CpuFunctionType:  cpuFunctionType,
-		CpuFunctionGroup: cpuFunctionGroup,
-		CurrentMode:      currentMode,
-		SequenceNumber:   sequenceNumber,
-		_S7Parameter:     NewS7Parameter(),
+		S7ParameterContract: NewS7Parameter(),
+		Method:              method,
+		CpuFunctionType:     cpuFunctionType,
+		CpuFunctionGroup:    cpuFunctionGroup,
+		CurrentMode:         currentMode,
+		SequenceNumber:      sequenceNumber,
 	}
-	_result._S7Parameter._S7ParameterChildRequirements = _result
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 
@@ -152,7 +150,7 @@ func (m *_S7ParameterModeTransition) GetTypeName() string {
 }
 
 func (m *_S7ParameterModeTransition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -182,96 +180,64 @@ func (m *_S7ParameterModeTransition) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterModeTransitionParse(ctx context.Context, theBytes []byte, messageType uint8) (S7ParameterModeTransition, error) {
-	return S7ParameterModeTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
-}
-
-func S7ParameterModeTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterModeTransition, error) {
+func (m *_S7ParameterModeTransition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterModeTransition S7ParameterModeTransition, err error) {
+	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterModeTransition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint16
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7ParameterModeTransition")
-		}
-		if reserved != uint16(0x0010) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0010),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0010))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
+	itemLength, err := ReadImplicitField[uint8](ctx, "itemLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
+	}
 	_ = itemLength
-	if _itemLengthErr != nil {
-		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of S7ParameterModeTransition")
-	}
 
-	// Simple Field (method)
-	_method, _methodErr := readBuffer.ReadUint8("method", 8)
-	if _methodErr != nil {
-		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field of S7ParameterModeTransition")
+	method, err := ReadSimpleField(ctx, "method", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'method' field"))
 	}
-	method := _method
+	m.Method = method
 
-	// Simple Field (cpuFunctionType)
-	_cpuFunctionType, _cpuFunctionTypeErr := readBuffer.ReadUint8("cpuFunctionType", 4)
-	if _cpuFunctionTypeErr != nil {
-		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field of S7ParameterModeTransition")
+	cpuFunctionType, err := ReadSimpleField(ctx, "cpuFunctionType", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cpuFunctionType' field"))
 	}
-	cpuFunctionType := _cpuFunctionType
+	m.CpuFunctionType = cpuFunctionType
 
-	// Simple Field (cpuFunctionGroup)
-	_cpuFunctionGroup, _cpuFunctionGroupErr := readBuffer.ReadUint8("cpuFunctionGroup", 4)
-	if _cpuFunctionGroupErr != nil {
-		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field of S7ParameterModeTransition")
+	cpuFunctionGroup, err := ReadSimpleField(ctx, "cpuFunctionGroup", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cpuFunctionGroup' field"))
 	}
-	cpuFunctionGroup := _cpuFunctionGroup
+	m.CpuFunctionGroup = cpuFunctionGroup
 
-	// Simple Field (currentMode)
-	_currentMode, _currentModeErr := readBuffer.ReadUint8("currentMode", 8)
-	if _currentModeErr != nil {
-		return nil, errors.Wrap(_currentModeErr, "Error parsing 'currentMode' field of S7ParameterModeTransition")
+	currentMode, err := ReadSimpleField(ctx, "currentMode", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentMode' field"))
 	}
-	currentMode := _currentMode
+	m.CurrentMode = currentMode
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of S7ParameterModeTransition")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
+	m.SequenceNumber = sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("S7ParameterModeTransition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterModeTransition")
 	}
 
-	// Create a partially initialized instance
-	_child := &_S7ParameterModeTransition{
-		_S7Parameter:     &_S7Parameter{},
-		Method:           method,
-		CpuFunctionType:  cpuFunctionType,
-		CpuFunctionGroup: cpuFunctionGroup,
-		CurrentMode:      currentMode,
-		SequenceNumber:   sequenceNumber,
-		reservedField0:   reservedField0,
-	}
-	_child._S7Parameter._S7ParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_S7ParameterModeTransition) Serialize() ([]byte, error) {
@@ -292,62 +258,32 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for S7ParameterModeTransition")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint16 = uint16(0x0010)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint16(0x0010),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0010), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
-
-		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(2)))
-		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, uint8((itemLength)))
-		if _itemLengthErr != nil {
-			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
+		if err := WriteImplicitField(ctx, "itemLength", itemLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemLength' field")
 		}
 
-		// Simple Field (method)
-		method := uint8(m.GetMethod())
-		_methodErr := writeBuffer.WriteUint8("method", 8, uint8((method)))
-		if _methodErr != nil {
-			return errors.Wrap(_methodErr, "Error serializing 'method' field")
+		if err := WriteSimpleField[uint8](ctx, "method", m.GetMethod(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'method' field")
 		}
 
-		// Simple Field (cpuFunctionType)
-		cpuFunctionType := uint8(m.GetCpuFunctionType())
-		_cpuFunctionTypeErr := writeBuffer.WriteUint8("cpuFunctionType", 4, uint8((cpuFunctionType)))
-		if _cpuFunctionTypeErr != nil {
-			return errors.Wrap(_cpuFunctionTypeErr, "Error serializing 'cpuFunctionType' field")
+		if err := WriteSimpleField[uint8](ctx, "cpuFunctionType", m.GetCpuFunctionType(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cpuFunctionType' field")
 		}
 
-		// Simple Field (cpuFunctionGroup)
-		cpuFunctionGroup := uint8(m.GetCpuFunctionGroup())
-		_cpuFunctionGroupErr := writeBuffer.WriteUint8("cpuFunctionGroup", 4, uint8((cpuFunctionGroup)))
-		if _cpuFunctionGroupErr != nil {
-			return errors.Wrap(_cpuFunctionGroupErr, "Error serializing 'cpuFunctionGroup' field")
+		if err := WriteSimpleField[uint8](ctx, "cpuFunctionGroup", m.GetCpuFunctionGroup(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cpuFunctionGroup' field")
 		}
 
-		// Simple Field (currentMode)
-		currentMode := uint8(m.GetCurrentMode())
-		_currentModeErr := writeBuffer.WriteUint8("currentMode", 8, uint8((currentMode)))
-		if _currentModeErr != nil {
-			return errors.Wrap(_currentModeErr, "Error serializing 'currentMode' field")
+		if err := WriteSimpleField[uint8](ctx, "currentMode", m.GetCurrentMode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentMode' field")
 		}
 
-		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterModeTransition"); popErr != nil {
@@ -355,12 +291,10 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.S7ParameterContract.(*_S7Parameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_S7ParameterModeTransition) isS7ParameterModeTransition() bool {
-	return true
-}
+func (m *_S7ParameterModeTransition) IsS7ParameterModeTransition() {}
 
 func (m *_S7ParameterModeTransition) String() string {
 	if m == nil {

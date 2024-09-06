@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type LightingDataRampToLevel interface {
 	GetGroup() byte
 	// GetLevel returns Level (property field)
 	GetLevel() byte
-}
-
-// LightingDataRampToLevelExactly can be used when we want exactly this type and not a type which fulfills LightingDataRampToLevel.
-// This is useful for switch cases.
-type LightingDataRampToLevelExactly interface {
-	LightingDataRampToLevel
-	isLightingDataRampToLevel() bool
+	// IsLightingDataRampToLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingDataRampToLevel()
 }
 
 // _LightingDataRampToLevel is the data-structure of this message
 type _LightingDataRampToLevel struct {
-	*_LightingData
+	LightingDataContract
 	Group byte
 	Level byte
 }
+
+var _ LightingDataRampToLevel = (*_LightingDataRampToLevel)(nil)
+var _ LightingDataRequirements = (*_LightingDataRampToLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,12 +67,8 @@ type _LightingDataRampToLevel struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_LightingDataRampToLevel) InitializeParent(parent LightingData, commandTypeContainer LightingCommandTypeContainer) {
-	m.CommandTypeContainer = commandTypeContainer
-}
-
-func (m *_LightingDataRampToLevel) GetParent() LightingData {
-	return m._LightingData
+func (m *_LightingDataRampToLevel) GetParent() LightingDataContract {
+	return m.LightingDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -96,11 +92,11 @@ func (m *_LightingDataRampToLevel) GetLevel() byte {
 // NewLightingDataRampToLevel factory function for _LightingDataRampToLevel
 func NewLightingDataRampToLevel(group byte, level byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataRampToLevel {
 	_result := &_LightingDataRampToLevel{
-		Group:         group,
-		Level:         level,
-		_LightingData: NewLightingData(commandTypeContainer),
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+		Level:                level,
 	}
-	_result._LightingData._LightingDataChildRequirements = _result
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
 
@@ -120,7 +116,7 @@ func (m *_LightingDataRampToLevel) GetTypeName() string {
 }
 
 func (m *_LightingDataRampToLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8
@@ -135,47 +131,34 @@ func (m *_LightingDataRampToLevel) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingDataRampToLevelParse(ctx context.Context, theBytes []byte) (LightingDataRampToLevel, error) {
-	return LightingDataRampToLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func LightingDataRampToLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {
+func (m *_LightingDataRampToLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LightingData) (__lightingDataRampToLevel LightingDataRampToLevel, err error) {
+	m.LightingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LightingDataRampToLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LightingDataRampToLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (group)
-	_group, _groupErr := readBuffer.ReadByte("group")
-	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataRampToLevel")
+	group, err := ReadSimpleField(ctx, "group", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'group' field"))
 	}
-	group := _group
+	m.Group = group
 
-	// Simple Field (level)
-	_level, _levelErr := readBuffer.ReadByte("level")
-	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of LightingDataRampToLevel")
+	level, err := ReadSimpleField(ctx, "level", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
-	level := _level
+	m.Level = level
 
 	if closeErr := readBuffer.CloseContext("LightingDataRampToLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LightingDataRampToLevel")
 	}
 
-	// Create a partially initialized instance
-	_child := &_LightingDataRampToLevel{
-		_LightingData: &_LightingData{},
-		Group:         group,
-		Level:         level,
-	}
-	_child._LightingData._LightingDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_LightingDataRampToLevel) Serialize() ([]byte, error) {
@@ -196,18 +179,12 @@ func (m *_LightingDataRampToLevel) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for LightingDataRampToLevel")
 		}
 
-		// Simple Field (group)
-		group := byte(m.GetGroup())
-		_groupErr := writeBuffer.WriteByte("group", (group))
-		if _groupErr != nil {
-			return errors.Wrap(_groupErr, "Error serializing 'group' field")
+		if err := WriteSimpleField[byte](ctx, "group", m.GetGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'group' field")
 		}
 
-		// Simple Field (level)
-		level := byte(m.GetLevel())
-		_levelErr := writeBuffer.WriteByte("level", (level))
-		if _levelErr != nil {
-			return errors.Wrap(_levelErr, "Error serializing 'level' field")
+		if err := WriteSimpleField[byte](ctx, "level", m.GetLevel(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LightingDataRampToLevel"); popErr != nil {
@@ -215,12 +192,10 @@ func (m *_LightingDataRampToLevel) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.LightingDataContract.(*_LightingData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_LightingDataRampToLevel) isLightingDataRampToLevel() bool {
-	return true
-}
+func (m *_LightingDataRampToLevel) IsLightingDataRampToLevel() {}
 
 func (m *_LightingDataRampToLevel) String() string {
 	if m == nil {

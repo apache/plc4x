@@ -75,13 +75,13 @@ public class BACnetHostAddressEnclosed implements Message {
     writeBuffer.pushContext("BACnetHostAddressEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (hostAddress)
-    writeSimpleField("hostAddress", hostAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hostAddress", hostAddress, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetHostAddressEnclosed");
   }
@@ -118,19 +118,18 @@ public class BACnetHostAddressEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetHostAddress hostAddress =
         readSimpleField(
             "hostAddress",
-            new DataReaderComplexDefault<>(
-                () -> BACnetHostAddress.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetHostAddress.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetHostAddressEnclosed");

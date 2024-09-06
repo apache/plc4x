@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataUpdateInterval interface {
 	GetUpdateInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataUpdateIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUpdateInterval.
-// This is useful for switch cases.
-type BACnetConstructedDataUpdateIntervalExactly interface {
-	BACnetConstructedDataUpdateInterval
-	isBACnetConstructedDataUpdateInterval() bool
+	// IsBACnetConstructedDataUpdateInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataUpdateInterval()
 }
 
 // _BACnetConstructedDataUpdateInterval is the data-structure of this message
 type _BACnetConstructedDataUpdateInterval struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	UpdateInterval BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataUpdateInterval = (*_BACnetConstructedDataUpdateInterval)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUpdateInterval)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataUpdateInterval) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataUpdateInterval) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataUpdateInterval) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataUpdateInterval) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataUpdateInterval) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataUpdateInterval factory function for _BACnetConstructedDataUpdateInterval
 func NewBACnetConstructedDataUpdateInterval(updateInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateInterval {
-	_result := &_BACnetConstructedDataUpdateInterval{
-		UpdateInterval:         updateInterval,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if updateInterval == nil {
+		panic("updateInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateInterval must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataUpdateInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UpdateInterval:                updateInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataUpdateInterval) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataUpdateInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (updateInterval)
 	lengthInBits += m.UpdateInterval.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataUpdateInterval) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataUpdateIntervalParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateInterval, error) {
-	return BACnetConstructedDataUpdateIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataUpdateIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateInterval, error) {
+func (m *_BACnetConstructedDataUpdateInterval) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataUpdateInterval BACnetConstructedDataUpdateInterval, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUpdateInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (updateInterval)
-	if pullErr := readBuffer.PullContext("updateInterval"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for updateInterval")
+	updateInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "updateInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateInterval' field"))
 	}
-	_updateInterval, _updateIntervalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _updateIntervalErr != nil {
-		return nil, errors.Wrap(_updateIntervalErr, "Error parsing 'updateInterval' field of BACnetConstructedDataUpdateInterval")
-	}
-	updateInterval := _updateInterval.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("updateInterval"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for updateInterval")
-	}
+	m.UpdateInterval = updateInterval
 
-	// Virtual field
-	_actualValue := updateInterval
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), updateInterval)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUpdateInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUpdateInterval")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataUpdateInterval{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		UpdateInterval: updateInterval,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataUpdateInterval) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataUpdateInterval) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUpdateInterval")
 		}
 
-		// Simple Field (updateInterval)
-		if pushErr := writeBuffer.PushContext("updateInterval"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for updateInterval")
-		}
-		_updateIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateInterval())
-		if popErr := writeBuffer.PopContext("updateInterval"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for updateInterval")
-		}
-		if _updateIntervalErr != nil {
-			return errors.Wrap(_updateIntervalErr, "Error serializing 'updateInterval' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "updateInterval", m.GetUpdateInterval(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'updateInterval' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataUpdateInterval) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataUpdateInterval) isBACnetConstructedDataUpdateInterval() bool {
-	return true
-}
+func (m *_BACnetConstructedDataUpdateInterval) IsBACnetConstructedDataUpdateInterval() {}
 
 func (m *_BACnetConstructedDataUpdateInterval) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -48,13 +50,8 @@ type HVACAuxiliaryLevel interface {
 	GetIsFanSpeedAtDefaultSpeed() bool
 	// GetSpeedSettings returns SpeedSettings (virtual field)
 	GetSpeedSettings() uint8
-}
-
-// HVACAuxiliaryLevelExactly can be used when we want exactly this type and not a type which fulfills HVACAuxiliaryLevel.
-// This is useful for switch cases.
-type HVACAuxiliaryLevelExactly interface {
-	HVACAuxiliaryLevel
-	isHVACAuxiliaryLevel() bool
+	// IsHVACAuxiliaryLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACAuxiliaryLevel()
 }
 
 // _HVACAuxiliaryLevel is the data-structure of this message
@@ -64,6 +61,8 @@ type _HVACAuxiliaryLevel struct {
 	// Reserved Fields
 	reservedField0 *bool
 }
+
+var _ HVACAuxiliaryLevel = (*_HVACAuxiliaryLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -167,78 +166,76 @@ func HVACAuxiliaryLevelParse(ctx context.Context, theBytes []byte) (HVACAuxiliar
 	return HVACAuxiliaryLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACAuxiliaryLevelParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
+		return HVACAuxiliaryLevelParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
+	v, err := (&_HVACAuxiliaryLevel{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_HVACAuxiliaryLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACAuxiliaryLevel HVACAuxiliaryLevel, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HVACAuxiliaryLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HVACAuxiliaryLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *bool
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HVACAuxiliaryLevel")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (fanMode)
-	_fanMode, _fanModeErr := readBuffer.ReadBit("fanMode")
-	if _fanModeErr != nil {
-		return nil, errors.Wrap(_fanModeErr, "Error parsing 'fanMode' field of HVACAuxiliaryLevel")
+	fanMode, err := ReadSimpleField(ctx, "fanMode", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fanMode' field"))
 	}
-	fanMode := _fanMode
+	m.FanMode = fanMode
 
-	// Virtual field
-	_isFanModeAutomatic := !(fanMode)
-	isFanModeAutomatic := bool(_isFanModeAutomatic)
+	isFanModeAutomatic, err := ReadVirtualField[bool](ctx, "isFanModeAutomatic", (*bool)(nil), !(fanMode))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFanModeAutomatic' field"))
+	}
 	_ = isFanModeAutomatic
 
-	// Virtual field
-	_isFanModeContinuous := fanMode
-	isFanModeContinuous := bool(_isFanModeContinuous)
+	isFanModeContinuous, err := ReadVirtualField[bool](ctx, "isFanModeContinuous", (*bool)(nil), fanMode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFanModeContinuous' field"))
+	}
 	_ = isFanModeContinuous
 
-	// Simple Field (mode)
-	_mode, _modeErr := readBuffer.ReadUint8("mode", 6)
-	if _modeErr != nil {
-		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of HVACAuxiliaryLevel")
+	mode, err := ReadSimpleField(ctx, "mode", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mode' field"))
 	}
-	mode := _mode
+	m.Mode = mode
 
-	// Virtual field
-	_isFanSpeedAtDefaultSpeed := bool((mode) == (0x00))
-	isFanSpeedAtDefaultSpeed := bool(_isFanSpeedAtDefaultSpeed)
+	isFanSpeedAtDefaultSpeed, err := ReadVirtualField[bool](ctx, "isFanSpeedAtDefaultSpeed", (*bool)(nil), bool((mode) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFanSpeedAtDefaultSpeed' field"))
+	}
 	_ = isFanSpeedAtDefaultSpeed
 
-	// Virtual field
-	_speedSettings := mode
-	speedSettings := uint8(_speedSettings)
+	speedSettings, err := ReadVirtualField[uint8](ctx, "speedSettings", (*uint8)(nil), mode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'speedSettings' field"))
+	}
 	_ = speedSettings
 
 	if closeErr := readBuffer.CloseContext("HVACAuxiliaryLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACAuxiliaryLevel")
 	}
 
-	// Create the instance
-	return &_HVACAuxiliaryLevel{
-		FanMode:        fanMode,
-		Mode:           mode,
-		reservedField0: reservedField0,
-	}, nil
+	return m, nil
 }
 
 func (m *_HVACAuxiliaryLevel) Serialize() ([]byte, error) {
@@ -258,27 +255,12 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(pushErr, "Error pushing for HVACAuxiliaryLevel")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (fanMode)
-	fanMode := bool(m.GetFanMode())
-	_fanModeErr := writeBuffer.WriteBit("fanMode", (fanMode))
-	if _fanModeErr != nil {
-		return errors.Wrap(_fanModeErr, "Error serializing 'fanMode' field")
+	if err := WriteSimpleField[bool](ctx, "fanMode", m.GetFanMode(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'fanMode' field")
 	}
 	// Virtual field
 	isFanModeAutomatic := m.GetIsFanModeAutomatic()
@@ -293,11 +275,8 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(_isFanModeContinuousErr, "Error serializing 'isFanModeContinuous' field")
 	}
 
-	// Simple Field (mode)
-	mode := uint8(m.GetMode())
-	_modeErr := writeBuffer.WriteUint8("mode", 6, uint8((mode)))
-	if _modeErr != nil {
-		return errors.Wrap(_modeErr, "Error serializing 'mode' field")
+	if err := WriteSimpleField[uint8](ctx, "mode", m.GetMode(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+		return errors.Wrap(err, "Error serializing 'mode' field")
 	}
 	// Virtual field
 	isFanSpeedAtDefaultSpeed := m.GetIsFanSpeedAtDefaultSpeed()
@@ -318,9 +297,7 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 	return nil
 }
 
-func (m *_HVACAuxiliaryLevel) isHVACAuxiliaryLevel() bool {
-	return true
-}
+func (m *_HVACAuxiliaryLevel) IsHVACAuxiliaryLevel() {}
 
 func (m *_HVACAuxiliaryLevel) String() string {
 	if m == nil {

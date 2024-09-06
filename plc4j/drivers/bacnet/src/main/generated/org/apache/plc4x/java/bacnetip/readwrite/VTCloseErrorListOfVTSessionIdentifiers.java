@@ -75,14 +75,14 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
     writeBuffer.pushContext("VTCloseErrorListOfVTSessionIdentifiers");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfVtSessionIdentifiers)
     writeComplexTypeArrayField(
         "listOfVtSessionIdentifiers", listOfVtSessionIdentifiers, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("VTCloseErrorListOfVTSessionIdentifiers");
   }
@@ -123,13 +123,13 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetApplicationTagUnsignedInteger> listOfVtSessionIdentifiers =
         readTerminatedArrayField(
             "listOfVtSessionIdentifiers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -142,7 +142,7 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("VTCloseErrorListOfVTSessionIdentifiers");

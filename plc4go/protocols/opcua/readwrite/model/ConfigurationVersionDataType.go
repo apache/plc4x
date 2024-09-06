@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type ConfigurationVersionDataType interface {
 	GetMajorVersion() uint32
 	// GetMinorVersion returns MinorVersion (property field)
 	GetMinorVersion() uint32
-}
-
-// ConfigurationVersionDataTypeExactly can be used when we want exactly this type and not a type which fulfills ConfigurationVersionDataType.
-// This is useful for switch cases.
-type ConfigurationVersionDataTypeExactly interface {
-	ConfigurationVersionDataType
-	isConfigurationVersionDataType() bool
+	// IsConfigurationVersionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConfigurationVersionDataType()
 }
 
 // _ConfigurationVersionDataType is the data-structure of this message
 type _ConfigurationVersionDataType struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	MajorVersion uint32
 	MinorVersion uint32
 }
+
+var _ ConfigurationVersionDataType = (*_ConfigurationVersionDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ConfigurationVersionDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_ConfigurationVersionDataType) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConfigurationVersionDataType) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_ConfigurationVersionDataType) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_ConfigurationVersionDataType) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_ConfigurationVersionDataType) GetMinorVersion() uint32 {
 // NewConfigurationVersionDataType factory function for _ConfigurationVersionDataType
 func NewConfigurationVersionDataType(majorVersion uint32, minorVersion uint32) *_ConfigurationVersionDataType {
 	_result := &_ConfigurationVersionDataType{
-		MajorVersion:               majorVersion,
-		MinorVersion:               minorVersion,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MajorVersion:                      majorVersion,
+		MinorVersion:                      minorVersion,
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_ConfigurationVersionDataType) GetTypeName() string {
 }
 
 func (m *_ConfigurationVersionDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (majorVersion)
 	lengthInBits += 32
@@ -137,47 +135,34 @@ func (m *_ConfigurationVersionDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConfigurationVersionDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (ConfigurationVersionDataType, error) {
-	return ConfigurationVersionDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func ConfigurationVersionDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ConfigurationVersionDataType, error) {
+func (m *_ConfigurationVersionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__configurationVersionDataType ConfigurationVersionDataType, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConfigurationVersionDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConfigurationVersionDataType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := readBuffer.ReadUint32("majorVersion", 32)
-	if _majorVersionErr != nil {
-		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of ConfigurationVersionDataType")
+	majorVersion, err := ReadSimpleField(ctx, "majorVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'majorVersion' field"))
 	}
-	majorVersion := _majorVersion
+	m.MajorVersion = majorVersion
 
-	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := readBuffer.ReadUint32("minorVersion", 32)
-	if _minorVersionErr != nil {
-		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of ConfigurationVersionDataType")
+	minorVersion, err := ReadSimpleField(ctx, "minorVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minorVersion' field"))
 	}
-	minorVersion := _minorVersion
+	m.MinorVersion = minorVersion
 
 	if closeErr := readBuffer.CloseContext("ConfigurationVersionDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConfigurationVersionDataType")
 	}
 
-	// Create a partially initialized instance
-	_child := &_ConfigurationVersionDataType{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		MajorVersion:               majorVersion,
-		MinorVersion:               minorVersion,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_ConfigurationVersionDataType) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_ConfigurationVersionDataType) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for ConfigurationVersionDataType")
 		}
 
-		// Simple Field (majorVersion)
-		majorVersion := uint32(m.GetMajorVersion())
-		_majorVersionErr := writeBuffer.WriteUint32("majorVersion", 32, uint32((majorVersion)))
-		if _majorVersionErr != nil {
-			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "majorVersion", m.GetMajorVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'majorVersion' field")
 		}
 
-		// Simple Field (minorVersion)
-		minorVersion := uint32(m.GetMinorVersion())
-		_minorVersionErr := writeBuffer.WriteUint32("minorVersion", 32, uint32((minorVersion)))
-		if _minorVersionErr != nil {
-			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "minorVersion", m.GetMinorVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minorVersion' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConfigurationVersionDataType"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_ConfigurationVersionDataType) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_ConfigurationVersionDataType) isConfigurationVersionDataType() bool {
-	return true
-}
+func (m *_ConfigurationVersionDataType) IsConfigurationVersionDataType() {}
 
 func (m *_ConfigurationVersionDataType) String() string {
 	if m == nil {

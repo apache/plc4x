@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataRestorePreparationTime interface {
 	GetRestorePreparationTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataRestorePreparationTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestorePreparationTime.
-// This is useful for switch cases.
-type BACnetConstructedDataRestorePreparationTimeExactly interface {
-	BACnetConstructedDataRestorePreparationTime
-	isBACnetConstructedDataRestorePreparationTime() bool
+	// IsBACnetConstructedDataRestorePreparationTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRestorePreparationTime()
 }
 
 // _BACnetConstructedDataRestorePreparationTime is the data-structure of this message
 type _BACnetConstructedDataRestorePreparationTime struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	RestorePreparationTime BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataRestorePreparationTime = (*_BACnetConstructedDataRestorePreparationTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestorePreparationTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataRestorePreparationTime) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataRestorePreparationTime) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataRestorePreparationTime) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataRestorePreparationTime) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataRestorePreparationTime) GetActualValue() BACnetAp
 
 // NewBACnetConstructedDataRestorePreparationTime factory function for _BACnetConstructedDataRestorePreparationTime
 func NewBACnetConstructedDataRestorePreparationTime(restorePreparationTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestorePreparationTime {
-	_result := &_BACnetConstructedDataRestorePreparationTime{
-		RestorePreparationTime: restorePreparationTime,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if restorePreparationTime == nil {
+		panic("restorePreparationTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRestorePreparationTime must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataRestorePreparationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RestorePreparationTime:        restorePreparationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataRestorePreparationTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataRestorePreparationTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (restorePreparationTime)
 	lengthInBits += m.RestorePreparationTime.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataRestorePreparationTime) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataRestorePreparationTimeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestorePreparationTime, error) {
-	return BACnetConstructedDataRestorePreparationTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataRestorePreparationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestorePreparationTime, error) {
+func (m *_BACnetConstructedDataRestorePreparationTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataRestorePreparationTime BACnetConstructedDataRestorePreparationTime, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestorePreparationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRestorePreparationTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (restorePreparationTime)
-	if pullErr := readBuffer.PullContext("restorePreparationTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for restorePreparationTime")
+	restorePreparationTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "restorePreparationTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'restorePreparationTime' field"))
 	}
-	_restorePreparationTime, _restorePreparationTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _restorePreparationTimeErr != nil {
-		return nil, errors.Wrap(_restorePreparationTimeErr, "Error parsing 'restorePreparationTime' field of BACnetConstructedDataRestorePreparationTime")
-	}
-	restorePreparationTime := _restorePreparationTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("restorePreparationTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for restorePreparationTime")
-	}
+	m.RestorePreparationTime = restorePreparationTime
 
-	// Virtual field
-	_actualValue := restorePreparationTime
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), restorePreparationTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestorePreparationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRestorePreparationTime")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataRestorePreparationTime{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		RestorePreparationTime: restorePreparationTime,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataRestorePreparationTime) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRestorePreparationTime")
 		}
 
-		// Simple Field (restorePreparationTime)
-		if pushErr := writeBuffer.PushContext("restorePreparationTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for restorePreparationTime")
-		}
-		_restorePreparationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetRestorePreparationTime())
-		if popErr := writeBuffer.PopContext("restorePreparationTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for restorePreparationTime")
-		}
-		if _restorePreparationTimeErr != nil {
-			return errors.Wrap(_restorePreparationTimeErr, "Error serializing 'restorePreparationTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "restorePreparationTime", m.GetRestorePreparationTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'restorePreparationTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,11 +213,10 @@ func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataRestorePreparationTime) isBACnetConstructedDataRestorePreparationTime() bool {
-	return true
+func (m *_BACnetConstructedDataRestorePreparationTime) IsBACnetConstructedDataRestorePreparationTime() {
 }
 
 func (m *_BACnetConstructedDataRestorePreparationTime) String() string {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type MemberID interface {
 	GetFormat() uint8
 	// GetInstance returns Instance (property field)
 	GetInstance() uint8
-}
-
-// MemberIDExactly can be used when we want exactly this type and not a type which fulfills MemberID.
-// This is useful for switch cases.
-type MemberIDExactly interface {
-	MemberID
-	isMemberID() bool
+	// IsMemberID is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMemberID()
 }
 
 // _MemberID is the data-structure of this message
 type _MemberID struct {
-	*_LogicalSegmentType
+	LogicalSegmentTypeContract
 	Format   uint8
 	Instance uint8
 }
+
+var _ MemberID = (*_MemberID)(nil)
+var _ LogicalSegmentTypeRequirements = (*_MemberID)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,10 +71,8 @@ func (m *_MemberID) GetLogicalSegmentType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MemberID) InitializeParent(parent LogicalSegmentType) {}
-
-func (m *_MemberID) GetParent() LogicalSegmentType {
-	return m._LogicalSegmentType
+func (m *_MemberID) GetParent() LogicalSegmentTypeContract {
+	return m.LogicalSegmentTypeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,11 +96,11 @@ func (m *_MemberID) GetInstance() uint8 {
 // NewMemberID factory function for _MemberID
 func NewMemberID(format uint8, instance uint8) *_MemberID {
 	_result := &_MemberID{
-		Format:              format,
-		Instance:            instance,
-		_LogicalSegmentType: NewLogicalSegmentType(),
+		LogicalSegmentTypeContract: NewLogicalSegmentType(),
+		Format:                     format,
+		Instance:                   instance,
 	}
-	_result._LogicalSegmentType._LogicalSegmentTypeChildRequirements = _result
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
 	return _result
 }
 
@@ -122,7 +120,7 @@ func (m *_MemberID) GetTypeName() string {
 }
 
 func (m *_MemberID) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.LogicalSegmentTypeContract.(*_LogicalSegmentType).getLengthInBits(ctx))
 
 	// Simple field (format)
 	lengthInBits += 2
@@ -137,47 +135,34 @@ func (m *_MemberID) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MemberIDParse(ctx context.Context, theBytes []byte) (MemberID, error) {
-	return MemberIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MemberIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MemberID, error) {
+func (m *_MemberID) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LogicalSegmentType) (__memberID MemberID, err error) {
+	m.LogicalSegmentTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MemberID"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MemberID")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (format)
-	_format, _formatErr := readBuffer.ReadUint8("format", 2)
-	if _formatErr != nil {
-		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of MemberID")
+	format, err := ReadSimpleField(ctx, "format", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'format' field"))
 	}
-	format := _format
+	m.Format = format
 
-	// Simple Field (instance)
-	_instance, _instanceErr := readBuffer.ReadUint8("instance", 8)
-	if _instanceErr != nil {
-		return nil, errors.Wrap(_instanceErr, "Error parsing 'instance' field of MemberID")
+	instance, err := ReadSimpleField(ctx, "instance", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instance' field"))
 	}
-	instance := _instance
+	m.Instance = instance
 
 	if closeErr := readBuffer.CloseContext("MemberID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MemberID")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MemberID{
-		_LogicalSegmentType: &_LogicalSegmentType{},
-		Format:              format,
-		Instance:            instance,
-	}
-	_child._LogicalSegmentType._LogicalSegmentTypeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MemberID) Serialize() ([]byte, error) {
@@ -198,18 +183,12 @@ func (m *_MemberID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 			return errors.Wrap(pushErr, "Error pushing for MemberID")
 		}
 
-		// Simple Field (format)
-		format := uint8(m.GetFormat())
-		_formatErr := writeBuffer.WriteUint8("format", 2, uint8((format)))
-		if _formatErr != nil {
-			return errors.Wrap(_formatErr, "Error serializing 'format' field")
+		if err := WriteSimpleField[uint8](ctx, "format", m.GetFormat(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+			return errors.Wrap(err, "Error serializing 'format' field")
 		}
 
-		// Simple Field (instance)
-		instance := uint8(m.GetInstance())
-		_instanceErr := writeBuffer.WriteUint8("instance", 8, uint8((instance)))
-		if _instanceErr != nil {
-			return errors.Wrap(_instanceErr, "Error serializing 'instance' field")
+		if err := WriteSimpleField[uint8](ctx, "instance", m.GetInstance(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instance' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MemberID"); popErr != nil {
@@ -217,12 +196,10 @@ func (m *_MemberID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.LogicalSegmentTypeContract.(*_LogicalSegmentType).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MemberID) isMemberID() bool {
-	return true
-}
+func (m *_MemberID) IsMemberID() {}
 
 func (m *_MemberID) String() string {
 	if m == nil {

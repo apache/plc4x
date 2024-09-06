@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type MeteringDataGasConsumption interface {
 	MeteringData
 	// GetMJ returns MJ (property field)
 	GetMJ() uint32
-}
-
-// MeteringDataGasConsumptionExactly can be used when we want exactly this type and not a type which fulfills MeteringDataGasConsumption.
-// This is useful for switch cases.
-type MeteringDataGasConsumptionExactly interface {
-	MeteringDataGasConsumption
-	isMeteringDataGasConsumption() bool
+	// IsMeteringDataGasConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataGasConsumption()
 }
 
 // _MeteringDataGasConsumption is the data-structure of this message
 type _MeteringDataGasConsumption struct {
-	*_MeteringData
+	MeteringDataContract
 	MJ uint32
 }
+
+var _ MeteringDataGasConsumption = (*_MeteringDataGasConsumption)(nil)
+var _ MeteringDataRequirements = (*_MeteringDataGasConsumption)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,13 +64,8 @@ type _MeteringDataGasConsumption struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MeteringDataGasConsumption) InitializeParent(parent MeteringData, commandTypeContainer MeteringCommandTypeContainer, argument byte) {
-	m.CommandTypeContainer = commandTypeContainer
-	m.Argument = argument
-}
-
-func (m *_MeteringDataGasConsumption) GetParent() MeteringData {
-	return m._MeteringData
+func (m *_MeteringDataGasConsumption) GetParent() MeteringDataContract {
+	return m.MeteringDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ func (m *_MeteringDataGasConsumption) GetMJ() uint32 {
 // NewMeteringDataGasConsumption factory function for _MeteringDataGasConsumption
 func NewMeteringDataGasConsumption(mJ uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataGasConsumption {
 	_result := &_MeteringDataGasConsumption{
-		MJ:            mJ,
-		_MeteringData: NewMeteringData(commandTypeContainer, argument),
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		MJ:                   mJ,
 	}
-	_result._MeteringData._MeteringDataChildRequirements = _result
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 
@@ -113,7 +108,7 @@ func (m *_MeteringDataGasConsumption) GetTypeName() string {
 }
 
 func (m *_MeteringDataGasConsumption) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	// Simple field (mJ)
 	lengthInBits += 32
@@ -125,39 +120,28 @@ func (m *_MeteringDataGasConsumption) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataGasConsumptionParse(ctx context.Context, theBytes []byte) (MeteringDataGasConsumption, error) {
-	return MeteringDataGasConsumptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func MeteringDataGasConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataGasConsumption, error) {
+func (m *_MeteringDataGasConsumption) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeteringData) (__meteringDataGasConsumption MeteringDataGasConsumption, err error) {
+	m.MeteringDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeteringDataGasConsumption"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeteringDataGasConsumption")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (mJ)
-	_mJ, _mJErr := readBuffer.ReadUint32("mJ", 32)
-	if _mJErr != nil {
-		return nil, errors.Wrap(_mJErr, "Error parsing 'mJ' field of MeteringDataGasConsumption")
+	mJ, err := ReadSimpleField(ctx, "mJ", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mJ' field"))
 	}
-	mJ := _mJ
+	m.MJ = mJ
 
 	if closeErr := readBuffer.CloseContext("MeteringDataGasConsumption"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MeteringDataGasConsumption")
 	}
 
-	// Create a partially initialized instance
-	_child := &_MeteringDataGasConsumption{
-		_MeteringData: &_MeteringData{},
-		MJ:            mJ,
-	}
-	_child._MeteringData._MeteringDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_MeteringDataGasConsumption) Serialize() ([]byte, error) {
@@ -178,11 +162,8 @@ func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MeteringDataGasConsumption")
 		}
 
-		// Simple Field (mJ)
-		mJ := uint32(m.GetMJ())
-		_mJErr := writeBuffer.WriteUint32("mJ", 32, uint32((mJ)))
-		if _mJErr != nil {
-			return errors.Wrap(_mJErr, "Error serializing 'mJ' field")
+		if err := WriteSimpleField[uint32](ctx, "mJ", m.GetMJ(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mJ' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MeteringDataGasConsumption"); popErr != nil {
@@ -190,12 +171,10 @@ func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.MeteringDataContract.(*_MeteringData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_MeteringDataGasConsumption) isMeteringDataGasConsumption() bool {
-	return true
-}
+func (m *_MeteringDataGasConsumption) IsMeteringDataGasConsumption() {}
 
 func (m *_MeteringDataGasConsumption) String() string {
 	if m == nil {

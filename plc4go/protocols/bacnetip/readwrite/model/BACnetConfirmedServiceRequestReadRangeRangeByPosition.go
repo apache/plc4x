@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,21 +43,19 @@ type BACnetConfirmedServiceRequestReadRangeRangeByPosition interface {
 	GetReferenceIndex() BACnetApplicationTagUnsignedInteger
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
-}
-
-// BACnetConfirmedServiceRequestReadRangeRangeByPositionExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeByPosition.
-// This is useful for switch cases.
-type BACnetConfirmedServiceRequestReadRangeRangeByPositionExactly interface {
-	BACnetConfirmedServiceRequestReadRangeRangeByPosition
-	isBACnetConfirmedServiceRequestReadRangeRangeByPosition() bool
+	// IsBACnetConfirmedServiceRequestReadRangeRangeByPosition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRangeRangeByPosition()
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeByPosition is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRangeByPosition struct {
-	*_BACnetConfirmedServiceRequestReadRangeRange
+	BACnetConfirmedServiceRequestReadRangeRangeContract
 	ReferenceIndex BACnetApplicationTagUnsignedInteger
 	Count          BACnetApplicationTagSignedInteger
 }
+
+var _ BACnetConfirmedServiceRequestReadRangeRangeByPosition = (*_BACnetConfirmedServiceRequestReadRangeRangeByPosition)(nil)
+var _ BACnetConfirmedServiceRequestReadRangeRangeRequirements = (*_BACnetConfirmedServiceRequestReadRangeRangeByPosition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,14 +67,8 @@ type _BACnetConfirmedServiceRequestReadRangeRangeByPosition struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) InitializeParent(parent BACnetConfirmedServiceRequestReadRangeRange, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) {
-	m.PeekedTagHeader = peekedTagHeader
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetParent() BACnetConfirmedServiceRequestReadRangeRange {
-	return m._BACnetConfirmedServiceRequestReadRangeRange
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetParent() BACnetConfirmedServiceRequestReadRangeRangeContract {
+	return m.BACnetConfirmedServiceRequestReadRangeRangeContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +91,18 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetCount() BACn
 
 // NewBACnetConfirmedServiceRequestReadRangeRangeByPosition factory function for _BACnetConfirmedServiceRequestReadRangeRangeByPosition
 func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(referenceIndex BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRangeByPosition {
+	if referenceIndex == nil {
+		panic("referenceIndex of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
+	}
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestReadRangeRangeByPosition{
+		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
 		ReferenceIndex: referenceIndex,
 		Count:          count,
-		_BACnetConfirmedServiceRequestReadRangeRange: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
 	}
-	_result._BACnetConfirmedServiceRequestReadRangeRange._BACnetConfirmedServiceRequestReadRangeRangeChildRequirements = _result
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
 	return _result
 }
 
@@ -122,7 +122,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetTypeName() s
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).getLengthInBits(ctx))
 
 	// Simple field (referenceIndex)
 	lengthInBits += m.ReferenceIndex.GetLengthInBits(ctx)
@@ -137,59 +137,34 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInByte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(ctx context.Context, theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
-	return BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequestReadRangeRange) (__bACnetConfirmedServiceRequestReadRangeRangeByPosition BACnetConfirmedServiceRequestReadRangeRangeByPosition, err error) {
+	m.BACnetConfirmedServiceRequestReadRangeRangeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceIndex)
-	if pullErr := readBuffer.PullContext("referenceIndex"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceIndex")
+	referenceIndex, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referenceIndex", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceIndex' field"))
 	}
-	_referenceIndex, _referenceIndexErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _referenceIndexErr != nil {
-		return nil, errors.Wrap(_referenceIndexErr, "Error parsing 'referenceIndex' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
-	}
-	referenceIndex := _referenceIndex.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("referenceIndex"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceIndex")
-	}
+	m.ReferenceIndex = referenceIndex
 
-	// Simple Field (count)
-	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for count")
+	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}
-	_count, _countErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
-	}
-	count := _count.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for count")
-	}
+	m.Count = count
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConfirmedServiceRequestReadRangeRangeByPosition{
-		_BACnetConfirmedServiceRequestReadRangeRange: &_BACnetConfirmedServiceRequestReadRangeRange{},
-		ReferenceIndex: referenceIndex,
-		Count:          count,
-	}
-	_child._BACnetConfirmedServiceRequestReadRangeRange._BACnetConfirmedServiceRequestReadRangeRangeChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) Serialize() ([]byte, error) {
@@ -210,28 +185,12 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 		}
 
-		// Simple Field (referenceIndex)
-		if pushErr := writeBuffer.PushContext("referenceIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceIndex")
-		}
-		_referenceIndexErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceIndex())
-		if popErr := writeBuffer.PopContext("referenceIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceIndex")
-		}
-		if _referenceIndexErr != nil {
-			return errors.Wrap(_referenceIndexErr, "Error serializing 'referenceIndex' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referenceIndex", m.GetReferenceIndex(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceIndex' field")
 		}
 
-		// Simple Field (count)
-		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for count")
-		}
-		_countErr := writeBuffer.WriteSerializable(ctx, m.GetCount())
-		if popErr := writeBuffer.PopContext("count"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for count")
-		}
-		if _countErr != nil {
-			return errors.Wrap(_countErr, "Error serializing 'count' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", m.GetCount(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); popErr != nil {
@@ -239,11 +198,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWr
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) isBACnetConfirmedServiceRequestReadRangeRangeByPosition() bool {
-	return true
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) IsBACnetConfirmedServiceRequestReadRangeRangeByPosition() {
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) String() string {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetChannelValueUnsigned interface {
 	BACnetChannelValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetChannelValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueUnsigned.
-// This is useful for switch cases.
-type BACnetChannelValueUnsignedExactly interface {
-	BACnetChannelValueUnsigned
-	isBACnetChannelValueUnsigned() bool
+	// IsBACnetChannelValueUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueUnsigned()
 }
 
 // _BACnetChannelValueUnsigned is the data-structure of this message
 type _BACnetChannelValueUnsigned struct {
-	*_BACnetChannelValue
+	BACnetChannelValueContract
 	UnsignedValue BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetChannelValueUnsigned = (*_BACnetChannelValueUnsigned)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueUnsigned)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetChannelValueUnsigned struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetChannelValueUnsigned) InitializeParent(parent BACnetChannelValue, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetChannelValueUnsigned) GetParent() BACnetChannelValue {
-	return m._BACnetChannelValue
+func (m *_BACnetChannelValueUnsigned) GetParent() BACnetChannelValueContract {
+	return m.BACnetChannelValueContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetChannelValueUnsigned) GetUnsignedValue() BACnetApplicationTagUns
 
 // NewBACnetChannelValueUnsigned factory function for _BACnetChannelValueUnsigned
 func NewBACnetChannelValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueUnsigned {
-	_result := &_BACnetChannelValueUnsigned{
-		UnsignedValue:       unsignedValue,
-		_BACnetChannelValue: NewBACnetChannelValue(peekedTagHeader),
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetChannelValueUnsigned must not be nil")
 	}
-	_result._BACnetChannelValue._BACnetChannelValueChildRequirements = _result
+	_result := &_BACnetChannelValueUnsigned{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		UnsignedValue:              unsignedValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetChannelValueUnsigned) GetTypeName() string {
 }
 
 func (m *_BACnetChannelValueUnsigned) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
 
 	// Simple field (unsignedValue)
 	lengthInBits += m.UnsignedValue.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetChannelValueUnsigned) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueUnsignedParse(ctx context.Context, theBytes []byte) (BACnetChannelValueUnsigned, error) {
-	return BACnetChannelValueUnsignedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetChannelValueUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueUnsigned, error) {
+func (m *_BACnetChannelValueUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueUnsigned BACnetChannelValueUnsigned, err error) {
+	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueUnsigned"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueUnsigned")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unsignedValue)
-	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
+	unsignedValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unsignedValue' field"))
 	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _unsignedValueErr != nil {
-		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetChannelValueUnsigned")
-	}
-	unsignedValue := _unsignedValue.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
-	}
+	m.UnsignedValue = unsignedValue
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueUnsigned"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueUnsigned")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetChannelValueUnsigned{
-		_BACnetChannelValue: &_BACnetChannelValue{},
-		UnsignedValue:       unsignedValue,
-	}
-	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetChannelValueUnsigned) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetChannelValueUnsigned) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueUnsigned")
 		}
 
-		// Simple Field (unsignedValue)
-		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
-		}
-		_unsignedValueErr := writeBuffer.WriteSerializable(ctx, m.GetUnsignedValue())
-		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unsignedValue")
-		}
-		if _unsignedValueErr != nil {
-			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", m.GetUnsignedValue(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unsignedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueUnsigned"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetChannelValueUnsigned) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetChannelValueContract.(*_BACnetChannelValue).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetChannelValueUnsigned) isBACnetChannelValueUnsigned() bool {
-	return true
-}
+func (m *_BACnetChannelValueUnsigned) IsBACnetChannelValueUnsigned() {}
 
 func (m *_BACnetChannelValueUnsigned) String() string {
 	if m == nil {

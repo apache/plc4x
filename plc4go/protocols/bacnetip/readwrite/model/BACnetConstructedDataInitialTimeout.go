@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataInitialTimeout interface {
 	GetInitialTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-}
-
-// BACnetConstructedDataInitialTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInitialTimeout.
-// This is useful for switch cases.
-type BACnetConstructedDataInitialTimeoutExactly interface {
-	BACnetConstructedDataInitialTimeout
-	isBACnetConstructedDataInitialTimeout() bool
+	// IsBACnetConstructedDataInitialTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataInitialTimeout()
 }
 
 // _BACnetConstructedDataInitialTimeout is the data-structure of this message
 type _BACnetConstructedDataInitialTimeout struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	InitialTimeout BACnetApplicationTagUnsignedInteger
 }
+
+var _ BACnetConstructedDataInitialTimeout = (*_BACnetConstructedDataInitialTimeout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInitialTimeout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataInitialTimeout) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataInitialTimeout) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataInitialTimeout) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataInitialTimeout) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataInitialTimeout) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataInitialTimeout factory function for _BACnetConstructedDataInitialTimeout
 func NewBACnetConstructedDataInitialTimeout(initialTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInitialTimeout {
-	_result := &_BACnetConstructedDataInitialTimeout{
-		InitialTimeout:         initialTimeout,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if initialTimeout == nil {
+		panic("initialTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataInitialTimeout must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataInitialTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InitialTimeout:                initialTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataInitialTimeout) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (initialTimeout)
 	lengthInBits += m.InitialTimeout.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataInitialTimeoutParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInitialTimeout, error) {
-	return BACnetConstructedDataInitialTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataInitialTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInitialTimeout, error) {
+func (m *_BACnetConstructedDataInitialTimeout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataInitialTimeout BACnetConstructedDataInitialTimeout, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInitialTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInitialTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (initialTimeout)
-	if pullErr := readBuffer.PullContext("initialTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for initialTimeout")
+	initialTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "initialTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initialTimeout' field"))
 	}
-	_initialTimeout, _initialTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _initialTimeoutErr != nil {
-		return nil, errors.Wrap(_initialTimeoutErr, "Error parsing 'initialTimeout' field of BACnetConstructedDataInitialTimeout")
-	}
-	initialTimeout := _initialTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("initialTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for initialTimeout")
-	}
+	m.InitialTimeout = initialTimeout
 
-	// Virtual field
-	_actualValue := initialTimeout
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), initialTimeout)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInitialTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInitialTimeout")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataInitialTimeout{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		InitialTimeout: initialTimeout,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataInitialTimeout) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInitialTimeout")
 		}
 
-		// Simple Field (initialTimeout)
-		if pushErr := writeBuffer.PushContext("initialTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for initialTimeout")
-		}
-		_initialTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetInitialTimeout())
-		if popErr := writeBuffer.PopContext("initialTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for initialTimeout")
-		}
-		if _initialTimeoutErr != nil {
-			return errors.Wrap(_initialTimeoutErr, "Error serializing 'initialTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "initialTimeout", m.GetInitialTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'initialTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(ctx cont
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataInitialTimeout) isBACnetConstructedDataInitialTimeout() bool {
-	return true
-}
+func (m *_BACnetConstructedDataInitialTimeout) IsBACnetConstructedDataInitialTimeout() {}
 
 func (m *_BACnetConstructedDataInitialTimeout) String() string {
 	if m == nil {

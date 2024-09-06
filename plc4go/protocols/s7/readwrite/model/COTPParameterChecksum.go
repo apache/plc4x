@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type COTPParameterChecksum interface {
 	COTPParameter
 	// GetCrc returns Crc (property field)
 	GetCrc() uint8
-}
-
-// COTPParameterChecksumExactly can be used when we want exactly this type and not a type which fulfills COTPParameterChecksum.
-// This is useful for switch cases.
-type COTPParameterChecksumExactly interface {
-	COTPParameterChecksum
-	isCOTPParameterChecksum() bool
+	// IsCOTPParameterChecksum is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPParameterChecksum()
 }
 
 // _COTPParameterChecksum is the data-structure of this message
 type _COTPParameterChecksum struct {
-	*_COTPParameter
+	COTPParameterContract
 	Crc uint8
 }
+
+var _ COTPParameterChecksum = (*_COTPParameterChecksum)(nil)
+var _ COTPParameterRequirements = (*_COTPParameterChecksum)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_COTPParameterChecksum) GetParameterType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_COTPParameterChecksum) InitializeParent(parent COTPParameter) {}
-
-func (m *_COTPParameterChecksum) GetParent() COTPParameter {
-	return m._COTPParameter
+func (m *_COTPParameterChecksum) GetParent() COTPParameterContract {
+	return m.COTPParameterContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,10 +89,10 @@ func (m *_COTPParameterChecksum) GetCrc() uint8 {
 // NewCOTPParameterChecksum factory function for _COTPParameterChecksum
 func NewCOTPParameterChecksum(crc uint8, rest uint8) *_COTPParameterChecksum {
 	_result := &_COTPParameterChecksum{
-		Crc:            crc,
-		_COTPParameter: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(rest),
+		Crc:                   crc,
 	}
-	_result._COTPParameter._COTPParameterChildRequirements = _result
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
 	return _result
 }
 
@@ -114,7 +112,7 @@ func (m *_COTPParameterChecksum) GetTypeName() string {
 }
 
 func (m *_COTPParameterChecksum) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Simple field (crc)
 	lengthInBits += 8
@@ -126,41 +124,28 @@ func (m *_COTPParameterChecksum) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPParameterChecksumParse(ctx context.Context, theBytes []byte, rest uint8) (COTPParameterChecksum, error) {
-	return COTPParameterChecksumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
-}
-
-func COTPParameterChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterChecksum, error) {
+func (m *_COTPParameterChecksum) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPParameter, rest uint8) (__cOTPParameterChecksum COTPParameterChecksum, err error) {
+	m.COTPParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterChecksum")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (crc)
-	_crc, _crcErr := readBuffer.ReadUint8("crc", 8)
-	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of COTPParameterChecksum")
+	crc, err := ReadSimpleField(ctx, "crc", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
 	}
-	crc := _crc
+	m.Crc = crc
 
 	if closeErr := readBuffer.CloseContext("COTPParameterChecksum"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterChecksum")
 	}
 
-	// Create a partially initialized instance
-	_child := &_COTPParameterChecksum{
-		_COTPParameter: &_COTPParameter{
-			Rest: rest,
-		},
-		Crc: crc,
-	}
-	_child._COTPParameter._COTPParameterChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_COTPParameterChecksum) Serialize() ([]byte, error) {
@@ -181,11 +166,8 @@ func (m *_COTPParameterChecksum) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for COTPParameterChecksum")
 		}
 
-		// Simple Field (crc)
-		crc := uint8(m.GetCrc())
-		_crcErr := writeBuffer.WriteUint8("crc", 8, uint8((crc)))
-		if _crcErr != nil {
-			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
+		if err := WriteSimpleField[uint8](ctx, "crc", m.GetCrc(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'crc' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterChecksum"); popErr != nil {
@@ -193,12 +175,10 @@ func (m *_COTPParameterChecksum) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.COTPParameterContract.(*_COTPParameter).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_COTPParameterChecksum) isCOTPParameterChecksum() bool {
-	return true
-}
+func (m *_COTPParameterChecksum) IsCOTPParameterChecksum() {}
 
 func (m *_COTPParameterChecksum) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetHostAddressIpAddress interface {
 	BACnetHostAddress
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetContextTagOctetString
-}
-
-// BACnetHostAddressIpAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetHostAddressIpAddress.
-// This is useful for switch cases.
-type BACnetHostAddressIpAddressExactly interface {
-	BACnetHostAddressIpAddress
-	isBACnetHostAddressIpAddress() bool
+	// IsBACnetHostAddressIpAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetHostAddressIpAddress()
 }
 
 // _BACnetHostAddressIpAddress is the data-structure of this message
 type _BACnetHostAddressIpAddress struct {
-	*_BACnetHostAddress
+	BACnetHostAddressContract
 	IpAddress BACnetContextTagOctetString
 }
+
+var _ BACnetHostAddressIpAddress = (*_BACnetHostAddressIpAddress)(nil)
+var _ BACnetHostAddressRequirements = (*_BACnetHostAddressIpAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetHostAddressIpAddress struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetHostAddressIpAddress) InitializeParent(parent BACnetHostAddress, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetHostAddressIpAddress) GetParent() BACnetHostAddress {
-	return m._BACnetHostAddress
+func (m *_BACnetHostAddressIpAddress) GetParent() BACnetHostAddressContract {
+	return m.BACnetHostAddressContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetHostAddressIpAddress) GetIpAddress() BACnetContextTagOctetString
 
 // NewBACnetHostAddressIpAddress factory function for _BACnetHostAddressIpAddress
 func NewBACnetHostAddressIpAddress(ipAddress BACnetContextTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetHostAddressIpAddress {
-	_result := &_BACnetHostAddressIpAddress{
-		IpAddress:          ipAddress,
-		_BACnetHostAddress: NewBACnetHostAddress(peekedTagHeader),
+	if ipAddress == nil {
+		panic("ipAddress of type BACnetContextTagOctetString for BACnetHostAddressIpAddress must not be nil")
 	}
-	_result._BACnetHostAddress._BACnetHostAddressChildRequirements = _result
+	_result := &_BACnetHostAddressIpAddress{
+		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
+		IpAddress:                 ipAddress,
+	}
+	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetHostAddressIpAddress) GetTypeName() string {
 }
 
 func (m *_BACnetHostAddressIpAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetHostAddressContract.(*_BACnetHostAddress).getLengthInBits(ctx))
 
 	// Simple field (ipAddress)
 	lengthInBits += m.IpAddress.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetHostAddressIpAddress) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetHostAddressIpAddressParse(ctx context.Context, theBytes []byte) (BACnetHostAddressIpAddress, error) {
-	return BACnetHostAddressIpAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func BACnetHostAddressIpAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressIpAddress, error) {
+func (m *_BACnetHostAddressIpAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetHostAddress) (__bACnetHostAddressIpAddress BACnetHostAddressIpAddress, err error) {
+	m.BACnetHostAddressContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetHostAddressIpAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetHostAddressIpAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipAddress)
-	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
+	ipAddress, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "ipAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipAddress' field"))
 	}
-	_ipAddress, _ipAddressErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
-	if _ipAddressErr != nil {
-		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of BACnetHostAddressIpAddress")
-	}
-	ipAddress := _ipAddress.(BACnetContextTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
-	}
+	m.IpAddress = ipAddress
 
 	if closeErr := readBuffer.CloseContext("BACnetHostAddressIpAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetHostAddressIpAddress")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetHostAddressIpAddress{
-		_BACnetHostAddress: &_BACnetHostAddress{},
-		IpAddress:          ipAddress,
-	}
-	_child._BACnetHostAddress._BACnetHostAddressChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetHostAddressIpAddress) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetHostAddressIpAddress) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetHostAddressIpAddress")
 		}
 
-		// Simple Field (ipAddress)
-		if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipAddress")
-		}
-		_ipAddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpAddress())
-		if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipAddress")
-		}
-		if _ipAddressErr != nil {
-			return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
+		if err := WriteSimpleField[BACnetContextTagOctetString](ctx, "ipAddress", m.GetIpAddress(), WriteComplex[BACnetContextTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetHostAddressIpAddress"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetHostAddressIpAddress) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetHostAddressContract.(*_BACnetHostAddress).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetHostAddressIpAddress) isBACnetHostAddressIpAddress() bool {
-	return true
-}
+func (m *_BACnetHostAddressIpAddress) IsBACnetHostAddressIpAddress() {}
 
 func (m *_BACnetHostAddressIpAddress) String() string {
 	if m == nil {

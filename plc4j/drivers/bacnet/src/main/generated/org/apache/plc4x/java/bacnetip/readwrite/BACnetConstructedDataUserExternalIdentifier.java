@@ -83,10 +83,7 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
     writeBuffer.pushContext("BACnetConstructedDataUserExternalIdentifier");
 
     // Simple Field (userExternalIdentifier)
-    writeSimpleField(
-        "userExternalIdentifier",
-        userExternalIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userExternalIdentifier", userExternalIdentifier, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
     BACnetApplicationTagCharacterString userExternalIdentifier =
         readSimpleField(
             "userExternalIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

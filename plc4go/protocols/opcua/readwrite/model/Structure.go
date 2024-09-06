@@ -36,18 +36,15 @@ type Structure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-}
-
-// StructureExactly can be used when we want exactly this type and not a type which fulfills Structure.
-// This is useful for switch cases.
-type StructureExactly interface {
-	Structure
-	isStructure() bool
+	// IsStructure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStructure()
 }
 
 // _Structure is the data-structure of this message
 type _Structure struct {
 }
+
+var _ Structure = (*_Structure)(nil)
 
 // NewStructure factory function for _Structure
 func NewStructure() *_Structure {
@@ -83,11 +80,23 @@ func StructureParse(ctx context.Context, theBytes []byte) (Structure, error) {
 	return StructureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StructureParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Structure, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Structure, error) {
+		return StructureParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StructureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Structure, error) {
+	v, err := (&_Structure{}).parse(ctx, readBuffer)
+	if err != nil {
+		return nil, err
+	}
+	return v, err
+}
+
+func (m *_Structure) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__structure Structure, err error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Structure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Structure")
 	}
@@ -98,8 +107,7 @@ func StructureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return nil, errors.Wrap(closeErr, "Error closing for Structure")
 	}
 
-	// Create the instance
-	return &_Structure{}, nil
+	return m, nil
 }
 
 func (m *_Structure) Serialize() ([]byte, error) {
@@ -125,9 +133,7 @@ func (m *_Structure) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	return nil
 }
 
-func (m *_Structure) isStructure() bool {
-	return true
-}
+func (m *_Structure) IsStructure() {}
 
 func (m *_Structure) String() string {
 	if m == nil {

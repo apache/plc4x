@@ -37,19 +37,17 @@ type LRawCon interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
-}
-
-// LRawConExactly can be used when we want exactly this type and not a type which fulfills LRawCon.
-// This is useful for switch cases.
-type LRawConExactly interface {
-	LRawCon
-	isLRawCon() bool
+	// IsLRawCon is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLRawCon()
 }
 
 // _LRawCon is the data-structure of this message
 type _LRawCon struct {
-	*_CEMI
+	CEMIContract
 }
+
+var _ LRawCon = (*_LRawCon)(nil)
+var _ CEMIRequirements = (*_LRawCon)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,18 +63,16 @@ func (m *_LRawCon) GetMessageCode() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_LRawCon) InitializeParent(parent CEMI) {}
-
-func (m *_LRawCon) GetParent() CEMI {
-	return m._CEMI
+func (m *_LRawCon) GetParent() CEMIContract {
+	return m.CEMIContract
 }
 
 // NewLRawCon factory function for _LRawCon
 func NewLRawCon(size uint16) *_LRawCon {
 	_result := &_LRawCon{
-		_CEMI: NewCEMI(size),
+		CEMIContract: NewCEMI(size),
 	}
-	_result._CEMI._CEMIChildRequirements = _result
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 
@@ -96,7 +92,7 @@ func (m *_LRawCon) GetTypeName() string {
 }
 
 func (m *_LRawCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -105,15 +101,11 @@ func (m *_LRawCon) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LRawConParse(ctx context.Context, theBytes []byte, size uint16) (LRawCon, error) {
-	return LRawConParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
-}
-
-func LRawConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LRawCon, error) {
+func (m *_LRawCon) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lRawCon LRawCon, err error) {
+	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LRawCon"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LRawCon")
 	}
@@ -124,14 +116,7 @@ func LRawConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, si
 		return nil, errors.Wrap(closeErr, "Error closing for LRawCon")
 	}
 
-	// Create a partially initialized instance
-	_child := &_LRawCon{
-		_CEMI: &_CEMI{
-			Size: size,
-		},
-	}
-	_child._CEMI._CEMIChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_LRawCon) Serialize() ([]byte, error) {
@@ -157,12 +142,10 @@ func (m *_LRawCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.CEMIContract.(*_CEMI).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_LRawCon) isLRawCon() bool {
-	return true
-}
+func (m *_LRawCon) IsLRawCon() {}
 
 func (m *_LRawCon) String() string {
 	if m == nil {

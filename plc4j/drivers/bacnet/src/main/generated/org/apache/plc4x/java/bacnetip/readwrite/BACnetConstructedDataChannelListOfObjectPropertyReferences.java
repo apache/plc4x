@@ -100,7 +100,7 @@ public class BACnetConstructedDataChannelListOfObjectPropertyReferences
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (references)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataChannelListOfObjectPropertyReferences
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataChannelListOfObjectPropertyReferences
     List<BACnetDeviceObjectPropertyReference> references =
         readTerminatedArrayField(
             "references",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)

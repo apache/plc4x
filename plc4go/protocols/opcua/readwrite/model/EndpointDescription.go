@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -55,18 +57,13 @@ type EndpointDescription interface {
 	GetTransportProfileUri() PascalString
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() uint8
-}
-
-// EndpointDescriptionExactly can be used when we want exactly this type and not a type which fulfills EndpointDescription.
-// This is useful for switch cases.
-type EndpointDescriptionExactly interface {
-	EndpointDescription
-	isEndpointDescription() bool
+	// IsEndpointDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEndpointDescription()
 }
 
 // _EndpointDescription is the data-structure of this message
 type _EndpointDescription struct {
-	*_ExtensionObjectDefinition
+	ExtensionObjectDefinitionContract
 	EndpointUrl            PascalString
 	Server                 ExtensionObjectDefinition
 	ServerCertificate      PascalByteString
@@ -77,6 +74,9 @@ type _EndpointDescription struct {
 	TransportProfileUri    PascalString
 	SecurityLevel          uint8
 }
+
+var _ EndpointDescription = (*_EndpointDescription)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EndpointDescription)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,10 +92,8 @@ func (m *_EndpointDescription) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EndpointDescription) InitializeParent(parent ExtensionObjectDefinition) {}
-
-func (m *_EndpointDescription) GetParent() ExtensionObjectDefinition {
-	return m._ExtensionObjectDefinition
+func (m *_EndpointDescription) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -146,19 +144,34 @@ func (m *_EndpointDescription) GetSecurityLevel() uint8 {
 
 // NewEndpointDescription factory function for _EndpointDescription
 func NewEndpointDescription(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) *_EndpointDescription {
-	_result := &_EndpointDescription{
-		EndpointUrl:                endpointUrl,
-		Server:                     server,
-		ServerCertificate:          serverCertificate,
-		SecurityMode:               securityMode,
-		SecurityPolicyUri:          securityPolicyUri,
-		NoOfUserIdentityTokens:     noOfUserIdentityTokens,
-		UserIdentityTokens:         userIdentityTokens,
-		TransportProfileUri:        transportProfileUri,
-		SecurityLevel:              securityLevel,
-		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for EndpointDescription must not be nil")
 	}
-	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
+	if server == nil {
+		panic("server of type ExtensionObjectDefinition for EndpointDescription must not be nil")
+	}
+	if serverCertificate == nil {
+		panic("serverCertificate of type PascalByteString for EndpointDescription must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for EndpointDescription must not be nil")
+	}
+	if transportProfileUri == nil {
+		panic("transportProfileUri of type PascalString for EndpointDescription must not be nil")
+	}
+	_result := &_EndpointDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		EndpointUrl:                       endpointUrl,
+		Server:                            server,
+		ServerCertificate:                 serverCertificate,
+		SecurityMode:                      securityMode,
+		SecurityPolicyUri:                 securityPolicyUri,
+		NoOfUserIdentityTokens:            noOfUserIdentityTokens,
+		UserIdentityTokens:                userIdentityTokens,
+		TransportProfileUri:               transportProfileUri,
+		SecurityLevel:                     securityLevel,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -178,7 +191,7 @@ func (m *_EndpointDescription) GetTypeName() string {
 }
 
 func (m *_EndpointDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (endpointUrl)
 	lengthInBits += m.EndpointUrl.GetLengthInBits(ctx)
@@ -221,159 +234,76 @@ func (m *_EndpointDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EndpointDescriptionParse(ctx context.Context, theBytes []byte, identifier string) (EndpointDescription, error) {
-	return EndpointDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
-}
-
-func EndpointDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EndpointDescription, error) {
+func (m *_EndpointDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__endpointDescription EndpointDescription, err error) {
+	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EndpointDescription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EndpointDescription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (endpointUrl)
-	if pullErr := readBuffer.PullContext("endpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrl")
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
-	_endpointUrl, _endpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointUrlErr != nil {
-		return nil, errors.Wrap(_endpointUrlErr, "Error parsing 'endpointUrl' field of EndpointDescription")
-	}
-	endpointUrl := _endpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrl")
-	}
+	m.EndpointUrl = endpointUrl
 
-	// Simple Field (server)
-	if pullErr := readBuffer.PullContext("server"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for server")
+	server, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "server", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("310")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
-	_server, _serverErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("310"))
-	if _serverErr != nil {
-		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of EndpointDescription")
-	}
-	server := _server.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("server"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for server")
-	}
+	m.Server = server
 
-	// Simple Field (serverCertificate)
-	if pullErr := readBuffer.PullContext("serverCertificate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverCertificate")
+	serverCertificate, err := ReadSimpleField[PascalByteString](ctx, "serverCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCertificate' field"))
 	}
-	_serverCertificate, _serverCertificateErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _serverCertificateErr != nil {
-		return nil, errors.Wrap(_serverCertificateErr, "Error parsing 'serverCertificate' field of EndpointDescription")
-	}
-	serverCertificate := _serverCertificate.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("serverCertificate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverCertificate")
-	}
+	m.ServerCertificate = serverCertificate
 
-	// Simple Field (securityMode)
-	if pullErr := readBuffer.PullContext("securityMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityMode")
+	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityMode' field"))
 	}
-	_securityMode, _securityModeErr := MessageSecurityModeParseWithBuffer(ctx, readBuffer)
-	if _securityModeErr != nil {
-		return nil, errors.Wrap(_securityModeErr, "Error parsing 'securityMode' field of EndpointDescription")
-	}
-	securityMode := _securityMode
-	if closeErr := readBuffer.CloseContext("securityMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityMode")
-	}
+	m.SecurityMode = securityMode
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of EndpointDescription")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
-	}
+	m.SecurityPolicyUri = securityPolicyUri
 
-	// Simple Field (noOfUserIdentityTokens)
-	_noOfUserIdentityTokens, _noOfUserIdentityTokensErr := readBuffer.ReadInt32("noOfUserIdentityTokens", 32)
-	if _noOfUserIdentityTokensErr != nil {
-		return nil, errors.Wrap(_noOfUserIdentityTokensErr, "Error parsing 'noOfUserIdentityTokens' field of EndpointDescription")
+	noOfUserIdentityTokens, err := ReadSimpleField(ctx, "noOfUserIdentityTokens", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfUserIdentityTokens' field"))
 	}
-	noOfUserIdentityTokens := _noOfUserIdentityTokens
+	m.NoOfUserIdentityTokens = noOfUserIdentityTokens
 
-	// Array field (userIdentityTokens)
-	if pullErr := readBuffer.PullContext("userIdentityTokens", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userIdentityTokens")
+	userIdentityTokens, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "userIdentityTokens", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("306")), readBuffer), uint64(noOfUserIdentityTokens))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userIdentityTokens' field"))
 	}
-	// Count array
-	userIdentityTokens := make([]ExtensionObjectDefinition, max(noOfUserIdentityTokens, 0))
-	// This happens when the size is set conditional to 0
-	if len(userIdentityTokens) == 0 {
-		userIdentityTokens = nil
-	}
-	{
-		_numItems := uint16(max(noOfUserIdentityTokens, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "306")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'userIdentityTokens' field of EndpointDescription")
-			}
-			userIdentityTokens[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("userIdentityTokens", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userIdentityTokens")
-	}
+	m.UserIdentityTokens = userIdentityTokens
 
-	// Simple Field (transportProfileUri)
-	if pullErr := readBuffer.PullContext("transportProfileUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportProfileUri")
+	transportProfileUri, err := ReadSimpleField[PascalString](ctx, "transportProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportProfileUri' field"))
 	}
-	_transportProfileUri, _transportProfileUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _transportProfileUriErr != nil {
-		return nil, errors.Wrap(_transportProfileUriErr, "Error parsing 'transportProfileUri' field of EndpointDescription")
-	}
-	transportProfileUri := _transportProfileUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("transportProfileUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportProfileUri")
-	}
+	m.TransportProfileUri = transportProfileUri
 
-	// Simple Field (securityLevel)
-	_securityLevel, _securityLevelErr := readBuffer.ReadUint8("securityLevel", 8)
-	if _securityLevelErr != nil {
-		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of EndpointDescription")
+	securityLevel, err := ReadSimpleField(ctx, "securityLevel", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityLevel' field"))
 	}
-	securityLevel := _securityLevel
+	m.SecurityLevel = securityLevel
 
 	if closeErr := readBuffer.CloseContext("EndpointDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EndpointDescription")
 	}
 
-	// Create a partially initialized instance
-	_child := &_EndpointDescription{
-		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		EndpointUrl:                endpointUrl,
-		Server:                     server,
-		ServerCertificate:          serverCertificate,
-		SecurityMode:               securityMode,
-		SecurityPolicyUri:          securityPolicyUri,
-		NoOfUserIdentityTokens:     noOfUserIdentityTokens,
-		UserIdentityTokens:         userIdentityTokens,
-		TransportProfileUri:        transportProfileUri,
-		SecurityLevel:              securityLevel,
-	}
-	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_EndpointDescription) Serialize() ([]byte, error) {
@@ -394,107 +324,40 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for EndpointDescription")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (server)
-		if pushErr := writeBuffer.PushContext("server"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for server")
-		}
-		_serverErr := writeBuffer.WriteSerializable(ctx, m.GetServer())
-		if popErr := writeBuffer.PopContext("server"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for server")
-		}
-		if _serverErr != nil {
-			return errors.Wrap(_serverErr, "Error serializing 'server' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "server", m.GetServer(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'server' field")
 		}
 
-		// Simple Field (serverCertificate)
-		if pushErr := writeBuffer.PushContext("serverCertificate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverCertificate")
-		}
-		_serverCertificateErr := writeBuffer.WriteSerializable(ctx, m.GetServerCertificate())
-		if popErr := writeBuffer.PopContext("serverCertificate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverCertificate")
-		}
-		if _serverCertificateErr != nil {
-			return errors.Wrap(_serverCertificateErr, "Error serializing 'serverCertificate' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "serverCertificate", m.GetServerCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverCertificate' field")
 		}
 
-		// Simple Field (securityMode)
-		if pushErr := writeBuffer.PushContext("securityMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityMode")
-		}
-		_securityModeErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityMode())
-		if popErr := writeBuffer.PopContext("securityMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityMode")
-		}
-		if _securityModeErr != nil {
-			return errors.Wrap(_securityModeErr, "Error serializing 'securityMode' field")
+		if err := WriteSimpleEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", m.GetSecurityMode(), WriteEnum[MessageSecurityMode, uint32](MessageSecurityMode.GetValue, MessageSecurityMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityMode' field")
 		}
 
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
-		// Simple Field (noOfUserIdentityTokens)
-		noOfUserIdentityTokens := int32(m.GetNoOfUserIdentityTokens())
-		_noOfUserIdentityTokensErr := writeBuffer.WriteInt32("noOfUserIdentityTokens", 32, int32((noOfUserIdentityTokens)))
-		if _noOfUserIdentityTokensErr != nil {
-			return errors.Wrap(_noOfUserIdentityTokensErr, "Error serializing 'noOfUserIdentityTokens' field")
+		if err := WriteSimpleField[int32](ctx, "noOfUserIdentityTokens", m.GetNoOfUserIdentityTokens(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfUserIdentityTokens' field")
 		}
 
-		// Array Field (userIdentityTokens)
-		if pushErr := writeBuffer.PushContext("userIdentityTokens", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userIdentityTokens")
-		}
-		for _curItem, _element := range m.GetUserIdentityTokens() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetUserIdentityTokens()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'userIdentityTokens' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("userIdentityTokens", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userIdentityTokens")
+		if err := WriteComplexTypeArrayField(ctx, "userIdentityTokens", m.GetUserIdentityTokens(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'userIdentityTokens' field")
 		}
 
-		// Simple Field (transportProfileUri)
-		if pushErr := writeBuffer.PushContext("transportProfileUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportProfileUri")
-		}
-		_transportProfileUriErr := writeBuffer.WriteSerializable(ctx, m.GetTransportProfileUri())
-		if popErr := writeBuffer.PopContext("transportProfileUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportProfileUri")
-		}
-		if _transportProfileUriErr != nil {
-			return errors.Wrap(_transportProfileUriErr, "Error serializing 'transportProfileUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "transportProfileUri", m.GetTransportProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportProfileUri' field")
 		}
 
-		// Simple Field (securityLevel)
-		securityLevel := uint8(m.GetSecurityLevel())
-		_securityLevelErr := writeBuffer.WriteUint8("securityLevel", 8, uint8((securityLevel)))
-		if _securityLevelErr != nil {
-			return errors.Wrap(_securityLevelErr, "Error serializing 'securityLevel' field")
+		if err := WriteSimpleField[uint8](ctx, "securityLevel", m.GetSecurityLevel(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EndpointDescription"); popErr != nil {
@@ -502,12 +365,10 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_EndpointDescription) isEndpointDescription() bool {
-	return true
-}
+func (m *_EndpointDescription) IsEndpointDescription() {}
 
 func (m *_EndpointDescription) String() string {
 	if m == nil {

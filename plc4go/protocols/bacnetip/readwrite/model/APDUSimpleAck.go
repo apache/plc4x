@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,23 +43,21 @@ type APDUSimpleAck interface {
 	GetOriginalInvokeId() uint8
 	// GetServiceChoice returns ServiceChoice (property field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
-}
-
-// APDUSimpleAckExactly can be used when we want exactly this type and not a type which fulfills APDUSimpleAck.
-// This is useful for switch cases.
-type APDUSimpleAckExactly interface {
-	APDUSimpleAck
-	isAPDUSimpleAck() bool
+	// IsAPDUSimpleAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUSimpleAck()
 }
 
 // _APDUSimpleAck is the data-structure of this message
 type _APDUSimpleAck struct {
-	*_APDU
+	APDUContract
 	OriginalInvokeId uint8
 	ServiceChoice    BACnetConfirmedServiceChoice
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ APDUSimpleAck = (*_APDUSimpleAck)(nil)
+var _ APDURequirements = (*_APDUSimpleAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,10 +73,8 @@ func (m *_APDUSimpleAck) GetApduType() ApduType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_APDUSimpleAck) InitializeParent(parent APDU) {}
-
-func (m *_APDUSimpleAck) GetParent() APDU {
-	return m._APDU
+func (m *_APDUSimpleAck) GetParent() APDUContract {
+	return m.APDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,11 +98,11 @@ func (m *_APDUSimpleAck) GetServiceChoice() BACnetConfirmedServiceChoice {
 // NewAPDUSimpleAck factory function for _APDUSimpleAck
 func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice, apduLength uint16) *_APDUSimpleAck {
 	_result := &_APDUSimpleAck{
+		APDUContract:     NewAPDU(apduLength),
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		_APDU:            NewAPDU(apduLength),
 	}
-	_result._APDU._APDUChildRequirements = _result
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 
@@ -124,7 +122,7 @@ func (m *_APDUSimpleAck) GetTypeName() string {
 }
 
 func (m *_APDUSimpleAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -142,73 +140,40 @@ func (m *_APDUSimpleAck) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUSimpleAckParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUSimpleAck, error) {
-	return APDUSimpleAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func APDUSimpleAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {
+func (m *_APDUSimpleAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUSimpleAck APDUSimpleAck, err error) {
+	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDUSimpleAck")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 4)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUSimpleAck")
-		}
-		if reserved != uint8(0) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(4)), uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
-	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUSimpleAck")
+	originalInvokeId, err := ReadSimpleField(ctx, "originalInvokeId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalInvokeId' field"))
 	}
-	originalInvokeId := _originalInvokeId
+	m.OriginalInvokeId = originalInvokeId
 
-	// Simple Field (serviceChoice)
-	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
+	serviceChoice, err := ReadEnumField[BACnetConfirmedServiceChoice](ctx, "serviceChoice", "BACnetConfirmedServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceChoice' field"))
 	}
-	_serviceChoice, _serviceChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
-	if _serviceChoiceErr != nil {
-		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field of APDUSimpleAck")
-	}
-	serviceChoice := _serviceChoice
-	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
-	}
+	m.ServiceChoice = serviceChoice
 
 	if closeErr := readBuffer.CloseContext("APDUSimpleAck"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDUSimpleAck")
 	}
 
-	// Create a partially initialized instance
-	_child := &_APDUSimpleAck{
-		_APDU: &_APDU{
-			ApduLength: apduLength,
-		},
-		OriginalInvokeId: originalInvokeId,
-		ServiceChoice:    serviceChoice,
-		reservedField0:   reservedField0,
-	}
-	_child._APDU._APDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_APDUSimpleAck) Serialize() ([]byte, error) {
@@ -229,39 +194,16 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for APDUSimpleAck")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (serviceChoice)
-		if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serviceChoice")
-		}
-		_serviceChoiceErr := writeBuffer.WriteSerializable(ctx, m.GetServiceChoice())
-		if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serviceChoice")
-		}
-		if _serviceChoiceErr != nil {
-			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
+		if err := WriteSimpleEnumField[BACnetConfirmedServiceChoice](ctx, "serviceChoice", "BACnetConfirmedServiceChoice", m.GetServiceChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceChoice' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUSimpleAck"); popErr != nil {
@@ -269,12 +211,10 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.APDUContract.(*_APDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_APDUSimpleAck) isAPDUSimpleAck() bool {
-	return true
-}
+func (m *_APDUSimpleAck) IsAPDUSimpleAck() {}
 
 func (m *_APDUSimpleAck) String() string {
 	if m == nil {

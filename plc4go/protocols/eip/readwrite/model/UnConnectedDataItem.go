@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type UnConnectedDataItem interface {
 	TypeId
 	// GetService returns Service (property field)
 	GetService() CipService
-}
-
-// UnConnectedDataItemExactly can be used when we want exactly this type and not a type which fulfills UnConnectedDataItem.
-// This is useful for switch cases.
-type UnConnectedDataItemExactly interface {
-	UnConnectedDataItem
-	isUnConnectedDataItem() bool
+	// IsUnConnectedDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnConnectedDataItem()
 }
 
 // _UnConnectedDataItem is the data-structure of this message
 type _UnConnectedDataItem struct {
-	*_TypeId
+	TypeIdContract
 	Service CipService
 }
+
+var _ UnConnectedDataItem = (*_UnConnectedDataItem)(nil)
+var _ TypeIdRequirements = (*_UnConnectedDataItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -68,10 +68,8 @@ func (m *_UnConnectedDataItem) GetId() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_UnConnectedDataItem) InitializeParent(parent TypeId) {}
-
-func (m *_UnConnectedDataItem) GetParent() TypeId {
-	return m._TypeId
+func (m *_UnConnectedDataItem) GetParent() TypeIdContract {
+	return m.TypeIdContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +88,14 @@ func (m *_UnConnectedDataItem) GetService() CipService {
 
 // NewUnConnectedDataItem factory function for _UnConnectedDataItem
 func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
-	_result := &_UnConnectedDataItem{
-		Service: service,
-		_TypeId: NewTypeId(),
+	if service == nil {
+		panic("service of type CipService for UnConnectedDataItem must not be nil")
 	}
-	_result._TypeId._TypeIdChildRequirements = _result
+	_result := &_UnConnectedDataItem{
+		TypeIdContract: NewTypeId(),
+		Service:        service,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
 
@@ -114,7 +115,7 @@ func (m *_UnConnectedDataItem) GetTypeName() string {
 }
 
 func (m *_UnConnectedDataItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.TypeIdContract.(*_TypeId).getLengthInBits(ctx))
 
 	// Implicit Field (packetSize)
 	lengthInBits += 16
@@ -129,52 +130,34 @@ func (m *_UnConnectedDataItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func UnConnectedDataItemParse(ctx context.Context, theBytes []byte) (UnConnectedDataItem, error) {
-	return UnConnectedDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
-}
-
-func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UnConnectedDataItem, error) {
+func (m *_UnConnectedDataItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TypeId) (__unConnectedDataItem UnConnectedDataItem, err error) {
+	m.TypeIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UnConnectedDataItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UnConnectedDataItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (packetSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetSize, _packetSizeErr := readBuffer.ReadUint16("packetSize", 16)
+	packetSize, err := ReadImplicitField[uint16](ctx, "packetSize", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetSize' field"))
+	}
 	_ = packetSize
-	if _packetSizeErr != nil {
-		return nil, errors.Wrap(_packetSizeErr, "Error parsing 'packetSize' field of UnConnectedDataItem")
-	}
 
-	// Simple Field (service)
-	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for service")
+	service, err := ReadSimpleField[CipService](ctx, "service", ReadComplex[CipService](CipServiceParseWithBufferProducer[CipService]((bool)(bool(false)), (uint16)(packetSize)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'service' field"))
 	}
-	_service, _serviceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint16(packetSize))
-	if _serviceErr != nil {
-		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of UnConnectedDataItem")
-	}
-	service := _service.(CipService)
-	if closeErr := readBuffer.CloseContext("service"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for service")
-	}
+	m.Service = service
 
 	if closeErr := readBuffer.CloseContext("UnConnectedDataItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for UnConnectedDataItem")
 	}
 
-	// Create a partially initialized instance
-	_child := &_UnConnectedDataItem{
-		_TypeId: &_TypeId{},
-		Service: service,
-	}
-	_child._TypeId._TypeIdChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_UnConnectedDataItem) Serialize() ([]byte, error) {
@@ -194,24 +177,13 @@ func (m *_UnConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, wri
 		if pushErr := writeBuffer.PushContext("UnConnectedDataItem"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for UnConnectedDataItem")
 		}
-
-		// Implicit Field (packetSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		packetSize := uint16(m.GetService().GetLengthInBytes(ctx))
-		_packetSizeErr := writeBuffer.WriteUint16("packetSize", 16, uint16((packetSize)))
-		if _packetSizeErr != nil {
-			return errors.Wrap(_packetSizeErr, "Error serializing 'packetSize' field")
+		if err := WriteImplicitField(ctx, "packetSize", packetSize, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'packetSize' field")
 		}
 
-		// Simple Field (service)
-		if pushErr := writeBuffer.PushContext("service"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for service")
-		}
-		_serviceErr := writeBuffer.WriteSerializable(ctx, m.GetService())
-		if popErr := writeBuffer.PopContext("service"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for service")
-		}
-		if _serviceErr != nil {
-			return errors.Wrap(_serviceErr, "Error serializing 'service' field")
+		if err := WriteSimpleField[CipService](ctx, "service", m.GetService(), WriteComplex[CipService](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'service' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UnConnectedDataItem"); popErr != nil {
@@ -219,12 +191,10 @@ func (m *_UnConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.TypeIdContract.(*_TypeId).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_UnConnectedDataItem) isUnConnectedDataItem() bool {
-	return true
-}
+func (m *_UnConnectedDataItem) IsUnConnectedDataItem() {}
 
 func (m *_UnConnectedDataItem) String() string {
 	if m == nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataPower interface {
 	GetPower() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-}
-
-// BACnetConstructedDataPowerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPower.
-// This is useful for switch cases.
-type BACnetConstructedDataPowerExactly interface {
-	BACnetConstructedDataPower
-	isBACnetConstructedDataPower() bool
+	// IsBACnetConstructedDataPower is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPower()
 }
 
 // _BACnetConstructedDataPower is the data-structure of this message
 type _BACnetConstructedDataPower struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Power BACnetApplicationTagReal
 }
+
+var _ BACnetConstructedDataPower = (*_BACnetConstructedDataPower)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPower)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataPower) GetPropertyIdentifierArgument() BACnetProp
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataPower) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataPower) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataPower) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataPower) GetActualValue() BACnetApplicationTagReal 
 
 // NewBACnetConstructedDataPower factory function for _BACnetConstructedDataPower
 func NewBACnetConstructedDataPower(power BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPower {
-	_result := &_BACnetConstructedDataPower{
-		Power:                  power,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if power == nil {
+		panic("power of type BACnetApplicationTagReal for BACnetConstructedDataPower must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataPower{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Power:                         power,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataPower) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataPower) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (power)
 	lengthInBits += m.Power.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataPower) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataPowerParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPower, error) {
-	return BACnetConstructedDataPowerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataPowerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPower, error) {
+func (m *_BACnetConstructedDataPower) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPower BACnetConstructedDataPower, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPower"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPower")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (power)
-	if pullErr := readBuffer.PullContext("power"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for power")
+	power, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "power", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'power' field"))
 	}
-	_power, _powerErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _powerErr != nil {
-		return nil, errors.Wrap(_powerErr, "Error parsing 'power' field of BACnetConstructedDataPower")
-	}
-	power := _power.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("power"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for power")
-	}
+	m.Power = power
 
-	// Virtual field
-	_actualValue := power
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), power)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPower"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPower")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataPower{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Power: power,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataPower) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPower")
 		}
 
-		// Simple Field (power)
-		if pushErr := writeBuffer.PushContext("power"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for power")
-		}
-		_powerErr := writeBuffer.WriteSerializable(ctx, m.GetPower())
-		if popErr := writeBuffer.PopContext("power"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for power")
-		}
-		if _powerErr != nil {
-			return errors.Wrap(_powerErr, "Error serializing 'power' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "power", m.GetPower(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'power' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataPower) isBACnetConstructedDataPower() bool {
-	return true
-}
+func (m *_BACnetConstructedDataPower) IsBACnetConstructedDataPower() {}
 
 func (m *_BACnetConstructedDataPower) String() string {
 	if m == nil {

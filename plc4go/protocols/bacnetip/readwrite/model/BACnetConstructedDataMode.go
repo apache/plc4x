@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,20 +43,18 @@ type BACnetConstructedDataMode interface {
 	GetMode() BACnetLifeSafetyModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyModeTagged
-}
-
-// BACnetConstructedDataModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMode.
-// This is useful for switch cases.
-type BACnetConstructedDataModeExactly interface {
-	BACnetConstructedDataMode
-	isBACnetConstructedDataMode() bool
+	// IsBACnetConstructedDataMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMode()
 }
 
 // _BACnetConstructedDataMode is the data-structure of this message
 type _BACnetConstructedDataMode struct {
-	*_BACnetConstructedData
+	BACnetConstructedDataContract
 	Mode BACnetLifeSafetyModeTagged
 }
+
+var _ BACnetConstructedDataMode = (*_BACnetConstructedDataMode)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,14 +74,8 @@ func (m *_BACnetConstructedDataMode) GetPropertyIdentifierArgument() BACnetPrope
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetConstructedDataMode) InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
-}
-
-func (m *_BACnetConstructedDataMode) GetParent() BACnetConstructedData {
-	return m._BACnetConstructedData
+func (m *_BACnetConstructedDataMode) GetParent() BACnetConstructedDataContract {
+	return m.BACnetConstructedDataContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,11 +109,14 @@ func (m *_BACnetConstructedDataMode) GetActualValue() BACnetLifeSafetyModeTagged
 
 // NewBACnetConstructedDataMode factory function for _BACnetConstructedDataMode
 func NewBACnetConstructedDataMode(mode BACnetLifeSafetyModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMode {
-	_result := &_BACnetConstructedDataMode{
-		Mode:                   mode,
-		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	if mode == nil {
+		panic("mode of type BACnetLifeSafetyModeTagged for BACnetConstructedDataMode must not be nil")
 	}
-	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result
+	_result := &_BACnetConstructedDataMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Mode:                          mode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 
@@ -139,7 +136,7 @@ func (m *_BACnetConstructedDataMode) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (mode)
 	lengthInBits += m.Mode.GetLengthInBits(ctx)
@@ -153,53 +150,34 @@ func (m *_BACnetConstructedDataMode) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataModeParse(ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMode, error) {
-	return BACnetConstructedDataModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-}
-
-func BACnetConstructedDataModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMode, error) {
+func (m *_BACnetConstructedDataMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMode BACnetConstructedDataMode, err error) {
+	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (mode)
-	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for mode")
+	mode, err := ReadSimpleField[BACnetLifeSafetyModeTagged](ctx, "mode", ReadComplex[BACnetLifeSafetyModeTagged](BACnetLifeSafetyModeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mode' field"))
 	}
-	_mode, _modeErr := BACnetLifeSafetyModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _modeErr != nil {
-		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of BACnetConstructedDataMode")
-	}
-	mode := _mode.(BACnetLifeSafetyModeTagged)
-	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for mode")
-	}
+	m.Mode = mode
 
-	// Virtual field
-	_actualValue := mode
-	actualValue := _actualValue
+	actualValue, err := ReadVirtualField[BACnetLifeSafetyModeTagged](ctx, "actualValue", (*BACnetLifeSafetyModeTagged)(nil), mode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMode")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetConstructedDataMode{
-		_BACnetConstructedData: &_BACnetConstructedData{
-			TagNumber:          tagNumber,
-			ArrayIndexArgument: arrayIndexArgument,
-		},
-		Mode: mode,
-	}
-	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetConstructedDataMode) Serialize() ([]byte, error) {
@@ -220,16 +198,8 @@ func (m *_BACnetConstructedDataMode) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMode")
 		}
 
-		// Simple Field (mode)
-		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for mode")
-		}
-		_modeErr := writeBuffer.WriteSerializable(ctx, m.GetMode())
-		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for mode")
-		}
-		if _modeErr != nil {
-			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
+		if err := WriteSimpleField[BACnetLifeSafetyModeTagged](ctx, "mode", m.GetMode(), WriteComplex[BACnetLifeSafetyModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
@@ -243,12 +213,10 @@ func (m *_BACnetConstructedDataMode) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetConstructedDataContract.(*_BACnetConstructedData).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetConstructedDataMode) isBACnetConstructedDataMode() bool {
-	return true
-}
+func (m *_BACnetConstructedDataMode) IsBACnetConstructedDataMode() {}
 
 func (m *_BACnetConstructedDataMode) String() string {
 	if m == nil {

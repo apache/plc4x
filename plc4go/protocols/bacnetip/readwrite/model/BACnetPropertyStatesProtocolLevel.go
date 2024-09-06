@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesProtocolLevel interface {
 	BACnetPropertyStates
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
-}
-
-// BACnetPropertyStatesProtocolLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesProtocolLevel.
-// This is useful for switch cases.
-type BACnetPropertyStatesProtocolLevelExactly interface {
-	BACnetPropertyStatesProtocolLevel
-	isBACnetPropertyStatesProtocolLevel() bool
+	// IsBACnetPropertyStatesProtocolLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesProtocolLevel()
 }
 
 // _BACnetPropertyStatesProtocolLevel is the data-structure of this message
 type _BACnetPropertyStatesProtocolLevel struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	ProtocolLevel BACnetProtocolLevelTagged
 }
+
+var _ BACnetPropertyStatesProtocolLevel = (*_BACnetPropertyStatesProtocolLevel)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesProtocolLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesProtocolLevel struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesProtocolLevel) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesProtocolLevel) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesProtocolLevel) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetProtocolLevel() BACnetProtocolLe
 
 // NewBACnetPropertyStatesProtocolLevel factory function for _BACnetPropertyStatesProtocolLevel
 func NewBACnetPropertyStatesProtocolLevel(protocolLevel BACnetProtocolLevelTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesProtocolLevel {
-	_result := &_BACnetPropertyStatesProtocolLevel{
-		ProtocolLevel:         protocolLevel,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if protocolLevel == nil {
+		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetPropertyStatesProtocolLevel must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesProtocolLevel{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ProtocolLevel:                protocolLevel,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesProtocolLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (protocolLevel)
 	lengthInBits += m.ProtocolLevel.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesProtocolLevelParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
-	return BACnetPropertyStatesProtocolLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesProtocolLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
+func (m *_BACnetPropertyStatesProtocolLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesProtocolLevel BACnetPropertyStatesProtocolLevel, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesProtocolLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesProtocolLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolLevel)
-	if pullErr := readBuffer.PullContext("protocolLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolLevel")
+	protocolLevel, err := ReadSimpleField[BACnetProtocolLevelTagged](ctx, "protocolLevel", ReadComplex[BACnetProtocolLevelTagged](BACnetProtocolLevelTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolLevel' field"))
 	}
-	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _protocolLevelErr != nil {
-		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field of BACnetPropertyStatesProtocolLevel")
-	}
-	protocolLevel := _protocolLevel.(BACnetProtocolLevelTagged)
-	if closeErr := readBuffer.CloseContext("protocolLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolLevel")
-	}
+	m.ProtocolLevel = protocolLevel
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesProtocolLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesProtocolLevel")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesProtocolLevel{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		ProtocolLevel:         protocolLevel,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesProtocolLevel) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesProtocolLevel")
 		}
 
-		// Simple Field (protocolLevel)
-		if pushErr := writeBuffer.PushContext("protocolLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolLevel")
-		}
-		_protocolLevelErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolLevel())
-		if popErr := writeBuffer.PopContext("protocolLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolLevel")
-		}
-		if _protocolLevelErr != nil {
-			return errors.Wrap(_protocolLevelErr, "Error serializing 'protocolLevel' field")
+		if err := WriteSimpleField[BACnetProtocolLevelTagged](ctx, "protocolLevel", m.GetProtocolLevel(), WriteComplex[BACnetProtocolLevelTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesProtocolLevel"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesProtocolLevel) isBACnetPropertyStatesProtocolLevel() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesProtocolLevel) IsBACnetPropertyStatesProtocolLevel() {}
 
 func (m *_BACnetPropertyStatesProtocolLevel) String() string {
 	if m == nil {

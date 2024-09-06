@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,18 +49,13 @@ type APDUSegmentAck interface {
 	GetSequenceNumber() uint8
 	// GetActualWindowSize returns ActualWindowSize (property field)
 	GetActualWindowSize() uint8
-}
-
-// APDUSegmentAckExactly can be used when we want exactly this type and not a type which fulfills APDUSegmentAck.
-// This is useful for switch cases.
-type APDUSegmentAckExactly interface {
-	APDUSegmentAck
-	isAPDUSegmentAck() bool
+	// IsAPDUSegmentAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUSegmentAck()
 }
 
 // _APDUSegmentAck is the data-structure of this message
 type _APDUSegmentAck struct {
-	*_APDU
+	APDUContract
 	NegativeAck      bool
 	Server           bool
 	OriginalInvokeId uint8
@@ -67,6 +64,9 @@ type _APDUSegmentAck struct {
 	// Reserved Fields
 	reservedField0 *uint8
 }
+
+var _ APDUSegmentAck = (*_APDUSegmentAck)(nil)
+var _ APDURequirements = (*_APDUSegmentAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,10 +82,8 @@ func (m *_APDUSegmentAck) GetApduType() ApduType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_APDUSegmentAck) InitializeParent(parent APDU) {}
-
-func (m *_APDUSegmentAck) GetParent() APDU {
-	return m._APDU
+func (m *_APDUSegmentAck) GetParent() APDUContract {
+	return m.APDUContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -121,14 +119,14 @@ func (m *_APDUSegmentAck) GetActualWindowSize() uint8 {
 // NewAPDUSegmentAck factory function for _APDUSegmentAck
 func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
 	_result := &_APDUSegmentAck{
+		APDUContract:     NewAPDU(apduLength),
 		NegativeAck:      negativeAck,
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		SequenceNumber:   sequenceNumber,
 		ActualWindowSize: actualWindowSize,
-		_APDU:            NewAPDU(apduLength),
 	}
-	_result._APDU._APDUChildRequirements = _result
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 
@@ -148,7 +146,7 @@ func (m *_APDUSegmentAck) GetTypeName() string {
 }
 
 func (m *_APDUSegmentAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 2
@@ -175,91 +173,58 @@ func (m *_APDUSegmentAck) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUSegmentAckParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUSegmentAck, error) {
-	return APDUSegmentAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
-}
-
-func APDUSegmentAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUSegmentAck, error) {
+func (m *_APDUSegmentAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUSegmentAck APDUSegmentAck, err error) {
+	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDUSegmentAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDUSegmentAck")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 2)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUSegmentAck")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
+	m.reservedField0 = reservedField0
 
-	// Simple Field (negativeAck)
-	_negativeAck, _negativeAckErr := readBuffer.ReadBit("negativeAck")
-	if _negativeAckErr != nil {
-		return nil, errors.Wrap(_negativeAckErr, "Error parsing 'negativeAck' field of APDUSegmentAck")
+	negativeAck, err := ReadSimpleField(ctx, "negativeAck", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'negativeAck' field"))
 	}
-	negativeAck := _negativeAck
+	m.NegativeAck = negativeAck
 
-	// Simple Field (server)
-	_server, _serverErr := readBuffer.ReadBit("server")
-	if _serverErr != nil {
-		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of APDUSegmentAck")
+	server, err := ReadSimpleField(ctx, "server", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
-	server := _server
+	m.Server = server
 
-	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
-	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUSegmentAck")
+	originalInvokeId, err := ReadSimpleField(ctx, "originalInvokeId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalInvokeId' field"))
 	}
-	originalInvokeId := _originalInvokeId
+	m.OriginalInvokeId = originalInvokeId
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of APDUSegmentAck")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
+	m.SequenceNumber = sequenceNumber
 
-	// Simple Field (actualWindowSize)
-	_actualWindowSize, _actualWindowSizeErr := readBuffer.ReadUint8("actualWindowSize", 8)
-	if _actualWindowSizeErr != nil {
-		return nil, errors.Wrap(_actualWindowSizeErr, "Error parsing 'actualWindowSize' field of APDUSegmentAck")
+	actualWindowSize, err := ReadSimpleField(ctx, "actualWindowSize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualWindowSize' field"))
 	}
-	actualWindowSize := _actualWindowSize
+	m.ActualWindowSize = actualWindowSize
 
 	if closeErr := readBuffer.CloseContext("APDUSegmentAck"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDUSegmentAck")
 	}
 
-	// Create a partially initialized instance
-	_child := &_APDUSegmentAck{
-		_APDU: &_APDU{
-			ApduLength: apduLength,
-		},
-		NegativeAck:      negativeAck,
-		Server:           server,
-		OriginalInvokeId: originalInvokeId,
-		SequenceNumber:   sequenceNumber,
-		ActualWindowSize: actualWindowSize,
-		reservedField0:   reservedField0,
-	}
-	_child._APDU._APDUChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_APDUSegmentAck) Serialize() ([]byte, error) {
@@ -280,55 +245,28 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for APDUSegmentAck")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (negativeAck)
-		negativeAck := bool(m.GetNegativeAck())
-		_negativeAckErr := writeBuffer.WriteBit("negativeAck", (negativeAck))
-		if _negativeAckErr != nil {
-			return errors.Wrap(_negativeAckErr, "Error serializing 'negativeAck' field")
+		if err := WriteSimpleField[bool](ctx, "negativeAck", m.GetNegativeAck(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'negativeAck' field")
 		}
 
-		// Simple Field (server)
-		server := bool(m.GetServer())
-		_serverErr := writeBuffer.WriteBit("server", (server))
-		if _serverErr != nil {
-			return errors.Wrap(_serverErr, "Error serializing 'server' field")
+		if err := WriteSimpleField[bool](ctx, "server", m.GetServer(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'server' field")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
-		// Simple Field (actualWindowSize)
-		actualWindowSize := uint8(m.GetActualWindowSize())
-		_actualWindowSizeErr := writeBuffer.WriteUint8("actualWindowSize", 8, uint8((actualWindowSize)))
-		if _actualWindowSizeErr != nil {
-			return errors.Wrap(_actualWindowSizeErr, "Error serializing 'actualWindowSize' field")
+		if err := WriteSimpleField[uint8](ctx, "actualWindowSize", m.GetActualWindowSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'actualWindowSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUSegmentAck"); popErr != nil {
@@ -336,12 +274,10 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.APDUContract.(*_APDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_APDUSegmentAck) isAPDUSegmentAck() bool {
-	return true
-}
+func (m *_APDUSegmentAck) IsAPDUSegmentAck() {}
 
 func (m *_APDUSegmentAck) String() string {
 	if m == nil {

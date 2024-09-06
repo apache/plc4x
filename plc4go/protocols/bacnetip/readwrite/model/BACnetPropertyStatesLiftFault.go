@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,20 +41,18 @@ type BACnetPropertyStatesLiftFault interface {
 	BACnetPropertyStates
 	// GetLiftFault returns LiftFault (property field)
 	GetLiftFault() BACnetLiftFaultTagged
-}
-
-// BACnetPropertyStatesLiftFaultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftFault.
-// This is useful for switch cases.
-type BACnetPropertyStatesLiftFaultExactly interface {
-	BACnetPropertyStatesLiftFault
-	isBACnetPropertyStatesLiftFault() bool
+	// IsBACnetPropertyStatesLiftFault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLiftFault()
 }
 
 // _BACnetPropertyStatesLiftFault is the data-structure of this message
 type _BACnetPropertyStatesLiftFault struct {
-	*_BACnetPropertyStates
+	BACnetPropertyStatesContract
 	LiftFault BACnetLiftFaultTagged
 }
+
+var _ BACnetPropertyStatesLiftFault = (*_BACnetPropertyStatesLiftFault)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftFault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,12 +64,8 @@ type _BACnetPropertyStatesLiftFault struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_BACnetPropertyStatesLiftFault) InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader) {
-	m.PeekedTagHeader = peekedTagHeader
-}
-
-func (m *_BACnetPropertyStatesLiftFault) GetParent() BACnetPropertyStates {
-	return m._BACnetPropertyStates
+func (m *_BACnetPropertyStatesLiftFault) GetParent() BACnetPropertyStatesContract {
+	return m.BACnetPropertyStatesContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,11 +84,14 @@ func (m *_BACnetPropertyStatesLiftFault) GetLiftFault() BACnetLiftFaultTagged {
 
 // NewBACnetPropertyStatesLiftFault factory function for _BACnetPropertyStatesLiftFault
 func NewBACnetPropertyStatesLiftFault(liftFault BACnetLiftFaultTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftFault {
-	_result := &_BACnetPropertyStatesLiftFault{
-		LiftFault:             liftFault,
-		_BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
+	if liftFault == nil {
+		panic("liftFault of type BACnetLiftFaultTagged for BACnetPropertyStatesLiftFault must not be nil")
 	}
-	_result._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _result
+	_result := &_BACnetPropertyStatesLiftFault{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftFault:                    liftFault,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 
@@ -112,7 +111,7 @@ func (m *_BACnetPropertyStatesLiftFault) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesLiftFault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
 
 	// Simple field (liftFault)
 	lengthInBits += m.LiftFault.GetLengthInBits(ctx)
@@ -124,45 +123,28 @@ func (m *_BACnetPropertyStatesLiftFault) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLiftFaultParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftFault, error) {
-	return BACnetPropertyStatesLiftFaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
-}
-
-func BACnetPropertyStatesLiftFaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftFault, error) {
+func (m *_BACnetPropertyStatesLiftFault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLiftFault BACnetPropertyStatesLiftFault, err error) {
+	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftFault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftFault)
-	if pullErr := readBuffer.PullContext("liftFault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftFault")
+	liftFault, err := ReadSimpleField[BACnetLiftFaultTagged](ctx, "liftFault", ReadComplex[BACnetLiftFaultTagged](BACnetLiftFaultTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftFault' field"))
 	}
-	_liftFault, _liftFaultErr := BACnetLiftFaultTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftFaultErr != nil {
-		return nil, errors.Wrap(_liftFaultErr, "Error parsing 'liftFault' field of BACnetPropertyStatesLiftFault")
-	}
-	liftFault := _liftFault.(BACnetLiftFaultTagged)
-	if closeErr := readBuffer.CloseContext("liftFault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftFault")
-	}
+	m.LiftFault = liftFault
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftFault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftFault")
 	}
 
-	// Create a partially initialized instance
-	_child := &_BACnetPropertyStatesLiftFault{
-		_BACnetPropertyStates: &_BACnetPropertyStates{},
-		LiftFault:             liftFault,
-	}
-	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_BACnetPropertyStatesLiftFault) Serialize() ([]byte, error) {
@@ -183,16 +165,8 @@ func (m *_BACnetPropertyStatesLiftFault) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftFault")
 		}
 
-		// Simple Field (liftFault)
-		if pushErr := writeBuffer.PushContext("liftFault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftFault")
-		}
-		_liftFaultErr := writeBuffer.WriteSerializable(ctx, m.GetLiftFault())
-		if popErr := writeBuffer.PopContext("liftFault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftFault")
-		}
-		if _liftFaultErr != nil {
-			return errors.Wrap(_liftFaultErr, "Error serializing 'liftFault' field")
+		if err := WriteSimpleField[BACnetLiftFaultTagged](ctx, "liftFault", m.GetLiftFault(), WriteComplex[BACnetLiftFaultTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftFault' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftFault"); popErr != nil {
@@ -200,12 +174,10 @@ func (m *_BACnetPropertyStatesLiftFault) SerializeWithWriteBuffer(ctx context.Co
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_BACnetPropertyStatesLiftFault) isBACnetPropertyStatesLiftFault() bool {
-	return true
-}
+func (m *_BACnetPropertyStatesLiftFault) IsBACnetPropertyStatesLiftFault() {}
 
 func (m *_BACnetPropertyStatesLiftFault) String() string {
 	if m == nil {

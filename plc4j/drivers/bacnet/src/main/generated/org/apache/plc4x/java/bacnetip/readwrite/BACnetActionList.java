@@ -70,15 +70,13 @@ public class BACnetActionList implements Message {
     writeBuffer.pushContext("BACnetActionList");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Array Field (action)
     writeComplexTypeArrayField("action", action, writeBuffer);
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetActionList");
   }
@@ -118,14 +116,12 @@ public class BACnetActionList implements Message {
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     List<BACnetActionCommand> action =
         readTerminatedArrayField(
             "action",
-            new DataReaderComplexDefault<>(
-                () -> BACnetActionCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetActionCommand.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -134,8 +130,7 @@ public class BACnetActionList implements Message {
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetActionList");
     // Create the instance

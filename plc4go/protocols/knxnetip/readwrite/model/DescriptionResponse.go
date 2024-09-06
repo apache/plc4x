@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -42,21 +45,19 @@ type DescriptionResponse interface {
 	GetDibDeviceInfo() DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
-}
-
-// DescriptionResponseExactly can be used when we want exactly this type and not a type which fulfills DescriptionResponse.
-// This is useful for switch cases.
-type DescriptionResponseExactly interface {
-	DescriptionResponse
-	isDescriptionResponse() bool
+	// IsDescriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDescriptionResponse()
 }
 
 // _DescriptionResponse is the data-structure of this message
 type _DescriptionResponse struct {
-	*_KnxNetIpMessage
+	KnxNetIpMessageContract
 	DibDeviceInfo      DIBDeviceInfo
 	DibSuppSvcFamilies DIBSuppSvcFamilies
 }
+
+var _ DescriptionResponse = (*_DescriptionResponse)(nil)
+var _ KnxNetIpMessageRequirements = (*_DescriptionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -72,10 +73,8 @@ func (m *_DescriptionResponse) GetMsgType() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_DescriptionResponse) InitializeParent(parent KnxNetIpMessage) {}
-
-func (m *_DescriptionResponse) GetParent() KnxNetIpMessage {
-	return m._KnxNetIpMessage
+func (m *_DescriptionResponse) GetParent() KnxNetIpMessageContract {
+	return m.KnxNetIpMessageContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,12 +97,18 @@ func (m *_DescriptionResponse) GetDibSuppSvcFamilies() DIBSuppSvcFamilies {
 
 // NewDescriptionResponse factory function for _DescriptionResponse
 func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_DescriptionResponse {
-	_result := &_DescriptionResponse{
-		DibDeviceInfo:      dibDeviceInfo,
-		DibSuppSvcFamilies: dibSuppSvcFamilies,
-		_KnxNetIpMessage:   NewKnxNetIpMessage(),
+	if dibDeviceInfo == nil {
+		panic("dibDeviceInfo of type DIBDeviceInfo for DescriptionResponse must not be nil")
 	}
-	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result
+	if dibSuppSvcFamilies == nil {
+		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for DescriptionResponse must not be nil")
+	}
+	_result := &_DescriptionResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		DibDeviceInfo:           dibDeviceInfo,
+		DibSuppSvcFamilies:      dibSuppSvcFamilies,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 
@@ -123,7 +128,7 @@ func (m *_DescriptionResponse) GetTypeName() string {
 }
 
 func (m *_DescriptionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (dibDeviceInfo)
 	lengthInBits += m.DibDeviceInfo.GetLengthInBits(ctx)
@@ -138,59 +143,34 @@ func (m *_DescriptionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DescriptionResponseParse(ctx context.Context, theBytes []byte) (DescriptionResponse, error) {
-	return DescriptionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
-}
-
-func DescriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionResponse, error) {
+func (m *_DescriptionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__descriptionResponse DescriptionResponse, err error) {
+	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DescriptionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DescriptionResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dibDeviceInfo)
-	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dibDeviceInfo")
+	dibDeviceInfo, err := ReadSimpleField[DIBDeviceInfo](ctx, "dibDeviceInfo", ReadComplex[DIBDeviceInfo](DIBDeviceInfoParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dibDeviceInfo' field"))
 	}
-	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParseWithBuffer(ctx, readBuffer)
-	if _dibDeviceInfoErr != nil {
-		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field of DescriptionResponse")
-	}
-	dibDeviceInfo := _dibDeviceInfo.(DIBDeviceInfo)
-	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dibDeviceInfo")
-	}
+	m.DibDeviceInfo = dibDeviceInfo
 
-	// Simple Field (dibSuppSvcFamilies)
-	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dibSuppSvcFamilies")
+	dibSuppSvcFamilies, err := ReadSimpleField[DIBSuppSvcFamilies](ctx, "dibSuppSvcFamilies", ReadComplex[DIBSuppSvcFamilies](DIBSuppSvcFamiliesParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dibSuppSvcFamilies' field"))
 	}
-	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParseWithBuffer(ctx, readBuffer)
-	if _dibSuppSvcFamiliesErr != nil {
-		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field of DescriptionResponse")
-	}
-	dibSuppSvcFamilies := _dibSuppSvcFamilies.(DIBSuppSvcFamilies)
-	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dibSuppSvcFamilies")
-	}
+	m.DibSuppSvcFamilies = dibSuppSvcFamilies
 
 	if closeErr := readBuffer.CloseContext("DescriptionResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DescriptionResponse")
 	}
 
-	// Create a partially initialized instance
-	_child := &_DescriptionResponse{
-		_KnxNetIpMessage:   &_KnxNetIpMessage{},
-		DibDeviceInfo:      dibDeviceInfo,
-		DibSuppSvcFamilies: dibSuppSvcFamilies,
-	}
-	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
-	return _child, nil
+	return m, nil
 }
 
 func (m *_DescriptionResponse) Serialize() ([]byte, error) {
@@ -211,28 +191,12 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for DescriptionResponse")
 		}
 
-		// Simple Field (dibDeviceInfo)
-		if pushErr := writeBuffer.PushContext("dibDeviceInfo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dibDeviceInfo")
-		}
-		_dibDeviceInfoErr := writeBuffer.WriteSerializable(ctx, m.GetDibDeviceInfo())
-		if popErr := writeBuffer.PopContext("dibDeviceInfo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dibDeviceInfo")
-		}
-		if _dibDeviceInfoErr != nil {
-			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
+		if err := WriteSimpleField[DIBDeviceInfo](ctx, "dibDeviceInfo", m.GetDibDeviceInfo(), WriteComplex[DIBDeviceInfo](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dibDeviceInfo' field")
 		}
 
-		// Simple Field (dibSuppSvcFamilies)
-		if pushErr := writeBuffer.PushContext("dibSuppSvcFamilies"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dibSuppSvcFamilies")
-		}
-		_dibSuppSvcFamiliesErr := writeBuffer.WriteSerializable(ctx, m.GetDibSuppSvcFamilies())
-		if popErr := writeBuffer.PopContext("dibSuppSvcFamilies"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dibSuppSvcFamilies")
-		}
-		if _dibSuppSvcFamiliesErr != nil {
-			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
+		if err := WriteSimpleField[DIBSuppSvcFamilies](ctx, "dibSuppSvcFamilies", m.GetDibSuppSvcFamilies(), WriteComplex[DIBSuppSvcFamilies](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DescriptionResponse"); popErr != nil {
@@ -240,12 +204,10 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.SerializeParent(ctx, writeBuffer, m, ser)
+	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-func (m *_DescriptionResponse) isDescriptionResponse() bool {
-	return true
-}
+func (m *_DescriptionResponse) IsDescriptionResponse() {}
 
 func (m *_DescriptionResponse) String() string {
 	if m == nil {

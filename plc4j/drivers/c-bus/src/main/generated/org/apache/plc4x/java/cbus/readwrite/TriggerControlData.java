@@ -79,7 +79,7 @@ public abstract class TriggerControlData implements Message {
         "commandTypeContainer",
         "TriggerControlCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TriggerControlCommandTypeContainer::getValue,
             TriggerControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -141,7 +141,7 @@ public abstract class TriggerControlData implements Message {
         readEnumField(
             "commandTypeContainer",
             "TriggerControlCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 TriggerControlCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     TriggerControlCommandType commandType =
