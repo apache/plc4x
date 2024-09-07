@@ -99,6 +99,9 @@
             [simple     uint 16         offset]
             [const      uint 16         blank 0x00]
         ]
+        ['0xFD'     UmasPDUErrorResponse
+            [array      uint 8          block count 'byteLength - 2']
+        ]
         ['0xFE', '0x01'     UmasInitCommsResponse
             [simple     uint 16         maxFrameSize]
             [simple     uint 16         firmwareVersion]

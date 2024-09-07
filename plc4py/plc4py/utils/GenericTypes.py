@@ -56,7 +56,10 @@ class ByteOrder(Enum):
 
     @staticmethod
     def get_short_name(order):
-        if order == ByteOrder.LITTLE_ENDIAN or order == ByteOrder.LITTLE_ENDIAN_WORD_SWAP:
+        if (
+            order == ByteOrder.LITTLE_ENDIAN
+            or order == ByteOrder.LITTLE_ENDIAN_WORD_SWAP
+        ):
             return "little"
         elif order == ByteOrder.BIG_ENDIAN or order == ByteOrder.BIG_ENDIAN_WORD_SWAP:
             return "big"

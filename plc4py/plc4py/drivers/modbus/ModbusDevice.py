@@ -97,16 +97,20 @@ class ModbusDevice:
 
         if isinstance(tag, ModbusTagCoil):
             if tag.data_type.value != ModbusDataType.BOOL.value:
-                raise NotImplementedError(f"Only BOOL data types can be used with the coil register area")
+                raise NotImplementedError(
+                    f"Only BOOL data types can be used with the coil register area"
+                )
             pdu = ModbusPDUReadCoilsRequest(tag.address, tag.quantity)
         elif isinstance(tag, ModbusTagDiscreteInput):
             if tag.data_type.value != ModbusDataType.BOOL.value:
-                raise NotImplementedError(f"Only BOOL data types can be used with the digital input register area")
+                raise NotImplementedError(
+                    f"Only BOOL data types can be used with the digital input register area"
+                )
             pdu = ModbusPDUReadDiscreteInputsRequest(tag.address, tag.quantity)
         elif isinstance(tag, ModbusTagInputRegister):
             number_of_registers_per_item = tag.data_type.data_type_size / 2
             number_of_registers = ceil(tag.quantity * number_of_registers_per_item)
-            pdu = ModbusPDUReadInputRegistersRequest(tag.address,number_of_registers)
+            pdu = ModbusPDUReadInputRegistersRequest(tag.address, number_of_registers)
         elif isinstance(tag, ModbusTagHoldingRegister):
             number_of_registers_per_item = tag.data_type.data_type_size / 2
             number_of_registers = ceil(tag.quantity * number_of_registers_per_item)
@@ -150,7 +154,9 @@ class ModbusDevice:
             a = bitarray()
             a.frombytes(bytearray(result.value))
             a.bytereverse()
-            read_buffer = ReadBufferByteBased(bytearray(a), self._configuration.byte_order)
+            read_buffer = ReadBufferByteBased(
+                bytearray(a), self._configuration.byte_order
+            )
             quantity = request.tags[request.tag_names[0]].quantity
             if quantity == 1:
                 returned_value = PlcBOOL(read_buffer.read_bit(""))
@@ -197,9 +203,7 @@ class ModbusDevice:
         message_future = loop.create_future()
         values = request.values[request.tag_names[0]]
         if isinstance(tag, ModbusTagCoil):
-            pdu = ModbusPDUWriteMultipleCoilsRequest(
-                tag.address, tag.quantity, values
-            )
+            pdu = ModbusPDUWriteMultipleCoilsRequest(tag.address, tag.quantity, values)
         elif isinstance(tag, ModbusTagDiscreteInput):
             raise PlcRuntimeException(
                 "Modbus doesn't support writing to discrete inputs"
@@ -242,16 +246,15 @@ class ModbusDevice:
             response_item = ResponseItem(PlcResponseCode.INVALID_ADDRESS, None)
         else:
             response_item = ResponseItem(PlcResponseCode.OK, None)
-        write_response = PlcWriteResponse(PlcResponseCode.OK, {request.tag_names[0]: response_item})
+        write_response = PlcWriteResponse(
+            PlcResponseCode.OK, {request.tag_names[0]: response_item}
+        )
         return write_response
-
 
     def _serialize_data_items(self, tag: ModbusTag, values: PlcValue) -> List[int]:
         length = tag.quantity * tag.data_type.data_type_size
 
-        write_buffer = WriteBufferByteBased(
-            length, self._configuration.byte_order
-        )
+        write_buffer = WriteBufferByteBased(length, self._configuration.byte_order)
 
         DataItem.static_serialize(
             write_buffer,
@@ -259,6 +262,6 @@ class ModbusDevice:
             tag.data_type,
             tag.quantity,
             True,
-            self._configuration.byte_order
+            self._configuration.byte_order,
         )
         return list(write_buffer.get_bytes().tobytes())

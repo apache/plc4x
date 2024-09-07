@@ -40,9 +40,9 @@ async def test_plc_driver_umas_read():
     log = logging.getLogger(__name__)
 
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("umas://192.168.1.177:502") as connection:
+    async with driver_manager.connection("umas://192.168.190.174:502") as connection:
         with connection.read_request_builder() as builder:
-            builder.add_item(f"Random Tag {1}", "testing:DINT")
+            builder.add_item(f"Random Tag {1}", "blurbe:REAL")
             request = builder.build()
 
         future = connection.execute(request)
@@ -56,7 +56,7 @@ async def test_plc_driver_umas_read():
 
 @pytest.mark.asyncio
 @pytest.mark.xfail
-async def manual_test_plc_driver_umas_browse():
+async def test_plc_driver_umas_browse():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("umas://192.168.1.174:502") as connection:
         with connection.browse_request_builder() as builder:

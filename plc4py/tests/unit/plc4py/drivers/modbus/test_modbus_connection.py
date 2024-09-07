@@ -30,6 +30,7 @@ from plc4py.spi.values.PlcValues import PlcINT, PlcREAL
 logger = logging.getLogger("testing")
 TEST_SERVER_IP = "192.168.190.132"
 
+
 @pytest.mark.asyncio
 @pytest.mark.xfail
 async def manual_test_plc_driver_modbus_connect():
@@ -60,7 +61,9 @@ async def test_plc_driver_modbus_read_coil():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "0x00001")
             request = builder.build()
@@ -81,11 +84,15 @@ async def test_plc_driver_modbus_read_coil_non_bool():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "0x00001:REAL")
             request = builder.build()
-            TestCase.assertRaises(await connection.execute(request), NotImplementedError)
+            TestCase.assertRaises(
+                await connection.execute(request), NotImplementedError
+            )
 
 
 @pytest.mark.asyncio
@@ -100,7 +107,9 @@ async def test_plc_driver_modbus_read_coil_array():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "0x00001[2]")
             request = builder.build()
@@ -121,7 +130,9 @@ async def test_plc_driver_modbus_read_contacts():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "1x00001")
             request = builder.build()
@@ -142,7 +153,9 @@ async def test_plc_driver_modbus_read_contact_array():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "1x00001[2]")
             request = builder.build()
@@ -163,7 +176,9 @@ async def test_plc_driver_modbus_read_input_register():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "3x00001")
             request = builder.build()
@@ -184,7 +199,9 @@ async def test_plc_driver_modbus_read_input_register_array():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "3x00001[2]")
             request = builder.build()
@@ -205,7 +222,9 @@ async def test_plc_driver_modbus_read_holding():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00001")
             request = builder.build()
@@ -226,7 +245,9 @@ async def test_plc_driver_modbus_read_holding():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00001[2]")
             request = builder.build()
@@ -247,7 +268,9 @@ async def test_plc_driver_modbus_read_holding_real():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_WORD_SWAP") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_WORD_SWAP"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00011:REAL[2]")
             request = builder.build()
@@ -268,13 +291,15 @@ async def test_plc_driver_modbus_read_holding_string_even():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00041:CHAR[6]")
             request = builder.build()
             response = await connection.execute(request)
             value = response.tags["Random Tag"].value
-            assert value == [b'F', b'A', b'F', b'B', b'C', b'B']
+            assert value == [b"F", b"A", b"F", b"B", b"C", b"B"]
 
 
 @pytest.mark.asyncio
@@ -289,13 +314,15 @@ async def test_plc_driver_modbus_read_holding_string_odd():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00041:CHAR[5]")
             request = builder.build()
             response = await connection.execute(request)
             value = response.tags["Random Tag"].value
-            assert value == [b'F', b'A', b'F', b'B', b'C']
+            assert value == [b"F", b"A", b"F", b"B", b"C"]
 
 
 @pytest.mark.asyncio
@@ -310,7 +337,9 @@ async def test_plc_driver_modbus_write_holding_int():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
         with connection.write_request_builder() as builder:
             builder.add_item("Random Tag", "4x00001", PlcINT(874))
             request = builder.build()
@@ -331,7 +360,9 @@ async def test_plc_driver_modbus_write_holding_real():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_WORD_SWAP") as connection:
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_WORD_SWAP"
+    ) as connection:
         with connection.write_request_builder() as builder:
             builder.add_item("Random Tag", "4x00011:REAL", PlcREAL(874))
             request = builder.build()
