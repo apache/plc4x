@@ -87,9 +87,9 @@ class DefaultPlcReader(PlcReader):
                 self._device.read(request, self._transport), 10
             )
             return response
-        except Exception:
+        except Exception as e:
             # TODO:- This exception is very general and probably should be replaced
-            return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
+            raise e
 
     def is_read_supported(self) -> bool:
         """

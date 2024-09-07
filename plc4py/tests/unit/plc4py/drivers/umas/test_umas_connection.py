@@ -46,12 +46,10 @@ async def test_plc_driver_umas_read():
             request = builder.build()
 
         future = connection.execute(request)
-        await future
-        response = future.result()
+        response = await future
         value = response.tags["Random Tag 1"].value
         log.error(f"Read tag test_REAL - {value}")
-        await asyncio.sleep(1)
-    pass
+        assert value == 0.0
 
 
 @pytest.mark.asyncio
