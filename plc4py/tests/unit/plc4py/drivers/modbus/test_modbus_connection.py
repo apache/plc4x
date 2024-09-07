@@ -247,7 +247,7 @@ async def test_plc_driver_modbus_read_holding_real():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502") as connection:
+    async with driver_manager.connection(f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_WORD_SWAP") as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00001:REAL[2]")
             request = builder.build()
