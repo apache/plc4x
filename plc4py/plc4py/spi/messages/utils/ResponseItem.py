@@ -18,12 +18,12 @@
 #
 from abc import ABC
 from dataclasses import dataclass
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Union
 
 from plc4py.api.messages.PlcResponse import PlcResponseCode
 from plc4py.api.value.PlcValue import PlcValue
 
-T = TypeVar("T", bound=PlcValue)
+T = TypeVar("T", bound=Union[PlcValue, None])
 
 
 @dataclass

@@ -151,12 +151,18 @@ class ModbusDevice:
             return response
 
         if isinstance(tag, ModbusTagCoil) or isinstance(tag, ModbusTagDiscreteInput):
+            # As we need to do some funky stuff with the ordering of bits when reading bits
+            # We aren't using the DataItem code for it
+
+            # Normalize the array so we can just read the bits in one by one
             a = bitarray()
             a.frombytes(bytearray(result.value))
             a.bytereverse()
             read_buffer = ReadBufferByteBased(
                 bytearray(a), self._configuration.byte_order
             )
+
+            # If it's an array we need to wrap it in a PlcList
             quantity = request.tags[request.tag_names[0]].quantity
             if quantity == 1:
                 returned_value = PlcBOOL(read_buffer.read_bit(""))
@@ -253,7 +259,6 @@ class ModbusDevice:
 
     def _serialize_data_items(self, tag: ModbusTag, values: PlcValue) -> List[int]:
         length = tag.quantity * tag.data_type.data_type_size
-
         write_buffer = WriteBufferByteBased(length, self._configuration.byte_order)
 
         DataItem.static_serialize(

@@ -25,7 +25,7 @@ from plc4py.PlcDriverManager import PlcDriverManager
 from plc4py.api.value.PlcValue import PlcResponseCode
 import logging
 
-from plc4py.spi.values.PlcValues import PlcINT, PlcREAL
+from plc4py.spi.values.PlcValues import PlcINT, PlcREAL, PlcList
 
 logger = logging.getLogger("testing")
 TEST_SERVER_IP = "192.168.190.174"
@@ -342,6 +342,29 @@ async def test_plc_driver_modbus_write_holding_int():
     ) as connection:
         with connection.write_request_builder() as builder:
             builder.add_item("Random Tag", "4x00001", PlcINT(874))
+            request = builder.build()
+            response = await connection.execute(request)
+            value = response.tags["Random Tag"]
+            assert value.response_code == PlcResponseCode.OK
+
+
+@pytest.mark.asyncio
+@pytest.mark.xfail
+async def test_plc_driver_modbus_write_holding_int_array():
+    """
+    Test reading data from a Modbus PLC.
+    """
+    log = logging.getLogger(__name__)
+
+    # Initialize the PlcDriverManager
+    driver_manager = PlcDriverManager()
+
+    # Establish a connection to the Modbus PLC
+    async with driver_manager.connection(
+        f"modbus://{TEST_SERVER_IP}:502"
+    ) as connection:
+        with connection.write_request_builder() as builder:
+            builder.add_item("Random Tag", "4x00001[5]", PlcList([PlcINT(874), PlcINT(0), PlcINT(3), PlcINT(4), PlcINT(5)]))
             request = builder.build()
             response = await connection.execute(request)
             value = response.tags["Random Tag"]

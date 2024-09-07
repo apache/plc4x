@@ -92,6 +92,7 @@ class DefaultPlcWriter(PlcWriter):
             return response
         except Exception as e:
             # If an error occurs during the execution of the write request, return a response with
+            # Still haven't found a nice way to return an error
             # the INTERNAL_ERROR code. This exception is very general and probably should be replaced.
             # TODO:- This exception is very general and probably should be replaced
             raise e
