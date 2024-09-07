@@ -122,7 +122,7 @@ class ModbusDevice:
             self._configuration.unit_identifier,
             pdu,
         )
-        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), self._configuration.byte_order)
+        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
         adu.serialize(write_buffer)
 
         protocol = transport.protocol
@@ -225,7 +225,7 @@ class ModbusDevice:
             self._configuration.unit_identifier,
             pdu,
         )
-        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), self._configuration.byte_order)
+        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
         adu.serialize(write_buffer)
 
         protocol = transport.protocol

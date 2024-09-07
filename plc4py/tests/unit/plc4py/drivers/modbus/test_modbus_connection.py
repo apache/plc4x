@@ -310,7 +310,7 @@ async def test_plc_driver_modbus_write_holding_int():
 
 
 @pytest.mark.asyncio
-async def test_plc_driver_modbus_write_holding():
+async def test_plc_driver_modbus_write_holding_real():
     """
     Test reading data from a Modbus PLC.
     """

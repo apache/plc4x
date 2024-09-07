@@ -42,4 +42,4 @@ class ModbusConfiguration(PlcConfiguration):
         # Get the unit identifier from the parameters, default to 1
         self.unit_identifier = self.parameters.get("unit_identifier", 1)
         #Specifies the byte order of the payload
-        self.byte_order = self.parameters.get("byte_order", ByteOrder.BIG_ENDIAN)
+        self.byte_order = ByteOrder[self.parameters.get("byte_order", "BIG_ENDIAN")]
