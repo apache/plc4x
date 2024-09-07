@@ -381,6 +381,11 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
                 value,
             )
             src.frombytes(result)
+            if byte_order == ByteOrder.BIG_ENDIAN_WORD_SWAP or byte_order == ByteOrder.LITTLE_ENDIAN_WORD_SWAP:
+                if 32 < bit_length <= 64:
+                    src = src[16:32] + src[0:16] + src[48:] + src[32:48]
+                elif 16 < bit_length <= 32:
+                    src = src[16:] + src[0:16]
             if bit_length < 8:
                 self.bb[self.position : self.position + bit_length] = src[-bit_length:]
             else:
