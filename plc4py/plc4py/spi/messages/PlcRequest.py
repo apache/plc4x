@@ -63,14 +63,9 @@ class DefaultWriteRequestBuilder(WriteRequestBuilder):
         return self.write_request
 
     def add_item(self, tag_name: str, address_string: str, value: PlcValue) -> None:
-        if value
+
         tag = self.tag_builder.create(address_string)
         self.write_request.tags[tag_name] = tag
-
-        if not isinstance(value, list):
-            if not isinstance(value, PlcValue):
-
-            value = [value]
         self.write_request.values[tag_name] = value
 
     def add_tag(self, tag_name: str, tag: PlcTag, value: PlcValue) -> None:

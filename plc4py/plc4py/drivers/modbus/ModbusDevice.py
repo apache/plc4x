@@ -64,8 +64,8 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersReq
     ModbusPDUWriteMultipleHoldingRegistersRequestBuilder,
 )
 
-from drivers.modbus.ModbusTag import ModbusTag
-from protocols.modbus.readwrite.ModbusDataType import ModbusDataType
+from plc4py.drivers.modbus.ModbusTag import ModbusTag
+from plc4py.protocols.modbus.readwrite.ModbusDataType import ModbusDataType
 
 
 @dataclass
@@ -122,7 +122,7 @@ class ModbusDevice:
             self._configuration.unit_identifier,
             pdu,
         )
-        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
+        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), self._configuration.byte_order)
         adu.serialize(write_buffer)
 
         protocol = transport.protocol
@@ -150,17 +150,18 @@ class ModbusDevice:
             a = bitarray()
             a.frombytes(bytearray(result.value))
             a.bytereverse()
-            read_buffer = ReadBufferByteBased(bytearray(a), ByteOrder.BIG_ENDIAN)
+            read_buffer = ReadBufferByteBased(bytearray(a), self._configuration.byte_order)
             quantity = request.tags[request.tag_names[0]].quantity
             if quantity == 1:
                 returned_value = PlcBOOL(read_buffer.read_bit(""))
             else:
-                returned_value = []
+                returned_array = []
                 for _ in range(quantity):
-                    returned_value.append(PlcBOOL(read_buffer.read_bit("")))
+                    returned_array.append(PlcBOOL(read_buffer.read_bit("")))
+                returned_value = PlcList(returned_array)
         else:
             read_buffer = ReadBufferByteBased(
-                bytearray(result.value), ByteOrder.BIG_ENDIAN
+                bytearray(result.value), self._configuration.byte_order
             )
             returned_value = DataItem.static_parse(
                 read_buffer,
@@ -208,9 +209,10 @@ class ModbusDevice:
                 "Modbus doesn't support writing to input registers"
             )
         elif isinstance(tag, ModbusTagHoldingRegister):
-            self._serialize_data_items(tag, values)
+            values = self._serialize_data_items(tag, values)
+            quantity = tag.quantity * (tag.data_type.data_type_size / 2)
             pdu = ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
-                tag.address, tag.quantity, [values]
+                tag.address, quantity, values
             ).build()
         else:
             raise NotImplementedError(
@@ -223,7 +225,7 @@ class ModbusDevice:
             self._configuration.unit_identifier,
             pdu,
         )
-        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
+        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), self._configuration.byte_order)
         adu.serialize(write_buffer)
 
         protocol = transport.protocol
@@ -236,14 +238,19 @@ class ModbusDevice:
 
         await message_future
         result = message_future.result()
-        pass
+        if isinstance(result, ModbusPDUError):
+            response_item = ResponseItem(PlcResponseCode.INVALID_ADDRESS, None)
+        else:
+            response_item = ResponseItem(PlcResponseCode.OK, None)
+        write_response = PlcWriteResponse(PlcResponseCode.OK, {request.tag_names[0]: response_item})
+        return write_response
 
-    def _serialize_data_items(self, tag: ModbusTag, values: List[PlcValue]) -> List[int]:
-        length: int = 0
+
+    def _serialize_data_items(self, tag: ModbusTag, values: PlcValue) -> List[int]:
         length = tag.quantity * tag.data_type.data_type_size
 
         write_buffer = WriteBufferByteBased(
-            length, ByteOrder.BIG_ENDIAN
+            length, self._configuration.byte_order
         )
 
         DataItem.static_serialize(
@@ -252,6 +259,6 @@ class ModbusDevice:
             tag.data_type,
             tag.quantity,
             True,
-            ByteOrder.BIG_ENDIAN
+            self._configuration.byte_order
         )
-        return write_buffer.get_bytes().tobytes()
+        return list(write_buffer.get_bytes().tobytes())
