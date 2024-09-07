@@ -28,7 +28,7 @@ import logging
 from plc4py.spi.values.PlcValues import PlcINT, PlcREAL
 
 logger = logging.getLogger("testing")
-TEST_SERVER_IP = "192.168.190.132"
+TEST_SERVER_IP = "192.168.190.174"
 
 
 @pytest.mark.asyncio
@@ -269,7 +269,7 @@ async def test_plc_driver_modbus_read_holding_real():
 
     # Establish a connection to the Modbus PLC
     async with driver_manager.connection(
-        f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_WORD_SWAP"
+        f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_BYTE_SWAP"
     ) as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00011:REAL[2]")
@@ -361,7 +361,7 @@ async def test_plc_driver_modbus_write_holding_real():
 
     # Establish a connection to the Modbus PLC
     async with driver_manager.connection(
-        f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_WORD_SWAP"
+        f"modbus://{TEST_SERVER_IP}:502?byte_order=BIG_ENDIAN_BYTE_SWAP"
     ) as connection:
         with connection.write_request_builder() as builder:
             builder.add_item("Random Tag", "4x00011:REAL", PlcREAL(874))

@@ -46,8 +46,8 @@ class ByteOrder(Enum):
 
     LITTLE_ENDIAN = auto()
     BIG_ENDIAN = auto()
-    LITTLE_ENDIAN_WORD_SWAP = auto()
-    BIG_ENDIAN_WORD_SWAP = auto()
+    LITTLE_ENDIAN_BYTE_SWAP = auto()
+    BIG_ENDIAN_BYTE_SWAP = auto()
 
     def __new__(cls, value):
         obj = object.__new__(cls)
@@ -58,10 +58,10 @@ class ByteOrder(Enum):
     def get_short_name(order):
         if (
             order == ByteOrder.LITTLE_ENDIAN
-            or order == ByteOrder.LITTLE_ENDIAN_WORD_SWAP
+            or order == ByteOrder.LITTLE_ENDIAN_BYTE_SWAP
         ):
             return "little"
-        elif order == ByteOrder.BIG_ENDIAN or order == ByteOrder.BIG_ENDIAN_WORD_SWAP:
+        elif order == ByteOrder.BIG_ENDIAN or order == ByteOrder.BIG_ENDIAN_BYTE_SWAP:
             return "big"
 
 
