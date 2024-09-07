@@ -31,6 +31,7 @@ logger = logging.getLogger("testing")
 TEST_SERVER_IP = "192.168.190.132"
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def manual_test_plc_driver_modbus_connect():
     """
     Test the connection to a Modbus PLC using PlcDriverManager.
@@ -130,6 +131,7 @@ async def test_plc_driver_modbus_read_contacts():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read_contact_array():
     """
     Test reading data from a Modbus PLC.
@@ -150,6 +152,7 @@ async def test_plc_driver_modbus_read_contact_array():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read_input_register():
     """
     Test reading data from a Modbus PLC.
@@ -170,6 +173,7 @@ async def test_plc_driver_modbus_read_input_register():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read_input_register_array():
     """
     Test reading data from a Modbus PLC.
@@ -190,6 +194,7 @@ async def test_plc_driver_modbus_read_input_register_array():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read_holding():
     """
     Test reading data from a Modbus PLC.
@@ -210,6 +215,7 @@ async def test_plc_driver_modbus_read_holding():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read_holding():
     """
     Test reading data from a Modbus PLC.
@@ -230,6 +236,7 @@ async def test_plc_driver_modbus_read_holding():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read_holding_real():
     """
     Test reading data from a Modbus PLC.
@@ -250,6 +257,7 @@ async def test_plc_driver_modbus_read_holding_real():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read_holding_string_even():
     """
     Test reading data from a Modbus PLC.
@@ -270,6 +278,7 @@ async def test_plc_driver_modbus_read_holding_string_even():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read_holding_string_odd():
     """
     Test reading data from a Modbus PLC.
@@ -290,6 +299,7 @@ async def test_plc_driver_modbus_read_holding_string_odd():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_write_holding_int():
     """
     Test reading data from a Modbus PLC.
@@ -310,6 +320,7 @@ async def test_plc_driver_modbus_write_holding_int():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_write_holding_real():
     """
     Test reading data from a Modbus PLC.

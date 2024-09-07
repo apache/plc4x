@@ -46,6 +46,8 @@ class ByteOrder(Enum):
 
     LITTLE_ENDIAN = auto()
     BIG_ENDIAN = auto()
+    LITTLE_ENDIAN_BYTE_SWAP = auto()
+    BIG_ENDIAN_BYTE_SWAP = auto()
 
     def __new__(cls, value):
         obj = object.__new__(cls)
