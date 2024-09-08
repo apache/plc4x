@@ -147,7 +147,7 @@ class UmasVariableBuilder:
     def build(self) -> UmasVariable:
         variable: UmasVariable = None
         _ARRAY_REGEX: str = (
-            "^ARRAY\[(?P<start_number>[0-9]*)..(?P<end_number>[0-9]*)\] OF (?P<data_type>[a-zA-z0-9]*)"
+            r"^ARRAY\[(?P<start_number>[0-9]*)..(?P<end_number>[0-9]*)\] OF (?P<data_type>[a-zA-z0-9]*)"
         )
         _ARRAY_COMPILED: Pattern[AnyStr] = re.compile(_ARRAY_REGEX)
 

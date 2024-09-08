@@ -48,7 +48,6 @@ async def test_plc_driver_umas_read():
         future = connection.execute(request)
         response = await future
         value = response.tags["Random Tag 1"].value
-        log.error(f"Read tag test_REAL - {value}")
         assert value == 0.0
 
 
@@ -56,7 +55,7 @@ async def test_plc_driver_umas_read():
 @pytest.mark.xfail
 async def test_plc_driver_umas_browse():
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("umas://192.168.1.174:502") as connection:
+    async with driver_manager.connection("umas://192.168.190.174:502") as connection:
         with connection.browse_request_builder() as builder:
             builder.add_query("All Tags", "*")
             request = builder.build()
@@ -64,4 +63,4 @@ async def test_plc_driver_umas_browse():
         future = connection.execute(request)
         await future
         response = future.result()
-    pass
+        pass
