@@ -711,8 +711,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_DETRONS = 684,
         M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD = 685,
         M_VARNI_DIGITAL_PRIVATE_LIMITED = 686,
-        M_ABB___RESERVED = 687,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 688,
+        M_3A_ENTREPRISE_APS = 687,
+        M_ABB___RESERVED = 688,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 689,
     }
 
     public static class KnxManufacturerInfo
@@ -2681,10 +2682,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_VARNI_DIGITAL_PRIVATE_LIMITED: { /* '686' */
                     return 744;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '687' */
+                case KnxManufacturer.M_3A_ENTREPRISE_APS: { /* '687' */
+                    return 745;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '688' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '688' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '689' */
                     return 43959;
                 }
                 case KnxManufacturer.M_EELECTRON: { /* '69' */
@@ -4758,10 +4762,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_VARNI_DIGITAL_PRIVATE_LIMITED: { /* '686' */
                     return "Varni Digital Private Limited";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '687' */
+                case KnxManufacturer.M_3A_ENTREPRISE_APS: { /* '687' */
+                    return "3a entreprise aps";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '688' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '688' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '689' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_EELECTRON: { /* '69' */

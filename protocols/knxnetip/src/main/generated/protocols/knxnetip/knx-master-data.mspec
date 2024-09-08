@@ -1436,8 +1436,9 @@
     ['684' M_DETRONS ['742', '"DETRONS"']]
     ['685' M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD ['743', '"Zhejiang FORICK, Intelligent Technology Co., LTD"']]
     ['686' M_VARNI_DIGITAL_PRIVATE_LIMITED ['744', '"Varni Digital Private Limited"']]
-    ['687' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['688' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['687' M_3A_ENTREPRISE_APS ['745', '"3a entreprise aps"']]
+    ['688' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['689' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

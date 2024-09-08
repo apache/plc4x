@@ -797,9 +797,10 @@ public enum KnxManufacturer {
   M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD(
       (int) 685, (int) 743, (String) "Zhejiang FORICK, Intelligent Technology Co., LTD"),
   M_VARNI_DIGITAL_PRIVATE_LIMITED((int) 686, (int) 744, (String) "Varni Digital Private Limited"),
-  M_ABB___RESERVED((int) 687, (int) 43954, (String) "ABB - reserved"),
+  M_3A_ENTREPRISE_APS((int) 687, (int) 745, (String) "3a entreprise aps"),
+  M_ABB___RESERVED((int) 688, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 688, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 689, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
