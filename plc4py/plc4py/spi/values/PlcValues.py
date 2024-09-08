@@ -19,164 +19,132 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
-from plc4py.api.value.PlcValue import PlcValue
+from ...api.value.PlcValue import PlcValue
 
 
-@dataclass
 class PlcINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcBYTE(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcCHAR(PlcValue[str]):
     pass
 
 
-@dataclass
 class PlcDATE(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcDATE_AND_TIME(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcDINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcDWORD(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcLDATE(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcLDATE_AND_TIME(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcLINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcList(PlcValue[List[Any]]):
     pass
 
 
-@dataclass
 class PlcLREAL(PlcValue[float]):
     pass
 
 
-@dataclass
 class PlcLTIME(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcLTIME_OF_DAY(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcLWORD(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcNull(PlcValue[None]):
     pass
 
 
-@dataclass
 class PlcRawByteArray(List[PlcValue[Any]]):
     pass
 
 
-@dataclass
 class PlcREAL(PlcValue[float]):
     pass
 
 
-@dataclass
 class PlcSINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcSTRING(PlcValue[str]):
     pass
 
 
-@dataclass
 class PlcStruct(PlcValue[Dict[str, PlcValue[str]]]):
     pass
 
 
-@dataclass
 class PlcTIME(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcTIME_OF_DAY(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcUBINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcUDINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcUINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcULINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcUSINT(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcWCHAR(PlcValue[str]):
     pass
 
 
-@dataclass
 class PlcWORD(PlcValue[int]):
     pass
 
 
-@dataclass
 class PlcWSTRING(PlcValue[str]):
     pass
 
 
-@dataclass
 class PlcBOOL(PlcValue[bool]):
     pass

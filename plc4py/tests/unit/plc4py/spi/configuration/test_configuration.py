@@ -21,7 +21,7 @@ from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 
 def test_configuration_standard_raw_ip():
     config = PlcConfiguration(
-        "profibus:raw://127.0.0.1:4664&host=localhost&mac=01:02:03:04:05:06"
+        "profibus:raw://127.0.0.1:4664?host=localhost&mac=01:02:03:04:05:06"
     )
     assert config.protocol == "profibus"
     assert config.transport == "raw"
@@ -32,7 +32,7 @@ def test_configuration_standard_raw_ip():
 
 def test_configuration_standard_tcp_localhost():
     config = PlcConfiguration(
-        "profibus:tcp://localhost:4664&host=localhost&mac=01:02:03:04:05:06"
+        "profibus:tcp://localhost:4664?host=localhost&mac=01:02:03:04:05:06"
     )
     assert config.protocol == "profibus"
     assert config.transport == "tcp"
@@ -43,7 +43,7 @@ def test_configuration_standard_tcp_localhost():
 
 def test_configuration_standard_no_transport():
     config = PlcConfiguration(
-        "profibus://localhost:4664&host=localhost&mac=01:02:03:04:05:06"
+        "profibus://localhost:4664?host=localhost&mac=01:02:03:04:05:06"
     )
     assert config.protocol == "profibus"
     assert config.transport == None
@@ -54,7 +54,7 @@ def test_configuration_standard_no_transport():
 
 def test_configuration_standard_second_parameter():
     config = PlcConfiguration(
-        "profibus://localhost:4664&host=localhost&mac=01:02:03:04:05:06"
+        "profibus://localhost:4664?host=localhost&mac=01:02:03:04:05:06"
     )
     assert config.protocol == "profibus"
     assert config.transport == None
@@ -66,7 +66,7 @@ def test_configuration_standard_second_parameter():
 
 def test_configuration_standard_no_port():
     config = PlcConfiguration(
-        "profibus://localhost&host=localhost&mac=01:02:03:04:05:06"
+        "profibus://localhost?host=localhost&mac=01:02:03:04:05:06"
     )
     assert config.protocol == "profibus"
     assert config.transport == None
@@ -86,7 +86,7 @@ def test_configuration_standard_no_parameters():
 
 
 def test_configuration_standard_no_parameters():
-    config = PlcConfiguration("eip://127.0.0.1&test=plc4x")
+    config = PlcConfiguration("eip://127.0.0.1?test=plc4x")
     assert config.protocol == "eip"
     assert config.transport == None
     assert config.host == "127.0.0.1"

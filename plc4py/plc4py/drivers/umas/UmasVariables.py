@@ -186,7 +186,7 @@ class UmasVariableBuilder:
                         variable = UmasCustomVariable(
                             self.tag_name,
                             data_type,
-                            self.tag_reference.block,
+                            self.block,
                             self.tag_reference.offset,
                             children,
                         )

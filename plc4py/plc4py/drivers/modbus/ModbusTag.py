@@ -102,7 +102,7 @@ class ModbusTag(PlcTag):
             )
 
         data_type = (
-            ModbusDataType(matcher.group("datatype"))
+            ModbusDataType[matcher.group("datatype")]
             if "datatype" in matcher.groupdict()
             and matcher.group("datatype") is not None
             else cls._DEFAULT_DATA_TYPE

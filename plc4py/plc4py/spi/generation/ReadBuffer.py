@@ -324,6 +324,11 @@ class ReadBufferByteBased(ReadBuffer):
             padded = (32 - bit_length) * bitarray("0") + bitarray(
                 self.bb[self.position : self.position + bit_length]
             )
+            if (
+                byte_order == ByteOrder.BIG_ENDIAN_BYTE_SWAP
+                or byte_order == ByteOrder.LITTLE_ENDIAN_BYTE_SWAP
+            ):
+                padded = padded[16:] + padded[0:16]
             result: int = struct.unpack(endian_string + "i", padded)[0]
             self.position += bit_length
             return result
@@ -342,6 +347,11 @@ class ReadBufferByteBased(ReadBuffer):
             padded = (64 - bit_length) * bitarray("0") + bitarray(
                 self.bb[self.position : self.position + bit_length]
             )
+            if (
+                byte_order == ByteOrder.BIG_ENDIAN_BYTE_SWAP
+                or byte_order == ByteOrder.LITTLE_ENDIAN_BYTE_SWAP
+            ):
+                padded = padded[16:32] + padded[0:16] + padded[48:] + padded[32:48]
             result: int = struct.unpack(endian_string + "q", padded)[0]
             self.position += bit_length
             return result
@@ -356,9 +366,15 @@ class ReadBufferByteBased(ReadBuffer):
             endianness: str = ">"
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
+            buffer = self.bb[self.position : self.position + bit_length]
+            if (
+                byte_order == ByteOrder.BIG_ENDIAN_BYTE_SWAP
+                or byte_order == ByteOrder.LITTLE_ENDIAN_BYTE_SWAP
+            ):
+                buffer = buffer[16:] + buffer[0:16]
             result: float = struct.unpack(
                 endianness + "f",
-                self.bb[self.position : self.position + bit_length],
+                buffer,
             )[0]
             self.position += bit_length
             return result
@@ -373,9 +389,15 @@ class ReadBufferByteBased(ReadBuffer):
             endianness: str = ">"
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
+            buffer = self.bb[self.position : self.position + bit_length]
+            if (
+                byte_order == ByteOrder.BIG_ENDIAN_BYTE_SWAP
+                or byte_order == ByteOrder.LITTLE_ENDIAN_BYTE_SWAP
+            ):
+                buffer = buffer[16:32] + buffer[0:16] + buffer[48:] + buffer[32:48]
             result: float = struct.unpack(
                 endianness + "d",
-                self.bb[self.position : self.position + bit_length],
+                buffer,
             )[0]
             self.position += bit_length
             return result
