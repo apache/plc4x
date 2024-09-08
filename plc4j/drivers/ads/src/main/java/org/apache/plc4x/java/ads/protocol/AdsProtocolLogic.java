@@ -488,7 +488,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }
 
                 // Convert the plc value type from the ADS specific one to the PLC4X global one.
-                org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(dataType).toString());
+                org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType =
+                    org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(dataType).toString());
 
                 // If this type has children, add entries for its children.
                 List<PlcBrowseItem> children = getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), !symbol.getFlagReadOnly(), dataType);
@@ -504,32 +505,21 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 options.put("offset", new PlcUDINT(symbol.getOffset()));
                 options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
 
-                if (plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
-                    List<ArrayInfo> arrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
-                    List<PlcBrowseItemArrayInfo> itemArrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
-                    for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
-                        arrayInfo.add(new DefaultArrayInfo(
-                            (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
-                        itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
-                            adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
-                    }
-                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), symbol.getName(),
-                        true, !symbol.getFlagReadOnly(), true, childMap, options, itemArrayInfo);
+                List<ArrayInfo> arrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
+                List<PlcBrowseItemArrayInfo> itemArrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
+                for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
+                    arrayInfo.add(new DefaultArrayInfo(
+                        (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
+                    itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
+                        adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+                }
+                DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), symbol.getName(),
+                    true, !symbol.getFlagReadOnly(), true, childMap, options, itemArrayInfo);
 
-                    // Check if this item should be added to the result
-                    if (interceptor.intercept(item)) {
-                        // Add the type itself.
-                        resultsForQuery.add(item);
-                    }
-                } else {
-                    DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, Collections.emptyList()), symbol.getName(), true,
-                        !symbol.getFlagReadOnly(), true, childMap, options);
-
-                    // Check if this item should be added to the result
-                    if (interceptor.intercept(item)) {
-                        // Add the type itself.
-                        resultsForQuery.add(item);
-                    }
+                // Check if this item should be added to the result
+                if (interceptor.intercept(item)) {
+                    // Add the type itself.
+                    resultsForQuery.add(item);
                 }
             }
             responseCodes.put(queryName, PlcResponseCode.OK);
@@ -541,6 +531,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     }
 
     protected List<PlcBrowseItem> getBrowseItems(String basePath, long baseGroupId, long baseOffset, boolean parentWritable, AdsDataTypeTableEntry dataType) {
+        // If this is an array type, then we need to lookup it's elemental type and use that instead
+        if(dataType.getArrayDimensions() > 0) {
+            dataType = this.dataTypeTable.get(dataType.getSimpleTypeName());
+        }
+
         if (dataType.getNumChildren() == 0) {
             return Collections.emptyList();
         }
@@ -555,7 +550,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             String itemAddress = basePath + "." + child.getPropertyName();
 
             // Convert the plc value type from the ADS specific one to the PLC4X global one.
-            org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(childDataType).toString());
+            org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType =
+                org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(childDataType).toString());
 
             // Recursively add all children of the current datatype.
             List<PlcBrowseItem> children = getBrowseItems(itemAddress, baseGroupId, baseOffset + child.getOffset(), parentWritable, childDataType);
@@ -571,26 +567,18 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             options.put("offset", new PlcUDINT(baseOffset + child.getOffset()));
             options.put("size-in-bytes", new PlcUDINT(childDataType.getSize()));
 
-            if (plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
-                List<ArrayInfo> arrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
-                List<PlcBrowseItemArrayInfo> itemArrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
-                for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : childDataType.getArrayInfo()) {
-                    arrayInfo.add(new DefaultArrayInfo(
-                        (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
-                    itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
-                        adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
-                }
-                // Add the type itself.
-                values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(
-                    basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), child.getPropertyName(),
-                    true, parentWritable, true, childMap, options, itemArrayInfo));
-            } else {
-                // Add the type itself.
-                values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(
-                    basePath + "." + child.getPropertyName(), plc4xPlcValueType,
-                    Collections.emptyList()), child.getPropertyName(),
-                    true, parentWritable, true, childMap, options));
+            List<ArrayInfo> arrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
+            List<PlcBrowseItemArrayInfo> itemArrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
+            for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : childDataType.getArrayInfo()) {
+                arrayInfo.add(new DefaultArrayInfo(
+                    (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
+                itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
+                    adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
             }
+            // Add the type itself.
+            values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(
+                basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), child.getPropertyName(),
+                true, parentWritable, true, childMap, options, itemArrayInfo));
         }
         return values;
     }
@@ -1765,7 +1753,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     }
 
     protected PlcValueType getPlcValueTypeForAdsDataType(AdsDataTypeTableEntry dataTypeTableEntry) {
-        String dataTypeName = dataTypeTableEntry.getDataTypeName();
+        String dataTypeName = (!dataTypeTableEntry.getSimpleTypeName().isEmpty() && !dataTypeTableEntry.getDataTypeName().equals("BOOL")) ?
+            dataTypeTableEntry.getSimpleTypeName() : dataTypeTableEntry.getDataTypeName();
         if (dataTypeName.startsWith("STRING(")) {
             dataTypeName = "STRING";
         } else if (dataTypeName.startsWith("WSTRING(")) {
@@ -1775,27 +1764,6 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         try {
             return PlcValueType.valueOf(dataTypeName);
         } catch (IllegalArgumentException e) {
-            // Then check if this is an array.
-            if (dataTypeTableEntry.getArrayDimensions() > 0) {
-                return PlcValueType.List;
-            }
-            // There seem to be some data types, that have odd names, but no children
-            // So we'll check if their "simpleTypeName" matches instead.
-            if (dataTypeTableEntry.getChildren().isEmpty()) {
-                try {
-                    dataTypeName = dataTypeTableEntry.getSimpleTypeName();
-                    if (dataTypeName.startsWith("STRING(")) {
-                        dataTypeName = "STRING";
-                    } else if (dataTypeName.startsWith("WSTRING(")) {
-                        dataTypeName = "WSTRING";
-                    }
-
-                    return PlcValueType.valueOf(dataTypeName);
-                } catch (IllegalArgumentException e2) {
-                    // In this case it's something we can't handle.
-                    return PlcValueType.NULL;
-                }
-            }
             return PlcValueType.Struct;
         }
     }
