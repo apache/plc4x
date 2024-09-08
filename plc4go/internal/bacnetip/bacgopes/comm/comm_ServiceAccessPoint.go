@@ -25,10 +25,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type ServiceAccessPoint interface {

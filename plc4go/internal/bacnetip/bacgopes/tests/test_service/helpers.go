@@ -25,8 +25,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
@@ -39,6 +37,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 // This struct turns off the deferred startup function call that broadcasts I-Am-Router-To-Network and Network-Number-Is

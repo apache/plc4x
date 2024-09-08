@@ -25,9 +25,6 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/suite"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvllservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
@@ -37,6 +34,8 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 type TestAnnexJCodecSuite struct {

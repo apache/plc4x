@@ -31,14 +31,13 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 type TIPNetwork struct {

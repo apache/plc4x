@@ -20,9 +20,8 @@
 package quick
 
 import (
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 func WhoIsRouterToNetwork(net uint16) *npdu.WhoIsRouterToNetwork {

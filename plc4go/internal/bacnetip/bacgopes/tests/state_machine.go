@@ -27,13 +27,12 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // Transition Instances of this class are transitions betweeen getStates of a state machine.

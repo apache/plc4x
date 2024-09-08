@@ -22,11 +22,6 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/iocb"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"net"
 	"net/url"
 	"time"
@@ -34,6 +29,11 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/iocb"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"

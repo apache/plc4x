@@ -20,9 +20,8 @@
 package appservice
 
 import (
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 //go:generate plc4xGenerator -type=DeviceInfo -prefix=app_

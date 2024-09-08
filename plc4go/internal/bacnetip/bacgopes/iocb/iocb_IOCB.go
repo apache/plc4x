@@ -26,10 +26,9 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type IOCBState int

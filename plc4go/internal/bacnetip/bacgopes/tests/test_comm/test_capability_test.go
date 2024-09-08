@@ -25,9 +25,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 // TODO: big WIP
