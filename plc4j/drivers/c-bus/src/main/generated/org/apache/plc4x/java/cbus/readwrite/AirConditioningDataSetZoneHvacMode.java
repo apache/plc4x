@@ -106,40 +106,29 @@ public class AirConditioningDataSetZoneHvacMode extends AirConditioningData impl
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (hvacModeAndFlags)
-    writeSimpleField(
-        "hvacModeAndFlags", hvacModeAndFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hvacModeAndFlags", hvacModeAndFlags, writeComplex(writeBuffer));
 
     // Simple Field (hvacType)
     writeSimpleEnumField(
         "hvacType",
         "HVACType",
         hvacType,
-        new DataWriterEnumDefault<>(
-            HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (level) (Can be skipped, if the value is null)
     writeOptionalField(
-        "level",
-        level,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHvacModeAndFlags().getIsLevelTemperature());
+        "level", level, writeComplex(writeBuffer), getHvacModeAndFlags().getIsLevelTemperature());
 
     // Optional Field (rawLevel) (Can be skipped, if the value is null)
     writeOptionalField(
-        "rawLevel",
-        rawLevel,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHvacModeAndFlags().getIsLevelRaw());
+        "rawLevel", rawLevel, writeComplex(writeBuffer), getHvacModeAndFlags().getIsLevelRaw());
 
     // Optional Field (auxLevel) (Can be skipped, if the value is null)
     writeOptionalField(
-        "auxLevel",
-        auxLevel,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHvacModeAndFlags().getIsAuxLevelUsed());
+        "auxLevel", auxLevel, writeComplex(writeBuffer), getHvacModeAndFlags().getIsAuxLevelUsed());
 
     writeBuffer.popContext("AirConditioningDataSetZoneHvacMode");
   }
@@ -195,39 +184,35 @@ public class AirConditioningDataSetZoneHvacMode extends AirConditioningData impl
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACModeAndFlags hvacModeAndFlags =
         readSimpleField(
             "hvacModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACModeAndFlags.staticParse(readBuffer), readBuffer));
 
     HVACType hvacType =
         readEnumField(
             "hvacType",
             "HVACType",
-            new DataReaderEnumDefault<>(HVACType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     HVACTemperature level =
         readOptionalField(
             "level",
-            new DataReaderComplexDefault<>(
-                () -> HVACTemperature.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACTemperature.staticParse(readBuffer), readBuffer),
             hvacModeAndFlags.getIsLevelTemperature());
 
     HVACRawLevels rawLevel =
         readOptionalField(
             "rawLevel",
-            new DataReaderComplexDefault<>(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
             hvacModeAndFlags.getIsLevelRaw());
 
     HVACAuxiliaryLevel auxLevel =
         readOptionalField(
             "auxLevel",
-            new DataReaderComplexDefault<>(
-                () -> HVACAuxiliaryLevel.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACAuxiliaryLevel.staticParse(readBuffer), readBuffer),
             hvacModeAndFlags.getIsAuxLevelUsed());
 
     readBuffer.closeContext("AirConditioningDataSetZoneHvacMode");

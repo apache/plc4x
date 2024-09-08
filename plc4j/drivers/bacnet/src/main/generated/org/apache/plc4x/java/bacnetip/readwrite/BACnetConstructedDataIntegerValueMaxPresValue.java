@@ -83,7 +83,7 @@ public class BACnetConstructedDataIntegerValueMaxPresValue extends BACnetConstru
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueMaxPresValue");
 
     // Simple Field (maxPresValue)
-    writeSimpleField("maxPresValue", maxPresValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxPresValue", maxPresValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataIntegerValueMaxPresValue extends BACnetConstru
     BACnetApplicationTagSignedInteger maxPresValue =
         readSimpleField(
             "maxPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

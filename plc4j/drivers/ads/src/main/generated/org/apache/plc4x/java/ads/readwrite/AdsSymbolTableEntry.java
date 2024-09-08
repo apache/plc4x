@@ -545,12 +545,6 @@ public class AdsSymbolTableEntry implements Message {
     return lengthInBits;
   }
 
-  public static AdsSymbolTableEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsSymbolTableEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsSymbolTableEntry");
     PositionAware positionAware = readBuffer;

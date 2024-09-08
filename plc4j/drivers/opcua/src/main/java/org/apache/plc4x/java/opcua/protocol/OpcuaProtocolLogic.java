@@ -18,9 +18,10 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
-import static java.util.concurrent.ForkJoinPool.commonPool;
+import static org.apache.plc4x.java.opcua.context.SecureChannel.getX509Certificate;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -31,6 +32,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
+import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.readwrite.*;
@@ -39,11 +41,12 @@ import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
+import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.transaction.RequestTransactionManager.RequestTransaction;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
@@ -56,9 +59,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements HasConfiguration<OpcuaConfiguration>, PlcSubscriber {
@@ -78,9 +78,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         new NullExtension());               // Body
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
+    private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new ConcurrentHashMap<>();
+    private final RequestTransactionManager tm = new RequestTransactionManager();
+
     private OpcuaConfiguration configuration;
-    private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new HashMap<>();
+    private OpcuaDriverContext driverContext;
     private SecureChannel channel;
+    private Conversation conversation;
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
@@ -89,7 +93,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void close(ConversationContext<OpcuaAPU> context) {
-        //Nothing
+        tm.shutdown();
     }
 
     @Override
@@ -100,12 +104,21 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         for (Map.Entry<Long, OpcuaSubscriptionHandle> subscriber : subscriptions.entrySet()) {
             subscriber.getValue().stopSubscriber();
         }
-        commonPool().submit(() -> channel.onDisconnect(context));
+
+        RequestTransaction tx = tm.startRequest();
+        tx.submit(() -> {
+            try {
+                channel.onDisconnect();
+                tx.endRequest();
+            } catch (Exception e) {
+                tx.failRequest(e);
+            }
+        });
     }
 
     @Override
     public void setDriverContext(DriverContext driverContext) {
-        super.setDriverContext(driverContext);
+        this.driverContext = (OpcuaDriverContext) driverContext;
     }
 
     @Override
@@ -114,48 +127,77 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         if (this.channel == null) {
             try {
-                this.channel = createSecureChannel(context.getAuthentication());
+                this.channel = createSecureChannel(context, context.getAuthentication());
             } catch (PlcRuntimeException ex) {
                 context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException(ex));
                 return;
             }
         }
-        commonPool().submit(() -> this.channel.onConnect(context));
+
+        CompletableFuture<ActivateSessionResponse> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            channel.onConnect().whenComplete(((response, error) -> bridge(transaction, future, response, error)));
+        });
+        future.whenComplete((response, error) -> {
+            if (error != null) {
+                LOGGER.error("Failed to establish connection", error);
+                return;
+            }
+            LOGGER.info("Established connection to server", error);
+            context.fireConnected();
+        });
     }
 
     @Override
     public void onDiscover(ConversationContext<OpcuaAPU> context) {
+        if (!configuration.isDiscovery()) {
+            LOGGER.debug("not encrypted, ignoring onDiscover");
+            context.fireDiscovered(configuration);
+            return;
+        }
+
         // Only the TCP transport supports login.
         LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
         if (this.channel == null) {
             try {
-                this.channel = createSecureChannel(context.getAuthentication());
+                this.channel = createSecureChannel(context, context.getAuthentication());
             } catch (PlcRuntimeException ex) {
                 context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException(ex));
                 return;
             }
         }
-        commonPool().submit(() -> channel.onDiscover(context));
+
+        CompletableFuture<EndpointDescription> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() ->
+            channel.onDiscover().whenComplete((response, error) -> bridge(transaction, future, response, error))
+        );
+        future.whenComplete((response, error) -> {
+          if (error != null) {
+              PlcConnectionException exception = new PlcConnectionException(error);
+              context.getChannel().pipeline().fireExceptionCaught(exception);
+              transaction.failRequest(exception);
+              return;
+          }
+          configuration.setServerCertificate(getX509Certificate(response.getServerCertificate().getStringValue()));
+          context.fireDiscovered(configuration);
+          context.fireDisconnected();
+          transaction.endRequest();
+        });
     }
 
-    private SecureChannel createSecureChannel(PlcAuthentication authentication) {
-        return new SecureChannel((OpcuaDriverContext) driverContext, configuration, authentication);
+    private SecureChannel createSecureChannel(ConversationContext<OpcuaAPU> context, PlcAuthentication authentication) {
+        this.conversation = new Conversation(context, driverContext, configuration);
+        return new SecureChannel(conversation, tm, driverContext, configuration, authentication);
     }
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         LOGGER.trace("Reading Value");
 
-        CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-
-        RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
-            SecureChannel.getCurrentDateTime(),
-            channel.getRequestHandle(),
-            0L,
-            NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
-            NULL_EXTENSION_OBJECT);
+        RequestHeader requestHeader = conversation.createRequestHeader();
 
         List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getTagNames().size());
         Iterator<String> iterator = request.getTagNames().iterator();
@@ -178,64 +220,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             readValueArray.size(),
             readValueArray);
 
-        ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
-            false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.parseInt(opcuaReadRequest.getIdentifier())),
-            null,
-            null);
-
-        ExtensionObject extObject = new ExtensionObject(
-            expandedNodeId,
-            null,
-            opcuaReadRequest);
-
-        try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            extObject.serialize(buffer);
-
-            /* Functional Consumer example using inner class */
-            Consumer<byte[]> consumer = opcuaResponse -> {
-                try {
-                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
-                    if (reply instanceof ReadResponse) {
-                        future.complete(new DefaultPlcReadResponse(request, readResponse(request.getTagNames(), ((ReadResponse) reply).getResults())));
-                    } else {
-                        if (reply instanceof ServiceFault) {
-                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
-                            LOGGER.error("Read request ended up with ServiceFault: {}", header);
-                        } else {
-                            LOGGER.error("Remote party returned an error '{}'", reply);
-                        }
-
-                        Map<String, ResponseItem<PlcValue>> status = new LinkedHashMap<>();
-                        for (String key : request.getTagNames()) {
-                            status.put(key, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
-                        }
-                        future.complete(new DefaultPlcReadResponse(request, status));
-                    }
-                } catch (ParseException | PlcRuntimeException e) {
-                    future.completeExceptionally(new PlcRuntimeException(e));
-                }
-            };
-
-            /* Functional Consumer example using inner class */
-            // Pass the response back to the application.
-            Consumer<TimeoutException> timeout = future::completeExceptionally;
-
-            /* Functional Consumer example using inner class */
-            BiConsumer<OpcuaAPU, Throwable> error = (message, t) -> {
-
-                // Pass the response back to the application.
-                future.completeExceptionally(t);
-            };
-
-            channel.submit(context, timeout, error, consumer, buffer);
-
-        } catch (SerializationException e) {
-            LOGGER.error("Unable to serialise the ReadRequest");
-        }
-
-        return future;
+        CompletableFuture<ReadResponse> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            conversation.submit(opcuaReadRequest, ReadResponse.class).whenComplete((response, error) -> bridge(transaction, future, response, error));
+        });
+        return future.thenApply(response -> new DefaultPlcReadResponse(request, readResponse(request.getTagNames(), response.getResults())));
     }
 
     static NodeId generateNodeId(OpcuaTag tag) {
@@ -261,7 +251,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     }
 
     public Map<String, ResponseItem<PlcValue>> readResponse(LinkedHashSet<String> tagNames, List<DataValue> results) {
-        PlcResponseCode responseCode = PlcResponseCode.OK;
+        PlcResponseCode responseCode = null; // initialize variable
         Map<String, ResponseItem<PlcValue>> response = new HashMap<>();
         int count = 0;
         for (String tagName : tagNames) {
@@ -415,13 +405,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     responseCode = PlcResponseCode.UNSUPPORTED;
                     LOGGER.error("Data type - " + variant.getClass() + " is not supported ");
                 }
-            } else {
-                if (results.get(count).getStatusCode().getStatusCode() == OpcuaStatusCode.BadNodeIdUnknown.getValue()) {
-                    responseCode = PlcResponseCode.NOT_FOUND;
-                } else {
-                    responseCode = PlcResponseCode.UNSUPPORTED;
+                // response code might be null in first iteration
+                if (PlcResponseCode.UNSUPPORTED != responseCode) {
+                    responseCode = PlcResponseCode.OK;
                 }
-                LOGGER.error("Error while reading value from OPC UA server error code:- " + results.get(count).getStatusCode().toString());
+            } else {
+                StatusCode statusCode = results.get(count).getStatusCode();
+                responseCode = mapOpcStatusCode(statusCode.getStatusCode(), PlcResponseCode.UNSUPPORTED);
+                LOGGER.error("Error while reading value from OPC UA server error code: {}", results.get(count).getStatusCode().toString());
             }
             count++;
             response.put(tagName, new ResponseItem<>(responseCode, value));
@@ -429,12 +420,36 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return response;
     }
 
+    private static PlcResponseCode mapOpcStatusCode(long opcStatusCode, PlcResponseCode fallback) {
+        if (!OpcuaStatusCode.isDefined(opcStatusCode)) {
+            return PlcResponseCode.INTERNAL_ERROR;
+        }
+
+        OpcuaStatusCode statusCode = OpcuaStatusCode.enumForValue(opcStatusCode);
+        if (statusCode == OpcuaStatusCode.Good) {
+            return PlcResponseCode.OK;
+        } else if (statusCode == OpcuaStatusCode.BadNodeIdUnknown) {
+            return PlcResponseCode.NOT_FOUND;
+        } else if (statusCode == OpcuaStatusCode.BadTypeMismatch) {
+            return PlcResponseCode.INVALID_DATATYPE;
+        } else if (statusCode == OpcuaStatusCode.BadNotWritable) {
+            return PlcResponseCode.ACCESS_DENIED;
+        } else if (statusCode == OpcuaStatusCode.BadUserAccessDenied) {
+            return PlcResponseCode.ACCESS_DENIED;
+        } else if (statusCode == OpcuaStatusCode.BadAttributeIdInvalid) {
+            return PlcResponseCode.INVALID_ADDRESS;
+        } else if (statusCode == OpcuaStatusCode.BadIndexRangeNoData) {
+            return PlcResponseCode.INVALID_ADDRESS;
+        }
+        return fallback;
+    }
+
     private Variant fromPlcValue(String tagName, OpcuaTag tag, PlcWriteRequest request) {
         PlcList valueObject;
-        if (request.getPlcValue(tagName).getObject() instanceof ArrayList) {
+        if (request.getPlcValue(tagName).getObject() instanceof List) {
             valueObject = (PlcList) request.getPlcValue(tagName);
         } else {
-            ArrayList<PlcValue> list = new ArrayList<>();
+            List<PlcValue> list = new ArrayList<>();
             list.add(request.getPlcValue(tagName));
             valueObject = new PlcList(list);
         }
@@ -695,17 +710,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         LOGGER.trace("Writing Value");
-        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
-        RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
-            SecureChannel.getCurrentDateTime(),
-            channel.getRequestHandle(),
-            0L,
-            NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
-            NULL_EXTENSION_OBJECT);
-
+        RequestHeader requestHeader = conversation.createRequestHeader();
         List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getTagNames().size());
         for (String tagName : request.getTagNames()) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
@@ -730,72 +737,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null)));
         }
 
-        WriteRequest opcuaWriteRequest = new WriteRequest(
-            requestHeader,
-            writeValueList.size(),
-            writeValueList);
+        WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList.size(), writeValueList);
 
-        ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
-            false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.parseInt(opcuaWriteRequest.getIdentifier())),
-            null,
-            null);
-
-        ExtensionObject extObject = new ExtensionObject(
-            expandedNodeId,
-            null,
-            opcuaWriteRequest);
-
-        try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            extObject.serialize(buffer);
-
-            /* Functional Consumer example using inner class */
-            Consumer<byte[]> consumer = opcuaResponse -> {
-                try {
-                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
-                    if (reply instanceof WriteResponse) {
-                        WriteResponse responseMessage = (WriteResponse) reply;
-                        PlcWriteResponse response = writeResponse(request, responseMessage);
-
-                        // Pass the response back to the application.
-                        future.complete(response);
-                    } else {
-                        if (reply instanceof ServiceFault) {
-                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
-                            LOGGER.error("Write request ended up with ServiceFault: {}", header);
-                        } else {
-                            LOGGER.error("Remote party returned an error '{}'", reply);
-                        }
-
-                        Map<String, PlcResponseCode> status = new LinkedHashMap<>();
-                        for (String key : request.getTagNames()) {
-                            status.put(key, PlcResponseCode.INTERNAL_ERROR);
-                        }
-                        future.complete(new DefaultPlcWriteResponse(request, status));
-                    }
-                } catch (ParseException e) {
-                    throw new PlcRuntimeException(e);
-                }
-            };
-
-            /* Functional Consumer example using inner class */
-            // Pass the response back to the application.
-            Consumer<TimeoutException> timeout = future::completeExceptionally;
-
-            /* Functional Consumer example using inner class */
-            BiConsumer<OpcuaAPU, Throwable> error = (message, t) -> {
-                // Pass the response back to the application.
-                future.completeExceptionally(t);
-            };
-
-            channel.submit(context, timeout, error, consumer, buffer);
-
-        } catch (SerializationException e) {
-            LOGGER.error("Unable to serialise the ReadRequest");
-        }
-
-        return future;
+        CompletableFuture<WriteResponse> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            conversation.submit(opcuaWriteRequest, WriteResponse.class).whenComplete((response, error) -> bridge(transaction, future, response, error));
+        });
+        return future.thenApply(response -> writeResponse(request, response));
     }
 
     private PlcWriteResponse writeResponse(DefaultPlcWriteRequest request, WriteResponse writeResponse) {
@@ -804,17 +753,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         Iterator<String> responseIterator = request.getTagNames().iterator();
         for (int i = 0; i < request.getTagNames().size(); i++) {
             String tagName = responseIterator.next();
-            OpcuaStatusCode statusCode = OpcuaStatusCode.enumForValue(results.get(i).getStatusCode());
-            switch (statusCode) {
-                case Good:
-                    responseMap.put(tagName, PlcResponseCode.OK);
-                    break;
-                case BadNodeIdUnknown:
-                    responseMap.put(tagName, PlcResponseCode.NOT_FOUND);
-                    break;
-                default:
-                    responseMap.put(tagName, PlcResponseCode.REMOTE_ERROR);
-            }
+            long opcStatusCode = results.get(i).getStatusCode();
+            PlcResponseCode statusCode = mapOpcStatusCode(opcStatusCode, PlcResponseCode.REMOTE_ERROR);
+            responseMap.put(tagName, statusCode);
         }
         return new DefaultPlcWriteResponse(request, responseMap);
     }
@@ -822,45 +763,47 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        return CompletableFuture.supplyAsync(() -> {
-            Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-            long subscriptionId;
-            ArrayList<String> tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
-            long cycleTime = (subscriptionRequest.getTag(tagNames.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
+        List<String> tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
+        long cycleTime = (subscriptionRequest.getTag(tagNames.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
 
-            try {
-                CompletableFuture<CreateSubscriptionResponse> subscription = onSubscribeCreateSubscription(cycleTime);
-                CreateSubscriptionResponse response = subscription.get(SecureChannel.REQUEST_TIMEOUT_LONG, TimeUnit.MILLISECONDS);
-                subscriptionId = response.getSubscriptionId();
-                subscriptions.put(subscriptionId, new OpcuaSubscriptionHandle(context, this, channel, subscriptionRequest, subscriptionId, cycleTime));
-            } catch (Exception e) {
-                throw new PlcRuntimeException("Unable to subscribe because of: " + e.getMessage());
-            }
-
-            for (String tagName : subscriptionRequest.getTagNames()) {
-                final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
-                if (!(tagDefaultPlcSubscription.getTag() instanceof OpcuaTag)) {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
-                } else {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, subscriptions.get(subscriptionId)));
+        CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            // bridge(transaction, future, response, error)
+            onSubscribeCreateSubscription(cycleTime).thenApply(response -> {
+                long subscriptionId = response.getSubscriptionId();
+                OpcuaSubscriptionHandle handle = new OpcuaSubscriptionHandle(this, tm,
+                    conversation, subscriptionRequest, subscriptionId, cycleTime);
+                subscriptions.put(handle.getSubscriptionId(), handle);
+                return handle;
+            })
+            .thenCompose(handle -> handle.onSubscribeCreateMonitoredItemsRequest())
+            .thenApply(handle -> {
+                Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+                for (String tagName : subscriptionRequest.getTagNames()) {
+                    final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
+                    if (!(tagDefaultPlcSubscription.getTag() instanceof OpcuaTag)) {
+                        values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                    } else {
+                        values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, handle));
+                    }
                 }
-            }
-            return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
+
+                return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
+            })
+            .whenComplete((response, error) -> bridge(transaction, future, response, error));
         });
+        return future;
+    }
+
+    protected void requestSubscriptionPublish() {
+
     }
 
     private CompletableFuture<CreateSubscriptionResponse> onSubscribeCreateSubscription(long cycleTime) {
-        CompletableFuture<CreateSubscriptionResponse> future = new CompletableFuture<>();
         LOGGER.trace("Entering creating subscription request");
 
-        RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
-            SecureChannel.getCurrentDateTime(),
-            channel.getRequestHandle(),
-            0L,
-            NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
-            NULL_EXTENSION_OBJECT);
-
+        RequestHeader requestHeader = conversation.createRequestHeader();
         CreateSubscriptionRequest createSubscriptionRequest = new CreateSubscriptionRequest(
             requestHeader,
             cycleTime,
@@ -871,69 +814,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             (short) 0
         );
 
-        ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
-            false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.parseInt(createSubscriptionRequest.getIdentifier())),
-            null,
-            null);
-
-        ExtensionObject extObject = new ExtensionObject(
-            expandedNodeId,
-            null,
-            createSubscriptionRequest);
-
-        try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            extObject.serialize(buffer);
-
-            /* Functional Consumer example using inner class */
-            Consumer<byte[]> consumer = opcuaResponse -> {
-                try {
-                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN),false).getBody();
-                    if (reply instanceof CreateSubscriptionResponse) {
-                        CreateSubscriptionResponse responseMessage = (CreateSubscriptionResponse) reply;
-
-                        // Pass the response back to the application.
-                        future.complete(responseMessage);
-                    } else {
-                        if (reply instanceof ServiceFault) {
-                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
-                            LOGGER.error("Subscription request ended up with ServiceFault: {}", header);
-                            future.completeExceptionally(new PlcRuntimeException(
-                                    String.format("Subscription request ended up with ServiceFault: %s", header)
-                            ));
-                        } else {
-                            LOGGER.error("Remote party returned an error '{}'", reply);
-                            future.completeExceptionally(new PlcRuntimeException(
-                                    String.format("Remote party returned an error '%s'", reply)
-                            ));
-                        }
-                    }
-                } catch (ParseException e) {
-                    LOGGER.error("error parsing", e);
-                }
-            };
-
-            /* Functional Consumer example using inner class */
-            Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting on the crate subscription response", e);
-                // Pass the response back to the application.
-                future.completeExceptionally(e);
-            };
-
-            /* Functional Consumer example using inner class */
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while creating the subscription", e);
-                // Pass the response back to the application.
-                future.completeExceptionally(e);
-            };
-
-            channel.submit(context, timeout, error, consumer, buffer);
-        } catch (SerializationException e) {
-            LOGGER.error("Error while creating the subscription", e);
-            future.completeExceptionally(e);
-        }
-        return future;
+        return conversation.submit(createSubscriptionRequest, CreateSubscriptionResponse.class);
     }
 
     @Override
@@ -975,5 +856,15 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         byte[] data4 = new byte[]{0, 0};
         byte[] data5 = new byte[]{0, 0, 0, 0, 0, 0};
         return new GuidValue(0L, 0, 0, data4, data5);
+    }
+
+    private static <T> void bridge(RequestTransaction transaction, CompletableFuture<T> future, T response, Throwable error) {
+        if (error != null) {
+            future.completeExceptionally(error);
+            transaction.failRequest(error);
+        } else {
+            future.complete(response);
+            transaction.endRequest();
+        }
     }
 }

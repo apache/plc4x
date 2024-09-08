@@ -91,7 +91,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("MonitoredItemCreateResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (monitoredItemId)
     writeSimpleField("monitoredItemId", monitoredItemId, writeUnsignedLong(writeBuffer, 32));
@@ -104,7 +104,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
     writeSimpleField("revisedQueueSize", revisedQueueSize, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (filterResult)
-    writeSimpleField("filterResult", filterResult, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("filterResult", filterResult, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredItemCreateResult");
   }
@@ -146,8 +146,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     long monitoredItemId = readSimpleField("monitoredItemId", readUnsignedLong(readBuffer, 32));
 
@@ -159,7 +158,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
     ExtensionObject filterResult =
         readSimpleField(
             "filterResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("MonitoredItemCreateResult");

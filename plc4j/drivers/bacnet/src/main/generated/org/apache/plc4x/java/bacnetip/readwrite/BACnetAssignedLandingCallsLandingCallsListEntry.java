@@ -62,10 +62,10 @@ public class BACnetAssignedLandingCallsLandingCallsListEntry implements Message 
     writeBuffer.pushContext("BACnetAssignedLandingCallsLandingCallsListEntry");
 
     // Simple Field (floorNumber)
-    writeSimpleField("floorNumber", floorNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("floorNumber", floorNumber, writeComplex(writeBuffer));
 
     // Simple Field (direction)
-    writeSimpleField("direction", direction, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("direction", direction, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAssignedLandingCallsLandingCallsListEntry");
   }
@@ -90,12 +90,6 @@ public class BACnetAssignedLandingCallsLandingCallsListEntry implements Message 
     return lengthInBits;
   }
 
-  public static BACnetAssignedLandingCallsLandingCallsListEntry staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAssignedLandingCallsLandingCallsListEntry staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAssignedLandingCallsLandingCallsListEntry");
@@ -105,7 +99,7 @@ public class BACnetAssignedLandingCallsLandingCallsListEntry implements Message 
     BACnetContextTagUnsignedInteger floorNumber =
         readSimpleField(
             "floorNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -117,7 +111,7 @@ public class BACnetAssignedLandingCallsLandingCallsListEntry implements Message 
     BACnetLiftCarDirectionTagged direction =
         readSimpleField(
             "direction",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDirectionTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func Utf8LengthToPascalLength(_ context.Context, stringValue string) int32 {
@@ -32,5 +31,5 @@ func Utf8LengthToPascalLength(_ context.Context, stringValue string) int32 {
 }
 
 func PascalLengthToUtf8Length(_ context.Context, slength int32) int32 {
-	return utils.Max(slength, 0)
+	return max(slength, 0)
 }

@@ -25,13 +25,14 @@ import (
 	"runtime/debug"
 	"strconv"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 type Reader struct {
@@ -127,11 +128,11 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 			return
 		}
 		extensionObjectDefinition := reply.GetBody()
-		if _readResponse, ok := extensionObjectDefinition.(readWriteModel.ReadResponseExactly); ok {
+		if _readResponse, ok := extensionObjectDefinition.(readWriteModel.ReadResponse); ok {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, spiModel.NewDefaultPlcReadResponse(readResponse(m.log, readRequest, readRequest.GetTagNames(), _readResponse.GetResults())), nil)
 			return
 		} else {
-			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFaultExactly); ok {
+			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFault); ok {
 				header := serviceFault.GetResponseHeader()
 				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
 			} else {

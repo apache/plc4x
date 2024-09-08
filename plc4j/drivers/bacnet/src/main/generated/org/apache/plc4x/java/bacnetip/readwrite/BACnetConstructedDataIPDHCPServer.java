@@ -82,7 +82,7 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataIPDHCPServer");
 
     // Simple Field (dhcpServer)
-    writeSimpleField("dhcpServer", dhcpServer, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dhcpServer", dhcpServer, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
     BACnetApplicationTagOctetString dhcpServer =
         readSimpleField(
             "dhcpServer",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

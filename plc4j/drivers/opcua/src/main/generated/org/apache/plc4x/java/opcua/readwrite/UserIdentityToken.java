@@ -77,13 +77,11 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
     writeImplicitField("policyLength", policyLength, writeSignedInt(writeBuffer, 32));
 
     // Simple Field (policyId)
-    writeSimpleField("policyId", policyId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("policyId", policyId, writeComplex(writeBuffer));
 
     // Simple Field (userIdentityTokenDefinition)
     writeSimpleField(
-        "userIdentityTokenDefinition",
-        userIdentityTokenDefinition,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "userIdentityTokenDefinition", userIdentityTokenDefinition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserIdentityToken");
   }
@@ -121,13 +119,12 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
 
     PascalString policyId =
         readSimpleField(
-            "policyId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "policyId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     UserIdentityTokenDefinition userIdentityTokenDefinition =
         readSimpleField(
             "userIdentityTokenDefinition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     UserIdentityTokenDefinition.staticParse(
                         readBuffer, (String) (policyId.getStringValue())),

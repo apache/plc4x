@@ -63,12 +63,6 @@ public class DateString implements Message {
     return lengthInBits;
   }
 
-  public static DateString staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DateString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DateString");
     PositionAware positionAware = readBuffer;

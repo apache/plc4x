@@ -113,7 +113,7 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
     List<PascalString> endpointUrlList =
         readCountArrayField(
             "endpointUrlList",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfEndpointUrlList);
 
     readBuffer.closeContext("EndpointUrlListDataType");

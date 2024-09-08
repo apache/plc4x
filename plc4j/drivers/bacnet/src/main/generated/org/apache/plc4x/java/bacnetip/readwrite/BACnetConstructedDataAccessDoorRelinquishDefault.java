@@ -83,8 +83,7 @@ public class BACnetConstructedDataAccessDoorRelinquishDefault extends BACnetCons
     writeBuffer.pushContext("BACnetConstructedDataAccessDoorRelinquishDefault");
 
     // Simple Field (relinquishDefault)
-    writeSimpleField(
-        "relinquishDefault", relinquishDefault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relinquishDefault", relinquishDefault, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDoorValueTagged actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataAccessDoorRelinquishDefault extends BACnetCons
     BACnetDoorValueTagged relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorValueTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

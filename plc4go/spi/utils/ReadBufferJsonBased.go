@@ -20,13 +20,15 @@
 package utils
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"math/big"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // NewJsonReadBuffer return as ReadBuffer which doesn't validate attributes and lists
@@ -70,11 +72,20 @@ type jsonReadBuffer struct {
 	err            error
 }
 
+var _ ReadBuffer = (*jsonReadBuffer)(nil)
+
 //
 // Internal section
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
+
+func (j *jsonReadBuffer) SetByteOrder(binary.ByteOrder) {
+}
+
+func (j *jsonReadBuffer) GetByteOrder() binary.ByteOrder {
+	return binary.BigEndian
+}
 
 func (j *jsonReadBuffer) GetPos() uint16 {
 	return uint16(j.pos / 8)
@@ -406,7 +417,7 @@ func (j *jsonReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, reade
 	}
 }
 
-func (j *jsonReadBuffer) ReadString(logicalName string, bitLength uint32, encoding string, readerArgs ...WithReaderArgs) (string, error) {
+func (j *jsonReadBuffer) ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error) {
 	if j.err != nil {
 		return "", j.err
 	}

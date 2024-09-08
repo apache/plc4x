@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4c</artifactId>
@@ -34,7 +34,7 @@
   <description>Implementation of the protocol adapters for usage as C library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
     <unity.version>2.5.2</unity.version>
     <!-- Tell Sonar where to find the sources -->
     <!--sonar.sources></sonar.sources-->
@@ -44,6 +44,7 @@
   </properties>
 
   <build>
+    <sourceDirectory>${project.basedir}</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
@@ -242,13 +243,24 @@
         </configuration>
       </plugin>
 
-      <!-- For this module deploying maven artifacts doesn't make any sense -->
+      <!-- Create a source bundle, so we can use this in the extras build -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>build-utils/source-bundle-descriptor.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <!--
@@ -333,7 +345,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-c</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -341,21 +353,21 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-plc4x</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-s7</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

@@ -20,10 +20,10 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/constraints"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCleanupTimer(t *testing.T) {
@@ -98,39 +98,6 @@ func TestInlineIf(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, InlineIf(tt.args.test, tt.args.a, tt.args.b), "InlineIf(%v, func(), func())", tt.args.test)
-		})
-	}
-}
-
-func TestMin(t *testing.T) {
-	type args[T constraints.Ordered] struct {
-		left  T
-		right T
-	}
-	type testCase[T constraints.Ordered] struct {
-		name string
-		args args[T]
-		want T
-	}
-	tests := []testCase[string]{
-		{
-			args: args[string]{
-				"a",
-				"b",
-			},
-			want: "a",
-		},
-		{
-			args: args[string]{
-				"b",
-				"a",
-			},
-			want: "a",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, Min(tt.args.left, tt.args.right), "Min(%v, %v)", tt.args.left, tt.args.right)
 		})
 	}
 }

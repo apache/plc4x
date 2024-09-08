@@ -63,7 +63,6 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
     private static final MacAddress PROFINET_BROADCAST_MAC_ADDRESS = new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00});
     final private ProfinetChannel channel;
     final List<PlcDiscoveryItem> values = new ArrayList<>();
-    final Set<Timer> periodicTimers = new HashSet<>();
     private final Logger logger = LoggerFactory.getLogger(ProfinetDiscoverer.class);
     private PlcDiscoveryItemHandler handler;
 
@@ -75,35 +74,6 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
     @Override
     public CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest) {
         return discoverWithHandler(discoveryRequest, null);
-    }
-
-    public CompletableFuture<PlcDiscoveryResponse> setDiscoveryEndTimer(PlcDiscoveryRequest discoveryRequest, long delay) {
-        CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
-
-        // Create a timer that completes the future after a given time with all the responses it found till then.
-        Timer timer = new Timer("Discovery Timeout");
-        timer.schedule(new TimerTask() {
-            public void run() {
-                PlcDiscoveryResponse response =
-                    new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, values);
-                for (Map.Entry<MacAddress, PcapHandle> entry : channel.getOpenHandles().entrySet()) {
-                    PcapHandle openHandle = entry.getValue();
-                    try {
-                        openHandle.breakLoop();
-                        openHandle.close();
-                    } catch (Exception e) {
-                        logger.error("Error occurred while closing handle");
-                    }
-                }
-                for (Timer timer : periodicTimers) {
-                    timer.cancel();
-                    timer.purge();
-                }
-                future.complete(response);
-            }
-        }, delay);
-
-        return future;
     }
 
     public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
@@ -128,10 +98,42 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
             try {
                 Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, identificationRequest.getLengthInBytes());
                 handle.sendPacket(packet);
-            } catch (PcapNativeException | NotOpenException | IllegalRawDataException e) {
+            } catch (PcapNativeException e) {
+                // This occurs, if for example the Wi-Fi network is disabled.
+                if(!e.getMessage().contains("Network is down")) {
+                    throw new RuntimeException(e);
+                }
+             } catch (NotOpenException | IllegalRawDataException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public CompletableFuture<PlcDiscoveryResponse> setDiscoveryEndTimer(PlcDiscoveryRequest discoveryRequest, long delay) {
+        CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
+
+        // Create a timer that completes the future after a given time with all the responses it found till then.
+        Timer timer = new Timer("Discovery Timeout");
+        timer.schedule(new TimerTask() {
+            public void run() {
+                PlcDiscoveryResponse response =
+                    new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, values);
+                for (Map.Entry<MacAddress, PcapHandle> entry : channel.getOpenHandles().entrySet()) {
+                    PcapHandle openHandle = entry.getValue();
+                    try {
+                        openHandle.breakLoop();
+                        openHandle.close();
+                    } catch (Exception e) {
+                        logger.error("Error occurred while closing handle");
+                    }
+                }
+                timer.cancel();
+                timer.purge();
+                future.complete(response);
+            }
+        }, delay);
+
+        return future;
     }
 
     protected void handleIncomingPacket(Ethernet_FramePayload frame, EthernetPacket ethernetPacket) {

@@ -65,7 +65,7 @@ public class FirmataMessageCommand extends FirmataMessage implements Message {
     writeSimpleField(
         "command",
         command,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("FirmataMessageCommand");
@@ -97,7 +97,7 @@ public class FirmataMessageCommand extends FirmataMessage implements Message {
     FirmataCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> FirmataCommand.staticParse(readBuffer, (boolean) (response)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

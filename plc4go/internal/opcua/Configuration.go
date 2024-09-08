@@ -25,36 +25,39 @@ import (
 	"reflect"
 	"strconv"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Configuration
+//go:generate plc4xGenerator -type=Configuration
 type Configuration struct {
-	code              string
-	host              string
-	port              string
-	endpoint          string
-	transportEndpoint string
-	params            string
-	isEncrypted       bool
-	thumbprint        readWriteModel.PascalByteString
-	senderCertificate []byte
-	discovery         bool
-	username          string
-	password          string
-	securityPolicy    string
-	keyStoreFile      string
-	certDirectory     string
-	keyStorePassword  string
-	ckp               *CertificateKeyPair
+	Code              string
+	Host              string
+	Port              string
+	Endpoint          string
+	TransportEndpoint string
+	Params            string
+	IsEncrypted       bool
+	Thumbprint        readWriteModel.PascalByteString
+	SenderCertificate []byte
+	Discovery         bool
+	Username          string
+	Password          string
+	SecurityPolicy    string
+	KeyStoreFile      string
+	CertDirectory     string
+	KeyStorePassword  string
+	Ckp               *CertificateKeyPair
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
+	titleOptions(options)
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
 	for i := 0; i < reflectConfiguration.NumField(); i++ {
@@ -83,19 +86,26 @@ func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configur
 	return configuration, nil
 }
 
+func titleOptions(options map[string][]string) {
+	caser := cases.Title(language.AmericanEnglish)
+	for key, value := range options {
+		options[caser.String(key)] = value
+	}
+}
+
 func (c *Configuration) openKeyStore() error {
-	c.isEncrypted = true
-	securityTempDir := path.Join(c.certDirectory, "security")
+	c.IsEncrypted = true
+	securityTempDir := path.Join(c.CertDirectory, "security")
 	if _, err := os.Stat(securityTempDir); errors.Is(err, os.ErrNotExist) {
 		if err := os.Mkdir(securityTempDir, 700); err != nil {
 			return errors.New("Unable to create directory please confirm folder permissions on " + securityTempDir)
 		}
 	}
 
-	serverKeyStore := path.Join(securityTempDir, c.keyStoreFile)
+	serverKeyStore := path.Join(securityTempDir, c.KeyStoreFile)
 	if _, err := os.Stat(securityTempDir); errors.Is(err, os.ErrNotExist) {
 		var err error
-		c.ckp, err = generateCertificate()
+		c.Ckp, err = generateCertificate()
 		if err != nil {
 			return errors.Wrap(err, "error generating certificate")
 		}
@@ -117,7 +127,7 @@ func (c *Configuration) openKeyStore() error {
 
 func createDefaultConfiguration() Configuration {
 	return Configuration{
-		securityPolicy: "None",
+		SecurityPolicy: "None",
 	}
 }
 

@@ -100,7 +100,7 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (presentValue)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
     List<BACnetPropertyAccessResult> presentValue =
         readTerminatedArrayField(
             "presentValue",
-            new DataReaderComplexDefault<>(
-                () -> BACnetPropertyAccessResult.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetPropertyAccessResult.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

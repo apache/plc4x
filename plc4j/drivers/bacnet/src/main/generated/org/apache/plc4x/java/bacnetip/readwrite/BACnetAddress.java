@@ -78,7 +78,7 @@ public class BACnetAddress implements Message {
     writeBuffer.pushContext("BACnetAddress");
 
     // Simple Field (networkNumber)
-    writeSimpleField("networkNumber", networkNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkNumber", networkNumber, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BigInteger zero = getZero();
@@ -89,7 +89,7 @@ public class BACnetAddress implements Message {
     writeBuffer.writeVirtual("isLocalNetwork", isLocalNetwork);
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isBroadcast = getIsBroadcast();
@@ -124,12 +124,6 @@ public class BACnetAddress implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetAddress");
     PositionAware positionAware = readBuffer;
@@ -138,7 +132,7 @@ public class BACnetAddress implements Message {
     BACnetApplicationTagUnsignedInteger networkNumber =
         readSimpleField(
             "networkNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -151,7 +145,7 @@ public class BACnetAddress implements Message {
     BACnetApplicationTagOctetString macAddress =
         readSimpleField(
             "macAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

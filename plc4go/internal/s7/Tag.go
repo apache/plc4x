@@ -150,7 +150,7 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return err
 	}
 
-	if err := writeBuffer.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), "UTF-8", m.MemoryArea.String()); err != nil {
+	if err := writeBuffer.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
 		return err
 	}
 	if err := writeBuffer.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
@@ -165,7 +165,7 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	if err := writeBuffer.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), "UTF-8", m.Datatype.String()); err != nil {
+	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
 		return err
 	}
 
@@ -196,7 +196,7 @@ func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return err
 	}
 
-	if err := writeBuffer.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), "UTF-8", m.MemoryArea.String()); err != nil {
+	if err := writeBuffer.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
 		return err
 	}
 	if err := writeBuffer.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
@@ -214,7 +214,7 @@ func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	if err := writeBuffer.WriteUint16("stringLength", 16, m.stringLength); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), "UTF-8", m.Datatype.String()); err != nil {
+	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
 		return err
 	}
 

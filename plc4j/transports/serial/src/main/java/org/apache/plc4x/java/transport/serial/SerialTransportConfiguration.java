@@ -18,9 +18,9 @@
  */
 package org.apache.plc4x.java.transport.serial;
 
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 
-public interface SerialTransportConfiguration extends TransportConfiguration {
+public interface SerialTransportConfiguration extends PlcTransportConfiguration {
 
     int getBaudRate();
 

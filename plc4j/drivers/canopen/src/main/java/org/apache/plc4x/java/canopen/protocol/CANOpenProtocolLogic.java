@@ -223,7 +223,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
 
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(writeValue, tag.getCanOpenDataType(), writeValue.getLength()), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, writeValue, tag.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
-            final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(writeBuffer.getData()));
+            final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(writeBuffer.getBytes()));
             context.sendToWire(new CANOpenFrame((short) tag.getNodeId(), tag.getService(), payload));
             response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, PlcResponseCode.OK)));
         } catch (Exception e) {
@@ -339,15 +339,6 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                 logger.debug("Decoded CANOpen {} from {}, message {}", service, nodeId, payload);
             }
         }
-
-//        int identifier = msg.getIdentifier();
-//        CANOpenService service = CANOpenService.valueOf((byte) (identifier >> 7));
-//        if (service != null) {
-//            ReadBuffer buffer = new ReadBuffer(msg.getData());
-//            CANOpenPayload payload = CANOpenPayloadIO.staticParse(buffer, service);
-//
-//
-//        }
     }
 
     private void publishEvent(CANOpenService service, int nodeId, CANOpenPayload payload) {

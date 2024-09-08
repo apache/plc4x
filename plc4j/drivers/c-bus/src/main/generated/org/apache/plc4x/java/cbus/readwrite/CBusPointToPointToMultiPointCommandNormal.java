@@ -80,13 +80,13 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (salData)
-    writeSimpleField("salData", salData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("salData", salData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToPointToMultiPointCommandNormal");
   }
@@ -122,13 +122,12 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     SALData salData =
         readSimpleField(
             "salData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SALData.staticParse(
                         readBuffer, (ApplicationId) (application.getApplicationId())),

@@ -61,7 +61,7 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
         "serviceChoice",
         "BACnetUnconfirmedServiceChoice",
         getServiceChoice(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetUnconfirmedServiceChoice::getValue,
             BACnetUnconfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -91,26 +91,6 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequest staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Integer serviceRequestLength;
-    if (args[0] instanceof Integer) {
-      serviceRequestLength = (Integer) args[0];
-    } else if (args[0] instanceof String) {
-      serviceRequestLength = Integer.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Integer or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, serviceRequestLength);
-  }
-
   public static BACnetUnconfirmedServiceRequest staticParse(
       ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequest");
@@ -121,7 +101,7 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
         readDiscriminatorEnumField(
             "serviceChoice",
             "BACnetUnconfirmedServiceChoice",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 BACnetUnconfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

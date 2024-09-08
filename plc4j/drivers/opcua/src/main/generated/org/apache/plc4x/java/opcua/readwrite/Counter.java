@@ -63,11 +63,6 @@ public class Counter implements Message {
     return lengthInBits;
   }
 
-  public static Counter staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Counter staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Counter");
     PositionAware positionAware = readBuffer;

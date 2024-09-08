@@ -62,7 +62,7 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
     writeBuffer.pushContext("Ethernet_FramePayload_PnDcp");
 
     // Simple Field (pdu)
-    writeSimpleField("pdu", pdu, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("pdu", pdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Ethernet_FramePayload_PnDcp");
   }
@@ -91,9 +91,7 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_Pdu pdu =
-        readSimpleField(
-            "pdu",
-            new DataReaderComplexDefault<>(() -> PnDcp_Pdu.staticParse(readBuffer), readBuffer));
+        readSimpleField("pdu", readComplex(() -> PnDcp_Pdu.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Ethernet_FramePayload_PnDcp");
     // Create the instance

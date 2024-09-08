@@ -71,7 +71,7 @@ public class S7Tag implements PlcTag, Serializable {
     private final byte bitOffset;
     private final int numElements;
 
-    protected S7Tag(TransportSize dataType, MemoryArea memoryArea,
+    public S7Tag(TransportSize dataType, MemoryArea memoryArea,
                     int blockNumber, int byteOffset,
                     byte bitOffset, int numElements) {
         this.dataType = dataType;

@@ -20,14 +20,16 @@
 package cbus
 
 import (
-	"github.com/rs/zerolog"
 	"reflect"
 	"strconv"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Configuration
+//go:generate plc4xGenerator -type=Configuration
 type Configuration struct {
 	Srchk    bool
 	Exstat   bool
@@ -45,6 +47,7 @@ type Configuration struct {
 }
 
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
+	titleOptions(options)
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
 	for i := 0; i < reflectConfiguration.NumField(); i++ {
@@ -70,6 +73,13 @@ func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configur
 		}
 	}
 	return configuration, nil
+}
+
+func titleOptions(options map[string][]string) {
+	caser := cases.Title(language.AmericanEnglish)
+	for key, value := range options {
+		options[caser.String(key)] = value
+	}
 }
 
 func createDefaultConfiguration() Configuration {

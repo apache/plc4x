@@ -282,7 +282,7 @@ public class OpenProtocolMessageParameterSetSelectedRev2
         "rotationDirection",
         "RotationDirection",
         rotationDirection,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             RotationDirection::getValue,
             RotationDirection::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -557,8 +557,7 @@ public class OpenProtocolMessageParameterSetSelectedRev2
         readEnumField(
             "rotationDirection",
             "RotationDirection",
-            new DataReaderEnumDefault<>(
-                RotationDirection::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RotationDirection::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdBatchSize =

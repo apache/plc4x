@@ -22,19 +22,22 @@ package transactions
 import (
 	"container/list"
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
 	"io"
+	"os"
+	"os/signal"
 	"runtime"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
-
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var sharedExecutorInstance pool.Executor // shared instance
@@ -47,9 +50,13 @@ func init() {
 		config.WithCustomLogger(zerolog.Nop()),
 	)
 	sharedExecutorInstance.Start()
-	runtime.SetFinalizer(sharedExecutorInstance, func(sharedExecutorInstance pool.Executor) {
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
+		<-c
 		sharedExecutorInstance.Stop()
-	})
+	}()
 }
 
 type RequestTransactionRunnable func(RequestTransaction)
@@ -104,7 +111,7 @@ type withCustomExecutor struct {
 	executor pool.Executor
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=requestTransactionManager
+//go:generate plc4xGenerator -type=requestTransactionManager
 type requestTransactionManager struct {
 	runningRequests     []*requestTransaction
 	runningRequestMutex sync.RWMutex
@@ -123,7 +130,7 @@ type requestTransactionManager struct {
 
 	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 //

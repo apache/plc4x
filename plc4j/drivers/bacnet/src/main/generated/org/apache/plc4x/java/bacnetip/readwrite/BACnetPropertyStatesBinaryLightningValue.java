@@ -61,8 +61,7 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
     writeBuffer.pushContext("BACnetPropertyStatesBinaryLightningValue");
 
     // Simple Field (binaryLightningValue)
-    writeSimpleField(
-        "binaryLightningValue", binaryLightningValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("binaryLightningValue", binaryLightningValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesBinaryLightningValue");
   }
@@ -93,7 +92,7 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
     BACnetBinaryLightingPVTagged binaryLightningValue =
         readSimpleField(
             "binaryLightningValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryLightingPVTagged.staticParse(
                         readBuffer,

@@ -77,7 +77,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("QueryNextRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -87,8 +87,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
         "releaseContinuationPoint", releaseContinuationPoint, writeBoolean(writeBuffer));
 
     // Simple Field (continuationPoint)
-    writeSimpleField(
-        "continuationPoint", continuationPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
     writeBuffer.popContext("QueryNextRequest");
   }
@@ -128,7 +127,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -141,8 +140,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     PascalByteString continuationPoint =
         readSimpleField(
             "continuationPoint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("QueryNextRequest");
     // Create the instance

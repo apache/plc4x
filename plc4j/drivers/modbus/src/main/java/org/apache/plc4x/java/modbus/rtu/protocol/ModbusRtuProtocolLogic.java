@@ -27,6 +27,7 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
+import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -47,7 +48,8 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
     @Override
     public void setConfiguration(ModbusRtuConfiguration configuration) {
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
-        this.unitIdentifier = (short) configuration.getUnitIdentifier();
+        this.unitIdentifier = (short) configuration.getDefaultUnitIdentifier();
+        this.defaultPayloadByteOrder = configuration.getDefaultPayloadByteOrder();
         this.tm = new RequestTransactionManager(1);
     }
 
@@ -60,12 +62,12 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
     public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
         CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
 
-        // 0x00 should be the "vendor-id" and is part of the basic level
-        // This is theoretically required, however have I never come across
-        // an implementation that actually provides it.
-        final ModbusPDU identificationRequestPdu = new ModbusPDUReadDeviceIdentificationRequest(
-            ModbusDeviceInformationLevel.BASIC, (short) 0x00);
-        ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitIdentifier, identificationRequestPdu);
+        // As it seems that even, if Modbus defines a DeviceIdentificationRequest, no device actually implements this.
+        // So we fall back to a request, that most certainly is implemented by any device. Even if the device doesn't
+        // have any holding-register:1, it should still gracefully respond.
+        ModbusPDU readRequestPdu = getReadRequestPdu(pingAddress);
+        final short unitId = getUnitId(pingAddress);
+        ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, readRequestPdu);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(modbusRtuADU)
@@ -100,8 +102,9 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             String tagName = request.getTagNames().iterator().next();
             ModbusTag tag = (ModbusTag) request.getTag(tagName);
             final ModbusPDU requestPdu = getReadRequestPdu(tag);
+            final short unitId = getUnitId(tag);
 
-            ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitIdentifier, requestPdu);
+            ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
@@ -118,7 +121,11 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
                         responseCode = getErrorCode(errorResponse);
                     } else {
                         try {
-                            plcValue = toPlcValue(requestPdu, responsePdu, tag.getDataType());
+                            ModbusByteOrder byteOrder = defaultPayloadByteOrder;
+                            if(tag.getByteOrder() != null) {
+                                byteOrder = tag.getByteOrder();
+                            }
+                            plcValue = toPlcValue(requestPdu, responsePdu, tag.getDataType(), byteOrder);
                             responseCode = PlcResponseCode.OK;
                         } catch (ParseException e) {
                             // Add an error response code ...
@@ -159,7 +166,8 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             String tagName = request.getTagNames().iterator().next();
             PlcTag tag = request.getTag(tagName);
             final ModbusPDU requestPdu = getWriteRequestPdu(tag, writeRequest.getPlcValue(tagName));
-            ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitIdentifier, requestPdu);
+            final short unitId = getUnitId(tag);
+            ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)

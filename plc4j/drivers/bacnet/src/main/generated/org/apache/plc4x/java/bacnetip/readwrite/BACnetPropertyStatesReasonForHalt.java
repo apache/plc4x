@@ -60,7 +60,7 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesReasonForHalt");
 
     // Simple Field (reasonForHalt)
-    writeSimpleField("reasonForHalt", reasonForHalt, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reasonForHalt", reasonForHalt, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesReasonForHalt");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
     BACnetProgramErrorTagged reasonForHalt =
         readSimpleField(
             "reasonForHalt",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProgramErrorTagged.staticParse(
                         readBuffer,

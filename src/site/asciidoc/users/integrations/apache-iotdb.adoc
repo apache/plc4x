@@ -34,7 +34,7 @@ Then, we can write data into IoTDB using JDBC with SQL or native API called sess
 
 === Example 
 
-https://github.com/apache/plc4x/tree/develop/plc4j/examples/hello-integration-iotdb shows an example
+https://github.com/apache/plc4x-extras/tree/develop/plc4j/examples/hello-integration-iotdb shows an example
 to collect data using PLC4x and then writing data to IoTDB.
 
 To run the java example, some arguments are needed:

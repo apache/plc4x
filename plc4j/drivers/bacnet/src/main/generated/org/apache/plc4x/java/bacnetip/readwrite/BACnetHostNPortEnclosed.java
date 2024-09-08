@@ -75,14 +75,13 @@ public class BACnetHostNPortEnclosed implements Message {
     writeBuffer.pushContext("BACnetHostNPortEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (bacnetHostNPort)
-    writeSimpleField(
-        "bacnetHostNPort", bacnetHostNPort, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bacnetHostNPort", bacnetHostNPort, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetHostNPortEnclosed");
   }
@@ -110,26 +109,6 @@ public class BACnetHostNPortEnclosed implements Message {
     return lengthInBits;
   }
 
-  public static BACnetHostNPortEnclosed staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
   public static BACnetHostNPortEnclosed staticParse(ReadBuffer readBuffer, Short tagNumber)
       throws ParseException {
     readBuffer.pullContext("BACnetHostNPortEnclosed");
@@ -139,19 +118,18 @@ public class BACnetHostNPortEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetHostNPort bacnetHostNPort =
         readSimpleField(
             "bacnetHostNPort",
-            new DataReaderComplexDefault<>(
-                () -> BACnetHostNPort.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetHostNPort.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetHostNPortEnclosed");

@@ -60,7 +60,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
     writeBuffer.pushContext("BACnetValueSourceObject");
 
     // Simple Field (object)
-    writeSimpleField("object", object, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("object", object, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetValueSourceObject");
   }
@@ -91,7 +91,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
     BACnetDeviceObjectReferenceEnclosed object =
         readSimpleField(
             "object",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

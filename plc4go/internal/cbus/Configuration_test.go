@@ -21,9 +21,11 @@ package cbus
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestParseFromOptions(t *testing.T) {
@@ -114,7 +116,7 @@ func TestParseFromOptions(t *testing.T) {
 				},
 			},
 			want: Configuration{
-				Srchk:                 true, // Note: at the moment the fields are case-sensitive so the key above is just ignored
+				Srchk:                 false,
 				Exstat:                true,
 				Pun:                   false,
 				LocalSal:              true,

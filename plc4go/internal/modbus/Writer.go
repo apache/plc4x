@@ -21,18 +21,18 @@ package modbus
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"math"
 	"sync/atomic"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Writer struct {
@@ -74,7 +74,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(tagName)
-		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity)
+		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity, true)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(
 				writeRequest,

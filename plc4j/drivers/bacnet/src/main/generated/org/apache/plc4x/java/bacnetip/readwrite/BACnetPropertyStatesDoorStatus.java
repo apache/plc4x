@@ -60,7 +60,7 @@ public class BACnetPropertyStatesDoorStatus extends BACnetPropertyStates impleme
     writeBuffer.pushContext("BACnetPropertyStatesDoorStatus");
 
     // Simple Field (doorStatus)
-    writeSimpleField("doorStatus", doorStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorStatus", doorStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesDoorStatus");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesDoorStatus extends BACnetPropertyStates impleme
     BACnetDoorStatusTagged doorStatus =
         readSimpleField(
             "doorStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorStatusTagged.staticParse(
                         readBuffer,

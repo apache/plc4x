@@ -77,7 +77,7 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("DeleteSubscriptionsRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfSubscriptionIds)
     writeSimpleField("noOfSubscriptionIds", noOfSubscriptionIds, writeSignedInt(writeBuffer, 32));
@@ -123,7 +123,7 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 

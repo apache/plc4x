@@ -73,7 +73,7 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -122,8 +122,7 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte reservedField1 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x00);
 

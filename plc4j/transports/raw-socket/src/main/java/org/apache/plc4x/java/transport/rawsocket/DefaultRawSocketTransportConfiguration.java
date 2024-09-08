@@ -20,12 +20,14 @@
 package org.apache.plc4x.java.transport.rawsocket;
 
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.transport.pcap.DefaultPcapTransportConfiguration;
 
 public abstract class DefaultRawSocketTransportConfiguration extends DefaultPcapTransportConfiguration implements RawSocketTransportConfiguration {
 
     @ConfigurationParameter("resolve-mac-address")
+    @Description("If set to true, the transport will automatically resolve the MAC address for a given IP address (Allows connecting to a raw-socket device using the devices host-name or ip-address).")
     private boolean resolveMacAddress;
 
     public DefaultRawSocketTransportConfiguration() {

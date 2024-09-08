@@ -21,7 +21,6 @@ package org.apache.plc4x.java.iec608705104;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriverManager;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104Tag;
 
 import java.util.concurrent.CompletableFuture;
@@ -34,7 +33,7 @@ public class ManualTest {
             shutdown.complete(null);
         }));
         try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection("iec-60870-5-104://192.168.23.10")) {
-            if(!plcConnection.getMetadata().canSubscribe()) {
+            if(!plcConnection.getMetadata().isSubscribeSupported()) {
                 throw new RuntimeException("Subscription not supported");
             }
 

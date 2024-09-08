@@ -83,8 +83,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataProportionalConstant");
 
     // Simple Field (proportionalConstant)
-    writeSimpleField(
-        "proportionalConstant", proportionalConstant, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("proportionalConstant", proportionalConstant, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
     BACnetApplicationTagReal proportionalConstant =
         readSimpleField(
             "proportionalConstant",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

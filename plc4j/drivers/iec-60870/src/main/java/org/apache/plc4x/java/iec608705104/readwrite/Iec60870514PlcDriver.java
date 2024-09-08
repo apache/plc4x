@@ -19,7 +19,8 @@
 package org.apache.plc4x.java.iec608705104.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Configuration;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014TcpTransportConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.protocol.Iec608705104Protocol;
@@ -27,10 +28,11 @@ import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104TagHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -40,7 +42,7 @@ import java.util.function.ToIntFunction;
  * - TCP
  * - Serial
  */
-public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> implements TransportConfigurationTypeProvider {
+public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> {
 
     @Override
     public String getProtocolCode() {
@@ -58,13 +60,27 @@ public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> implements T
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return Iec608705014Configuration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(Iec608705014TcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -116,15 +132,6 @@ public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> implements T
                 byteBuf.readByte();
             }
         }
-    }
-
-    @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Iec608705014TcpTransportConfiguration.class;
-        }
-        return null;
     }
 
 }

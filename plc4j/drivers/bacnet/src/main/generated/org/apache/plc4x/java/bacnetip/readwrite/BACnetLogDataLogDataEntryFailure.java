@@ -59,7 +59,7 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
     writeBuffer.pushContext("BACnetLogDataLogDataEntryFailure");
 
     // Simple Field (failure)
-    writeSimpleField("failure", failure, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("failure", failure, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryFailure");
   }
@@ -90,8 +90,7 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
     ErrorEnclosed failure =
         readSimpleField(
             "failure",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (7)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (7)), readBuffer));
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryFailure");
     // Create the instance

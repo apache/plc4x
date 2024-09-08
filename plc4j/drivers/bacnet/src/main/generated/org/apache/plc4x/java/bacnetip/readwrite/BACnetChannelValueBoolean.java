@@ -60,7 +60,7 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
     writeBuffer.pushContext("BACnetChannelValueBoolean");
 
     // Simple Field (booleanValue)
-    writeSimpleField("booleanValue", booleanValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("booleanValue", booleanValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueBoolean");
   }
@@ -91,7 +91,7 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

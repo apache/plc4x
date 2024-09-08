@@ -85,7 +85,7 @@ public class LPollData extends LDataFrame implements Message {
     writeBuffer.pushContext("LPollData");
 
     // Simple Field (sourceAddress)
-    writeSimpleField("sourceAddress", sourceAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceAddress", sourceAddress, writeComplex(writeBuffer));
 
     // Array Field (targetAddress)
     writeByteArrayField("targetAddress", targetAddress, writeByteArray(writeBuffer, 8));
@@ -136,8 +136,7 @@ public class LPollData extends LDataFrame implements Message {
 
     KnxAddress sourceAddress =
         readSimpleField(
-            "sourceAddress",
-            new DataReaderComplexDefault<>(() -> KnxAddress.staticParse(readBuffer), readBuffer));
+            "sourceAddress", readComplex(() -> KnxAddress.staticParse(readBuffer), readBuffer));
 
     byte[] targetAddress = readBuffer.readByteArray("targetAddress", Math.toIntExact(2));
 

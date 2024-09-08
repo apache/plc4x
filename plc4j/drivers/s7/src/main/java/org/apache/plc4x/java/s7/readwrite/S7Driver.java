@@ -19,7 +19,10 @@
 package org.apache.plc4x.java.s7.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.s7.readwrite.discovery.ProfinetChannel;
+import org.apache.plc4x.java.s7.readwrite.discovery.S7PlcDiscoverer;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer;
@@ -29,9 +32,15 @@ import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
 import org.apache.plc4x.java.s7.readwrite.tag.S7PlcTagHandler;
 import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.pcap4j.core.PcapNativeException;
+import org.pcap4j.core.Pcaps;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -50,13 +59,23 @@ public class S7Driver extends S7HGeneratedDriverBase {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return S7Configuration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    protected boolean canDiscover() {
+        return true;
     }
 
     @Override
@@ -88,6 +107,18 @@ public class S7Driver extends S7HGeneratedDriverBase {
     @Override
     protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
         return new PlcValueHandler();
+    }
+
+    @Override
+    public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
+        // TODO: This should actually happen in the execute method of the discoveryRequest and not here ...
+        try {
+            ProfinetChannel channel = new ProfinetChannel(Pcaps.findAllDevs());
+            S7PlcDiscoverer discoverer = new S7PlcDiscoverer(channel);
+            return new DefaultPlcDiscoveryRequest.Builder(discoverer);
+        } catch (PcapNativeException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

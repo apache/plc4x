@@ -99,7 +99,7 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (portFilter)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,8 +161,7 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
     List<BACnetPortPermission> portFilter =
         readTerminatedArrayField(
             "portFilter",
-            new DataReaderComplexDefault<>(
-                () -> BACnetPortPermission.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetPortPermission.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

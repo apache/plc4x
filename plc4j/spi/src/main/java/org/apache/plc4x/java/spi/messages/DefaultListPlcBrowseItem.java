@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.messages;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -26,9 +27,12 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
+
+    private final List<PlcBrowseItemArrayInfo> arrayInformation;
 
     public DefaultListPlcBrowseItem(PlcTag tag,
                                     String name,
@@ -36,8 +40,20 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
                                     boolean writable,
                                     boolean subscribable,
                                     Map<String, PlcBrowseItem> children,
-                                    Map<String, PlcValue> options) {
+                                    Map<String, PlcValue> options,
+                                    List<PlcBrowseItemArrayInfo> arrayInformation) {
         super(tag, name, readable, writable, subscribable, children, options);
+        this.arrayInformation = arrayInformation;
+    }
+
+    @Override
+    public boolean isArray() {
+        return (arrayInformation != null) && !arrayInformation.isEmpty();
+    }
+
+    @Override
+    public List<PlcBrowseItemArrayInfo> getArrayInformation() {
+        return arrayInformation;
     }
 
     @Override

@@ -26,7 +26,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.EventListenerMessageCodec;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
@@ -84,7 +84,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     }
 
     private ChannelHandler getMessageCodec(PlcConnectionConfiguration configuration) {
-        return new GeneratedProtocolMessageCodec<>(basePacketClass, protocolIO.apply(configuration), byteOrder, parserArgs,
+        return new GeneratedProtocolMessageCodec<>(basePacketClass, protocolIO.apply(configuration), byteOrder,
             packetSizeEstimator == null ? null : packetSizeEstimator.apply(configuration),
             corruptPacketRemover == null ? null : corruptPacketRemover.apply(configuration));
     }

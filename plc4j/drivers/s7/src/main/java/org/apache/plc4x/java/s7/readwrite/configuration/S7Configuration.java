@@ -18,74 +18,112 @@
  */
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
+import org.apache.plc4x.java.s7.readwrite.DeviceGroup;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.configuration.annotations.Since;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 
-public class S7Configuration extends S7TcpTransportConfiguration {
+public class S7Configuration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
+    @Description("Rack value for the client (PLC4X device).")
     public int localRack = 1;
 
     @ConfigurationParameter("local-slot")
     @IntDefaultValue(1)
+    @Description("Slot value for the client (PLC4X device).")
     public int localSlot = 1;
+
+    @ConfigurationParameter("local-device-group")
+    @StringDefaultValue("OTHERS")
+    @Description("Local Device Group. (Defaults to 'OTHERS').\nAllowed values:\n - PG_OR_PC\n - OS\n - OTHERS")
+    @Since("0.13.0")
+    public DeviceGroup localDeviceGroup;
 
     @ConfigurationParameter("local-tsap")
     @IntDefaultValue(0)
+    @Description("Local Transport Service Access Point. (Overrides settings made in local-rack, local-slot and local-device-group. Be sure to convert into integer representation)")
     public int localTsap = 0;
 
     @ConfigurationParameter("remote-rack")
     @IntDefaultValue(0)
+    @Description("Rack value for the remote main CPU (PLC).")
     public int remoteRack = 0;
 
     @ConfigurationParameter("remote-slot")
     @IntDefaultValue(0)
+    @Description("Slot value for the remote main CPU (PLC).")
     public int remoteSlot = 0;
+
+    @ConfigurationParameter("remote-device-group")
+    @StringDefaultValue("PG_OR_PC")
+    @Description("Remote Device Group (Defaults to 'PG_OR_PC').\nAllowed values:\n - PG_OR_PC\n - OS\n - OTHERS")
+    @Since("0.13.0")
+    public DeviceGroup remoteDeviceGroup;
+
+    @ConfigurationParameter("remote-tsap")
+    @IntDefaultValue(0)
+    @Description("Remote Transport Service Access Point. (Overrides settings made in remote-rack, remote-slot and remote-device-group. Be sure to convert into integer representation)")
+    public int remoteTsap = 0;
 
     @ConfigurationParameter("remote-rack2")
     @IntDefaultValue(0)
+    @Description("Rack value for the remote secondary CPU (PLC).")
     public int remoteRack2 = 0;
 
     @ConfigurationParameter("remote-slot2")
     @IntDefaultValue(0)
+    @Description("Slot value for the remote secondary CPU (PLC).")
     public int remoteSlot2 = 0;
 
-
-    @ConfigurationParameter("remote-tsap")
-    @IntDefaultValue(0)
-    public int remoteTsap = 0;
+    @ConfigurationParameter("remote-device-group2")
+    @StringDefaultValue("PG_OR_PC")
+    @Description("Remote Device Group. (Defaults to 'PG_OR_PC').\nAllowed values:\n - PG_OR_PC\n - OS\n - OTHERS")
+    @Since("0.13.0")
+    public DeviceGroup remoteDeviceGroup2;
 
     @ConfigurationParameter("pdu-size")
     @IntDefaultValue(1024)
+    @Description("Maximum size of a data-packet sent to and received from the remote PLC. During the connection process both parties will negotiate a maximum size both parties can work with and is equal or smaller than the given value is used. The driver will automatically split up large requests to not exceed this value in a request or expected response.")
     public int pduSize = 1024;
 
     @ConfigurationParameter("max-amq-caller")
     @IntDefaultValue(8)
+    @Description("Maximum number of unconfirmed requests the PLC will accept in parallel before discarding with errors. This parameter also will be negotiated during the connection process and the maximum both parties can work with and is equal or smaller than the given value is used. The driver will automatically take care not exceeding this value while processing requests. Too many requests can cause a growing queue.")
     public int maxAmqCaller = 8;
 
     @ConfigurationParameter("max-amq-callee")
     @IntDefaultValue(8)
+    @Description("Maximum number of unconfirmed responses or requests PLC4X will accept in parallel before discarding with errors. This option is available for completeness and is correctly handled out during the connection process, however it is currently not enforced on PLC4X’s side. So if a PLC would send more messages than agreed upon, these would still be processed.")
     public int maxAmqCallee = 8;
 
     @ConfigurationParameter("controller-type")
+    @Description("As part of the connection process, usually the PLC4X S7 driver would try to identify the remote device. However some devices seem to have problems with this and hang up or cause other problems. In such a case, providing the controller-type will skip the identification process and hereby avoid this type of problem. Possible values are:/n- S7_300\n- S7_400\n- S7_1200\n- S7-1500\n- LOGO")
     public String controllerType;
 
     @ConfigurationParameter("read-timeout")
     @IntDefaultValue(0)
+    @Description("This is the maximum waiting time for reading on the TCP channel. As there is no traffic, it must be assumed that the connection with the interlocutor was lost and it must be restarted. When the channel is closed, the \"fail over\" is carried out in case of having the secondary channel, or it is expected that it will be restored automatically, which is done every 4 seconds.")
     public int readTimeout = 0;
 
     @ConfigurationParameter("ping")
     @BooleanDefaultValue(false)
+    @Description("Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.")
     public boolean ping = false;
 
     @ConfigurationParameter("ping-time")
     @IntDefaultValue(0)
+    @Description("If your application requires sampling times greater than the set \"read-timeout\" time, it is important that the PING option is activated, this will prevent the TCP channel from being closed unnecessarily.")
     public int pingTime = 0;
 
     @ConfigurationParameter("retry-time")
     @IntDefaultValue(0)
+    @Description("Time value in seconds at which the execution of the PING will be scheduled. Generally set by developer experience, but generally should be the same as (read-timeout / 2).")
     public int retryTime = 0;
 
     public int getLocalRack() {
@@ -102,6 +140,14 @@ public class S7Configuration extends S7TcpTransportConfiguration {
 
     public void setLocalSlot(int localSlot) {
         this.localSlot = localSlot;
+    }
+
+    public DeviceGroup getLocalDeviceGroup() {
+        return localDeviceGroup;
+    }
+
+    public void setLocalDeviceGroup(DeviceGroup localDeviceGroup) {
+        this.localDeviceGroup = localDeviceGroup;
     }
 
     public int getLocalTsap() {
@@ -128,12 +174,28 @@ public class S7Configuration extends S7TcpTransportConfiguration {
         this.remoteSlot = remoteSlot;
     }
 
+    public DeviceGroup getRemoteDeviceGroup() {
+        return remoteDeviceGroup;
+    }
+
+    public void setRemoteDeviceGroup(DeviceGroup remoteDeviceGroup) {
+        this.remoteDeviceGroup = remoteDeviceGroup;
+    }
+
     public int getRemoteRack2() {
         return remoteRack2;
     }
 
     public void setRemoteRack2(int remoteRack2) {
         this.remoteRack2 = remoteRack2;
+    }
+
+    public DeviceGroup getRemoteDeviceGroup2() {
+        return remoteDeviceGroup2;
+    }
+
+    public void setRemoteDeviceGroup2(DeviceGroup remoteDeviceGroup2) {
+        this.remoteDeviceGroup2 = remoteDeviceGroup2;
     }
 
     public int getRemoteSlot2() {
@@ -227,7 +289,6 @@ public class S7Configuration extends S7TcpTransportConfiguration {
             ", remote-rack2=" + remoteRack2 +
             ", remote-slot2=" + remoteSlot2 +
             ", remote-tsap=" + remoteTsap +
-            ", port=" + getDefaultPort() +                
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +

@@ -77,7 +77,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("WriteRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToWrite)
     writeSimpleField("noOfNodesToWrite", noOfNodesToWrite, writeSignedInt(writeBuffer, 32));
@@ -126,7 +126,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     List<ExtensionObjectDefinition> nodesToWrite =
         readCountArrayField(
             "nodesToWrite",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("670")),
                 readBuffer),
             noOfNodesToWrite);

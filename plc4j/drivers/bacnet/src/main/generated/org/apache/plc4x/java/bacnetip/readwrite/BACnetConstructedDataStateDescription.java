@@ -83,8 +83,7 @@ public class BACnetConstructedDataStateDescription extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataStateDescription");
 
     // Simple Field (stateDescription)
-    writeSimpleField(
-        "stateDescription", stateDescription, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("stateDescription", stateDescription, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataStateDescription extends BACnetConstructedData
     BACnetApplicationTagCharacterString stateDescription =
         readSimpleField(
             "stateDescription",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

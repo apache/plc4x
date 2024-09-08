@@ -75,14 +75,13 @@ public class BACnetReadAccessProperty implements Message {
     writeBuffer.pushContext("BACnetReadAccessProperty");
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (readResult) (Can be skipped, if the value is null)
-    writeOptionalField("readResult", readResult, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("readResult", readResult, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetReadAccessProperty");
   }
@@ -114,27 +113,6 @@ public class BACnetReadAccessProperty implements Message {
     return lengthInBits;
   }
 
-  public static BACnetReadAccessProperty staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[0] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[0];
-    } else if (args[0] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, objectTypeArgument);
-  }
-
   public static BACnetReadAccessProperty staticParse(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetReadAccessProperty");
@@ -144,7 +122,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -153,7 +131,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -165,7 +143,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetReadAccessPropertyReadResult readResult =
         readOptionalField(
             "readResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReadAccessPropertyReadResult.staticParse(
                         readBuffer,

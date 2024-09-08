@@ -112,11 +112,10 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("ActivateSessionRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (clientSignature)
-    writeSimpleField(
-        "clientSignature", clientSignature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientSignature", clientSignature, writeComplex(writeBuffer));
 
     // Simple Field (noOfClientSoftwareCertificates)
     writeSimpleField(
@@ -135,12 +134,10 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     writeComplexTypeArrayField("localeIds", localeIds, writeBuffer);
 
     // Simple Field (userIdentityToken)
-    writeSimpleField(
-        "userIdentityToken", userIdentityToken, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userIdentityToken", userIdentityToken, writeComplex(writeBuffer));
 
     // Simple Field (userTokenSignature)
-    writeSimpleField(
-        "userTokenSignature", userTokenSignature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userTokenSignature", userTokenSignature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ActivateSessionRequest");
   }
@@ -204,14 +201,14 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObjectDefinition clientSignature =
         readSimpleField(
             "clientSignature",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("458")),
                 readBuffer));
 
@@ -221,7 +218,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     List<ExtensionObjectDefinition> clientSoftwareCertificates =
         readCountArrayField(
             "clientSoftwareCertificates",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("346")),
                 readBuffer),
             noOfClientSoftwareCertificates);
@@ -231,19 +228,19 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     List<PascalString> localeIds =
         readCountArrayField(
             "localeIds",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfLocaleIds);
 
     ExtensionObject userIdentityToken =
         readSimpleField(
             "userIdentityToken",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     ExtensionObjectDefinition userTokenSignature =
         readSimpleField(
             "userTokenSignature",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("458")),
                 readBuffer));
 

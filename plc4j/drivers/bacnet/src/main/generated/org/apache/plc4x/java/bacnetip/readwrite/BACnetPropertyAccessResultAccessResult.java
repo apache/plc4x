@@ -104,48 +104,6 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
   }
 
   public static BACnetPropertyAccessResultAccessResult staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 3)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 3, but got " + args.length);
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[0] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[0];
-    } else if (args[0] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    BACnetPropertyIdentifier propertyIdentifierArgument;
-    if (args[1] instanceof BACnetPropertyIdentifier) {
-      propertyIdentifierArgument = (BACnetPropertyIdentifier) args[1];
-    } else if (args[1] instanceof String) {
-      propertyIdentifierArgument = BACnetPropertyIdentifier.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type BACnetPropertyIdentifier or a string which is"
-              + " parseable but was "
-              + args[1].getClass().getName());
-    }
-    BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument;
-    if (args[2] instanceof BACnetTagPayloadUnsignedInteger) {
-      propertyArrayIndexArgument = (BACnetTagPayloadUnsignedInteger) args[2];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 2 expected to be of type BACnetTagPayloadUnsignedInteger or a string which is"
-              + " parseable but was "
-              + args[2].getClass().getName());
-    }
-    return staticParse(
-        readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument);
-  }
-
-  public static BACnetPropertyAccessResultAccessResult staticParse(
       ReadBuffer readBuffer,
       BACnetObjectType objectTypeArgument,
       BACnetPropertyIdentifier propertyIdentifierArgument,
@@ -158,8 +116,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
 

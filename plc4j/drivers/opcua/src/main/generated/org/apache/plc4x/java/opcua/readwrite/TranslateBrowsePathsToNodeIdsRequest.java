@@ -78,7 +78,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     writeBuffer.pushContext("TranslateBrowsePathsToNodeIdsRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfBrowsePaths)
     writeSimpleField("noOfBrowsePaths", noOfBrowsePaths, writeSignedInt(writeBuffer, 32));
@@ -127,7 +127,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -136,7 +136,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     List<ExtensionObjectDefinition> browsePaths =
         readCountArrayField(
             "browsePaths",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("545")),
                 readBuffer),
             noOfBrowsePaths);

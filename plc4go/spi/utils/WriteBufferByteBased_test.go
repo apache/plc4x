@@ -24,12 +24,12 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/icza/bitio"
-	"github.com/stretchr/testify/mock"
 	"math/big"
 	"testing"
 
+	"github.com/icza/bitio"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestSizingWorksProperly(t *testing.T) {
@@ -907,9 +907,8 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 	type args struct {
 		in0       string
 		bitLength uint32
-		encoding  string
 		value     string
-		in4       []WithWriterArgs
+		args      []WithWriterArgs
 	}
 	tests := []struct {
 		name    string
@@ -935,8 +934,8 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 			},
 			args: args{
 				bitLength: 48,
-				encoding:  "UTF8",
 				value:     "plc4x",
+				args:      []WithWriterArgs{WithEncoding("UTF8")},
 			},
 			wantErr: assert.NoError,
 		},
@@ -947,8 +946,8 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 			},
 			args: args{
 				bitLength: 48,
-				encoding:  "UTF16",
 				value:     "plc4x",
+				args:      []WithWriterArgs{WithEncoding("UTF16")},
 			},
 			wantErr: assert.NoError,
 		},
@@ -959,8 +958,8 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 			},
 			args: args{
 				bitLength: 48,
-				encoding:  "UTF16BE",
 				value:     "plc4x",
+				args:      []WithWriterArgs{WithEncoding("UTF16BE")},
 			},
 			wantErr: assert.NoError,
 		},
@@ -971,8 +970,8 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 			},
 			args: args{
 				bitLength: 48,
-				encoding:  "UTF16LE",
 				value:     "plc4x",
+				args:      []WithWriterArgs{WithEncoding("UTF16LE")},
 			},
 			wantErr: assert.NoError,
 		},
@@ -985,7 +984,7 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
-			tt.wantErr(t, wb.WriteString(tt.args.in0, tt.args.bitLength, tt.args.encoding, tt.args.value, tt.args.in4...), fmt.Sprintf("WriteString(%v, %v, %v, %v, %v)", tt.args.in0, tt.args.bitLength, tt.args.encoding, tt.args.value, tt.args.in4))
+			tt.wantErr(t, wb.WriteString(tt.args.in0, tt.args.bitLength, tt.args.value, tt.args.args...), fmt.Sprintf("WriteString(%v, %v, %v,  %v)", tt.args.in0, tt.args.bitLength, tt.args.value, tt.args.args))
 		})
 	}
 }

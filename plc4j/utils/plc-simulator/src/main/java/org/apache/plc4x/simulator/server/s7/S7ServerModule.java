@@ -79,7 +79,7 @@ public class S7ServerModule implements ServerModule {
                     public void initChannel(SocketChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new GeneratedProtocolMessageCodec<>(TPKTPacket.class,
-                            TPKTPacket::staticParse, ByteOrder.BIG_ENDIAN, null,
+                            TPKTPacket::staticParse, ByteOrder.BIG_ENDIAN,
                             new S7Driver.ByteLengthEstimator(),
                             new S7Driver.CorruptPackageCleaner()));
                         pipeline.addLast(new S7Step7ServerAdapter(context));

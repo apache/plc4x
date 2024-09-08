@@ -82,17 +82,16 @@ public class ListOfCovNotificationsValue implements Message {
     writeBuffer.pushContext("ListOfCovNotificationsValue");
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Simple Field (propertyValue)
-    writeSimpleField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (timeOfChange) (Can be skipped, if the value is null)
-    writeOptionalField("timeOfChange", timeOfChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("timeOfChange", timeOfChange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ListOfCovNotificationsValue");
   }
@@ -127,27 +126,6 @@ public class ListOfCovNotificationsValue implements Message {
     return lengthInBits;
   }
 
-  public static ListOfCovNotificationsValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[0] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[0];
-    } else if (args[0] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, objectTypeArgument);
-  }
-
   public static ListOfCovNotificationsValue staticParse(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("ListOfCovNotificationsValue");
@@ -157,7 +135,7 @@ public class ListOfCovNotificationsValue implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -166,7 +144,7 @@ public class ListOfCovNotificationsValue implements Message {
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -178,7 +156,7 @@ public class ListOfCovNotificationsValue implements Message {
     BACnetConstructedData propertyValue =
         readSimpleField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -192,7 +170,7 @@ public class ListOfCovNotificationsValue implements Message {
     BACnetContextTagTime timeOfChange =
         readOptionalField(
             "timeOfChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagTime)
                         BACnetContextTag.staticParse(

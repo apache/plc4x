@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_INTERROGATION_COMMAND extends Informat
 
     // Simple Field (qoi)
     writeSimpleField(
-        "qoi",
-        qoi,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qoi", qoi, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_INTERROGATION_COMMAND");
   }
@@ -100,8 +97,7 @@ public class InformationObjectWithoutTime_INTERROGATION_COMMAND extends Informat
     QualifierOfInterrogation qoi =
         readSimpleField(
             "qoi",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfInterrogation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfInterrogation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_INTERROGATION_COMMAND");

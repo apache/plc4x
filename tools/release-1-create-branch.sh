@@ -19,6 +19,8 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
+DIRECTORY=$(pwd)
+
 # 0. Check if there are uncommitted changes as these would automatically be committed (local)
 if [[ $(git status --porcelain) ]]; then
   # Changes
@@ -27,7 +29,7 @@ if [[ $(git status --porcelain) ]]; then
 fi
 
 # 1. Get and calculate the current version (local)
-PROJECT_VERSION=$(../mvnw -f ../pom.xml -q -Dexec.executable=echo -Dexec.args="${project.version}" --non-recursive exec:exec)
+PROJECT_VERSION=$(../mvnw -f ../pom.xml -q -Dexec.executable=echo -Dexec.args="\${project.version}" --non-recursive exec:exec)
 RELEASE_VERSION=${PROJECT_VERSION%"-SNAPSHOT"}
 RELEASE_SHORT_VERSION=${RELEASE_VERSION%".0"}
 BRANCH_NAME="rel/$RELEASE_SHORT_VERSION"
@@ -41,15 +43,15 @@ echo "New develop Version: '$NEW_VERSION'"
 # 2. Ask if the RELEASE_NOTES have been filled out at all (local)
 read -p "Have the RELEASE_NOTES been updated for this version? (yes/no) " yn
 case $yn in
-	yes ) echo continuing with the proess;;
+	yes ) echo continuing with the process;;
 	no ) echo Please update the RELEASE_NOTES first;
 		exit 1;;
 	* ) echo invalid response;
 		exit 1;;
 esac
 
-# 3. Do a simple maven branch command with pushChanges=false (inside the Docker container)
-docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpushChanges=false -DdevelopmentVersion="$NEW_VERSION" -DbranchName="$BRANCH_NAME"
+# 3. Do a simple maven branch command with pushChanges=false
+docker compose run releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpushChanges=false -DdevelopmentVersion="$NEW_VERSION" -DbranchName="$BRANCH_NAME"
 if [ $? -ne 0 ]; then
     echo "Got non-0 exit code from docker compose, aborting."
     exit 1
@@ -71,7 +73,8 @@ Incompatible changes\n\
 \n\
 Bug Fixes\n\
 ---------\n\
-\
+\n\
+==============================================================\n\
 "
 echo NEW_VERSION
 sed -i '' "1s/.*/$NEW_HEADER/" ../RELEASE_NOTES

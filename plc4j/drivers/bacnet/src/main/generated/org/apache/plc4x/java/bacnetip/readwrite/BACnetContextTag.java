@@ -73,7 +73,7 @@ public abstract class BACnetContextTag implements Message {
     writeBuffer.pushContext("BACnetContextTag");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     byte tagNumber = getTagNumber();
@@ -112,36 +112,6 @@ public abstract class BACnetContextTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetContextTag staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    Short tagNumberArgument;
-    if (args[0] instanceof Short) {
-      tagNumberArgument = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumberArgument = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    BACnetDataType dataType;
-    if (args[1] instanceof BACnetDataType) {
-      dataType = (BACnetDataType) args[1];
-    } else if (args[1] instanceof String) {
-      dataType = BACnetDataType.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type BACnetDataType or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumberArgument, dataType);
-  }
-
   public static BACnetContextTag staticParse(
       ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType)
       throws ParseException {
@@ -151,9 +121,7 @@ public abstract class BACnetContextTag implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getActualTagNumber()) == (tagNumberArgument))) {
       throw new ParseAssertException("tagnumber doesn't match");

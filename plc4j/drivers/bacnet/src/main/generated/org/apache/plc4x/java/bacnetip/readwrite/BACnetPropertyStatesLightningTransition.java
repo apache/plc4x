@@ -61,8 +61,7 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
     writeBuffer.pushContext("BACnetPropertyStatesLightningTransition");
 
     // Simple Field (lightningTransition)
-    writeSimpleField(
-        "lightningTransition", lightningTransition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightningTransition", lightningTransition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLightningTransition");
   }
@@ -93,7 +92,7 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
     BACnetLightingTransitionTagged lightningTransition =
         readSimpleField(
             "lightningTransition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingTransitionTagged.staticParse(
                         readBuffer,

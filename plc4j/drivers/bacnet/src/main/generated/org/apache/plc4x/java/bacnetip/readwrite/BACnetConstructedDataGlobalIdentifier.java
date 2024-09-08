@@ -83,8 +83,7 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataGlobalIdentifier");
 
     // Simple Field (globalIdentifier)
-    writeSimpleField(
-        "globalIdentifier", globalIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("globalIdentifier", globalIdentifier, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger globalIdentifier =
         readSimpleField(
             "globalIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

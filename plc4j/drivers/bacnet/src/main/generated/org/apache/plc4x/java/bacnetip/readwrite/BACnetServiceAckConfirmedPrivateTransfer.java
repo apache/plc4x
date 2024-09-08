@@ -82,13 +82,13 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     writeBuffer.pushContext("BACnetServiceAckConfirmedPrivateTransfer");
 
     // Simple Field (vendorId)
-    writeSimpleField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Simple Field (serviceNumber)
-    writeSimpleField("serviceNumber", serviceNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serviceNumber", serviceNumber, writeComplex(writeBuffer));
 
     // Optional Field (resultBlock) (Can be skipped, if the value is null)
-    writeOptionalField("resultBlock", resultBlock, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("resultBlock", resultBlock, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckConfirmedPrivateTransfer");
   }
@@ -127,7 +127,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     BACnetVendorIdTagged vendorId =
         readSimpleField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -136,7 +136,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     BACnetContextTagUnsignedInteger serviceNumber =
         readSimpleField(
             "serviceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -148,7 +148,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     BACnetConstructedData resultBlock =
         readOptionalField(
             "resultBlock",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

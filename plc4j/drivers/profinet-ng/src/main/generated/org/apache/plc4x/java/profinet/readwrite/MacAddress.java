@@ -79,12 +79,6 @@ public class MacAddress implements Message {
     return lengthInBits;
   }
 
-  public static MacAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static MacAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MacAddress");
     PositionAware positionAware = readBuffer;

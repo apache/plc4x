@@ -61,7 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDate
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryDate");
 
     // Simple Field (dateValue)
-    writeSimpleField("dateValue", dateValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateValue", dateValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryDate");
   }
@@ -93,7 +93,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDate
     BACnetApplicationTagDate dateValue =
         readSimpleField(
             "dateValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

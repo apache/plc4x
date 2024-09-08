@@ -22,12 +22,12 @@ package cache
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"time"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
 
 type plcConnectionLease struct {

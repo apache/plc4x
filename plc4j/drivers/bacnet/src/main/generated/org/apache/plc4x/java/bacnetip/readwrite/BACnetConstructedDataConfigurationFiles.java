@@ -100,7 +100,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (configurationFiles)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     List<BACnetApplicationTagObjectIdentifier> configurationFiles =
         readTerminatedArrayField(
             "configurationFiles",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

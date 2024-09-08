@@ -23,22 +23,19 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
 import org.apache.plc4x.java.ctrlx.readwrite.connection.CtrlXConnection;
 import org.apache.plc4x.java.ctrlx.readwrite.discovery.CtrlXPlcDiscoverer;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
 import java.util.regex.Matcher;
 
-public class CtrlXDriver implements PlcDriver, TransportConfigurationTypeProvider {
+public class CtrlXDriver implements PlcDriver {
 
     @Override
     public String getProtocolCode() {
@@ -78,7 +75,7 @@ public class CtrlXDriver implements PlcDriver, TransportConfigurationTypeProvide
         }
 
         // Create the configuration object.
-        Configuration configuration = configurationFactory
+        PlcConnectionConfiguration configuration = configurationFactory
             .createConfiguration(CtrlXConfiguration.class, protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
@@ -89,7 +86,7 @@ public class CtrlXDriver implements PlcDriver, TransportConfigurationTypeProvide
             throw new PlcConnectionException("Only 'https' transport is supported by this driver");
         }
 
-        if((authentication == null) || (!(authentication instanceof PlcUsernamePasswordAuthentication))) {
+        if((!(authentication instanceof PlcUsernamePasswordAuthentication))) {
             throw new PlcConnectionException("CtrlX connections require username-password authentication");
         }
         PlcUsernamePasswordAuthentication usernamePasswordAuthentication =
@@ -100,17 +97,6 @@ public class CtrlXDriver implements PlcDriver, TransportConfigurationTypeProvide
             usernamePasswordAuthentication.getUsername(),
             usernamePasswordAuthentication.getPassword());
     }
-
-    @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
-        return CtrlXConfiguration.class;
-    }
-
-    @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        return null;
-    }
-
 
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {

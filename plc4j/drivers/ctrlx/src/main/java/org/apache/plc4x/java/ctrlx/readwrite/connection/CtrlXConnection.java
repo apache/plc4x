@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcQuery;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
@@ -41,6 +42,8 @@ import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTag;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTagHandler;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
 import org.apache.plc4x.java.spi.messages.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -49,6 +52,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
+
+    private static final Logger logger = LoggerFactory.getLogger(CtrlXConnection.class);
 
     private final String baseUrl;
     private final String username;
@@ -60,6 +65,8 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     private NodesApi nodesApi;
     private DataLayerInformationAndSettingsApi dataLayerApi;
 
+    private final CtrlXTagHandler controlXTagHandler = new CtrlXTagHandler();
+
     public CtrlXConnection(String baseUrl, String username, String password) {
         this.baseUrl = baseUrl;
         this.username = username;
@@ -69,7 +76,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
     @Override
     public void connect() throws PlcConnectionException {
-        if(apiClient != null) {
+        if (apiClient != null) {
             throw new PlcConnectionException("Already connected");
         }
         apiClient = ApiClientFactory.getApiClient(baseUrl, username, password);
@@ -91,25 +98,37 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     }
 
     @Override
+    public Optional<PlcTag> parseTagAddress(String tagAddress) {
+        PlcTag plcTag;
+        try {
+            plcTag = controlXTagHandler.parseTag(tagAddress);
+        } catch (Exception e) {
+            logger.error("Error parsing tag address {}", tagAddress);
+            return Optional.empty();
+        }
+        return Optional.ofNullable(plcTag);
+    }
+
+    @Override
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
-            public boolean canRead() {
+            public boolean isReadSupported() {
                 return true;
             }
 
             @Override
-            public boolean canWrite() {
+            public boolean isWriteSupported() {
                 return true;
             }
 
             @Override
-            public boolean canSubscribe() {
+            public boolean isSubscribeSupported() {
                 return true;
             }
 
             @Override
-            public boolean canBrowse() {
+            public boolean isBrowseSupported() {
                 return true;
             }
         };
@@ -122,7 +141,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
     @Override
     public PlcBrowseRequest.Builder browseRequestBuilder() {
-        return new DefaultPlcBrowseRequest.Builder(this, new CtrlXTagHandler());
+        return new DefaultPlcBrowseRequest.Builder(this, controlXTagHandler);
     }
 
     @Override
@@ -242,7 +261,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                                 new DefaultListPlcBrowseItem(
                                     new CtrlXTag(curNode, PlcValueType.BOOL, Collections.emptyList()),
                                     curNode, true, true, true,
-                                    Collections.emptyMap(), Collections.emptyMap())));
+                                    Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList())));
                         }
                     }
                     // If this node has children, then it's branch, and we need to add its children to the queue.

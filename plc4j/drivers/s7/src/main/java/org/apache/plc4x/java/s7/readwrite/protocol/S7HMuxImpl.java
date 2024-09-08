@@ -26,7 +26,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.AttributeKey;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
@@ -127,7 +127,6 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      */
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf outbb, List<Object> list) {
-        logger.debug("ENCODE: " + outbb.toString());
         if ((embed_ctx == null) && (ctx.channel() instanceof EmbeddedChannel)) embed_ctx = ctx;
         if ((tcp_channel != null) && (embed_ctx == ctx)) {
             tcp_channel.writeAndFlush(outbb.copy());
@@ -142,7 +141,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * the pipeline of the channel "embeded_channel"
      */
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf inbb, List<Object> list) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf inbb, List<Object> list) throws Exception {     
         embed_ctx.fireChannelRead(inbb.copy());
     }
 

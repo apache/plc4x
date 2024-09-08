@@ -426,8 +426,8 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Term paddingValue = getExpressionTerm(ctx.paddingValue);
-        Term paddingCondition = getExpressionTerm(ctx.paddingCondition);
-        Field field = new DefaultPaddingField(getAttributes(ctx), type, name, paddingValue, paddingCondition);
+        Term timesPadding = getExpressionTerm(ctx.timesPadding);
+        Field field = new DefaultPaddingField(getAttributes(ctx), type, name, paddingValue, timesPadding);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }

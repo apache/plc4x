@@ -47,50 +47,20 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
   }
 
   // Properties.
-  protected final String chunk;
-  protected final int secureChannelId;
-  protected final int secureTokenId;
-  protected final int sequenceNumber;
-  protected final int requestId;
-  protected final byte[] message;
+  protected final SecurityHeader securityHeader;
+  protected final Payload message;
 
-  public OpcuaMessageRequest(
-      String chunk,
-      int secureChannelId,
-      int secureTokenId,
-      int sequenceNumber,
-      int requestId,
-      byte[] message) {
-    super();
-    this.chunk = chunk;
-    this.secureChannelId = secureChannelId;
-    this.secureTokenId = secureTokenId;
-    this.sequenceNumber = sequenceNumber;
-    this.requestId = requestId;
+  public OpcuaMessageRequest(ChunkType chunk, SecurityHeader securityHeader, Payload message) {
+    super(chunk);
+    this.securityHeader = securityHeader;
     this.message = message;
   }
 
-  public String getChunk() {
-    return chunk;
+  public SecurityHeader getSecurityHeader() {
+    return securityHeader;
   }
 
-  public int getSecureChannelId() {
-    return secureChannelId;
-  }
-
-  public int getSecureTokenId() {
-    return secureTokenId;
-  }
-
-  public int getSequenceNumber() {
-    return sequenceNumber;
-  }
-
-  public int getRequestId() {
-    return requestId;
-  }
-
-  public byte[] getMessage() {
+  public Payload getMessage() {
     return message;
   }
 
@@ -100,28 +70,11 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("OpcuaMessageRequest");
 
-    // Simple Field (chunk)
-    writeSimpleField("chunk", chunk, writeString(writeBuffer, 8));
+    // Simple Field (securityHeader)
+    writeSimpleField("securityHeader", securityHeader, writeComplex(writeBuffer));
 
-    // Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int messageSize = (int) (getLengthInBytes());
-    writeImplicitField("messageSize", messageSize, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (secureChannelId)
-    writeSimpleField("secureChannelId", secureChannelId, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (secureTokenId)
-    writeSimpleField("secureTokenId", secureTokenId, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (sequenceNumber)
-    writeSimpleField("sequenceNumber", sequenceNumber, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (requestId)
-    writeSimpleField("requestId", requestId, writeSignedInt(writeBuffer, 32));
-
-    // Array Field (message)
-    writeByteArrayField("message", message, writeByteArray(writeBuffer, 8));
+    // Simple Field (message)
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaMessageRequest");
   }
@@ -137,85 +90,54 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
     OpcuaMessageRequest _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (chunk)
-    lengthInBits += 8;
+    // Simple field (securityHeader)
+    lengthInBits += securityHeader.getLengthInBits();
 
-    // Implicit Field (messageSize)
-    lengthInBits += 32;
-
-    // Simple field (secureChannelId)
-    lengthInBits += 32;
-
-    // Simple field (secureTokenId)
-    lengthInBits += 32;
-
-    // Simple field (sequenceNumber)
-    lengthInBits += 32;
-
-    // Simple field (requestId)
-    lengthInBits += 32;
-
-    // Array field
-    if (message != null) {
-      lengthInBits += 8 * message.length;
-    }
+    // Simple field (message)
+    lengthInBits += message.getLengthInBits();
 
     return lengthInBits;
   }
 
   public static MessagePDUBuilder staticParseMessagePDUBuilder(
-      ReadBuffer readBuffer, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Long totalLength, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaMessageRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    String chunk = readSimpleField("chunk", readString(readBuffer, 8));
+    SecurityHeader securityHeader =
+        readSimpleField(
+            "securityHeader",
+            readComplex(() -> SecurityHeader.staticParse(readBuffer), readBuffer));
 
-    int messageSize = readImplicitField("messageSize", readSignedInt(readBuffer, 32));
-
-    int secureChannelId = readSimpleField("secureChannelId", readSignedInt(readBuffer, 32));
-
-    int secureTokenId = readSimpleField("secureTokenId", readSignedInt(readBuffer, 32));
-
-    int sequenceNumber = readSimpleField("sequenceNumber", readSignedInt(readBuffer, 32));
-
-    int requestId = readSimpleField("requestId", readSignedInt(readBuffer, 32));
-
-    byte[] message = readBuffer.readByteArray("message", Math.toIntExact((messageSize) - (24)));
+    Payload message =
+        readSimpleField(
+            "message",
+            readComplex(
+                () ->
+                    Payload.staticParse(
+                        readBuffer,
+                        (boolean) (false),
+                        (long) (((totalLength) - (securityHeader.getLengthInBytes())) - (16L))),
+                readBuffer));
 
     readBuffer.closeContext("OpcuaMessageRequest");
     // Create the instance
-    return new OpcuaMessageRequestBuilderImpl(
-        chunk, secureChannelId, secureTokenId, sequenceNumber, requestId, message);
+    return new OpcuaMessageRequestBuilderImpl(securityHeader, message);
   }
 
   public static class OpcuaMessageRequestBuilderImpl implements MessagePDU.MessagePDUBuilder {
-    private final String chunk;
-    private final int secureChannelId;
-    private final int secureTokenId;
-    private final int sequenceNumber;
-    private final int requestId;
-    private final byte[] message;
+    private final SecurityHeader securityHeader;
+    private final Payload message;
 
-    public OpcuaMessageRequestBuilderImpl(
-        String chunk,
-        int secureChannelId,
-        int secureTokenId,
-        int sequenceNumber,
-        int requestId,
-        byte[] message) {
-      this.chunk = chunk;
-      this.secureChannelId = secureChannelId;
-      this.secureTokenId = secureTokenId;
-      this.sequenceNumber = sequenceNumber;
-      this.requestId = requestId;
+    public OpcuaMessageRequestBuilderImpl(SecurityHeader securityHeader, Payload message) {
+      this.securityHeader = securityHeader;
       this.message = message;
     }
 
-    public OpcuaMessageRequest build() {
+    public OpcuaMessageRequest build(ChunkType chunk) {
       OpcuaMessageRequest opcuaMessageRequest =
-          new OpcuaMessageRequest(
-              chunk, secureChannelId, secureTokenId, sequenceNumber, requestId, message);
+          new OpcuaMessageRequest(chunk, securityHeader, message);
       return opcuaMessageRequest;
     }
   }
@@ -229,11 +151,7 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
       return false;
     }
     OpcuaMessageRequest that = (OpcuaMessageRequest) o;
-    return (getChunk() == that.getChunk())
-        && (getSecureChannelId() == that.getSecureChannelId())
-        && (getSecureTokenId() == that.getSecureTokenId())
-        && (getSequenceNumber() == that.getSequenceNumber())
-        && (getRequestId() == that.getRequestId())
+    return (getSecurityHeader() == that.getSecurityHeader())
         && (getMessage() == that.getMessage())
         && super.equals(that)
         && true;
@@ -241,14 +159,7 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getChunk(),
-        getSecureChannelId(),
-        getSecureTokenId(),
-        getSequenceNumber(),
-        getRequestId(),
-        getMessage());
+    return Objects.hash(super.hashCode(), getSecurityHeader(), getMessage());
   }
 
   @Override

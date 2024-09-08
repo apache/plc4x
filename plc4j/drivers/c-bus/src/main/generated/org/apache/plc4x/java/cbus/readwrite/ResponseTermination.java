@@ -87,12 +87,6 @@ public class ResponseTermination implements Message {
     return lengthInBits;
   }
 
-  public static ResponseTermination staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ResponseTermination staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ResponseTermination");
     PositionAware positionAware = readBuffer;

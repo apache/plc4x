@@ -76,10 +76,10 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
     writeBuffer.pushContext("ReplyOrConfirmationReply");
 
     // Simple Field (reply)
-    writeSimpleField("reply", reply, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reply", reply, writeComplex(writeBuffer));
 
     // Simple Field (termination)
-    writeSimpleField("termination", termination, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("termination", termination, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReplyOrConfirmationReply");
   }
@@ -114,7 +114,7 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
     Reply reply =
         readSimpleField(
             "reply",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     Reply.staticParse(
                         readBuffer, (CBusOptions) (cBusOptions), (RequestContext) (requestContext)),
@@ -123,8 +123,7 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
     ResponseTermination termination =
         readSimpleField(
             "termination",
-            new DataReaderComplexDefault<>(
-                () -> ResponseTermination.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ResponseTermination.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReplyOrConfirmationReply");
     // Create the instance

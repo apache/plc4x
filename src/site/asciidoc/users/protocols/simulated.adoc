@@ -21,31 +21,11 @@
 
 === Connection String Options
 
+include::../../../plc4j/drivers/all/src/site/generated/simulated.adoc[]
+
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-
-|Code
-2+|`simulated`
-
-|Name
-2+|Simulated
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-simulated</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+| `tcp`
-
-|Compatible Transports:
-2+| - `tcp`
 
 3+|Supported Operations
 

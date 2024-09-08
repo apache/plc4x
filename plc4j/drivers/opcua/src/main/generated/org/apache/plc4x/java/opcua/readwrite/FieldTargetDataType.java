@@ -105,34 +105,32 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("FieldTargetDataType");
 
     // Simple Field (dataSetFieldId)
-    writeSimpleField("dataSetFieldId", dataSetFieldId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataSetFieldId", dataSetFieldId, writeComplex(writeBuffer));
 
     // Simple Field (receiverIndexRange)
-    writeSimpleField(
-        "receiverIndexRange", receiverIndexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("receiverIndexRange", receiverIndexRange, writeComplex(writeBuffer));
 
     // Simple Field (targetNodeId)
-    writeSimpleField("targetNodeId", targetNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNodeId", targetNodeId, writeComplex(writeBuffer));
 
     // Simple Field (attributeId)
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (writeIndexRange)
-    writeSimpleField(
-        "writeIndexRange", writeIndexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("writeIndexRange", writeIndexRange, writeComplex(writeBuffer));
 
     // Simple Field (overrideValueHandling)
     writeSimpleEnumField(
         "overrideValueHandling",
         "OverrideValueHandling",
         overrideValueHandling,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             OverrideValueHandling::getValue,
             OverrideValueHandling::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (overrideValue)
-    writeSimpleField("overrideValue", overrideValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("overrideValue", overrideValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("FieldTargetDataType");
   }
@@ -180,37 +178,32 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
 
     GuidValue dataSetFieldId =
         readSimpleField(
-            "dataSetFieldId",
-            new DataReaderComplexDefault<>(() -> GuidValue.staticParse(readBuffer), readBuffer));
+            "dataSetFieldId", readComplex(() -> GuidValue.staticParse(readBuffer), readBuffer));
 
     PascalString receiverIndexRange =
         readSimpleField(
             "receiverIndexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     NodeId targetNodeId =
         readSimpleField(
-            "targetNodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "targetNodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
     PascalString writeIndexRange =
         readSimpleField(
-            "writeIndexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "writeIndexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     OverrideValueHandling overrideValueHandling =
         readEnumField(
             "overrideValueHandling",
             "OverrideValueHandling",
-            new DataReaderEnumDefault<>(
-                OverrideValueHandling::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(OverrideValueHandling::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     Variant overrideValue =
         readSimpleField(
-            "overrideValue",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+            "overrideValue", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("FieldTargetDataType");
     // Create the instance

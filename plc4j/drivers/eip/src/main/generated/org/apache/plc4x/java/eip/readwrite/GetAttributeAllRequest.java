@@ -83,11 +83,10 @@ public class GetAttributeAllRequest extends CipService implements Message {
     writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (classSegment)
-    writeSimpleField("classSegment", classSegment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("classSegment", classSegment, writeComplex(writeBuffer));
 
     // Simple Field (instanceSegment)
-    writeSimpleField(
-        "instanceSegment", instanceSegment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("instanceSegment", instanceSegment, writeComplex(writeBuffer));
 
     writeBuffer.popContext("GetAttributeAllRequest");
   }
@@ -125,13 +124,11 @@ public class GetAttributeAllRequest extends CipService implements Message {
 
     PathSegment classSegment =
         readSimpleField(
-            "classSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "classSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
-            "instanceSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "instanceSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("GetAttributeAllRequest");
     // Create the instance

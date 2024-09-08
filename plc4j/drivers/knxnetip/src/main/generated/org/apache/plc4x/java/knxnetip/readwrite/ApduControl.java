@@ -80,12 +80,6 @@ public abstract class ApduControl implements Message {
     return lengthInBits;
   }
 
-  public static ApduControl staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ApduControl staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ApduControl");
     PositionAware positionAware = readBuffer;

@@ -262,8 +262,8 @@
     [REAL64      ['64', '"LREAL"'         ] ]
 
     // compound/complex types
-    [RECORD           [ '8', '"BYTE"'       ] ]
-    [OCTET_STRING     [ '8', '"BYTE"'       ] ]
+    [RECORD           [ '8', '"RAW_BYTE_ARRAY"' ] ]
+    [OCTET_STRING     [ '8', '"RAW_BYTE_ARRAY"' ] ]
     [VISIBLE_STRING   [ '8', '"CHAR"'       ] ]
     [UNICODE_STRING   ['16', '"WCHAR"'      ] ]
     [TIME_OF_DAY      ['48', '"TIME_OF_DAY"'] ]
@@ -330,7 +330,7 @@
             [simple float 64 value]
         ]
         ['RECORD' List(int 32 size)
-            [array byte value length 'size']
+            [array byte   value count 'size']
         ]
         ['OCTET_STRING' STRING
            [simple vstring 'size' value]

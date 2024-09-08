@@ -82,7 +82,7 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataCarPosition");
 
     // Simple Field (carPosition)
-    writeSimpleField("carPosition", carPosition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("carPosition", carPosition, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger carPosition =
         readSimpleField(
             "carPosition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

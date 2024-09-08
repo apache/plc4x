@@ -98,31 +98,25 @@ public class BACnetEventSummary implements Message {
     writeBuffer.pushContext("BACnetEventSummary");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (eventState)
-    writeSimpleField("eventState", eventState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventState", eventState, writeComplex(writeBuffer));
 
     // Simple Field (acknowledgedTransitions)
-    writeSimpleField(
-        "acknowledgedTransitions",
-        acknowledgedTransitions,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("acknowledgedTransitions", acknowledgedTransitions, writeComplex(writeBuffer));
 
     // Simple Field (eventTimestamps)
-    writeSimpleField(
-        "eventTimestamps", eventTimestamps, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventTimestamps", eventTimestamps, writeComplex(writeBuffer));
 
     // Simple Field (notifyType)
-    writeSimpleField("notifyType", notifyType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notifyType", notifyType, writeComplex(writeBuffer));
 
     // Simple Field (eventEnable)
-    writeSimpleField("eventEnable", eventEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventEnable", eventEnable, writeComplex(writeBuffer));
 
     // Simple Field (eventPriorities)
-    writeSimpleField(
-        "eventPriorities", eventPriorities, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventPriorities", eventPriorities, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventSummary");
   }
@@ -162,12 +156,6 @@ public class BACnetEventSummary implements Message {
     return lengthInBits;
   }
 
-  public static BACnetEventSummary staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetEventSummary staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventSummary");
     PositionAware positionAware = readBuffer;
@@ -176,7 +164,7 @@ public class BACnetEventSummary implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -188,7 +176,7 @@ public class BACnetEventSummary implements Message {
     BACnetEventStateTagged eventState =
         readSimpleField(
             "eventState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -197,7 +185,7 @@ public class BACnetEventSummary implements Message {
     BACnetEventTransitionBitsTagged acknowledgedTransitions =
         readSimpleField(
             "acknowledgedTransitions",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -206,14 +194,14 @@ public class BACnetEventSummary implements Message {
     BACnetEventTimestampsEnclosed eventTimestamps =
         readSimpleField(
             "eventTimestamps",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventTimestampsEnclosed.staticParse(readBuffer, (short) (3)),
                 readBuffer));
 
     BACnetNotifyTypeTagged notifyType =
         readSimpleField(
             "notifyType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotifyTypeTagged.staticParse(
                         readBuffer, (short) (4), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -222,7 +210,7 @@ public class BACnetEventSummary implements Message {
     BACnetEventTransitionBitsTagged eventEnable =
         readSimpleField(
             "eventEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (5), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -231,7 +219,7 @@ public class BACnetEventSummary implements Message {
     BACnetEventPriorities eventPriorities =
         readSimpleField(
             "eventPriorities",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventPriorities.staticParse(readBuffer, (short) (6)), readBuffer));
 
     readBuffer.closeContext("BACnetEventSummary");

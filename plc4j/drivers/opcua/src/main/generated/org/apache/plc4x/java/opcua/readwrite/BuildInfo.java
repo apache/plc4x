@@ -98,21 +98,19 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("BuildInfo");
 
     // Simple Field (productUri)
-    writeSimpleField("productUri", productUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productUri", productUri, writeComplex(writeBuffer));
 
     // Simple Field (manufacturerName)
-    writeSimpleField(
-        "manufacturerName", manufacturerName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("manufacturerName", manufacturerName, writeComplex(writeBuffer));
 
     // Simple Field (productName)
-    writeSimpleField("productName", productName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productName", productName, writeComplex(writeBuffer));
 
     // Simple Field (softwareVersion)
-    writeSimpleField(
-        "softwareVersion", softwareVersion, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("softwareVersion", softwareVersion, writeComplex(writeBuffer));
 
     // Simple Field (buildNumber)
-    writeSimpleField("buildNumber", buildNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("buildNumber", buildNumber, writeComplex(writeBuffer));
 
     // Simple Field (buildDate)
     writeSimpleField("buildDate", buildDate, writeSignedLong(writeBuffer, 64));
@@ -160,28 +158,24 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString manufacturerName =
         readSimpleField(
             "manufacturerName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productName =
         readSimpleField(
-            "productName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString softwareVersion =
         readSimpleField(
-            "softwareVersion",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "softwareVersion", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString buildNumber =
         readSimpleField(
-            "buildNumber",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "buildNumber", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long buildDate = readSimpleField("buildDate", readSignedLong(readBuffer, 64));
 

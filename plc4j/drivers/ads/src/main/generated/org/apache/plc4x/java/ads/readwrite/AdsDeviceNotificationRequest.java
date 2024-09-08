@@ -139,8 +139,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
     List<AdsStampHeader> adsStampHeaders =
         readCountArrayField(
             "adsStampHeaders",
-            new DataReaderComplexDefault<>(
-                () -> AdsStampHeader.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsStampHeader.staticParse(readBuffer), readBuffer),
             stamps);
 
     readBuffer.closeContext("AdsDeviceNotificationRequest");

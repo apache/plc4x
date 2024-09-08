@@ -100,10 +100,10 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
     writeSimpleField("indicated", indicated, writeBoolean(writeBuffer));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SDOInitiateDownloadRequest");
   }
@@ -157,13 +157,12 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
 
     IndexAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> IndexAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> IndexAddress.staticParse(readBuffer), readBuffer));
 
     SDOInitiateUploadResponsePayload payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SDOInitiateUploadResponsePayload.staticParse(
                         readBuffer, (boolean) (expedited), (boolean) (indicated), (byte) (size)),

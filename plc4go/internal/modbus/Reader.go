@@ -21,20 +21,20 @@ package modbus
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"math"
 	"runtime/debug"
 	"sync/atomic"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Reader struct {
@@ -205,7 +205,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	// Decode the data according to the information from the request
 	m.log.Trace().Msg("decode data")
 	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-	value, err := readWriteModel.DataItemParse(ctxForModel, data, tag.Datatype, tag.Quantity)
+	value, err := readWriteModel.DataItemParse(ctxForModel, data, tag.Datatype, tag.Quantity, true)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}

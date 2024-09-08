@@ -43,153 +43,80 @@ public class DataItem {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DataItem.class);
 
-  public static PlcValue staticParse(ReadBuffer readBuffer, GenericCANDataType dataType)
-      throws ParseException {
+  public static PlcValue staticParse(
+      ReadBuffer readBuffer, GenericCANDataType dataType, Integer size) throws ParseException {
     if (EvaluationHelper.equals(dataType, GenericCANDataType.BYTE)) { // BYTE
-      byte value =
-          readSimpleField(
-              "value", readByte(readBuffer, 8), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      byte value = readSimpleField("value", readByte(readBuffer, 8));
       return new PlcBYTE(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.BOOLEAN)) { // BOOL
-      boolean value =
-          readSimpleField(
-              "value", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      boolean value = readSimpleField("value", readBoolean(readBuffer));
       return new PlcBOOL(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED8)) { // USINT
-      short value =
-          readSimpleField(
-              "value",
-              readUnsignedShort(readBuffer, 8),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED16)) { // UINT
-      int value =
-          readSimpleField(
-              "value",
-              readUnsignedInt(readBuffer, 16),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
       return new PlcUINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED24)) { // UDINT
-      int value =
-          readSimpleField(
-              "value",
-              readUnsignedInt(readBuffer, 24),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 24));
       return new PlcUDINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED32)) { // UDINT
-      long value =
-          readSimpleField(
-              "value",
-              readUnsignedLong(readBuffer, 32),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
       return new PlcUDINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED40)) { // ULINT
-      long value =
-          readSimpleField(
-              "value",
-              readUnsignedLong(readBuffer, 40),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 40));
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED48)) { // ULINT
-      long value =
-          readSimpleField(
-              "value",
-              readUnsignedLong(readBuffer, 48),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 48));
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED56)) { // ULINT
-      long value =
-          readSimpleField(
-              "value",
-              readUnsignedLong(readBuffer, 56),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 56));
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED64)) { // ULINT
-      BigInteger value =
-          readSimpleField(
-              "value",
-              readUnsignedBigInteger(readBuffer, 64),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      BigInteger value = readSimpleField("value", readUnsignedBigInteger(readBuffer, 64));
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER8)) { // SINT
-      byte value =
-          readSimpleField(
-              "value",
-              readSignedByte(readBuffer, 8),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      byte value = readSimpleField("value", readSignedByte(readBuffer, 8));
       return new PlcSINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER16)) { // INT
-      short value =
-          readSimpleField(
-              "value",
-              readSignedShort(readBuffer, 16),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      short value = readSimpleField("value", readSignedShort(readBuffer, 16));
       return new PlcINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER24)) { // DINT
-      int value =
-          readSimpleField(
-              "value",
-              readSignedInt(readBuffer, 24),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      int value = readSimpleField("value", readSignedInt(readBuffer, 24));
       return new PlcDINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER32)) { // DINT
-      int value =
-          readSimpleField(
-              "value",
-              readSignedInt(readBuffer, 32),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      int value = readSimpleField("value", readSignedInt(readBuffer, 32));
       return new PlcDINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER40)) { // LINT
-      long value =
-          readSimpleField(
-              "value",
-              readSignedLong(readBuffer, 40),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      long value = readSimpleField("value", readSignedLong(readBuffer, 40));
       return new PlcLINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER48)) { // LINT
-      long value =
-          readSimpleField(
-              "value",
-              readSignedLong(readBuffer, 48),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      long value = readSimpleField("value", readSignedLong(readBuffer, 48));
       return new PlcLINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER56)) { // LINT
-      long value =
-          readSimpleField(
-              "value",
-              readSignedLong(readBuffer, 56),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      long value = readSimpleField("value", readSignedLong(readBuffer, 56));
       return new PlcLINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER64)) { // LINT
-      long value =
-          readSimpleField(
-              "value",
-              readSignedLong(readBuffer, 64),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      long value = readSimpleField("value", readSignedLong(readBuffer, 64));
       return new PlcLINT(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.REAL32)) { // REAL
-      float value =
-          readSimpleField(
-              "value",
-              readFloat(readBuffer, 32),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      float value = readSimpleField("value", readFloat(readBuffer, 32));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.REAL64)) { // LREAL
-      double value =
-          readSimpleField(
-              "value",
-              readDouble(readBuffer, 64),
-              WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      double value = readSimpleField("value", readDouble(readBuffer, 64));
       return new PlcLREAL(value);
+    } else if (EvaluationHelper.equals(dataType, GenericCANDataType.RAW)) { // List
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(size));
+      return new PlcRawByteArray(value);
     }
     return null;
   }
 
-  public static int getLengthInBytes(PlcValue _value, GenericCANDataType dataType) {
-    return (int) Math.ceil((float) getLengthInBits(_value, dataType) / 8.0);
+  public static int getLengthInBytes(PlcValue _value, GenericCANDataType dataType, Integer size) {
+    return (int) Math.ceil((float) getLengthInBits(_value, dataType, size) / 8.0);
   }
 
-  public static int getLengthInBits(PlcValue _value, GenericCANDataType dataType) {
+  public static int getLengthInBits(PlcValue _value, GenericCANDataType dataType, Integer size) {
     int lengthInBits = 0;
     if (EvaluationHelper.equals(dataType, GenericCANDataType.BYTE)) { // BYTE
       // Simple field (value)
@@ -251,160 +178,93 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.REAL64)) { // LREAL
       // Simple field (value)
       lengthInBits += 64;
+    } else if (EvaluationHelper.equals(dataType, GenericCANDataType.RAW)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
     }
 
     return lengthInBits;
   }
 
   public static void staticSerialize(
-      WriteBuffer writeBuffer, PlcValue _value, GenericCANDataType dataType)
+      WriteBuffer writeBuffer, PlcValue _value, GenericCANDataType dataType, Integer size)
       throws SerializationException {
-    staticSerialize(writeBuffer, _value, dataType, ByteOrder.BIG_ENDIAN);
+    staticSerialize(writeBuffer, _value, dataType, size, ByteOrder.BIG_ENDIAN);
   }
 
   public static void staticSerialize(
-      WriteBuffer writeBuffer, PlcValue _value, GenericCANDataType dataType, ByteOrder byteOrder)
+      WriteBuffer writeBuffer,
+      PlcValue _value,
+      GenericCANDataType dataType,
+      Integer size,
+      ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(dataType, GenericCANDataType.BYTE)) { // BYTE
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (byte) _value.getByte(),
-          writeByte(writeBuffer, 8),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (byte) _value.getByte(), writeByte(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.BOOLEAN)) { // BOOL
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (boolean) _value.getBoolean(),
-          writeBoolean(writeBuffer),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED8)) { // USINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (short) _value.getShort(),
-          writeUnsignedShort(writeBuffer, 8),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED16)) { // UINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (int) _value.getInteger(),
-          writeUnsignedInt(writeBuffer, 16),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED24)) { // UDINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (int) _value.getInteger(),
-          writeUnsignedInt(writeBuffer, 24),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 24));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED32)) { // UDINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (long) _value.getLong(),
-          writeUnsignedLong(writeBuffer, 32),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED40)) { // ULINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (long) _value.getLong(),
-          writeUnsignedLong(writeBuffer, 40),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 40));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED48)) { // ULINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (long) _value.getLong(),
-          writeUnsignedLong(writeBuffer, 48),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 48));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED56)) { // ULINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (long) _value.getLong(),
-          writeUnsignedLong(writeBuffer, 56),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 56));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.UNSIGNED64)) { // ULINT
       // Simple Field (value)
       writeSimpleField(
-          "value",
-          (BigInteger) _value.getBigInteger(),
-          writeUnsignedBigInteger(writeBuffer, 64),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+          "value", (BigInteger) _value.getBigInteger(), writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER8)) { // SINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (byte) _value.getByte(),
-          writeSignedByte(writeBuffer, 8),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (byte) _value.getByte(), writeSignedByte(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER16)) { // INT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (short) _value.getShort(),
-          writeSignedShort(writeBuffer, 16),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (short) _value.getShort(), writeSignedShort(writeBuffer, 16));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER24)) { // DINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (int) _value.getInteger(),
-          writeSignedInt(writeBuffer, 24),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (int) _value.getInteger(), writeSignedInt(writeBuffer, 24));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER32)) { // DINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (int) _value.getInteger(),
-          writeSignedInt(writeBuffer, 32),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (int) _value.getInteger(), writeSignedInt(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER40)) { // LINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (long) _value.getLong(),
-          writeSignedLong(writeBuffer, 40),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (long) _value.getLong(), writeSignedLong(writeBuffer, 40));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER48)) { // LINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (long) _value.getLong(),
-          writeSignedLong(writeBuffer, 48),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (long) _value.getLong(), writeSignedLong(writeBuffer, 48));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER56)) { // LINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (long) _value.getLong(),
-          writeSignedLong(writeBuffer, 56),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (long) _value.getLong(), writeSignedLong(writeBuffer, 56));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.INTEGER64)) { // LINT
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (long) _value.getLong(),
-          writeSignedLong(writeBuffer, 64),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (long) _value.getLong(), writeSignedLong(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.REAL32)) { // REAL
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (float) _value.getFloat(),
-          writeFloat(writeBuffer, 32),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, GenericCANDataType.REAL64)) { // LREAL
       // Simple Field (value)
-      writeSimpleField(
-          "value",
-          (double) _value.getDouble(),
-          writeDouble(writeBuffer, 64),
-          WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+      writeSimpleField("value", (double) _value.getDouble(), writeDouble(writeBuffer, 64));
+    } else if (EvaluationHelper.equals(dataType, GenericCANDataType.RAW)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     }
   }
 }

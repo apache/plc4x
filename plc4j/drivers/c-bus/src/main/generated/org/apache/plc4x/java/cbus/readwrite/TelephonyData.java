@@ -74,7 +74,7 @@ public abstract class TelephonyData implements Message {
         "commandTypeContainer",
         "TelephonyCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TelephonyCommandTypeContainer::getValue,
             TelephonyCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -116,12 +116,6 @@ public abstract class TelephonyData implements Message {
     return lengthInBits;
   }
 
-  public static TelephonyData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TelephonyData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TelephonyData");
     PositionAware positionAware = readBuffer;
@@ -136,7 +130,7 @@ public abstract class TelephonyData implements Message {
         readEnumField(
             "commandTypeContainer",
             "TelephonyCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 TelephonyCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     TelephonyCommandType commandType =
         readVirtualField(

@@ -22,7 +22,6 @@ package knxnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"math"
 	"net"
 	"runtime/debug"
@@ -30,10 +29,12 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/pkg/errors"
+
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
-	"github.com/pkg/errors"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,20 +63,20 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					Msg("panic-ed")
 			}
 		}()
-		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
+		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
 		if !ok {
 			return
 		}
 		var destinationAddress []byte
 		switch lDataInd.GetDataFrame().(type) {
-		case driverModel.LDataExtendedExactly:
+		case driverModel.LDataExtended:
 			dataFrame := lDataInd.GetDataFrame().(driverModel.LDataExtended)
 			destinationAddress = dataFrame.GetDestinationAddress()
 			switch dataFrame.GetApdu().(type) {
-			case driverModel.ApduDataContainerExactly:
+			case driverModel.ApduDataContainer:
 				container := dataFrame.GetApdu().(driverModel.ApduDataContainer)
 				switch container.GetDataApdu().(type) {
-				case driverModel.ApduDataGroupValueWriteExactly:
+				case driverModel.ApduDataGroupValueWrite:
 					groupValueWrite := container.GetDataApdu().(driverModel.ApduDataGroupValueWrite)
 					if destinationAddress == nil {
 						return
@@ -97,7 +98,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 					}
 				}
-			case driverModel.ApduControlContainerExactly:
+			case driverModel.ApduControlContainer:
 				if dataFrame.GetGroupAddress() {
 					return
 				}

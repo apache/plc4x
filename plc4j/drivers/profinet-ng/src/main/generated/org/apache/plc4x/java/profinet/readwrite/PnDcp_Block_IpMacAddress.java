@@ -78,7 +78,7 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
     writeSimpleField(
         "macAddress",
         macAddress,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_IpMacAddress");
@@ -120,7 +120,7 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
     MacAddress macAddress =
         readSimpleField(
             "macAddress",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_IpMacAddress");

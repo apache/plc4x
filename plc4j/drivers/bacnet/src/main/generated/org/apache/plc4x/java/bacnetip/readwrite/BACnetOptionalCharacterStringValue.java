@@ -61,8 +61,7 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
     writeBuffer.pushContext("BACnetOptionalCharacterStringValue");
 
     // Simple Field (characterstring)
-    writeSimpleField(
-        "characterstring", characterstring, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("characterstring", characterstring, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetOptionalCharacterStringValue");
   }
@@ -93,7 +92,7 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
     BACnetApplicationTagCharacterString characterstring =
         readSimpleField(
             "characterstring",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

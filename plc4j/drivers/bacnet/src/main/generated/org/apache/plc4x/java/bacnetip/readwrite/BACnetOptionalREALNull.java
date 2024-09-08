@@ -60,7 +60,7 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
     writeBuffer.pushContext("BACnetOptionalREALNull");
 
     // Simple Field (nullValue)
-    writeSimpleField("nullValue", nullValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nullValue", nullValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetOptionalREALNull");
   }
@@ -91,7 +91,7 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

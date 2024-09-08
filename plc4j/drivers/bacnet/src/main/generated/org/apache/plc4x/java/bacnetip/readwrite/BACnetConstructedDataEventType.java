@@ -82,7 +82,7 @@ public class BACnetConstructedDataEventType extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataEventType");
 
     // Simple Field (eventType)
-    writeSimpleField("eventType", eventType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventType", eventType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEventTypeTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataEventType extends BACnetConstructedData implem
     BACnetEventTypeTagged eventType =
         readSimpleField(
             "eventType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

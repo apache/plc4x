@@ -84,10 +84,10 @@ public class PriorityMappingEntryType extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("PriorityMappingEntryType");
 
     // Simple Field (mappingUri)
-    writeSimpleField("mappingUri", mappingUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("mappingUri", mappingUri, writeComplex(writeBuffer));
 
     // Simple Field (priorityLabel)
-    writeSimpleField("priorityLabel", priorityLabel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("priorityLabel", priorityLabel, writeComplex(writeBuffer));
 
     // Simple Field (priorityValue_PCP)
     writeSimpleField("priorityValue_PCP", priorityValue_PCP, writeUnsignedShort(writeBuffer, 8));
@@ -132,13 +132,11 @@ public class PriorityMappingEntryType extends ExtensionObjectDefinition implemen
 
     PascalString mappingUri =
         readSimpleField(
-            "mappingUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "mappingUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString priorityLabel =
         readSimpleField(
-            "priorityLabel",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "priorityLabel", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     short priorityValue_PCP =
         readSimpleField("priorityValue_PCP", readUnsignedShort(readBuffer, 8));

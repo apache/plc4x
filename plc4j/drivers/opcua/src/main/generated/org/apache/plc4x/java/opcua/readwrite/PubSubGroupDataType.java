@@ -119,7 +119,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("PubSubGroupDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -132,14 +132,13 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (securityGroupId)
-    writeSimpleField(
-        "securityGroupId", securityGroupId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityGroupId", securityGroupId, writeComplex(writeBuffer));
 
     // Simple Field (noOfSecurityKeyServices)
     writeSimpleField(
@@ -225,8 +224,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -237,13 +235,11 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString securityGroupId =
         readSimpleField(
-            "securityGroupId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "securityGroupId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfSecurityKeyServices =
         readSimpleField("noOfSecurityKeyServices", readSignedInt(readBuffer, 32));
@@ -251,7 +247,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> securityKeyServices =
         readCountArrayField(
             "securityKeyServices",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("314")),
                 readBuffer),
             noOfSecurityKeyServices);
@@ -264,7 +260,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> groupProperties =
         readCountArrayField(
             "groupProperties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfGroupProperties);

@@ -114,7 +114,7 @@ public class ModbusPDUReadFileRecordResponse extends ModbusPDU implements Messag
     List<ModbusPDUReadFileRecordResponseItem> items =
         readLengthArrayField(
             "items",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ModbusPDUReadFileRecordResponseItem.staticParse(readBuffer), readBuffer),
             byteCount);
 

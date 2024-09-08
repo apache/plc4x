@@ -77,7 +77,7 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("AddReferencesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfReferencesToAdd)
     writeSimpleField("noOfReferencesToAdd", noOfReferencesToAdd, writeSignedInt(writeBuffer, 32));
@@ -126,7 +126,7 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     List<ExtensionObjectDefinition> referencesToAdd =
         readCountArrayField(
             "referencesToAdd",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("381")),
                 readBuffer),
             noOfReferencesToAdd);

@@ -83,8 +83,7 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataTotalRecordCount");
 
     // Simple Field (totalRecordCount)
-    writeSimpleField(
-        "totalRecordCount", totalRecordCount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("totalRecordCount", totalRecordCount, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger totalRecordCount =
         readSimpleField(
             "totalRecordCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

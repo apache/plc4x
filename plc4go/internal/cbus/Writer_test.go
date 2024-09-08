@@ -21,17 +21,18 @@ package cbus
 
 import (
 	"context"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestNewWriter(t *testing.T) {

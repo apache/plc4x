@@ -82,7 +82,7 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataEgressTime");
 
     // Simple Field (egressTime)
-    writeSimpleField("egressTime", egressTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("egressTime", egressTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger egressTime =
         readSimpleField(
             "egressTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

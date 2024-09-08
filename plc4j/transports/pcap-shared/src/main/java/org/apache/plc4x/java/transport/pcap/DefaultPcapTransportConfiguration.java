@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.transport.pcap;
 
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
@@ -27,10 +28,12 @@ public abstract class DefaultPcapTransportConfiguration implements PcapTransport
 
     @ConfigurationParameter("support-vlans")
     @BooleanDefaultValue(false)
+    @Description("Should VLan packets be automatically unpacked?")
     private boolean supportVlans;
 
     @ConfigurationParameter("protocol-id")
     @IntDefaultValue(-1)
+    @Description("When provided, filters all packets to let only packets matching this ethernet protocol-id pass.")
     private int protocolId;
 
     @Override

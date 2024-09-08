@@ -29,7 +29,7 @@ public interface PlcDriverManager {
         return new DefaultPlcDriverManager();
     }
 
-    Set<String> listDrivers();
+    Set<String> getProtocolCodes();
 
     PlcDriver getDriver(String protocolCode) throws PlcConnectionException;
 

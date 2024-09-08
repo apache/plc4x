@@ -21,10 +21,10 @@ package eip
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"regexp"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 )
 
 type TagHandler struct {

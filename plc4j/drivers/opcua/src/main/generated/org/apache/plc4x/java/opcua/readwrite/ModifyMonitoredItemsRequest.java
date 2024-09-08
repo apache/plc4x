@@ -91,7 +91,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     writeBuffer.pushContext("ModifyMonitoredItemsRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (subscriptionId)
     writeSimpleField("subscriptionId", subscriptionId, writeUnsignedLong(writeBuffer, 32));
@@ -101,7 +101,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
         "timestampsToReturn",
         "TimestampsToReturn",
         timestampsToReturn,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TimestampsToReturn::getValue,
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -159,7 +159,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -169,15 +169,14 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
         readEnumField(
             "timestampsToReturn",
             "TimestampsToReturn",
-            new DataReaderEnumDefault<>(
-                TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfItemsToModify = readSimpleField("noOfItemsToModify", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> itemsToModify =
         readCountArrayField(
             "itemsToModify",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("757")),
                 readBuffer),
             noOfItemsToModify);

@@ -68,10 +68,10 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("OptionSet");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     // Simple Field (validBits)
-    writeSimpleField("validBits", validBits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("validBits", validBits, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OptionSet");
   }
@@ -104,15 +104,11 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
 
     PascalByteString value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString validBits =
         readSimpleField(
-            "validBits",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "validBits", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OptionSet");
     // Create the instance

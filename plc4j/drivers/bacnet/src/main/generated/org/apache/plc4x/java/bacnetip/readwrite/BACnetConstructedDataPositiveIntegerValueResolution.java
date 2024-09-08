@@ -83,7 +83,7 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueResolution");
 
     // Simple Field (resolution)
-    writeSimpleField("resolution", resolution, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("resolution", resolution, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
     BACnetApplicationTagUnsignedInteger resolution =
         readSimpleField(
             "resolution",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

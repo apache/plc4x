@@ -63,12 +63,6 @@ public class RsaEncryptedSecret implements Message {
     return lengthInBits;
   }
 
-  public static RsaEncryptedSecret staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static RsaEncryptedSecret staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("RsaEncryptedSecret");
     PositionAware positionAware = readBuffer;

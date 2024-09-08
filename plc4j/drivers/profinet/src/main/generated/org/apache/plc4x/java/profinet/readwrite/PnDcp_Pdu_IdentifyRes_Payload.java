@@ -80,7 +80,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
         "serviceId",
         "PnDcp_ServiceId",
         getServiceId(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnDcp_ServiceId::getValue, PnDcp_ServiceId::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -88,7 +88,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     writeSimpleField(
         "serviceType",
         serviceType,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (xid)
@@ -151,12 +151,6 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_IdentifyRes_Payload staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnDcp_Pdu_IdentifyRes_Payload staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_IdentifyRes_Payload");
@@ -167,15 +161,13 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
         readDiscriminatorEnumField(
             "serviceId",
             "PnDcp_ServiceId",
-            new DataReaderEnumDefault<>(
-                PnDcp_ServiceId::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(PnDcp_ServiceId::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnDcp_ServiceType serviceType =
         readSimpleField(
             "serviceType",
-            new DataReaderComplexDefault<>(
-                () -> PnDcp_ServiceType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnDcp_ServiceType.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     long xid =

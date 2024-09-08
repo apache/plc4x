@@ -97,8 +97,12 @@
             // It is used to detect a programming change to know when to re-read the tag information.
             [simple     uint 32        crc]
             [simple     uint 8        variableCount]
-           // A list of variables to read. Note that these need to be placed in order based on the memory block and offset
-            [array      VariableRequestReference variables count 'variableCount']
+            [array      VariableReadRequestReference variables count 'variableCount']
+        ]
+        ['0x23'      UmasPDUWriteVariableRequest
+            [simple     uint 32        crc]
+            [simple     uint 8        variableCount]
+            [array      VariableWriteRequestReference variables count 'variableCount']
         ]
         // Is used to read information from the data dictionary such as tag names, data types, etc...
         ['0x26'     UmasPDUReadDataDictionaryRequest
@@ -111,6 +115,9 @@
             [simple     uint 16         blockNo]
             [simple     uint 16         offset]
             [const      uint 16         blank 0x00]
+        ]
+        ['0xFD'     UmasPDUErrorResponse
+            [array      uint 8          block count 'byteLength - 2']
         ]
         ['0xFE', '0x01'     UmasInitCommsResponse
             // The largest UMAS packet size. I don't think it includes the Modbus header
@@ -136,7 +143,7 @@
             [simple     uint 16         unknown1]
             [simple     uint 8          hostnameLength]
             [simple     vstring         'hostnameLength*8' hostname]
-            [simple     uint 8          numberOfMemoryBanks
+            [simple     uint 8          numberOfMemoryBanks]
             // List of memory blocks within the PLC.
             [array      PlcMemoryBlockIdent memoryIdents count 'numberOfMemoryBanks']
         ]
@@ -156,6 +163,9 @@
         ]
         ['0xFE', '0x22'     UmasPDUReadVariableResponse
             // It just returns the variable data which can then be decoded with the DataIO.
+            [array      uint 8          block count 'byteLength - 2']
+        ]
+        ['0xFE', '0x23'     UmasPDUWriteVariableResponse
             [array      uint 8          block count 'byteLength - 2']
         ]
         // Reads information from the data dictionary.
@@ -201,7 +211,7 @@
     [array      UmasDatatypeReference         records count 'noOfRecords']
 ]
 
-[type VariableRequestReference
+[type VariableReadRequestReference
     [simple     uint 4           isArray]
     [simple     uint 4           dataSizeIndex]
     [simple     uint 16          block]
@@ -209,6 +219,17 @@
     [simple     uint 16          baseOffset]
     [simple     uint 8           offset]
     [optional   uint 16          arrayLength 'isArray']
+]
+
+[type VariableWriteRequestReference
+    [simple     uint 4           isArray]
+    [simple     uint 4           dataSizeIndex]
+    [simple     uint 16          block]
+    [const      uint 8           unknown1 0x01]
+    [simple     uint 16          baseOffset]
+    [simple     uint 8           offset]
+    [optional   uint 16          arrayLength 'isArray']
+    [array      byte       recordData     length  'isArray == 1 ? dataSizeIndex * arrayLength : dataSizeIndex']
 ]
 
 [type UmasUnlocatedVariableReference
@@ -219,7 +240,7 @@
     [simple     uint 8           unknown5]
     [simple     uint 16          unknown4]
     [simple     uint 16          stringLength]
-    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']
+    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)']
 ]
 
 [type UmasUDTDefinition
@@ -227,7 +248,7 @@
     [simple     uint 16          offset]
     [simple     uint 16          unknown5]
     [simple     uint 16          unknown4]
-    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, -1)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, -1)' '(stringLength * 8)'']
+    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, -1)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, -1)' '(stringLength * 8)']
 ]
 
 [type UmasDatatypeReference
@@ -236,7 +257,7 @@
     [simple     uint 8           classIdentifier]
     [simple     uint 8           dataType]
     [simple     uint 8           stringLength]
-    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']
+    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)']
 ]
 
 [type PlcMemoryBlockIdent
@@ -302,7 +323,7 @@
             [array float 32 value count 'numberOfValues']
         ]
         ['STRING','1' STRING
-            [manual vstring value  'STATIC_CALL("parseTerminatedStringBytes", readBuffer, numberOfValues)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, numberOfValues)' '(numberOfValues * 8)'']
+            [manual vstring value  'STATIC_CALL("parseTerminatedStringBytes", readBuffer, numberOfValues)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, numberOfValues)' '(numberOfValues * 8)']
         ]
         ['STRING' List
             [array float 32 value count 'numberOfValues']

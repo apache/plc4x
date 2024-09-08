@@ -82,7 +82,7 @@ public class BACnetConstructedDataIntervalOffset extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataIntervalOffset");
 
     // Simple Field (intervalOffset)
-    writeSimpleField("intervalOffset", intervalOffset, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("intervalOffset", intervalOffset, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataIntervalOffset extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger intervalOffset =
         readSimpleField(
             "intervalOffset",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

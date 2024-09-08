@@ -21,13 +21,13 @@ package pcap
 
 import (
 	"bufio"
-	"github.com/rs/zerolog/log"
 	"testing"
 
-	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
-
 	"github.com/gopacket/gopacket/pcap"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
 func TestNewPcapTransportInstance(t *testing.T) {
@@ -106,6 +106,10 @@ func TestTransportInstance_Close(t *testing.T) {
 }
 
 func TestTransportInstance_Connect(t *testing.T) {
+	if !IsPcapAvailable() {
+		t.Skip("LibPCAP (unix/linux/mac) or NPcap (windows) is not installed, skipping test")
+	}
+
 	type fields struct {
 		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		transportFile                    string
@@ -336,4 +340,14 @@ func TestTransportInstance_Write(t *testing.T) {
 			}
 		})
 	}
+}
+
+func IsPcapAvailable() (result bool) {
+	defer func() {
+		if err := recover(); err != nil {
+			result = false
+		}
+	}()
+	pcap.Version()
+	return true
 }

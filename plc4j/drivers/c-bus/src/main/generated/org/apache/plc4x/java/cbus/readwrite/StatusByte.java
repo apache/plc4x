@@ -77,32 +77,28 @@ public class StatusByte implements Message {
         "gav3",
         "GAVState",
         gav3,
-        new DataWriterEnumDefault<>(
-            GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (gav2)
     writeSimpleEnumField(
         "gav2",
         "GAVState",
         gav2,
-        new DataWriterEnumDefault<>(
-            GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (gav1)
     writeSimpleEnumField(
         "gav1",
         "GAVState",
         gav1,
-        new DataWriterEnumDefault<>(
-            GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (gav0)
     writeSimpleEnumField(
         "gav0",
         "GAVState",
         gav0,
-        new DataWriterEnumDefault<>(
-            GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
 
     writeBuffer.popContext("StatusByte");
   }
@@ -133,12 +129,6 @@ public class StatusByte implements Message {
     return lengthInBits;
   }
 
-  public static StatusByte staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static StatusByte staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusByte");
     PositionAware positionAware = readBuffer;
@@ -146,27 +136,19 @@ public class StatusByte implements Message {
 
     GAVState gav3 =
         readEnumField(
-            "gav3",
-            "GAVState",
-            new DataReaderEnumDefault<>(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
+            "gav3", "GAVState", readEnum(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     GAVState gav2 =
         readEnumField(
-            "gav2",
-            "GAVState",
-            new DataReaderEnumDefault<>(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
+            "gav2", "GAVState", readEnum(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     GAVState gav1 =
         readEnumField(
-            "gav1",
-            "GAVState",
-            new DataReaderEnumDefault<>(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
+            "gav1", "GAVState", readEnum(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     GAVState gav0 =
         readEnumField(
-            "gav0",
-            "GAVState",
-            new DataReaderEnumDefault<>(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
+            "gav0", "GAVState", readEnum(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     readBuffer.closeContext("StatusByte");
     // Create the instance

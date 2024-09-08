@@ -23,15 +23,15 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestMessageCodec_Send(t *testing.T) {
@@ -776,7 +776,16 @@ func Test_extractMMIAndSAL(t *testing.T) {
 					readWriteModel.NewReplyOrConfirmationReply(
 						readWriteModel.NewReplyEncodedReply(
 							readWriteModel.NewMonitoredSALReply(
-								nil,
+								readWriteModel.NewMonitoredSALShortFormBasicMode(
+									0,
+									nil,
+									nil,
+									nil,
+									readWriteModel.ApplicationIdContainer_RESERVED_00,
+									nil,
+									0,
+									nil,
+								),
 								0,
 								nil,
 								nil,
@@ -786,7 +795,7 @@ func Test_extractMMIAndSAL(t *testing.T) {
 							nil,
 							nil,
 						),
-						nil,
+						readWriteModel.NewResponseTermination(),
 						0,
 						nil,
 						nil,

@@ -98,7 +98,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("OpenSecureChannelRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (clientProtocolVersion)
     writeSimpleField(
@@ -109,7 +109,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         "requestType",
         "SecurityTokenRequestType",
         requestType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SecurityTokenRequestType::getValue,
             SecurityTokenRequestType::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -119,13 +119,13 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (clientNonce)
-    writeSimpleField("clientNonce", clientNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientNonce", clientNonce, writeComplex(writeBuffer));
 
     // Simple Field (requestedLifetime)
     writeSimpleField("requestedLifetime", requestedLifetime, writeUnsignedLong(writeBuffer, 32));
@@ -174,7 +174,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -185,21 +185,17 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         readEnumField(
             "requestType",
             "SecurityTokenRequestType",
-            new DataReaderEnumDefault<>(
-                SecurityTokenRequestType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(SecurityTokenRequestType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     MessageSecurityMode securityMode =
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalByteString clientNonce =
         readSimpleField(
-            "clientNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "clientNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     long requestedLifetime = readSimpleField("requestedLifetime", readUnsignedLong(readBuffer, 32));
 

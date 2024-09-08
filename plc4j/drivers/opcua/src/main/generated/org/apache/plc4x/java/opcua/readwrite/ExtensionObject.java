@@ -74,17 +74,17 @@ public class ExtensionObject implements Message {
     writeBuffer.pushContext("ExtensionObject");
 
     // Simple Field (typeId)
-    writeSimpleField("typeId", typeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("typeId", typeId, writeComplex(writeBuffer));
 
     // Optional Field (encodingMask) (Can be skipped, if the value is null)
-    writeOptionalField("encodingMask", encodingMask, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("encodingMask", encodingMask, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String identifier = getIdentifier();
     writeBuffer.writeVirtual("identifier", identifier);
 
     // Simple Field (body)
-    writeSimpleField("body", body, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("body", body, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ExtensionObject");
   }
@@ -116,26 +116,6 @@ public class ExtensionObject implements Message {
     return lengthInBits;
   }
 
-  public static ExtensionObject staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Boolean includeEncodingMask;
-    if (args[0] instanceof Boolean) {
-      includeEncodingMask = (Boolean) args[0];
-    } else if (args[0] instanceof String) {
-      includeEncodingMask = Boolean.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Boolean or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, includeEncodingMask);
-  }
-
   public static ExtensionObject staticParse(ReadBuffer readBuffer, Boolean includeEncodingMask)
       throws ParseException {
     readBuffer.pullContext("ExtensionObject");
@@ -144,22 +124,19 @@ public class ExtensionObject implements Message {
 
     ExpandedNodeId typeId =
         readSimpleField(
-            "typeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "typeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     ExtensionObjectEncodingMask encodingMask =
         readOptionalField(
             "encodingMask",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectEncodingMask.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ExtensionObjectEncodingMask.staticParse(readBuffer), readBuffer),
             includeEncodingMask);
     String identifier = readVirtualField("identifier", String.class, typeId.getIdentifier());
 
     ExtensionObjectDefinition body =
         readSimpleField(
             "body",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) (identifier)),
                 readBuffer));
 

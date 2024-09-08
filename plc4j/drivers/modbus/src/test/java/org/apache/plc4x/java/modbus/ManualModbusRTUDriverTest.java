@@ -65,12 +65,13 @@ public class ManualModbusRTUDriverTest extends ManualTest {
      */
 
     public ManualModbusRTUDriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {
-        ManualModbusRTUDriverTest test = new ManualModbusRTUDriverTest("modbus-rtu:///dev/tty.usbserial-AR0K3WCE?serial.baud-rate=9600&serial.num-data-bits=7&num-stop-bits=1&serial.parity=EVEN_PARITY");
-        test.addTestCase("holding-register:1:BOOL", new PlcBOOL(true)); // 0001
+        //ManualModbusRTUDriverTest test = new ManualModbusRTUDriverTest("modbus-rtu:///dev/tty.usbserial-AR0K3WCE");
+        ManualModbusRTUDriverTest test = new ManualModbusRTUDriverTest("modbus-rtu:///dev/tty.usbserial-AR0K3WCE?serial.baud-rate=9600&serial.num-data-bits=8&num-stop-bits=1&serial.parity=EVEN_PARITY");
+        test.addTestCase("400001:BOOL", new PlcBOOL(true)); // 0001
 /*        test.addTestCase("holding-register:2:BYTE", new PlcBYTE(42)); // 2A
         test.addTestCase("holding-register:3:WORD", new PlcWORD(42424)); // A5B8
         test.addTestCase("holding-register:4:DWORD", new PlcDWORD(4242442424L)); // FCDE 88B8

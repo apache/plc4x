@@ -69,7 +69,7 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned");
 
     // Simple Field (unsignedValue)
-    writeSimpleField("unsignedValue", unsignedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned");
   }
@@ -101,7 +101,7 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

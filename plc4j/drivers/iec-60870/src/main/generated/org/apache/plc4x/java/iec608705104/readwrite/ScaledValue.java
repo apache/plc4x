@@ -81,12 +81,6 @@ public class ScaledValue implements Message {
     return lengthInBits;
   }
 
-  public static ScaledValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ScaledValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ScaledValue");
     PositionAware positionAware = readBuffer;

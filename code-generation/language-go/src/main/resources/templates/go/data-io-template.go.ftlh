@@ -120,6 +120,15 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
                     <#assign arrayElementType = arrayField.type.elementTypeReference>
 
 			// Array Field (${arrayField.name})
+                        <#if arrayElementType.isByteBased()>
+							<#if !field.isCountArrayField() && !field.isLengthArrayField()>
+			return nil, errors.Wrap(_${arrayField.name}Err, "Array fields of type byte only support 'count' and 'length' loop-types.")<@emitImport import="github.com/pkg/errors" />
+							</#if>
+			${arrayField.name}, _${arrayField.name}Err := readBuffer.ReadByteArray("${arrayField.name}", int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}))<#if arrayField.loopExpression.contains("CEIL")><@emitImport import="math" /></#if>
+			if _${arrayField.name}Err != nil {
+				return nil, errors.Wrap(_${arrayField.name}Err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+			}
+                        <#else>
 			var ${arrayField.name} []api.PlcValue
 			for i := 0; i < int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}); i++ {
 				_item, _itemErr := <#if arrayElementType.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.name, arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>Complex type array in data-io parsing currently not implemented</#if>
@@ -128,6 +137,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				}
 				${arrayField.name} = append(${arrayField.name}, ${helper.getPlcValueTypeForTypeReference(arrayElementType)}(_item))
 			}
+						</#if>
 					<#if arrayField.name == "value">
 						<#assign valueDefined=true>
 					</#if>
@@ -299,15 +309,26 @@ func ${type.name}Serialize(value api.PlcValue<#if parserArguments?has_content>, 
 	return wb.GetBytes(), nil
 }
 
+<#if parserArguments?has_content>
+type _${type.name} struct {
+	<#list parserArguments as parserArgument>
+		${parserArgument.name?cap_first} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+	</#list>
+}
+
+	<#list parserArguments as parserArgument>
+func (m _${type.name}) Get${parserArgument.name?cap_first}() <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}{
+		return m.${parserArgument.name?cap_first}
+}
+
+	</#list>
+</#if>
+
 func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
 	<#if parserArguments?has_content>
-	m := struct {
-    	<#list parserArguments as parserArgument>
-			${parserArgument.name?cap_first} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
-		</#list>
-	}{
+	m := _${type.name}{
 		<#list parserArguments as parserArgument>
 			${parserArgument.name?cap_first}: ${parserArgument.name},
 		</#list>

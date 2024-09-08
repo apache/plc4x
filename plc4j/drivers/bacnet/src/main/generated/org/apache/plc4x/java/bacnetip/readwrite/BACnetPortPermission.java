@@ -62,10 +62,10 @@ public class BACnetPortPermission implements Message {
     writeBuffer.pushContext("BACnetPortPermission");
 
     // Simple Field (port)
-    writeSimpleField("port", port, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("port", port, writeComplex(writeBuffer));
 
     // Optional Field (enable) (Can be skipped, if the value is null)
-    writeOptionalField("enable", enable, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("enable", enable, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPortPermission");
   }
@@ -92,12 +92,6 @@ public class BACnetPortPermission implements Message {
     return lengthInBits;
   }
 
-  public static BACnetPortPermission staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetPortPermission staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetPortPermission");
     PositionAware positionAware = readBuffer;
@@ -106,7 +100,7 @@ public class BACnetPortPermission implements Message {
     BACnetContextTagUnsignedInteger port =
         readSimpleField(
             "port",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -118,7 +112,7 @@ public class BACnetPortPermission implements Message {
     BACnetContextTagBoolean enable =
         readOptionalField(
             "enable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

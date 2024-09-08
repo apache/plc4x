@@ -47,64 +47,20 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
   }
 
   // Properties.
-  protected final String chunk;
-  protected final int secureChannelId;
-  protected final PascalString securityPolicyUri;
-  protected final PascalByteString senderCertificate;
-  protected final PascalByteString receiverCertificateThumbprint;
-  protected final int sequenceNumber;
-  protected final int requestId;
-  protected final byte[] message;
+  protected final OpenChannelMessage openResponse;
+  protected final Payload message;
 
-  public OpcuaOpenResponse(
-      String chunk,
-      int secureChannelId,
-      PascalString securityPolicyUri,
-      PascalByteString senderCertificate,
-      PascalByteString receiverCertificateThumbprint,
-      int sequenceNumber,
-      int requestId,
-      byte[] message) {
-    super();
-    this.chunk = chunk;
-    this.secureChannelId = secureChannelId;
-    this.securityPolicyUri = securityPolicyUri;
-    this.senderCertificate = senderCertificate;
-    this.receiverCertificateThumbprint = receiverCertificateThumbprint;
-    this.sequenceNumber = sequenceNumber;
-    this.requestId = requestId;
+  public OpcuaOpenResponse(ChunkType chunk, OpenChannelMessage openResponse, Payload message) {
+    super(chunk);
+    this.openResponse = openResponse;
     this.message = message;
   }
 
-  public String getChunk() {
-    return chunk;
+  public OpenChannelMessage getOpenResponse() {
+    return openResponse;
   }
 
-  public int getSecureChannelId() {
-    return secureChannelId;
-  }
-
-  public PascalString getSecurityPolicyUri() {
-    return securityPolicyUri;
-  }
-
-  public PascalByteString getSenderCertificate() {
-    return senderCertificate;
-  }
-
-  public PascalByteString getReceiverCertificateThumbprint() {
-    return receiverCertificateThumbprint;
-  }
-
-  public int getSequenceNumber() {
-    return sequenceNumber;
-  }
-
-  public int getRequestId() {
-    return requestId;
-  }
-
-  public byte[] getMessage() {
+  public Payload getMessage() {
     return message;
   }
 
@@ -114,39 +70,11 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("OpcuaOpenResponse");
 
-    // Simple Field (chunk)
-    writeSimpleField("chunk", chunk, writeString(writeBuffer, 8));
+    // Simple Field (openResponse)
+    writeSimpleField("openResponse", openResponse, writeComplex(writeBuffer));
 
-    // Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int messageSize = (int) (getLengthInBytes());
-    writeImplicitField("messageSize", messageSize, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (secureChannelId)
-    writeSimpleField("secureChannelId", secureChannelId, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
-
-    // Simple Field (senderCertificate)
-    writeSimpleField(
-        "senderCertificate", senderCertificate, new DataWriterComplexDefault<>(writeBuffer));
-
-    // Simple Field (receiverCertificateThumbprint)
-    writeSimpleField(
-        "receiverCertificateThumbprint",
-        receiverCertificateThumbprint,
-        new DataWriterComplexDefault<>(writeBuffer));
-
-    // Simple Field (sequenceNumber)
-    writeSimpleField("sequenceNumber", sequenceNumber, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (requestId)
-    writeSimpleField("requestId", requestId, writeSignedInt(writeBuffer, 32));
-
-    // Array Field (message)
-    writeByteArrayField("message", message, writeByteArray(writeBuffer, 8));
+    // Simple Field (message)
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaOpenResponse");
   }
@@ -162,140 +90,55 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
     OpcuaOpenResponse _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (chunk)
-    lengthInBits += 8;
+    // Simple field (openResponse)
+    lengthInBits += openResponse.getLengthInBits();
 
-    // Implicit Field (messageSize)
-    lengthInBits += 32;
-
-    // Simple field (secureChannelId)
-    lengthInBits += 32;
-
-    // Simple field (securityPolicyUri)
-    lengthInBits += securityPolicyUri.getLengthInBits();
-
-    // Simple field (senderCertificate)
-    lengthInBits += senderCertificate.getLengthInBits();
-
-    // Simple field (receiverCertificateThumbprint)
-    lengthInBits += receiverCertificateThumbprint.getLengthInBits();
-
-    // Simple field (sequenceNumber)
-    lengthInBits += 32;
-
-    // Simple field (requestId)
-    lengthInBits += 32;
-
-    // Array field
-    if (message != null) {
-      lengthInBits += 8 * message.length;
-    }
+    // Simple field (message)
+    lengthInBits += message.getLengthInBits();
 
     return lengthInBits;
   }
 
   public static MessagePDUBuilder staticParseMessagePDUBuilder(
-      ReadBuffer readBuffer, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Long totalLength, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaOpenResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    String chunk = readSimpleField("chunk", readString(readBuffer, 8));
-
-    int messageSize = readImplicitField("messageSize", readSignedInt(readBuffer, 32));
-
-    int secureChannelId = readSimpleField("secureChannelId", readSignedInt(readBuffer, 32));
-
-    PascalString securityPolicyUri =
+    OpenChannelMessage openResponse =
         readSimpleField(
-            "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "openResponse",
+            readComplex(
+                () -> OpenChannelMessage.staticParse(readBuffer, (boolean) (response)),
+                readBuffer));
 
-    PascalByteString senderCertificate =
+    Payload message =
         readSimpleField(
-            "senderCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
-
-    PascalByteString receiverCertificateThumbprint =
-        readSimpleField(
-            "receiverCertificateThumbprint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
-
-    int sequenceNumber = readSimpleField("sequenceNumber", readSignedInt(readBuffer, 32));
-
-    int requestId = readSimpleField("requestId", readSignedInt(readBuffer, 32));
-
-    byte[] message =
-        readBuffer.readByteArray(
             "message",
-            Math.toIntExact(
-                ((((messageSize)
-                                - (((((securityPolicyUri.getStringLength()) == (-(1)))
-                                    ? 0
-                                    : securityPolicyUri.getStringLength()))))
-                            - (((((senderCertificate.getStringLength()) == (-(1)))
-                                ? 0
-                                : senderCertificate.getStringLength()))))
-                        - (((((receiverCertificateThumbprint.getStringLength()) == (-(1)))
-                            ? 0
-                            : receiverCertificateThumbprint.getStringLength()))))
-                    - (32)));
+            readComplex(
+                () ->
+                    Payload.staticParse(
+                        readBuffer,
+                        (boolean) (false),
+                        (long) (((totalLength) - (openResponse.getLengthInBytes())) - (16L))),
+                readBuffer));
 
     readBuffer.closeContext("OpcuaOpenResponse");
     // Create the instance
-    return new OpcuaOpenResponseBuilderImpl(
-        chunk,
-        secureChannelId,
-        securityPolicyUri,
-        senderCertificate,
-        receiverCertificateThumbprint,
-        sequenceNumber,
-        requestId,
-        message);
+    return new OpcuaOpenResponseBuilderImpl(openResponse, message);
   }
 
   public static class OpcuaOpenResponseBuilderImpl implements MessagePDU.MessagePDUBuilder {
-    private final String chunk;
-    private final int secureChannelId;
-    private final PascalString securityPolicyUri;
-    private final PascalByteString senderCertificate;
-    private final PascalByteString receiverCertificateThumbprint;
-    private final int sequenceNumber;
-    private final int requestId;
-    private final byte[] message;
+    private final OpenChannelMessage openResponse;
+    private final Payload message;
 
-    public OpcuaOpenResponseBuilderImpl(
-        String chunk,
-        int secureChannelId,
-        PascalString securityPolicyUri,
-        PascalByteString senderCertificate,
-        PascalByteString receiverCertificateThumbprint,
-        int sequenceNumber,
-        int requestId,
-        byte[] message) {
-      this.chunk = chunk;
-      this.secureChannelId = secureChannelId;
-      this.securityPolicyUri = securityPolicyUri;
-      this.senderCertificate = senderCertificate;
-      this.receiverCertificateThumbprint = receiverCertificateThumbprint;
-      this.sequenceNumber = sequenceNumber;
-      this.requestId = requestId;
+    public OpcuaOpenResponseBuilderImpl(OpenChannelMessage openResponse, Payload message) {
+      this.openResponse = openResponse;
       this.message = message;
     }
 
-    public OpcuaOpenResponse build() {
-      OpcuaOpenResponse opcuaOpenResponse =
-          new OpcuaOpenResponse(
-              chunk,
-              secureChannelId,
-              securityPolicyUri,
-              senderCertificate,
-              receiverCertificateThumbprint,
-              sequenceNumber,
-              requestId,
-              message);
+    public OpcuaOpenResponse build(ChunkType chunk) {
+      OpcuaOpenResponse opcuaOpenResponse = new OpcuaOpenResponse(chunk, openResponse, message);
       return opcuaOpenResponse;
     }
   }
@@ -309,13 +152,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
       return false;
     }
     OpcuaOpenResponse that = (OpcuaOpenResponse) o;
-    return (getChunk() == that.getChunk())
-        && (getSecureChannelId() == that.getSecureChannelId())
-        && (getSecurityPolicyUri() == that.getSecurityPolicyUri())
-        && (getSenderCertificate() == that.getSenderCertificate())
-        && (getReceiverCertificateThumbprint() == that.getReceiverCertificateThumbprint())
-        && (getSequenceNumber() == that.getSequenceNumber())
-        && (getRequestId() == that.getRequestId())
+    return (getOpenResponse() == that.getOpenResponse())
         && (getMessage() == that.getMessage())
         && super.equals(that)
         && true;
@@ -323,16 +160,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getChunk(),
-        getSecureChannelId(),
-        getSecurityPolicyUri(),
-        getSenderCertificate(),
-        getReceiverCertificateThumbprint(),
-        getSequenceNumber(),
-        getRequestId(),
-        getMessage());
+    return Objects.hash(super.hashCode(), getOpenResponse(), getMessage());
   }
 
   @Override

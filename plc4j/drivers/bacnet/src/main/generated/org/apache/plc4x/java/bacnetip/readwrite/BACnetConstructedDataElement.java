@@ -122,21 +122,14 @@ public class BACnetConstructedDataElement implements Message {
 
     // Optional Field (applicationTag) (Can be skipped, if the value is null)
     writeOptionalField(
-        "applicationTag",
-        applicationTag,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getIsApplicationTag());
+        "applicationTag", applicationTag, writeComplex(writeBuffer), getIsApplicationTag());
 
     // Optional Field (contextTag) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "contextTag", contextTag, new DataWriterComplexDefault<>(writeBuffer), getIsContextTag());
+    writeOptionalField("contextTag", contextTag, writeComplex(writeBuffer), getIsContextTag());
 
     // Optional Field (constructedData) (Can be skipped, if the value is null)
     writeOptionalField(
-        "constructedData",
-        constructedData,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getIsConstructedData());
+        "constructedData", constructedData, writeComplex(writeBuffer), getIsConstructedData());
 
     writeBuffer.popContext("BACnetConstructedDataElement");
   }
@@ -178,48 +171,6 @@ public class BACnetConstructedDataElement implements Message {
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataElement staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 3)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 3, but got " + args.length);
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[0] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[0];
-    } else if (args[0] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    BACnetPropertyIdentifier propertyIdentifierArgument;
-    if (args[1] instanceof BACnetPropertyIdentifier) {
-      propertyIdentifierArgument = (BACnetPropertyIdentifier) args[1];
-    } else if (args[1] instanceof String) {
-      propertyIdentifierArgument = BACnetPropertyIdentifier.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type BACnetPropertyIdentifier or a string which is"
-              + " parseable but was "
-              + args[1].getClass().getName());
-    }
-    BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-    if (args[2] instanceof BACnetTagPayloadUnsignedInteger) {
-      arrayIndexArgument = (BACnetTagPayloadUnsignedInteger) args[2];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 2 expected to be of type BACnetTagPayloadUnsignedInteger or a string which is"
-              + " parseable but was "
-              + args[2].getClass().getName());
-    }
-    return staticParse(
-        readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument);
-  }
-
   public static BACnetConstructedDataElement staticParse(
       ReadBuffer readBuffer,
       BACnetObjectType objectTypeArgument,
@@ -233,8 +184,7 @@ public class BACnetConstructedDataElement implements Message {
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
     boolean isApplicationTag =
@@ -259,14 +209,13 @@ public class BACnetConstructedDataElement implements Message {
     BACnetApplicationTag applicationTag =
         readOptionalField(
             "applicationTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetApplicationTag.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetApplicationTag.staticParse(readBuffer), readBuffer),
             isApplicationTag);
 
     BACnetContextTag contextTag =
         readOptionalField(
             "contextTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetContextTag.staticParse(
                         readBuffer,
@@ -278,7 +227,7 @@ public class BACnetConstructedDataElement implements Message {
     BACnetConstructedData constructedData =
         readOptionalField(
             "constructedData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

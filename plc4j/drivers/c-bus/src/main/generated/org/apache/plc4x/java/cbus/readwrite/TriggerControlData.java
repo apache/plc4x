@@ -79,7 +79,7 @@ public abstract class TriggerControlData implements Message {
         "commandTypeContainer",
         "TriggerControlCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TriggerControlCommandTypeContainer::getValue,
             TriggerControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -127,12 +127,6 @@ public abstract class TriggerControlData implements Message {
     return lengthInBits;
   }
 
-  public static TriggerControlData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TriggerControlData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlData");
     PositionAware positionAware = readBuffer;
@@ -147,7 +141,7 @@ public abstract class TriggerControlData implements Message {
         readEnumField(
             "commandTypeContainer",
             "TriggerControlCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 TriggerControlCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     TriggerControlCommandType commandType =

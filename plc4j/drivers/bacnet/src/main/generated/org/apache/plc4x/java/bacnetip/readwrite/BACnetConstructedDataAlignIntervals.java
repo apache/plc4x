@@ -82,7 +82,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataAlignIntervals");
 
     // Simple Field (alignIntervals)
-    writeSimpleField("alignIntervals", alignIntervals, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alignIntervals", alignIntervals, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
     BACnetApplicationTagBoolean alignIntervals =
         readSimpleField(
             "alignIntervals",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

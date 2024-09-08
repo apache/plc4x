@@ -98,11 +98,10 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("AddReferencesItem");
 
     // Simple Field (sourceNodeId)
-    writeSimpleField("sourceNodeId", sourceNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceNodeId", sourceNodeId, writeComplex(writeBuffer));
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -111,19 +110,17 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (targetServerUri)
-    writeSimpleField(
-        "targetServerUri", targetServerUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetServerUri", targetServerUri, writeComplex(writeBuffer));
 
     // Simple Field (targetNodeId)
-    writeSimpleField("targetNodeId", targetNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNodeId", targetNodeId, writeComplex(writeBuffer));
 
     // Simple Field (targetNodeClass)
     writeSimpleEnumField(
         "targetNodeClass",
         "NodeClass",
         targetNodeClass,
-        new DataWriterEnumDefault<>(
-            NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("AddReferencesItem");
   }
@@ -171,13 +168,11 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
 
     NodeId sourceNodeId =
         readSimpleField(
-            "sourceNodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "sourceNodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -186,20 +181,17 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
 
     PascalString targetServerUri =
         readSimpleField(
-            "targetServerUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "targetServerUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     ExpandedNodeId targetNodeId =
         readSimpleField(
-            "targetNodeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "targetNodeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     NodeClass targetNodeClass =
         readEnumField(
             "targetNodeClass",
             "NodeClass",
-            new DataReaderEnumDefault<>(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("AddReferencesItem");
     // Create the instance

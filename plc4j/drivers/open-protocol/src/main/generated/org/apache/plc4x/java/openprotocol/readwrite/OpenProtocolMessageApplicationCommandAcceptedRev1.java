@@ -82,7 +82,7 @@ public class OpenProtocolMessageApplicationCommandAcceptedRev1
         "midNumberAccepted",
         "Mid",
         midNumberAccepted,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageApplicationCommandAcceptedRev1");
@@ -116,7 +116,7 @@ public class OpenProtocolMessageApplicationCommandAcceptedRev1
         readEnumField(
             "midNumberAccepted",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommandAcceptedRev1");

@@ -47,50 +47,20 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
   }
 
   // Properties.
-  protected final String chunk;
-  protected final int secureChannelId;
-  protected final int secureTokenId;
-  protected final int sequenceNumber;
-  protected final int requestId;
-  protected final ExtensionObject message;
+  protected final SecurityHeader securityHeader;
+  protected final Payload message;
 
-  public OpcuaCloseRequest(
-      String chunk,
-      int secureChannelId,
-      int secureTokenId,
-      int sequenceNumber,
-      int requestId,
-      ExtensionObject message) {
-    super();
-    this.chunk = chunk;
-    this.secureChannelId = secureChannelId;
-    this.secureTokenId = secureTokenId;
-    this.sequenceNumber = sequenceNumber;
-    this.requestId = requestId;
+  public OpcuaCloseRequest(ChunkType chunk, SecurityHeader securityHeader, Payload message) {
+    super(chunk);
+    this.securityHeader = securityHeader;
     this.message = message;
   }
 
-  public String getChunk() {
-    return chunk;
+  public SecurityHeader getSecurityHeader() {
+    return securityHeader;
   }
 
-  public int getSecureChannelId() {
-    return secureChannelId;
-  }
-
-  public int getSecureTokenId() {
-    return secureTokenId;
-  }
-
-  public int getSequenceNumber() {
-    return sequenceNumber;
-  }
-
-  public int getRequestId() {
-    return requestId;
-  }
-
-  public ExtensionObject getMessage() {
+  public Payload getMessage() {
     return message;
   }
 
@@ -100,28 +70,11 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("OpcuaCloseRequest");
 
-    // Simple Field (chunk)
-    writeSimpleField("chunk", chunk, writeString(writeBuffer, 8));
-
-    // Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int messageSize = (int) (getLengthInBytes());
-    writeImplicitField("messageSize", messageSize, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (secureChannelId)
-    writeSimpleField("secureChannelId", secureChannelId, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (secureTokenId)
-    writeSimpleField("secureTokenId", secureTokenId, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (sequenceNumber)
-    writeSimpleField("sequenceNumber", sequenceNumber, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (requestId)
-    writeSimpleField("requestId", requestId, writeSignedInt(writeBuffer, 32));
+    // Simple Field (securityHeader)
+    writeSimpleField("securityHeader", securityHeader, writeComplex(writeBuffer));
 
     // Simple Field (message)
-    writeSimpleField("message", message, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaCloseRequest");
   }
@@ -137,23 +90,8 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     OpcuaCloseRequest _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (chunk)
-    lengthInBits += 8;
-
-    // Implicit Field (messageSize)
-    lengthInBits += 32;
-
-    // Simple field (secureChannelId)
-    lengthInBits += 32;
-
-    // Simple field (secureTokenId)
-    lengthInBits += 32;
-
-    // Simple field (sequenceNumber)
-    lengthInBits += 32;
-
-    // Simple field (requestId)
-    lengthInBits += 32;
+    // Simple field (securityHeader)
+    lengthInBits += securityHeader.getLengthInBits();
 
     // Simple field (message)
     lengthInBits += message.getLengthInBits();
@@ -167,57 +105,33 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    String chunk = readSimpleField("chunk", readString(readBuffer, 8));
+    SecurityHeader securityHeader =
+        readSimpleField(
+            "securityHeader",
+            readComplex(() -> SecurityHeader.staticParse(readBuffer), readBuffer));
 
-    int messageSize = readImplicitField("messageSize", readSignedInt(readBuffer, 32));
-
-    int secureChannelId = readSimpleField("secureChannelId", readSignedInt(readBuffer, 32));
-
-    int secureTokenId = readSimpleField("secureTokenId", readSignedInt(readBuffer, 32));
-
-    int sequenceNumber = readSimpleField("sequenceNumber", readSignedInt(readBuffer, 32));
-
-    int requestId = readSimpleField("requestId", readSignedInt(readBuffer, 32));
-
-    ExtensionObject message =
+    Payload message =
         readSimpleField(
             "message",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObject.staticParse(readBuffer, (boolean) (false)), readBuffer));
+            readComplex(
+                () -> Payload.staticParse(readBuffer, (boolean) (false), (long) (0L)), readBuffer));
 
     readBuffer.closeContext("OpcuaCloseRequest");
     // Create the instance
-    return new OpcuaCloseRequestBuilderImpl(
-        chunk, secureChannelId, secureTokenId, sequenceNumber, requestId, message);
+    return new OpcuaCloseRequestBuilderImpl(securityHeader, message);
   }
 
   public static class OpcuaCloseRequestBuilderImpl implements MessagePDU.MessagePDUBuilder {
-    private final String chunk;
-    private final int secureChannelId;
-    private final int secureTokenId;
-    private final int sequenceNumber;
-    private final int requestId;
-    private final ExtensionObject message;
+    private final SecurityHeader securityHeader;
+    private final Payload message;
 
-    public OpcuaCloseRequestBuilderImpl(
-        String chunk,
-        int secureChannelId,
-        int secureTokenId,
-        int sequenceNumber,
-        int requestId,
-        ExtensionObject message) {
-      this.chunk = chunk;
-      this.secureChannelId = secureChannelId;
-      this.secureTokenId = secureTokenId;
-      this.sequenceNumber = sequenceNumber;
-      this.requestId = requestId;
+    public OpcuaCloseRequestBuilderImpl(SecurityHeader securityHeader, Payload message) {
+      this.securityHeader = securityHeader;
       this.message = message;
     }
 
-    public OpcuaCloseRequest build() {
-      OpcuaCloseRequest opcuaCloseRequest =
-          new OpcuaCloseRequest(
-              chunk, secureChannelId, secureTokenId, sequenceNumber, requestId, message);
+    public OpcuaCloseRequest build(ChunkType chunk) {
+      OpcuaCloseRequest opcuaCloseRequest = new OpcuaCloseRequest(chunk, securityHeader, message);
       return opcuaCloseRequest;
     }
   }
@@ -231,11 +145,7 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
       return false;
     }
     OpcuaCloseRequest that = (OpcuaCloseRequest) o;
-    return (getChunk() == that.getChunk())
-        && (getSecureChannelId() == that.getSecureChannelId())
-        && (getSecureTokenId() == that.getSecureTokenId())
-        && (getSequenceNumber() == that.getSequenceNumber())
-        && (getRequestId() == that.getRequestId())
+    return (getSecurityHeader() == that.getSecurityHeader())
         && (getMessage() == that.getMessage())
         && super.equals(that)
         && true;
@@ -243,14 +153,7 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getChunk(),
-        getSecureChannelId(),
-        getSecureTokenId(),
-        getSequenceNumber(),
-        getRequestId(),
-        getMessage());
+    return Objects.hash(super.hashCode(), getSecurityHeader(), getMessage());
   }
 
   @Override

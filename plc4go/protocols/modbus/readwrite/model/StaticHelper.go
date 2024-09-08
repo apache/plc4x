@@ -21,10 +21,14 @@ package model
 
 import "context"
 
-func AsciiLrcCheck(ctx context.Context, address uint8, pdu ModbusPDU) (uint8, error) {
-	return 0, nil
+func AsciiLrcCheck(ctx context.Context, address uint8, pdu ModbusPDU) func() (uint8, error) {
+	return func() (uint8, error) {
+		return 0, nil
+	}
 }
 
-func RtuCrcCheck(ctx context.Context, address uint8, pdu ModbusPDU) (uint16, error) {
-	return 0, nil
+func RtuCrcCheck(ctx context.Context, address uint8, pdu ModbusPDU) func() (uint16, error) {
+	return func() (uint16, error) {
+		return 0, nil
+	}
 }

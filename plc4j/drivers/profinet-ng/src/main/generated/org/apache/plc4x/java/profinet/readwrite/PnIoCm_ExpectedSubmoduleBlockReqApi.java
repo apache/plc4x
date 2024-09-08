@@ -165,12 +165,6 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_ExpectedSubmoduleBlockReqApi staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_ExpectedSubmoduleBlockReqApi staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_ExpectedSubmoduleBlockReqApi");
@@ -211,8 +205,7 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
     List<PnIoCm_Submodule> submodules =
         readCountArrayField(
             "submodules",
-            new DataReaderComplexDefault<>(
-                () -> PnIoCm_Submodule.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_Submodule.staticParse(readBuffer), readBuffer),
             numSubmodules,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

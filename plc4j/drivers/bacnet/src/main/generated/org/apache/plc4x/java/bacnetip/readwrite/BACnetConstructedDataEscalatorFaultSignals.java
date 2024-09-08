@@ -119,7 +119,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
     List<BACnetEscalatorFaultTagged> faultSignals =
         readTerminatedArrayField(
             "faultSignals",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEscalatorFaultTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

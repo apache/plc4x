@@ -77,16 +77,16 @@ public class BACnetSecurityKeySet implements Message {
     writeBuffer.pushContext("BACnetSecurityKeySet");
 
     // Simple Field (keyRevision)
-    writeSimpleField("keyRevision", keyRevision, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("keyRevision", keyRevision, writeComplex(writeBuffer));
 
     // Simple Field (activationTime)
-    writeSimpleField("activationTime", activationTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("activationTime", activationTime, writeComplex(writeBuffer));
 
     // Simple Field (expirationTime)
-    writeSimpleField("expirationTime", expirationTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("expirationTime", expirationTime, writeComplex(writeBuffer));
 
     // Simple Field (keyIds)
-    writeSimpleField("keyIds", keyIds, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("keyIds", keyIds, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSecurityKeySet");
   }
@@ -117,12 +117,6 @@ public class BACnetSecurityKeySet implements Message {
     return lengthInBits;
   }
 
-  public static BACnetSecurityKeySet staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetSecurityKeySet staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSecurityKeySet");
     PositionAware positionAware = readBuffer;
@@ -131,7 +125,7 @@ public class BACnetSecurityKeySet implements Message {
     BACnetContextTagUnsignedInteger keyRevision =
         readSimpleField(
             "keyRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -143,19 +137,19 @@ public class BACnetSecurityKeySet implements Message {
     BACnetDateTimeEnclosed activationTime =
         readSimpleField(
             "activationTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer));
 
     BACnetDateTimeEnclosed expirationTime =
         readSimpleField(
             "expirationTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     BACnetSecurityKeySetKeyIds keyIds =
         readSimpleField(
             "keyIds",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetSecurityKeySetKeyIds.staticParse(readBuffer, (short) (3)), readBuffer));
 
     readBuffer.closeContext("BACnetSecurityKeySet");

@@ -66,7 +66,7 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
     writeBuffer.pushContext("BACnetPriorityValueDateTime");
 
     // Simple Field (dateTimeValue)
-    writeSimpleField("dateTimeValue", dateTimeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateTimeValue", dateTimeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueDateTime");
   }
@@ -97,7 +97,7 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
             "dateTimeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetPriorityValueDateTime");

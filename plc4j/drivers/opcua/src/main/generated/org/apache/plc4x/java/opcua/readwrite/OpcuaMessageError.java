@@ -47,19 +47,13 @@ public class OpcuaMessageError extends MessagePDU implements Message {
   }
 
   // Properties.
-  protected final String chunk;
   protected final OpcuaStatusCode error;
   protected final PascalString reason;
 
-  public OpcuaMessageError(String chunk, OpcuaStatusCode error, PascalString reason) {
-    super();
-    this.chunk = chunk;
+  public OpcuaMessageError(ChunkType chunk, OpcuaStatusCode error, PascalString reason) {
+    super(chunk);
     this.error = error;
     this.reason = reason;
-  }
-
-  public String getChunk() {
-    return chunk;
   }
 
   public OpcuaStatusCode getError() {
@@ -76,24 +70,16 @@ public class OpcuaMessageError extends MessagePDU implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("OpcuaMessageError");
 
-    // Simple Field (chunk)
-    writeSimpleField("chunk", chunk, writeString(writeBuffer, 8));
-
-    // Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int messageSize = (int) (getLengthInBytes());
-    writeImplicitField("messageSize", messageSize, writeSignedInt(writeBuffer, 32));
-
     // Simple Field (error)
     writeSimpleEnumField(
         "error",
         "OpcuaStatusCode",
         error,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             OpcuaStatusCode::getValue, OpcuaStatusCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (reason)
-    writeSimpleField("reason", reason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reason", reason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaMessageError");
   }
@@ -108,12 +94,6 @@ public class OpcuaMessageError extends MessagePDU implements Message {
     int lengthInBits = super.getLengthInBits();
     OpcuaMessageError _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-
-    // Simple field (chunk)
-    lengthInBits += 8;
-
-    // Implicit Field (messageSize)
-    lengthInBits += 32;
 
     // Simple field (error)
     lengthInBits += 32;
@@ -130,39 +110,31 @@ public class OpcuaMessageError extends MessagePDU implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    String chunk = readSimpleField("chunk", readString(readBuffer, 8));
-
-    int messageSize = readImplicitField("messageSize", readSignedInt(readBuffer, 32));
-
     OpcuaStatusCode error =
         readEnumField(
             "error",
             "OpcuaStatusCode",
-            new DataReaderEnumDefault<>(
-                OpcuaStatusCode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(OpcuaStatusCode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString reason =
         readSimpleField(
-            "reason",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "reason", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpcuaMessageError");
     // Create the instance
-    return new OpcuaMessageErrorBuilderImpl(chunk, error, reason);
+    return new OpcuaMessageErrorBuilderImpl(error, reason);
   }
 
   public static class OpcuaMessageErrorBuilderImpl implements MessagePDU.MessagePDUBuilder {
-    private final String chunk;
     private final OpcuaStatusCode error;
     private final PascalString reason;
 
-    public OpcuaMessageErrorBuilderImpl(String chunk, OpcuaStatusCode error, PascalString reason) {
-      this.chunk = chunk;
+    public OpcuaMessageErrorBuilderImpl(OpcuaStatusCode error, PascalString reason) {
       this.error = error;
       this.reason = reason;
     }
 
-    public OpcuaMessageError build() {
+    public OpcuaMessageError build(ChunkType chunk) {
       OpcuaMessageError opcuaMessageError = new OpcuaMessageError(chunk, error, reason);
       return opcuaMessageError;
     }
@@ -177,8 +149,7 @@ public class OpcuaMessageError extends MessagePDU implements Message {
       return false;
     }
     OpcuaMessageError that = (OpcuaMessageError) o;
-    return (getChunk() == that.getChunk())
-        && (getError() == that.getError())
+    return (getError() == that.getError())
         && (getReason() == that.getReason())
         && super.equals(that)
         && true;
@@ -186,7 +157,7 @@ public class OpcuaMessageError extends MessagePDU implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getChunk(), getError(), getReason());
+    return Objects.hash(super.hashCode(), getError(), getReason());
   }
 
   @Override

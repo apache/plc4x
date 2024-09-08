@@ -147,12 +147,6 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_IoCrBlockReqApi staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_IoCrBlockReqApi staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnIoCm_IoCrBlockReqApi");
     PositionAware positionAware = readBuffer;
@@ -174,8 +168,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     List<PnIoCm_IoDataObject> ioDataObjects =
         readCountArrayField(
             "ioDataObjects",
-            new DataReaderComplexDefault<>(
-                () -> PnIoCm_IoDataObject.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_IoDataObject.staticParse(readBuffer), readBuffer),
             numIoDataObjects,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -188,7 +181,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     List<PnIoCm_IoCs> ioCss =
         readCountArrayField(
             "ioCss",
-            new DataReaderComplexDefault<>(() -> PnIoCm_IoCs.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_IoCs.staticParse(readBuffer), readBuffer),
             numIoCss,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

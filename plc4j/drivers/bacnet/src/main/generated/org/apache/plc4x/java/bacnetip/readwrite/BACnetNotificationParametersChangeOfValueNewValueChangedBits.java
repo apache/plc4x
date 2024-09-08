@@ -69,7 +69,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedBits
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits");
 
     // Simple Field (changedBits)
-    writeSimpleField("changedBits", changedBits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("changedBits", changedBits, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits");
   }
@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedBits
     BACnetContextTagBitString changedBits =
         readSimpleField(
             "changedBits",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBitString)
                         BACnetContextTag.staticParse(

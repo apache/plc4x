@@ -26,14 +26,16 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.s7.readwrite.ControllerType;
+import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
@@ -47,6 +49,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
 
 /**
  * This object generates the main connection and includes the management
@@ -125,7 +130,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             // define a future we can use to signal back that the s7 session is
             // finished initializing.
             CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
-            CompletableFuture<Configuration> sessionDiscoveredCompleteFuture = new CompletableFuture<>();
+            CompletableFuture<PlcConnectionConfiguration> sessionDiscoveredCompleteFuture = new CompletableFuture<>();
 
             if (channelFactory == null) {
                 throw new PlcConnectionException("No primary channel factory provided");
@@ -144,7 +149,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                         sessionDisconnectCompleteFuture,
                         sessionDiscoveredCompleteFuture));
 
-                channel.pipeline().addFirst(new LoggingHandler("DOOM"));
+                //channel.pipeline().addFirst(new LoggingHandler("DOOM"));
                 channel.pipeline().addFirst("Multiplexor", s7hmux);
             }
 
@@ -224,7 +229,6 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     primaryChannel.pipeline().remove(MULTIPLEXER);
                     primaryChannel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     primaryChannel.eventLoop().shutdownGracefully();
-
                 } catch (Exception ex) {
                     logger.info(ex.toString());
                 }
@@ -250,6 +254,17 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         return channel.attr(S7HMuxImpl.IS_CONNECTED).get();
     }
 
+    /**
+     * Subscriptions are only supported in a small subset of the S7 devices.
+     *
+     * @return true, if the device supports subscriptions.
+     */
+    @Override
+    public boolean isSubscribeSupported() {
+        Plc4xProtocolBase<?> protocol = getProtocol();
+        S7DriverContext s7driverContext = (S7DriverContext) protocol.getDriverContext();
+        return (s7driverContext.getControllerType() == ControllerType.S7_300) || (s7driverContext.getControllerType() == ControllerType.S7_400);
+    }
 
     public void doPrimaryTcpConnections() {
         try {
@@ -417,5 +432,13 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         }
         return null;
     }
+
+    @Override
+    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+        if (!isSubscribeSupported()) {
+            throw new PlcUnsupportedOperationException("The connection does not support subscription");
+        }
+        return new S7PlcSubscriptionRequest.Builder(this, getPlcTagHandler());        
+    }        
 
 }

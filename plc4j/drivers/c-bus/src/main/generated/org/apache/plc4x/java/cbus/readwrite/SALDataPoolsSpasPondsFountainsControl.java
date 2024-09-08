@@ -63,9 +63,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
 
     // Simple Field (poolsSpaPondsFountainsData)
     writeSimpleField(
-        "poolsSpaPondsFountainsData",
-        poolsSpaPondsFountainsData,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "poolsSpaPondsFountainsData", poolsSpaPondsFountainsData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataPoolsSpasPondsFountainsControl");
   }
@@ -96,7 +94,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
     LightingData poolsSpaPondsFountainsData =
         readSimpleField(
             "poolsSpaPondsFountainsData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataPoolsSpasPondsFountainsControl");
     // Create the instance

@@ -140,7 +140,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("PubSubConnectionDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -149,14 +149,13 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
 
     // Simple Field (publisherId)
-    writeSimpleField("publisherId", publisherId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("publisherId", publisherId, writeComplex(writeBuffer));
 
     // Simple Field (transportProfileUri)
-    writeSimpleField(
-        "transportProfileUri", transportProfileUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportProfileUri", transportProfileUri, writeComplex(writeBuffer));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     // Simple Field (noOfConnectionProperties)
     writeSimpleField(
@@ -166,8 +165,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     writeComplexTypeArrayField("connectionProperties", connectionProperties, writeBuffer);
 
     // Simple Field (transportSettings)
-    writeSimpleField(
-        "transportSettings", transportSettings, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportSettings", transportSettings, writeComplex(writeBuffer));
 
     // Simple Field (noOfWriterGroups)
     writeSimpleField("noOfWriterGroups", noOfWriterGroups, writeSignedInt(writeBuffer, 32));
@@ -263,8 +261,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -273,18 +270,17 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
 
     Variant publisherId =
         readSimpleField(
-            "publisherId",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+            "publisherId", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     PascalString transportProfileUri =
         readSimpleField(
             "transportProfileUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     ExtensionObject address =
         readSimpleField(
             "address",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     int noOfConnectionProperties =
@@ -293,7 +289,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     List<ExtensionObjectDefinition> connectionProperties =
         readCountArrayField(
             "connectionProperties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfConnectionProperties);
@@ -301,7 +297,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     ExtensionObject transportSettings =
         readSimpleField(
             "transportSettings",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     int noOfWriterGroups = readSimpleField("noOfWriterGroups", readSignedInt(readBuffer, 32));
@@ -309,7 +305,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     List<PubSubGroupDataType> writerGroups =
         readCountArrayField(
             "writerGroups",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (PubSubGroupDataType)
                         ExtensionObjectDefinition.staticParse(readBuffer, (String) ("15609")),
@@ -321,7 +317,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     List<PubSubGroupDataType> readerGroups =
         readCountArrayField(
             "readerGroups",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (PubSubGroupDataType)
                         ExtensionObjectDefinition.staticParse(readBuffer, (String) ("15609")),

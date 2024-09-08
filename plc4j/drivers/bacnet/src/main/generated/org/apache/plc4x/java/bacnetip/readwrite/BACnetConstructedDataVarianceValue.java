@@ -82,7 +82,7 @@ public class BACnetConstructedDataVarianceValue extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataVarianceValue");
 
     // Simple Field (varianceValue)
-    writeSimpleField("varianceValue", varianceValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("varianceValue", varianceValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataVarianceValue extends BACnetConstructedData im
     BACnetApplicationTagReal varianceValue =
         readSimpleField(
             "varianceValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

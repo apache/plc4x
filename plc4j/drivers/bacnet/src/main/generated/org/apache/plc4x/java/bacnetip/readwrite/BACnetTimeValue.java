@@ -61,10 +61,10 @@ public class BACnetTimeValue implements Message {
     writeBuffer.pushContext("BACnetTimeValue");
 
     // Simple Field (timeValue)
-    writeSimpleField("timeValue", timeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeValue", timeValue, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimeValue");
   }
@@ -89,12 +89,6 @@ public class BACnetTimeValue implements Message {
     return lengthInBits;
   }
 
-  public static BACnetTimeValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetTimeValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetTimeValue");
     PositionAware positionAware = readBuffer;
@@ -103,14 +97,14 @@ public class BACnetTimeValue implements Message {
     BACnetApplicationTagTime timeValue =
         readSimpleField(
             "timeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetConstructedDataElement value =
         readSimpleField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedDataElement.staticParse(
                         readBuffer,

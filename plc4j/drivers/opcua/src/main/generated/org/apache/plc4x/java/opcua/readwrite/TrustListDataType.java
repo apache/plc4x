@@ -229,8 +229,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     List<PascalByteString> trustedCertificates =
         readCountArrayField(
             "trustedCertificates",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
             noOfTrustedCertificates);
 
     int noOfTrustedCrls = readSimpleField("noOfTrustedCrls", readSignedInt(readBuffer, 32));
@@ -238,8 +237,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     List<PascalByteString> trustedCrls =
         readCountArrayField(
             "trustedCrls",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
             noOfTrustedCrls);
 
     int noOfIssuerCertificates =
@@ -248,8 +246,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     List<PascalByteString> issuerCertificates =
         readCountArrayField(
             "issuerCertificates",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
             noOfIssuerCertificates);
 
     int noOfIssuerCrls = readSimpleField("noOfIssuerCrls", readSignedInt(readBuffer, 32));
@@ -257,8 +254,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     List<PascalByteString> issuerCrls =
         readCountArrayField(
             "issuerCrls",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
             noOfIssuerCrls);
 
     readBuffer.closeContext("TrustListDataType");

@@ -113,12 +113,6 @@ public class PnIoCm_IoDataObject implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_IoDataObject staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_IoDataObject staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnIoCm_IoDataObject");
     PositionAware positionAware = readBuffer;

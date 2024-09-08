@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.transport.CANOpenFrameDataAdapter;
 import org.apache.plc4x.java.canopen.transport.IdentityCANOpenFrameBuilder;

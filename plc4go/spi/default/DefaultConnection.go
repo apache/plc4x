@@ -25,15 +25,15 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
@@ -97,17 +97,17 @@ type withPlcValueHandler struct {
 	plcValueHandler spi.PlcValueHandler
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultConnection
+//go:generate plc4xGenerator -type=defaultConnection
 type defaultConnection struct {
 	DefaultConnectionRequirements `ignore:"true"`
 	// defaultTtl the time to live after a close
-	defaultTtl time.Duration `stringer:"true"`
+	defaultTtl time.Duration
 	// connected indicates if a connection is connected
 	connected    atomic.Bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {

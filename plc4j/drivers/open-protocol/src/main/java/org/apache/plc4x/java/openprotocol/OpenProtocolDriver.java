@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.openprotocol;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.openprotocol.config.OpenProtocolConfiguration;
 import org.apache.plc4x.java.openprotocol.config.OpenProtocolTcpTransportConfiguration;
 import org.apache.plc4x.java.openprotocol.protocol.OpenProtocolProtocolLogic;
@@ -32,13 +32,14 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage> implements TransportConfigurationTypeProvider {
+public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage> {
 
     @Override
     public String getProtocolCode() {
@@ -51,18 +52,27 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return OpenProtocolConfiguration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(OpenProtocolTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
     }
 
     @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> false;
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -102,8 +112,7 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
 
     @Override
     protected ProtocolStackConfigurer<OpenProtocolMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(OpenProtocolMessage.class,
-                OpenProtocolMessage::staticParse)
+        return SingleProtocolStackConfigurer.builder(OpenProtocolMessage.class, io -> OpenProtocolMessage.staticParse(io, 1))
             .withProtocol(OpenProtocolProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .build();
@@ -123,15 +132,6 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     @Override
     public OpenProtocolTag prepareTag(String tagAddress){
         return OpenProtocolTag.of(tagAddress);
-    }
-
-    @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return OpenProtocolTcpTransportConfiguration.class;
-        }
-        return null;
     }
 
 }

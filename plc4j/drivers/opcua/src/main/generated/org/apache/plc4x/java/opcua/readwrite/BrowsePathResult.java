@@ -75,7 +75,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("BrowsePathResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfTargets)
     writeSimpleField("noOfTargets", noOfTargets, writeSignedInt(writeBuffer, 32));
@@ -123,15 +123,14 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfTargets = readSimpleField("noOfTargets", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> targets =
         readCountArrayField(
             "targets",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("548")),
                 readBuffer),
             noOfTargets);

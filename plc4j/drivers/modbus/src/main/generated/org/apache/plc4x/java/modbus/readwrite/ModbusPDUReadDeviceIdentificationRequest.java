@@ -90,7 +90,7 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
         "level",
         "ModbusDeviceInformationLevel",
         level,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ModbusDeviceInformationLevel::getValue,
             ModbusDeviceInformationLevel::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -140,8 +140,7 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
         readEnumField(
             "level",
             "ModbusDeviceInformationLevel",
-            new DataReaderEnumDefault<>(
-                ModbusDeviceInformationLevel::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ModbusDeviceInformationLevel::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short objectId = readSimpleField("objectId", readUnsignedShort(readBuffer, 8));
 

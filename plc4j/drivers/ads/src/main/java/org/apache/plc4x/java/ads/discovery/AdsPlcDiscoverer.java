@@ -112,21 +112,21 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
 
                                             if (hostNameBlock != null) {
                                                 Map<String, String> options = new HashMap<>();
-                                                options.put("sourceAmsNetId", inet4Address.getHostAddress() + ".1.1");
-                                                options.put("sourceAmsPort", "65534");
-                                                options.put("targetAmsNetId", remoteAmsNetId.getOctet1() + "." + remoteAmsNetId.getOctet2() + "." + remoteAmsNetId.getOctet3() + "." + remoteAmsNetId.getOctet4() + "." + remoteAmsNetId.getOctet5() + "." + remoteAmsNetId.getOctet6());
+                                                options.put("source-ams-net-id", inet4Address.getHostAddress() + ".1.1");
+                                                options.put("source-ams-port", "65534");
+                                                options.put("target-ams-net-id", remoteAmsNetId.getOctet1() + "." + remoteAmsNetId.getOctet2() + "." + remoteAmsNetId.getOctet3() + "." + remoteAmsNetId.getOctet4() + "." + remoteAmsNetId.getOctet5() + "." + remoteAmsNetId.getOctet6());
                                                 // TODO: Check if this is legit, or if we can get the information from somewhere.
-                                                options.put("targetAmsPort", "851");
+                                                options.put("target-ams-port", "851");
 
                                                 Map<String, PlcValue> attributes = new HashMap<>();
-                                                attributes.put("hostName", new PlcSTRING(hostNameBlock.getHostName().getText()));
+                                                attributes.put("host-name", new PlcSTRING(hostNameBlock.getHostName().getText()));
                                                 if (versionBlock != null) {
                                                     byte[] versionData = versionBlock.getVersionData();
                                                     int patchVersion = ((int) versionData[3] & 0xFF) << 8 | ((int) versionData[2] & 0xFF);
-                                                    attributes.put("twinCatVersion", new PlcSTRING(String.format("%d.%d.%d", (short) versionData[0] & 0xFF, (short) versionData[1] & 0xFF, patchVersion)));
+                                                    attributes.put("twin-cat-version", new PlcSTRING(String.format("%d.%d.%d", (short) versionData[0] & 0xFF, (short) versionData[1] & 0xFF, patchVersion)));
                                                 }
                                                 if (fingerprintBlock != null) {
-                                                    attributes.put("fingerprint", new PlcSTRING(new String(fingerprintBlock.getData())));
+                                                    attributes.put("fingerprint", new PlcSTRING(new String(fingerprintBlock.getData()).trim()));
                                                 }
                                                 // TODO: Find out how to handle the OS Data
 
@@ -183,7 +183,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                             }
 
                             try {
-                                Thread.sleep(3000);
+                                Thread.sleep(100);
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
@@ -205,6 +205,8 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
             public void run() {
                 PlcDiscoveryResponse response =
                     new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, new ArrayList<>(values));
+                timer.cancel();
+                timer.purge();
                 future.complete(response);
             }
         }, 5000L);

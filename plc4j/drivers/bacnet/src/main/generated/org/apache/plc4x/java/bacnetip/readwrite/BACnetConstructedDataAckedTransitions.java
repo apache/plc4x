@@ -83,8 +83,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataAckedTransitions");
 
     // Simple Field (ackedTransitions)
-    writeSimpleField(
-        "ackedTransitions", ackedTransitions, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackedTransitions", ackedTransitions, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEventTransitionBitsTagged actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
     BACnetEventTransitionBitsTagged ackedTransitions =
         readSimpleField(
             "ackedTransitions",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

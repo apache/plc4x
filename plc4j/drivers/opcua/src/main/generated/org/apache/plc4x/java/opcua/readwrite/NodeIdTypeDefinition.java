@@ -59,8 +59,7 @@ public abstract class NodeIdTypeDefinition implements Message {
         "nodeType",
         "NodeIdType",
         getNodeType(),
-        new DataWriterEnumDefault<>(
-            NodeIdType::getValue, NodeIdType::name, writeUnsignedByte(writeBuffer, 6)));
+        writeEnum(NodeIdType::getValue, NodeIdType::name, writeUnsignedByte(writeBuffer, 6)));
 
     // Switch field (Serialize the sub-type)
     serializeNodeIdTypeDefinitionChild(writeBuffer);
@@ -87,12 +86,6 @@ public abstract class NodeIdTypeDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeIdTypeDefinition staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NodeIdTypeDefinition staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdTypeDefinition");
     PositionAware positionAware = readBuffer;
@@ -102,7 +95,7 @@ public abstract class NodeIdTypeDefinition implements Message {
         readDiscriminatorEnumField(
             "nodeType",
             "NodeIdType",
-            new DataReaderEnumDefault<>(NodeIdType::enumForValue, readUnsignedByte(readBuffer, 6)));
+            readEnum(NodeIdType::enumForValue, readUnsignedByte(readBuffer, 6)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     NodeIdTypeDefinitionBuilder builder = null;

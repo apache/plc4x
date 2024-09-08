@@ -89,12 +89,6 @@ public class NumericNodeId implements Message {
     return lengthInBits;
   }
 
-  public static NumericNodeId staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NumericNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NumericNodeId");
     PositionAware positionAware = readBuffer;

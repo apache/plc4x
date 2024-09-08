@@ -20,8 +20,8 @@ package org.apache.plc4x.java.spi;
 
 import io.netty.channel.Channel;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
@@ -45,7 +45,7 @@ public interface ConversationContext<T> {
 
     void fireDisconnected();
 
-    void fireDiscovered(Configuration c);
+    void fireDiscovered(PlcConnectionConfiguration c);
 
     SendRequestContext<T> sendRequest(T packet);
 
@@ -149,7 +149,7 @@ public interface ConversationContext<T> {
 
         void cancel();
 
-        void awaitResponse() throws InterruptedException, ExecutionException;
+        void await() throws InterruptedException, ExecutionException;
 
     }
 

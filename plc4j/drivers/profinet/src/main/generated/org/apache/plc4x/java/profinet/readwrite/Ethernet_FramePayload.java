@@ -80,12 +80,6 @@ public abstract class Ethernet_FramePayload implements Message {
     return lengthInBits;
   }
 
-  public static Ethernet_FramePayload staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Ethernet_FramePayload staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload");
     PositionAware positionAware = readBuffer;

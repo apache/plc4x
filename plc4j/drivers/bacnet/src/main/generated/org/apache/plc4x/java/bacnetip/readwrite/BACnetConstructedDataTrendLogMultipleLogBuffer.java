@@ -119,8 +119,7 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
     List<BACnetLogMultipleRecord> floorText =
         readTerminatedArrayField(
             "floorText",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLogMultipleRecord.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetLogMultipleRecord.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

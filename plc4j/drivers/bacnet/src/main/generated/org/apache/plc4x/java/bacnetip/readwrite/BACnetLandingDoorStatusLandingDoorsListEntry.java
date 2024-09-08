@@ -62,10 +62,10 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
     writeBuffer.pushContext("BACnetLandingDoorStatusLandingDoorsListEntry");
 
     // Simple Field (floorNumber)
-    writeSimpleField("floorNumber", floorNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("floorNumber", floorNumber, writeComplex(writeBuffer));
 
     // Simple Field (doorStatus)
-    writeSimpleField("doorStatus", doorStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorStatus", doorStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingDoorStatusLandingDoorsListEntry");
   }
@@ -90,12 +90,6 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLandingDoorStatusLandingDoorsListEntry staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLandingDoorStatusLandingDoorsListEntry staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetLandingDoorStatusLandingDoorsListEntry");
@@ -105,7 +99,7 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
     BACnetContextTagUnsignedInteger floorNumber =
         readSimpleField(
             "floorNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -117,7 +111,7 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
     BACnetDoorStatusTagged doorStatus =
         readSimpleField(
             "doorStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorStatusTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

@@ -74,13 +74,13 @@ public class TransactionErrorType extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("TransactionErrorType");
 
     // Simple Field (targetId)
-    writeSimpleField("targetId", targetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetId", targetId, writeComplex(writeBuffer));
 
     // Simple Field (error)
-    writeSimpleField("error", error, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("error", error, writeComplex(writeBuffer));
 
     // Simple Field (message)
-    writeSimpleField("message", message, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TransactionErrorType");
   }
@@ -115,20 +115,14 @@ public class TransactionErrorType extends ExtensionObjectDefinition implements M
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId targetId =
-        readSimpleField(
-            "targetId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("targetId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     StatusCode error =
-        readSimpleField(
-            "error",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+        readSimpleField("error", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     LocalizedText message =
         readSimpleField(
-            "message",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "message", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("TransactionErrorType");
     // Create the instance

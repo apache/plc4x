@@ -274,6 +274,11 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     public String toString() {
         return Character.toString((char) ((int) value));
     }
+    
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
 
     public byte[] getBytes() {
         return new byte[]{

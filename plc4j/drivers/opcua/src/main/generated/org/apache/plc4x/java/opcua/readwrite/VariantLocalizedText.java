@@ -121,7 +121,7 @@ public class VariantLocalizedText extends Variant implements Message {
     List<LocalizedText> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(() -> LocalizedText.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantLocalizedText");

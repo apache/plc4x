@@ -24,6 +24,9 @@ import (
 	"runtime/debug"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -31,12 +34,9 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Connection
+//go:generate plc4xGenerator -type=Connection
 type Connection struct {
 	_default.DefaultConnection
 	messageCodec *MessageCodec
@@ -48,9 +48,9 @@ type Connection struct {
 	channel *SecureChannel
 
 	connectEvent      chan struct{}
-	connectTimeout    time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
+	connectTimeout    time.Duration // TODO: do we need to have that in general, where to get that from
 	disconnectEvent   chan struct{}
-	disconnectTimeout time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
+	disconnectTimeout time.Duration // TODO: do we need to have that in general, where to get that from
 
 	connectionId string
 	tracer       tracer.Tracer

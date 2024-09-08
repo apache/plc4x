@@ -95,7 +95,7 @@ public abstract class Plc4xMessage implements Message {
         "requestType",
         "Plc4xRequestType",
         getRequestType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xRequestType::getValue, Plc4xRequestType::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -133,12 +133,6 @@ public abstract class Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xMessage staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Plc4xMessage staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xMessage");
     PositionAware positionAware = readBuffer;
@@ -167,8 +161,7 @@ public abstract class Plc4xMessage implements Message {
         readDiscriminatorEnumField(
             "requestType",
             "Plc4xRequestType",
-            new DataReaderEnumDefault<>(
-                Plc4xRequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Plc4xRequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

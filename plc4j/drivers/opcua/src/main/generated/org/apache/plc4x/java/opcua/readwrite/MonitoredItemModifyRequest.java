@@ -72,8 +72,7 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
     writeSimpleField("monitoredItemId", monitoredItemId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (requestedParameters)
-    writeSimpleField(
-        "requestedParameters", requestedParameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestedParameters", requestedParameters, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredItemModifyRequest");
   }
@@ -109,7 +108,7 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
     ExtensionObjectDefinition requestedParameters =
         readSimpleField(
             "requestedParameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("742")),
                 readBuffer));
 

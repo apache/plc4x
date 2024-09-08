@@ -91,11 +91,10 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("NodeReference");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -158,14 +157,11 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("nodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -178,7 +174,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     List<NodeId> referencedNodeIds =
         readCountArrayField(
             "referencedNodeIds",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NodeId.staticParse(readBuffer), readBuffer),
             noOfReferencedNodeIds);
 
     readBuffer.closeContext("NodeReference");

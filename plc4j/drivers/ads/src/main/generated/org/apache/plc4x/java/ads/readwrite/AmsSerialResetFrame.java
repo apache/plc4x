@@ -143,12 +143,6 @@ public class AmsSerialResetFrame implements Message {
     return lengthInBits;
   }
 
-  public static AmsSerialResetFrame staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AmsSerialResetFrame staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsSerialResetFrame");
     PositionAware positionAware = readBuffer;

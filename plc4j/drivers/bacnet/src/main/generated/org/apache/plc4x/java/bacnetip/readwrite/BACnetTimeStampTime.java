@@ -59,7 +59,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
     writeBuffer.pushContext("BACnetTimeStampTime");
 
     // Simple Field (timeValue)
-    writeSimpleField("timeValue", timeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeValue", timeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimeStampTime");
   }
@@ -90,7 +90,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
     BACnetContextTagTime timeValue =
         readSimpleField(
             "timeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagTime)
                         BACnetContextTag.staticParse(

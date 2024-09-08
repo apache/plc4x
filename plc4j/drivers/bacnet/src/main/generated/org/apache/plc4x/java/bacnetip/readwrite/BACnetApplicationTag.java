@@ -68,7 +68,7 @@ public abstract class BACnetApplicationTag implements Message {
     writeBuffer.pushContext("BACnetApplicationTag");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short actualTagNumber = getActualTagNumber();
@@ -107,12 +107,6 @@ public abstract class BACnetApplicationTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetApplicationTag staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetApplicationTag staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTag");
     PositionAware positionAware = readBuffer;
@@ -120,9 +114,7 @@ public abstract class BACnetApplicationTag implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getTagClass()) == (TagClass.APPLICATION_TAGS))) {
       throw new ParseValidationException("should be a application tag");

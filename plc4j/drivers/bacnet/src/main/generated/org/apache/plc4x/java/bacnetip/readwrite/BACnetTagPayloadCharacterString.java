@@ -74,7 +74,7 @@ public class BACnetTagPayloadCharacterString implements Message {
         "encoding",
         "BACnetCharacterEncoding",
         encoding,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetCharacterEncoding::getValue,
             BACnetCharacterEncoding::name,
             writeByte(writeBuffer, 8)));
@@ -115,26 +115,6 @@ public class BACnetTagPayloadCharacterString implements Message {
     return lengthInBits;
   }
 
-  public static BACnetTagPayloadCharacterString staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Long actualLength;
-    if (args[0] instanceof Long) {
-      actualLength = (Long) args[0];
-    } else if (args[0] instanceof String) {
-      actualLength = Long.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Long or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, actualLength);
-  }
-
   public static BACnetTagPayloadCharacterString staticParse(
       ReadBuffer readBuffer, Long actualLength) throws ParseException {
     readBuffer.pullContext("BACnetTagPayloadCharacterString");
@@ -145,8 +125,7 @@ public class BACnetTagPayloadCharacterString implements Message {
         readEnumField(
             "encoding",
             "BACnetCharacterEncoding",
-            new DataReaderEnumDefault<>(
-                BACnetCharacterEncoding::enumForValue, readByte(readBuffer, 8)));
+            readEnum(BACnetCharacterEncoding::enumForValue, readByte(readBuffer, 8)));
     int actualLengthInBit =
         readVirtualField("actualLengthInBit", int.class, ((actualLength) * (8)) - (8));
 

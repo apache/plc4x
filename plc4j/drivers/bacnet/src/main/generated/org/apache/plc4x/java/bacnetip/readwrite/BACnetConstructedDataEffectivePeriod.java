@@ -82,7 +82,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataEffectivePeriod");
 
     // Simple Field (dateRange)
-    writeSimpleField("dateRange", dateRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateRange", dateRange, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateRange actualValue = getActualValue();
@@ -123,9 +123,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
 
     BACnetDateRange dateRange =
         readSimpleField(
-            "dateRange",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateRange.staticParse(readBuffer), readBuffer));
+            "dateRange", readComplex(() -> BACnetDateRange.staticParse(readBuffer), readBuffer));
     BACnetDateRange actualValue = readVirtualField("actualValue", BACnetDateRange.class, dateRange);
 
     readBuffer.closeContext("BACnetConstructedDataEffectivePeriod");

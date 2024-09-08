@@ -123,13 +123,13 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 	}
 }
 
-func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLanguageTypeNameForTypeReference(constantType)}) (${type.name}, error) {
+func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLanguageTypeNameForTypeReference(constantType)}) (enum ${type.name}, ok bool) {
 	for _, sizeValue := range ${type.name}Values {
 		if sizeValue.${constantName?cap_first}() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return <#if type.type.orElseThrow().isStringTypeReference()>""<#else>0</#if>, errors.Errorf("enum for %v describing ${constantName?cap_first} not found", value)
+	return <#if type.type.orElseThrow().isStringTypeReference()>""<#else>0</#if>, false
 }
 	</#list>
 </#if>
@@ -217,6 +217,18 @@ func (e ${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type.orElseThrow(), helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow()) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.PLC4XEnumName())")}
 }
 	</#if>
+</#if>
+
+func (e ${type.name}) GetValue() <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if> {
+	return <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>(e)
+}
+
+<#if type.constantNames?has_content>
+    <#list type.constantNames as constantName>
+func (e ${type.name}) Get${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}  {
+	return e.${constantName?cap_first}()
+}
+	</#list>
 </#if>
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

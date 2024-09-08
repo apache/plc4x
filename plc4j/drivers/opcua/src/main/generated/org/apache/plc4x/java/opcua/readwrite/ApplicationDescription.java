@@ -112,30 +112,27 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("ApplicationDescription");
 
     // Simple Field (applicationUri)
-    writeSimpleField("applicationUri", applicationUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("applicationUri", applicationUri, writeComplex(writeBuffer));
 
     // Simple Field (productUri)
-    writeSimpleField("productUri", productUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productUri", productUri, writeComplex(writeBuffer));
 
     // Simple Field (applicationName)
-    writeSimpleField(
-        "applicationName", applicationName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("applicationName", applicationName, writeComplex(writeBuffer));
 
     // Simple Field (applicationType)
     writeSimpleEnumField(
         "applicationType",
         "ApplicationType",
         applicationType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationType::getValue, ApplicationType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (gatewayServerUri)
-    writeSimpleField(
-        "gatewayServerUri", gatewayServerUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("gatewayServerUri", gatewayServerUri, writeComplex(writeBuffer));
 
     // Simple Field (discoveryProfileUri)
-    writeSimpleField(
-        "discoveryProfileUri", discoveryProfileUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("discoveryProfileUri", discoveryProfileUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfDiscoveryUrls)
     writeSimpleField("noOfDiscoveryUrls", noOfDiscoveryUrls, writeSignedInt(writeBuffer, 32));
@@ -198,43 +195,39 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
 
     PascalString applicationUri =
         readSimpleField(
-            "applicationUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "applicationUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText applicationName =
         readSimpleField(
             "applicationName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     ApplicationType applicationType =
         readEnumField(
             "applicationType",
             "ApplicationType",
-            new DataReaderEnumDefault<>(
-                ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString gatewayServerUri =
         readSimpleField(
             "gatewayServerUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString discoveryProfileUri =
         readSimpleField(
             "discoveryProfileUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfDiscoveryUrls = readSimpleField("noOfDiscoveryUrls", readSignedInt(readBuffer, 32));
 
     List<PascalString> discoveryUrls =
         readCountArrayField(
             "discoveryUrls",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfDiscoveryUrls);
 
     readBuffer.closeContext("ApplicationDescription");

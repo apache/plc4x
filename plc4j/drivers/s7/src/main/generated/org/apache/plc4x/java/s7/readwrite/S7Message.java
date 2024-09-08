@@ -106,10 +106,10 @@ public abstract class S7Message implements Message {
     serializeS7MessageChild(writeBuffer);
 
     // Optional Field (parameter) (Can be skipped, if the value is null)
-    writeOptionalField("parameter", parameter, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("parameter", parameter, writeComplex(writeBuffer));
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    writeOptionalField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7Message");
   }
@@ -158,11 +158,6 @@ public abstract class S7Message implements Message {
     return lengthInBits;
   }
 
-  public static S7Message staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static S7Message staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7Message");
     PositionAware positionAware = readBuffer;
@@ -205,14 +200,14 @@ public abstract class S7Message implements Message {
     S7Parameter parameter =
         readOptionalField(
             "parameter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> S7Parameter.staticParse(readBuffer, (short) (messageType)), readBuffer),
             (parameterLength) > (0));
 
     S7Payload payload =
         readOptionalField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     S7Payload.staticParse(
                         readBuffer, (short) (messageType), (S7Parameter) (parameter)),

@@ -76,12 +76,6 @@ public class CBusConstants implements Message {
     return lengthInBits;
   }
 
-  public static CBusConstants staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CBusConstants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CBusConstants");
     PositionAware positionAware = readBuffer;

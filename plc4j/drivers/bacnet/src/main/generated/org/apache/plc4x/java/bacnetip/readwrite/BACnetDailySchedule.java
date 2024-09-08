@@ -68,13 +68,13 @@ public class BACnetDailySchedule implements Message {
     writeBuffer.pushContext("BACnetDailySchedule");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (daySchedule)
     writeComplexTypeArrayField("daySchedule", daySchedule, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDailySchedule");
   }
@@ -106,12 +106,6 @@ public class BACnetDailySchedule implements Message {
     return lengthInBits;
   }
 
-  public static BACnetDailySchedule staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetDailySchedule staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetDailySchedule");
     PositionAware positionAware = readBuffer;
@@ -120,14 +114,12 @@ public class BACnetDailySchedule implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     List<BACnetTimeValue> daySchedule =
         readTerminatedArrayField(
             "daySchedule",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetTimeValue.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -136,8 +128,7 @@ public class BACnetDailySchedule implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetDailySchedule");
     // Create the instance

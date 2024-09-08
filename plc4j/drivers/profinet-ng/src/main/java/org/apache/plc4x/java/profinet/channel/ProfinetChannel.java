@@ -106,8 +106,6 @@ public class ProfinetChannel {
                     // Check if it's a PROFINET packet
                     if (payload.getHeader().getDstPort().value() == -30572 || payload.getHeader().getDstPort().value() == -15536 || payload.getHeader().getDstPort().value() == -15535) {
                         isPnPacket = true;
-                    } else {
-                        System.out.println("UDP Packet from port: " + payload.getHeader().getSrcPort().value());
                     }
                 }
 

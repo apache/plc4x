@@ -240,7 +240,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         "ioCrType",
         "PnIoCm_IoCrType",
         ioCrType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_IoCrType::getValue, PnIoCm_IoCrType::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -305,7 +305,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         "rtClass",
         "PnIoCm_RtClass",
         rtClass,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_RtClass::getValue, PnIoCm_RtClass::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -383,7 +383,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     writeSimpleField(
         "ioCrMulticastMacAdr",
         ioCrMulticastMacAdr,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numberOfApis) (Used for parsing, but its value is not stored as it's
@@ -528,8 +528,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         readEnumField(
             "ioCrType",
             "PnIoCm_IoCrType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_IoCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_IoCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int ioCrReference =
@@ -584,8 +583,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         readEnumField(
             "rtClass",
             "PnIoCm_RtClass",
-            new DataReaderEnumDefault<>(
-                PnIoCm_RtClass::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(PnIoCm_RtClass::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int dataLength =
@@ -651,7 +649,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     MacAddress ioCrMulticastMacAdr =
         readSimpleField(
             "ioCrMulticastMacAdr",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int numberOfApis =
@@ -663,8 +661,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     List<PnIoCm_IoCrBlockReqApi> apis =
         readCountArrayField(
             "apis",
-            new DataReaderComplexDefault<>(
-                () -> PnIoCm_IoCrBlockReqApi.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_IoCrBlockReqApi.staticParse(readBuffer), readBuffer),
             numberOfApis,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

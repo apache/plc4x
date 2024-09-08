@@ -24,17 +24,17 @@ import (
 	"runtime/debug"
 	"time"
 
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-
-	"github.com/pkg/errors"
 )
 
 var _ apiModel.PlcWriteRequestBuilder = &DefaultPlcWriteRequestBuilder{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequestBuilder
+//go:generate plc4xGenerator -type=DefaultPlcWriteRequestBuilder
 type DefaultPlcWriteRequestBuilder struct {
 	writer                  spi.PlcWriter       `ignore:"true"`
 	tagHandler              spi.PlcTagHandler   `ignore:"true"`
@@ -124,7 +124,7 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (apiModel.PlcWriteRequest, error
 
 var _ apiModel.PlcWriteRequest = &DefaultPlcWriteRequest{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequest
+//go:generate plc4xGenerator -type=DefaultPlcWriteRequest
 type DefaultPlcWriteRequest struct {
 	*DefaultPlcTagRequest
 	values                  map[string]apiValues.PlcValue

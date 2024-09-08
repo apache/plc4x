@@ -97,12 +97,6 @@ public class QualifierOfCounterInterrogationCommand implements Message {
     return lengthInBits;
   }
 
-  public static QualifierOfCounterInterrogationCommand staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static QualifierOfCounterInterrogationCommand staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("QualifierOfCounterInterrogationCommand");

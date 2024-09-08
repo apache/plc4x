@@ -40,7 +40,8 @@ public class ModbusEncodeTest {
     @Test
     public void testEncodeIntegerSINT() {
         Integer[] object = {1,-1,127,-128,5,6,7,8};
-        ModbusTagHoldingRegister holdingregister = ModbusTagHoldingRegister.of("holding-register:8:SINT");
+        ModbusTagHoldingRegister holdingregister = ModbusTagHoldingRegister.of("holding-register:8:SINT{unit-id: 10}");
+        Assertions.assertEquals((short) 10, holdingregister.getUnitId());
         PlcList list = (PlcList) PlcValueHandler.of(holdingregister, object);
         Assertions.assertEquals("[1,-1,127,-128,5,6,7,8]", list.toString());
     }

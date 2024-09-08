@@ -100,7 +100,7 @@ public class BACnetConstructedDataAuthenticationPolicyList extends BACnetConstru
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (authenticationPolicyList)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataAuthenticationPolicyList extends BACnetConstru
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataAuthenticationPolicyList extends BACnetConstru
     List<BACnetAuthenticationPolicy> authenticationPolicyList =
         readTerminatedArrayField(
             "authenticationPolicyList",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAuthenticationPolicy.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetAuthenticationPolicy.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

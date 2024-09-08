@@ -48,7 +48,7 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
     public CANOpenFrame fromCAN(FrameData frame) {
         CANOpenService service = StaticHelper.serviceId((short) frame.getNodeId());
         int nodeId = Math.abs(service.getMin() - frame.getNodeId());
-        return new CANOpenFrame((short) nodeId, service, frame.read(CANOpenPayload::staticParse, service));
+        return new CANOpenFrame((short) nodeId, service, frame.read(io -> CANOpenPayload.staticParse(io, service)));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
             WriteBufferByteBased buffer = new WriteBufferByteBased(payload.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
             payload.serialize(buffer);
             return builder.get().withId(frame.getService().getMin() + frame.getNodeId())
-                .withData(buffer.getData())
+                .withData(buffer.getBytes())
                 .create();
         } catch (SerializationException e) {
             throw new PlcRuntimeException(e);

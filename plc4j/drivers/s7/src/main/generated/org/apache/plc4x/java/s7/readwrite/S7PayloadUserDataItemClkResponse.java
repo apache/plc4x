@@ -94,7 +94,7 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
     writeSimpleField("year1", year1, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (timeStamp)
-    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeStamp", timeStamp, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7PayloadUserDataItemClkResponse");
   }
@@ -139,8 +139,7 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
 
     DateAndTime timeStamp =
         readSimpleField(
-            "timeStamp",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeStamp", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadUserDataItemClkResponse");
     // Create the instance

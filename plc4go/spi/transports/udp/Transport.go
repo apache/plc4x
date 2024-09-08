@@ -20,15 +20,17 @@
 package udp
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"regexp"
 	"strconv"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Transport struct {

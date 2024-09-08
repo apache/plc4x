@@ -82,7 +82,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataFaultType");
 
     // Simple Field (faultType)
-    writeSimpleField("faultType", faultType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("faultType", faultType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetFaultTypeTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
     BACnetFaultTypeTagged faultType =
         readSimpleField(
             "faultType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

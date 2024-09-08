@@ -24,15 +24,15 @@ import (
 	"io"
 	"net/url"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 // PlcDriverManager is the main entry point for PLC4Go applications
@@ -106,12 +106,12 @@ type WithDiscoveryOption interface {
 // Internal section
 //
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=plcDriverManger
+//go:generate plc4xGenerator -type=plcDriverManger
 type plcDriverManger struct {
 	drivers    map[string]PlcDriver
 	transports map[string]transports.Transport
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 type withDiscoveryOption struct {

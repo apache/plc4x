@@ -140,17 +140,17 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("FieldMetaData");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     // Simple Field (fieldFlags)
     writeSimpleEnumField(
         "fieldFlags",
         "DataSetFieldFlags",
         fieldFlags,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataSetFieldFlags::getValue,
             DataSetFieldFlags::name,
             writeUnsignedInt(writeBuffer, 16)));
@@ -159,7 +159,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeSimpleField("builtInType", builtInType, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (dataType)
-    writeSimpleField("dataType", dataType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataType", dataType, writeComplex(writeBuffer));
 
     // Simple Field (valueRank)
     writeSimpleField("valueRank", valueRank, writeSignedInt(writeBuffer, 32));
@@ -175,7 +175,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeSimpleField("maxStringLength", maxStringLength, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (dataSetFieldId)
-    writeSimpleField("dataSetFieldId", dataSetFieldId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataSetFieldId", dataSetFieldId, writeComplex(writeBuffer));
 
     // Simple Field (noOfProperties)
     writeSimpleField("noOfProperties", noOfProperties, writeSignedInt(writeBuffer, 32));
@@ -252,28 +252,22 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     DataSetFieldFlags fieldFlags =
         readEnumField(
             "fieldFlags",
             "DataSetFieldFlags",
-            new DataReaderEnumDefault<>(
-                DataSetFieldFlags::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(DataSetFieldFlags::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     short builtInType = readSimpleField("builtInType", readUnsignedShort(readBuffer, 8));
 
     NodeId dataType =
-        readSimpleField(
-            "dataType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("dataType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     int valueRank = readSimpleField("valueRank", readSignedInt(readBuffer, 32));
 
@@ -287,15 +281,14 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
 
     GuidValue dataSetFieldId =
         readSimpleField(
-            "dataSetFieldId",
-            new DataReaderComplexDefault<>(() -> GuidValue.staticParse(readBuffer), readBuffer));
+            "dataSetFieldId", readComplex(() -> GuidValue.staticParse(readBuffer), readBuffer));
 
     int noOfProperties = readSimpleField("noOfProperties", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> properties =
         readCountArrayField(
             "properties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfProperties);

@@ -62,7 +62,7 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
     writeBuffer.pushContext("TlvProfibusSubTypeChassisMac");
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TlvProfibusSubTypeChassisMac");
   }
@@ -92,8 +92,7 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
 
     MacAddress macAddress =
         readSimpleField(
-            "macAddress",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer));
+            "macAddress", readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("TlvProfibusSubTypeChassisMac");
     // Create the instance

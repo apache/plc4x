@@ -91,23 +91,17 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
 
     // Simple Field (subscriberProcessIdentifier)
     writeSimpleField(
-        "subscriberProcessIdentifier",
-        subscriberProcessIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "subscriberProcessIdentifier", subscriberProcessIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (monitoredObjectIdentifier)
     writeSimpleField(
-        "monitoredObjectIdentifier",
-        monitoredObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredObjectIdentifier", monitoredObjectIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (issueConfirmed) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "issueConfirmed", issueConfirmed, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("issueConfirmed", issueConfirmed, writeComplex(writeBuffer));
 
     // Optional Field (lifetimeInSeconds) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "lifetimeInSeconds", lifetimeInSeconds, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("lifetimeInSeconds", lifetimeInSeconds, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestSubscribeCOV");
   }
@@ -152,7 +146,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
             "subscriberProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -164,7 +158,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(
             "monitoredObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -176,7 +170,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     BACnetContextTagBoolean issueConfirmed =
         readOptionalField(
             "issueConfirmed",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -186,7 +180,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     BACnetContextTagUnsignedInteger lifetimeInSeconds =
         readOptionalField(
             "lifetimeInSeconds",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

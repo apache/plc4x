@@ -113,7 +113,7 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
     List<DataValue> dataValues =
         readCountArrayField(
             "dataValues",
-            new DataReaderComplexDefault<>(() -> DataValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DataValue.staticParse(readBuffer), readBuffer),
             noOfDataValues);
 
     readBuffer.closeContext("HistoryData");

@@ -62,7 +62,7 @@ public class CloseSecureChannelRequest extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("CloseSecureChannelRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CloseSecureChannelRequest");
   }
@@ -93,7 +93,7 @@ public class CloseSecureChannelRequest extends ExtensionObjectDefinition impleme
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 

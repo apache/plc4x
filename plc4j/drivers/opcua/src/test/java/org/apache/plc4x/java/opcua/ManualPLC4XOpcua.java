@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcua;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubscriptionHandle;
 import org.eclipse.milo.examples.server.ExampleServer;
@@ -29,6 +30,7 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * This class serves only as a manual entry point for ad-hoc tests of the OPC UA PLC4J driver.

@@ -69,7 +69,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger");
 
     // Simple Field (integerValue)
-    writeSimpleField("integerValue", integerValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("integerValue", integerValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger");
   }
@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

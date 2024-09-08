@@ -114,7 +114,7 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
         "units",
         "MeasurementUnits",
         units,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MeasurementUnits::getValue,
             MeasurementUnits::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -189,8 +189,7 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
         readEnumField(
             "units",
             "MeasurementUnits",
-            new DataReaderEnumDefault<>(
-                MeasurementUnits::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(MeasurementUnits::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte multiplier = readSimpleField("multiplier", readSignedByte(readBuffer, 8));
 

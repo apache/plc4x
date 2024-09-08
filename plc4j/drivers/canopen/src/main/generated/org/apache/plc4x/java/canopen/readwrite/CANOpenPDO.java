@@ -79,12 +79,6 @@ public class CANOpenPDO implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenPDO staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CANOpenPDO staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CANOpenPDO");
     PositionAware positionAware = readBuffer;

@@ -68,7 +68,7 @@ public abstract class AirConditioningData implements Message {
         "commandTypeContainer",
         "AirConditioningCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AirConditioningCommandTypeContainer::getValue,
             AirConditioningCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -104,12 +104,6 @@ public abstract class AirConditioningData implements Message {
     return lengthInBits;
   }
 
-  public static AirConditioningData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AirConditioningData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningData");
     PositionAware positionAware = readBuffer;
@@ -124,7 +118,7 @@ public abstract class AirConditioningData implements Message {
         readEnumField(
             "commandTypeContainer",
             "AirConditioningCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 AirConditioningCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     AirConditioningCommandType commandType =

@@ -55,7 +55,7 @@ public class BACnetAccessThreatLevel implements Message {
     writeBuffer.pushContext("BACnetAccessThreatLevel");
 
     // Simple Field (threatLevel)
-    writeSimpleField("threatLevel", threatLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("threatLevel", threatLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAccessThreatLevel");
   }
@@ -77,12 +77,6 @@ public class BACnetAccessThreatLevel implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAccessThreatLevel staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAccessThreatLevel staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetAccessThreatLevel");
     PositionAware positionAware = readBuffer;
@@ -91,7 +85,7 @@ public class BACnetAccessThreatLevel implements Message {
     BACnetApplicationTagUnsignedInteger threatLevel =
         readSimpleField(
             "threatLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

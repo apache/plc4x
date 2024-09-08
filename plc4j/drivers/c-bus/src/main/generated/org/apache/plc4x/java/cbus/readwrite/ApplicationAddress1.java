@@ -87,12 +87,6 @@ public class ApplicationAddress1 implements Message {
     return lengthInBits;
   }
 
-  public static ApplicationAddress1 staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ApplicationAddress1 staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ApplicationAddress1");
     PositionAware positionAware = readBuffer;

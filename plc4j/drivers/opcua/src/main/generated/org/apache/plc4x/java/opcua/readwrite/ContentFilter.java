@@ -113,7 +113,7 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
     List<ExtensionObjectDefinition> elements =
         readCountArrayField(
             "elements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("585")),
                 readBuffer),
             noOfElements);

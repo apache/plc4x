@@ -76,33 +76,6 @@ public abstract class S7Payload implements Message {
     return lengthInBits;
   }
 
-  public static S7Payload staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    Short messageType;
-    if (args[0] instanceof Short) {
-      messageType = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      messageType = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    S7Parameter parameter;
-    if (args[1] instanceof S7Parameter) {
-      parameter = (S7Parameter) args[1];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type S7Parameter or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, messageType, parameter);
-  }
-
   public static S7Payload staticParse(
       ReadBuffer readBuffer, Short messageType, S7Parameter parameter) throws ParseException {
     readBuffer.pullContext("S7Payload");

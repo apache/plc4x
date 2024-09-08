@@ -76,8 +76,7 @@ public class AdsWriteResponse extends AmsPacket implements Message {
         "result",
         "ReturnCode",
         result,
-        new DataWriterEnumDefault<>(
-            ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("AdsWriteResponse");
   }
@@ -109,8 +108,7 @@ public class AdsWriteResponse extends AmsPacket implements Message {
         readEnumField(
             "result",
             "ReturnCode",
-            new DataReaderEnumDefault<>(
-                ReturnCode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ReturnCode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("AdsWriteResponse");
     // Create the instance

@@ -18,10 +18,10 @@
  */
 package org.apache.plc4x.java.transport.serial;
 
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 
 public class SerialTransport implements Transport, HasConfiguration<SerialTransportConfiguration> {
 
@@ -53,7 +53,7 @@ public class SerialTransport implements Transport, HasConfiguration<SerialTransp
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigType() {
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
         return DefaultSerialTransportConfiguration.class;
     }
 

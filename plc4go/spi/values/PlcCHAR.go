@@ -69,7 +69,7 @@ func (m PlcCHAR) Serialize() ([]byte, error) {
 }
 
 func (m PlcCHAR) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcCHAR", 8, "UTF-8", m.value)
+	return writeBuffer.WriteString("PlcCHAR", 8, m.value)
 }
 
 func (m PlcCHAR) String() string {

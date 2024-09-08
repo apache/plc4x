@@ -63,7 +63,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
     writeBuffer.pushContext("BACnetApplicationTagBoolean");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean actualValue = getActualValue();
@@ -100,7 +100,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
     BACnetTagPayloadBoolean payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadBoolean.staticParse(
                         readBuffer, (long) (header.getActualLength())),

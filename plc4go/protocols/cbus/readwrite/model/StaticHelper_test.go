@@ -20,11 +20,13 @@
 package model
 
 import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCalculateChecksum(t *testing.T) {

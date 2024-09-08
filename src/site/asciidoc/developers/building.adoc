@@ -50,59 +50,48 @@ So simply adding the additional `w` to each of the Maven commands, there should 
 This document can't provide you with all the details needed to get started with `Maven` itself.
 But there is a lot of good documentation out there.
 
-Justin McLean and Christofer Dutz even recorded a not quite 2 hour Maven training Video some time ago for another Apache project.
+Justin McLean and Christofer Dutz even recorded a not quite 2-hour Maven training Video some time ago for another Apache project.
 
 It should handle all the details needed to get a general understanding of Maven and how it works.
 
 .Recording of a Maven Training for Apache Flex from 2016
-video::167857327[vimeo,width=640,height=420]
+https://vimeo.com/167857327
 
 === Building PLC4X with Maven
 
-In general all modules which are not considered production-ready are located in the `sandbox` section of the project.
-
-They are not built per default and are enabled by enabling the `with-sandbox` Maven profile.
-
 As especially building the C++, and C# drivers requires building of some third party artifacts and increases build-time dramatically and requires setting up some additional third party tools, we have excluded these parts form the default Maven build.
 
-The following profiles are available (*They have to be enabled additionally to the `with-sandbox` profile*):
+The following profiles are available:
 
-- `with-c`: Builds all C related modules, integrations and examples
-- `with-dotnet`: Builds all C# and .Net related modules, integrations and examples
-- `with-go`: Builds all Go related modules, integrations and examples
-- `with-java`: Builds all Java related modules, integrations and examples
-- `with-python`: Builds all Python related modules, integrations and examples (Also requires `with-sandbox`)
-- `with-sandbox`: Builds the modules which are not yet considered stable enough to become part of the main distribution
+- `with-c`: Builds all C related modules
+- `with-dotnet`: Builds all C# and .Net related modules
+- `with-go`: Builds all Go related modules
+- `with-java`: Builds all Java related modules
+- `with-python`: Builds all Python related modules
 
 WARNING: As these profiles typically require some preparation and setup on your development machine, please read the link:preparing/index.html[Preparing your Computer] guide for a detailed description on this.
 
-Beyond that there is an additional profile `with-proxies` which will enable additional modules in each of the activated languages.
-This `proxies` module, uses `Apache Thrift` to generate modules for forwarding requests to an `interop server` which runs somewhere else or on the same machine.
-
-WARNING: Currently when enabling the `with-python` module, you are required to also enable the `with-proxies` profile too as this is currently required there but will probably change in the near future.
-
-There are 3 more profiles that allow you to activate additional modules or functionality:
-
-- `with-docker` : Some modules also provide the means to build `Docker` images. By enabling this profile these images are automatically built too
-- `with-boost` : Builds a `C`/`C++` Library used by both the `Apache Thrift` build as well as the `C++` drivers. Unfortunately this is an extremely intense build so we have setup the PLC4X build to only require this profile to be activated once. If the resulting artifacts are installed in your `Maven-Local-Repo`, these will be re-used.
-
-The minimum Apache PLC4X build will build only the `Java` modules without any experimental modules:
+The minimum Apache PLC4X build will build only basic code-generation modules without support for any language:
 
     mvn install
 
+So if for example you want to build only the Java related modules, the following command will do that:
+
+    mvn -P with-java install
+
 If you want to skip the running of tests (even if this is not encouraged) you can skip them all together.
 
-    mvn install -DskipTests
+    mvn -P with-java -DskipTests install
 
 All Apache PLC4X modules are built by executing the following command:
 
-    mvn -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox install
+    mvn -P with-c,with-dotnet,with-go,with-java,with-python install
 
 This not only builds the artifacts and creates the jar files, but also runs all unit- and integration-tests.
 
 If you want to skip the running of tests (even if this is not encouraged) you can skip them all together.
 
-    mvn -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox install -DskipTests
+    mvn -P with-c,with-dotnet,with-go,with-java,with-python install -DskipTests
 
 This will not skip the compilation of tests, however.
 
@@ -146,17 +135,11 @@ All Properties are expanded to the value Maven uses.
 
 So whenever Maven doesn't behave the way you expect it to, just enable this profile and it should help you find out, what's going on.
 
-==== `development` profile
+==== `enable-all-checks` profile
 
-This profile enables some extra strict enforcer rules. It is encouraged to activate this profile during development.
-
-In the `CI Build` this profile is enabled.
-
-==== `skip-prerequisite-check` profile
-
-Some times, actually only on the build-server we have encountered random failures of the `prerequisite check` build step.
-
-In order to still be able to build in this case, activating this profile simply disables these checks.
+Some tests of the PLC4X project do require quite a bit of time to run.
+Therefore we decided to disable these for a normal build on developer machines.
+If you want to run them locally and not rely on them being run on the CI servers, enable the `enable-all-checks` profile.
 
 === Use the compiled library with Gradle
 
@@ -164,7 +147,7 @@ Compiling the library as explained here add the new version in the local Maven r
 
 Here there's an example: 
 
-[source, groovy]
+[source, groovy, subs=attributes+]
 :source-highlighter: prettify
 ----
 repositories {
@@ -173,8 +156,8 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.apache.plc4x', name: 'plc4j-api', version: '0.8.0-SNAPSHOT'
-    implementation group: 'org.apache.plc4x', name: 'plc4j-driver-s7', version: '0.8.0-SNAPSHOT'
-    implementation group: 'org.apache.plc4x', name: 'plc4j-connection-pool', version: '0.8.0-SNAPSHOT'
+    implementation group: 'org.apache.plc4x', name: 'plc4j-api', version: '{current-last-released-version}'
+    implementation group: 'org.apache.plc4x', name: 'plc4j-driver-s7', version: '{current-last-released-version}'
+    implementation group: 'org.apache.plc4x', name: 'plc4j-connection-pool', version: '{current-last-released-version}'
 }
 ----

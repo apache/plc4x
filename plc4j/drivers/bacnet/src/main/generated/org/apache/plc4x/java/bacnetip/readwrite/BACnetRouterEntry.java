@@ -77,17 +77,16 @@ public class BACnetRouterEntry implements Message {
     writeBuffer.pushContext("BACnetRouterEntry");
 
     // Simple Field (networkNumber)
-    writeSimpleField("networkNumber", networkNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkNumber", networkNumber, writeComplex(writeBuffer));
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
     // Simple Field (status)
-    writeSimpleField("status", status, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("status", status, writeComplex(writeBuffer));
 
     // Optional Field (performanceIndex) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "performanceIndex", performanceIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("performanceIndex", performanceIndex, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetRouterEntry");
   }
@@ -120,12 +119,6 @@ public class BACnetRouterEntry implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRouterEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetRouterEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetRouterEntry");
     PositionAware positionAware = readBuffer;
@@ -134,7 +127,7 @@ public class BACnetRouterEntry implements Message {
     BACnetContextTagUnsignedInteger networkNumber =
         readSimpleField(
             "networkNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -146,7 +139,7 @@ public class BACnetRouterEntry implements Message {
     BACnetContextTagOctetString macAddress =
         readSimpleField(
             "macAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(
@@ -158,7 +151,7 @@ public class BACnetRouterEntry implements Message {
     BACnetRouterEntryStatusTagged status =
         readSimpleField(
             "status",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetRouterEntryStatusTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -167,7 +160,7 @@ public class BACnetRouterEntry implements Message {
     BACnetContextTagOctetString performanceIndex =
         readOptionalField(
             "performanceIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(

@@ -68,10 +68,10 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("EphemeralKeyType");
 
     // Simple Field (publicKey)
-    writeSimpleField("publicKey", publicKey, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("publicKey", publicKey, writeComplex(writeBuffer));
 
     // Simple Field (signature)
-    writeSimpleField("signature", signature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("signature", signature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EphemeralKeyType");
   }
@@ -104,15 +104,11 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
 
     PascalByteString publicKey =
         readSimpleField(
-            "publicKey",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "publicKey", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString signature =
         readSimpleField(
-            "signature",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "signature", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("EphemeralKeyType");
     // Create the instance

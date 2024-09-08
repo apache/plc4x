@@ -21,15 +21,16 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ apiModel.PlcUnsubscriptionRequestBuilder = &DefaultPlcUnsubscriptionRequestBuilder{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequestBuilder
+//go:generate plc4xGenerator -type=DefaultPlcUnsubscriptionRequestBuilder
 type DefaultPlcUnsubscriptionRequestBuilder struct {
 	subscriptionHandles []apiModel.PlcSubscriptionHandle
 }
@@ -49,7 +50,7 @@ func (d *DefaultPlcUnsubscriptionRequestBuilder) Build() (apiModel.PlcUnsubscrip
 
 var _ apiModel.PlcUnsubscriptionRequest = &DefaultPlcUnsubscriptionRequest{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequest
+//go:generate plc4xGenerator -type=DefaultPlcUnsubscriptionRequest
 type DefaultPlcUnsubscriptionRequest struct {
 	subscriptionHandles []apiModel.PlcSubscriptionHandle
 }

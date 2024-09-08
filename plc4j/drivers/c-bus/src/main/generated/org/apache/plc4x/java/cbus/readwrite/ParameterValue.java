@@ -78,36 +78,6 @@ public abstract class ParameterValue implements Message {
     return lengthInBits;
   }
 
-  public static ParameterValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    ParameterType parameterType;
-    if (args[0] instanceof ParameterType) {
-      parameterType = (ParameterType) args[0];
-    } else if (args[0] instanceof String) {
-      parameterType = ParameterType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type ParameterType or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    Short numBytes;
-    if (args[1] instanceof Short) {
-      numBytes = (Short) args[1];
-    } else if (args[1] instanceof String) {
-      numBytes = Short.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type Short or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, parameterType, numBytes);
-  }
-
   public static ParameterValue staticParse(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValue");

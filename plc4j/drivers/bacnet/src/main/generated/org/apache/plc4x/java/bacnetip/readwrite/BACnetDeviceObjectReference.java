@@ -63,12 +63,10 @@ public class BACnetDeviceObjectReference implements Message {
     writeBuffer.pushContext("BACnetDeviceObjectReference");
 
     // Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDeviceObjectReference");
   }
@@ -95,12 +93,6 @@ public class BACnetDeviceObjectReference implements Message {
     return lengthInBits;
   }
 
-  public static BACnetDeviceObjectReference staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetDeviceObjectReference staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetDeviceObjectReference");
@@ -110,7 +102,7 @@ public class BACnetDeviceObjectReference implements Message {
     BACnetContextTagObjectIdentifier deviceIdentifier =
         readOptionalField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -122,7 +114,7 @@ public class BACnetDeviceObjectReference implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

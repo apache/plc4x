@@ -62,10 +62,10 @@ public class BACnetNetworkSecurityPolicy implements Message {
     writeBuffer.pushContext("BACnetNetworkSecurityPolicy");
 
     // Simple Field (portId)
-    writeSimpleField("portId", portId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("portId", portId, writeComplex(writeBuffer));
 
     // Simple Field (securityLevel)
-    writeSimpleField("securityLevel", securityLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityLevel", securityLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNetworkSecurityPolicy");
   }
@@ -90,12 +90,6 @@ public class BACnetNetworkSecurityPolicy implements Message {
     return lengthInBits;
   }
 
-  public static BACnetNetworkSecurityPolicy staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetNetworkSecurityPolicy staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetNetworkSecurityPolicy");
@@ -105,7 +99,7 @@ public class BACnetNetworkSecurityPolicy implements Message {
     BACnetContextTagUnsignedInteger portId =
         readSimpleField(
             "portId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -117,7 +111,7 @@ public class BACnetNetworkSecurityPolicy implements Message {
     BACnetSecurityPolicyTagged securityLevel =
         readSimpleField(
             "securityLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSecurityPolicyTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

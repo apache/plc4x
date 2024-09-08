@@ -83,8 +83,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataFullDutyBaseline");
 
     // Simple Field (fullDutyBaseLine)
-    writeSimpleField(
-        "fullDutyBaseLine", fullDutyBaseLine, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fullDutyBaseLine", fullDutyBaseLine, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
     BACnetApplicationTagReal fullDutyBaseLine =
         readSimpleField(
             "fullDutyBaseLine",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

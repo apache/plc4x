@@ -71,7 +71,7 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
     writeSimpleField("clientHandle", clientHandle, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredItemNotification");
   }
@@ -105,9 +105,7 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
     long clientHandle = readSimpleField("clientHandle", readUnsignedLong(readBuffer, 32));
 
     DataValue value =
-        readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> DataValue.staticParse(readBuffer), readBuffer));
+        readSimpleField("value", readComplex(() -> DataValue.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("MonitoredItemNotification");
     // Create the instance

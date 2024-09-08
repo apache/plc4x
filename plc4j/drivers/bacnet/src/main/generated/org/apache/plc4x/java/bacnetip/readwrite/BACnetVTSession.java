@@ -70,16 +70,13 @@ public class BACnetVTSession implements Message {
     writeBuffer.pushContext("BACnetVTSession");
 
     // Simple Field (localVtSessionId)
-    writeSimpleField(
-        "localVtSessionId", localVtSessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("localVtSessionId", localVtSessionId, writeComplex(writeBuffer));
 
     // Simple Field (removeVtSessionId)
-    writeSimpleField(
-        "removeVtSessionId", removeVtSessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("removeVtSessionId", removeVtSessionId, writeComplex(writeBuffer));
 
     // Simple Field (remoteVtAddress)
-    writeSimpleField(
-        "remoteVtAddress", remoteVtAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("remoteVtAddress", remoteVtAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetVTSession");
   }
@@ -107,12 +104,6 @@ public class BACnetVTSession implements Message {
     return lengthInBits;
   }
 
-  public static BACnetVTSession staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetVTSession staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetVTSession");
     PositionAware positionAware = readBuffer;
@@ -121,7 +112,7 @@ public class BACnetVTSession implements Message {
     BACnetApplicationTagUnsignedInteger localVtSessionId =
         readSimpleField(
             "localVtSessionId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -130,7 +121,7 @@ public class BACnetVTSession implements Message {
     BACnetApplicationTagUnsignedInteger removeVtSessionId =
         readSimpleField(
             "removeVtSessionId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -139,8 +130,7 @@ public class BACnetVTSession implements Message {
     BACnetAddress remoteVtAddress =
         readSimpleField(
             "remoteVtAddress",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAddress.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetVTSession");
     // Create the instance

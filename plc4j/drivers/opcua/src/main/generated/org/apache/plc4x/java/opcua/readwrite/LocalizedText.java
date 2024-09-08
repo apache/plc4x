@@ -83,10 +83,10 @@ public class LocalizedText implements Message {
     writeSimpleField("localeSpecified", localeSpecified, writeBoolean(writeBuffer));
 
     // Optional Field (locale) (Can be skipped, if the value is null)
-    writeOptionalField("locale", locale, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("locale", locale, writeComplex(writeBuffer));
 
     // Optional Field (text) (Can be skipped, if the value is null)
-    writeOptionalField("text", text, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("text", text, writeComplex(writeBuffer));
 
     writeBuffer.popContext("LocalizedText");
   }
@@ -124,12 +124,6 @@ public class LocalizedText implements Message {
     return lengthInBits;
   }
 
-  public static LocalizedText staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LocalizedText staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LocalizedText");
     PositionAware positionAware = readBuffer;
@@ -145,13 +139,13 @@ public class LocalizedText implements Message {
     PascalString locale =
         readOptionalField(
             "locale",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             localeSpecified);
 
     PascalString text =
         readOptionalField(
             "text",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             textSpecified);
 
     readBuffer.closeContext("LocalizedText");

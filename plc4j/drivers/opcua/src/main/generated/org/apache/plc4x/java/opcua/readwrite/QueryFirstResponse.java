@@ -119,7 +119,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("QueryFirstResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfQueryDataSets)
     writeSimpleField("noOfQueryDataSets", noOfQueryDataSets, writeSignedInt(writeBuffer, 32));
@@ -128,8 +128,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     writeComplexTypeArrayField("queryDataSets", queryDataSets, writeBuffer);
 
     // Simple Field (continuationPoint)
-    writeSimpleField(
-        "continuationPoint", continuationPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
     // Simple Field (noOfParsingResults)
     writeSimpleField("noOfParsingResults", noOfParsingResults, writeSignedInt(writeBuffer, 32));
@@ -144,7 +143,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
 
     // Simple Field (filterResult)
-    writeSimpleField("filterResult", filterResult, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("filterResult", filterResult, writeComplex(writeBuffer));
 
     writeBuffer.popContext("QueryFirstResponse");
   }
@@ -217,7 +216,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -226,7 +225,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     List<ExtensionObjectDefinition> queryDataSets =
         readCountArrayField(
             "queryDataSets",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("579")),
                 readBuffer),
             noOfQueryDataSets);
@@ -234,15 +233,14 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     PascalByteString continuationPoint =
         readSimpleField(
             "continuationPoint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     int noOfParsingResults = readSimpleField("noOfParsingResults", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> parsingResults =
         readCountArrayField(
             "parsingResults",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("612")),
                 readBuffer),
             noOfParsingResults);
@@ -252,14 +250,13 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     ExtensionObjectDefinition filterResult =
         readSimpleField(
             "filterResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("609")),
                 readBuffer));
 

@@ -78,18 +78,16 @@ public class ListOfCovNotifications implements Message {
 
     // Simple Field (monitoredObjectIdentifier)
     writeSimpleField(
-        "monitoredObjectIdentifier",
-        monitoredObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredObjectIdentifier", monitoredObjectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfValues)
     writeComplexTypeArrayField("listOfValues", listOfValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ListOfCovNotifications");
   }
@@ -124,12 +122,6 @@ public class ListOfCovNotifications implements Message {
     return lengthInBits;
   }
 
-  public static ListOfCovNotifications staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ListOfCovNotifications staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ListOfCovNotifications");
     PositionAware positionAware = readBuffer;
@@ -138,7 +130,7 @@ public class ListOfCovNotifications implements Message {
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(
             "monitoredObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -150,13 +142,12 @@ public class ListOfCovNotifications implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer));
 
     List<ListOfCovNotificationsValue> listOfValues =
         readTerminatedArrayField(
             "listOfValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ListOfCovNotificationsValue.staticParse(
                         readBuffer, (BACnetObjectType) (monitoredObjectIdentifier.getObjectType())),
@@ -169,8 +160,7 @@ public class ListOfCovNotifications implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (1)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("ListOfCovNotifications");
     // Create the instance

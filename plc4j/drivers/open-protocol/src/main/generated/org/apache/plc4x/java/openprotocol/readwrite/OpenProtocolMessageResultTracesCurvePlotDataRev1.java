@@ -173,8 +173,7 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
     List<VariableDataField> dataFields =
         readCountArrayField(
             "dataFields",
-            new DataReaderComplexDefault<>(
-                () -> VariableDataField.staticParse(readBuffer), readBuffer),
+            readComplex(() -> VariableDataField.staticParse(readBuffer), readBuffer),
             numberOfParameterDataFields,
             WithOption.WithEncoding("ASCII"));
 

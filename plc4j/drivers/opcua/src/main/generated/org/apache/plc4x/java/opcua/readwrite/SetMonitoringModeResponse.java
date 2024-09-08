@@ -91,7 +91,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("SetMonitoringModeResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfResults)
     writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
@@ -158,7 +158,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -167,7 +167,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     List<StatusCode> results =
         readCountArrayField(
             "results",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfResults);
 
     int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
@@ -175,8 +175,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("SetMonitoringModeResponse");

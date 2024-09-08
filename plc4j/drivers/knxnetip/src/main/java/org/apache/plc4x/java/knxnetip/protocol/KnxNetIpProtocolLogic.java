@@ -227,24 +227,23 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         // Cancel the timer for sending connection state requests.
         connectionStateTimer.cancel();
 
+        // Just send out the disconnect request message, in most cases the remote will not respond.
+        // So in this case we'll just fire out the message and treat the connection as closed.
         DisconnectRequest disconnectRequest = new DisconnectRequest(knxNetIpDriverContext.getCommunicationChannelId(),
             new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP,
                 knxNetIpDriverContext.getLocalIPAddress(), knxNetIpDriverContext.getLocalPort()));
-        context.sendRequest(disconnectRequest)
-            .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
-            .only(DisconnectResponse.class)
-            .handle(disconnectResponse -> {
-                // In general, we should probably check if the disconnect was successful, but in
-                // the end we couldn't do much if the disconnect would fail.
-                final String gatewayName = knxNetIpDriverContext.getGatewayName();
-                final KnxAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
-                LOGGER.info(String.format("Disconnected from KNX Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
-                    gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
+        context.sendToWire(disconnectRequest);
 
-                // Send an event that connection disconnect is complete.
-                context.fireDisconnected();
-                LOGGER.debug("Disconnected event fired from KNX protocol");
-            });
+        // In general, we should probably check if the disconnect was successful, but in
+        // the end we couldn't do much if the disconnect would fail.
+        final String gatewayName = knxNetIpDriverContext.getGatewayName();
+        final KnxAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
+        LOGGER.info("Disconnected from KNX Gateway '{}' with KNX address '{}.{}.{}'",
+            gatewayName, gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup());
+
+        // Send an event that connection disconnect is complete.
+        context.fireDisconnected();
+        LOGGER.debug("Disconnected event fired from KNX protocol");
     }
 
     @Override
@@ -308,7 +307,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 try {
                     final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(KnxDatapoint.getLengthInBytes(value, groupAddress.getType()));
                     KnxDatapoint.staticSerialize(writeBuffer, value, groupAddress.getType());
-                    final byte[] serialized = writeBuffer.getData();
+                    final byte[] serialized = writeBuffer.getBytes();
                     dataFirstByte = serialized[0];
                     data = new byte[serialized.length - 1];
                     System.arraycopy(serialized, 1, data, 0, serialized.length - 1);
@@ -612,7 +611,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         } catch (Exception e) {
             throw new PlcRuntimeException("Error converting tag into knx address data.", e);
         }
-        return address.getData();
+        return address.getBytes();
     }
 
     protected static String toString(KnxAddress knxAddress) {

@@ -60,7 +60,7 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
     writeBuffer.pushContext("BACnetChannelValueReal");
 
     // Simple Field (realValue)
-    writeSimpleField("realValue", realValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("realValue", realValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueReal");
   }
@@ -91,7 +91,7 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
     BACnetApplicationTagReal realValue =
         readSimpleField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

@@ -72,13 +72,13 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
         "command",
         "SDOResponseCommand",
         command,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SDOResponseCommand::getValue,
             SDOResponseCommand::name,
             writeUnsignedByte(writeBuffer, 3)));
 
     // Simple Field (response)
-    writeSimpleField("response", response, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("response", response, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CANOpenSDOResponse");
   }
@@ -113,13 +113,12 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
         readEnumField(
             "command",
             "SDOResponseCommand",
-            new DataReaderEnumDefault<>(
-                SDOResponseCommand::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(SDOResponseCommand::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     SDOResponse response =
         readSimpleField(
             "response",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> SDOResponse.staticParse(readBuffer, (SDOResponseCommand) (command)),
                 readBuffer));
 

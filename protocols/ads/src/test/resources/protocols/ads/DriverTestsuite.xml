@@ -28,19 +28,19 @@
   <driver-name>ads</driver-name>
   <driver-parameters>
     <parameter>
-      <name>sourceAmsNetId</name>
+      <name>source-ams-net-id</name>
       <value>192.168.23.220.1.1</value>
     </parameter>
     <parameter>
-      <name>sourceAmsPort</name>
+      <name>source-ams-port</name>
       <value>65534</value>
     </parameter>
     <parameter>
-      <name>targetAmsNetId</name>
+      <name>target-ams-net-id</name>
       <value>192.168.23.20.1.1</value>
     </parameter>
     <parameter>
-      <name>targetAmsPort</name>
+      <name>target-ams-port</name>
       <value>851</value>
     </parameter>
   </driver-parameters>

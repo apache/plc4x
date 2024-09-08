@@ -71,7 +71,7 @@ public class ManualAdsDriverTest extends ManualTest {
      */
 
     public ManualAdsDriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {
@@ -81,7 +81,7 @@ public class ManualAdsDriverTest extends ManualTest {
         int sourceAmsPort = 65534;
         String targetAmsNetId = spsIp + ".1.1";
         int targetAmsPort = 851;
-        String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
+        String connectionString = String.format("ads:tcp://%s?source-ams-net-id=%s&source-ams-port=%d&target-ams-net-id=%s&target-ams-port=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
         ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
         test.addTestCase("MAIN.hurz_BOOL", new PlcBOOL(true));
         test.addTestCase("MAIN.hurz_BYTE", new PlcBYTE(42));

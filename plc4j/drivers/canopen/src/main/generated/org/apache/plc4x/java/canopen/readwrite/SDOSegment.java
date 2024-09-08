@@ -87,7 +87,7 @@ public class SDOSegment implements Message {
     writeSimpleField("indicated", indicated, writeBoolean(writeBuffer));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
@@ -139,12 +139,6 @@ public class SDOSegment implements Message {
     return lengthInBits;
   }
 
-  public static SDOSegment staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SDOSegment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SDOSegment");
     PositionAware positionAware = readBuffer;
@@ -161,8 +155,7 @@ public class SDOSegment implements Message {
 
     IndexAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> IndexAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> IndexAddress.staticParse(readBuffer), readBuffer));
 
     byte[] data =
         readBuffer.readByteArray(

@@ -60,8 +60,7 @@ public abstract class APDU implements Message {
         "apduType",
         "ApduType",
         getApduType(),
-        new DataWriterEnumDefault<>(
-            ApduType::getValue, ApduType::name, writeUnsignedByte(writeBuffer, 4)));
+        writeEnum(ApduType::getValue, ApduType::name, writeUnsignedByte(writeBuffer, 4)));
 
     // Switch field (Serialize the sub-type)
     serializeAPDUChild(writeBuffer);
@@ -88,25 +87,6 @@ public abstract class APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDU staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Integer apduLength;
-    if (args[0] instanceof Integer) {
-      apduLength = (Integer) args[0];
-    } else if (args[0] instanceof String) {
-      apduLength = Integer.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Integer or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, apduLength);
-  }
-
   public static APDU staticParse(ReadBuffer readBuffer, Integer apduLength) throws ParseException {
     readBuffer.pullContext("APDU");
     PositionAware positionAware = readBuffer;
@@ -116,7 +96,7 @@ public abstract class APDU implements Message {
         readDiscriminatorEnumField(
             "apduType",
             "ApduType",
-            new DataReaderEnumDefault<>(ApduType::enumForValue, readUnsignedByte(readBuffer, 4)));
+            readEnum(ApduType::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     APDUBuilder builder = null;

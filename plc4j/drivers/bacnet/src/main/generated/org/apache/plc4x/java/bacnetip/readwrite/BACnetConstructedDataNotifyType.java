@@ -82,7 +82,7 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataNotifyType");
 
     // Simple Field (notifyType)
-    writeSimpleField("notifyType", notifyType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notifyType", notifyType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetNotifyTypeTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
     BACnetNotifyTypeTagged notifyType =
         readSimpleField(
             "notifyType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotifyTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

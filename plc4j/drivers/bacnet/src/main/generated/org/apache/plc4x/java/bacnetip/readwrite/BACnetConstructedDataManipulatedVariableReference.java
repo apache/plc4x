@@ -84,9 +84,7 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
 
     // Simple Field (manipulatedVariableReference)
     writeSimpleField(
-        "manipulatedVariableReference",
-        manipulatedVariableReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "manipulatedVariableReference", manipulatedVariableReference, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetObjectPropertyReference actualValue = getActualValue();
@@ -128,8 +126,7 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
     BACnetObjectPropertyReference manipulatedVariableReference =
         readSimpleField(
             "manipulatedVariableReference",
-            new DataReaderComplexDefault<>(
-                () -> BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer));
     BACnetObjectPropertyReference actualValue =
         readVirtualField(
             "actualValue", BACnetObjectPropertyReference.class, manipulatedVariableReference);

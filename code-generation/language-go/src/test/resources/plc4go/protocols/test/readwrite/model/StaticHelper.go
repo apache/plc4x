@@ -19,7 +19,10 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/spi/utils"
+import (
+	"context"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 func ParseBit(io utils.ReadBuffer) int8 {
 	return 0
@@ -77,14 +80,19 @@ func Parse(io utils.ReadBuffer) int8 {
 func Serialize(io utils.WriteBuffer, data byte) {
 }
 
-func ReadManualField(io utils.ReadBuffer, simpleField uint8) (any, error) {
+func ReadAManualField(ctx context.Context, io utils.ReadBuffer, simpleField uint8) (any, error) {
 	return uint8(0), nil
 }
 
-func CrcInt8(num int) (int8, error) {
-	return int8(num), nil
+
+func CrcInt8(num int)  func() (int8, error) {
+	return func() (int8, error) {
+		return int8(num), nil
+	}
 }
 
-func CrcUint8(num int) (uint8, error) {
-	return uint8(num), nil
+func CrcUint8(num int) func() (uint8, error) {
+	return func() (uint8, error) {
+		return uint8(num), nil
+	}
 }

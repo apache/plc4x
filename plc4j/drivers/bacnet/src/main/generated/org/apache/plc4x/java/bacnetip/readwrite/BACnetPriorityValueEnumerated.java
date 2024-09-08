@@ -66,8 +66,7 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
     writeBuffer.pushContext("BACnetPriorityValueEnumerated");
 
     // Simple Field (enumeratedValue)
-    writeSimpleField(
-        "enumeratedValue", enumeratedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enumeratedValue", enumeratedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueEnumerated");
   }
@@ -98,7 +97,7 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
     BACnetApplicationTagEnumerated enumeratedValue =
         readSimpleField(
             "enumeratedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagEnumerated) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

@@ -83,8 +83,7 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataElapsedActiveTime");
 
     // Simple Field (elapsedActiveTime)
-    writeSimpleField(
-        "elapsedActiveTime", elapsedActiveTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("elapsedActiveTime", elapsedActiveTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger elapsedActiveTime =
         readSimpleField(
             "elapsedActiveTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

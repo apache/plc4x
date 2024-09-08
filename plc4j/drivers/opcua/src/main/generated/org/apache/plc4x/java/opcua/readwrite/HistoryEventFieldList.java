@@ -113,7 +113,7 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
     List<Variant> eventFields =
         readCountArrayField(
             "eventFields",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Variant.staticParse(readBuffer), readBuffer),
             noOfEventFields);
 
     readBuffer.closeContext("HistoryEventFieldList");

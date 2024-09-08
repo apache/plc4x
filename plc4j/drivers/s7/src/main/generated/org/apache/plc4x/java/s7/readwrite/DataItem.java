@@ -211,7 +211,7 @@ public class DataItem {
           hour,
           minutes,
           seconds,
-          millisecondsOfSecond);
+          millisecondsOfSecond * 1000000);
     } else if (EvaluationHelper.equals(
         dataProtocolId, (String) "IEC61131_DATE_AND_LTIME")) { // DATE_AND_LTIME
       BigInteger nanosecondsSinceEpoch =

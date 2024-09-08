@@ -92,7 +92,7 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
     writeBuffer.pushContext("TranslateBrowsePathsToNodeIdsResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfResults)
     writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
@@ -159,7 +159,7 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -168,7 +168,7 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
     List<ExtensionObjectDefinition> results =
         readCountArrayField(
             "results",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("551")),
                 readBuffer),
             noOfResults);
@@ -178,8 +178,7 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("TranslateBrowsePathsToNodeIdsResponse");

@@ -72,13 +72,13 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
         "criteriaType",
         "IdentityCriteriaType",
         criteriaType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             IdentityCriteriaType::getValue,
             IdentityCriteriaType::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (criteria)
-    writeSimpleField("criteria", criteria, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("criteria", criteria, writeComplex(writeBuffer));
 
     writeBuffer.popContext("IdentityMappingRuleType");
   }
@@ -113,13 +113,11 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
         readEnumField(
             "criteriaType",
             "IdentityCriteriaType",
-            new DataReaderEnumDefault<>(
-                IdentityCriteriaType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(IdentityCriteriaType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString criteria =
         readSimpleField(
-            "criteria",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "criteria", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("IdentityMappingRuleType");
     // Create the instance

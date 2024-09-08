@@ -23,11 +23,12 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/icza/bitio"
-	"github.com/stretchr/testify/assert"
 	"math"
 	"math/big"
 	"testing"
+
+	"github.com/icza/bitio"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewReadBuffer(t *testing.T) {
@@ -1565,7 +1566,7 @@ func TestReadBuffer_ReadString(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadString("", tt.args.bitLength, "utf-8")
+			got, err := rb.ReadString("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadString() error = %v, wantErr %v", err, tt.wantErr)
 				return

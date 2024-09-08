@@ -20,10 +20,10 @@
 package tests
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
 	modbusIO "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 

@@ -66,6 +66,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private static final byte[] DEFAULT_SENDER_CONTEXT = "PLC4X   ".getBytes(StandardCharsets.US_ASCII);
     private static final long EMPTY_SESSION_HANDLE = 0L;
+    private static final long EMPTY_INTERFACE_OPTIONS = 0L;
     private static final long EMPTY_INTERFACE_HANDLE = 0L;
     private NullAddressItem nullAddressItem;
     private byte[] senderContext;
@@ -187,7 +188,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         context.sendRequest(listServicesRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
             .onError((p, e) -> {
-                throw new PlcRuntimeException("List EIP Services failed");
+                context.getChannel().pipeline().fireExceptionCaught(new PlcRuntimeException("List EIP Services failed"));
             })
             .handle(p -> {
                 if (p.getStatus() == CIPStatus.Success.getValue()) {
@@ -197,9 +198,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     }
                     this.cipEncapsulationAvailable = listServicesResponse.getSupportsCIPEncapsulation();
                 } else if (p.getStatus() == CIPStatus.InvalidCommandWithWrongEndianess.getValue()) {
-                    throw new PlcRuntimeException("The remote device doesn't seem to use " + configuration.getByteOrder().name() + " byte order.");
+                    context.getChannel().pipeline().fireExceptionCaught(new PlcRuntimeException("The remote device doesn't seem to use " + configuration.getByteOrder().name() + " byte order."));
                 } else {
-                    throw new PlcRuntimeException("Got status code while polling for supported EIP services [" + p.getStatus() + "]");
+                    context.getChannel().pipeline().fireExceptionCaught(new PlcRuntimeException("Got status code while polling for supported EIP services [" + p.getStatus() + "]"));
                 }
                 onConnectRegisterSession(context);
             });
@@ -234,7 +235,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             .only(CipRRData.class)
             .check(cipRRData -> {
                 if (cipRRData.getStatus() != CIPStatus.Success.getValue()) {
-                    throw new PlcRuntimeException("Got status code while polling for supported CIP services [" + cipRRData.getStatus() + "]");
+                    context.getChannel().pipeline().fireExceptionCaught(new PlcRuntimeException("Got status code while polling for supported CIP services [" + cipRRData.getStatus() + "]"));
                 }
                 return true;
             })
@@ -247,7 +248,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     context.fireConnected();
                     return;
                 } else if ((long) response.getStatus() != CIPStatus.Success.getValue()) {
-                    throw new PlcRuntimeException("Got status code while polling for supported CIP attributes [" + response.getStatus() + "]");
+                    context.getChannel().pipeline().fireExceptionCaught(new PlcRuntimeException("Got status code while polling for supported CIP attributes [" + response.getStatus() + "]"));
                 }
                 if (response.getAttributes() != null) {
                     for (Integer classId : response.getAttributes().getClassId()) {
@@ -294,7 +295,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         logger.debug("Got assigned with Session handle {}", sessionHandle);
                         getAllAttributes(context);
                     } else {
-                        throw new PlcRuntimeException("Got status code while polling for supported EIP services [" + p.getStatus() + "]");
+                        context.getChannel().pipeline().fireExceptionCaught(new PlcRuntimeException("Got status code while polling for supported EIP services [" + p.getStatus() + "]"));
                     }
                 } else {
                     onConnectOpenConnectionManager(context);
@@ -357,7 +358,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             .only(CipRRData.class)
             .check(cipRRData -> {
                 if (cipRRData.getStatus() != 0L) {
-                    throw new PlcRuntimeException("Got status code while opening Connection Manager[" + cipRRData.getStatus() + "]");
+                    context.getChannel().pipeline().fireExceptionCaught(new PlcRuntimeException("Got status code while opening Connection Manager[" + cipRRData.getStatus() + "]"));
                 }
                 return true;
             })
@@ -374,7 +375,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 context.fireConnected();
             });
     }
-
 
     @Override
     public void onDisconnect(ConversationContext<EipPacket> context) {
@@ -421,7 +421,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         }
     }
 
-
     public void onDisconnectUnregisterSession(ConversationContext<EipPacket> context) {
         logger.debug("Sending Un RegisterSession EIP Package");
 
@@ -431,26 +430,29 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0L,
                 DEFAULT_SENDER_CONTEXT,
                 0L);
-        context.sendRequest(connectionRequest)
-            .expectResponse(EipPacket.class, Duration.ofMillis(1))
-            .onError((p, e) -> context.fireDisconnected())
-            .onTimeout(p -> context.fireDisconnected())
-            .handle(p -> context.fireDisconnected());
-
+        try {
+            context.sendRequest(connectionRequest)
+                .expectResponse(EipPacket.class, Duration.ofMillis(1))
+                .onError((p, e) -> context.fireDisconnected())
+                .onTimeout(p -> context.fireDisconnected())
+                .handle(p -> context.fireDisconnected());
+        } catch (Exception e) {
+            // Some devices hang up when reading the last byte of the disconnect request, so we'll
+            // simply catch and ignore any exceptions potentially caused by this.
+        }
         context.fireDisconnected();
     }
 
     private CompletableFuture<PlcReadResponse> readWithoutMessageRouter(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-
+        List<CompletableFuture<Void>> internalFutures = new ArrayList<>();
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         for (String tagName : request.getTagNames()) {
-            CompletableFuture<Boolean> internalFuture = new CompletableFuture<>();
-            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+            CompletableFuture<Void> internalFuture = new CompletableFuture<>();
             EipTag eipTag = (EipTag) request.getTag(tagName);
             String tag = eipTag.getTag();
 
@@ -466,44 +468,55 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     (byte) this.configuration.getBackplane(),
                     (byte) this.configuration.getSlot());
 
-                List<TypeId> typeIds = new ArrayList<>(2);
+                List<TypeId> typeIds = Arrays.asList(
+                    nullAddressItem,
+                    new UnConnectedDataItem(requestItem));
 
-                typeIds.add(nullAddressItem);
-                typeIds.add(new UnConnectedDataItem(requestItem));
-
-                CipRRData pkt = new CipRRData(
+                CipRRData rrdata = new CipRRData(
                     sessionHandle,
                     CIPStatus.Success.getValue(),
                     DEFAULT_SENDER_CONTEXT,
                     0L,
-                    0L,
+                    EMPTY_INTERFACE_HANDLE,
                     0,
                     typeIds);
 
-                transaction.submit(() -> context.sendRequest(pkt)
+                RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+                transaction.submit(() -> context.sendRequest(rrdata)
                     .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-                    .onTimeout(future::completeExceptionally)
-                    .onError((p, e) -> future.completeExceptionally(e))
+                    .onTimeout(internalFuture::completeExceptionally)
+                    .onError((p, e) -> internalFuture.completeExceptionally(e))
                     .check(p -> p instanceof CipRRData)
                     .unwrap(p -> (CipRRData) p)
                     .check(p -> p.getSessionHandle() == sessionHandle)
                     .handle(p -> {
                         List<TypeId> responseTypeIds = p.getTypeIds();
                         UnConnectedDataItem dataItem = (UnConnectedDataItem) responseTypeIds.get(1);
-                        Map<String, ResponseItem<PlcValue>> readResponse = decodeSingleReadResponse(dataItem.getService(), tagName, eipTag);
-                        values.putAll(readResponse);
-                        internalFuture.complete(true);
-                        // Finish the request-transaction.
+                        // If the response indicates an error, handle this.
+                        if((dataItem.getService() instanceof CipConnectedResponse) && (((CipConnectedResponse) dataItem.getService()).getStatus() == 0x03)) {
+                            values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                        }
+                        // Otherwise process the response.
+                        else {
+                            Map<String, ResponseItem<PlcValue>> readResponse = decodeSingleReadResponse(dataItem.getService(), tagName, eipTag);
+                            values.putAll(readResponse);
+                        }
+                        internalFuture.complete(null);
                         transaction.endRequest();
                     }));
+                internalFutures.add(internalFuture);
             } catch (SerializationException e) {
-                e.printStackTrace();
+                internalFuture.completeExceptionally(new PlcRuntimeException("Failed to read field"));
             }
         }
 
-        // TODO: This seems to be blocking here ... we should probably do this asynchronously
-        PlcReadResponse readResponse = new DefaultPlcReadResponse(readRequest, values);
-        future.complete(readResponse);
+        CompletableFuture.allOf(internalFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
+            PlcReadResponse readResponse = new DefaultPlcReadResponse(readRequest, values);
+            future.complete(readResponse);
+        }).exceptionally(e -> {
+            future.completeExceptionally(e);
+            return null;
+        });
 
         return future;
     }
@@ -526,15 +539,21 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     toAnsi(tag),
                     1);
 
-                CipUnconnectedRequest unreq = new CipUnconnectedRequest(
+                CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
                     classSegment,
                     instanceSegment,
                     req,
                     (byte) this.configuration.getBackplane(),
                     (byte) this.configuration.getSlot());
-                requests.add(unreq);
+
+                // TODO: Possibly check if adding this would make the request/response exceed some
+                //  protocol limits and possibly split up into multiple requests.
+                requests.add(requestItem);
             } catch (SerializationException e) {
-                e.printStackTrace();
+                // TODO: Instead of failing the entire request it might be better to return a failure
+                //  status for only this item.
+                future.completeExceptionally(new PlcRuntimeException("Failed to read field", e));
+                return future;
             }
         }
 
@@ -600,10 +619,14 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 CipReadRequest req = new CipReadRequest(
                     toAnsi(tag),
                     1);
-
+                // TODO: Possibly check if adding this would make the request/response exceed some
+                //  protocol limits and possibly split up into multiple requests.
                 requests.add(req);
             } catch (SerializationException e) {
-                e.printStackTrace();
+                // TODO: Instead of failing the entire request it might be better to return a failure
+                //  status for only this item.
+                future.completeExceptionally(new PlcRuntimeException("Failed to read field", e));
+                return future;
             }
         }
 
@@ -661,7 +684,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future;
-        if (!this.useMessageRouter && !this.useConnectionManager) {
+        if (configuration.isForceUnconnectedOperation() || (!this.useMessageRouter && !this.useConnectionManager)) {
             future = readWithoutMessageRouter(readRequest);
         } else if (this.useMessageRouter && !this.useConnectionManager) {
             future = readWithoutConnectionManager(readRequest);
@@ -689,7 +712,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     newSegment = new LogicalSegment(new MemberID((byte) 0x00, Short.parseShort(identifier)));
                     segments.add(newSegment);
                 } else {
-                    newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier, (short) 0));
+                    newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier, (identifier.length() % 2 == 0) ? null : (short) 0));
                     segments.add(newSegment);
                 }
             } else {
@@ -887,74 +910,79 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     public CompletableFuture<PlcWriteResponse> writeWithoutMessageRouter(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
-        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfTags());
+        List<CompletableFuture<Void>> internalFutures = new ArrayList<>();
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
         Map<String, PlcResponseCode> values = new HashMap<>();
 
         for (String fieldName : writeRequest.getTagNames()) {
+            CompletableFuture<Void> internalFuture = new CompletableFuture<>();
             final EipTag field = (EipTag) request.getTag(fieldName);
             final PlcValue value = request.getPlcValue(fieldName);
             String tag = field.getTag();
             int elements = Math.max(field.getElementNb(), 1);
 
-            byte[] data = encodeValue(value, field.getType());
-            CipWriteRequest writeReq = null;
             try {
-                writeReq = new CipWriteRequest(toAnsi(tag), field.getType(), elements, data);
-            } catch (SerializationException e) {
-                e.printStackTrace();
-            }
-            CompletableFuture<Boolean> internalFuture = new CompletableFuture<>();
-            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+                byte[] data = encodeValue(value, field.getType());
+                CipWriteRequest writeReq = new CipWriteRequest(
+                    toAnsi(tag),
+                    field.getType(),
+                    elements,
+                    data);
 
-            tm.startRequest();
-
-            UnConnectedDataItem exchange = new UnConnectedDataItem(
-                new CipUnconnectedRequest(
+                CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
                     classSegment,
                     instanceSegment,
                     writeReq,
                     (byte) configuration.getBackplane(),
-                    (byte) configuration.getSlot()));
+                    (byte) configuration.getSlot());
 
-            List<TypeId> typeIds = Arrays.asList(nullAddressItem, exchange);
+                List<TypeId> typeIds = Arrays.asList(
+                    nullAddressItem,
+                    new UnConnectedDataItem(requestItem));
 
-            CipRRData rrdata = new CipRRData(
-                sessionHandle,
-                0L,
-                senderContext,
-                0L,
-                EMPTY_INTERFACE_HANDLE,
-                0,
-                typeIds);
+                CipRRData rrdata = new CipRRData(
+                    sessionHandle,
+                    0L,
+                    // TODO: Check if this could also be the DEFAULT_SENDER_CONTEXT
+                    senderContext,
+                    EMPTY_INTERFACE_OPTIONS,
+                    EMPTY_INTERFACE_HANDLE,
+                    0,
+                    typeIds);
 
-            transaction.submit(() -> context.sendRequest(rrdata)
-                .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-                .onTimeout(future::completeExceptionally)
-                .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p instanceof CipRRData).unwrap(p -> (CipRRData) p)
-                .check(p -> p.getSessionHandle() == sessionHandle)
-                //.check(p -> p.getSenderContext() == senderContext)
-                .check(p -> ((UnConnectedDataItem) p.getTypeIds().get(1)).getService() instanceof CipWriteResponse)
-                .unwrap(p -> (CipWriteResponse) ((UnConnectedDataItem) p.getTypeIds().get(1)).getService())
-                .handle(p -> {
-                    Map<String, PlcResponseCode> responseItem = decodeSingleWriteResponse(p, fieldName);
-                    values.putAll(responseItem);
-                    internalFuture.complete(true);
-                    transaction.endRequest();
-                })
-            );
-            try {
-                internalFuture.get(REQUEST_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                future.completeExceptionally(new PlcRuntimeException("Failed to read field"));
+                RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+                transaction.submit(() -> context.sendRequest(rrdata)
+                    .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+                    .onTimeout(internalFuture::completeExceptionally)
+                    .onError((p, e) -> internalFuture.completeExceptionally(e))
+                    .check(p -> p instanceof CipRRData)
+                    .unwrap(p -> (CipRRData) p)
+                    .check(p -> p.getSessionHandle() == sessionHandle)
+                    //.check(p -> p.getSenderContext() == senderContext)
+                    .check(p -> ((UnConnectedDataItem) p.getTypeIds().get(1)).getService() instanceof CipWriteResponse)
+                    .unwrap(p -> (CipWriteResponse) ((UnConnectedDataItem) p.getTypeIds().get(1)).getService())
+                    .handle(p -> {
+                        Map<String, PlcResponseCode> responseItem = decodeSingleWriteResponse(p, fieldName);
+                        values.putAll(responseItem);
+                        internalFuture.complete(null);
+                        transaction.endRequest();
+                    })
+                );
+                internalFutures.add(internalFuture);
+            } catch (SerializationException e) {
+                internalFuture.completeExceptionally(new PlcRuntimeException("Failed to read field"));
             }
 
+            CompletableFuture.allOf(internalFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
+                PlcWriteResponse readResponse = new DefaultPlcWriteResponse(writeRequest, values);
+                future.complete(readResponse);
+            }).exceptionally(e -> {
+                future.completeExceptionally(e);
+                return null;
+            });
         }
-        // TODO: This seems to be blocking here ... we should probably do this asynchronously
-        PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, values);
-        future.complete(response);
+
         return future;
     }
 
@@ -973,9 +1001,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 CipWriteRequest writeReq = new CipWriteRequest(toAnsi(tag), field.getType(), elements, data);
                 items.add(writeReq);
             } catch (SerializationException e) {
-                e.printStackTrace();
+                // TODO: Instead of failing the entire request it might be better to return a failure
+                //  status for only this item.
+                future.completeExceptionally(new PlcRuntimeException("Failed to write field", e));
+                return future;
             }
-
         }
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -1096,9 +1126,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 CipWriteRequest writeReq = new CipWriteRequest(toAnsi(tag), field.getType(), elements, data);
                 items.add(writeReq);
             } catch (SerializationException e) {
-                e.printStackTrace();
+                // TODO: Instead of failing the entire request it might be better to return a failure
+                //  status for only this item.
+                future.completeExceptionally(new PlcRuntimeException("Failed to write field", e));
+                return future;
             }
-
         }
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -1192,7 +1224,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future;
-        if (!this.useMessageRouter && !this.useConnectionManager) {
+        if (configuration.isForceUnconnectedOperation() || (!this.useMessageRouter && !this.useConnectionManager)) {
             future = writeWithoutMessageRouter(writeRequest);
         } else if (this.useMessageRouter && !this.useConnectionManager) {
             future = writeWithoutConnectionManager(writeRequest);

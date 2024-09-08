@@ -73,10 +73,10 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
     writeImplicitField("notificationLength", notificationLength, writeSignedInt(writeBuffer, 32));
 
     // Simple Field (status)
-    writeSimpleField("status", status, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("status", status, writeComplex(writeBuffer));
 
     // Simple Field (diagnosticInfo)
-    writeSimpleField("diagnosticInfo", diagnosticInfo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("diagnosticInfo", diagnosticInfo, writeComplex(writeBuffer));
 
     writeBuffer.popContext("StatusChangeNotification");
   }
@@ -114,14 +114,12 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
 
     StatusCode status =
         readSimpleField(
-            "status",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "status", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     DiagnosticInfo diagnosticInfo =
         readSimpleField(
             "diagnosticInfo",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("StatusChangeNotification");
     // Create the instance

@@ -83,10 +83,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataBackupAndRestoreState");
 
     // Simple Field (backupAndRestoreState)
-    writeSimpleField(
-        "backupAndRestoreState",
-        backupAndRestoreState,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("backupAndRestoreState", backupAndRestoreState, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetBackupStateTagged actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
     BACnetBackupStateTagged backupAndRestoreState =
         readSimpleField(
             "backupAndRestoreState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBackupStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

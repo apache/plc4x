@@ -22,9 +22,10 @@ package transactions
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func Test_completedFuture_AwaitCompletion(t *testing.T) {

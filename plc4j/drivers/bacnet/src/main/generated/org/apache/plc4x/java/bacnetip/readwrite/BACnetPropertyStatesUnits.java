@@ -60,7 +60,7 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
     writeBuffer.pushContext("BACnetPropertyStatesUnits");
 
     // Simple Field (units)
-    writeSimpleField("units", units, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("units", units, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesUnits");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
             "units",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEngineeringUnitsTagged.staticParse(
                         readBuffer,

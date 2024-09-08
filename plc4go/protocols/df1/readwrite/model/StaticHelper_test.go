@@ -20,8 +20,9 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestDF1UtilsCrcCheck(t *testing.T) {
@@ -59,7 +60,7 @@ func TestDF1UtilsCrcCheck(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := CrcCheck(testutils.TestContext(t), tt.args.destinationAddress, tt.args.sourceAddress, tt.args.command)
+			got, err := CrcCheck(testutils.TestContext(t), tt.args.destinationAddress, tt.args.sourceAddress, tt.args.command)()
 			if err != nil {
 				t.Errorf("DF1UtilsCrcCheck() got error: %#v", err)
 			}

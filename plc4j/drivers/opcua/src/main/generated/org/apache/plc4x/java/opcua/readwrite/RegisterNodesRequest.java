@@ -77,7 +77,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("RegisterNodesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToRegister)
     writeSimpleField("noOfNodesToRegister", noOfNodesToRegister, writeSignedInt(writeBuffer, 32));
@@ -126,7 +126,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     List<NodeId> nodesToRegister =
         readCountArrayField(
             "nodesToRegister",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NodeId.staticParse(readBuffer), readBuffer),
             noOfNodesToRegister);
 
     readBuffer.closeContext("RegisterNodesRequest");

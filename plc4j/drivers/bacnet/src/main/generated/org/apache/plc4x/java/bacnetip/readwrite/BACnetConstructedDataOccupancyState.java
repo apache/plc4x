@@ -82,7 +82,7 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataOccupancyState");
 
     // Simple Field (occupancyState)
-    writeSimpleField("occupancyState", occupancyState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("occupancyState", occupancyState, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccessZoneOccupancyStateTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
     BACnetAccessZoneOccupancyStateTagged occupancyState =
         readSimpleField(
             "occupancyState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessZoneOccupancyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

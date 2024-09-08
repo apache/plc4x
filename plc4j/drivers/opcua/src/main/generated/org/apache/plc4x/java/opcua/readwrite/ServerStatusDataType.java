@@ -108,18 +108,17 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
         "state",
         "ServerState",
         state,
-        new DataWriterEnumDefault<>(
-            ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (buildInfo)
-    writeSimpleField("buildInfo", buildInfo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("buildInfo", buildInfo, writeComplex(writeBuffer));
 
     // Simple Field (secondsTillShutdown)
     writeSimpleField(
         "secondsTillShutdown", secondsTillShutdown, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (shutdownReason)
-    writeSimpleField("shutdownReason", shutdownReason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("shutdownReason", shutdownReason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ServerStatusDataType");
   }
@@ -170,13 +169,12 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
         readEnumField(
             "state",
             "ServerState",
-            new DataReaderEnumDefault<>(
-                ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     ExtensionObjectDefinition buildInfo =
         readSimpleField(
             "buildInfo",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("340")),
                 readBuffer));
 
@@ -185,9 +183,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
 
     LocalizedText shutdownReason =
         readSimpleField(
-            "shutdownReason",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "shutdownReason", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ServerStatusDataType");
     // Create the instance

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.events;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import static io.netty.buffer.Unpooled.wrappedBuffer;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcTag;
@@ -38,6 +39,10 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.apache.plc4x.java.s7.readwrite.tag.S7SubscriptionTag;
+import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 public class S7CyclicEvent implements S7Event {
 
@@ -58,8 +63,6 @@ public class S7CyclicEvent implements S7Event {
     private final Instant timeStamp;
     private final Map<String, Object> map;
 
-    private int j;
-
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesPush event) {
         this.map = new HashMap<>();
         this.timeStamp = Instant.now();
@@ -68,34 +71,16 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.TIMESTAMP.name(), this.timeStamp);
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
-        int[] n = new int[1];
+        int[] n = new int[1];        
+
         request.getTagNames().forEach(tagname -> {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s -> {
-                buffer[j] = s.byteValue();
-                j++;
-            });
-            map.put(tagname, buffer);
-            n[0]++;
+            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            n[0]++;                                    
         });
 
-
-//        for (int i=0; i<event.getItemsCount(); i++){
-//            //map.put(Fields.RETURNCODE_.name()+i, event.getItems()[i].getReturnCode().getValue());
-//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-//            event.getItems().get(i).getData().forEach(s->{
-//                    buffer[j] = s.byteValue();
-//                    j ++;                
-//                });
-//            map.put(Fields.DATA_.name()+i, buffer);  
-//        }
     }
 
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenPush event) {
@@ -107,30 +92,15 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
         int[] n = new int[1];
+        
         request.getTagNames().forEach(tagname -> {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s -> {
-                buffer[j] = s.byteValue();
-                j++;
-            });
-            map.put(tagname, buffer);
-            n[0]++;
+            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            n[0]++;                                    
         });
-//        for (int i=0; i<event.getItemsCount(); i++){
-//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-//            event.getItems().get(i).getData().forEach(s->{
-//                    buffer[j] = s.byteValue();
-//                    j ++;                
-//                });
-//            map.put(Fields.DATA_.name()+i, buffer);  
-//        }
+        
     }
 
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesSubscribeResponse event) {
@@ -142,30 +112,14 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
         int[] n = new int[1];
+
         request.getTagNames().forEach(tagname -> {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s -> {
-                buffer[j] = s.byteValue();
-                j++;
-            });
-            map.put(tagname, buffer);
-            n[0]++;
-        });
-//        for (int i=0; i<event.getItemsCount(); i++){
-//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-//            event.getItems().get(i).getData().forEach(s->{
-//                    buffer[j] = s.byteValue();
-//                    j ++;                
-//                });
-//            map.put(Fields.DATA_.name()+i, buffer); 
-//        }            
+            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            n[0]++;                                    
+        });       
     }
 
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse event) {
@@ -177,30 +131,14 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
         int[] n = new int[1];
+        
         request.getTagNames().forEach(tagname -> {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s -> {
-                buffer[j] = s.byteValue();
-                j++;
-            });
-            map.put(tagname, buffer);
-            n[0]++;
-        });
-//        for (int i=0; i<event.getItemsCount(); i++){
-//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-//            event.getItems().get(i).getData().forEach(s->{
-//                    buffer[j] = s.byteValue();
-//                    j ++;                
-//                });
-//            map.put(Fields.DATA_.name()+i, buffer); 
-//        }            
+            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            n[0]++;                                    
+        });       
     }
 
     @Override
@@ -225,7 +163,12 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public PlcValue getPlcValue(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (request.getTagNames().contains(name)) {
+            PlcValue plcvalue = (PlcValue) map.get(name);
+            plcvalue.getRaw();
+            return plcvalue;
+        }
+        return null;
     }
 
     @Override
@@ -773,6 +716,162 @@ public class S7CyclicEvent implements S7Event {
     @Override
     public PlcResponseCode getResponseCode(String name) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final S7CyclicEvent other = (S7CyclicEvent) obj;
+        
+        for (String tag:request.getTagNames()) {
+            final PlcValue othervalue = other.getPlcValue(tag);
+            if (othervalue == null) return false;
+            final PlcValue localvalue = (PlcValue) getPlcValue(tag);
+            if (Arrays.equals(localvalue.getRaw(), othervalue.getRaw()) == false){
+                return false;
+            }
+        };
+        
+        return true;
+    }
+    
+        
+    private static PlcValue DataToPlcValue(String tagname, PlcSubscriptionRequest request, List<Short> data){
+        
+        int[] i = new int[1];
+        
+        final byte[] buffer = new byte[data.size()];
+
+        data.forEach( b -> {
+            buffer[i[0]] = b.byteValue(); 
+            i[0]++;
+        });
+                
+        ByteBuf bb = wrappedBuffer(buffer);
+        
+        
+        final DefaultPlcSubscriptionTag  dpst = (DefaultPlcSubscriptionTag) request.getTag(tagname);
+        final S7SubscriptionTag subTag = (S7SubscriptionTag) dpst.getTag();
+        final S7Tag[] s7Tags = subTag.getS7Tags();
+        
+        PlcValue plcValue = null;
+        
+        switch(s7Tags[0].getDataType()){
+            case BOOL:
+                Boolean[] bools = new Boolean[s7Tags[0].getNumberOfElements()];
+                for (int iter = 0; iter < s7Tags[0].getNumberOfElements(); iter++) {
+                    bools[iter] = bb.readBoolean();
+                }
+                plcValue = PlcValueHandler.of(bools);
+                break;
+            case BYTE:
+                // TODO: This looks suspicious
+                Byte[] bytes = new Byte[bb.capacity()];
+                for (Byte b:bytes) {
+                    b = Byte.valueOf(bb.readByte());
+                }
+                plcValue = PlcValueHandler.of(bytes);
+                break;
+            case WORD:
+                break;  
+            case DWORD:
+                break; 
+            case LWORD:
+                break;                  
+            case INT:
+                Short[] shorts = new Short[s7Tags[0].getNumberOfElements()];
+                for (int iter = 0; iter < s7Tags[0].getNumberOfElements(); iter ++) {
+                    shorts[iter] = bb.readShort();
+                }
+                plcValue = PlcValueHandler.of(shorts);
+                break;
+            case UINT:
+                break;    
+            case SINT:
+                break;   
+            case USINT:
+                break;  
+            case DINT:
+                // TODO: This looks suspicious
+                Integer[] integers = new Integer[bb.capacity() / Integer.SIZE];
+                for (Integer di:integers) {
+                    di = Integer.valueOf(bb.readInt());
+                }
+                plcValue = PlcValueHandler.of(integers);
+                break;
+            case UDINT:
+                break;    
+            case LINT:
+                // TODO: This looks suspicious
+                Long[] longs = new Long[bb.capacity() / Long.SIZE];
+                for (Long l:longs) {
+                    l = bb.readLong();
+                }
+                plcValue = PlcValueHandler.of(longs);
+                break;
+            case ULINT:
+                break;  
+            case REAL:
+                // TODO: This looks suspicious
+                Float[] floats = new Float[bb.capacity() / Float.SIZE];
+                for (Float f:floats) {
+                    f = bb.readFloat();
+                }
+                plcValue = PlcValueHandler.of(floats);
+                break;
+            case LREAL:
+                // TODO: This looks suspicious
+                Double[] doubles = new Double[bb.capacity() / Double.SIZE];
+                for (Double d:doubles) {
+                    d = bb.readDouble();
+                }
+                plcValue = PlcValueHandler.of(doubles);
+                break;
+            case CHAR:
+                break;   
+            case WCHAR:
+                break;   
+            case STRING:
+                break; 
+            case WSTRING:
+                break;      
+            case S5TIME:
+                break;
+            case TIME:
+                break; 
+            case LTIME:
+                break;    
+            case DATE:
+                break; 
+            case TIME_OF_DAY:
+                break;      
+            case TOD:
+                break;                 
+            case LTIME_OF_DAY:
+                break;    
+            case LTOD:
+                break;   
+            case DATE_AND_TIME:
+                break; 
+            case DT:
+                break; 
+            case DATE_AND_LTIME:
+                break;                 
+            case LDT:
+                break;  
+            case DTL:
+                break;                  
+        }
+        
+        return plcValue;
     }
 
 }

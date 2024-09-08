@@ -72,17 +72,11 @@ public class InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_NORMALIZE
 
     // Simple Field (nva)
     writeSimpleField(
-        "nva",
-        nva,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nva", nva, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qpm)
     writeSimpleField(
-        "qpm",
-        qpm,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qpm", qpm, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE");
@@ -119,14 +113,13 @@ public class InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_NORMALIZE
     NormalizedValue nva =
         readSimpleField(
             "nva",
-            new DataReaderComplexDefault<>(
-                () -> NormalizedValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NormalizedValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualifierOfParameterOfMeasuredValues qpm =
         readSimpleField(
             "qpm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> QualifierOfParameterOfMeasuredValues.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

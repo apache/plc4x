@@ -60,7 +60,7 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
     writeBuffer.pushContext("BACnetPropertyStateActionUnknown");
 
     // Simple Field (unknownValue)
-    writeSimpleField("unknownValue", unknownValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unknownValue", unknownValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStateActionUnknown");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
     BACnetContextTagUnknown unknownValue =
         readSimpleField(
             "unknownValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnknown)
                         BACnetContextTag.staticParse(

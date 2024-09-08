@@ -40,7 +40,7 @@ Pto. La Cruz, Anzoátegui, Venezuela |Electrical engineer, dedicated to process 
 
 IoT Consultant
 
-Mapped
+Timecho Europe GmbH
 
 Frankfurt |Likes to swim outside the mainstream. He is really passionate about walking new paths. His first email to an Apache list on file was to the Cocoon project back in the year 2000. His direct involvement started in 2012 when he was elected to become an Apache Flex committer. Since then he became involved with a lot of Apache-internal groups and committees and was elected to become a Member of the Apache Software Foundation in 2015 and recently has taken up the role of mentoring several IoT podlings in the Apache Incubator. | a|image::team/cdutz.png[cdutz, 200, 200]
 | *Julian Feinauer*

@@ -74,7 +74,7 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
         "accessControlDirection",
         "AccessControlDirection",
         accessControlDirection,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AccessControlDirection::getValue,
             AccessControlDirection::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -118,8 +118,7 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
         readEnumField(
             "accessControlDirection",
             "AccessControlDirection",
-            new DataReaderEnumDefault<>(
-                AccessControlDirection::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(AccessControlDirection::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte[] data =
         readBuffer.readByteArray(

@@ -567,7 +567,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "plc4c_spi_write_string(writeBuffer, " + length + ", \"" +
-                    encoding + "\", " + fieldName + ")";
+                    encoding + "\", (char*) " + fieldName + ")";
             }
             case VSTRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));

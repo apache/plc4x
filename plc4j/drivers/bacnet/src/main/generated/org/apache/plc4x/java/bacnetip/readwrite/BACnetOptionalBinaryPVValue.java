@@ -60,7 +60,7 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
     writeBuffer.pushContext("BACnetOptionalBinaryPVValue");
 
     // Simple Field (binaryPv)
-    writeSimpleField("binaryPv", binaryPv, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("binaryPv", binaryPv, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetOptionalBinaryPVValue");
   }
@@ -91,7 +91,7 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
     BACnetBinaryPVTagged binaryPv =
         readSimpleField(
             "binaryPv",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

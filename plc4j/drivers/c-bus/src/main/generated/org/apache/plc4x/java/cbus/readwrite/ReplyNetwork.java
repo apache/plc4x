@@ -61,10 +61,10 @@ public class ReplyNetwork implements Message {
     writeBuffer.pushContext("ReplyNetwork");
 
     // Simple Field (networkRoute)
-    writeSimpleField("networkRoute", networkRoute, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkRoute", networkRoute, writeComplex(writeBuffer));
 
     // Simple Field (unitAddress)
-    writeSimpleField("unitAddress", unitAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unitAddress", unitAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReplyNetwork");
   }
@@ -89,12 +89,6 @@ public class ReplyNetwork implements Message {
     return lengthInBits;
   }
 
-  public static ReplyNetwork staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ReplyNetwork staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ReplyNetwork");
     PositionAware positionAware = readBuffer;
@@ -102,13 +96,11 @@ public class ReplyNetwork implements Message {
 
     NetworkRoute networkRoute =
         readSimpleField(
-            "networkRoute",
-            new DataReaderComplexDefault<>(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
+            "networkRoute", readComplex(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
 
     UnitAddress unitAddress =
         readSimpleField(
-            "unitAddress",
-            new DataReaderComplexDefault<>(() -> UnitAddress.staticParse(readBuffer), readBuffer));
+            "unitAddress", readComplex(() -> UnitAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReplyNetwork");
     // Create the instance

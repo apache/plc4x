@@ -77,7 +77,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("FindServersResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfServers)
     writeSimpleField("noOfServers", noOfServers, writeSignedInt(writeBuffer, 32));
@@ -126,7 +126,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> servers =
         readCountArrayField(
             "servers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
                 readBuffer),
             noOfServers);

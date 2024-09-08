@@ -80,12 +80,10 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
 
     // Simple Field (reinitializedStateOfDevice)
     writeSimpleField(
-        "reinitializedStateOfDevice",
-        reinitializedStateOfDevice,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "reinitializedStateOfDevice", reinitializedStateOfDevice, writeComplex(writeBuffer));
 
     // Optional Field (password) (Can be skipped, if the value is null)
-    writeOptionalField("password", password, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("password", password, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestReinitializeDevice");
   }
@@ -123,7 +121,7 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
         reinitializedStateOfDevice =
             readSimpleField(
                 "reinitializedStateOfDevice",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
                             .staticParse(
@@ -135,7 +133,7 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
     BACnetContextTagCharacterString password =
         readOptionalField(
             "password",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

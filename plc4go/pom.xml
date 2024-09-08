@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      https://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4go</artifactId>
@@ -36,7 +34,7 @@
   <description>Implementation of the protocol adapters for usage as Go(lang) library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
     <!-- Tell Sonar where to find the sources -->
     <sonar.sources>.</sonar.sources>
     <sonar.inclusions>**</sonar.inclusions>
@@ -44,7 +42,7 @@
 
     <sonar.tests>.</sonar.tests>
     <sonar.test.inclusions>**/*_test.go</sonar.test.inclusions>
-    <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,examples/**/*,tests/**/*,tools/**/*
+    <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,tests/**/*,tools/**/*
     </sonar.coverage.exclusions>
 
     <sonar.go.exclusions>**/vendor/**,**/*_mock.go,**/mock_*.go</sonar.go.exclusions>
@@ -57,10 +55,11 @@
 
     <go.cover.flag>-coverprofile=target/coverage.out</go.cover.flag>
 
-    <go.stringer.version>v0.11.1</go.stringer.version>
-    <go.junit-report.version>v2.0.1</go.junit-report.version>
-    <go.gotestsum.version>v1.10.1</go.gotestsum.version>
-    <go.mockery.version>v2.32.4</go.mockery.version>
+    <go.version>1.23.0</go.version>
+    <go.stringer.version>v0.24.0</go.stringer.version>
+    <go.junit-report.version>v2.1.0</go.junit-report.version>
+    <go.gotestsum.version>v1.12.0</go.gotestsum.version>
+    <go.mockery.version>v2.45.0</go.mockery.version>
   </properties>
 
   <build>
@@ -81,7 +80,7 @@
             </goals>
             <configuration>
               <target>
-                <mkdir dir="target${file.separator}surefire-reports"/>
+                <mkdir dir="target${file.separator}surefire-reports" />
               </target>
             </configuration>
           </execution>
@@ -273,6 +272,42 @@
               </packages>
             </configuration>
           </execution>
+          <execution>
+            <id>get-goimports-reviser</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>github.com/incu6us/goimports-reviser/v3@latest</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-plc4xGenerator</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>./tools/plc4xGenerator</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-plc4xLicencer</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>./tools/plc4xLicencer</package>
+              </packages>
+            </configuration>
+          </execution>
 
           <!-- Run the go code-generation -->
           <execution>
@@ -298,9 +333,9 @@
             </goals>
             <configuration>
               <exec>mockery</exec>
-              <customCommand>--all</customCommand>
+              <customCommand>--log-level</customCommand>
               <packages>
-                <package>--with-expecter</package>
+                <package>info</package>
               </packages>
             </configuration>
           </execution>
@@ -383,6 +418,92 @@
             </configuration>
           </execution>
 
+          <!-- Format (group) imports -->
+          <execution>
+            <id>fix-imports-internal</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>goimports-reviser</exec>
+              <customCommand>-recursive</customCommand>
+              <packages>
+                <package>internal</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>fix-imports-pkg</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>goimports-reviser</exec>
+              <customCommand>-recursive</customCommand>
+              <packages>
+                <package>pkg</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>fix-imports-protocols</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>goimports-reviser</exec>
+              <customCommand>-recursive</customCommand>
+              <packages>
+                <package>protocols</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>fix-imports-spi</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>goimports-reviser</exec>
+              <customCommand>-recursive</customCommand>
+              <packages>
+                <package>spi</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>fix-imports-tests</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>goimports-reviser</exec>
+              <customCommand>-recursive</customCommand>
+              <packages>
+                <package>tests</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>fix-imports-tools</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>goimports-reviser</exec>
+              <customCommand>-recursive</customCommand>
+              <packages>
+                <package>tools</package>
+              </packages>
+            </configuration>
+          </execution>
+
           <execution>
             <id>run-go-vet</id>
             <phase>verify</phase>
@@ -397,7 +518,7 @@
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>
-          <goVersion>1.20.7</goVersion>
+          <goVersion>${go.version}</goVersion>
         </configuration>
       </plugin>
 
@@ -416,7 +537,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ab-eth</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -424,7 +545,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ads</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -432,7 +553,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-bacnetip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -440,7 +561,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-c-bus</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -448,7 +569,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -456,7 +577,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-eip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -464,7 +585,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-firmata</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -472,7 +593,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -480,7 +601,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -488,7 +609,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-opcua</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -496,7 +617,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -504,7 +625,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-simulated</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -513,10 +634,27 @@
 
   <profiles>
     <profile>
-      <id>.os-windows</id>
+      <id>.os-windows-x86_64</id>
       <activation>
         <os>
           <family>windows</family>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <!--
+        Coverage doesn't work in windows because of a long path issue in cover.exe
+        Tracked upstream issue: https://github.com/golang/go/issues/60785
+        -->
+        <go.cover.flag>-v</go.cover.flag>
+      </properties>
+    </profile>
+    <profile>
+      <id>.os-windows-aarch64</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>aarch64</arch>
         </os>
       </activation>
       <properties>
@@ -717,7 +855,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-go</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -725,84 +863,84 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-ab-eth</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-ads</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-bacnetip</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-c-bus</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-df1</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-eip</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-firmata</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-knxnetip</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-opcua</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-s7</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-simulated</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

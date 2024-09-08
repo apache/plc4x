@@ -68,10 +68,10 @@ public class BrowsePath extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("BrowsePath");
 
     // Simple Field (startingNode)
-    writeSimpleField("startingNode", startingNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("startingNode", startingNode, writeComplex(writeBuffer));
 
     // Simple Field (relativePath)
-    writeSimpleField("relativePath", relativePath, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relativePath", relativePath, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BrowsePath");
   }
@@ -104,13 +104,12 @@ public class BrowsePath extends ExtensionObjectDefinition implements Message {
 
     NodeId startingNode =
         readSimpleField(
-            "startingNode",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "startingNode", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     ExtensionObjectDefinition relativePath =
         readSimpleField(
             "relativePath",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("542")),
                 readBuffer));
 

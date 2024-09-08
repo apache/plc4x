@@ -77,19 +77,16 @@ public class BACnetDeviceObjectPropertyReference implements Message {
     writeBuffer.pushContext("BACnetDeviceObjectPropertyReference");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDeviceObjectPropertyReference");
   }
@@ -124,12 +121,6 @@ public class BACnetDeviceObjectPropertyReference implements Message {
     return lengthInBits;
   }
 
-  public static BACnetDeviceObjectPropertyReference staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetDeviceObjectPropertyReference staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetDeviceObjectPropertyReference");
@@ -139,7 +130,7 @@ public class BACnetDeviceObjectPropertyReference implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -151,7 +142,7 @@ public class BACnetDeviceObjectPropertyReference implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -160,7 +151,7 @@ public class BACnetDeviceObjectPropertyReference implements Message {
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -172,7 +163,7 @@ public class BACnetDeviceObjectPropertyReference implements Message {
     BACnetContextTagObjectIdentifier deviceIdentifier =
         readOptionalField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

@@ -61,8 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryEnumerated
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated");
 
     // Simple Field (enumeratedValue)
-    writeSimpleField(
-        "enumeratedValue", enumeratedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enumeratedValue", enumeratedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated");
   }
@@ -94,7 +93,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryEnumerated
     BACnetApplicationTagEnumerated enumeratedValue =
         readSimpleField(
             "enumeratedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagEnumerated) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

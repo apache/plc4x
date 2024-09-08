@@ -61,7 +61,7 @@ public class SDOAbortRequest extends SDORequest implements Message {
     writeBuffer.pushContext("SDOAbortRequest");
 
     // Simple Field (abort)
-    writeSimpleField("abort", abort, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("abort", abort, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SDOAbortRequest");
   }
@@ -90,9 +90,7 @@ public class SDOAbortRequest extends SDORequest implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDOAbort abort =
-        readSimpleField(
-            "abort",
-            new DataReaderComplexDefault<>(() -> SDOAbort.staticParse(readBuffer), readBuffer));
+        readSimpleField("abort", readComplex(() -> SDOAbort.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SDOAbortRequest");
     // Create the instance

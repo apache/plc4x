@@ -85,13 +85,13 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     writeBuffer.pushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
 
     // Optional Field (timeDuration) (Can be skipped, if the value is null)
-    writeOptionalField("timeDuration", timeDuration, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("timeDuration", timeDuration, writeComplex(writeBuffer));
 
     // Simple Field (enableDisable)
-    writeSimpleField("enableDisable", enableDisable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enableDisable", enableDisable, writeComplex(writeBuffer));
 
     // Optional Field (password) (Can be skipped, if the value is null)
-    writeOptionalField("password", password, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("password", password, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
   }
@@ -133,7 +133,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     BACnetContextTagUnsignedInteger timeDuration =
         readOptionalField(
             "timeDuration",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -145,7 +145,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged enableDisable =
         readSimpleField(
             "enableDisable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
                         .staticParse(
@@ -155,7 +155,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     BACnetContextTagCharacterString password =
         readOptionalField(
             "password",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

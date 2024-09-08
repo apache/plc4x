@@ -24,29 +24,29 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/pkg/errors"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=ConnectionMetadata
+//go:generate plc4xGenerator -type=ConnectionMetadata
 type ConnectionMetadata struct {
 	KnxMedium         driverModel.KnxMedium `stringer:"true"`
 	GatewayName       string
@@ -322,9 +322,9 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
 					for m.handleTunnelingRequests {
 						incomingMessage := <-defaultIncomingMessageChannel
-						tunnelingRequest, ok := incomingMessage.(driverModel.TunnelingRequestExactly)
+						tunnelingRequest, ok := incomingMessage.(driverModel.TunnelingRequest)
 						if !ok {
-							tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponseExactly)
+							tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponse)
 							if ok {
 								m.log.Warn().Stringer("tunnelingResponse", tunnelingResponse).Msg("Got an unhandled TunnelingResponse message")
 							} else {
@@ -338,7 +338,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 							continue
 						}
 
-						lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
+						lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
 						if !ok {
 							continue
 						}
@@ -354,9 +354,9 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 						// If this is an incoming disconnect request, remove the device
 						// from the device connections, otherwise handle it as normal
 						// incoming message.
-						apduControlContainer, ok := lDataFrameData.GetApdu().(driverModel.ApduControlContainerExactly)
+						apduControlContainer, ok := lDataFrameData.GetApdu().(driverModel.ApduControlContainer)
 						if ok {
-							_, ok := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnectExactly)
+							_, ok := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
 							if ok {
 								if m.DeviceConnections[sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
 									// Remove the connection

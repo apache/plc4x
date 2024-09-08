@@ -70,14 +70,13 @@ public class BACnetSpecialEvent implements Message {
     writeBuffer.pushContext("BACnetSpecialEvent");
 
     // Simple Field (period)
-    writeSimpleField("period", period, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("period", period, writeComplex(writeBuffer));
 
     // Simple Field (listOfTimeValues)
-    writeSimpleField(
-        "listOfTimeValues", listOfTimeValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfTimeValues", listOfTimeValues, writeComplex(writeBuffer));
 
     // Simple Field (eventPriority)
-    writeSimpleField("eventPriority", eventPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventPriority", eventPriority, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSpecialEvent");
   }
@@ -105,12 +104,6 @@ public class BACnetSpecialEvent implements Message {
     return lengthInBits;
   }
 
-  public static BACnetSpecialEvent staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetSpecialEvent staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSpecialEvent");
     PositionAware positionAware = readBuffer;
@@ -119,20 +112,19 @@ public class BACnetSpecialEvent implements Message {
     BACnetSpecialEventPeriod period =
         readSimpleField(
             "period",
-            new DataReaderComplexDefault<>(
-                () -> BACnetSpecialEventPeriod.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetSpecialEventPeriod.staticParse(readBuffer), readBuffer));
 
     BACnetSpecialEventListOfTimeValues listOfTimeValues =
         readSimpleField(
             "listOfTimeValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetSpecialEventListOfTimeValues.staticParse(readBuffer, (short) (2)),
                 readBuffer));
 
     BACnetContextTagUnsignedInteger eventPriority =
         readSimpleField(
             "eventPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

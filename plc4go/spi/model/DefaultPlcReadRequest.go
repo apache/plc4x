@@ -24,15 +24,16 @@ import (
 	"runtime/debug"
 	"time"
 
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-	"github.com/pkg/errors"
 )
 
 var _ apiModel.PlcReadRequestBuilder = &DefaultPlcReadRequestBuilder{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
+//go:generate plc4xGenerator -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader     `ignore:"true"`
 	tagHandler             spi.PlcTagHandler `ignore:"true"`
@@ -87,7 +88,7 @@ func (d *DefaultPlcReadRequestBuilder) Build() (apiModel.PlcReadRequest, error) 
 
 var _ apiModel.PlcReadRequest = &DefaultPlcReadRequest{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequest
+//go:generate plc4xGenerator -type=DefaultPlcReadRequest
 type DefaultPlcReadRequest struct {
 	*DefaultPlcTagRequest
 	reader                 spi.PlcReader                       `ignore:"true"`

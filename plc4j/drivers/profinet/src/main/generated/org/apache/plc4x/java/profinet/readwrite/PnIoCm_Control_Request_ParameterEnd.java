@@ -128,7 +128,7 @@ public class PnIoCm_Control_Request_ParameterEnd extends PnIoCm_Block implements
     writeSimpleField(
         "arUuid",
         arUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (sessionKey)
@@ -237,7 +237,7 @@ public class PnIoCm_Control_Request_ParameterEnd extends PnIoCm_Block implements
     Uuid arUuid =
         readSimpleField(
             "arUuid",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Uuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int sessionKey =

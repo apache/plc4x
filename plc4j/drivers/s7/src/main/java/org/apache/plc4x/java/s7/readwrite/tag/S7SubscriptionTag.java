@@ -55,10 +55,20 @@ public class S7SubscriptionTag implements PlcTag {
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
         Pattern.compile("%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[XBWD]?)(?<byteDBOffset>\\d{1,7})(.(?<bitDBOffset>[0-7]))?:(?<dataDBType>[a-zA-Z_]+)(\\[(?<numDBElements>\\d+)])?");
+    
+    private static final Pattern DATA_BLOCK_SHORT_PATTERN =
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");    
 
     //All fields index 9
     private static final Pattern EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN =
-        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})((" + ADDRESS_PATTERN + ")|(" + DATA_BLOCK_ADDRESS_PATTERN + ")))+)");
+        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})((" + 
+                ADDRESS_PATTERN + ")|(" + 
+                DATA_BLOCK_ADDRESS_PATTERN + ")))+)");
+    
+    private static final Pattern EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN_SHORT =
+        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})((" + DATA_BLOCK_SHORT_PATTERN + ")))+)");    
+    
+    
 
     private static final Pattern EVENT_SUBSCRIPTION_DB_QUERY_PATTERN =
         Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[B]?)(?<byteDBOffset>\\d{1,7})(\\[(?<numDBElements>\\d+)]))?)+)");
@@ -199,7 +209,8 @@ public class S7SubscriptionTag implements PlcTag {
             EVENT_ALARM_QUERY_PATTERN.matcher(tagString).matches() ||
             EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN.matcher(tagString).matches() ||
             EVENT_SUBSCRIPTION_DB_QUERY_PATTERN.matcher(tagString).matches() ||
-            EVENT_CANCEL_JOB_QUERY_PATTERN.matcher(tagString).matches();
+            EVENT_CANCEL_JOB_QUERY_PATTERN.matcher(tagString).matches() ||
+            EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN_SHORT.matcher(tagString).matches();
 
 //        return EVENT_SUBSCRIPTION_TYPE_PATTERN.matcher(tagString).matches() ||
 //            EVENT_ALARM_ACK_PATTERN.matcher(tagString).matches() ||
@@ -208,6 +219,9 @@ public class S7SubscriptionTag implements PlcTag {
     }
 
     public static S7SubscriptionTag of(String tagString) {
+        // TODO: This method needs some major cleanup.
+        //  - A lot of duplicated code
+        //  - Not making use of named groups using the name constants
         {
             Matcher matcher = EVENT_SUBSCRIPTION_TYPE_PATTERN.matcher(tagString);
             if (matcher.matches()) {
@@ -232,7 +246,6 @@ public class S7SubscriptionTag implements PlcTag {
                 }
                 return new S7SubscriptionTag(S7SubscriptionType.ALARM_ACK,
                     arrEventId);
-
             }
         }
 
@@ -264,7 +277,6 @@ public class S7SubscriptionTag implements PlcTag {
                     tb,
                     multi);
             }
-
         }
 
         {
@@ -287,6 +299,27 @@ public class S7SubscriptionTag implements PlcTag {
                     multi);
             }
         }
+        
+        {
+            Matcher matcher = EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN_SHORT.matcher(tagString);
+            if (matcher.matches()) {
+                TimeBase tb = TimeBase.valueOf(matcher.group(TIME_BASE));
+                short multi = Short.parseShort(matcher.group(TIME_BASE_MULTIPLIER));
+                S7Tag[] myTags;
+                String strAddress = matcher.group(9);
+                String[] fieldAddress = strAddress.split(",");
+                myTags = new S7Tag[fieldAddress.length];
+                int i = 0;
+                for (String address : fieldAddress) {
+                    myTags[i] = S7Tag.of(address);
+                    i++;
+                }
+                return new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION,
+                    myTags,
+                    tb,
+                    multi);
+            }
+        }        
 
         {
             Matcher matcher = EVENT_CANCEL_JOB_QUERY_PATTERN.matcher(tagString);
@@ -302,8 +335,7 @@ public class S7SubscriptionTag implements PlcTag {
 
             }
         }
-
-
+                
         throw new PlcInvalidTagException("Unable to parse address: " + tagString);
     }
 

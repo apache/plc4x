@@ -83,8 +83,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataOperationDirection");
 
     // Simple Field (operationDirection)
-    writeSimpleField(
-        "operationDirection", operationDirection, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("operationDirection", operationDirection, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEscalatorOperationDirectionTagged actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
     BACnetEscalatorOperationDirectionTagged operationDirection =
         readSimpleField(
             "operationDirection",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEscalatorOperationDirectionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

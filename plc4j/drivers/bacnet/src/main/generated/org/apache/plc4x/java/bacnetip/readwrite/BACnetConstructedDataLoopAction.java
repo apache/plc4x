@@ -82,7 +82,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataLoopAction");
 
     // Simple Field (action)
-    writeSimpleField("action", action, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("action", action, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetActionTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
     BACnetActionTagged action =
         readSimpleField(
             "action",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetActionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

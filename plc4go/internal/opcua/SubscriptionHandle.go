@@ -22,17 +22,19 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"golang.org/x/exp/slices"
+	"slices"
 	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type SubscriptionHandle struct {
@@ -51,7 +53,7 @@ type SubscriptionHandle struct {
 	subscriberWg sync.WaitGroup
 	complete     bool
 
-	log zerolog.Logger `ignore:"true""`
+	log zerolog.Logger
 }
 
 func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connection *Connection, subscriptionRequest apiModel.PlcSubscriptionRequest, subscriptionId uint32, cycleTime time.Duration) *SubscriptionHandle {
@@ -170,9 +172,9 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		}
 		var responseMessage readWriteModel.CreateMonitoredItemsResponse
 		switch unknownExtensionObject := unknownExtensionObject.(type) {
-		case readWriteModel.CreateMonitoredItemsResponseExactly:
+		case readWriteModel.CreateMonitoredItemsResponse:
 			responseMessage = unknownExtensionObject
-		case readWriteModel.ServiceFaultExactly:
+		case readWriteModel.ServiceFault:
 			serviceFault := unknownExtensionObject
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
 			errorChan <- errors.Errorf("Subscription ServiceFault returned from server with error code,  '%s'", header.GetServiceResult())
