@@ -46,6 +46,7 @@ setup(
         "aenum",
         "bitarray",
         "typing_extensions",
+        "pluggy",
     ],
     extras_require={
         "dev": [

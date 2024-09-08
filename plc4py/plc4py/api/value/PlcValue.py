@@ -54,7 +54,9 @@ class PlcValue(Generic[T], ABC):
     def __eq__(self, other):
         """Compare PlcValue with another or a native data type"""
         if isinstance(other, PlcValue):
-            return (self.value == other.value) and (self.__class__.__name__ == other.__class__.__name__)
+            return (self.value == other.value) and (
+                self.__class__.__name__ == other.__class__.__name__
+            )
         else:
             return other == self.value
 

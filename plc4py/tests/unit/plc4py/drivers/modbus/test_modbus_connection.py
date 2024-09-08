@@ -364,7 +364,11 @@ async def test_plc_driver_modbus_write_holding_int_array():
         f"modbus://{TEST_SERVER_IP}:502"
     ) as connection:
         with connection.write_request_builder() as builder:
-            builder.add_item("Random Tag", "4x00001[5]", PlcList([PlcINT(874), PlcINT(0), PlcINT(3), PlcINT(4), PlcINT(5)]))
+            builder.add_item(
+                "Random Tag",
+                "4x00001[5]",
+                PlcList([PlcINT(874), PlcINT(0), PlcINT(3), PlcINT(4), PlcINT(5)]),
+            )
             request = builder.build()
             response = await connection.execute(request)
             value = response.tags["Random Tag"]

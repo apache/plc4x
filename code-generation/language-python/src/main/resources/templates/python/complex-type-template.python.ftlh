@@ -869,14 +869,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
     <@emitImport import="from plc4py.api.exceptions.exceptions import SerializationException" />
     <@emitImport import="from plc4py.api.exceptions.exceptions import PlcRuntimeException" />
     def __str__(self) -> str:
-        pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
-        #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
-        #    raise PlcRuntimeException(e)
+        # TODO:- Implement a generic python object to probably json convertor or something.
+        return ""
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
     <#if type.isDiscriminatedParentTypeDefinition()>
 @dataclass
