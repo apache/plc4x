@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NetworkNumberQuality struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewNetworkNumberQuality(arg Arg) (*NetworkNumberQuality, error) {
+	s := &NetworkNumberQuality{
+		enumerations: map[string]uint64{"unknown": 0,
+			"learned":           1,
+			"learnedConfigured": 2,
+			"configured":        3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

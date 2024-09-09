@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LandingCallStatusCommand struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewLandingCallStatusCommand(arg Arg) (*LandingCallStatusCommand, error) {
+	s := &LandingCallStatusCommand{
+		choiceElements: []Element{
+			NewElement("direction", V2E(NewLiftCarDirection), WithElementContext(1)),
+			NewElement("destination", V2E(NewUnsigned8), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

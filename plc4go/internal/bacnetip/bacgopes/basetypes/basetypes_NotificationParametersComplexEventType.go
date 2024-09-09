@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type NotificationParametersComplexEventType struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersComplexEventType(arg Arg) (*NotificationParametersComplexEventType, error) {
+	s := &NotificationParametersComplexEventType{
+		sequenceElements: []Element{
+			NewElement("complexEventType", V2E(NewPropertyValue), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

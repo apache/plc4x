@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type EventParameterAccessEvent struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewEventParameterAccessEvent(arg Arg) (*EventParameterAccessEvent, error) {
+	s := &EventParameterAccessEvent{
+		sequenceElements: []Element{
+			NewElement("accessEvent", SequenceOf(NewEventParameterAccessEventAccessEvent), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

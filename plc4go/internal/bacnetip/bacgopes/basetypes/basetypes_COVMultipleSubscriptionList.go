@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type COVMultipleSubscriptionList struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewCOVMultipleSubscriptionList(arg Arg) (*COVMultipleSubscriptionList, error) {
+	s := &COVMultipleSubscriptionList{
+		sequenceElements: []Element{
+			NewElement("monitoredObjectIdentifier", Vs2E(NewObjectIdentifier), WithElementContext(0)),
+			NewElement("listOfCOVReferences", SequenceOf(NewCOVMultipleSubscriptionListOfCOVReference), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

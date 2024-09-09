@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LimitEnable struct {
+	*BitString
+	bitLen      int
+	bitNames    map[string]int
+	vendorRange vendorRange
+}
+
+func NewLimitEnable(arg Arg) (*LimitEnable, error) {
+	s := &LimitEnable{
+		bitNames: map[string]int{
+			"lowLimitEnable":  0,
+			"highLimitEnable": 1,
+		},
+		bitLen: 2,
+	}
+	panic("implement me")
+	return s, nil
+}

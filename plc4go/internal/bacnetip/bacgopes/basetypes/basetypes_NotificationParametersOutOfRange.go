@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NotificationParametersOutOfRange struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersOutOfRange(arg Arg) (*NotificationParametersOutOfRange, error) {
+	s := &NotificationParametersOutOfRange{
+		sequenceElements: []Element{
+			NewElement("exceedingValue", V2E(NewReal), WithElementContext(0)),
+			NewElement("statusFlags", V2E(NewStatusFlags), WithElementContext(1)),
+			NewElement("deadband", V2E(NewReal), WithElementContext(2)),
+			NewElement("exceededLimit", V2E(NewReal), WithElementContext(3)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

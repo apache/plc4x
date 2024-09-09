@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LiftGroupMode struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLiftGroupMode(arg Arg) (*LiftGroupMode, error) {
+	s := &LiftGroupMode{
+		enumerations: map[string]uint64{"unknown": 0,
+			"normal":         1,
+			"downPeak":       2,
+			"twoWay":         3,
+			"fourWay":        4,
+			"emergencyPower": 5,
+			"upPeak":         6,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

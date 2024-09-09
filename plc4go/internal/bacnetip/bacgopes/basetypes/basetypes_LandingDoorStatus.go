@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type LandingDoorStatus struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewLandingDoorStatus(arg Arg) (*LandingDoorStatus, error) {
+	s := &LandingDoorStatus{
+		sequenceElements: []Element{
+			NewElement("landingDoors", SequenceOf(NewLandingDoorStatusLandingDoor), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

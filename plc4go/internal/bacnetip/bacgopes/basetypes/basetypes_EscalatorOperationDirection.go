@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EscalatorOperationDirection struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewEscalatorOperationDirection(arg Arg) (*EscalatorOperationDirection, error) {
+	s := &EscalatorOperationDirection{
+		vendorRange: vendorRange{1024, 65535},
+		enumerations: map[string]uint64{"unknown": 0,
+			"stopped":          1,
+			"upRatedSpeed":     2,
+			"upReducedSpeed":   3,
+			"downRatedSpeed":   4,
+			"downReducedSpeed": 5,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

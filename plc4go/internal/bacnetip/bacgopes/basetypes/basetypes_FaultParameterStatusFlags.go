@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type FaultParameterStatusFlags struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewFaultParameterStatusFlags(arg Arg) (*FaultParameterStatusFlags, error) {
+	s := &FaultParameterStatusFlags{
+		sequenceElements: []Element{
+			NewElement("statusFlagsReference", V2E(NewDeviceObjectPropertyReference), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

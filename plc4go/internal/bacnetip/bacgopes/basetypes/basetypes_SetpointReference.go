@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type SetpointReference struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewSetpointReference(arg Arg) (*SetpointReference, error) {
+	s := &SetpointReference{
+		sequenceElements: []Element{
+			NewElement("setpointReference", V2E(NewObjectPropertyReference), WithElementContext(0), WithElementOptional(true)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

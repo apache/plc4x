@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventParameterBufferReady struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewEventParameterBufferReady(arg Arg) (*EventParameterBufferReady, error) {
+	s := &EventParameterBufferReady{
+		sequenceElements: []Element{
+			NewElement("notificationThreshold", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("previousNotificationCount", V2E(NewUnsigned), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

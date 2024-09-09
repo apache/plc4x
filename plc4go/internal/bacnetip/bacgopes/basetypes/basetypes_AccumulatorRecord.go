@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AccumulatorRecord struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewAccumulatorRecord(arg Arg) (*AccumulatorRecord, error) {
+	s := &AccumulatorRecord{
+		sequenceElements: []Element{
+			NewElement("timestamp", V2E(NewDateTime), WithElementContext(0)),
+			NewElement("presentValue", V2E(NewUnsigned), WithElementContext(1)),
+			NewElement("accumulatedValue", V2E(NewUnsigned), WithElementContext(2)),
+			NewElement("accumulatorStatus", V2E(NewAccumulatorRecordAccumulatorStatus), WithElementContext(3)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

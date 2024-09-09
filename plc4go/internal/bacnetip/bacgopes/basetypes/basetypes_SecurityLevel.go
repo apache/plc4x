@@ -18,3 +18,28 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type SecurityLevel struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewSecurityLevel(arg Arg) (*SecurityLevel, error) {
+	s := &SecurityLevel{
+		enumerations: map[string]uint64{"incapable": 0,
+			"plain":             1,
+			"signed":            2,
+			"encrypted":         3,
+			"signedEndToEnd":    4,
+			"encryptedEndToEnd": 4,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

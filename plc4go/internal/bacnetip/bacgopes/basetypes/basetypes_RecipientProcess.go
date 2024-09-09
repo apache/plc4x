@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type RecipientProcess struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewRecipientProcess(arg Arg) (*RecipientProcess, error) {
+	s := &RecipientProcess{
+		sequenceElements: []Element{
+			NewElement("recipient", V2E(NewRecipient), WithElementContext(0)),
+			NewElement("processIdentifier", V2E(NewUnsigned), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

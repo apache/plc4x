@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type ActionList struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewActionList(arg Arg) (*ActionList, error) {
+	s := &ActionList{
+		sequenceElements: []Element{
+			NewElement("action", SequenceOf(NewActionCommand), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

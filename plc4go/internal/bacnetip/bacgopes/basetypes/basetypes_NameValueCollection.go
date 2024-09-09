@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type NameValueCollection struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNameValueCollection(arg Arg) (*NameValueCollection, error) {
+	s := &NameValueCollection{
+		sequenceElements: []Element{
+			NewElement("members", SequenceOfs(NewNameValue), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LightingInProgress struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLightingInProgress(arg Arg) (*LightingInProgress, error) {
+	s := &LightingInProgress{
+		enumerations: map[string]uint64{"idle": 0,
+			"fadeActive":    1,
+			"rampActive":    2,
+			"notControlled": 3,
+			"other":         4,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

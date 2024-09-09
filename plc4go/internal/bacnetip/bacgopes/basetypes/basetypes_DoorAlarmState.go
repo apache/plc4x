@@ -18,3 +18,32 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type DoorAlarmState struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewDoorAlarmState(arg Arg) (*DoorAlarmState, error) {
+	s := &DoorAlarmState{
+		vendorRange: vendorRange{256, 65535},
+		enumerations: map[string]uint64{"normal": 0,
+			"alarm":           1,
+			"doorOpenTooLong": 2,
+			"forcedOpen":      3,
+			"tamper":          4,
+			"doorFault":       5,
+			"lockDown":        6,
+			"freeAccess":      7,
+			"egressOpen":      8,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

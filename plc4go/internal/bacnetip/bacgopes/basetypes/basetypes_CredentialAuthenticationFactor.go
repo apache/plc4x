@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type CredentialAuthenticationFactor struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewCredentialAuthenticationFactor(arg Arg) (*CredentialAuthenticationFactor, error) {
+	s := &CredentialAuthenticationFactor{
+		sequenceElements: []Element{
+			NewElement("disable", V2E(NewAccessAuthenticationFactorDisable), WithElementContext(0)),
+			NewElement("authenticationFactor", V2E(NewAuthenticationFactor), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

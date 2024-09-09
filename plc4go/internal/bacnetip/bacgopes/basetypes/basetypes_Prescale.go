@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Prescale struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewPrescale(arg Arg) (*Prescale, error) {
+	s := &Prescale{
+		sequenceElements: []Element{
+			NewElement("multiplier", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("moduloDivide", V2E(NewUnsigned), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

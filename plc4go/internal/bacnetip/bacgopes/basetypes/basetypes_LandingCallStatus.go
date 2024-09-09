@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LandingCallStatus struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewLandingCallStatus(arg Arg) (*LandingCallStatus, error) {
+	s := &LandingCallStatus{
+		sequenceElements: []Element{
+			NewElement("floorNumber", V2E(NewUnsigned8), WithElementContext(0)),
+			NewElement("command", V2E(NewLandingCallStatusCommand)),
+			NewElement("floorText", V2E(NewCharacterString), WithElementContext(3), WithElementOptional(true)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

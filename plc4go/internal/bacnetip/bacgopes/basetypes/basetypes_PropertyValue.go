@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type PropertyValue struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewPropertyValue(arg Arg) (*PropertyValue, error) {
+	s := &PropertyValue{
+		sequenceElements: []Element{
+			NewElement("propertyIdentifier", V2E(NewPropertyIdentifier), WithElementContext(0)),
+			NewElement("propertyArrayIndex", V2E(NewUnsigned), WithElementContext(1), WithElementOptional(true)),
+			NewElement("value", Vs2E(NewAny), WithElementContext(2)),
+			NewElement("priority", V2E(NewUnsigned), WithElementContext(3), WithElementOptional(true)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

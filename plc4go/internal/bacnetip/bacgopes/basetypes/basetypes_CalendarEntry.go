@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type CalendarEntry struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewCalendarEntry(arg Arg) (*CalendarEntry, error) {
+	s := &CalendarEntry{
+		choiceElements: []Element{
+			NewElement("date", Vs2E(NewDate), WithElementContext(0)),
+			NewElement("dateRange", V2E(NewDateRange), WithElementContext(1)),
+			NewElement("weekNDay", V2E(NewWeekNDay), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ProcessIdSelection struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewProcessIdSelection(arg Arg) (*ProcessIdSelection, error) {
+	s := &ProcessIdSelection{
+		choiceElements: []Element{
+			NewElement("processIdentifier", V2E(NewUnsigned)),
+			NewElement("nullValue", V2E(NewNull)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

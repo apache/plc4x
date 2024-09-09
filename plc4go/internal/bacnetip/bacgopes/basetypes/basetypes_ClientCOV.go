@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ClientCOV struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewClientCOV(arg Arg) (*ClientCOV, error) {
+	s := &ClientCOV{
+		choiceElements: []Element{
+			NewElement("realIncrement", V2E(NewReal)),
+			NewElement("defaultIncrement", V2E(NewNull)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

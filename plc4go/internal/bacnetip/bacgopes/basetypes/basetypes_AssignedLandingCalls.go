@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type AssignedLandingCalls struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewAssignedLandingCalls(arg Arg) (*AssignedLandingCalls, error) {
+	s := &AssignedLandingCalls{
+		sequenceElements: []Element{
+			NewElement("landingCalls", SequenceOf(NewAssignedLandingCallsLandingCalls), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

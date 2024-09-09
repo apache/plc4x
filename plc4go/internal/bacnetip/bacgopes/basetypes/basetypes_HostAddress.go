@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type HostAddress struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewHostAddress(arg Arg) (*HostAddress, error) {
+	s := &HostAddress{
+		choiceElements: []Element{
+			NewElement("none", V2E(NewNull), WithElementContext(0)),
+			NewElement("ipAddress", V2E(NewOctetString), WithElementContext(1)), //  4 octets for B/IP or 16 octets for B/IPv6
+			NewElement("name", V2E(NewCharacterString), WithElementContext(2)),  //  Internet host name (see RFC 1123)
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

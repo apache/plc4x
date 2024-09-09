@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NotificationParametersUnsignedRange struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersUnsignedRange(arg Arg) (*NotificationParametersUnsignedRange, error) {
+	s := &NotificationParametersUnsignedRange{
+		sequenceElements: []Element{
+			NewElement("exceedingValue", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("statusFlags", V2E(NewStatusFlags), WithElementContext(1)),
+			NewElement("exceedingLimit", V2E(NewUnsigned), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

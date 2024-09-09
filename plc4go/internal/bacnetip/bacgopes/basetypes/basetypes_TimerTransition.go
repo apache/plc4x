@@ -18,3 +18,30 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type TimerTransition struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewTimerTransition(arg Arg) (*TimerTransition, error) {
+	s := &TimerTransition{
+		enumerations: map[string]uint64{"none": 0,
+			"idleToRunning":    1,
+			"runningToIdle":    2,
+			"runningToRunning": 3,
+			"runningToExpired": 4,
+			"forcedToExpired":  5,
+			"expiredToIdle":    6,
+			"expiredToRunning": 7,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

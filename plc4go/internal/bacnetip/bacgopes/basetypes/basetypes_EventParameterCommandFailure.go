@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventParameterCommandFailure struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewEventParameterCommandFailure(arg Arg) (*EventParameterCommandFailure, error) {
+	s := &EventParameterCommandFailure{
+		sequenceElements: []Element{
+			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("feedbackPropertyReference", V2E(NewDeviceObjectPropertyReference), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

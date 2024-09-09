@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type DateTime struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewDateTime(arg Arg) (*DateTime, error) {
+	s := &DateTime{
+		sequenceElements: []Element{
+			NewElement("date", Vs2E(NewDate)),
+			NewElement("time", Vs2E(NewTime)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

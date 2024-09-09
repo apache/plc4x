@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AccumulatorRecordAccumulatorStatus struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAccumulatorRecordAccumulatorStatus(arg Arg) (*AccumulatorRecordAccumulatorStatus, error) {
+	s := &AccumulatorRecordAccumulatorStatus{
+		enumerations: map[string]uint64{"normal": 0,
+			"starting":  1,
+			"recovered": 2,
+			"abnormal":  3,
+			"failed":    4,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

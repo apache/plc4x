@@ -18,3 +18,28 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ProgramState struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewProgramState(arg Arg) (*ProgramState, error) {
+	s := &ProgramState{
+		enumerations: map[string]uint64{"idle": 0,
+			"loading":   1,
+			"running":   2,
+			"waiting":   3,
+			"halted":    4,
+			"unloading": 5,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

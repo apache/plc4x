@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type HostNPort struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewHostNPort(arg Arg) (*HostNPort, error) {
+	s := &HostNPort{
+		sequenceElements: []Element{
+			NewElement("host", V2E(NewHostAddress), WithElementContext(0)),
+			NewElement("port", V2E(NewUnsigned16), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type RouterEntryStatus struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewRouterEntryStatus(arg Arg) (*RouterEntryStatus, error) {
+	s := &RouterEntryStatus{
+		enumerations: map[string]uint64{"available": 0,
+			"busy":         1,
+			"disconnected": 2,
+		},
+	}
+	panic("implement me enumasdasd")
+	return s, nil
+}
+
+//
+//   Forward Sequences
+//

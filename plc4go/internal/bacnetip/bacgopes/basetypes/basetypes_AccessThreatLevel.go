@@ -18,3 +18,22 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AccessThreatLevel struct {
+	*Unsigned
+}
+
+func NewAccessThreatLevel(arg Arg) (*AccessThreatLevel, error) {
+	s := &AccessThreatLevel{}
+	_low_limit := 0
+	_ = _low_limit
+	_high_limit := 100
+	_ = _high_limit
+	panic("implement me")
+	return s, nil
+}

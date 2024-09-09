@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LiftCarCallList struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewLiftCarCallList(arg Arg) (*LiftCarCallList, error) {
+	s := &LiftCarCallList{
+		sequenceElements: []Element{
+			NewElement("floorNumbers", SequenceOf(NewUnsigned8), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

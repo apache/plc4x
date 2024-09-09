@@ -18,3 +18,30 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AccessZoneOccupancyState struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAccessZoneOccupancyState(arg Arg) (*AccessZoneOccupancyState, error) {
+	s := &AccessZoneOccupancyState{
+		vendorRange: vendorRange{64, 65535},
+		enumerations: map[string]uint64{"normal": 0,
+			"belowLowerLimit": 1,
+			"atLowerLimit":    2,
+			"atUpperLimit":    3,
+			"aboveUpperLimit": 4,
+			"disabled":        5,
+			"notSupported":    6,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

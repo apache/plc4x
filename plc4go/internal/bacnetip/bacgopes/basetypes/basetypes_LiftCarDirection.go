@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LiftCarDirection struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLiftCarDirection(arg Arg) (*LiftCarDirection, error) {
+	s := &LiftCarDirection{
+		vendorRange: vendorRange{1024, 65535},
+		enumerations: map[string]uint64{"unknown": 0,
+			"none":      1,
+			"stopped":   2,
+			"up":        3,
+			"down":      4,
+			"upAndDown": 5,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

@@ -18,3 +18,33 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NetworkType struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewNetworkType(arg Arg) (*NetworkType, error) {
+	s := &NetworkType{
+		enumerations: map[string]uint64{"ethernet": 0,
+			"arcnet":  1,
+			"mstp":    2,
+			"ptp":     3,
+			"lontalk": 4,
+			"ipv4":    5,
+			"zigbee":  6,
+			"virtual": 7,
+			// "non-bacnet":  8  Removed in Version 1, Revision 18,
+			"ipv6":   9,
+			"serial": 10,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

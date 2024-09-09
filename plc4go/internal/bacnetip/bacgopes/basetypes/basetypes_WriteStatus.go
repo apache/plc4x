@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type WriteStatus struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewWriteStatus(arg Arg) (*WriteStatus, error) {
+	s := &WriteStatus{
+		enumerations: map[string]uint64{"idle": 0,
+			"inProgress": 1,
+			"successful": 2,
+			"failed":     3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

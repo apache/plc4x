@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventState struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewEventState(arg Arg) (*EventState, error) {
+	s := &EventState{
+		vendorRange: vendorRange{64, 65535},
+		enumerations: map[string]uint64{"normal": 0,
+			"fault":           1,
+			"offnormal":       2,
+			"highLimit":       3,
+			"lowLimit":        4,
+			"lifeSafetyAlarm": 5,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

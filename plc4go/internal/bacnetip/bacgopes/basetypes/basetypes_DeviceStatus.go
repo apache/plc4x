@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type DeviceStatus struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewDeviceStatus(arg Arg) (*DeviceStatus, error) {
+	s := &DeviceStatus{
+		vendorRange: vendorRange{64, 65535},
+		enumerations: map[string]uint64{"operational": 0,
+			"operationalReadOnly": 1,
+			"downloadRequired":    2,
+			"downloadInProgress":  3,
+			"nonOperational":      4,
+			"backupInProgress":    5,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

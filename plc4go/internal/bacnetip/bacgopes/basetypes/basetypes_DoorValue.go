@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type DoorValue struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewDoorValue(arg Arg) (*DoorValue, error) {
+	s := &DoorValue{
+		enumerations: map[string]uint64{"lock": 0,
+			"unlock":              1,
+			"pulseUnlock":         2,
+			"extendedPulseUnlock": 3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

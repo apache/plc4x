@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type DeviceObjectReference struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewDeviceObjectReference(arg Arg) (*DeviceObjectReference, error) {
+	s := &DeviceObjectReference{
+		sequenceElements: []Element{
+			NewElement("deviceIdentifier", Vs2E(NewObjectIdentifier), WithElementContext(0), WithElementOptional(true)),
+			NewElement("objectIdentifier", Vs2E(NewObjectIdentifier), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

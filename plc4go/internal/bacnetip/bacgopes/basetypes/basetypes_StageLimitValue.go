@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type StageLimitValue struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewStageLimitValue(arg Arg) (*StageLimitValue, error) {
+	s := &StageLimitValue{
+		sequenceElements: []Element{
+			NewElement("limit", V2E(NewReal)),
+			NewElement("values", Vs2E(NewBitString)),
+			NewElement("deadband", V2E(NewReal)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

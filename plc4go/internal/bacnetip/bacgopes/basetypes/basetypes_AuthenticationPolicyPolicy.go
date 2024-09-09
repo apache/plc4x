@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuthenticationPolicyPolicy struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewAuthenticationPolicyPolicy(arg Arg) (*AuthenticationPolicyPolicy, error) {
+	s := &AuthenticationPolicyPolicy{
+		sequenceElements: []Element{
+			NewElement("credentialDataInput", V2E(NewDeviceObjectReference), WithElementContext(0)),
+			NewElement("index", V2E(NewUnsigned), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

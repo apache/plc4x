@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ObjectPropertyReference struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewObjectPropertyReference(arg Arg) (*ObjectPropertyReference, error) {
+	s := &ObjectPropertyReference{
+		sequenceElements: []Element{
+			NewElement("objectIdentifier", Vs2E(NewObjectIdentifier), WithElementContext(0)),
+			NewElement("propertyIdentifier", V2E(NewPropertyIdentifier), WithElementContext(1)),
+			NewElement("propertyArrayIndex", V2E(NewUnsigned), WithElementContext(2), WithElementOptional(true)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

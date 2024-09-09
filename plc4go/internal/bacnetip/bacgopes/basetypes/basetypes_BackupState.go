@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type BackupState struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewBackupState(arg Arg) (*BackupState, error) {
+	s := &BackupState{
+		enumerations: map[string]uint64{"idle": 0,
+			"preparingForBackup":  1,
+			"preparingForRestore": 2,
+			"performingABackup":   3,
+			"performingARestore":  4,
+			"backupFailure":       5,
+			"restoreFailure":      6,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type FaultParameterExtended struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewFaultParameterExtended(arg Arg) (*FaultParameterExtended, error) {
+	s := &FaultParameterExtended{
+		sequenceElements: []Element{
+			NewElement("vendorId", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("extendedFaultType", V2E(NewUnsigned), WithElementContext(1)),
+			NewElement("parameters", SequenceOf(NewFaultParameterExtendedParameters), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

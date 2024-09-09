@@ -18,3 +18,30 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type VTClass struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewVTClass(arg Arg) (*VTClass, error) {
+	s := &VTClass{
+		vendorRange: vendorRange{64, 65535},
+		enumerations: map[string]uint64{"defaultTerminal": 0,
+			"ansiX364": 1,
+			"decVt52":  2,
+			"decVt100": 3,
+			"decVt220": 4,
+			"hp70094":  5,
+			"ibm3130":  6,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

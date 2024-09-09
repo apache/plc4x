@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Polarity struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewPolarity(arg Arg) (*Polarity, error) {
+	s := &Polarity{
+		enumerations: map[string]uint64{"normal": 0,
+			"reverse": 1,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

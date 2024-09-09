@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuditLevel struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAuditLevel(arg Arg) (*AuditLevel, error) {
+	s := &AuditLevel{
+		vendorRange: vendorRange{128, 255},
+		enumerations: map[string]uint64{"none": 0,
+			"auditAll":    1,
+			"auditConfig": 2,
+			"default":     3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuditLogRecordLogDatum struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewAuditLogRecordLogDatum(arg Arg) (*AuditLogRecordLogDatum, error) {
+	s := &AuditLogRecordLogDatum{
+		choiceElements: []Element{
+			NewElement("logStatus", V2E(NewLogStatus), WithElementContext(0)),
+			NewElement("auditNotification", V2E(NewAuditNotification), WithElementContext(1)),
+			NewElement("timeChange", V2E(NewReal)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

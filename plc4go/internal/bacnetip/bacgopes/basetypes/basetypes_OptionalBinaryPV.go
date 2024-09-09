@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type OptionalBinaryPV struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewOptionalBinaryPV(arg Arg) (*OptionalBinaryPV, error) {
+	s := &OptionalBinaryPV{
+		choiceElements: []Element{
+			NewElement("null", V2E(NewNull)),
+			NewElement("binaryPV", V2E(NewBinaryPV)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

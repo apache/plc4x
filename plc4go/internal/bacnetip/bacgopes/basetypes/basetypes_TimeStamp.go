@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type TimeStamp struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewTimeStamp(arg Arg) (*TimeStamp, error) {
+	s := &TimeStamp{
+		choiceElements: []Element{
+			NewElement("time", Vs2E(NewTime), WithElementContext(0)),
+			NewElement("sequenceNumber", V2E(NewUnsigned), WithElementContext(1)),
+			NewElement("dateTime", V2E(NewDateTime), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

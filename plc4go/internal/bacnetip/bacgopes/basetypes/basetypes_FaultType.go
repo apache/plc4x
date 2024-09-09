@@ -18,3 +18,28 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type FaultType struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewFaultType(arg Arg) (*FaultType, error) {
+	s := &FaultType{
+		enumerations: map[string]uint64{"none": 0,
+			"faultCharacterstring": 1,
+			"faultExtended":        2,
+			"faultLifeSafety":      3,
+			"faultState":           4,
+			"faultStatusFlags":     5,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

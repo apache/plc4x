@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type AuditLogQueryParameters struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewAuditLogQueryParameters(arg Arg) (*AuditLogQueryParameters, error) {
+	s := &AuditLogQueryParameters{
+		choiceElements: []Element{
+			NewElement("byTarget", V2E(NewAuditLogQueryParametersByTarget), WithElementContext(0)),
+			NewElement("bySource", V2E(NewAuditLogQueryParametersBySource), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

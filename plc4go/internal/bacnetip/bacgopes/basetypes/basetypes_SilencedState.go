@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type SilencedState struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewSilencedState(arg Arg) (*SilencedState, error) {
+	s := &SilencedState{
+		vendorRange: vendorRange{64, 65535},
+		enumerations: map[string]uint64{"unsilenced": 0,
+			"audibleSilenced": 1,
+			"visibleSilenced": 2,
+			"allSilenced":     3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

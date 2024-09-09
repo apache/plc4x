@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NotificationParametersBufferReady struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersBufferReady(arg Arg) (*NotificationParametersBufferReady, error) {
+	s := &NotificationParametersBufferReady{
+		sequenceElements: []Element{
+			NewElement("bufferProperty", V2E(NewDeviceObjectPropertyReference), WithElementContext(0)),
+			NewElement("previousNotification", V2E(NewUnsigned), WithElementContext(1)),
+			NewElement("currentNotification", V2E(NewUnsigned), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

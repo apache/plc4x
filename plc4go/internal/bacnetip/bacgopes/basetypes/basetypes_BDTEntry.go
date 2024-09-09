@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type BDTEntry struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewBDTEntry(arg Arg) (*BDTEntry, error) {
+	s := &BDTEntry{
+		sequenceElements: []Element{
+			NewElement("bbmdAddress", V2E(NewHostNPort), WithElementContext(0)),
+			NewElement("broadcastMask", V2E(NewOctetString), WithElementContext(1)), //  shall be present if BACnet/IP, and absent for BACnet/IPv6
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AccessPassbackMode struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAccessPassbackMode(arg Arg) (*AccessPassbackMode, error) {
+	s := &AccessPassbackMode{
+		enumerations: map[string]uint64{"passbackOff": 0,
+			"hardPassback": 1,
+			"softPassback": 2,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

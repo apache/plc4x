@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LockStatus struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLockStatus(arg Arg) (*LockStatus, error) {
+	s := &LockStatus{
+		enumerations: map[string]uint64{"locked": 0,
+			"unlocked": 1,
+			"fault":    2,
+			"unknown":  3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

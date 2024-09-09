@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type SpecialEvent struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewSpecialEvent(arg Arg) (*SpecialEvent, error) {
+	s := &SpecialEvent{
+		sequenceElements: []Element{
+			NewElement("period", V2E(NewSpecialEventPeriod)),
+			NewElement("listOfTimeValues", SequenceOf(NewTimeValue), WithElementContext(2)),
+			NewElement("eventPriority", V2E(NewUnsigned), WithElementContext(3)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

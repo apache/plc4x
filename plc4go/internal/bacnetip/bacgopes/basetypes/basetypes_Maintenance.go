@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Maintenance struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewMaintenance(arg Arg) (*Maintenance, error) {
+	s := &Maintenance{
+		vendorRange: vendorRange{256, 65535},
+		enumerations: map[string]uint64{"none": 0,
+			"periodicTest":           1,
+			"needServiceOperational": 2,
+			"needServiceInoperative": 3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

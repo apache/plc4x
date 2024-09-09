@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type FaultParameterState struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewFaultParameterState(arg Arg) (*FaultParameterState, error) {
+	s := &FaultParameterState{
+		sequenceElements: []Element{
+			NewElement("listOfFaultValues", SequenceOf(NewPropertyStates), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

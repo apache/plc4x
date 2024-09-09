@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EscalatorMode struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewEscalatorMode(arg Arg) (*EscalatorMode, error) {
+	s := &EscalatorMode{
+		vendorRange: vendorRange{1024, 65535},
+		enumerations: map[string]uint64{"unknown": 0,
+			"stop":         1,
+			"up":           2,
+			"down":         3,
+			"inspection":   4,
+			"outOfService": 5,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

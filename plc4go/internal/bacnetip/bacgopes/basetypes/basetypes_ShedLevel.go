@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ShedLevel struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewShedLevel(arg Arg) (*ShedLevel, error) {
+	s := &ShedLevel{
+		choiceElements: []Element{
+			NewElement("percent", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("level", V2E(NewUnsigned), WithElementContext(1)),
+			NewElement("amount", V2E(NewReal), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

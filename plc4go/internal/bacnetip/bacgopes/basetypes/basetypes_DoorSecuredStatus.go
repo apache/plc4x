@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type DoorSecuredStatus struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewDoorSecuredStatus(arg Arg) (*DoorSecuredStatus, error) {
+	s := &DoorSecuredStatus{
+		enumerations: map[string]uint64{"secured": 0,
+			"unsecured": 1,
+			"unknown":   2,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Action struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAction(arg Arg) (*Action, error) {
+	s := &Action{
+		enumerations: map[string]uint64{"direct": 0,
+			"reverse": 1,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

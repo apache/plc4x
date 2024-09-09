@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ProtocolLevel struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewProtocolLevel(arg Arg) (*ProtocolLevel, error) {
+	s := &ProtocolLevel{
+		enumerations: map[string]uint64{"physical": 0,
+			"protocol":             1,
+			"bacnetApplication":    2,
+			"nonBacnetApplication": 3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

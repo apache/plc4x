@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type VMACEntry struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewVMACEntry(arg Arg) (*VMACEntry, error) {
+	s := &VMACEntry{
+		sequenceElements: []Element{
+			NewElement("virtualMACAddress", V2E(NewOctetString), WithElementContext(0)), //  maximum size 6 octets
+			NewElement("nativeMACAddress", V2E(NewOctetString), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

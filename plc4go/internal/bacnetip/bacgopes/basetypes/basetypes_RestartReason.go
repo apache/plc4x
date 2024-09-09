@@ -18,3 +18,32 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type RestartReason struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewRestartReason(arg Arg) (*RestartReason, error) {
+	s := &RestartReason{
+		vendorRange: vendorRange{64, 255},
+		enumerations: map[string]uint64{"unknown": 0,
+			"coldstart":          1,
+			"warmstart":          2,
+			"detectedPowerLost":  3,
+			"detectedPoweredOff": 4,
+			"hardwareWatchdog":   5,
+			"softwareWatchdog":   6,
+			"suspended":          7,
+			"activateChanges":    8,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

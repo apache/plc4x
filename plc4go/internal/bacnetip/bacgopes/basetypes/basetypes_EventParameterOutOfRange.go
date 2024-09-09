@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventParameterOutOfRange struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewEventParameterOutOfRange(arg Arg) (*EventParameterOutOfRange, error) {
+	s := &EventParameterOutOfRange{
+		sequenceElements: []Element{
+			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("lowLimit", V2E(NewReal), WithElementContext(1)),
+			NewElement("highLimit", V2E(NewReal), WithElementContext(2)),
+			NewElement("deadband", V2E(NewReal), WithElementContext(3)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

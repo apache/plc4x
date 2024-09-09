@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuthenticationStatus struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAuthenticationStatus(arg Arg) (*AuthenticationStatus, error) {
+	s := &AuthenticationStatus{
+		enumerations: map[string]uint64{"notReady": 0,
+			"ready":                          1,
+			"disabled":                       2,
+			"waitingForAuthenticationFactor": 3,
+			"waitingForAccompaniment":        4,
+			"waitingForVerification":         5,
+			"inProgress":                     6,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

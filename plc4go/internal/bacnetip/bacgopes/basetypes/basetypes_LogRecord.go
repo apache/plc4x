@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type LogRecord struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewLogRecord(arg Arg) (*LogRecord, error) {
+	s := &LogRecord{
+		sequenceElements: []Element{
+			NewElement("timestamp", V2E(NewDateTime), WithElementContext(0)),
+			NewElement("logDatum", V2E(NewLogRecordLogDatum), WithElementContext(1)),
+			NewElement("statusFlags", V2E(NewStatusFlags), WithElementContext(2), WithElementOptional(true)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

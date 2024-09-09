@@ -18,3 +18,30 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ErrorClass struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewErrorClass(arg Arg) (*ErrorClass, error) {
+	s := &ErrorClass{
+		enumerations: map[string]uint64{"device": 0,
+			"object":        1,
+			"property":      2,
+			"resources":     3,
+			"security":      4,
+			"services":      5,
+			"vt":            6,
+			"communication": 7,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

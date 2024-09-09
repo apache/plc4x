@@ -18,3 +18,18 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type PriorityArray struct {
+}
+
+func NewPriorityArray(arg Arg) (*PriorityArray, error) {
+	s := &PriorityArray{}
+	ArrayOf(NewPriorityValue, 16, PriorityValue{})
+	panic("implementchoice")
+	return s, nil
+}

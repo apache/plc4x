@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type BinaryPV struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewBinaryPV(arg Arg) (*BinaryPV, error) {
+	s := &BinaryPV{
+		enumerations: map[string]uint64{"inactive": 0,
+			"active": 1,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

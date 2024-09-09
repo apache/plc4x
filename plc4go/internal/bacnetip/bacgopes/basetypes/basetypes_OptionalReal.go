@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type OptionalReal struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewOptionalReal(arg Arg) (*OptionalReal, error) {
+	s := &OptionalReal{
+		choiceElements: []Element{
+			NewElement("null", V2E(NewNull)),
+			NewElement("real", V2E(NewReal)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

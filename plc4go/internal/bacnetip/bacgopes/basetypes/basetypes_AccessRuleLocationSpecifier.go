@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AccessRuleLocationSpecifier struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAccessRuleLocationSpecifier(arg Arg) (*AccessRuleLocationSpecifier, error) {
+	s := &AccessRuleLocationSpecifier{
+		enumerations: map[string]uint64{"specified": 0,
+			"all": 1,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type FaultParameterLifeSafety struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewFaultParameterLifeSafety(arg Arg) (*FaultParameterLifeSafety, error) {
+	s := &FaultParameterLifeSafety{
+		sequenceElements: []Element{
+			NewElement("listOfFaultValues", SequenceOf(NewLifeSafetyState), WithElementContext(0)),
+			NewElement("modePropertyReference", V2E(NewDeviceObjectPropertyReference), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AddressBinding struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewAddressBinding(arg Arg) (*AddressBinding, error) {
+	s := &AddressBinding{
+		sequenceElements: []Element{
+			NewElement("deviceObjectIdentifier", Vs2E(NewObjectIdentifier)),
+			NewElement("deviceAddress", V2E(NewDeviceAddress)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type TimeValue struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewTimeValue(arg Arg) (*TimeValue, error) {
+	s := &TimeValue{
+		sequenceElements: []Element{
+			NewElement("time", Vs2E(NewTime)),
+			NewElement("value", Vs2E(NewAnyAtomic)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

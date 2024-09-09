@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NotificationParametersChangeOfBitstring struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersChangeOfBitstring(arg Arg) (*NotificationParametersChangeOfBitstring, error) {
+	s := &NotificationParametersChangeOfBitstring{
+		sequenceElements: []Element{
+			NewElement("referencedBitstring", Vs2E(NewBitString), WithElementContext(0)),
+			NewElement("statusFlags", V2E(NewStatusFlags), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

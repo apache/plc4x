@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type RouterEntry struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewRouterEntry(arg Arg) (*RouterEntry, error) {
+	s := &RouterEntry{
+		sequenceElements: []Element{
+			NewElement("networkNumber", V2E(NewUnsigned16), WithElementContext(0)),
+			NewElement("macAddress", V2E(NewOctetString), WithElementContext(1)),
+			NewElement("status", V2E(NewRouterEntryStatus), WithElementContext(2)), //  Defined Above
+			NewElement("performanceIndex", V2E(NewUnsigned8), WithElementContext(3), WithElementOptional(true)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

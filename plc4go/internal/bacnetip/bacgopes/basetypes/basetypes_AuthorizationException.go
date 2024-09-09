@@ -18,3 +18,30 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuthorizationException struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAuthorizationException(arg Arg) (*AuthorizationException, error) {
+	s := &AuthorizationException{
+		vendorRange: vendorRange{64, 255},
+		enumerations: map[string]uint64{"passback": 0,
+			"occupancyCheck":     1,
+			"accessRights":       2,
+			"lockout":            3,
+			"deny":               4,
+			"verification":       5,
+			"authorizationDelay": 6,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

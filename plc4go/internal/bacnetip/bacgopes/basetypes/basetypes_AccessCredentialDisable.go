@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AccessCredentialDisable struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAccessCredentialDisable(arg Arg) (*AccessCredentialDisable, error) {
+	s := &AccessCredentialDisable{
+		vendorRange: vendorRange{64, 65535},
+		enumerations: map[string]uint64{"none": 0,
+			"disable":        1,
+			"disableManual":  2,
+			"disableLockout": 3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

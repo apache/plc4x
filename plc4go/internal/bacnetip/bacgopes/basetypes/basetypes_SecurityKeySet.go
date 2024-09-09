@@ -18,3 +18,27 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type SecurityKeySet struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewSecurityKeySet(arg Arg) (*SecurityKeySet, error) {
+	s := &SecurityKeySet{
+		sequenceElements: []Element{
+			NewElement("keyRevision", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("activationTime", V2E(NewDateTime), WithElementContext(1)),
+			NewElement("expirationTime", V2E(NewDateTime), WithElementContext(2)),
+			NewElement("keyIds", SequenceOf(NewKeyIdentifier), WithElementContext(3)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

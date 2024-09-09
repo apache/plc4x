@@ -18,3 +18,28 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventTransitionBits struct {
+	*BitString
+	bitLen      int
+	bitNames    map[string]int
+	vendorRange vendorRange
+}
+
+func NewEventTransitionBits(arg Arg) (*EventTransitionBits, error) {
+	s := &EventTransitionBits{
+		bitNames: map[string]int{
+			"toOffnormal": 0,
+			"toFault":     1,
+			"toNormal":    2,
+		},
+		bitLen: 3,
+	}
+	panic("implement me")
+	return s, nil
+}

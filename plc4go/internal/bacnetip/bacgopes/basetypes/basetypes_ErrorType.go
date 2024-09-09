@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type ErrorType struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewErrorType(arg Arg) (*ErrorType, error) {
+	s := &ErrorType{
+		sequenceElements: []Element{
+			NewElement("errorClass", V2E(NewErrorClass)),
+			NewElement("errorCode", V2E(NewErrorCode)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type KeyIdentifier struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewKeyIdentifier(arg Arg) (*KeyIdentifier, error) {
+	s := &KeyIdentifier{
+		sequenceElements: []Element{
+			NewElement("algorithm", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("keyId", V2E(NewUnsigned), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

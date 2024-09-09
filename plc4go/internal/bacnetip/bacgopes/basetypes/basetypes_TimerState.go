@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type TimerState struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewTimerState(arg Arg) (*TimerState, error) {
+	s := &TimerState{
+		enumerations: map[string]uint64{"idle": 0,
+			"running": 1,
+			"expired": 2,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

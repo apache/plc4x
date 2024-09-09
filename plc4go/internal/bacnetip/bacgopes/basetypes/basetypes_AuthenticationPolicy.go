@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuthenticationPolicy struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewAuthenticationPolicy(arg Arg) (*AuthenticationPolicy, error) {
+	s := &AuthenticationPolicy{
+		sequenceElements: []Element{
+			NewElement("policy", SequenceOf(NewAuthenticationPolicyPolicy), WithElementContext(0)),
+			NewElement("orderEnforced", V2E(NewBoolean), WithElementContext(1)),
+			NewElement("timeout", V2E(NewUnsigned), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

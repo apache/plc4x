@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NotificationParametersChangeOfValueNewValue struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewNotificationParametersChangeOfValueNewValue(arg Arg) (*NotificationParametersChangeOfValueNewValue, error) {
+	s := &NotificationParametersChangeOfValueNewValue{
+		choiceElements: []Element{
+			NewElement("changedBits", Vs2E(NewBitString), WithElementContext(0)),
+			NewElement("changedValue", V2E(NewReal), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

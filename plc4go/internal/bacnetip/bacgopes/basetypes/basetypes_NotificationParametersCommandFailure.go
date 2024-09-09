@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type NotificationParametersCommandFailure struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersCommandFailure(arg Arg) (*NotificationParametersCommandFailure, error) {
+	s := &NotificationParametersCommandFailure{
+		sequenceElements: []Element{
+			NewElement("commandValue", Vs2E(NewAny), WithElementContext(0)),
+			NewElement("statusFlags", V2E(NewStatusFlags), WithElementContext(1)),
+			NewElement("feedbackValue", Vs2E(NewAny), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

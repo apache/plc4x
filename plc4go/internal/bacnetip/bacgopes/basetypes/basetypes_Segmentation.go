@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Segmentation struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewSegmentation(arg Arg) (*Segmentation, error) {
+	s := &Segmentation{
+		enumerations: map[string]uint64{"segmentedBoth": 0,
+			"segmentedTransmit": 1,
+			"segmentedReceive":  2,
+			"noSegmentation":    3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

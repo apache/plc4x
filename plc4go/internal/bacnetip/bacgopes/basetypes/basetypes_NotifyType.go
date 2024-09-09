@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NotifyType struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewNotifyType(arg Arg) (*NotifyType, error) {
+	s := &NotifyType{
+		enumerations: map[string]uint64{"alarm": 0,
+			"event":           1,
+			"ackNotification": 2,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

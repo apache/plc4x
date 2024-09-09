@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Address struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewAddress(arg Arg) (*Address, error) {
+	s := &Address{
+		sequenceElements: []Element{
+			NewElement("networkNumber", V2E(NewUnsigned16)),
+			NewElement("macAddress", V2E(NewOctetString)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

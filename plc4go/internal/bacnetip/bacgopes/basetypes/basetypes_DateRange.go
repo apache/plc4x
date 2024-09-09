@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type DateRange struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewDateRange(arg Arg) (*DateRange, error) {
+	s := &DateRange{
+		sequenceElements: []Element{
+			NewElement("startDate", Vs2E(NewDate)),
+			NewElement("endDate", Vs2E(NewDate)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,33 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LiftCarDriveStatus struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLiftCarDriveStatus(arg Arg) (*LiftCarDriveStatus, error) {
+	s := &LiftCarDriveStatus{
+		vendorRange: vendorRange{1024, 65535},
+		enumerations: map[string]uint64{"unknown": 0,
+			"stationary":      1,
+			"braking":         2,
+			"accelerate":      3,
+			"decelerate":      4,
+			"ratedSpeed":      5,
+			"singleFloorJump": 6,
+			"twoFloorJump":    7,
+			"threeFloorJump":  8,
+			"multiFloorJump":  9,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

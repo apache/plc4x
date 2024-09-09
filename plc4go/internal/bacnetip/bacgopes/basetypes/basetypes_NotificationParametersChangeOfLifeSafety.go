@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type NotificationParametersChangeOfLifeSafety struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersChangeOfLifeSafety(arg Arg) (*NotificationParametersChangeOfLifeSafety, error) {
+	s := &NotificationParametersChangeOfLifeSafety{
+		sequenceElements: []Element{
+			NewElement("newState", V2E(NewLifeSafetyState), WithElementContext(0)),
+			NewElement("newMode", V2E(NewLifeSafetyMode), WithElementContext(1)),
+			NewElement("statusFlags", V2E(NewStatusFlags), WithElementContext(2)),
+			NewElement("operationExpected", V2E(NewLifeSafetyOperation), WithElementContext(3)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

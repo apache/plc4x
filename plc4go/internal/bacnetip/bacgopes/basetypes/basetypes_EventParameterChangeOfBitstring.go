@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventParameterChangeOfBitstring struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewEventParameterChangeOfBitstring(arg Arg) (*EventParameterChangeOfBitstring, error) {
+	s := &EventParameterChangeOfBitstring{
+		sequenceElements: []Element{
+			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("bitmask", Vs2E(NewBitString), WithElementContext(1)),
+			NewElement("listOfBitstringValues", SequenceOfs(NewBitString), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

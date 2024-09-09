@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type SecurityPolicy struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewSecurityPolicy(arg Arg) (*SecurityPolicy, error) {
+	s := &SecurityPolicy{
+		enumerations: map[string]uint64{"plainNonTrusted": 0,
+			"plainTrusted":     1,
+			"signedTrusted":    2,
+			"encryptedTrusted": 3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

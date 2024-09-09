@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type SpecialEventPeriod struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewSpecialEventPeriod(arg Arg) (*SpecialEventPeriod, error) {
+	s := &SpecialEventPeriod{
+		choiceElements: []Element{
+			NewElement("calendarEntry", V2E(NewCalendarEntry), WithElementContext(0)),
+			NewElement("calendarReference", Vs2E(NewObjectIdentifier), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LoggingType struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLoggingType(arg Arg) (*LoggingType, error) {
+	s := &LoggingType{
+		vendorRange: vendorRange{64, 255},
+		enumerations: map[string]uint64{"polled": 0,
+			"cov":       1,
+			"triggered": 2,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

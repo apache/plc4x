@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type OptionalCharacterString struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewOptionalCharacterString(arg Arg) (*OptionalCharacterString, error) {
+	s := &OptionalCharacterString{
+		choiceElements: []Element{
+			NewElement("null", V2E(NewNull)),
+			NewElement("characterstring", V2E(NewCharacterString)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

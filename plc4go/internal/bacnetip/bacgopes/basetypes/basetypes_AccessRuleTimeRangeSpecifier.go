@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AccessRuleTimeRangeSpecifier struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAccessRuleTimeRangeSpecifier(arg Arg) (*AccessRuleTimeRangeSpecifier, error) {
+	s := &AccessRuleTimeRangeSpecifier{
+		enumerations: map[string]uint64{"specified": 0,
+			"always": 1,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

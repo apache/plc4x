@@ -18,3 +18,33 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LifeSafetyOperation struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLifeSafetyOperation(arg Arg) (*LifeSafetyOperation, error) {
+	s := &LifeSafetyOperation{
+		vendorRange: vendorRange{64, 65535},
+		enumerations: map[string]uint64{"none": 0,
+			"silence":          1,
+			"silenceAudible":   2,
+			"silenceVisual":    3,
+			"reset":            4,
+			"resetAlarm":       5,
+			"resetFault":       6,
+			"unsilence":        7,
+			"unsilenceAudible": 8,
+			"unsilenceVisual":  9,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

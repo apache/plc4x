@@ -18,3 +18,33 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type StatusFlags struct {
+	*BitString
+	bitLen      int
+	bitNames    map[string]int
+	vendorRange vendorRange
+}
+
+func NewStatusFlags(arg Arg) (*StatusFlags, error) {
+	s := &StatusFlags{
+		bitNames: map[string]int{
+			"inAlarm":      0,
+			"fault":        1,
+			"overridden":   2,
+			"outOfService": 3,
+		},
+		bitLen: 4,
+	}
+	panic("implement me")
+	return s, nil
+}
+
+//
+//   Enumerations
+//

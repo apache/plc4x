@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NotificationParametersChangeOfStatusFlagsType struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersChangeOfStatusFlagsType(arg Arg) (*NotificationParametersChangeOfStatusFlagsType, error) {
+	s := &NotificationParametersChangeOfStatusFlagsType{
+		sequenceElements: []Element{
+			NewElement("presentValue", V2E(NewCharacterString), WithElementContext(0)),
+			NewElement("referencedFlags", V2E(NewStatusFlags), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

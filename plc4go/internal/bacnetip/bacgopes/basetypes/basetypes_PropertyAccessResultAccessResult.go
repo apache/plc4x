@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type PropertyAccessResultAccessResult struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewPropertyAccessResultAccessResult(arg Arg) (*PropertyAccessResultAccessResult, error) {
+	s := &PropertyAccessResultAccessResult{
+		choiceElements: []Element{
+			NewElement("propertyValue", Vs2E(NewAny), WithElementContext(4)),
+			NewElement("propertyAccessError", V2E(NewErrorType), WithElementContext(5)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

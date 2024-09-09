@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ObjectSelector struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewObjectSelector(arg Arg) (*ObjectSelector, error) {
+	s := &ObjectSelector{
+		choiceElements: []Element{
+			NewElement("none", V2E(NewNull)),
+			NewElement("object", Vs2E(NewObjectIdentifier)),
+			NewElement("objectType", Vs2E(NewObjectType)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

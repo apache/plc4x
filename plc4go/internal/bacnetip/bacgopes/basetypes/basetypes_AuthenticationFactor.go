@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuthenticationFactor struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewAuthenticationFactor(arg Arg) (*AuthenticationFactor, error) {
+	s := &AuthenticationFactor{
+		sequenceElements: []Element{
+			NewElement("formatType", V2E(NewAuthenticationFactorType), WithElementContext(0)),
+			NewElement("formatClass", V2E(NewUnsigned), WithElementContext(1)),
+			NewElement("value", V2E(NewOctetString), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

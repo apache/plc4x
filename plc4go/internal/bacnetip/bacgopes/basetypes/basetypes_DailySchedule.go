@@ -18,3 +18,23 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type DailySchedule struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewDailySchedule(arg Arg) (*DailySchedule, error) {
+	s := &DailySchedule{
+		sequenceElements: []Element{
+			NewElement("daySchedule", SequenceOf(NewTimeValue), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

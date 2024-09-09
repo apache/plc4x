@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LogData struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewLogData(arg Arg) (*LogData, error) {
+	s := &LogData{
+		choiceElements: []Element{
+			NewElement("logStatus", V2E(NewLogStatus), WithElementContext(0)),
+			NewElement("logData", SequenceOf(NewLogDataLogData), WithElementContext(1)),
+			NewElement("timeChange", V2E(NewReal), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

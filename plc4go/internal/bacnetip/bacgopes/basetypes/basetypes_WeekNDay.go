@@ -18,3 +18,33 @@
  */
 
 package basetypes
+
+import (
+	"fmt"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type WeekNDay struct {
+	*OctetString
+}
+
+func NewWeekNDay(arg Arg) (*WeekNDay, error) {
+	s := &WeekNDay{}
+	panic("implement me")
+	return s, nil
+}
+
+func (w WeekNDay) String() string {
+	value := w.GetValue()
+	if len(value) != 3 {
+		return "WeekNDay(?): " + w.OctetString.String()
+	} else {
+		return fmt.Sprintf("WeekNDay(%d, %d, %d)", value[0], value[1], value[2])
+	}
+}
+
+//
+//   Sequences
+//

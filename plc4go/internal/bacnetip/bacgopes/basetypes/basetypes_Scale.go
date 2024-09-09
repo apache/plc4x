@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Scale struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewScale(arg Arg) (*Scale, error) {
+	s := &Scale{
+		choiceElements: []Element{
+			NewElement("floatScale", V2E(NewReal), WithElementContext(0)),
+			NewElement("integerScale", V2E(NewInteger), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

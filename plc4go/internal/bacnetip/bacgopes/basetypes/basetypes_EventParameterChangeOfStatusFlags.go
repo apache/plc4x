@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventParameterChangeOfStatusFlags struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewEventParameterChangeOfStatusFlags(arg Arg) (*EventParameterChangeOfStatusFlags, error) {
+	s := &EventParameterChangeOfStatusFlags{
+		sequenceElements: []Element{
+			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("selectedFlags", V2E(NewStatusFlags), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

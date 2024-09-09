@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventParameterChangeOfValueCOVCriteria struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewEventParameterChangeOfValueCOVCriteria(arg Arg) (*EventParameterChangeOfValueCOVCriteria, error) {
+	s := &EventParameterChangeOfValueCOVCriteria{
+		choiceElements: []Element{
+			NewElement("bitmask", Vs2E(NewBitString), WithElementContext(0)),
+			NewElement("referencedPropertyIncrement", V2E(NewReal), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

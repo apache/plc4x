@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type FaultParameterCharacterString struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewFaultParameterCharacterString(arg Arg) (*FaultParameterCharacterString, error) {
+	s := &FaultParameterCharacterString{
+		sequenceElements: []Element{
+			NewElement("listOfFaultValues", SequenceOf(NewCharacterString), WithElementContext(0)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

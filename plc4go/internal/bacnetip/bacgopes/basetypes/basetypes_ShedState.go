@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ShedState struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewShedState(arg Arg) (*ShedState, error) {
+	s := &ShedState{
+		enumerations: map[string]uint64{"shedInactive": 0,
+			"shedRequestPending": 1,
+			"shedCompliant":      2,
+			"shedNonCompliant":   3,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

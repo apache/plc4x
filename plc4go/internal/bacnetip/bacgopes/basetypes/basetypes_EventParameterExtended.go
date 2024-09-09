@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventParameterExtended struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewEventParameterExtended(arg Arg) (*EventParameterExtended, error) {
+	s := &EventParameterExtended{
+		sequenceElements: []Element{
+			NewElement("vendorId", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("extendedEventType", V2E(NewUnsigned), WithElementContext(1)),
+			NewElement("parameters", SequenceOf(NewEventParameterExtendedParameters), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

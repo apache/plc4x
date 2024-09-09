@@ -18,3 +18,24 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type FileAccessMethod struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewFileAccessMethod(arg Arg) (*FileAccessMethod, error) {
+	s := &FileAccessMethod{
+		enumerations: map[string]uint64{"recordAccess": 0,
+			"streamAccess": 1,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

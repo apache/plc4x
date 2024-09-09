@@ -18,3 +18,30 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Destination struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewDestination(arg Arg) (*Destination, error) {
+	s := &Destination{
+		sequenceElements: []Element{
+			NewElement("validDays", V2E(NewDaysOfWeek)),
+			NewElement("fromTime", Vs2E(NewTime)),
+			NewElement("toTime", Vs2E(NewTime)),
+			NewElement("recipient", V2E(NewRecipient)),
+			NewElement("processIdentifier", V2E(NewUnsigned)),
+			NewElement("issueConfirmedNotifications", V2E(NewBoolean)),
+			NewElement("transitions", V2E(NewEventTransitionBits)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

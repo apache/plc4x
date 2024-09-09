@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type IPMode struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewIPMode(arg Arg) (*IPMode, error) {
+	s := &IPMode{
+		enumerations: map[string]uint64{"normal": 0,
+			"foreign": 1,
+			"bbmd":    2,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

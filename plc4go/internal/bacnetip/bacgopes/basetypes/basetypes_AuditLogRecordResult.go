@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuditLogRecordResult struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewAuditLogRecordResult(arg Arg) (*AuditLogRecordResult, error) {
+	s := &AuditLogRecordResult{
+		sequenceElements: []Element{
+			NewElement("sequenceNumber", V2E(NewUnsigned), WithElementContext(0)), //  Unsigned64
+			NewElement("logRecord", V2E(NewAuditLogRecord), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

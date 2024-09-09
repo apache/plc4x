@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ValueSource struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewValueSource(arg Arg) (*ValueSource, error) {
+	s := &ValueSource{
+		choiceElements: []Element{
+			NewElement("none", V2E(NewNull), WithElementContext(0)),
+			NewElement("object", V2E(NewDeviceObjectReference), WithElementContext(1)),
+			NewElement("address", V2E(NewAddress), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

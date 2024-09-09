@@ -18,3 +18,28 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type ResultFlags struct {
+	*BitString
+	bitLen      int
+	bitNames    map[string]int
+	vendorRange vendorRange
+}
+
+func NewResultFlags(arg Arg) (*ResultFlags, error) {
+	s := &ResultFlags{
+		bitNames: map[string]int{
+			"firstItem": 0,
+			"lastItem":  1,
+			"moreItems": 2,
+		},
+		bitLen: 3,
+	}
+	panic("implement me")
+	return s, nil
+}

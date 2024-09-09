@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type PortPermission struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewPortPermission(arg Arg) (*PortPermission, error) {
+	s := &PortPermission{
+		sequenceElements: []Element{
+			NewElement("portId", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("enabled", V2E(NewBoolean), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

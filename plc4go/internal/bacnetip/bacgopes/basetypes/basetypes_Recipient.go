@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type Recipient struct {
+	*Choice
+	choiceElements []Element
+}
+
+func NewRecipient(arg Arg) (*Recipient, error) {
+	s := &Recipient{
+		choiceElements: []Element{
+			NewElement("device", Vs2E(NewObjectIdentifier), WithElementContext(0)),
+			NewElement("address", V2E(NewDeviceAddress), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

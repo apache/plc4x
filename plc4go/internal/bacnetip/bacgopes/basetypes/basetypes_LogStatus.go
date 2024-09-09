@@ -18,3 +18,28 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LogStatus struct {
+	*BitString
+	bitLen      int
+	bitNames    map[string]int
+	vendorRange vendorRange
+}
+
+func NewLogStatus(arg Arg) (*LogStatus, error) {
+	s := &LogStatus{
+		bitNames: map[string]int{
+			"logDisabled":    0,
+			"bufferPurged":   1,
+			"logInterrupted": 2,
+		},
+		bitLen: 3,
+	}
+	panic("implement me")
+	return s, nil
+}

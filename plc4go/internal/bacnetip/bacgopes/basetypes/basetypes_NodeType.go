@@ -18,3 +18,34 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NodeType struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewNodeType(arg Arg) (*NodeType, error) {
+	s := &NodeType{
+		enumerations: map[string]uint64{"unknown": 0,
+			"system":         1,
+			"network":        2,
+			"device":         3,
+			"organizational": 4,
+			"area":           5,
+			"equipment":      6,
+			"point":          7,
+			"collection":     8,
+			"property":       9,
+			"functional":     10,
+			"other":          11,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

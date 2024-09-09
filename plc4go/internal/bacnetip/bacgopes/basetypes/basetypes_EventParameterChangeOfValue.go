@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type EventParameterChangeOfValue struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewEventParameterChangeOfValue(arg Arg) (*EventParameterChangeOfValue, error) {
+	s := &EventParameterChangeOfValue{
+		sequenceElements: []Element{
+			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("covCriteria", V2E(NewEventParameterChangeOfValueCOVCriteria), WithElementContext(1)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

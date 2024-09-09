@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
+type NotificationParametersChangeOfReliabilityType struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewNotificationParametersChangeOfReliabilityType(arg Arg) (*NotificationParametersChangeOfReliabilityType, error) {
+	s := &NotificationParametersChangeOfReliabilityType{
+		sequenceElements: []Element{
+			NewElement("reliability", V2E(NewReliability), WithElementContext(0)),
+			NewElement("statusFlags", V2E(NewStatusFlags), WithElementContext(1)),
+			NewElement("propertyValues", SequenceOf(NewPropertyValue), WithElementContext(2)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}

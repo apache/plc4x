@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LightingTransition struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLightingTransition(arg Arg) (*LightingTransition, error) {
+	s := &LightingTransition{
+		vendorRange: vendorRange{64, 255},
+		enumerations: map[string]uint64{"none": 0,
+			"fade": 1,
+			"ramp": 2,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

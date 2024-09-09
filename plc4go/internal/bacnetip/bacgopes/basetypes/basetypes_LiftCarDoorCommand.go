@@ -18,3 +18,25 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type LiftCarDoorCommand struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewLiftCarDoorCommand(arg Arg) (*LiftCarDoorCommand, error) {
+	s := &LiftCarDoorCommand{
+		enumerations: map[string]uint64{"none": 0,
+			"open":  1,
+			"close": 2,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

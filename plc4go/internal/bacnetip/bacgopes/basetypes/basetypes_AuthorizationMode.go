@@ -18,3 +18,29 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type AuthorizationMode struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewAuthorizationMode(arg Arg) (*AuthorizationMode, error) {
+	s := &AuthorizationMode{
+		vendorRange: vendorRange{64, 65536},
+		enumerations: map[string]uint64{"authorize": 0,
+			"grantActive":          1,
+			"denyAll":              2,
+			"verificationRequired": 3,
+			"authorizationDelayed": 4,
+			"none":                 5,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

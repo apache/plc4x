@@ -18,3 +18,30 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type NetworkPortCommand struct {
+	*Enumerated
+	vendorRange  vendorRange
+	enumerations map[string]uint64
+}
+
+func NewNetworkPortCommand(arg Arg) (*NetworkPortCommand, error) {
+	s := &NetworkPortCommand{
+		enumerations: map[string]uint64{"idle": 0,
+			"discardChanges":         1,
+			"renewFdDRegistration":   2,
+			"restartSlaveDiscovery":  3,
+			"renewDHCP":              4,
+			"restartAutonegotiation": 5,
+			"disconnect":             6,
+			"restartPort":            7,
+		},
+	}
+	panic("enumeratedimplementme")
+	return s, nil
+}

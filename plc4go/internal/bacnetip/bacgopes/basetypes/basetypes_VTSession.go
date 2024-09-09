@@ -18,3 +18,26 @@
  */
 
 package basetypes
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type VTSession struct {
+	*Sequence
+	sequenceElements []Element
+}
+
+func NewVTSession(arg Arg) (*VTSession, error) {
+	s := &VTSession{
+		sequenceElements: []Element{
+			NewElement("localVtSessionID", V2E(NewUnsigned)),
+			NewElement("remoteVtSessionID", V2E(NewUnsigned)),
+			NewElement("remoteVtAddress", V2E(NewDeviceAddress)),
+		},
+	}
+	panic("implementchoice")
+	return s, nil
+}
