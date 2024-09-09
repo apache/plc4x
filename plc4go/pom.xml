@@ -427,79 +427,10 @@
             </goals>
             <configuration>
               <exec>goimports-reviser</exec>
-              <customCommand>-recursive</customCommand>
+              <customCommand>-excludes</customCommand>
               <packages>
-                <package>internal</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fix-imports-pkg</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>goimports-reviser</exec>
-              <customCommand>-recursive</customCommand>
-              <packages>
-                <package>pkg</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fix-imports-protocols</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>goimports-reviser</exec>
-              <customCommand>-recursive</customCommand>
-              <packages>
-                <package>protocols</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fix-imports-spi</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>goimports-reviser</exec>
-              <customCommand>-recursive</customCommand>
-              <packages>
-                <package>spi</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fix-imports-tests</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>goimports-reviser</exec>
-              <customCommand>-recursive</customCommand>
-              <packages>
-                <package>tests</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fix-imports-tools</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>goimports-reviser</exec>
-              <customCommand>-recursive</customCommand>
-              <packages>
-                <package>tools</package>
+                <package>.idea,.git</package>
+                <package>./...</package>
               </packages>
             </configuration>
           </execution>
