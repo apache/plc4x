@@ -877,6 +877,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     return new PlcLINT(Long.reverseBytes(data.getLong(0)));
                 case REAL:
                     return new PlcREAL(swap(data.getFloat(0)));
+                case LREAL:
+                    return new PlcLREAL(swap(data.getDouble(0)));
                 case BOOL:
                     return new PlcBOOL(data.getBoolean(0));
                 case STRING:
@@ -905,6 +907,19 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         int b3 = (bytes >> 16) & 0xff;
         int b4 = (bytes >> 24) & 0xff;
         return Float.intBitsToFloat(b1 << 24 | b2 << 16 | b3 << 8 | b4);
+    }
+
+    public double swap(double value) {
+        long bytes = Double.doubleToLongBits(value);
+        long b1 = (bytes) & 0xff;
+        long b2 = (bytes >> 8) & 0xff;
+        long b3 = (bytes >> 16) & 0xff;
+        long b4 = (bytes >> 24) & 0xff;
+        long b5 = (bytes >> 32) & 0xff;
+        long b6 = (bytes >> 40) & 0xff;
+        long b7 = (bytes >> 48) & 0xff;
+        long b8 = (bytes >> 56) & 0xff;
+        return Double.longBitsToDouble(b1 << 56 | b2 << 48 | b3 << 40 | b4 << 32 | b5 << 24 | b6 << 16 | b7 << 8 | b8);
     }
 
     public CompletableFuture<PlcWriteResponse> writeWithoutMessageRouter(PlcWriteRequest writeRequest) {
@@ -1301,11 +1316,14 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             case DINT:
                 buffer.putInt(value.getInteger());
                 break;
-            case REAL:
-                buffer.putDouble(value.getDouble());
-                break;
             case LINT:
                 buffer.putLong(value.getLong());
+                break;
+            case REAL:
+                buffer.putFloat(value.getFloat());
+                break;
+            case LREAL:
+                buffer.putDouble(value.getDouble());
                 break;
             case STRING:
             case STRUCTURED:
