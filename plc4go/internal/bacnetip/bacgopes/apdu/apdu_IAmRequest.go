@@ -20,6 +20,9 @@
 package apdu
 
 import (
+	"github.com/pkg/errors"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -33,32 +36,31 @@ type IAmRequest struct {
 	sequenceElements []Element
 }
 
-func NewIAmRequest(args Args, kwargs KWArgs) (*IAmRequest, error) {
+func NewIAmRequest(_ Args, kwargs KWArgs) (*IAmRequest, error) {
 	w := &IAmRequest{
 		serviceChoice: readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS,
 		sequenceElements: []Element{
 			NewElement("iAmDeviceIdentifier", Vs2E(NewObjectIdentifier)),
 			NewElement("maxAPDULengthAccepted", V2E(NewUnsigned)),
-			//NewElement("segmentationSupported", V2E(NewSegmentation)), // TODO: finish me
+			NewElement("segmentationSupported", V2E(NewSegmentation)),
 			NewElement("vendorID", V2E(NewUnsigned)),
 		},
 	}
-	panic("finish me") // TODO
-	/*
-		var err error
-		w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(
-			readWriteModel.NewBACnetUnconfirmedServiceRequestIAm(
-				readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0),
-				readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0),
-				0,
-			),
-			kwargs,
-			WithUnconfirmedRequestSequenceExtension(w),
-		)
-		if err != nil {
-			return nil, errors.Wrap(err, "error creating UnconfirmedRequestSequence")
-		}
-	*/
+	var err error
+	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(
+		readWriteModel.NewBACnetUnconfirmedServiceRequestIAm(
+			readWriteModel.CreateBACnetApplicationTagObjectIdentifier(0, 0),
+			readWriteModel.CreateBACnetApplicationTagUnsignedInteger(0),
+			readWriteModel.NewBACnetSegmentationTagged(readWriteModel.CreateBACnetTagHeaderBalanced(false, 0, 0), 0, 0, 0),
+			readWriteModel.CreateBACnetVendorIdApplicationTagged(0),
+			0,
+		),
+		kwargs,
+		WithUnconfirmedRequestSequenceExtension(w),
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating UnconfirmedRequestSequence")
+	}
 
 	return w, nil
 }

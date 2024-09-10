@@ -37,7 +37,7 @@ var spin = 10 * time.Millisecond
 var sleepTime = 0 * time.Nanosecond
 
 type deferredFunctionTuple struct {
-	fn     func(args Args, kwargs KWArgs) error
+	fn     GenericFunction
 	args   Args
 	kwargs KWArgs
 }
@@ -156,7 +156,7 @@ func RunOnce(localLog zerolog.Logger) {
 	}
 }
 
-func Deferred(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) {
+func Deferred(fn GenericFunction, args Args, kwargs KWArgs) {
 	// append it to the list
 	DeferredFunctions = append(DeferredFunctions, deferredFunctionTuple{fn, args, kwargs})
 

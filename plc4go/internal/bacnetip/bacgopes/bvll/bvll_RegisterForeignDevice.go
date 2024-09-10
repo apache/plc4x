@@ -98,5 +98,5 @@ func (r *RegisterForeignDevice) String() string {
 	if r == nil {
 		return "(*RegisterForeignDevice)(nil)"
 	}
-	return fmt.Sprintf("RegisterForeignDevice{%v, bvlciTimeToLive: %v}", r._BVLPDU, r.bvlciTimeToLive)
+	return fmt.Sprintf("RegisterForeignDevice{\n%v, bvlciTimeToLive: %v}", r._BVLPDU, r.bvlciTimeToLive)
 }

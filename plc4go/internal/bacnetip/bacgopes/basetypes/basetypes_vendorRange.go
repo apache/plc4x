@@ -22,7 +22,3 @@ package basetypes
 type vendorRange struct {
 	lower, upper int
 }
-
-//
-//   Bit Strings
-//

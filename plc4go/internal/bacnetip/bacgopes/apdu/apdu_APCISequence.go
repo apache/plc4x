@@ -26,6 +26,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 // APCISequenceContract provides a set of functions which can be overwritten by a sub struct
@@ -59,7 +60,7 @@ func NewAPCISequence(args Args, kwargs KWArgs, opts ...func(*APCISequence)) (*AP
 	} else {
 		a._contract.(APCISequenceContractRequirement).SetAPCISequence(a)
 	}
-	apdu := Get[APDU](args, 0) // TODO: might break but should be fine as we are a A*
+	apdu := Get[readWriteModel.APDU](args, 0) // TODO: might break but should be fine as we are a A*
 	a._APCI = NewAPCI(apdu).(*_APCI)
 	var err error
 	a.Sequence, err = NewSequence(args, kwargs, WithSequenceExtension(a._contract))

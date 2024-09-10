@@ -40,7 +40,3 @@ func NewRouterEntryStatus(arg Arg) (*RouterEntryStatus, error) {
 	panic("implement me enumasdasd")
 	return s, nil
 }
-
-//
-//   Forward Sequences
-//

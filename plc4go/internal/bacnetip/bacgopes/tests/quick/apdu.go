@@ -25,7 +25,11 @@ import (
 )
 
 func ConfirmedPrivateTransferRequest(kwargs KWArgs) *apdu.ConfirmedPrivateTransferRequest {
-	panic("implement me")
+	confirmedPrivateTransferRequest, err := apdu.NewConfirmedPrivateTransferRequest(NoArgs, kwargs)
+	if err != nil {
+		panic(err)
+	}
+	return confirmedPrivateTransferRequest
 }
 
 func WhoIsRequest(kwargs KWArgs) *apdu.WhoIsRequest {

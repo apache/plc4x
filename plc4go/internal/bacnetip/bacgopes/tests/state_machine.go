@@ -90,7 +90,7 @@ func (t TimeoutTransition) String() string {
 }
 
 type fnargs struct {
-	fn     func(args Args, kwargs KWArgs) error
+	fn     GenericFunction
 	args   Args
 	kwargs KWArgs
 }
@@ -501,12 +501,12 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 type TimeoutTask struct {
 	*OneShotTask
 
-	fn     func(args Args, kwargs KWArgs) error `ignore:"true"`
+	fn     GenericFunction `ignore:"true"`
 	args   Args
 	kwargs KWArgs
 }
 
-func NewTimeoutTask(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs, when *time.Time) *TimeoutTask {
+func NewTimeoutTask(fn GenericFunction, args Args, kwargs KWArgs, when *time.Time) *TimeoutTask {
 	_task := &TimeoutTask{
 		fn:     fn,
 		args:   args,

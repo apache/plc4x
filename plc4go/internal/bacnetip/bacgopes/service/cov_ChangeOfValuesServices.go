@@ -24,6 +24,6 @@ import (
 )
 
 type ChangeOfValuesServices struct {
-	*Capability
+	Capability
 	//TODO: implement me
 }

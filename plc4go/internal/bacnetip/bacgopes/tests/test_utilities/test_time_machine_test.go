@@ -78,7 +78,7 @@ func (s *SampleOneShotTask) ProcessTask() error {
 	return nil
 }
 
-func (suite *TimeMachineSuite) SampleTaskFunction() func(args Args, kwargs KWArgs) error {
+func (suite *TimeMachineSuite) SampleTaskFunction() GenericFunction {
 	return func(args Args, kwargs KWArgs) error {
 		currentTime := GlobalTimeMachineCurrentTime()
 		suite.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Time("current_time", currentTime).Msg("sample_task_function")

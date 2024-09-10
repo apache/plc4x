@@ -20,19 +20,42 @@
 package capability
 
 import (
+	"fmt"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-// TODO: implement
-//
-//go:generate plc4xGenerator -type=Capability -prefix=capability_
-type Capability struct {
+type Capability interface {
+	fmt.Stringer
+	utils.Serializable
+	getFN(fn string) GenericFunction
+	getZIndex() int
 }
 
-func NewCapability() *Capability {
-	return &Capability{}
+//go:generate plc4xGenerator -type=capability -prefix=capability_
+type capability struct {
+	_zindex int
 }
 
-func (c *Capability) getFN(fn string) func(args Args, kwargs KWArgs) error {
-	panic("implement me")
+var _ Capability = (*capability)(nil)
+
+func NewCapability() Capability {
+	return &capability{_zindex: 99}
+}
+
+func (c *capability) getFN(_ string) GenericFunction {
+	return nil
+}
+
+func (c *capability) getZIndex() int {
+	return c._zindex
+}
+
+func (c *capability) IsCollector() bool {
+	return false
+}
+
+func (c *capability) IsCapability() bool {
+	return true
 }

@@ -24,19 +24,19 @@ import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 //go:generate plc4xGenerator -type=OneShotFunctionTask -prefix=task_
 type OneShotFunctionTask struct {
 	*OneShotDeleteTask
-	fn     func(args Args, kwargs KWArgs) error `ignore:"true"`
+	fn     GenericFunction `ignore:"true"`
 	args   Args
 	kwargs KWArgs
 }
 
-func OneShotFunction(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) *OneShotFunctionTask {
+func OneShotFunction(fn GenericFunction, args Args, kwargs KWArgs) *OneShotFunctionTask {
 	task := &OneShotFunctionTask{fn: fn, args: args, kwargs: kwargs}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 	task.InstallTask(WithInstallTaskOptionsDelta(0))
 	return task
 }
 
-func FunctionTask(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) *OneShotFunctionTask {
+func FunctionTask(fn GenericFunction, args Args, kwargs KWArgs) *OneShotFunctionTask {
 	task := &OneShotFunctionTask{fn: fn, args: args, kwargs: kwargs}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 	return task

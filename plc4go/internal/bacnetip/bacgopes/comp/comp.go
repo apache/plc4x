@@ -23,10 +23,14 @@ import (
 	"cmp"
 	"container/heap"
 	"fmt"
+	"iter"
+	"sort"
 	"strings"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 )
+
+type GenericFunction = func(args Args, kwargs KWArgs) error
 
 type Arg any
 
@@ -53,8 +57,7 @@ func argsGetOrPanic[T any](args Args, index int) T {
 	aAtI := args[index]
 	v, ok := aAtI.(T)
 	if !ok {
-		var _type T
-		panic(fmt.Sprintf("argument #%d with type %T is not of type %T", index, aAtI, _type))
+		panic(fmt.Sprintf("argument #%d with type %T is not of type %T", index, aAtI, *new(T)))
 	}
 	return v
 }
@@ -347,4 +350,22 @@ type MissingRequiredParameter struct {
 
 func (m MissingRequiredParameter) Error() string {
 	return m.Message
+}
+
+// SortedMapIterator lets you iterate over an array in a deterministic way
+func SortedMapIterator[K cmp.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
+	keys := make([]K, len(m))
+	i := 0
+	for k := range m {
+		keys[i] = k
+		i++
+	}
+	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+	return func(yield func(K, V) bool) {
+		for _, k := range keys {
+			if !yield(k, m[k]) {
+				return
+			}
+		}
+	}
 }

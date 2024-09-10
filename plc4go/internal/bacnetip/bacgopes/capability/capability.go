@@ -18,3 +18,37 @@
  */
 
 package capability
+
+import (
+	"fmt"
+)
+
+type CollectorOrCapability struct {
+	Collector    *Collector
+	IsCollector  bool
+	Capability   *Capability
+	IsCapability bool
+}
+
+var (
+	_ fmt.Stringer = (*CollectorOrCapability)(nil)
+)
+
+func CoCCo(co Collector) CollectorOrCapability {
+	return CollectorOrCapability{&co, true, nil, false}
+}
+
+func CoCCa(ca Capability) CollectorOrCapability {
+	return CollectorOrCapability{nil, false, &ca, true}
+}
+
+func (c CollectorOrCapability) String() string {
+	switch {
+	case c.IsCollector:
+		return (*c.Collector).String()
+	case c.IsCapability:
+		return (*c.Capability).String()
+	default:
+		panic("impossible")
+	}
+}

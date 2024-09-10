@@ -20,53 +20,107 @@
 package capability
 
 import (
+	"fmt"
+	"iter"
+	"slices"
+
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
+
+type Collector interface {
+	fmt.Stringer
+	utils.Serializable
+	CapabilityFunctions(fn string) iter.Seq[GenericFunction]
+	SearchCapability(subs ...CollectorOrCapability) []Capability
+	AddCapability(cls Capability)
+}
 
 // TODO: implement
 //
-//go:generate plc4xGenerator -type=Collector -prefix=capability_
-type Collector struct {
-	capabilities []*Capability
+//go:generate plc4xGenerator -type=collector -prefix=capability_
+type collector struct {
+	capabilities []Capability
 
 	log zerolog.Logger
 }
 
-func NewCollector(localLog zerolog.Logger) *Collector {
-	return &Collector{log: localLog}
+var _ Collector = (*collector)(nil)
+
+func NewCollector(localLog zerolog.Logger, subs ...CollectorOrCapability) (_collector Collector, init func()) {
+	c := &collector{log: localLog}
+	return c, func() {
+		// gather the capabilities
+		c.capabilities = c.SearchCapability(subs...)
+	}
 }
 
-func (c *Collector) searchCapability() {
-	panic("not implemented") // TODO: implement me
+func (c *collector) SearchCapability(subs ...CollectorOrCapability) []Capability {
+	if c.log.Debug().Enabled() {
+		subsStringers := make([]fmt.Stringer, len(subs))
+		for i, sub := range subs {
+			subsStringers[i] = sub
+		}
+		c.log.Debug().Stringers("subs", subsStringers).Msg("SearchCapability")
+	}
+	var result []Capability
+	for _, sub := range subs {
+		if sub.IsCollector {
+			result = append(result, (*sub.Collector).SearchCapability(sub)...)
+		} else if c.IsCapability() {
+			result = append(result, *sub.Capability)
+		} else {
+			panic("impossible")
+		}
+	}
+	return result
 }
 
 // CapabilityFunctions generator yields functions that match the requested capability sorted by z-index.
-func (c *Collector) CapabilityFunctions(fn string) []func(args Args, kwargs KWArgs) error {
-	c.log.Trace().Msg("CapabilityFunctions")
+func (c *collector) CapabilityFunctions(fn string) iter.Seq[GenericFunction] {
+	c.log.Debug().Str("fn", fn).Msg("CapabilityFunctions")
 
 	// build a list of functions to call
-	var fns []func(args Args, kwargs KWArgs) error
-	for _, capability := range c.capabilities {
-		xfn := capability.getFN(fn)
-		c.log.Trace().Stringer("capability", capability).Bool("xfn", xfn != nil).Msg("cap")
+	type fnEntry struct {
+		_zindex int
+		fn      GenericFunction
+	}
+	var fns []fnEntry
+	for _, _capability := range c.capabilities {
+		xfn := _capability.getFN(fn)
+		c.log.Trace().Stringer("capability", _capability).Bool("xfn", xfn != nil).Msg("cap")
 		if xfn != nil {
-			// TODO: sorting
-			fns = append(fns, xfn)
+			fns = append(fns, fnEntry{_zindex: _capability.getZIndex(), fn: xfn})
 		}
 	}
-
 	// sort them by z-index
-	// TODO: sorting
+	slices.SortFunc(fns, func(a fnEntry, b fnEntry) int {
+		return a._zindex - b._zindex
+	})
+	c.log.Debug().Interface("fns", fns).Msg("fns")
 
-	// now yield them in order
-	// TODO: what?
-
-	return fns
+	return func(yield func(function GenericFunction) bool) {
+		// now yield them in order
+		for xindx, xfn := range fns {
+			c.log.Debug().Int("xindx", xindx).Msg("yield")
+			yield(xfn.fn)
+		}
+	}
 }
 
-func (c *Collector) AddCapability(cls any) {
-	// TODO: implement
+func (c *collector) AddCapability(cls Capability) {
+	c.log.Debug().Stringer("cls", cls).Msg("AddCapability")
+	c.capabilities = append(c.capabilities, cls)
+	// TODO: not sure what to do here
 	return
+}
+
+func (c *collector) IsCollector() bool {
+	return true
+}
+
+func (c *collector) IsCapability() bool {
+	return false
 }

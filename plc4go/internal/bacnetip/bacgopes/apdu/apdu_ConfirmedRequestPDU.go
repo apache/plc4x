@@ -40,7 +40,7 @@ func NewConfirmedRequestPDU(serviceRequest readWriteModel.BACnetConfirmedService
 	for _, opt := range opts {
 		opt(u)
 	}
-	apdu, err := new_APDU(u.buildConfirmedRequest(serviceRequest))
+	apdu, err := new_APDU(nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}
@@ -50,6 +50,8 @@ func NewConfirmedRequestPDU(serviceRequest readWriteModel.BACnetConfirmedService
 		u.apduService = &serviceChoice
 	}
 	u.SetExpectingReply(true)
+	u.SetRootMessage(u.buildConfirmedRequest(serviceRequest))
+
 	return u, nil
 }
 
@@ -78,71 +80,66 @@ func (c *ConfirmedRequestPDU) buildConfirmedRequest(serviceRequest readWriteMode
 }
 
 func (c *ConfirmedRequestPDU) GetSegmentedMessage() bool {
-	//TODO implement me
-	panic("implement me")
+	return c.apduSeg
 }
 
 func (c *ConfirmedRequestPDU) GetMoreFollows() bool {
-	//TODO implement me
-	panic("implement me")
+	return c.apduMor
 }
 
 func (c *ConfirmedRequestPDU) GetSegmentedResponseAccepted() bool {
-	//TODO implement me
-	panic("implement me")
+	return c.apduSA
 }
 
 func (c *ConfirmedRequestPDU) GetMaxSegmentsAccepted() readWriteModel.MaxSegmentsAccepted {
-	//TODO implement me
-	panic("implement me")
+	if c.apduMaxSegs != nil {
+		return readWriteModel.MaxSegmentsAccepted(*c.apduMaxSegs)
+	}
+	return readWriteModel.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS
 }
 
 func (c *ConfirmedRequestPDU) GetMaxApduLengthAccepted() readWriteModel.MaxApduLengthAccepted {
-	//TODO implement me
-	panic("implement me")
+	if c.apduMaxResp != nil {
+		return readWriteModel.MaxApduLengthAccepted(*c.apduMaxResp)
+	}
+	return readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1476
 }
 
 func (c *ConfirmedRequestPDU) GetInvokeId() uint8 {
-	//TODO implement me
-	panic("implement me")
+	if c.apduInvokeID != nil {
+		return *c.apduInvokeID
+	}
+	return 0
 }
 
 func (c *ConfirmedRequestPDU) GetSequenceNumber() *uint8 {
-	//TODO implement me
-	panic("implement me")
+	return c.apduSeq
 }
 
 func (c *ConfirmedRequestPDU) GetProposedWindowSize() *uint8 {
-	//TODO implement me
-	panic("implement me")
+	return c.apduWin
 }
 
 func (c *ConfirmedRequestPDU) GetServiceRequest() readWriteModel.BACnetConfirmedServiceRequest {
-	//TODO implement me
-	panic("implement me")
+	return c.serviceRequest
 }
 
 func (c *ConfirmedRequestPDU) GetSegmentServiceChoice() *readWriteModel.BACnetConfirmedServiceChoice {
-	//TODO implement me
-	panic("implement me")
+	serviceChoice := c.serviceRequest.GetServiceChoice()
+	return &serviceChoice
 }
 
 func (c *ConfirmedRequestPDU) GetSegment() []byte {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
 
 func (c *ConfirmedRequestPDU) GetApduHeaderReduction() uint16 {
-	//TODO implement me
-	panic("implement me")
+	return 0
 }
 
 func (c *ConfirmedRequestPDU) GetSegmentReduction() uint16 {
-	//TODO implement me
-	panic("implement me")
+	return 0
 }
 
 func (c *ConfirmedRequestPDU) IsAPDUConfirmedRequest() {
-	//TODO implement me
-	panic("implement me")
 }

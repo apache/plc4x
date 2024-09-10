@@ -19,19 +19,55 @@
 
 package apdu
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 // TODO: implement it...
 type ConfirmedPrivateTransferRequest struct {
 	*ConfirmedRequestSequence
+
+	serviceChoice    readWriteModel.BACnetConfirmedServiceChoice
+	sequenceElements []Element
 }
 
-func NewConfirmedPrivateTransferRequest() *ConfirmedPrivateTransferRequest {
-	c := &ConfirmedPrivateTransferRequest{}
-	panic("implement me")
-	return c
+func NewConfirmedPrivateTransferRequest(_ Args, _ KWArgs) (*ConfirmedPrivateTransferRequest, error) {
+	c := &ConfirmedPrivateTransferRequest{
+		serviceChoice: readWriteModel.BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER,
+		sequenceElements: []Element{
+			NewElement("vendorID", V2E(NewUnsigned), WithElementContext(0)),
+			NewElement("serviceNumber", V2E(NewUnsigned), WithElementContext(1)),
+			NewElement("serviceParameters", Vs2E(NewAny), WithElementContext(2), WithElementOptional(true)),
+		},
+	}
+	var err error
+	c.ConfirmedRequestSequence, err = NewConfirmedRequestSequence(
+		readWriteModel.NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(
+			readWriteModel.CreateBACnetVendorIdContextTagged(0, 0),
+			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0),
+			nil,
+			0,
+		),
+		NoKWArgs,
+		WithConfirmedRequestSequenceExtension(c),
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building confirmed request")
+	}
+	return c, nil
 }
 
-func (r *ConfirmedPrivateTransferRequest) String() string {
-	return fmt.Sprintf("ConfirmedPrivateTransferRequest{%s}", r.ConfirmedRequestSequence)
+func (c *ConfirmedPrivateTransferRequest) SetConfirmedRequestSequence(crs *ConfirmedRequestSequence) {
+	c.ConfirmedRequestSequence = crs
+}
+
+func (c *ConfirmedPrivateTransferRequest) String() string {
+	return fmt.Sprintf("ConfirmedPrivateTransferRequest{%s}", c.ConfirmedRequestSequence)
 }

@@ -100,5 +100,5 @@ func (n *IPRouterNode) AlternateString() (string, bool) {
 	if ExtendedGeneralOutput {
 		return "", false
 	}
-	return fmt.Sprintf("IPRouterNode for %s", n.lan.name), true
+	return fmt.Sprintf("IPRouterNode for '%s' (@%p)", n.lan.name, n.lan), true
 }

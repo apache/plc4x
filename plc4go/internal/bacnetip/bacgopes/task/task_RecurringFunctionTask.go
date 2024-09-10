@@ -30,12 +30,12 @@ import (
 
 type RecurringFunctionTask struct {
 	*RecurringTask
-	fn     func(args Args, kwargs KWArgs) error
+	fn     GenericFunction
 	args   Args
 	kwargs KWArgs
 }
 
-func NewRecurringFunctionTask(localLog zerolog.Logger, fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs, opts ...func(*RecurringFunctionTask)) *RecurringFunctionTask {
+func NewRecurringFunctionTask(localLog zerolog.Logger, fn GenericFunction, args Args, kwargs KWArgs, opts ...func(*RecurringFunctionTask)) *RecurringFunctionTask {
 	r := &RecurringFunctionTask{fn: fn, args: args, kwargs: kwargs}
 	for _, opt := range opts {
 		opt(r)

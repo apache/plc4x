@@ -20,34 +20,45 @@
 package test_comm
 
 import (
+	"context"
 	"testing"
 
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // TODO: big WIP
 
 type BaseCollector struct {
-	*Collector
+	Collector
 }
 
-func NewBaseCollector(localLog zerolog.Logger) *BaseCollector {
+func NewBaseCollector(localLog zerolog.Logger, subs ...CollectorOrCapability) (*BaseCollector, func()) {
 	b := &BaseCollector{}
-	b.Collector = NewCollector(localLog)
-	return b
+	var init func()
+	b.Collector, init = NewCollector(localLog, append([]CollectorOrCapability{CoCCo(b)}, subs...)...)
+	return b, init
 }
 
-func (b BaseCollector) transform(value any) any {
-	panic("not implemented") // TODO: implement me
+func (b *BaseCollector) Transform(value any) any {
+	for fn := range b.CapabilityFunctions("transform") {
+		value = fn(NewArgs(b, value), NoKWArgs)
+	}
 	return value
 }
 
+func (b *BaseCollector) SearchCapability(_ ...CollectorOrCapability) []Capability {
+	// No-op
+	return []Capability{}
+}
+
 type PlusOne struct {
-	*Capability
+	Capability
 }
 
 func NewPlusOne() *PlusOne {
@@ -61,7 +72,7 @@ func (p *PlusOne) transform(value any) any {
 }
 
 type TimesTen struct {
-	*Capability
+	Capability
 }
 
 func NewTimesTen() *TimesTen {
@@ -75,7 +86,7 @@ func (p *TimesTen) transform(value any) any {
 }
 
 type MakeList struct {
-	*Capability
+	Capability
 }
 
 //####################################
@@ -88,13 +99,11 @@ type Example1 struct {
 }
 
 func NewExample1(localLog zerolog.Logger) *Example1 {
-	b := &Example1{}
-	b.BaseCollector = NewBaseCollector(localLog)
-	return b
-}
-
-func (e *Example1) transform(value any) any {
-	return e.BaseCollector.transform(value)
+	e := &Example1{}
+	var init func()
+	e.BaseCollector, init = NewBaseCollector(localLog, CoCCo(e))
+	init()
+	return e
 }
 
 type Example2 struct {
@@ -103,14 +112,25 @@ type Example2 struct {
 }
 
 func NewExample2(localLog zerolog.Logger) *Example2 {
-	b := &Example2{}
-	b.BaseCollector = NewBaseCollector(localLog)
-	b.PlusOne = NewPlusOne()
-	return b
+	e := &Example2{}
+	var init func()
+	e.BaseCollector, init = NewBaseCollector(localLog, CoCCo(e))
+	e.PlusOne = NewPlusOne()
+	init()
+	return e
 }
 
-func (e *Example2) transform(value any) any {
-	return e.BaseCollector.transform(value)
+func (e *Example2) Serialize() ([]byte, error) {
+	return []byte(e.String()), nil
+}
+
+func (e *Example2) SerializeWithWriteBuffer(_ context.Context, _ utils.WriteBuffer) error {
+	// NO-OP
+	return nil
+}
+
+func (e *Example2) String() string {
+	return e.BaseCollector.String() + e.PlusOne.String()
 }
 
 type Example3 struct {
@@ -119,16 +139,27 @@ type Example3 struct {
 	*PlusOne
 }
 
-func (e *Example3) transform(value any) any {
-	return e.BaseCollector.transform(value)
+func NewExample3(localLog zerolog.Logger) *Example3 {
+	e := &Example3{}
+	var init func()
+	e.BaseCollector, init = NewBaseCollector(localLog, CoCCo(e))
+	init()
+	e.TimesTen = NewTimesTen()
+	e.PlusOne = NewPlusOne()
+	return e
 }
 
-func NewExample3(localLog zerolog.Logger) *Example3 {
-	b := &Example3{}
-	b.BaseCollector = NewBaseCollector(localLog)
-	b.TimesTen = NewTimesTen()
-	b.PlusOne = NewPlusOne()
-	return b
+func (e *Example3) Serialize() ([]byte, error) {
+	return []byte(e.String()), nil
+}
+
+func (e *Example3) SerializeWithWriteBuffer(_ context.Context, _ utils.WriteBuffer) error {
+	// NO-OP
+	return nil
+}
+
+func (e *Example3) String() string {
+	return e.BaseCollector.String() + e.TimesTen.String() + e.PlusOne.String()
 }
 
 type Example4 struct {
@@ -137,26 +168,39 @@ type Example4 struct {
 	*TimesTen
 }
 
+func (e *Example4) String() string {
+	return e.BaseCollector.String() + e.MakeList.String() + e.TimesTen.String()
+}
+
+func (e *Example4) Serialize() ([]byte, error) {
+	return []byte(e.String()), nil
+}
+
+func (e *Example4) SerializeWithWriteBuffer(_ context.Context, _ utils.WriteBuffer) error {
+	// NO-OP
+	return nil
+}
+
 func TestExamples(t *testing.T) {
-	t.Skip("big WIP...") // TODO: big WIP
+	t.Skip("needs more looking at when actually being needed") // TODO: ignore for now
 	t.Run("test_example_1", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
-		assert.Equal(t, 1, NewExample1(testingLogger).transform(1))
+		assert.Equal(t, 1, NewExample1(testingLogger).Transform(1))
 	})
 	t.Run("test_example_2", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
-		assert.Equal(t, 3, NewExample2(testingLogger).transform(2))
+		assert.Equal(t, 3, NewExample2(testingLogger).Transform(2))
 	})
 	t.Run("test_example_3", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
-		assert.Equal(t, 31, NewExample3(testingLogger).transform(3))
+		assert.Equal(t, 31, NewExample3(testingLogger).Transform(3))
 	})
 	t.Run("test_example_4", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
-		assert.Equal(t, []int{4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, NewExample3(testingLogger).transform(4))
+		assert.Equal(t, []int{4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, NewExample3(testingLogger).Transform(4))
 	})
 	t.Run("test_example_5", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
-		assert.Equal(t, 6, NewExample3(testingLogger).transform(5))
+		assert.Equal(t, 6, NewExample3(testingLogger).Transform(5))
 	})
 }

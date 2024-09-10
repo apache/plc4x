@@ -31,7 +31,7 @@ import (
 )
 
 func TestBasic(t *testing.T) {
-	t.Skip("finish me") // TODO: finish me
+	t.Skip("needs capability to work") // TODO: fixme
 	testingLogger := testutils.ProduceTestingLogger(t)
 	ExclusiveGlobalTimeMachine(t)
 

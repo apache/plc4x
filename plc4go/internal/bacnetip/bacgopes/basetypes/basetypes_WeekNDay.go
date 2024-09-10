@@ -44,7 +44,3 @@ func (w WeekNDay) String() string {
 		return fmt.Sprintf("WeekNDay(%d, %d, %d)", value[0], value[1], value[2])
 	}
 }
-
-//
-//   Sequences
-//

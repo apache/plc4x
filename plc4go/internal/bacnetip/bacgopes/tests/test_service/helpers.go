@@ -473,7 +473,7 @@ type COVTestClientServicesRequirements interface {
 
 type COVTestClientServices struct {
 	COVTestClientServicesRequirements
-	*Capability
+	Capability
 
 	log zerolog.Logger
 }

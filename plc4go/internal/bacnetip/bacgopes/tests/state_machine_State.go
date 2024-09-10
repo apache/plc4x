@@ -56,7 +56,7 @@ type State interface {
 	SetEvent(eventId string) State
 	Doc(docstring string) State
 	DocString() string
-	Call(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) State
+	Call(fn GenericFunction, args Args, kwargs KWArgs) State
 
 	getStateMachine() StateMachine
 	setStateMachine(StateMachine)
@@ -444,7 +444,7 @@ func (s *state) Timeout(delay time.Duration, nextState State) State {
 // Call Create a CallTransition from this state to another, possibly new, state.  The next state is returned for method
 //
 //	chaining. criteria tPDU to match next_state destination state after a successful match
-func (s *state) Call(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) State {
+func (s *state) Call(fn GenericFunction, args Args, kwargs KWArgs) State {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Call")
 	if s.callTransition != nil {
 		panic("state already has a 'Call' per state")

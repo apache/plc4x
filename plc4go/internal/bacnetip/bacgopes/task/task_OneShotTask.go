@@ -20,10 +20,10 @@
 package task
 
 import (
-	"fmt"
 	"time"
 )
 
+//go:generate plc4xGenerator -type=OneShotTask -prefix=task_
 type OneShotTask struct {
 	*Task
 }
@@ -34,8 +34,4 @@ func NewOneShotTask(taskRequirements TaskRequirements, when *time.Time) *OneShot
 		task.taskTime = when
 	})
 	return o
-}
-
-func (t *OneShotTask) String() string {
-	return fmt.Sprintf("OneShotTask(%v)", t.Task)
 }

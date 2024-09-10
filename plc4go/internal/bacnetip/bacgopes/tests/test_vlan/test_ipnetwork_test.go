@@ -308,18 +308,18 @@ func (suite *RouterSuite) SetupTest() {
 	suite.smg = NewStateMachineGroup(suite.log)
 
 	// make some networks
-	vlan10 := NewIPNetwork(suite.log)
-	vlan20 := NewIPNetwork(suite.log)
+	vlan10 := NewIPNetwork(suite.log, WithNetworkName("vlan10"))
+	vlan20 := NewIPNetwork(suite.log, WithNetworkName("vlan20"))
 
 	// make a router and add the networks
 	trouter := NewIPRouter(suite.log)
 	trouter.AddNetwork(quick.Address("192.168.10.1/24"), vlan10)
 	trouter.AddNetwork(quick.Address("192.168.20.1/24"), vlan20)
 
-	for pattern, lan := range map[string]*IPNetwork{
+	for pattern, lan := range SortedMapIterator(map[string]*IPNetwork{
 		"192.168.10.%d/24": vlan10,
 		"192.168.20.%d/24": vlan20,
-	} {
+	}) {
 		for i := range 2 {
 			nodeAddress, err := NewAddress(suite.log, fmt.Sprintf(pattern, i+2))
 			suite.NoError(err)
@@ -434,6 +434,5 @@ func (suite *RouterSuite) TestRemoteBroadcast() { // Test that a node can send a
 }
 
 func TestRouter(t *testing.T) {
-	t.Skip("skip for now") // TODO: fix me
 	suite.Run(t, new(RouterSuite))
 }

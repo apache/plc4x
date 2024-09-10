@@ -44,7 +44,3 @@ func NewStatusFlags(arg Arg) (*StatusFlags, error) {
 	panic("implement me")
 	return s, nil
 }
-
-//
-//   Enumerations
-//

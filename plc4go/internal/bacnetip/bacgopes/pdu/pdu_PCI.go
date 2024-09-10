@@ -98,6 +98,10 @@ func (p *_PCI) deepCopy() *_PCI {
 	return &_PCI{__pci, expectingReply, networkPriority}
 }
 
+func (p *_PCI) DeepCopy() any {
+	return p.deepCopy()
+}
+
 func (p *_PCI) String() string {
 	if ExtendedPDUOutput {
 		return fmt.Sprintf("_PCI{%s, expectingReply: %t, networkPriority: %s}", p.__PCI, p.expectingReply, p.networkPriority)
