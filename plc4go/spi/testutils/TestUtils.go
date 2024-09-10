@@ -125,6 +125,7 @@ func TestContext(t *testing.T) context.Context {
 }
 
 var (
+	muteLog                             bool
 	highLogPrecision                    bool
 	passLoggerToModel                   bool
 	receiveTimeout                      time.Duration
@@ -136,6 +137,7 @@ var (
 )
 
 func init() {
+	getOrLeaveBool("PLC4X_TEST_MUTE_LOG", &muteLog)
 	getOrLeaveBool("PLC4X_TEST_HIGH_TEST_LOG_PRECISION", &highLogPrecision)
 	if highLogPrecision {
 		zerolog.TimeFieldFormat = time.RFC3339Nano
@@ -188,6 +190,9 @@ type TestingLog interface {
 
 // ProduceTestingLogger produces a logger which redirects to testing.T
 func ProduceTestingLogger(t TestingLog) zerolog.Logger {
+	if muteLog {
+		return zerolog.Nop()
+	}
 	noColor := shouldNoColor()
 	consoleWriter := zerolog.NewConsoleWriter(
 		zerolog.ConsoleTestWriter(t),
