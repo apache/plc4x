@@ -23,6 +23,8 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
+var _debug = CreateDebugPrinter()
+
 // BVLPDUTypes is a dictionary of message type values and structs
 var BVLPDUTypes map[uint8]func() Decoder
 

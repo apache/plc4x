@@ -273,7 +273,7 @@ func (a *Application) Indication(args Args, kwargs KWArgs) error {
 		a.log.Debug().Err(err).Msg("err result")
 		panic("do it")
 		// TODO: do proper mapping
-		if err := a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))), kwargs); err != nil {
+		if err := a.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))), NoKWArgs); err != nil {
 			return err
 		}
 	}

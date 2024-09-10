@@ -259,7 +259,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	// build and address and save it
 	_, instance := ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
 	var err error
-	a.address, err = NewAddress(a.log, instance)
+	a.address, err = NewAddress(instance)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}

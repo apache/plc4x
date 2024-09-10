@@ -34,9 +34,6 @@ var (
 	// LogAppService enables logging for application services
 	LogAppService bool
 
-	// LogPDU enables logging for pdu
-	LogPDU bool
-
 	// LogVlan enables logging for vlan
 	LogVlan bool
 )
@@ -46,6 +43,5 @@ func init() {
 	ExtendedPDUOutput = os.Getenv("ExtendedPDUOutput") == "true"
 	LogComm = os.Getenv("LogComm") == "true"
 	LogAppService = os.Getenv("LogAppService") == "true"
-	LogPDU = os.Getenv("LogPDU") == "true"
 	LogVlan = os.Getenv("LogVlan") == "true"
 }

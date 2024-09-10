@@ -42,7 +42,7 @@ func NewRegisterForeignDevice(opts ...func(RegisterForeignDevice *RegisterForeig
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(model.NewBVLCRegisterForeignDevice(b.bvlciTimeToLive)).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCRegisterForeignDevice(b.bvlciTimeToLive))).(*_BVLPDU)
 	return b, nil
 }
 

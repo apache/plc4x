@@ -73,21 +73,21 @@ func TestAddressInt(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// test integer local station
-	testAddr, err := NewAddress(testingLogger, 1)
+	testAddr, err := NewAddress(1)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(1), "01")
 	assert.Equal(t, "1", testAddr.String())
 
-	testAddr, err = NewAddress(testingLogger, 254)
+	testAddr, err = NewAddress(254)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(1), "fe")
 	assert.Equal(t, "254", testAddr.String())
 
 	// Test bad integer
-	_, err = NewAddress(testingLogger, -1)
+	_, err = NewAddress(-1)
 	assert.Error(t, err)
 
-	_, err = NewAddress(testingLogger, 256)
+	_, err = NewAddress(256)
 	assert.Error(t, err)
 }
 
@@ -95,19 +95,19 @@ func TestAddressIpv4Str(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// test IPv4 local station address
-	testAddr, err := NewAddress(testingLogger, "1.2.3.4")
+	testAddr, err := NewAddress("1.2.3.4")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(6), "01020304BAC0")
 	assert.Equal(t, "1.2.3.4", testAddr.String())
 
 	// test IPv4 local station address with non-standard port
-	testAddr, err = NewAddress(testingLogger, "1.2.3.4:47809")
+	testAddr, err = NewAddress("1.2.3.4:47809")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(6), "01020304BAC1")
 	assert.Equal(t, "1.2.3.4:47809", testAddr.String())
 
 	// test IPv4 local station address with unrecognized port
-	testAddr, err = NewAddress(testingLogger, "1.2.3.4:47999")
+	testAddr, err = NewAddress("1.2.3.4:47999")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(6), "01020304bb7f")
 	assert.Equal(t, "0x01020304bb7f", testAddr.String())
@@ -117,7 +117,7 @@ func TestAddressEthStr(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// test IPv4 local station address
-	testAddr, err := NewAddress(testingLogger, "01:02:03:04:05:06")
+	testAddr, err := NewAddress("01:02:03:04:05:06")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(6), "010203040506")
 	assert.Equal(t, "0x010203040506", testAddr.String())
@@ -127,36 +127,36 @@ func TestAddressLocalStationStr(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// test integer local station
-	testAddr, err := NewAddress(testingLogger, "1")
+	testAddr, err := NewAddress("1")
 	require.NoError(t, err)
 	assert.Equal(t, "1", testAddr.String())
 
-	testAddr, err = NewAddress(testingLogger, "254")
+	testAddr, err = NewAddress("254")
 	require.NoError(t, err)
 	assert.Equal(t, "254", testAddr.String())
 
 	// Test bad integer
-	_, err = NewAddress(testingLogger, 256)
+	_, err = NewAddress(256)
 	assert.Error(t, err)
 
 	// test modern hex string
-	testAddr, err = NewAddress(testingLogger, "0x01")
+	testAddr, err = NewAddress("0x01")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(1), "01")
 	assert.Equal(t, "1", testAddr.String())
 
-	testAddr, err = NewAddress(testingLogger, "0x0102")
+	testAddr, err = NewAddress("0x0102")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(2), "0102")
 	assert.Equal(t, "0x0102", testAddr.String())
 
 	// test old school hex string
-	testAddr, err = NewAddress(testingLogger, "X'01'")
+	testAddr, err = NewAddress("X'01'")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(1), "01")
 	assert.Equal(t, "1", testAddr.String())
 
-	testAddr, err = NewAddress(testingLogger, "X'0102'")
+	testAddr, err = NewAddress("X'0102'")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(2), "0102")
 	assert.Equal(t, "0x0102", testAddr.String())
@@ -166,7 +166,7 @@ func TestAddressLocalBroadcastStr(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// test IPv4 local station address
-	testAddr, err := NewAddress(testingLogger, "*")
+	testAddr, err := NewAddress("*")
 	require.NoError(t, err)
 	assert.Equal(t, "*", testAddr.String())
 }
@@ -175,7 +175,7 @@ func TestAddressRemoteBroadcastStr(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// test IPv4 local station address
-	testAddr, err := NewAddress(testingLogger, "1:*")
+	testAddr, err := NewAddress("1:*")
 	require.NoError(t, err)
 	assert.Equal(t, "1:*", testAddr.String())
 }
@@ -184,49 +184,49 @@ func TestAddressRemoteStationStr(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// test IPv4 local station address
-	testAddr, err := NewAddress(testingLogger, "1:2")
+	testAddr, err := NewAddress("1:2")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "02")
 	assert.Equal(t, "1:2", testAddr.String())
 
-	testAddr, err = NewAddress(testingLogger, "1:254")
+	testAddr, err = NewAddress("1:254")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "fe")
 	assert.Equal(t, "1:254", testAddr.String())
 
 	// test bad network and mode
-	_, err = NewAddress(testingLogger, "65536:2")
+	_, err = NewAddress("65536:2")
 	assert.Error(t, err)
-	_, err = NewAddress(testingLogger, "1:256")
+	_, err = NewAddress("1:256")
 	assert.Error(t, err)
 
 	// test moder hex string
-	testAddr, err = NewAddress(testingLogger, "1:0x02")
+	testAddr, err = NewAddress("1:0x02")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "02")
 	assert.Equal(t, "1:2", testAddr.String())
 
 	// test bad network
-	_, err = NewAddress(testingLogger, "65536:0x02")
+	_, err = NewAddress("65536:0x02")
 	assert.Error(t, err)
 
-	testAddr, err = NewAddress(testingLogger, "1:0x0203")
+	testAddr, err = NewAddress("1:0x0203")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(2), "0203")
 	assert.Equal(t, "1:0x0203", testAddr.String())
 
 	// test old school hex
-	testAddr, err = NewAddress(testingLogger, "1:X'02'")
+	testAddr, err = NewAddress("1:X'02'")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "02")
 	assert.Equal(t, "1:2", testAddr.String())
 
-	testAddr, err = NewAddress(testingLogger, "1:X'0203'")
+	testAddr, err = NewAddress("1:X'0203'")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(2), "0203")
 	assert.Equal(t, "1:0x0203", testAddr.String())
 
-	_, err = NewAddress(testingLogger, "65536:X'02'")
+	_, err = NewAddress("65536:X'02'")
 	assert.Error(t, err)
 }
 
@@ -234,7 +234,7 @@ func TestAddressGlobalBroadcastStr(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// test IPv4 local station address
-	testAddr, err := NewAddress(testingLogger, "*:*")
+	testAddr, err := NewAddress("*:*")
 	require.NoError(t, err)
 	matchAddress(t, testAddr, GLOBAL_BROADCAST_ADDRESS, nil, nil, "")
 	assert.Equal(t, "*:*", testAddr.String())
@@ -244,36 +244,36 @@ func TestLocalStation(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// one Parameter
-	_, err := NewLocalStation(testingLogger, nil, nil)
+	_, err := NewLocalStation(nil, nil)
 	require.Error(t, err)
 
 	// test integer
-	testAddr, err := NewLocalStation(testingLogger, 1, nil)
+	testAddr, err := NewLocalStation(1, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(1), "01")
 	assert.Equal(t, "1", testAddr.String())
 
-	testAddr, err = NewLocalStation(testingLogger, 254, nil)
+	testAddr, err = NewLocalStation(254, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(1), "fe")
 	assert.Equal(t, "254", testAddr.String())
 
 	// Test bad integer
-	_, err = NewLocalStation(testingLogger, -1, nil)
+	_, err = NewLocalStation(-1, nil)
 	require.Error(t, err)
-	_, err = NewLocalStation(testingLogger, 256, nil)
+	_, err = NewLocalStation(256, nil)
 	require.Error(t, err)
 
 	// Test bytes
 	xtob, err := Xtob("01")
 	require.NoError(t, err)
-	testAddr, err = NewLocalStation(testingLogger, xtob, nil)
+	testAddr, err = NewLocalStation(xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(1), "01")
 	assert.Equal(t, "1", testAddr.String())
 	xtob, err = Xtob("fe")
 	require.NoError(t, err)
-	testAddr, err = NewLocalStation(testingLogger, xtob, nil)
+	testAddr, err = NewLocalStation(xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(1), "fe")
 	assert.Equal(t, "254", testAddr.String())
@@ -281,14 +281,14 @@ func TestLocalStation(t *testing.T) {
 	// multi-byte strings are hex encoded
 	xtob, err = Xtob("0102")
 	require.NoError(t, err)
-	testAddr, err = NewLocalStation(testingLogger, xtob, nil)
+	testAddr, err = NewLocalStation(xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(2), "0102")
 	assert.Equal(t, "0x0102", testAddr.String())
 
 	xtob, err = Xtob("010203")
 	require.NoError(t, err)
-	testAddr, err = NewLocalStation(testingLogger, xtob, nil)
+	testAddr, err = NewLocalStation(xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(3), "010203")
 	assert.Equal(t, "0x010203", testAddr.String())
@@ -296,7 +296,7 @@ func TestLocalStation(t *testing.T) {
 	// match and IP address
 	xtob, err = Xtob("01020304bac0")
 	require.NoError(t, err)
-	testAddr, err = NewLocalStation(testingLogger, xtob, nil)
+	testAddr, err = NewLocalStation(xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, LOCAL_STATION_ADDRESS, nil, l(6), "01020304bac0")
 	assert.Equal(t, "1.2.3.4", testAddr.String())
@@ -306,11 +306,11 @@ func TestRemoteStation(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// two Parameters, correct types
-	_, err := NewRemoteStation(testingLogger, nil, nil, nil)
+	_, err := NewRemoteStation(nil, nil, nil)
 	require.Error(t, err)
 
 	// test bad network
-	_, err = NewRemoteStation(testingLogger, nil, -11, nil)
+	_, err = NewRemoteStation(nil, -11, nil)
 	require.Error(t, err)
 }
 
@@ -322,20 +322,20 @@ func TestRemoteStationInts(t *testing.T) {
 	}
 
 	// testInteger
-	testAddr, err := NewRemoteStation(testingLogger, net(1), 1, nil)
+	testAddr, err := NewRemoteStation(net(1), 1, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "01")
 	assert.Equal(t, "1:1", testAddr.String())
 
-	testAddr, err = NewRemoteStation(testingLogger, net(1), 254, nil)
+	testAddr, err = NewRemoteStation(net(1), 254, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "fe")
 	assert.Equal(t, "1:254", testAddr.String())
 
 	// test station address
-	_, err = NewRemoteStation(testingLogger, nil, -1, nil)
+	_, err = NewRemoteStation(nil, -1, nil)
 	require.Error(t, err)
-	_, err = NewRemoteStation(testingLogger, nil, 256, nil)
+	_, err = NewRemoteStation(nil, 256, nil)
 	require.Error(t, err)
 }
 
@@ -349,14 +349,14 @@ func TestRemoteStationBytes(t *testing.T) {
 	// multi-byte strings are hex encoded
 	xtob, err := Xtob("0102")
 	require.NoError(t, err)
-	testAddr, err := NewRemoteStation(testingLogger, net(1), xtob, nil)
+	testAddr, err := NewRemoteStation(net(1), xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(2), "0102")
 	assert.Equal(t, "1:0x0102", testAddr.String())
 
 	xtob, err = Xtob("010203")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, nil)
+	testAddr, err = NewRemoteStation(net(1), xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(3), "010203")
 	assert.Equal(t, "1:0x010203", testAddr.String())
@@ -364,14 +364,14 @@ func TestRemoteStationBytes(t *testing.T) {
 	// match with IPv4 address
 	xtob, err = Xtob("01020304bac0")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, nil)
+	testAddr, err = NewRemoteStation(net(1), xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(6), "01020304bac0")
 	assert.Equal(t, "1:1.2.3.4", testAddr.String())
 
 	xtob, err = Xtob("01020304bac1")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, nil)
+	testAddr, err = NewRemoteStation(net(1), xtob, nil)
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(6), "01020304bac1")
 	assert.Equal(t, "1:1.2.3.4:47809", testAddr.String())
@@ -385,41 +385,41 @@ func TestRemoteStationIntsRouted(t *testing.T) {
 	}
 
 	Address := func(a string) *Address {
-		address, err := NewAddress(testingLogger, a)
+		address, err := NewAddress(a)
 		require.NoError(t, err)
 		return address
 	}
 
 	// testInteger
-	testAddr, err := NewRemoteStation(testingLogger, net(1), 1, Address("1.2.3.4"))
+	testAddr, err := NewRemoteStation(net(1), 1, Address("1.2.3.4"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "01")
 	assert.Equal(t, "1:1@1.2.3.4", testAddr.String())
 
-	testAddr, err = NewRemoteStation(testingLogger, net(1), 254, Address("1.2.3.4"))
+	testAddr, err = NewRemoteStation(net(1), 254, Address("1.2.3.4"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "fe")
 	assert.Equal(t, "1:254@1.2.3.4", testAddr.String())
 
-	testAddr, err = NewRemoteStation(testingLogger, net(1), 254, Address("1.2.3.4:47809"))
+	testAddr, err = NewRemoteStation(net(1), 254, Address("1.2.3.4:47809"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "fe")
 	assert.Equal(t, "1:254@1.2.3.4:47809", testAddr.String())
 
-	testAddr, err = NewRemoteStation(testingLogger, net(1), 254, Address("0x01020304BAC0"))
+	testAddr, err = NewRemoteStation(net(1), 254, Address("0x01020304BAC0"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "fe")
 	assert.Equal(t, "1:254@1.2.3.4", testAddr.String())
 
-	testAddr, err = NewRemoteStation(testingLogger, net(1), 254, Address("0x01020304BAC1"))
+	testAddr, err = NewRemoteStation(net(1), 254, Address("0x01020304BAC1"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(1), "fe")
 	assert.Equal(t, "1:254@1.2.3.4:47809", testAddr.String())
 
 	// test station address
-	_, err = NewRemoteStation(testingLogger, nil, -1, nil)
+	_, err = NewRemoteStation(nil, -1, nil)
 	require.Error(t, err)
-	_, err = NewRemoteStation(testingLogger, nil, 256, nil)
+	_, err = NewRemoteStation(nil, 256, nil)
 	require.Error(t, err)
 }
 
@@ -431,7 +431,7 @@ func TestRemoteStationBytesRouted(t *testing.T) {
 	}
 
 	Address := func(a string) *Address {
-		address, err := NewAddress(testingLogger, a)
+		address, err := NewAddress(a)
 		require.NoError(t, err)
 		return address
 	}
@@ -439,35 +439,35 @@ func TestRemoteStationBytesRouted(t *testing.T) {
 	// multi-byte strings are hex encoded
 	xtob, err := Xtob("0102")
 	require.NoError(t, err)
-	testAddr, err := NewRemoteStation(testingLogger, net(1), xtob, Address("1.2.3.4"))
+	testAddr, err := NewRemoteStation(net(1), xtob, Address("1.2.3.4"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(2), "0102")
 	assert.Equal(t, "1:0x0102@1.2.3.4", testAddr.String())
 
 	xtob, err = Xtob("010203")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, Address("1.2.3.4"))
+	testAddr, err = NewRemoteStation(net(1), xtob, Address("1.2.3.4"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(3), "010203")
 	assert.Equal(t, "1:0x010203@1.2.3.4", testAddr.String())
 
 	xtob, err = Xtob("010203")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, Address("1.2.3.4:47809"))
+	testAddr, err = NewRemoteStation(net(1), xtob, Address("1.2.3.4:47809"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(3), "010203")
 	assert.Equal(t, "1:0x010203@1.2.3.4:47809", testAddr.String())
 
 	xtob, err = Xtob("010203")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, Address("0x01020304BAC0"))
+	testAddr, err = NewRemoteStation(net(1), xtob, Address("0x01020304BAC0"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(3), "010203")
 	assert.Equal(t, "1:0x010203@1.2.3.4", testAddr.String())
 
 	xtob, err = Xtob("010203")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, Address("0x01020304BAC1"))
+	testAddr, err = NewRemoteStation(net(1), xtob, Address("0x01020304BAC1"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(3), "010203")
 	assert.Equal(t, "1:0x010203@1.2.3.4:47809", testAddr.String())
@@ -475,28 +475,28 @@ func TestRemoteStationBytesRouted(t *testing.T) {
 	// match with an IPv4 address
 	xtob, err = Xtob("01020304bac0")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, Address("1.2.3.4"))
+	testAddr, err = NewRemoteStation(net(1), xtob, Address("1.2.3.4"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(6), "01020304bac0")
 	assert.Equal(t, "1:1.2.3.4@1.2.3.4", testAddr.String())
 
 	xtob, err = Xtob("01020304bac0")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, Address("1.2.3.4:47809"))
+	testAddr, err = NewRemoteStation(net(1), xtob, Address("1.2.3.4:47809"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(6), "01020304bac0")
 	assert.Equal(t, "1:1.2.3.4@1.2.3.4:47809", testAddr.String())
 
 	xtob, err = Xtob("01020304bac0")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, Address("0x01020304BAC0"))
+	testAddr, err = NewRemoteStation(net(1), xtob, Address("0x01020304BAC0"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(6), "01020304bac0")
 	assert.Equal(t, "1:1.2.3.4@1.2.3.4", testAddr.String())
 
 	xtob, err = Xtob("01020304bac0")
 	require.NoError(t, err)
-	testAddr, err = NewRemoteStation(testingLogger, net(1), xtob, Address("0x01020304BAC1"))
+	testAddr, err = NewRemoteStation(net(1), xtob, Address("0x01020304BAC1"))
 	require.NoError(t, err)
 	matchAddress(t, testAddr, REMOTE_STATION_ADDRESS, n(1), l(6), "01020304bac0")
 	assert.Equal(t, "1:1.2.3.4@1.2.3.4:47809", testAddr.String())
@@ -511,7 +511,7 @@ func TestLocalBroadcast(t *testing.T) {
 func TestLocalBroadcastRouted(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 	Address := func(a string) *Address {
-		address, err := NewAddress(testingLogger, a)
+		address, err := NewAddress(a)
 		require.NoError(t, err)
 		return address
 	}
@@ -530,7 +530,7 @@ func TestRemoteBroadcast(t *testing.T) {
 func TestRemoteBroadcastRouted(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 	Address := func(a string) *Address {
-		address, err := NewAddress(testingLogger, a)
+		address, err := NewAddress(a)
 		require.NoError(t, err)
 		return address
 	}
@@ -549,7 +549,7 @@ func TestGlobalBroadcast(t *testing.T) {
 func TestGlobalBroadcastRouted(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 	Address := func(a string) *Address {
-		address, err := NewAddress(testingLogger, a)
+		address, err := NewAddress(a)
 		require.NoError(t, err)
 		return address
 	}
@@ -566,12 +566,12 @@ func TestGlobalBroadcastRouted(t *testing.T) {
 func TestAddressEquality(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 	LocalStation := func(addr any) *Address {
-		station, err := NewLocalStation(testingLogger, addr, nil)
+		station, err := NewLocalStation(addr, nil)
 		require.NoError(t, err)
 		return station
 	}
 	RemoteStation := func(net uint16, addr any) *Address {
-		station, err := NewRemoteStation(testingLogger, &net, addr, nil)
+		station, err := NewRemoteStation(&net, addr, nil)
 		require.NoError(t, err)
 		return station
 	}
@@ -588,7 +588,7 @@ func TestAddressEquality(t *testing.T) {
 		return broadcast
 	}
 	Address := func(a any) *Address {
-		address, err := NewAddress(testingLogger, a)
+		address, err := NewAddress(a)
 		require.NoError(t, err)
 		return address
 	}
@@ -604,7 +604,7 @@ func TestAddressEquality(t *testing.T) {
 func TestAddressEqualityRouted(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 	RemoteStation := func(net uint16, addr any, route *Address) *Address {
-		station, err := NewRemoteStation(testingLogger, &net, addr, route)
+		station, err := NewRemoteStation(&net, addr, route)
 		require.NoError(t, err)
 		return station
 	}
@@ -617,7 +617,7 @@ func TestAddressEqualityRouted(t *testing.T) {
 		return broadcast
 	}
 	Address := func(a any) *Address {
-		address, err := NewAddress(testingLogger, a)
+		address, err := NewAddress(a)
 		require.NoError(t, err)
 		return address
 	}

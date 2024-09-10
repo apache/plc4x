@@ -96,7 +96,7 @@ var _ APCI = (*_APCI)(nil)
 
 func NewAPCI(apdu readWriteModel.APDU) APCI {
 	a := &_APCI{}
-	a.PCI = NewPCI(apdu, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	a.PCI = NewPCI(NoArgs, NewKWArgs(KWCompRootMessage, apdu)) // TODO: convert to args so we can solve all those todos
 	if apdu != nil {
 		apduType := apdu.GetApduType()
 		a.apduType = &apduType

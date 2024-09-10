@@ -223,20 +223,15 @@ func TestForeign(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_unicast", func(t *testing.T) { //Test a unicast message from TD to IUT.
-		t.Skip("something is broken with routing...") // TODO: fixme...
 		ExclusiveGlobalTimeMachine(t)
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		tnet := NewTFNetwork(t)
 
 		//make a PDU from node 1 to node 2
-		pduData, err := Xtob(
-			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
-			"01.80" + // version, network layer message
-				"13 0008 01", // message type, network, flag
-		)
+		pduData, err := Xtob("dead.beef")
 		require.NoError(t, err)
-		pdu := NewPDU(NewMessageBridge(pduData...), WithPDUSource(tnet.fd.address), WithPDUDestination(tnet.bbmd.address))
+		pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewMessageBridge(pduData...), KWCPCISource, tnet.fd.address, KWCPCIDestination, tnet.bbmd.address))
 		t.Logf("pdu: %v", pdu)
 
 		// register, wait for ack, send some beef
@@ -250,7 +245,7 @@ func TestForeign(t *testing.T) {
 
 		// the bbmd is happy when it gets the pdu
 		tnet.bbmd.GetStartState().
-			Receive(NewArgs((PDU)(nil)), NewKWArgs(KWPPDUSource, tnet.fd.address, KWPDUData, pduData)).
+			Receive(NewArgs((PDU)(nil)), NewKWArgs(KWCPCISource, tnet.fd.address, KWCPCIData, pduData)).
 			Success("")
 
 		// remote sniffer node
@@ -270,20 +265,16 @@ func TestForeign(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { //Test a broadcast message from TD to IUT.
-		t.Skip("something is broken with routing...") // TODO: fixme...
+		t.Skip("needs more work before it can do something") // TODO: implement me
 		ExclusiveGlobalTimeMachine(t)
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		tnet := NewTFNetwork(t)
 
 		//make a PDU from node 1 to node 2
-		pduData, err := Xtob(
-			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
-			"01.80" + // version, network layer message
-				"13 0008 01", // message type, network, flag
-		)
+		pduData, err := Xtob("dead.beef")
 		require.NoError(t, err)
-		pdu := NewPDU(NewMessageBridge(pduData...), WithPDUSource(tnet.fd.address), WithPDUDestination(NewLocalBroadcast(nil)))
+		pdu := NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduData...), KWCPCISource, tnet.fd.address, KWCPCIDestination, NewLocalBroadcast(nil)))
 		t.Logf("pdu: %v", pdu)
 
 		// register, wait for ack, send some beef
@@ -297,7 +288,7 @@ func TestForeign(t *testing.T) {
 
 		// the bbmd is happy when it gets the pdu
 		tnet.bbmd.GetStartState().
-			Receive(NewArgs((PDU)(nil)), NewKWArgs(KWPPDUSource, tnet.fd.address, KWPDUData, pduData)).Doc("4-2-1").
+			Receive(NewArgs((PDU)(nil)), NewKWArgs(KWCPCISource, tnet.fd.address, KWCPCIData, pduData)).Doc("4-2-1").
 			Success("")
 
 		// home simple node
@@ -306,7 +297,7 @@ func TestForeign(t *testing.T) {
 
 		// home node happy when getting the pdu, broadcast by the bbmd
 		homeNode.GetStartState().Doc("4-3-0").
-			Receive(NewArgs((PDU)(nil)), NewKWArgs(KWPPDUSource, tnet.fd.address, KWPDUData, pduData)).Doc("4-3-1").
+			Receive(NewArgs((PDU)(nil)), NewKWArgs(KWCPCISource, tnet.fd.address, KWCPCIData, pduData)).Doc("4-3-1").
 			Success("")
 
 		// remote sniffer node

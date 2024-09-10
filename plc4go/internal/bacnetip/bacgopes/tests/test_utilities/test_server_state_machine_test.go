@@ -26,6 +26,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
@@ -42,7 +43,7 @@ func TestServerStateMachine(t *testing.T) {
 	require.NoError(t, err)
 
 	// make pdu object
-	pdu := NewPDU(NewDummyMessage())
+	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage()))
 
 	// make a send transition from start to success, run the machine
 	server.GetStartState().Send(pdu, nil).Success("")

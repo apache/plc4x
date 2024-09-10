@@ -223,19 +223,19 @@ func (d *UDPDirector) handleRead() {
 		return
 	}
 
-	saddr, err := NewAddress(d.log, sourceAddr)
+	saddr, err := NewAddress(NewArgs(sourceAddr))
 	if err != nil {
 		// pass along to a handler
 		d.handleError(errors.Wrap(err, "error parsing source address"))
 		return
 	}
-	daddr, err := NewAddress(d.log, d.udpConn.LocalAddr())
+	daddr, err := NewAddress(NewArgs(d.udpConn.LocalAddr()))
 	if err != nil {
 		// pass along to a handler
 		d.handleError(errors.Wrap(err, "error parsing destination address"))
 		return
 	}
-	pdu := NewPDU(bvlc, WithPDUSource(saddr), WithPDUDestination(daddr))
+	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, bvlc, KWCPCISource, saddr, KWCPCIDestination, daddr))
 	// send the _PDU up to the client
 	d.wg.Add(1)
 	go func() {

@@ -114,10 +114,10 @@ func (suite *TestNPDUCodecSuite) TestWhoIsRouterToNetwork() { // Test the Result
 
 	err = suite.Request(NewArgs(quick.WhoIsRouterToNetwork(1)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&WhoIsRouterToNetwork{}), NewKWArgs(KWWirtnNetwork, uint16(1)))
 }
@@ -140,10 +140,10 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworkEmpty() { // Test the Res
 
 	err = suite.Request(NewArgs(quick.IAmRouterToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&IAmRouterToNetwork{}), NewKWArgs(KWIartnNetworkList, networkList))
 }
@@ -166,10 +166,10 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworks() { // Test the Result 
 
 	err = suite.Request(NewArgs(quick.IAmRouterToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&IAmRouterToNetwork{}), NewKWArgs(KWIartnNetworkList, networkList))
 }
@@ -191,10 +191,10 @@ func (suite *TestNPDUCodecSuite) TestICouldBeRouterToNetworks() { // Test the Re
 
 	err = suite.Request(NewArgs(quick.ICouldBeRouterToNetwork(1, 2)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&ICouldBeRouterToNetwork{}), NewKWArgs(KWIcbrtnNetwork, uint16(1), KWIcbrtnPerformanceIndex, uint8(2)))
 }
@@ -216,10 +216,10 @@ func (suite *TestNPDUCodecSuite) TestRejectMessageToNetwork() { // Test the Resu
 
 	err = suite.Request(NewArgs(quick.RejectMessageToNetwork(1, 2)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&RejectMessageToNetwork{}), NewKWArgs(KWRmtnRejectionReason, readWriteModel.NLMRejectMessageToNetworkRejectReason(1), KWRmtnDNET, uint16(2)))
 }
@@ -242,10 +242,10 @@ func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkEmpty() { // Test the Re
 
 	err = suite.Request(NewArgs(quick.RouterBusyToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&RouterBusyToNetwork{}), NewKWArgs(KWRbtnNetworkList, networkList))
 }
@@ -268,10 +268,10 @@ func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkNetworks() { // Test the
 
 	err = suite.Request(NewArgs(quick.RouterBusyToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&RouterBusyToNetwork{}), NewKWArgs(KWRbtnNetworkList, networkList))
 }
@@ -294,10 +294,10 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkEmpty() { // Test t
 
 	err = suite.Request(NewArgs(quick.RouterAvailableToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&RouterAvailableToNetwork{}), NewKWArgs(KWRatnNetworkList, networkList))
 }
@@ -320,10 +320,10 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkNetworks() { // Tes
 
 	err = suite.Request(NewArgs(quick.RouterAvailableToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&RouterAvailableToNetwork{}), NewKWArgs(KWRatnNetworkList, networkList))
 }
@@ -345,10 +345,10 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableEmpty() { // Test the
 
 	err = suite.Request(NewArgs(quick.InitializeRoutingTable()), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&InitializeRoutingTable{}), NewKWArgs(KWIrtTable, []*RoutingTableEntry{}))
 }
@@ -377,10 +377,10 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable01() { // Test the Re
 
 	err = suite.Request(NewArgs(quick.InitializeRoutingTable(rtEntries...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&InitializeRoutingTable{}), NewKWArgs(KWIrtTable, rtEntries))
 }
@@ -409,10 +409,10 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable02() { // Test the Re
 
 	err = suite.Request(NewArgs(quick.InitializeRoutingTable(rtEntries...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&InitializeRoutingTable{}), NewKWArgs(KWIrtTable, rtEntries))
 }
@@ -441,10 +441,10 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck01() { // Test the
 
 	err = suite.Request(NewArgs(quick.InitializeRoutingTableAck(rtEntries...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&InitializeRoutingTableAck{}), NewKWArgs(KWIrtaTable, rtEntries))
 }
@@ -473,10 +473,10 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck02() { // Test the
 
 	err = suite.Request(NewArgs(quick.InitializeRoutingTableAck(rtEntries...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&InitializeRoutingTableAck{}), NewKWArgs(KWIrtaTable, rtEntries))
 }
@@ -498,10 +498,10 @@ func (suite *TestNPDUCodecSuite) TestEstablishConnectionToNetworks() { // Test t
 
 	err = suite.Request(NewArgs(quick.EstablishConnectionToNetwork(5, 6)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&EstablishConnectionToNetwork{}), NewKWArgs(KWEctnDNET, uint16(5), KWEctnTerminationTime, uint8(6)))
 }
@@ -523,10 +523,10 @@ func (suite *TestNPDUCodecSuite) TestDisconnectConnectionToNetwork() { // Test t
 
 	err = suite.Request(NewArgs(quick.DisconnectConnectionToNetwork(7)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&DisconnectConnectionToNetwork{}), NewKWArgs(KWDctnDNET, uint16(7)))
 }
@@ -548,10 +548,10 @@ func (suite *TestNPDUCodecSuite) TestWhatIsNetworkNumber() { // Test the Result 
 
 	err = suite.Request(NewArgs(quick.WhatIsNetworkNumber(0)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&WhatIsNetworkNumber{}), NoKWArgs)
 }
@@ -573,10 +573,10 @@ func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result enco
 
 	err = suite.Request(NewArgs(quick.NetworkNumberIs(8, true)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs(&NetworkNumberIs{}), NewKWArgs(KWNniNet, uint16(8), KWNniFlag, true))
 }

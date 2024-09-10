@@ -233,6 +233,7 @@ func TestNonBBMD(t *testing.T) {
 func TestBBMD(t *testing.T) {
 	t.Skip("big WIP")                           // TODO: too much needs to be done in APDU to get something to run here at all
 	t.Run("test_14_2_1_1", func(t *testing.T) { //14.2.1.1 Execute Forwarded-NPDU (One-hop Distribution).
+		t.Skip("needs more work before it can do something") // TODO: implement me
 		ExclusiveGlobalTimeMachine(t)
 		testLogger := testutils.ProduceTestingLogger(t)
 
@@ -265,7 +266,7 @@ func TestBBMD(t *testing.T) {
 
 		// broadcast a forwarded NPDU
 		td.GetStartState().Doc("2-1-0").
-			Send(quick.WhoIsRequest(NewKWArgs(KWPDUDestination, NewLocalBroadcast(nil))), nil).Doc("2-1-1").
+			Send(quick.WhoIsRequest(NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil))), nil).Doc("2-1-1").
 			Receive(NewArgs((*IAmRequest)(nil)), NoKWArgs).Doc("2-1-2").
 			Success("")
 
@@ -282,6 +283,7 @@ func TestBBMD(t *testing.T) {
 
 	})
 	t.Run("test_14_2_1_1", func(t *testing.T) { // 14.2.1.1 Execute Forwarded-NPDU (Two-hop Distribution).
+		t.Skip("needs more work before it can do something") // TODO: implement me
 		ExclusiveGlobalTimeMachine(t)
 		testLogger := testutils.ProduceTestingLogger(t)
 
@@ -314,7 +316,7 @@ func TestBBMD(t *testing.T) {
 
 		// broadcast a forwarded NPDU
 		td.GetStartState().Doc("2-3-0").
-			Send(quick.WhoIsRequest(NewKWArgs(KWPDUDestination, NewLocalBroadcast(nil))), nil).Doc("2-3-1").
+			Send(quick.WhoIsRequest(NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil))), nil).Doc("2-3-1").
 			Receive(NewArgs((*IAmRequest)(nil)), NoKWArgs).Doc("2-3-2").
 			Success("")
 

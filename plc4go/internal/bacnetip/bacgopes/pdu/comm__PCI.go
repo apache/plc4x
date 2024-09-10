@@ -56,8 +56,31 @@ type __PCI struct {
 
 var _ IPCI = (*__PCI)(nil)
 
-func new__PCI(rootMessage spi.Message, pduUserData spi.Message, pduSource *Address, pduDestination *Address) *__PCI {
-	return &__PCI{rootMessage, pduUserData, pduSource, pduDestination}
+func new__PCI(args Args, kwargs KWArgs) *__PCI {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwargs)
+	}
+	i := &__PCI{
+		rootMessage: KWO[spi.Message](kwargs, KWCompRootMessage, nil),
+	}
+	delete(kwargs, KWCompRootMessage)
+	var myKwargs = make(KWArgs)
+	var otherKwargs = make(KWArgs)
+	for _, element := range []KnownKey{KWCPCIUserData, KWCPCISource, KWCPCIDestination} {
+		if v, ok := kwargs[element]; ok {
+			myKwargs[element] = v
+		}
+	}
+	for k, v := range kwargs {
+		if _, ok := myKwargs[k]; !ok {
+			otherKwargs[k] = v
+		}
+	}
+
+	i.pduUserData = KWO[spi.Message](kwargs, KWCPCIUserData, nil)
+	i.pduSource = KWO[*Address](kwargs, KWCPCISource, nil)
+	i.pduDestination = KWO[*Address](kwargs, KWCPCIDestination, nil)
+	return i
 }
 
 func (p *__PCI) SetRootMessage(rootMessage spi.Message) {

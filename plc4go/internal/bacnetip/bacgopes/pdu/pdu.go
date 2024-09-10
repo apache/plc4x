@@ -24,8 +24,11 @@ import (
 	"net"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
+
+var _debug = CreateDebugPrinter()
 
 var _shortMask = 0xFFFF
 
@@ -77,10 +80,8 @@ func UnpackIpAddr(addr []byte) (addrTuple *AddressTuple[string, uint16]) {
 	return &AddressTuple[string, uint16]{uint32ToIpv4(ip).String(), port}
 }
 
-func NewLocalStation(localLog zerolog.Logger, addr any, route *Address) (*Address, error) {
-	l := &Address{
-		log: localLog,
-	}
+func NewLocalStation(addr any, route *Address) (*Address, error) {
+	l := &Address{}
 	l.AddrType = LOCAL_STATION_ADDRESS
 	l.AddrRoute = route
 
@@ -93,7 +94,9 @@ func NewLocalStation(localLog zerolog.Logger, addr any, route *Address) (*Addres
 		length := uint8(1)
 		l.AddrLen = &length
 	case []byte:
-		localLog.Debug().Msg("bytearray")
+		if _debug != nil {
+			_debug("    - bytes or bytearray")
+		}
 		l.AddrAddress = addr
 		length := uint8(len(addr))
 		l.AddrLen = &length
@@ -103,10 +106,8 @@ func NewLocalStation(localLog zerolog.Logger, addr any, route *Address) (*Addres
 	return l, nil
 }
 
-func NewRemoteStation(localLog zerolog.Logger, net *uint16, addr any, route *Address) (*Address, error) {
-	l := &Address{
-		log: localLog,
-	}
+func NewRemoteStation(net *uint16, addr any, route *Address) (*Address, error) {
+	l := &Address{}
 	l.AddrType = REMOTE_STATION_ADDRESS
 	l.AddrNet = net
 	l.AddrRoute = route
@@ -120,7 +121,9 @@ func NewRemoteStation(localLog zerolog.Logger, net *uint16, addr any, route *Add
 		length := uint8(1)
 		l.AddrLen = &length
 	case []byte:
-		localLog.Debug().Msg("bytearray")
+		if _debug != nil {
+			_debug("    - bytes or bytearray")
+		}
 		l.AddrAddress = addr
 		length := uint8(len(addr))
 		l.AddrLen = &length

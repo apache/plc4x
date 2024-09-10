@@ -84,7 +84,7 @@ func (c *ClientSSM) Request(args Args, kwargs KWArgs) error {
 	apdu := Get[PDU](args, 0)
 
 	// make sure it has a good source and destination
-	apdu = NewPDU(apdu, WithPDUSource(nil), WithPDUDestination(c.pduAddress))
+	apdu = NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, apdu, KWCPCIDestination, c.pduAddress))
 
 	// send it via the device
 	return c.ssmSAP.Request(NewArgs(apdu), kwargs)
@@ -203,7 +203,7 @@ func (c *ClientSSM) Response(args Args, kwargs KWArgs) error {
 	apdu := Get[PDU](args, 0)
 
 	// make sure it has a good source and destination
-	apdu = NewPDU(apdu, WithPDUSource(c.pduAddress), WithPDUDestination(nil))
+	apdu = NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, apdu, KWCPCISource, c.pduAddress))
 
 	// send it to the application
 	return c.ssmSAP.SapResponse(NewArgs(apdu), kwargs)
@@ -255,7 +255,7 @@ func (c *ClientSSM) abort(reason readWriteModel.BACnetAbortReason) (PDU, error) 
 	// build an abort _PDU to return
 	abortApdu := readWriteModel.NewAPDUAbort(false, c.invokeId, readWriteModel.NewBACnetAbortReasonTagged(reason, uint32(reason), 0), 0)
 	// return it
-	return NewPDU(abortApdu), nil
+	return NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, abortApdu)), nil
 }
 
 // segmentedRequest This function is called when the client is sending a segmented request and receives an apdu
@@ -457,7 +457,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 
 			// send back a segment ack
 			segmentAck := readWriteModel.NewAPDUSegmentAck(false, false, c.invokeId, c.initialSequenceNumber, *c.actualWindowSize, 0)
-			if err := c.Request(NewArgs(NewPDU(segmentAck)), NoKWArgs); err != nil {
+			if err := c.Request(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, segmentAck))), NoKWArgs); err != nil {
 				c.log.Debug().Err(err).Msg("error sending request")
 			}
 		} else {
@@ -496,7 +496,7 @@ func (c *ClientSSM) awaitConfirmationTimeout() error {
 		// save the retry count, indication acts like the request is coming from the application so the retryCount gets
 		//            re-initialized.
 		saveCount := c.retryCount
-		if err := c.Indication(NewArgs(NewPDU(c.segmentAPDU.originalApdu, WithPDUDestination(c.pduAddress))), NoKWArgs); err != nil { // TODO: check that it is really the intention to re-send the original apdu here
+		if err := c.Indication(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, c.segmentAPDU.originalApdu, KWCPCIDestination, c.pduAddress))), NoKWArgs); err != nil { // TODO: check that it is really the intention to re-send the original apdu here
 			return err
 		}
 		c.retryCount = saveCount
@@ -561,7 +561,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		// segment received out of order
 		c.RestartTimer(c.segmentTimeout)
 		segmentAck := readWriteModel.NewAPDUSegmentAck(true, false, c.invokeId, c.initialSequenceNumber, *c.actualWindowSize, 0)
-		if err := c.Request(NewArgs(NewPDU(segmentAck)), NoKWArgs); err != nil {
+		if err := c.Request(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, segmentAck))), NoKWArgs); err != nil {
 			c.log.Debug().Err(err).Msg("error sending request")
 		}
 		return nil
@@ -581,7 +581,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 
 		// send final ack
 		segmentAck := readWriteModel.NewAPDUSegmentAck(false, false, c.invokeId, c.lastSequenceNumber, *c.actualWindowSize, 0)
-		if err := c.Request(NewArgs(NewPDU(segmentAck)), NoKWArgs); err != nil {
+		if err := c.Request(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, segmentAck))), NoKWArgs); err != nil {
 			c.log.Debug().Err(err).Msg("error sending request")
 		}
 
@@ -595,7 +595,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}
-		if err := c.Response(NewArgs(NewPDU(parse)), NoKWArgs); err != nil {
+		if err := c.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, parse))), NoKWArgs); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	} else if *apduComplexAck.GetSequenceNumber() == c.initialSequenceNumber+*c.actualWindowSize {
@@ -604,7 +604,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		c.initialSequenceNumber = c.lastSequenceNumber
 		c.RestartTimer(c.segmentTimeout)
 		segmentAck := readWriteModel.NewAPDUSegmentAck(false, false, c.invokeId, c.lastSequenceNumber, *c.actualWindowSize, 0)
-		if err := c.Request(NewArgs(NewPDU(segmentAck)), NoKWArgs); err != nil { // send it ot the device
+		if err := c.Request(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, segmentAck))), NoKWArgs); err != nil { // send it ot the device
 			c.log.Debug().Err(err).Msg("error sending request")
 		}
 	} else {

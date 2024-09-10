@@ -292,7 +292,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 		switch npdu.GetPDUDestination().AddrType {
 		case REMOTE_STATION_ADDRESS:
 			n.log.Debug().Msg("mapping remote station to local station")
-			localStation, err := NewLocalStation(n.log, npdu.GetPDUDestination().AddrAddress, nil)
+			localStation, err := NewLocalStation(npdu.GetPDUDestination().AddrAddress, nil)
 			if err != nil {
 				return errors.Wrap(err, "error building local station")
 			}
@@ -458,7 +458,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			if len(n.adapters) > 1 && adapter != n.localAdapter {
 				// combine the source address
 				if !npdu.GetControl().GetSourceSpecified() {
-					remoteStationAddress, err := NewAddress(n.log, adapter.adapterNet, npdu.GetPDUSource().AddrAddress)
+					remoteStationAddress, err := NewAddress(NewArgs(adapter.adapterNet))
 					if err != nil {
 						return errors.Wrap(err, "error creating remote address")
 					}
@@ -564,7 +564,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 
 	// set the source address
 	if !npdu.GetControl().GetSourceSpecified() {
-		newSADR, err := NewRemoteStation(n.log, adapter.adapterNet, npdu.GetPDUSource().AddrAddress, nil)
+		newSADR, err := NewRemoteStation(adapter.adapterNet, npdu.GetPDUSource().AddrAddress, nil)
 		if err != nil {
 			return errors.Wrap(err, "error creating remote station")
 		}
@@ -605,7 +605,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			if npdu.GetNpduDADR().AddrType == REMOTE_BROADCAST_ADDRESS {
 				newpdu.SetPDUDestination(NewLocalBroadcast(nil))
 			} else {
-				newDADR, err := NewLocalStation(n.log, npdu.GetNpduDADR().AddrAddress, nil)
+				newDADR, err := NewLocalStation(npdu.GetNpduDADR().AddrAddress, nil)
 				if err != nil {
 					return errors.Wrap(err, "error building local station")
 				}
@@ -658,7 +658,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass this along as if it came from the NSE
-			if err := n.SapIndication(NewArgs(xadapter, NewPDU(xnpdu, WithPDUDestination(pduDestination))), NoKWArgs); err != nil {
+			if err := n.SapIndication(NewArgs(xadapter, NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, xnpdu, KWCPCIDestination, pduDestination))), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error sending indication")
 			}
 		}

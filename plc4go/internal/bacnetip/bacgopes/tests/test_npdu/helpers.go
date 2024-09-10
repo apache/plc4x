@@ -68,7 +68,7 @@ func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// Now as a vanilla PDU
-	ypdu := NewPDU(nil)
+	ypdu := NewPDU(Nothing())
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}

@@ -83,13 +83,13 @@ func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
 	rpdu := Get[PDU](args, 0)
 
 	// encode it as a generic BVLL PDU
-	bvlpdu := NewBVLPDU(nil)
+	bvlpdu := NewBVLPDU(Nothing())
 	if err := rpdu.(Encoder).Encode(bvlpdu); err != nil {
 		return errors.Wrap(err, "error encoding PDU")
 	}
 
 	// encode it as a PDU
-	pdu := NewPDU(nil)
+	pdu := NewPDU(Nothing())
 	if err := bvlpdu.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding PDU")
 	}
@@ -104,7 +104,7 @@ func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
 	pdu := Get[PDU](args, 0)
 
 	// interpret as a BVLL PDU
-	bvlpdu := NewBVLPDU(nil)
+	bvlpdu := NewBVLPDU(Nothing())
 	if err := bvlpdu.Decode(pdu); err != nil {
 		return errors.Wrap(err, "error decoding pdu")
 	}

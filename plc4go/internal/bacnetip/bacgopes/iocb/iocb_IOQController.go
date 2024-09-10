@@ -282,7 +282,7 @@ func (i *IOQController) _waitTrigger(_ Args, _ KWArgs) error {
 	i.stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 	// look for more to do
-	return i._trigger(NoArgs, NoKWArgs)
+	return i._trigger(Nothing())
 }
 
 func (i *IOQController) Close() error {

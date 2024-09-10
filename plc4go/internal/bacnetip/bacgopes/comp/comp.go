@@ -24,6 +24,9 @@ import (
 	"container/heap"
 	"fmt"
 	"iter"
+	"os"
+	"path"
+	"runtime"
 	"sort"
 	"strings"
 
@@ -69,6 +72,14 @@ func argsGetOrDefault[T any](args Args, index int, defaultValue T) T {
 	return args[index].(T)
 }
 
+func (a Args) Format(f fmt.State, verb rune) {
+	switch verb {
+	case 'r':
+		s := a.String()[1 : len(a.String())-1]
+		_, _ = f.Write([]byte("(" + s + ")"))
+	}
+}
+
 func (a Args) String() string {
 	r := ""
 	for i, ea := range a {
@@ -112,19 +123,49 @@ func NewKWArgs(kw ...any) KWArgs {
 	return r
 }
 
+func (k KWArgs) Format(f fmt.State, verb rune) {
+	switch verb {
+	case 'r':
+		_, _ = f.Write([]byte(k.String()))
+	}
+}
+
 func (k KWArgs) String() string {
 	r := ""
 	for kk, ea := range k {
+		switch kk {
+		case KWCompRootMessage, KWCompBVLCIRequirements:
+			// TODO: figure out if we want to control that for the %r above and do something different here
+			continue
+		}
 		switch tea := ea.(type) {
 		case []byte:
 			ea = Btox(tea, ".")
 		}
-		r += fmt.Sprintf("%s=%v, ", kk, ea)
+		r += fmt.Sprintf("'%s'=%v, ", kk, ea)
 	}
 	if r != "" {
 		r = r[:len(r)-2]
 	}
 	return "{" + r + "}"
+}
+
+// KW gets a value from KWArgs and if not present panics
+func KW[T any](kwargs KWArgs, key KnownKey) T {
+	r, ok := kwargs[key]
+	if !ok {
+		panic(fmt.Sprintf("key %v not found in kwargs", key))
+	}
+	return r.(T)
+}
+
+// KWO gets a value from KWArgs and if not present returns the supplied default value
+func KWO[T any](kwargs KWArgs, key KnownKey, defaultValue T) T {
+	r, ok := kwargs[key]
+	if !ok {
+		return defaultValue
+	}
+	return r.(T)
 }
 
 type KnownKey string
@@ -139,11 +180,18 @@ const (
 	KWError      = KnownKey("error")
 
 	////
-	// PDU related Keys
+	// comm.PCI related keys
 
-	KWPPDUSource     = KnownKey("pduSource")
-	KWPDUDestination = KnownKey("pduDestination")
-	KWPDUData        = KnownKey("pduData")
+	KWCPCISource      = KnownKey("source")
+	KWCPCIDestination = KnownKey("destination")
+	KWCPCIData        = KnownKey("data")
+	KWCPCIUserData    = KnownKey("user_data")
+
+	////
+	// PCI related keys
+
+	KWPCIExpectingReply  = KnownKey("expecting_reply")
+	KWPCINetworkPriority = KnownKey("network_priority")
 
 	////
 	// NPDU related keys
@@ -175,7 +223,18 @@ const (
 	KWFdRemain        = KnownKey("fdRemain")
 	KWBvlciTimeToLive = KnownKey("bvlciTimeToLive")
 	KWBvlciFDT        = KnownKey("bvlciFDT")
+
+	////
+	// Compability layer keys
+
+	KWCompRootMessage       = KnownKey("compRootMessage")
+	KWCompBVLCIRequirements = KnownKey("compBVLCIRequirements")
 )
+
+// Nothing give NoArgs and NoKWArgs
+func Nothing() (Args, KWArgs) {
+	return NoArgs, NoKWArgs
+}
 
 // An PriorityItem is something we manage in a priority queue.
 type PriorityItem[P cmp.Ordered, V any] struct {
@@ -368,4 +427,33 @@ func SortedMapIterator[K cmp.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
 			}
 		}
 	}
+}
+
+type DebugPrinter = func(format string, a ...any)
+
+func CreateDebugPrinter() DebugPrinter {
+	_, file, _, ok := runtime.Caller(1)
+	if !ok {
+		return nil
+	}
+	dir := path.Dir(file)
+	rootIndex := strings.Index(dir, "bacgopes")
+	dir = dir[rootIndex:]
+	qualifier := strings.ReplaceAll(dir, "/", ".")
+	dirPrefix := path.Base(dir) + "_"
+
+	bacgopesDebug := os.Getenv("BACGOPES_DEBUG")
+	if strings.Contains(bacgopesDebug, qualifier) {
+		return func(format string, a ...any) {
+			_, file, _, ok := runtime.Caller(1)
+			if !ok {
+				return
+			}
+			base := path.Base(file)
+			prefix := strings.TrimSuffix(base, ".go")
+			prefix = strings.TrimPrefix(prefix, dirPrefix)
+			_, _ = fmt.Fprintf(os.Stderr, "DEBUG:"+qualifier+"."+prefix+":"+format+"\n", a...)
+		}
+	}
+	return nil
 }

@@ -25,7 +25,6 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
@@ -48,16 +47,16 @@ func NewForwardedNPDU(pdu PDU, opts ...func(*ForwardedNPDU)) (*ForwardedNPDU, er
 	}
 	switch npdu := pdu.(type) {
 	case model.NPDU:
-		b._BVLPDU = NewBVLPDU(model.NewBVLCForwardedNPDU(b.produceInnerNPDU(npdu))).(*_BVLPDU)
+		b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCForwardedNPDU(b.produceInnerNPDU(npdu)))).(*_BVLPDU)
 	case nil:
-		b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+		b._BVLPDU = NewBVLPDU(Nothing()).(*_BVLPDU)
 	default:
 		data := pdu.GetPduData()
 		parsedNPDU, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
 		if err != nil {
-			b._BVLPDU = NewBVLPDU(model.NewBVLCForwardedNPDU(b.produceInnerNPDU(parsedNPDU))).(*_BVLPDU)
+			b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCForwardedNPDU(b.produceInnerNPDU(parsedNPDU)))).(*_BVLPDU)
 		} else {
-			b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+			b._BVLPDU = NewBVLPDU(Nothing()).(*_BVLPDU)
 			b._BVLPDU.SetPduData(data)
 		}
 	}
@@ -130,7 +129,7 @@ func (f *ForwardedNPDU) Decode(bvlpdu Arg) error {
 			var portArray = make([]byte, 2)
 			binary.BigEndian.PutUint16(portArray, port)
 			var err error
-			address, err := NewAddress(zerolog.Nop(), append(addr, portArray...))
+			address, err := NewAddress(NewArgs(append(addr, portArray...)))
 			if err != nil {
 				return errors.Wrap(err, "error creating address")
 			}

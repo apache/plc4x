@@ -30,12 +30,10 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 )
 
 type AddressType int
@@ -89,6 +87,13 @@ func (a *AddressTuple[L, R]) DeepCopy() any {
 	return a.deepCopy()
 }
 
+func (a *AddressTuple[L, R]) Format(s fmt.State, v rune) {
+	switch v {
+	case 'r':
+		_, _ = s.Write([]byte(a.String()))
+	}
+}
+
 func (a *AddressTuple[L, R]) String() string {
 	return fmt.Sprintf("(%v, %v)", a.Left, a.Right)
 }
@@ -129,17 +134,13 @@ type Address struct {
 	AddrPort           *uint16
 	AddrTuple          *AddressTuple[string, uint16]
 	AddrBroadcastTuple *AddressTuple[string, uint16]
-
-	log zerolog.Logger
 }
 
-func NewAddress(localLog zerolog.Logger, args ...any) (*Address, error) {
-	a := &Address{
-		log: localLog,
+func NewAddress(args Args) (*Address, error) {
+	if _debug != nil {
+		_debug("__init__ %r", args)
 	}
-	if !LogPDU {
-		a.log = zerolog.Nop()
-	}
+	a := &Address{}
 	a.AddrNet = nil
 	a.AddrAddress = nil
 	a.AddrLen = nil
@@ -184,7 +185,9 @@ func NewAddress(localLog zerolog.Logger, args ...any) (*Address, error) {
 
 // decodeAddress Initialize the address from a string.  Lots of different forms are supported
 func (a *Address) decodeAddress(addr any) error {
-	a.log.Debug().Type("addrType", addr).Interface("addr", addr).Msg("decodeAddress")
+	if _debug != nil {
+		_debug("decode_address %r %T", addr, addr)
+	}
 
 	// start out assuming this is a local station and didn't get routed
 	a.AddrType = LOCAL_STATION_ADDRESS
@@ -195,10 +198,14 @@ func (a *Address) decodeAddress(addr any) error {
 
 	switch {
 	case addr == "*":
-		a.log.Debug().Msg("localBroadcast")
+		if _debug != nil {
+			_debug("    - localBroadcast")
+		}
 		a.AddrType = LOCAL_BROADCAST_ADDRESS
 	case addr == "*:*":
-		a.log.Debug().Msg("globalBroadcast")
+		if _debug != nil {
+			_debug("    - globalBroadcast")
+		}
 		a.AddrType = GLOBAL_BROADCAST_ADDRESS
 	default:
 		switch addr := addr.(type) {
@@ -219,7 +226,9 @@ func (a *Address) decodeAddress(addr any) error {
 			if err != nil {
 				panic(err)
 			}
-			a.log.Debug().Msg("int")
+			if _debug != nil {
+				_debug("    - int")
+			}
 			if iaddr < 0 || iaddr > 255 {
 				return errors.New("address out of range")
 			}
@@ -227,7 +236,9 @@ func (a *Address) decodeAddress(addr any) error {
 			length := uint8(1)
 			a.AddrLen = &length
 		case []byte:
-			a.log.Debug().Msg("byte array")
+			if _debug != nil {
+				_debug("    - bytes or bytearray")
+			}
 			a.AddrAddress = addr
 			length := uint8(len(addr))
 			a.AddrLen = &length
@@ -248,11 +259,15 @@ func (a *Address) decodeAddress(addr any) error {
 				a.AddrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", *a.AddrPort}
 			}
 		case string:
-			a.log.Trace().Msg("str")
+			if _debug != nil {
+				_debug("    - str")
+			}
 
 			m := CombinedPattern.MatchString(addr)
 			if m {
-				a.log.Trace().Msg("combined pattern")
+				if _debug != nil {
+					_debug("    - combined pattern")
+				}
 				groups := CombinedPattern.FindStringSubmatch(addr)
 				_net := groups[1]
 				globalBroadcast := groups[2]
@@ -266,10 +281,14 @@ func (a *Address) decodeAddress(addr any) error {
 				routeIpPort := groups[10]
 
 				if globalBroadcast != "" && localBroadcast != "" {
-					a.log.Trace().Msg("global broadcast")
+					if _debug != nil {
+						_debug("    - global broadcast")
+					}
 					a.AddrType = GLOBAL_BROADCAST_ADDRESS
 				} else if _net != "" && localBroadcast != "" {
-					a.log.Trace().Msg("remote broadcast")
+					if _debug != nil {
+						_debug("    - remote broadcast")
+					}
 					netAddr, err := strconv.ParseUint(_net, 10, 16)
 					if err != nil {
 						return errors.Wrap(err, "can't parse net")
@@ -278,10 +297,14 @@ func (a *Address) decodeAddress(addr any) error {
 					var netAddr16 = uint16(netAddr)
 					a.AddrNet = &netAddr16
 				} else if localBroadcast != "" {
-					a.log.Trace().Msg("local broadcast")
+					if _debug != nil {
+						_debug("    - local broadcast")
+					}
 					a.AddrType = LOCAL_BROADCAST_ADDRESS
 				} else if _net != "" {
-					a.log.Trace().Msg("remote station")
+					if _debug != nil {
+						_debug("    - remote station")
+					}
 					netAddr, err := strconv.ParseUint(_net, 10, 16)
 					if err != nil {
 						return errors.Wrap(err, "can't parse net")
@@ -292,7 +315,9 @@ func (a *Address) decodeAddress(addr any) error {
 				}
 
 				if localAddr != "" {
-					a.log.Trace().Msg("simple address")
+					if _debug != nil {
+						_debug("    - simple address")
+					}
 					if strings.HasPrefix(localAddr, "0x") {
 						var err error
 						a.AddrAddress, err = Xtob(localAddr[2:])
@@ -313,7 +338,9 @@ func (a *Address) decodeAddress(addr any) error {
 				}
 
 				if localIpAddr != "" {
-					a.log.Trace().Msg("ip address")
+					if _debug != nil {
+						_debug("    - ip address")
+					}
 					if localIpPort == "" {
 						localIpPort = "47808"
 					}
@@ -328,7 +355,9 @@ func (a *Address) decodeAddress(addr any) error {
 					localIpPort16 := uint16(localIpPortParse)
 					a.AddrPort = &localIpPort16
 					a.AddrTuple = &AddressTuple[string, uint16]{localIpAddr, *a.AddrPort}
-					a.log.Debug().Stringer("addrTuple", a.AddrTuple).Msg("addrTuple")
+					if _debug != nil {
+						_debug("    - addrTuple: %r", a.AddrTuple)
+					}
 
 					parseAddr, err := netip.ParseAddr(localIpAddr)
 					if err != nil {
@@ -352,7 +381,9 @@ func (a *Address) decodeAddress(addr any) error {
 					bcastIpReverse := make(net.IP, 4)
 					binary.BigEndian.PutUint32(bcastIpReverse, bcast&uint32(_longMask))
 					a.AddrBroadcastTuple = &AddressTuple[string, uint16]{bcastIpReverse.String(), *a.AddrPort}
-					a.log.Debug().Stringer("addrBroadcastTuple", a.AddrBroadcastTuple).Msg("addrBroadcastTuple")
+					if _debug != nil {
+						_debug("    - addrBroadcastTuple: %r", a.AddrBroadcastTuple)
+					}
 
 					portReverse := make([]byte, 2)
 					binary.BigEndian.PutUint16(portReverse, *a.AddrPort&uint16(_shortMask))
@@ -362,7 +393,9 @@ func (a *Address) decodeAddress(addr any) error {
 				}
 
 				if !Settings.RouteAware && (routeAddr != "" || routeIpAddr != "") {
-					a.log.Warn().Msgf("route provided but not route aware: %v", addr)
+					if _debug != nil {
+						_debug("route provided but not route aware: %v", addr)
+					}
 				}
 
 				if routeAddr != "" {
@@ -371,7 +404,7 @@ func (a *Address) decodeAddress(addr any) error {
 						if err != nil {
 							return errors.Wrap(err, "can't parse route addr")
 						}
-						a.AddrRoute, err = NewAddress(a.log, xtob)
+						a.AddrRoute, err = NewAddress(NewArgs(xtob))
 						if err != nil {
 							return errors.Wrap(err, "can't parse route")
 						}
@@ -380,11 +413,13 @@ func (a *Address) decodeAddress(addr any) error {
 						if err != nil {
 							return errors.Wrap(err, "can't parse route addr")
 						}
-						a.AddrRoute, err = NewAddress(a.log, routeAddr)
+						a.AddrRoute, err = NewAddress(NewArgs(routeAddr))
 						if err != nil {
 							return errors.Wrap(err, "can't create route")
 						}
-						a.log.Debug().Interface("addRoute", a.AddrRoute).Msg("addRoute")
+						if _debug != nil {
+							_debug("    - addrRoute: %r", a.AddrRoute)
+						}
 					}
 				} else if routeIpAddr != "" {
 					if routeIpPort == "" {
@@ -392,7 +427,7 @@ func (a *Address) decodeAddress(addr any) error {
 					}
 					var err error
 					tuple := &AddressTuple[string, string]{routeIpAddr, routeIpPort}
-					a.AddrRoute, err = NewAddress(a.log, tuple)
+					a.AddrRoute, err = NewAddress(NewArgs(tuple))
 					if err != nil {
 						return errors.Wrap(err, "can't create route")
 					}
@@ -402,7 +437,9 @@ func (a *Address) decodeAddress(addr any) error {
 			}
 
 			if ethernet_re.MatchString(addr) {
-				a.log.Trace().Msg("ethernet")
+				if _debug != nil {
+					_debug("    - ethernet")
+				}
 				var err error
 				a.AddrAddress, err = Xtob(addr)
 				if err != nil {
@@ -415,7 +452,9 @@ func (a *Address) decodeAddress(addr any) error {
 
 			intR := regexp.MustCompile(`^\d+$`)
 			if intR.MatchString(addr) {
-				a.log.Trace().Msg("int")
+				if _debug != nil {
+					_debug("    - int")
+				}
 
 				parseUint, err := strconv.ParseUint(addr, 10, 8)
 				if err != nil {
@@ -429,7 +468,9 @@ func (a *Address) decodeAddress(addr any) error {
 
 			remoteBroadcast := regexp.MustCompile(`^\d+:[*]$`)
 			if remoteBroadcast.MatchString(addr) {
-				a.log.Trace().Msg("remote broadcast")
+				if _debug != nil {
+					_debug("    - remote broadcast")
+				}
 
 				parseUint, err := strconv.ParseUint(addr[:len(addr)-2], 10, 16)
 				if err != nil {
@@ -446,7 +487,9 @@ func (a *Address) decodeAddress(addr any) error {
 
 			remoteStation := regexp.MustCompile(`^\d+:[*]$`)
 			if remoteStation.MatchString(addr) {
-				a.log.Trace().Msg("remote station")
+				if _debug != nil {
+					_debug("    - remote station")
+				}
 
 				split := strings.Split(addr, ":")
 				_net, _addr := split[0], split[1]
@@ -470,7 +513,9 @@ func (a *Address) decodeAddress(addr any) error {
 
 			modernHexString := regexp.MustCompile(`^0x([0-9A-Fa-f][0-9A-Fa-f])+$`)
 			if modernHexString.MatchString(addr) {
-				a.log.Trace().Msg("modern hex string")
+				if _debug != nil {
+					_debug("    - modern hex string")
+				}
 
 				var err error
 				a.AddrAddress, err = Xtob(addr[2:])
@@ -484,7 +529,9 @@ func (a *Address) decodeAddress(addr any) error {
 
 			oldSchoolHexString := regexp.MustCompile(`^X'([0-9A-Fa-f][0-9A-Fa-f])+'$`)
 			if oldSchoolHexString.MatchString(addr) {
-				a.log.Trace().Msg("modern hex string")
+				if _debug != nil {
+					_debug("    - modern hex string")
+				}
 
 				var err error
 				a.AddrAddress, err = Xtob(addr[2 : len(addr)-1])
@@ -498,7 +545,9 @@ func (a *Address) decodeAddress(addr any) error {
 
 			remoteStationWithModernHexString := regexp.MustCompile(`^\d+:0x([0-9A-Fa-f][0-9A-Fa-f])+$`)
 			if remoteStationWithModernHexString.MatchString(addr) {
-				a.log.Trace().Msg("remote station with modern hex string")
+				if _debug != nil {
+					_debug("    - remote station with modern hex string")
+				}
 
 				split := strings.Split(addr, ":")
 				_net, _addr := split[0], split[1]
@@ -521,7 +570,9 @@ func (a *Address) decodeAddress(addr any) error {
 
 			remoteStationWithOldHexString := regexp.MustCompile(`^\d+:X'([0-9A-Fa-f][0-9A-Fa-f])+'$`)
 			if remoteStationWithOldHexString.MatchString(addr) {
-				a.log.Trace().Msg("remote station with modern hex string")
+				if _debug != nil {
+					_debug("    - remote station with modern hex string")
+				}
 
 				split := strings.Split(addr, ":")
 				_net, _addr := split[0], split[1]
@@ -543,7 +594,9 @@ func (a *Address) decodeAddress(addr any) error {
 			}
 
 			if interface_re.MatchString(addr) {
-				a.log.Trace().Msg("interface name with optional port")
+				if _debug != nil {
+					_debug("    - interface name with optional port")
+				}
 
 				groups := interface_re.FindStringSubmatch(addr)
 				_interface := groups[1]
@@ -580,7 +633,9 @@ func (a *Address) decodeAddress(addr any) error {
 				addrstr = net.ParseIP(uaddr).To4()
 			}
 			a.AddrTuple = &AddressTuple[string, uint16]{uaddr, *a.AddrPort}
-			a.log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
+			if _debug != nil {
+				_debug("    - addrstr: %r", addrstr)
+			}
 
 			ip := ipv4ToUint32(addrstr)
 			a.AddrIP = &ip
@@ -613,7 +668,9 @@ func (a *Address) decodeAddress(addr any) error {
 				addrstr = net.ParseIP(uaddr).To4()
 			}
 			a.AddrTuple = &AddressTuple[string, uint16]{uaddr, *a.AddrPort}
-			a.log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
+			if _debug != nil {
+				_debug("    - addrstr: %r", addrstr)
+			}
 
 			ip := ipv4ToUint32(addrstr)
 			a.AddrIP = &ip
@@ -634,7 +691,9 @@ func (a *Address) decodeAddress(addr any) error {
 
 			addrstr := uint32ToIpv4(uint32(uaddr))
 			a.AddrTuple = &AddressTuple[string, uint16]{addrstr.String(), *a.AddrPort}
-			a.log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
+			if _debug != nil {
+				_debug("    - addrstr: %r", addrstr)
+			}
 
 			ip := ipv4ToUint32(addrstr)
 			a.AddrIP = &ip
@@ -671,7 +730,9 @@ func (a *Address) Equals(other any) bool {
 		otherString := other.String()
 		equals := thisString == otherString
 		if !equals {
-			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+			if _debug != nil {
+				_debug("Mismatch %v != %v", thisString, otherString)
+			}
 		}
 		return equals
 	case Address:
@@ -679,7 +740,9 @@ func (a *Address) Equals(other any) bool {
 		otherString := other.String()
 		equals := thisString == otherString
 		if !equals {
-			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+			if _debug != nil {
+				_debug("Mismatch %v != %v", thisString, otherString)
+			}
 		}
 		return equals
 	case AddressTuple[string, uint16]:
@@ -687,7 +750,9 @@ func (a *Address) Equals(other any) bool {
 		otherString := other.String()
 		equals := thisString == otherString
 		if !equals {
-			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+			if _debug != nil {
+				_debug("Mismatch %v != %v", thisString, otherString)
+			}
 		}
 		return equals
 	case *AddressTuple[string, uint16]:
@@ -695,7 +760,9 @@ func (a *Address) Equals(other any) bool {
 		otherString := other.String()
 		equals := thisString == otherString
 		if !equals {
-			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+			if _debug != nil {
+				_debug("Mismatch %v != %v", thisString, otherString)
+			}
 		}
 		return equals
 	case AddressTuple[string, int]:
@@ -703,7 +770,9 @@ func (a *Address) Equals(other any) bool {
 		otherString := other.String()
 		equals := thisString == otherString
 		if !equals {
-			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+			if _debug != nil {
+				_debug("Mismatch %v != %v", thisString, otherString)
+			}
 		}
 		return equals
 	case *AddressTuple[string, int]:
@@ -711,18 +780,29 @@ func (a *Address) Equals(other any) bool {
 		otherString := other.String()
 		equals := thisString == otherString
 		if !equals {
-			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+			if _debug != nil {
+				_debug("Mismatch %v != %v", thisString, otherString)
+			}
 		}
 		return equals
 	default:
-		a.log.Debug().Type("otherType", other).Msg("Unmapped type comparison")
+		if _debug != nil {
+			_debug("Unmapped type comparison %T", other)
+		}
 		return false
+	}
+}
+
+func (a *Address) Format(s fmt.State, v rune) {
+	switch v {
+	case 'r':
+		_, _ = s.Write([]byte(a.String()))
 	}
 }
 
 func (a *Address) AlternateString() (string, bool) {
 	if a == nil {
-		return "<nil>", true
+		return "None", true
 	}
 	result := ""
 	if a.AddrType == NULL_ADDRESS {
@@ -839,7 +919,6 @@ func (a *Address) deepCopy() *Address {
 		CopyPtr(a.AddrPort),
 		a.AddrTuple.deepCopy(),
 		a.AddrBroadcastTuple.deepCopy(),
-		a.log,
 	}
 }
 

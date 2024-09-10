@@ -170,7 +170,7 @@ func (suite *TimeMachineSuite) TestOneShotImmediate2() {
 
 func (suite *TimeMachineSuite) TestFunctionTaskImmediate() {
 	// create a function task
-	ft := FunctionTask(suite.SampleTaskFunction(), NoArgs, NoKWArgs)
+	ft := FunctionTask(suite.SampleTaskFunction(), Nothing())
 	suite.sampleTaskFunctionCalled = nil
 
 	// reset the time machine to midnight, install the task, let it run
@@ -188,7 +188,7 @@ func (suite *TimeMachineSuite) TestFunctionTaskDelay() {
 	sampleDelay := 10 * time.Second
 
 	// create a function task
-	ft := FunctionTask(suite.SampleTaskFunction(), NoArgs, NoKWArgs)
+	ft := FunctionTask(suite.SampleTaskFunction(), Nothing())
 	suite.sampleTaskFunctionCalled = nil
 
 	// reset the time machine to midnight, install the task, let it run

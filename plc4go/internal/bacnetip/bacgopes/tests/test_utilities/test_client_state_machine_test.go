@@ -42,7 +42,7 @@ func TestClientStateMachine(t *testing.T) {
 	require.NoError(t, err)
 
 	// make pdu object
-	pdu := NewPDU(NewDummyMessage())
+	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage()))
 
 	// make a send transition from start to success, run the machine
 	client.GetStartState().Send(pdu, nil).Success("")

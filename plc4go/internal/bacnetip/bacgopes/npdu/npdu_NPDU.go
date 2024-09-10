@@ -52,7 +52,7 @@ var _ = (NPDU)(nil)
 func NewNPDU(nlm readWriteModel.NLM, apdu readWriteModel.APDU) (NPDU, error) {
 	n := &_NPDU{}
 	n._NPCI = NewNPCI(nlm, apdu).(*_NPCI)
-	n.PDUData = NewPDUData(NoArgs)
+	n.PDUData = NewPDUData(NoArgs, NoKWArgs)
 	if n.GetRootMessage() != nil {
 		data, _ := n.GetRootMessage().Serialize()
 		n.SetPduData(data)

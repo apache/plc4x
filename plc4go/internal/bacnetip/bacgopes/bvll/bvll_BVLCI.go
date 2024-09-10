@@ -67,13 +67,16 @@ type _BVLCI struct {
 
 var _ BVLCI = (*_BVLCI)(nil)
 
-func NewBVLCI(requirements BVLCIRequirements, bvlc readWriteModel.BVLC) BVLCI {
+func NewBVLCI(args Args, kwargs KWArgs) BVLCI {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwargs)
+	}
 	b := &_BVLCI{
 		bvlciType:    0x81,
-		requirements: requirements,
+		requirements: KW[BVLCIRequirements](kwargs, KWCompBVLCIRequirements),
 	}
-	b.PCI = NewPCI(bvlc, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
-	if bvlc != nil {
+	b.PCI = NewPCI(NoArgs, kwargs)
+	if bvlc := KWO[readWriteModel.BVLC](kwargs, KWCompRootMessage, nil); bvlc != nil {
 		b.bvlciFunction = bvlc.GetBvlcFunction()
 		b.bvlciLength = bvlc.GetLengthInBytes(context.Background())
 	}
@@ -96,6 +99,9 @@ func (b *_BVLCI) Update(bvlci Arg) error {
 }
 
 func (b *_BVLCI) Encode(pdu Arg) error {
+	if _debug != nil {
+		_debug("encode %s", pdu)
+	}
 	switch pdu := pdu.(type) {
 	case PCI:
 		if err := pdu.GetPCI().Update(b); err != nil {
@@ -117,6 +123,9 @@ func (b *_BVLCI) Encode(pdu Arg) error {
 }
 
 func (b *_BVLCI) Decode(pdu Arg) error {
+	if _debug != nil {
+		_debug("decode %s", pdu)
+	}
 	if err := b.PCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}

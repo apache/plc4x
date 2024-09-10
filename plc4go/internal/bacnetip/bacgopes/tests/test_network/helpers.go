@@ -100,7 +100,7 @@ func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// Now as a vanilla PDU
-	ypdu := NewPDU(NewMessageBridge())
+	ypdu := NewPDU(NoArgs, NewKWArgs(NewMessageBridge()))
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}
@@ -159,7 +159,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *Netwo
 	}
 
 	// save the name and address
-	s.address, err = NewAddress(s.log, address)
+	s.address, err = NewAddress(address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -205,7 +205,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 	}
 
 	// save the name and address
-	n.address, err = NewAddress(localLog, address)
+	n.address, err = NewAddress(address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creaing address")
 	}
@@ -272,7 +272,7 @@ func (r *RouterNode) AddNetwork(address string, vlan *Network, net uint16) error
 	r.log.Debug().Str("address", address).Stringer("vlan", vlan).Uint16("net", net).Msg("AddNetwork")
 
 	// convert the address to an Address
-	addr, err := NewAddress(r.log, address)
+	addr, err := NewAddress(address)
 	if err != nil {
 		return errors.Wrap(err, "error creaing address")
 	}
@@ -349,7 +349,7 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	// save the name and address
 	a.name = fmt.Sprintf("app @ %s", address)
 	var err error
-	a.address, err = NewAddress(localLog, address)
+	a.address, err = NewAddress(address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creaing address")
 	}
@@ -470,7 +470,7 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) 
 	// build a name, save the address
 	a.name = fmt.Sprintf("app @ %s", address)
 	var err error
-	a.address, err = NewAddress(localLog, address)
+	a.address, err = NewAddress(address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}

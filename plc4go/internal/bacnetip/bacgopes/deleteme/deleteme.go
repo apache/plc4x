@@ -39,7 +39,7 @@ type messageBridge struct {
 }
 
 func NewMessageBridge(bytes ...byte) MessageBridge {
-	return &messageBridge{NewPDUData(NewArgs(bytes))}
+	return &messageBridge{NewPDUData(NewArgs(bytes), NoKWArgs)}
 }
 
 var _ MessageBridge = (*messageBridge)(nil)

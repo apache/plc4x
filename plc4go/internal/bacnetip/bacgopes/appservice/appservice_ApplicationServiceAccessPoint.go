@@ -126,7 +126,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 			a.log.Debug().Err(errorFound).Msg("got error")
 
 			// TODO: map it to a error... code temporary placeholder
-			return a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0))), NoKWArgs)
+			return a.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0)))), NoKWArgs)
 		}
 	case readWriteModel.APDUUnconfirmedRequest:
 		var apduService readWriteModel.BACnetUnconfirmedServiceChoice

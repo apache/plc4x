@@ -40,7 +40,7 @@ func NewReadForeignDeviceTable(opts ...func(*ReadForeignDeviceTable)) (*ReadFore
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(model.NewBVLCReadForeignDeviceTable()).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCReadForeignDeviceTable())).(*_BVLPDU)
 	return b, nil
 }
 

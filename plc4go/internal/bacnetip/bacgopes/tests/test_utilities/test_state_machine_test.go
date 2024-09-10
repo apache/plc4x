@@ -335,7 +335,7 @@ func TestStateMachine(t *testing.T) {
 		tsm := NewTrappedStateMachine(testingLogger)
 
 		// Make a pdu object
-		pdu := NewPDU(nil)
+		pdu := NewPDU(Nothing())
 
 		// make a send transition from start to success, run the machine
 		tsm.GetStartState().Send(pdu, nil).Success("")
@@ -347,8 +347,8 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.GetCurrentState().IsSuccessState())
 
 		// check the callbacks
-		assert.IsType(t, NewPDU(nil), tsm.GetBeforeSendPdu())
-		assert.IsType(t, NewPDU(nil), tsm.GetAfterSendPdu())
+		assert.IsType(t, NewPDU(Nothing()), tsm.GetBeforeSendPdu())
+		assert.IsType(t, NewPDU(Nothing()), tsm.GetAfterSendPdu())
 
 		// make sure pdu was sent
 		assert.Same(t, pdu, tsm.GetSent())

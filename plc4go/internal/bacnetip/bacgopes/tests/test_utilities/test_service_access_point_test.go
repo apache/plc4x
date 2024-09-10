@@ -196,7 +196,7 @@ func (suite *TestApplicationSuite) TearDownSuite() {
 
 func (suite *TestApplicationSuite) TestSapRequest() {
 	// make a pdu
-	pdu := NewPDU(NewDummyMessage())
+	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage()))
 
 	// service access point is going to request something
 	err := suite.sap.SapRequest(NewArgs(pdu), NoKWArgs)
@@ -213,7 +213,7 @@ func (suite *TestApplicationSuite) TestSapRequest() {
 
 func (suite *TestApplicationSuite) TestAseRequest() {
 	// make a pdu
-	pdu := NewPDU(NewDummyMessage())
+	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage()))
 
 	// service access point is going to request something
 	err := suite.ase.Request(NewArgs(pdu), NoKWArgs)

@@ -246,7 +246,7 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 				return errors.New("invalid address, remote station for a different adapter")
 			}
 			var err error
-			destination, err = NewLocalStation(n.log, destination.AddrAddress, nil)
+			destination, err = NewLocalStation(destination.AddrAddress, nil)
 			if err != nil {
 				return errors.Wrap(err, "error creating station")
 			}
@@ -272,7 +272,7 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 				return errors.New("invalid address, no network for remote station")
 			}
 			var err error
-			destination, err = NewLocalStation(n.log, destination.AddrAddress, nil)
+			destination, err = NewLocalStation(destination.AddrAddress, nil)
 			if err != nil {
 				return errors.Wrap(err, "error creating station")
 			}
@@ -455,7 +455,7 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			if npdu.GetSourceNetworkAddress() != nil {
 				whoisrtn.SetNpduSADR(npdu.GetNpduSADR())
 			} else {
-				station, err := NewRemoteStation(n.log, adapter.adapterNet, npdu.GetPDUSource().AddrAddress, nil)
+				station, err := NewRemoteStation(adapter.adapterNet, npdu.GetPDUSource().AddrAddress, nil)
 				if err != nil {
 					return errors.Wrap(err, "error building RemoteStation")
 				}

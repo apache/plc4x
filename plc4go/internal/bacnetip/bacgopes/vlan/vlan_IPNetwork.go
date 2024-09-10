@@ -22,6 +22,7 @@ package vlan
 import (
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -46,7 +47,7 @@ func (n *IPNetwork) AddNode(node NetworkNode) {
 
 	ipNode := node.(*IPNode)
 
-	address, err := NewAddress(n.log, ipNode.addrBroadcastTuple)
+	address, err := NewAddress(NewArgs(ipNode.addrBroadcastTuple))
 	if err != nil {
 		panic(err) // TODO: check that we do the right thing here. Originally the tuple gets assigned but that makes trouble downstream
 	}

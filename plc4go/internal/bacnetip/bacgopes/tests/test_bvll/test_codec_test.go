@@ -113,10 +113,10 @@ func (suite *TestAnnexJCodecSuite) TestResult() {
 
 	err = suite.Request(NewArgs(quick.Result(0)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0)))
 
@@ -133,10 +133,10 @@ func (suite *TestAnnexJCodecSuite) TestResult() {
 
 	err = suite.Request(NewArgs(quick.Result(0x0010)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0010)))
 }
@@ -155,15 +155,15 @@ func (suite *TestAnnexJCodecSuite) TestWriteBroadcastDistributionTable() {
 
 	err = suite.Request(NewArgs(quick.WriteBroadcastDistributionTable()), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*WriteBroadcastDistributionTable)(nil)), NewKWArgs(KWBvlciBDT, []*Address{}))
 
 	// write table with an element
-	addr, _ := NewAddress(zerolog.Nop(), "192.168.0.254/24")
+	addr, _ := NewAddress(NewArgs("192.168.0.254/24"))
 	pduBytes, err = Xtob("81.01.000e" +
 		"c0.a8.00.fe.ba.c0 ff.ff.ff.00") // address and mask
 	suite.Require().NoError(err)
@@ -177,10 +177,10 @@ func (suite *TestAnnexJCodecSuite) TestWriteBroadcastDistributionTable() {
 
 	err = suite.Request(NewArgs(quick.WriteBroadcastDistributionTable(addr)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*WriteBroadcastDistributionTable)(nil)), NewKWArgs(KWBvlciBDT, []*Address{addr}))
 }
@@ -199,10 +199,10 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTable() {
 
 	err = suite.Request(NewArgs(quick.ReadBroadcastDistributionTable()), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*ReadBroadcastDistributionTable)(nil)), NoKWArgs)
 }
@@ -221,15 +221,15 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTableAck() {
 
 	err = suite.Request(NewArgs(quick.ReadBroadcastDistributionTableAck()), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*ReadBroadcastDistributionTableAck)(nil)), NewKWArgs(KWBvlciBDT, []*Address{}))
 
 	// Read TableAck with an element
-	addr, _ := NewAddress(zerolog.Nop(), "192.168.0.254/24")
+	addr, _ := NewAddress(NewArgs("192.168.0.254/24"))
 	pduBytes, err = Xtob("81.03.000e" + //bvlci
 		"c0.a8.00.fe.ba.c0 ff.ff.ff.00") // address and mask
 	suite.Require().NoError(err)
@@ -243,29 +243,23 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTableAck() {
 
 	err = suite.Request(NewArgs(quick.ReadBroadcastDistributionTableAck(addr)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*ReadBroadcastDistributionTableAck)(nil)), NewKWArgs(KWBvlciBDT, []*Address{addr}))
 }
 
 func (suite *TestAnnexJCodecSuite) TestForwardNPDU() {
-	addr, err := NewAddress(zerolog.Nop(), "192.168.0.1")
+	addr, err := NewAddress(NewArgs("192.168.0.1"))
 	xpdu, err := Xtob(
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-			"01 0001 0002 0003", // message type and network list
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
-	pduBytes, err := Xtob("81.04.0013" + //   bvlci // TODO: length was 0e before
+	pduBytes, err := Xtob("81.04.000e" + //
 		"c0.a8.00.01.ba.c0" + // original source address
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-		"01 0001 0002 0003", // message type and network list
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
@@ -278,12 +272,12 @@ func (suite *TestAnnexJCodecSuite) TestForwardNPDU() {
 
 	err = suite.Request(NewArgs(quick.ForwardedNPDU(addr, xpdu)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(NewArgs((*ForwardedNPDU)(nil)), NewKWArgs(KWBvlciAddress, addr, KWPDUData, xpdu))
+	err = suite.Confirmation(NewArgs((*ForwardedNPDU)(nil)), NewKWArgs(KWBvlciAddress, addr, KWCPCIData, xpdu))
 	suite.Assert().NoError(err)
 }
 
@@ -304,10 +298,10 @@ func (suite *TestAnnexJCodecSuite) TestRegisterForeignDevice() {
 
 	err = suite.Request(NewArgs(quick.RegisterForeignDevice(30)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*RegisterForeignDevice)(nil)), NewKWArgs(KWBvlciTimeToLive, uint16(30)))
 }
@@ -326,10 +320,10 @@ func (suite *TestAnnexJCodecSuite) TestReadForeignDeviceTable() {
 
 	err = suite.Request(NewArgs(quick.ReadForeignDeviceTable()), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*ReadForeignDeviceTable)(nil)), NoKWArgs)
 }
@@ -348,16 +342,16 @@ func (suite *TestAnnexJCodecSuite) TestReadForeignDeviceTableAck() {
 
 	err = suite.Request(NewArgs(quick.ReadForeignDeviceTableAck()), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*ReadForeignDeviceTableAck)(nil)), NewKWArgs(KWBvlciFDT, []*FDTEntry{}))
 
 	// Read TableAck with one entry
 	fdte := quick.FDTEntry()
-	fdte.FDAddress, err = NewAddress(suite.log, "192.168.0.10")
+	fdte.FDAddress, err = NewAddress(NewArgs("192.168.0.10"))
 	suite.Require().NoError(err)
 	fdte.FDTTL = 30
 	fdte.FDRemain = 15
@@ -377,16 +371,16 @@ func (suite *TestAnnexJCodecSuite) TestReadForeignDeviceTableAck() {
 
 	err = suite.Request(NewArgs(quick.ReadForeignDeviceTableAck(fdte)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*ReadForeignDeviceTableAck)(nil)), NewKWArgs(KWBvlciFDT, []*FDTEntry{fdte}))
 }
 
 func (suite *TestAnnexJCodecSuite) TestDeleteForeignDeviceTableEntry() {
-	addr, _ := NewAddress(zerolog.Nop(), "192.168.0.11/24")
+	addr, _ := NewAddress(NewArgs("192.168.0.11/24"))
 	pduBytes, err := Xtob("81.08.000a" + // bvlci
 		"c0.a8.00.0b.ba.c0") // address of entry to be deleted
 	suite.Require().NoError(err)
@@ -400,10 +394,10 @@ func (suite *TestAnnexJCodecSuite) TestDeleteForeignDeviceTableEntry() {
 
 	err = suite.Request(NewArgs(quick.DeleteForeignDeviceTableEntry(addr)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NewArgs((*DeleteForeignDeviceTableEntry)(nil)), NewKWArgs(KWBvlciAddress, addr))
 }
@@ -415,17 +409,11 @@ func (suite *TestAnnexJCodecSuite) TestDeleteForeignDeviceTableAck() {
 
 func (suite *TestAnnexJCodecSuite) TestDistributeBroadcastToNetwork() {
 	xpdu, err := Xtob(
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-			"01 0001 0002 0003", // message type and network list
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
-	pduBytes, err := Xtob("81.09.000d" + //   bvlci // TODO: length was 08 before
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-		"01 0001 0002 0003", // message type and network list
+	pduBytes, err := Xtob("81.09.0008" + //   bvlci
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
@@ -438,27 +426,21 @@ func (suite *TestAnnexJCodecSuite) TestDistributeBroadcastToNetwork() {
 
 	err = suite.Request(NewArgs(quick.DistributeBroadcastToNetwork(xpdu)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(NewArgs((*DistributeBroadcastToNetwork)(nil)), NewKWArgs(KWPDUData, xpdu))
+	err = suite.Confirmation(NewArgs((*DistributeBroadcastToNetwork)(nil)), NewKWArgs(KWCPCIData, xpdu))
 }
 
 func (suite *TestAnnexJCodecSuite) TestOriginalUnicastNPDU() {
 	xpdu, err := Xtob(
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-			"01 0001 0002 0003", // message type and network list
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
-	pduBytes, err := Xtob("81.0a.000d" + //   bvlci // TODO: length was 08 before
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-		"01 0001 0002 0003", // message type and network list
+	pduBytes, err := Xtob("81.0a.0008" + //   bvlci
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
@@ -471,27 +453,21 @@ func (suite *TestAnnexJCodecSuite) TestOriginalUnicastNPDU() {
 
 	err = suite.Request(NewArgs(quick.OriginalUnicastNPDU(xpdu)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(NewArgs((*OriginalUnicastNPDU)(nil)), NewKWArgs(KWPDUData, xpdu))
+	err = suite.Confirmation(NewArgs((*OriginalUnicastNPDU)(nil)), NewKWArgs(KWCPCIData, xpdu))
 }
 
 func (suite *TestAnnexJCodecSuite) TestOriginalBroadcastNPDU() {
 	xpdu, err := Xtob(
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-			"01 0001 0002 0003", // message type and network list
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
-	pduBytes, err := Xtob("81.0b.000d" + //   bvlci // TODO: length was 08 before
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-		"01 0001 0002 0003", // message type and network list
+	pduBytes, err := Xtob("81.0b.0008" + //   bvlci
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
@@ -504,12 +480,12 @@ func (suite *TestAnnexJCodecSuite) TestOriginalBroadcastNPDU() {
 
 	err = suite.Request(NewArgs(quick.OriginalBroadcastNPDU(xpdu)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWCPCIData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...)))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(NewArgs((*OriginalBroadcastNPDU)(nil)), NewKWArgs(KWPDUData, xpdu))
+	err = suite.Confirmation(NewArgs((*OriginalBroadcastNPDU)(nil)), NewKWArgs(KWCPCIData, xpdu))
 }
 
 func TestAnnexJCodec(t *testing.T) {

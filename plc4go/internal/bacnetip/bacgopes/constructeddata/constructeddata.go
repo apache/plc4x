@@ -208,7 +208,7 @@ func (a *Sequence) Encode(arg Arg) error {
 		if !element.IsOptional() && !ok {
 			return errors.Errorf("%s is a missing required element of %T", element.GetName(), a)
 		}
-		elementKlass, err := element.GetKlass()(NoArgs, NoKWArgs)
+		elementKlass, err := element.GetKlass()(Nothing())
 		if err != nil {
 			return errors.New("can't get zero object")
 		}
@@ -310,7 +310,7 @@ func (a *Sequence) Decode(arg Arg) error {
 	for _, element := range a._contract.GetSequenceElements() {
 		tag := tagList.Peek()
 
-		elementKlass, err := element.GetKlass()(NoArgs, NoKWArgs)
+		elementKlass, err := element.GetKlass()(Nothing())
 		if err != nil {
 			return errors.New("can't get zero object")
 		}

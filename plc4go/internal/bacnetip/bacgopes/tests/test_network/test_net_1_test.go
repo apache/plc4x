@@ -173,14 +173,14 @@ func TestNet1(t *testing.T) {
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("1-2-0").
 				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWPDUData, xtob(
+					NewKWArgs(KWCPCIData, xtob(
 						"01.80"+ //version, network layer
 							"00", //message type, no network
 					),
 					),
 				).Doc("1-2-1").
 				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWPDUData, xtob(
+					NewKWArgs(KWCPCIData, xtob(
 						"01.80"+ //version, network layer
 							"01 0002 0003", //message type and network list
 					),
@@ -246,7 +246,7 @@ func TestNet1(t *testing.T) {
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
 				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWPDUData, xtob(
+					NewKWArgs(KWCPCIData, xtob(
 						"01.80"+ //version, network layer
 							"00 0004", //message type, and network
 					)),
@@ -256,7 +256,7 @@ func TestNet1(t *testing.T) {
 			// sniffer on network 2 sees request forwarded by router
 			tnet.sniffer2.GetStartState().Doc("3-3-0").
 				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWPDUData, xtob(
+					NewKWArgs(KWCPCIData, xtob(
 						"01.88"+ //version, network layer
 							"0001 01 01"+ // snet/slen/sadr
 							"00 0004", //message type, and network

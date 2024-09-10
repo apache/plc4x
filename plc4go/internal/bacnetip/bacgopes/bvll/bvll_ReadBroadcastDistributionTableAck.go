@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
@@ -44,7 +43,7 @@ func NewReadBroadcastDistributionTableAck(opts ...func(*ReadBroadcastDistributio
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(model.NewBVLCReadBroadcastDistributionTableAck(b.produceBroadcastDistributionTable(), 0)).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCReadBroadcastDistributionTableAck(b.produceBroadcastDistributionTable(), 0))).(*_BVLPDU)
 	return b, nil
 }
 
@@ -80,7 +79,7 @@ func (r *ReadBroadcastDistributionTableAck) produceBvlciBDT(entries []model.BVLC
 		port := entry.GetPort()
 		var portArray = make([]byte, 2)
 		binary.BigEndian.PutUint16(portArray, port)
-		address, _ := NewAddress(zerolog.Nop(), append(addr, portArray...))
+		address, _ := NewAddress(NewArgs(append(addr, portArray...)))
 		mask := binary.BigEndian.Uint32(entry.GetBroadcastDistributionMap())
 		address.AddrMask = &mask
 		bvlciBDT = append(bvlciBDT, address)

@@ -126,13 +126,13 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 	for attrName, attrValue := range pduAttrs {
 		attrLog := localLog.With().Str("attrName", string(attrName)).Interface("attrValue", attrValue).Logger()
 		switch attrName {
-		case KWPPDUSource:
+		case KWCPCISource:
 			equals := pdu.(PDU).GetPDUSource().Equals(attrValue)
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case KWPDUDestination:
+		case KWCPCIDestination:
 			equals := pdu.(PDU).GetPDUDestination().Equals(attrValue)
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
@@ -166,7 +166,7 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case KWPDUData:
+		case KWCPCIData:
 			got := pdu.(PDU).GetPduData()
 			var want []byte
 			switch attrValue := attrValue.(type) {

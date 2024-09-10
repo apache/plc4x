@@ -21,6 +21,7 @@ package quick
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -59,7 +60,7 @@ func ReadBroadcastDistributionTableAck(bdt ...*pdu.Address) *bvll.ReadBroadcastD
 }
 
 func ForwardedNPDU(addr *pdu.Address, pduBytes []byte) *bvll.ForwardedNPDU {
-	npdu, err := bvll.NewForwardedNPDU(pdu.NewPDU(NewMessageBridge(pduBytes...)), bvll.WithForwardedNPDUAddress(addr))
+	npdu, err := bvll.NewForwardedNPDU(pdu.NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...))), bvll.WithForwardedNPDUAddress(addr))
 	if err != nil {
 		panic(err)
 	}
@@ -103,7 +104,7 @@ func DeleteForeignDeviceTableEntry(address *pdu.Address) *bvll.DeleteForeignDevi
 }
 
 func DistributeBroadcastToNetwork(pduBytes []byte) *bvll.DistributeBroadcastToNetwork {
-	distributeBroadcastToNetwork, err := bvll.NewDistributeBroadcastToNetwork(pdu.NewPDU(NewMessageBridge(pduBytes...)))
+	distributeBroadcastToNetwork, err := bvll.NewDistributeBroadcastToNetwork(pdu.NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...))))
 	if err != nil {
 		panic(err)
 	}
@@ -111,7 +112,7 @@ func DistributeBroadcastToNetwork(pduBytes []byte) *bvll.DistributeBroadcastToNe
 }
 
 func OriginalUnicastNPDU(pduBytes []byte) *bvll.OriginalUnicastNPDU {
-	npdu, err := bvll.NewOriginalUnicastNPDU(pdu.NewPDU(NewMessageBridge(pduBytes...)))
+	npdu, err := bvll.NewOriginalUnicastNPDU(pdu.NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...))))
 	if err != nil {
 		panic(err)
 	}
@@ -119,7 +120,7 @@ func OriginalUnicastNPDU(pduBytes []byte) *bvll.OriginalUnicastNPDU {
 }
 
 func OriginalBroadcastNPDU(pduBytes []byte) *bvll.OriginalBroadcastNPDU {
-	npdu, err := bvll.NewOriginalBroadcastNPDU(pdu.NewPDU(NewMessageBridge(pduBytes...)))
+	npdu, err := bvll.NewOriginalBroadcastNPDU(pdu.NewPDU(NoArgs, NewKWArgs(NewMessageBridge(pduBytes...))))
 	if err != nil {
 		panic(err)
 	}

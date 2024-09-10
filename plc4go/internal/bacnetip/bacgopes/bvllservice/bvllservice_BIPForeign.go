@@ -195,7 +195,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		return nil
 	case model.BVLCOriginalUnicastNPDU:
 		// build a vanilla _PDU
-		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
+		xpdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, pdu.GetPDUDestination()))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
@@ -216,11 +216,11 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		// build a _PDU with the source from the real source
 		ip := msg.GetIp()
 		port := msg.GetPort()
-		source, err := NewAddress(b.log, append(ip, Uint16ToPort(port)...))
+		source, err := NewAddress(NewArgs(append(ip, Uint16ToPort(port)...)))
 		if err != nil {
 			return errors.Wrap(err, "error building a ip")
 		}
-		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(source), WithPDUDestination(NewLocalBroadcast(nil)))
+		xpdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, source, KWCPCIDestination, NewLocalBroadcast(nil)))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
@@ -332,7 +332,7 @@ func (b *BIPForeign) Register(addr *Address, ttl int) error {
 // Immediately drops active foreign device registration and stops further
 // registration renewals.
 func (b *BIPForeign) Unregister() {
-	pdu := NewPDU(model.NewBVLCRegisterForeignDevice(0), WithPDUDestination(b.bbmdAddress))
+	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCRegisterForeignDevice(0), KWCPCIDestination, b.bbmdAddress))
 
 	// send it downstream
 	if err := b.Request(NewArgs(pdu), NoKWArgs); err != nil {

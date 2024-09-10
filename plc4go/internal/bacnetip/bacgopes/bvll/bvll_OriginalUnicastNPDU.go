@@ -27,7 +27,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 )
 
@@ -46,18 +46,18 @@ func NewOriginalUnicastNPDU(pdu PDU, opts ...func(*OriginalUnicastNPDU)) (*Origi
 		opt(o)
 	}
 	switch npdu := pdu.(type) {
-	case model.NPDU:
-		o._BVLPDU = NewBVLPDU(model.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(npdu))).(*_BVLPDU)
+	case readWriteModel.NPDU:
+		o._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, readWriteModel.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(npdu)))).(*_BVLPDU)
 	case nil:
-		o._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(Nothing()).(*_BVLPDU)
 	default:
 		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
 		data := pdu.GetPduData()
-		parse, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
+		parse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
 		if err != nil {
 			return nil, errors.Wrap(err, "error re-encoding")
 		}
-		o._BVLPDU = NewBVLPDU(model.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(parse))).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, readWriteModel.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(parse)))).(*_BVLPDU)
 	}
 	// Do a post construct for a bit more easy initialization
 	for _, f := range o._postConstruct {
@@ -83,7 +83,7 @@ func WithOriginalUnicastNPDUUserData(userData spi.Message) func(*OriginalUnicast
 	}
 }
 
-func (o *OriginalUnicastNPDU) produceInnerNPDU(inNpdu model.NPDU) (npdu model.NPDU, bvlcPayloadLength uint16) {
+func (o *OriginalUnicastNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
 	npdu = inNpdu
 	return
 }
@@ -111,7 +111,7 @@ func (o *OriginalUnicastNPDU) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCOriginalUnicastNPDU:
+		case readWriteModel.BVLCOriginalUnicastNPDU:
 			o.SetRootMessage(rm)
 		}
 	}

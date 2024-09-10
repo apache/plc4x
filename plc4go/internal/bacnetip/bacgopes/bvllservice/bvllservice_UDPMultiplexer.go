@@ -55,7 +55,7 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (
 	// check for some options
 	specialBroadcast := false
 	if address == nil {
-		address, _ := NewAddress(localLog)
+		address, _ := NewAddress(NoArgs)
 		u.address = address
 		u.addrTuple = &AddressTuple[string, uint16]{"", 47808}
 		u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", 47808}
@@ -66,7 +66,7 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (
 		} else if caddress, ok := address.(Address); ok {
 			u.address = &caddress
 		} else {
-			newAddress, err := NewAddress(localLog, address)
+			newAddress, err := NewAddress(NewArgs(address))
 			if err != nil {
 				return nil, errors.Wrap(err, "error parsing address")
 			}
@@ -164,7 +164,7 @@ func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 			return nil
 		}
 
-		address, err := NewAddress(m.log, *m.addrBroadcastTuple)
+		address, err := NewAddress(NewArgs(*m.addrBroadcastTuple))
 		if err != nil {
 			return errors.Wrap(err, "error getting address from tuple")
 		}
@@ -176,7 +176,7 @@ func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 		return errors.New("invalid destination address type")
 	}
 
-	return m.directPort.Indication(NewArgs(NewPDU(pdu, WithPDUDestination(dest))), NoKWArgs)
+	return m.directPort.Indication(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, pdu, KWCPCIDestination, dest))), NoKWArgs)
 }
 
 func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
@@ -197,7 +197,7 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	}
 
 	// the PDU source is a tuple, convert it to an Address instance
-	src, err := NewAddress(m.log, pdu.GetPDUSource())
+	src, err := NewAddress(NewArgs(pdu.GetPDUSource()))
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
@@ -223,7 +223,7 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 
 	// TODO: we only support 0x81 at the moment
 	if m.AnnexJ != nil {
-		return m.AnnexJ.Response(NewArgs(NewPDU(pdu.GetRootMessage(), WithPDUSource(src), WithPDUDestination(dest))), NoKWArgs)
+		return m.AnnexJ.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, pdu.GetRootMessage(), KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
 	}
 
 	return nil

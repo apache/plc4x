@@ -47,9 +47,9 @@ func NewOriginalBroadcastNPDU(pdu PDU, opts ...func(*OriginalBroadcastNPDU)) (*O
 	}
 	switch npdu := pdu.(type) {
 	case model.NPDU:
-		o._BVLPDU = NewBVLPDU(model.NewBVLCOriginalBroadcastNPDU(o.produceInnerNPDU(npdu))).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCOriginalBroadcastNPDU(o.produceInnerNPDU(npdu)))).(*_BVLPDU)
 	case nil:
-		o._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(Nothing()).(*_BVLPDU)
 	default:
 		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
 		data := pdu.GetPduData()
@@ -57,7 +57,7 @@ func NewOriginalBroadcastNPDU(pdu PDU, opts ...func(*OriginalBroadcastNPDU)) (*O
 		if err != nil {
 			return nil, errors.Wrap(err, "error re-encoding")
 		}
-		o._BVLPDU = NewBVLPDU(model.NewBVLCOriginalBroadcastNPDU(o.produceInnerNPDU(parse))).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCOriginalBroadcastNPDU(o.produceInnerNPDU(parse)))).(*_BVLPDU)
 	}
 	// Do a post construct for a bit more easy initialization
 	for _, f := range o._postConstruct {

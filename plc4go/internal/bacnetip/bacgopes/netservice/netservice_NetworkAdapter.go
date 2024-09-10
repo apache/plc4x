@@ -101,7 +101,7 @@ func (n *NetworkAdapter) ProcessNPDU(npdu NPDU) error {
 		Interface("adapterNet", n.adapterNet).
 		Msg("ProcessNPDU")
 
-	pdu := NewPDU(nil, WithPDUUserData(npdu.GetPDUUserData()))
+	pdu := NewPDU(NoArgs, NewKWArgs(KWCPCIUserData, npdu.GetPDUUserData()))
 	if err := npdu.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding NPDU")
 	}

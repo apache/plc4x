@@ -20,15 +20,13 @@
 package quick
 
 import (
-	"github.com/rs/zerolog"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 func Address(args ...any) *pdu.Address {
-	address, err := pdu.NewAddress(zerolog.Nop(), args...)
+	address, err := pdu.NewAddress(args)
 	if err != nil {
 		panic(err)
 	}
@@ -41,8 +39,8 @@ func AddressTuple[L any, R any](l L, r R) *pdu.AddressTuple[L, R] {
 
 func PDUData(args ...any) pdu.PDUData {
 	if args == nil {
-		return pdu.NewPDUData(NewArgs(NewMessageBridge()))
+		return pdu.NewPDUData(NoArgs, NewKWArgs(KWCompRootMessage, NewMessageBridge()))
 	} else {
-		return pdu.NewPDUData(NewArgs(NewMessageBridge(args[0].([]byte)...)))
+		return pdu.NewPDUData(NoArgs, NewKWArgs(KWCompRootMessage, NewMessageBridge(args[0].([]byte)...)))
 	}
 }

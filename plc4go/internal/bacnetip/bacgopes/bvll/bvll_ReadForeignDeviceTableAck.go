@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
@@ -44,7 +43,7 @@ func NewReadForeignDeviceTableAck(opts ...func(*ReadForeignDeviceTableAck)) (*Re
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(model.NewBVLCReadForeignDeviceTableAck(b.produceForeignDeviceTable(), 0)).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCReadForeignDeviceTableAck(b.produceForeignDeviceTable(), 0))).(*_BVLPDU)
 	return b, nil
 }
 
@@ -77,7 +76,7 @@ func (r *ReadForeignDeviceTableAck) produceBvlciFDT(entries []model.BVLCForeignD
 		port := entry.GetPort()
 		var portArray = make([]byte, 2)
 		binary.BigEndian.PutUint16(portArray, port)
-		address, _ := NewAddress(zerolog.Nop(), append(addr, portArray...))
+		address, _ := NewAddress(NewArgs(append(addr, portArray...)))
 		bvlciFDT = append(bvlciFDT, &FDTEntry{
 			FDAddress: address,
 			FDTTL:     entry.GetTtl(),

@@ -26,7 +26,6 @@ import (
 	"strconv"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
@@ -85,7 +84,7 @@ func NewNPCI(nlm readWriteModel.NLM, apdu readWriteModel.APDU) NPCI {
 		npduVersion: 1,
 	}
 	npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
-	n.PCI = NewPCI(npdu, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	n.PCI = NewPCI(NoArgs, NewKWArgs(KWCompRootMessage, npdu)) // TODO: convert to args so we can solve all those todos
 	return n
 }
 
@@ -233,7 +232,7 @@ func (n *_NPCI) Decode(pdu Arg) error {
 				n.npduDADR = NewRemoteBroadcast(dnet, nil)
 			} else {
 				var err error
-				n.npduDADR, err = NewRemoteStation(zerolog.Nop(), &dnet, dadr, nil)
+				n.npduDADR, err = NewRemoteStation(&dnet, dadr, nil)
 				if err != nil {
 					return errors.Wrap(err, "error creating remote station")
 				}
@@ -256,7 +255,7 @@ func (n *_NPCI) Decode(pdu Arg) error {
 			}
 
 			var err error
-			n.npduSADR, err = NewRemoteStation(zerolog.Nop(), &snet, sadr, nil)
+			n.npduSADR, err = NewRemoteStation(&snet, sadr, nil)
 			if err != nil {
 				return errors.Wrap(err, "error creating remote station")
 			}

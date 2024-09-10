@@ -54,7 +54,10 @@ type _PDUData struct {
 
 var _ PDUData = (*_PDUData)(nil)
 
-func NewPDUData(args Args) PDUData {
+func NewPDUData(args Args, kwargs KWArgs) PDUData {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwargs)
+	}
 	p := &_PDUData{}
 	if len(args) == 0 {
 		return p

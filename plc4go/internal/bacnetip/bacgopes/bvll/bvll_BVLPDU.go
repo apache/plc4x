@@ -44,10 +44,14 @@ type _BVLPDU struct {
 
 var _ BVLPDU = (*_BVLPDU)(nil)
 
-func NewBVLPDU(bvlc readWriteModel.BVLC) BVLPDU {
+func NewBVLPDU(args Args, kwargs KWArgs) BVLPDU {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwargs)
+	}
 	b := &_BVLPDU{}
-	b._BVLCI = NewBVLCI(b, bvlc).(*_BVLCI)
-	b.PDUData = NewPDUData(NoArgs)
+	kwargs[KWCompBVLCIRequirements] = b
+	b._BVLCI = NewBVLCI(args, kwargs).(*_BVLCI)
+	b.PDUData = NewPDUData(args, kwargs)
 	if b.GetRootMessage() != nil {
 		data, _ := b.GetRootMessage().Serialize()
 		b.SetPduData(data[4:])
@@ -56,6 +60,9 @@ func NewBVLPDU(bvlc readWriteModel.BVLC) BVLPDU {
 }
 
 func (b *_BVLPDU) Encode(pdu Arg) error {
+	if _debug != nil {
+		_debug("encode %s", pdu)
+	}
 	if err := b._BVLCI.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding _BVLCI")
 	}
@@ -67,6 +74,9 @@ func (b *_BVLPDU) Encode(pdu Arg) error {
 }
 
 func (b *_BVLPDU) Decode(pdu Arg) error {
+	if _debug != nil {
+		_debug("decode %s", pdu)
+	}
 	var rootMessage spi.Message
 	switch pdu := pdu.(type) { // Save a root message as long as we have enough data
 	case PDUData:

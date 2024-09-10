@@ -27,7 +27,6 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 )
 
 type PCI interface {
@@ -49,11 +48,26 @@ type _PCI struct {
 
 var _ PCI = (*_PCI)(nil)
 
-func NewPCI(rootMessage spi.Message, pduUserData spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority model.NPDUNetworkPriority) *_PCI {
+func NewPCI(args Args, kwargs KWArgs) *_PCI {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwargs)
+	}
+	var myKwargs = make(KWArgs)
+	var otherKwargs = make(KWArgs)
+	for _, element := range []KnownKey{KWCPCIUserData, KWCPCISource, KWCPCIDestination} {
+		if v, ok := kwargs[element]; ok {
+			myKwargs[element] = v
+		}
+	}
+	for k, v := range kwargs {
+		if _, ok := myKwargs[k]; !ok {
+			otherKwargs[k] = v
+		}
+	}
 	return &_PCI{
-		new__PCI(rootMessage, pduUserData, pduSource, pduDestination),
-		expectingReply,
-		networkPriority,
+		new__PCI(args, otherKwargs),
+		KWO(myKwargs, KWPCIExpectingReply, false),
+		KWO(myKwargs, KWPCINetworkPriority, model.NPDUNetworkPriority_NORMAL_MESSAGE),
 	}
 }
 

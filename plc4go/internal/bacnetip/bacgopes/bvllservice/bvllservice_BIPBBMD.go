@@ -134,7 +134,7 @@ func (b *BIPBBMD) Indication(args Args, kwargs KWArgs) error {
 		// send it to the peers
 		for _, bdte := range b.bbmdBDT {
 			if !bdte.Equals(b.bbmdAddress) {
-				dest, err := NewAddress(b.log, &AddressTuple[int, uint16]{int(*bdte.AddrIP | ^*bdte.AddrMask), *bdte.AddrPort})
+				dest, err := NewAddress(NewArgs(&AddressTuple[int, uint16]{Left: int(*bdte.AddrIP | ^*bdte.AddrMask), Right: *bdte.AddrPort}))
 				if err != nil {
 					return errors.Wrap(err, "error creating address tuple")
 				}
@@ -195,7 +195,13 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 		pdu := pdu.(*ForwardedNPDU) // TODO: check if this cast is fine
 		// send it upstream if there is a network layer
 		if b.HasServerPeer() {
-			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetBvlciAddress()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
+			xpdu := NewPDU(NoArgs, NewKWArgs(
+				KWCompRootMessage, NewMessageBridge(pdu.GetPduData()...),
+				KWCPCISource, pdu.GetBvlciAddress(),
+				KWCPCIDestination, NewLocalBroadcast(nil),
+				KWCPCIUserData, pdu.GetPDUUserData(),
+			),
+			)
 			//               if settings.route_aware:
 			//                   xpdu.pduSource.addrRoute = PDUSource
 			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
@@ -289,7 +295,13 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 	case model.BVLCDistributeBroadcastToNetwork:
 		// send it upstream if there is a network layer
 		if b.HasServerPeer() {
-			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
+			xpdu := NewPDU(NoArgs, NewKWArgs(
+				KWCompRootMessage, NewMessageBridge(pdu.GetPduData()...),
+				KWCPCISource, pdu.GetPDUSource(),
+				KWCPCIDestination, NewLocalBroadcast(nil),
+				KWCPCIUserData, pdu.GetPDUUserData(),
+			),
+			)
 			//               if settings.route_aware:
 			//                   xpdu.pduSource.addrRoute = PDUSource
 			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
@@ -314,7 +326,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 					return errors.Wrap(err, "error sending local broadcast")
 				}
 			} else {
-				address, err := NewAddress(b.log, &AddressTuple[int, uint16]{int(*bdte.AddrIP | ^*bdte.AddrMask), *bdte.AddrPort})
+				address, err := NewAddress(NewArgs(&AddressTuple[int, uint16]{Left: int(*bdte.AddrIP | ^*bdte.AddrMask), Right: *bdte.AddrPort}))
 				if err != nil {
 					return errors.Wrap(err, "error creating address")
 				}
@@ -342,7 +354,13 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 		// send it upstream if there is a network layer
 		if b.HasServerPeer() {
 			// build a PDU
-			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()), WithPDUUserData(pdu.GetPDUUserData()))
+			xpdu := NewPDU(NoArgs, NewKWArgs(
+				KWCompRootMessage, NewMessageBridge(pdu.GetPduData()...),
+				KWCPCISource, pdu.GetPDUSource(),
+				KWCPCIDestination, pdu.GetPDUDestination(),
+				KWCPCIUserData, pdu.GetPDUUserData(),
+			),
+			)
 			//               if settings.route_aware:
 			//                   xpdu.pduSource.addrRoute = PDUSource
 			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
@@ -353,7 +371,13 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 		// send it upstream if there is a network layer
 		if b.HasServerPeer() {
 			// build a PDU with a local broadcast address
-			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
+			xpdu := NewPDU(NoArgs, NewKWArgs(
+				KWCompRootMessage, NewMessageBridge(pdu.GetPduData()...),
+				KWCPCISource, pdu.GetPDUSource(),
+				KWCPCIDestination, NewLocalBroadcast(nil),
+				KWCPCIUserData, pdu.GetPDUUserData(),
+			),
+			)
 			//               if settings.route_aware:
 			//                   xpdu.pduSource.addrRoute = PDUSource
 			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
@@ -371,7 +395,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 		// send it to the peers
 		for _, bdte := range b.bbmdBDT {
 			if !bdte.Equals(b.bbmdAddress) {
-				address, err := NewAddress(b.log, &AddressTuple[int, uint16]{int(*bdte.AddrIP | ^*bdte.AddrMask), *bdte.AddrPort})
+				address, err := NewAddress(NewArgs(&AddressTuple[int, uint16]{int(*bdte.AddrIP | ^*bdte.AddrMask), *bdte.AddrPort}))
 				if err != nil {
 					return errors.Wrap(err, "error creating address")
 				}
@@ -409,7 +433,7 @@ func (b *BIPBBMD) RegisterForeignDevice(address Arg, ttl uint16) (model.BVLCResu
 		addr = address
 	case string:
 		var err error
-		addr, err = NewAddress(b.log, address)
+		addr, err = NewAddress(NewArgs(address))
 		if err != nil {
 			return model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, errors.Wrap(err, "error creating address")
 		}
@@ -446,7 +470,7 @@ func (b *BIPBBMD) DeleteForeignDeviceTableEntry(address Arg) (model.BVLCResultCo
 		addr = address
 	case string:
 		var err error
-		addr, err = NewAddress(b.log, address)
+		addr, err = NewAddress(NewArgs(address))
 		if err != nil {
 			return model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, errors.Wrap(err, "error creating address")
 		}
@@ -496,7 +520,7 @@ func (b *BIPBBMD) AddPeer(address Arg) error {
 		addr = address
 	case string:
 		var err error
-		addr, err = NewAddress(b.log, address)
+		addr, err = NewAddress(NewArgs(address))
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
 		}
@@ -528,7 +552,7 @@ func (b *BIPBBMD) DeletePeer(address Arg) error {
 		addr = address
 	case string:
 		var err error
-		addr, err = NewAddress(b.log, address)
+		addr, err = NewAddress(NewArgs(address))
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
 		}

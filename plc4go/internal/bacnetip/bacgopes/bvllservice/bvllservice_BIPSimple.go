@@ -132,14 +132,14 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 		return b.SapResponse(args, kwargs)
 	case model.BVLCOriginalUnicastNPDU:
 		// build a vanilla _PDU
-		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
+		xpdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, pdu.GetPDUDestination()))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NewArgs(xpdu), kwargs)
 	case model.BVLCOriginalBroadcastNPDU:
 		// build a _PDU with a local broadcast address
-		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)))
+		xpdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, NewLocalBroadcast(nil)))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
@@ -148,11 +148,11 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 		// build a _PDU with the source from the real source
 		ip := msg.GetIp()
 		port := msg.GetPort()
-		source, err := NewAddress(b.log, append(ip, Uint16ToPort(port)...))
+		source, err := NewAddress(NewArgs(append(ip, Uint16ToPort(port)...)))
 		if err != nil {
 			return errors.Wrap(err, "error building a ip")
 		}
-		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(source), WithPDUDestination(NewLocalBroadcast(nil)))
+		xpdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, source, KWCPCIDestination, NewLocalBroadcast(nil)))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream

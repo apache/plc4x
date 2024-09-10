@@ -24,7 +24,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 )
 
@@ -45,48 +44,16 @@ type _PDU struct {
 	*_PDUData
 }
 
-func NewPDU(pdu spi.Message, pduOptions ...PDUOption) PDU {
+func NewPDU(args Args, kwargs KWArgs) PDU {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwargs)
+	}
 	p := &_PDU{
-		_PCI: NewPCI(pdu, nil, nil, nil, false, model.NPDUNetworkPriority_NORMAL_MESSAGE),
+		_PCI: NewPCI(args, kwargs),
 	}
 	p.PDUContract = p
-	for _, option := range pduOptions {
-		option(p)
-	}
-	p._PDUData = NewPDUData(NewArgs(pdu)).(*_PDUData)
+	p._PDUData = NewPDUData(NewArgs(KWO[spi.Message](kwargs, KWCompRootMessage, nil)), NoKWArgs).(*_PDUData)
 	return p
-}
-
-type PDUOption func(pdu *_PDU)
-
-func WithPDUUserData(message spi.Message) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.rootMessage = message
-	}
-}
-
-func WithPDUSource(pduSource *Address) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.pduSource = pduSource
-	}
-}
-
-func WithPDUDestination(pduDestination *Address) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.pduDestination = pduDestination
-	}
-}
-
-func WithPDUExpectingReply(expectingReply bool) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.expectingReply = expectingReply
-	}
-}
-
-func WithPDUNetworkPriority(networkPriority model.NPDUNetworkPriority) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.networkPriority = networkPriority
-	}
 }
 
 func (p *_PDU) GetRootMessage() spi.Message {
