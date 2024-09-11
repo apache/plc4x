@@ -57,7 +57,7 @@ func NewConfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consist
 		u._contract.(ConfirmedRequestSequenceContractRequirement).SetConfirmedRequestSequence(u)
 	}
 	var err error
-	u.APCISequence, err = NewAPCISequence(NewArgs(model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)), kwargs, WithAPCISequenceExtension(u._contract))
+	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)), kwargs, WithAPCISequenceExtension(u._contract))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APCISequence")
 	}

@@ -165,7 +165,7 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 
 	// if the pduSource is unset, fill in our address, otherwise
 	// leave it alone to allow for simulated spoofing
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 	if pduSource := pdu.GetPDUSource(); pduSource == nil {
 		pdu.SetPDUSource(n.address)
 	} else if !n.spoofing && !pduSource.Equals(n.address) {

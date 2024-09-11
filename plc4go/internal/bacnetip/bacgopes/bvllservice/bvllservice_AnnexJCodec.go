@@ -80,7 +80,7 @@ func WithAnnexJCodecSid(sid int) func(*AnnexJCodec) {
 func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 
-	rpdu := Get[PDU](args, 0)
+	rpdu := GA[PDU](args, 0)
 
 	// encode it as a generic BVLL PDU
 	bvlpdu := NewBVLPDU(Nothing())
@@ -95,13 +95,13 @@ func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// send it downstream
-	return b.Request(NewArgs(pdu), NoKWArgs)
+	return b.Request(NA(pdu), NoKWArgs)
 }
 
 func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// interpret as a BVLL PDU
 	bvlpdu := NewBVLPDU(Nothing())
@@ -116,5 +116,5 @@ func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
 	}
 
 	// send it upstream
-	return b.Response(NewArgs(rpdu), NoKWArgs)
+	return b.Response(NA(rpdu), NoKWArgs)
 }

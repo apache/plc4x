@@ -82,7 +82,7 @@ func (t *TrappedClient) GetConfirmationReceived() PDU {
 func (t *TrappedClient) Request(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Request")
 	// a reference for checking
-	t.requestSent = Get[PDU](args, 0)
+	t.requestSent = GA[PDU](args, 0)
 
 	// continue with regular processing
 	return t.Client.Request(args, kwargs)
@@ -91,6 +91,6 @@ func (t *TrappedClient) Request(args Args, kwargs KWArgs) error {
 func (t *TrappedClient) Confirmation(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
 	// a reference for checking
-	t.confirmationReceived = Get[PDU](args, 0)
+	t.confirmationReceived = GA[PDU](args, 0)
 	return nil
 }

@@ -80,7 +80,7 @@ func (b *Boolean) Encode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	} //TODO: move tag number into member variable
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, b._appTag, b.value, []byte{}))
+	tag.set(NA(model.TagClass_APPLICATION_TAGS, b._appTag, b.value, []byte{}))
 	return nil
 }
 
@@ -108,7 +108,7 @@ func (b *Boolean) IsValid(arg any) bool {
 	return ok
 }
 
-// GetValue gives an int value because bool can't be used in constraint. A convenience method GetBoolValue exists.
+// GetValue gives an int value because bool can't be used in constraint. GA convenience method GetBoolValue exists.
 func (b *Boolean) GetValue() int {
 	return b.Atomic.GetValue()
 }

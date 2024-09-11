@@ -367,7 +367,7 @@ func TestStateMachine(t *testing.T) {
 		pdu := TPDU{}
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Receive(NewArgs(pdu), NoKWArgs).Success("")
+		tsm.GetStartState().Receive(NA(pdu), NoKWArgs).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -375,7 +375,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// tell the machine it is receiving the pdu
-		err = tsm.Receive(NewArgs(pdu), NoKWArgs)
+		err = tsm.Receive(NA(pdu), NoKWArgs)
 		require.NoError(t, err)
 
 		// check for success
@@ -402,7 +402,7 @@ func TestStateMachine(t *testing.T) {
 		badPdu := TPDU{b: 2}
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 1)).Success("")
+		tsm.GetStartState().Receive(NA(TPDU{}), NKW(KnownKey("a"), 1)).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -410,7 +410,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// give the machine a bad pdu
-		err = tsm.Receive(NewArgs(badPdu), NoKWArgs)
+		err = tsm.Receive(NA(badPdu), NoKWArgs)
 		require.NoError(t, err)
 
 		// check for fail
@@ -439,7 +439,7 @@ func TestStateMachine(t *testing.T) {
 		tsm := NewTrappedStateMachine(testingLogger)
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Call(_called, NewArgs(true), NoKWArgs).Success("")
+		tsm.GetStartState().Call(_called, NA(true), NoKWArgs).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -464,7 +464,7 @@ func TestStateMachine(t *testing.T) {
 		tsm := NewTrappedStateMachine(testingLogger)
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Call(_called, NewArgs(true), NoKWArgs)
+		tsm.GetStartState().Call(_called, NA(true), NoKWArgs)
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -490,7 +490,7 @@ func TestStateMachine(t *testing.T) {
 		// after sending the first pdu, wait for the second
 		s0 := tsm.GetStartState()
 		s1 := s0.Send(firstPdu, nil)
-		s2 := s1.Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 2))
+		s2 := s1.Receive(NA(TPDU{}), NKW(KnownKey("a"), 2))
 		s2.Success("")
 
 		// run the machine
@@ -502,7 +502,7 @@ func TestStateMachine(t *testing.T) {
 		assert.Same(t, s1, tsm.GetCurrentState())
 
 		// give the machine the second pdu
-		err = tsm.Receive(NewArgs(secondPdu), NoKWArgs)
+		err = tsm.Receive(NA(secondPdu), NoKWArgs)
 		require.NoError(t, err)
 
 		// check for success
@@ -535,7 +535,7 @@ func TestStateMachine(t *testing.T) {
 
 		// when the first pdu is received, send the second
 		s0 := tsm.GetStartState()
-		s1 := s0.Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 1))
+		s1 := s0.Receive(NA(TPDU{}), NKW(KnownKey("a"), 1))
 		s2 := s1.Send(secondPdu, nil)
 		s2.Success("")
 
@@ -547,7 +547,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// give the machine the first pdu
-		err = tsm.Receive(NewArgs(firstPdu), NoKWArgs)
+		err = tsm.Receive(NA(firstPdu), NoKWArgs)
 		require.NoError(t, err)
 
 		// check for success

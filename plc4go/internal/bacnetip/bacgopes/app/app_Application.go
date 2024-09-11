@@ -238,7 +238,7 @@ func (a *Application) GetServicesSupported() []string {
 
 func (a *Application) Request(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// double-check the input is the right kind of APDU
 	switch pdu.GetRootMessage().(type) {
@@ -251,7 +251,7 @@ func (a *Application) Request(args Args, kwargs KWArgs) error {
 
 func (a *Application) Indication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	apdu := Get[APDU](args, 0)
+	apdu := GA[APDU](args, 0)
 
 	// get a helper function
 	helperName := fmt.Sprintf("Do_%T", apdu)
@@ -273,7 +273,7 @@ func (a *Application) Indication(args Args, kwargs KWArgs) error {
 		a.log.Debug().Err(err).Msg("err result")
 		panic("do it")
 		// TODO: do proper mapping
-		if err := a.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))), NoKWArgs); err != nil {
+		if err := a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))), NoKWArgs); err != nil {
 			return err
 		}
 	}

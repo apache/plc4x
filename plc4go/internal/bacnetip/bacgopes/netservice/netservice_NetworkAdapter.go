@@ -81,7 +81,7 @@ func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
 		Interface("adapterNet", n.adapterNet).
 		Msg("confirmation")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	npdu, err := NewNPDU(nil, nil)
 	if err != nil {
@@ -101,11 +101,11 @@ func (n *NetworkAdapter) ProcessNPDU(npdu NPDU) error {
 		Interface("adapterNet", n.adapterNet).
 		Msg("ProcessNPDU")
 
-	pdu := NewPDU(NoArgs, NewKWArgs(KWCPCIUserData, npdu.GetPDUUserData()))
+	pdu := NewPDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData()))
 	if err := npdu.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding NPDU")
 	}
-	return n.Request(NewArgs(pdu), NoKWArgs)
+	return n.Request(NA(pdu), NoKWArgs)
 }
 
 func (n *NetworkAdapter) EstablishConnectionToNetwork(net any) error {

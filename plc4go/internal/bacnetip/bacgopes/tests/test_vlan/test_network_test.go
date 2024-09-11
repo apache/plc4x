@@ -143,12 +143,12 @@ func TestVLAN(t *testing.T) {
 		require.NoError(t, err)
 		dest, err := NewAddress(2)
 		require.NoError(t, err)
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, src, KWCPCIDestination, dest))
+		pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, mode 2 gets it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode2.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, src,
 		)).Success("")
 
@@ -171,15 +171,15 @@ func TestVLAN(t *testing.T) {
 		require.NoError(t, err)
 		dest, err := NewAddress(0)
 		require.NoError(t, err)
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, src, KWCPCIDestination, dest))
+		pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode2.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, src,
 		)).Success("")
-		tnode3.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode3.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, src,
 		)).Success("")
 
@@ -202,7 +202,7 @@ func TestVLAN(t *testing.T) {
 		require.NoError(t, err)
 		dest, err := NewAddress(3)
 		require.NoError(t, err)
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, src, KWCPCIDestination, dest))
+		pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
@@ -227,13 +227,13 @@ func TestVLAN(t *testing.T) {
 		require.NoError(t, err)
 		dest, err := NewAddress(1)
 		require.NoError(t, err)
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, src, KWCPCIDestination, dest))
+		pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, but gets it back as if it was from node 3
 		tnode1.GetStartState().
 			Send(pdu, nil).
-			Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+			Receive(NA(NewPDU(Nothing())), NKW(
 				KWCPCISource, src,
 			)).
 			Success("")
@@ -257,15 +257,15 @@ func TestVLAN(t *testing.T) {
 		require.NoError(t, err)
 		dest, err := NewAddress(2)
 		require.NoError(t, err)
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, src, KWCPCIDestination, dest))
+		pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode2.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, src,
 		)).Success("")
-		tnode3.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode3.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCIDestination, dest,
 		)).Success("")
 
@@ -283,12 +283,12 @@ func TestVLAN(t *testing.T) {
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a PDU from node 1 to node 2
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, KWCPCISource, quick.Address(1), KWCPCIDestination, quick.Address(1)))
+		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, KWCPCISource, quick.Address(1), KWCPCIDestination, quick.Address(1)))
 		t.Log(pdu)
 
 		// node 1 sends the pdu to node 2, node 3 waits and gets nothing
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode2.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, quick.Address(1),
 		)).Success("")
 
@@ -318,11 +318,11 @@ func TestVLANEvents(t *testing.T) {
 		dest, err := NewAddress(2)
 		require.NoError(t, err)
 
-		deadPDU := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage(0xde, 0xad), KWCPCISource, src, KWCPCIDestination, dest))
+		deadPDU := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage(0xde, 0xad), KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(deadPDU)
 
 		// make a PDU from node 1 to node 2
-		beefPDU := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage(0xbe, 0xef), KWCPCISource, src, KWCPCIDestination, dest))
+		beefPDU := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage(0xbe, 0xef), KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(beefPDU)
 
 		//  node 1 sends dead_pdu, waits for event, sends beef_pdu
@@ -332,10 +332,10 @@ func TestVLANEvents(t *testing.T) {
 
 		// node 2 receives dead_pdu, sets event, waits for beef_pdu
 		tnode2.GetStartState().
-			Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+			Receive(NA(NewPDU(Nothing())), NKW(
 				KWCPCIData, NewDummyMessage(0xde, 0xad),
 			)).SetEvent("e").
-			Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+			Receive(NA(NewPDU(Nothing())), NKW(
 				KWCPCIData, NewDummyMessage(0xbe, 0xef),
 			)).Success("")
 

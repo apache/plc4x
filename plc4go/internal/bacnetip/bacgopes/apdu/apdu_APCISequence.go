@@ -60,7 +60,7 @@ func NewAPCISequence(args Args, kwargs KWArgs, opts ...func(*APCISequence)) (*AP
 	} else {
 		a._contract.(APCISequenceContractRequirement).SetAPCISequence(a)
 	}
-	apdu := Get[readWriteModel.APDU](args, 0) // TODO: might break but should be fine as we are a A*
+	apdu := GA[readWriteModel.APDU](args, 0) // TODO: might break but should be fine as we are a GA*
 	a._APCI = NewAPCI(apdu).(*_APCI)
 	var err error
 	a.Sequence, err = NewSequence(args, kwargs, WithSequenceExtension(a._contract))

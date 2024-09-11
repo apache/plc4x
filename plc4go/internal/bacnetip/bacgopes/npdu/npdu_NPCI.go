@@ -84,7 +84,7 @@ func NewNPCI(nlm readWriteModel.NLM, apdu readWriteModel.APDU) NPCI {
 		npduVersion: 1,
 	}
 	npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
-	n.PCI = NewPCI(NoArgs, NewKWArgs(KWCompRootMessage, npdu)) // TODO: convert to args so we can solve all those todos
+	n.PCI = NewPCI(NoArgs, NKW(KWCompRootMessage, npdu)) // TODO: convert to args so we can solve all those todos
 	return n
 }
 

@@ -66,7 +66,7 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (
 		} else if caddress, ok := address.(Address); ok {
 			u.address = &caddress
 		} else {
-			newAddress, err := NewAddress(NewArgs(address))
+			newAddress, err := NewAddress(NA(address))
 			if err != nil {
 				return nil, errors.Wrap(err, "error parsing address")
 			}
@@ -147,8 +147,8 @@ func (m *UDPMultiplexer) Close() error {
 
 func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	server := Get[*_MultiplexServer](args, 0)
-	pdu := Get[PDU](args, 1)
+	server := GA[*_MultiplexServer](args, 0)
+	pdu := GA[PDU](args, 1)
 	m.log.Debug().
 		Stringer("server", server).
 		Stringer("pdu", pdu).
@@ -164,7 +164,7 @@ func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 			return nil
 		}
 
-		address, err := NewAddress(NewArgs(*m.addrBroadcastTuple))
+		address, err := NewAddress(NA(*m.addrBroadcastTuple))
 		if err != nil {
 			return errors.Wrap(err, "error getting address from tuple")
 		}
@@ -176,13 +176,13 @@ func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 		return errors.New("invalid destination address type")
 	}
 
-	return m.directPort.Indication(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, pdu, KWCPCIDestination, dest))), NoKWArgs)
+	return m.directPort.Indication(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCIDestination, dest))), NoKWArgs)
 }
 
 func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
-	client := Get[*_MultiplexClient](args, 0)
-	pdu := Get[PDU](args, 1)
+	client := GA[*_MultiplexClient](args, 0)
+	pdu := GA[PDU](args, 1)
 	m.log.Debug().
 		Stringer("client", client).
 		Stringer("pdu", pdu).
@@ -197,7 +197,7 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	}
 
 	// the PDU source is a tuple, convert it to an Address instance
-	src, err := NewAddress(NewArgs(pdu.GetPDUSource()))
+	src, err := NewAddress(NA(pdu.GetPDUSource()))
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
@@ -223,7 +223,7 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 
 	// TODO: we only support 0x81 at the moment
 	if m.AnnexJ != nil {
-		return m.AnnexJ.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, pdu.GetRootMessage(), KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
+		return m.AnnexJ.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu.GetRootMessage(), KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
 	}
 
 	return nil

@@ -63,7 +63,7 @@ func (t *TrappedStateMachine) BeforeSend(pdu PDU) {
 func (t *TrappedStateMachine) Send(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
 	// keep a copy
-	t.sent = Get[PDU](args, 0)
+	t.sent = GA[PDU](args, 0)
 	return nil
 }
 

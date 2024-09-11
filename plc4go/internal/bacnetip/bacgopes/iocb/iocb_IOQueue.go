@@ -75,7 +75,7 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (IOCBContract, error) {
 	i.log.Debug().
 		Bool("block", block).
 		Interface("delay", delay).
-		Msg("Get")
+		Msg("GA")
 
 	// if the queue is empty, and we do not block return None
 	if !block && len(i.Queue) == 0 {

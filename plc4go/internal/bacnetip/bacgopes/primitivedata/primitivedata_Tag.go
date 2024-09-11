@@ -238,9 +238,9 @@ func (t *tag) AppToContext(context uint) (*ContextTag, error) {
 		return nil, errors.New("application tag required")
 	}
 	if t.tagNumber == uint(model.BACnetDataType_BOOLEAN) {
-		return NewContextTag(NewArgs(context, []byte{byte(t.tagLVT)}))
+		return NewContextTag(NA(context, []byte{byte(t.tagLVT)}))
 	}
-	return NewContextTag(NewArgs(context, t.tagData))
+	return NewContextTag(NA(context, t.tagData))
 }
 
 func (t *tag) ContextToApp(dataType uint) (Tag, error) {
@@ -248,9 +248,9 @@ func (t *tag) ContextToApp(dataType uint) (Tag, error) {
 		return nil, errors.New("context tag required")
 	}
 	if dataType == uint(model.BACnetDataType_BOOLEAN) {
-		return NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, t.tagData[0], nil))
+		return NewTag(NA(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, t.tagData[0], nil))
 	}
-	return NewApplicationTag(NewArgs(dataType, t.tagData))
+	return NewApplicationTag(NA(dataType, t.tagData))
 }
 
 func (t *tag) AppToObject() (any, error) {
@@ -281,15 +281,15 @@ func (t *tag) AppToObject() (any, error) {
 	case *CharacterString:
 		return NewCharacterString(t)
 	case *BitString:
-		return NewBitString(NewArgs(t))
+		return NewBitString(NA(t))
 	case *Enumerated:
-		return NewEnumerated(NewArgs(t))
+		return NewEnumerated(NA(t))
 	case *Date:
-		return NewDate(NewArgs(t))
+		return NewDate(NA(t))
 	case *Time:
-		return NewTime(NewArgs(t))
+		return NewTime(NA(t))
 	case *ObjectIdentifier:
-		return NewObjectIdentifier(NewArgs(t))
+		return NewObjectIdentifier(NA(t))
 	default:
 		return nil, errors.Errorf("unknown tag klass %T", klass)
 	}

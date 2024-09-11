@@ -159,7 +159,7 @@ func (d *UDPDirector) AddActor(actor *UDPActor) {
 
 	// tell the ASE there is a new client
 	if d.GetServiceElement() != nil {
-		if err := d.SapRequest(NoArgs, NewKWArgs(KWAddActor, actor)); err != nil {
+		if err := d.SapRequest(NoArgs, NKW(KWAddActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in add actor")
 		}
 	}
@@ -173,8 +173,17 @@ func (d *UDPDirector) DelActor(actor *UDPActor) {
 
 	// tell the ASE the client has gone away
 	if d.GetServiceElement() != nil {
-		if err := d.SapRequest(NoArgs, NewKWArgs(KWDelActor, actor)); err != nil {
+		if err := d.SapRequest(NoArgs, NKW(KWDelActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in del actor")
+		}
+	}
+}
+
+func (d *UDPDirector) ActorError(actor *UDPActor, err error) {
+	// tell the ASE the actor had an error
+	if d.GetServiceElement() != nil {
+		if err := d.SapRequest(NoArgs, NKW(KWActorError, actor, KWError, err)); err != nil {
+			d.log.Error().Err(err).Msg("Error in actor error")
 		}
 	}
 }
@@ -183,24 +192,12 @@ func (d *UDPDirector) GetActor(address Address) *UDPActor {
 	return d.peers[address.String()]
 }
 
-func (d *UDPDirector) ActorError(actor *UDPActor, err error) {
-	// tell the ASE the actor had an error
-	if d.GetServiceElement() != nil {
-		if err := d.SapRequest(NoArgs, NewKWArgs(KWActorError, actor, KWError, err)); err != nil {
-			d.log.Error().Err(err).Msg("Error in actor error")
-		}
-	}
+func (d *UDPDirector) handleConnect() {
+	panic("implement me") // TODO: implement me
 }
 
-func (d *UDPDirector) Close() error {
-	d.log.Debug().Msg("UDPDirector closing")
-	defer func() {
-		d.log.Debug().Msg("waiting for running tasks to finnish")
-		d.wg.Wait()
-		d.log.Debug().Msg("waiting done")
-	}()
-	d.running = false
-	return d.udpConn.Close()
+func (d *UDPDirector) readable() {
+	panic("implement me") // TODO: implement me
 }
 
 func (d *UDPDirector) handleRead() {
@@ -223,19 +220,19 @@ func (d *UDPDirector) handleRead() {
 		return
 	}
 
-	saddr, err := NewAddress(NewArgs(sourceAddr))
+	saddr, err := NewAddress(NA(sourceAddr))
 	if err != nil {
 		// pass along to a handler
 		d.handleError(errors.Wrap(err, "error parsing source address"))
 		return
 	}
-	daddr, err := NewAddress(NewArgs(d.udpConn.LocalAddr()))
+	daddr, err := NewAddress(NA(d.udpConn.LocalAddr()))
 	if err != nil {
 		// pass along to a handler
 		d.handleError(errors.Wrap(err, "error parsing destination address"))
 		return
 	}
-	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, bvlc, KWCPCISource, saddr, KWCPCIDestination, daddr))
+	pdu := NewCPDU(NoArgs, NKW(KWCompRootMessage, bvlc, KWCPCISource, saddr, KWCPCIDestination, daddr)) // TODO: why do we set the destination here??? This might be completely wrong
 	// send the _PDU up to the client
 	d.wg.Add(1)
 	go func() {
@@ -246,6 +243,29 @@ func (d *UDPDirector) handleRead() {
 	}()
 }
 
+func (d *UDPDirector) writeable() {
+	panic("implement me") // TODO: implement me
+}
+
+func (d *UDPDirector) handleWrite() {
+	panic("implement me") // TODO: implement me
+}
+
+func (d *UDPDirector) Close() error {
+	d.log.Debug().Msg("UDPDirector closing")
+	defer func() {
+		d.log.Debug().Msg("waiting for running tasks to finnish")
+		d.wg.Wait()
+		d.log.Debug().Msg("waiting done")
+	}()
+	d.running = false
+	return d.udpConn.Close()
+}
+
+func (d *UDPDirector) handleClose() {
+	panic("implement me") // TODO: implement me
+}
+
 func (d *UDPDirector) handleError(err error) {
 	d.log.Debug().Err(err).Msg("handleError")
 }
@@ -253,7 +273,7 @@ func (d *UDPDirector) handleError(err error) {
 // Indication Client requests are queued for delivery.
 func (d *UDPDirector) Indication(args Args, kwargs KWArgs) error {
 	d.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// get the destination
 	addr := pdu.GetPDUDestination()
@@ -282,5 +302,5 @@ func (d *UDPDirector) _response(pdu PDU) error {
 	}
 
 	// send the message
-	return peer.Response(NewArgs(pdu), NoKWArgs)
+	return peer.Response(NA(pdu), NoKWArgs)
 }

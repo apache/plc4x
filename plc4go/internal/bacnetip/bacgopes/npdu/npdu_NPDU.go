@@ -227,18 +227,6 @@ func (n *_NPDU) DeepCopy() any {
 	return n.deepCopy()
 }
 
-func (n *_NPDU) Serialize() ([]byte, error) {
-	nPCI, err := n._NPCI.Serialize()
-	if err != nil {
-		return nil, errors.Wrap(err, "error serializing NPDU")
-	}
-	pduData, err := n.PDUData.Serialize()
-	if err != nil {
-		return nil, errors.Wrap(err, "error serializing PDU data")
-	}
-	return append(nPCI, pduData...), nil
-}
-
 func (n *_NPDU) String() string {
 	if ExtendedPDUOutput {
 		return fmt.Sprintf("NPDU{%s}", n._NPCI)

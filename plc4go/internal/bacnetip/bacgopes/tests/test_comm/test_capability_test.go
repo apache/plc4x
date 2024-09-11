@@ -47,7 +47,7 @@ func NewBaseCollector(localLog zerolog.Logger, subs ...CollectorOrCapability) (*
 
 func (b *BaseCollector) Transform(value any) any {
 	for fn := range b.CapabilityFunctions("transform") {
-		value = fn(NewArgs(b, value), NoKWArgs)
+		value = fn(NA(b, value), NoKWArgs)
 	}
 	return value
 }

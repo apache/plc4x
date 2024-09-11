@@ -57,7 +57,7 @@ func NewUnconfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consi
 		u._contract.(UnconfirmedRequestSequenceContractRequirement).SetUnconfirmedRequestSequence(u)
 	}
 	var err error
-	u.APCISequence, err = NewAPCISequence(NewArgs(model.NewAPDUUnconfirmedRequest(serviceRequest, 0)), kwargs, WithAPCISequenceExtension(u._contract))
+	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUUnconfirmedRequest(serviceRequest, 0)), kwargs, WithAPCISequenceExtension(u._contract))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APCISequence")
 	}

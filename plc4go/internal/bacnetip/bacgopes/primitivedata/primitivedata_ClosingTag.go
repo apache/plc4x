@@ -34,7 +34,7 @@ func NewClosingTag(context Arg) (*ClosingTag, error) {
 	o := &ClosingTag{}
 	switch context.(type) {
 	case PDUData:
-		_tag, err := NewTag(NewArgs(context))
+		_tag, err := NewTag(NA(context))
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating tag")
 		}
@@ -44,7 +44,7 @@ func NewClosingTag(context Arg) (*ClosingTag, error) {
 		}
 		return o, nil
 	case int, uint:
-		_tag, err := NewTag(NewArgs(TagClosingTagClass, context))
+		_tag, err := NewTag(NA(TagClosingTagClass, context))
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating tag")
 		}

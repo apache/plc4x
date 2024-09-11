@@ -56,7 +56,7 @@ func NewNPDUCodec(localLog zerolog.Logger) (*NPDUCodec, error) {
 func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	npdu := Get[NPDU](args, 0)
+	npdu := GA[NPDU](args, 0)
 
 	// first a generic _NPDU
 	xpdu, err := NewNPDU(nil, nil)
@@ -75,13 +75,13 @@ func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("ypdu", ypdu).Msg("encoded")
 
 	// send it downstream
-	return n.Request(NewArgs(ypdu), NoKWArgs)
+	return n.Request(NA(ypdu), NoKWArgs)
 }
 
 func (n *NPDUCodec) Confirmation(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// decode as generic _NPDU
 	xpdu, err := NewNPDU(nil, nil)
@@ -104,5 +104,5 @@ func (n *NPDUCodec) Confirmation(args Args, kwargs KWArgs) error {
 		return errors.Wrap(err, "error decoding ypdu")
 	}
 
-	return n.Response(NewArgs(ypdu), NoKWArgs)
+	return n.Response(NA(ypdu), NoKWArgs)
 }

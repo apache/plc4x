@@ -108,7 +108,7 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 
 	w.log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
 
-	return w._requirements.Request(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, whoIs, KWCPCIDestination, address))), NoKWArgs)
+	return w._requirements.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, whoIs, KWCPCIDestination, address))), NoKWArgs)
 }
 
 // DoWhoIsRequest respond to a Who-Is request.
@@ -178,7 +178,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 
 	iAm, err := NewIAmRequest(
 		NoArgs,
-		NewKWArgs(
+		NKW(
 			KnownKey("iAmDeviceIdentifier"), w.localDevice.ObjectIdentifier,
 			KnownKey("maxAPDULengthAccepted"), w.localDevice.MaximumApduLengthAccepted,
 			KnownKey("segmentationSupported"), w.localDevice.SegmentationSupported,
@@ -196,7 +196,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	iAm.SetPDUDestination(address)
 	w.log.Debug().Stringer("iAm", iAm).Msg("IAm")
 
-	return w._requirements.Request(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, iAm, KWCPCIDestination, address))), NoKWArgs)
+	return w._requirements.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, iAm, KWCPCIDestination, address))), NoKWArgs)
 }
 
 // DoIAmRequest responds to an I-Am request.

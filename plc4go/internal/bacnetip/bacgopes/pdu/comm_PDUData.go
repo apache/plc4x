@@ -26,12 +26,12 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
+
+// Note: upstream this belongs to comm but that would create a circular dependency
 
 type PDUData interface {
 	fmt.Stringer
-	utils.Serializable
 	Copyable
 	SetPduData([]byte)
 	GetPduData() []byte
@@ -46,8 +46,6 @@ type PDUData interface {
 }
 
 // _PDUData is basically a bridge to spi.Message
-//
-//go:generate plc4xGenerator -type=_PDUData -prefix=pdu_
 type _PDUData struct {
 	data []byte
 }
@@ -154,6 +152,6 @@ func (d *_PDUData) DeepCopy() any {
 	return d.deepCopy()
 }
 
-func (d *_PDUData) AlternateString() (string, bool) {
-	return Btox(d.data, "."), true
+func (d *_PDUData) String() string {
+	return Btox(d.data, ".")
 }

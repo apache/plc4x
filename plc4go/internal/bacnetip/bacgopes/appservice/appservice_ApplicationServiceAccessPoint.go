@@ -79,7 +79,7 @@ func WithApplicationServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) f
 
 func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	apdu := Get[APDU](args, 0)
+	apdu := GA[APDU](args, 0)
 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequest:
@@ -114,7 +114,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 		// no error so far, keep going
 		if errorFound == nil {
 			a.log.Trace().Msg("no decoding error")
-			if err := a.SapRequest(NewArgs(xpdu), NoKWArgs); err != nil {
+			if err := a.SapRequest(NA(xpdu), NoKWArgs); err != nil {
 				panic("if no abort or reject bubble up")
 				errorFound = err
 			}
@@ -126,7 +126,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 			a.log.Debug().Err(errorFound).Msg("got error")
 
 			// TODO: map it to a error... code temporary placeholder
-			return a.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0)))), NoKWArgs)
+			return a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0)))), NoKWArgs)
 		}
 	case readWriteModel.APDUUnconfirmedRequest:
 		var apduService readWriteModel.BACnetUnconfirmedServiceChoice
@@ -147,7 +147,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 		}
 
 		// forward the decoded packet
-		if err := a.SapRequest(NewArgs(xpdu), NoKWArgs); err != nil {
+		if err := a.SapRequest(NA(xpdu), NoKWArgs); err != nil {
 			panic("if no abort or reject bubble up")
 		}
 	default:
@@ -160,7 +160,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
 
-	apdu := Get[APDU](args, 0)
+	apdu := GA[APDU](args, 0)
 
 	isConfirmed := false
 	var xpdu APDU
@@ -189,7 +189,7 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) 
 	}
 
 	// forward the encoded packet
-	err := a.Request(NewArgs(xpdu), NoKWArgs)
+	err := a.Request(NA(xpdu), NoKWArgs)
 	if err != nil {
 		return errors.Wrap(err, "error forwarding the request ")
 	}

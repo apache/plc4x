@@ -117,7 +117,7 @@ func NewObjectType(args Args) (*ObjectType, error) {
 		arg0 = args[0]
 		switch arg0 := arg0.(type) {
 		case *ObjectType:
-			o.Enumerated, _ = NewEnumerated(NewArgs(arg0.Enumerated))
+			o.Enumerated, _ = NewEnumerated(NA(arg0.Enumerated))
 			for k, v := range arg0.enumerations {
 				o.enumerations[k] = v
 			}
@@ -140,7 +140,7 @@ func NewObjectType(args Args) (*ObjectType, error) {
 		}
 		arg0 = args[1]
 	}
-	o.Enumerated, err = NewEnumerated(NewArgs(enumeratedContract, arg0))
+	o.Enumerated, err = NewEnumerated(NA(enumeratedContract, arg0))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating enumerated")
 	}

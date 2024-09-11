@@ -142,14 +142,14 @@ func (b *TagList) Encode(data PDUData) {
 func (b *TagList) Decode(data PDUData) error {
 	for len(data.GetPduData()) != 0 {
 		var tag Tag
-		tag, err := NewTag(NewArgs(data))
+		tag, err := NewTag(NA(data))
 		if err != nil {
 			return errors.Wrap(err, "error creating tag")
 		}
 		switch tag.GetTagClass() {
 		case model.TagClass_APPLICATION_TAGS:
 		case model.TagClass_CONTEXT_SPECIFIC_TAGS:
-			tag, err = NewContextTag(NewArgs(tag.GetTagNumber(), tag.GetTagData()))
+			tag, err = NewContextTag(NA(tag.GetTagNumber(), tag.GetTagData()))
 			if err != nil {
 				panic(err)
 			}

@@ -25,8 +25,11 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 )
+
+var _debug = CreateDebugPrinter()
 
 // maps of named clients and servers
 var clientMap map[int]*client

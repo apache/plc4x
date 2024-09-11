@@ -36,7 +36,6 @@ type BVLPDU interface {
 	PDUData
 }
 
-//go:generate plc4xGenerator -type=_BVLPDU -prefix=bvll
 type _BVLPDU struct {
 	*_BVLCI
 	PDUData

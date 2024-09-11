@@ -57,7 +57,7 @@ func NewApplicationTag(args Args) (*ApplicationTag, error) {
 			}
 		}
 		tdata := args[1].([]byte)
-		_tag, err := NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, tnum, len(tdata), tdata))
+		_tag, err := NewTag(NA(model.TagClass_APPLICATION_TAGS, tnum, len(tdata), tdata))
 		if err != nil {
 			return nil, errors.New("error creating tag")
 		}

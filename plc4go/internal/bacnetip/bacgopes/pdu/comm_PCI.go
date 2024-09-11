@@ -33,6 +33,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+// Note: upstream this belongs to comm but that would create a circular dependency
+
 type IPCI interface {
 	spi.Message
 	SetRootMessage(spi.Message)

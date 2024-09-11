@@ -101,24 +101,24 @@ func (s *TrappedApplicationServiceElement) String() string {
 
 func (s *TrappedApplicationServiceElement) Request(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Request")
-	s.requestSent = Get[PDU](args, 0)
+	s.requestSent = GA[PDU](args, 0)
 	return s.ApplicationServiceElementContract.Request(args, kwargs)
 }
 
 func (s *TrappedApplicationServiceElement) Indication(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
-	s.indicationReceived = Get[PDU](args, 0)
+	s.indicationReceived = GA[PDU](args, 0)
 	return s.requirements.Indication(args, kwargs)
 }
 
 func (s *TrappedApplicationServiceElement) Response(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Response")
-	s.responseSent = Get[PDU](args, 0)
+	s.responseSent = GA[PDU](args, 0)
 	return s.ApplicationServiceElementContract.Response(args, kwargs)
 }
 
 func (s *TrappedApplicationServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
-	s.confirmationReceived = Get[PDU](args, 0)
+	s.confirmationReceived = GA[PDU](args, 0)
 	return s.requirements.Confirmation(args, kwargs)
 }

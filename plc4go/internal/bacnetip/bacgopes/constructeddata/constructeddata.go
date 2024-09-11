@@ -231,7 +231,7 @@ func (a *Sequence) Encode(arg Arg) error {
 				tagList.Append(openingTag)
 			}
 
-			helper, err := element.GetKlass()(NewArgs(value), NoKWArgs)
+			helper, err := element.GetKlass()(NA(value), NoKWArgs)
 			if err != nil {
 				return errors.Wrap(err, "error klass element")
 			}
@@ -250,7 +250,7 @@ func (a *Sequence) Encode(arg Arg) error {
 				tagList.Append(closingTag)
 			}
 		} else if isAtomic {
-			helper, err := element.GetKlass()(NewArgs(value), NoKWArgs)
+			helper, err := element.GetKlass()(NA(value), NoKWArgs)
 			if err != nil {
 				return errors.Wrap(err, "error klass element")
 			}
@@ -383,7 +383,7 @@ func (a *Sequence) Decode(arg Arg) error {
 			tagList.Pop()
 
 			// a helper cooperates between the atomic value and the tag
-			helper, err := element.GetKlass()(NewArgs(tag), NoKWArgs)
+			helper, err := element.GetKlass()(NA(tag), NoKWArgs)
 			if err != nil {
 				return errors.Wrap(err, "error creating helper")
 			}

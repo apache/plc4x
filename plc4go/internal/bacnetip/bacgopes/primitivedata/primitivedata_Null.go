@@ -68,7 +68,7 @@ func (n *Null) Encode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, n._appTag, n.value, []byte{}))
+	tag.set(NA(model.TagClass_APPLICATION_TAGS, n._appTag, n.value, []byte{}))
 	return nil
 }
 

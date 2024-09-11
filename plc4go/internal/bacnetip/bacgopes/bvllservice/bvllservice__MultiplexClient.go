@@ -46,5 +46,5 @@ func _New_MultiplexClient(localLog zerolog.Logger, multiplexer *UDPMultiplexer) 
 }
 
 func (m *_MultiplexClient) Confirmation(args Args, kwargs KWArgs) error {
-	return m.multiplexer.Confirmation(NewArgs(m, args), NoKWArgs)
+	return m.multiplexer.Confirmation(NA(m, args), NoKWArgs)
 }

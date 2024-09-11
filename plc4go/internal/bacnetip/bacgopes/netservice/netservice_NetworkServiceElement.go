@@ -130,7 +130,7 @@ func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {
 		// sap.router_info_cache.update_router_info(adapter.adapterNet, adapter.adapterAddr, netlist)
 
 		// send an announcement
-		if err := n.iamRouterToNetwork(NewArgs(adapter, nil, netlist), NoKWArgs); err != nil {
+		if err := n.iamRouterToNetwork(NA(adapter, nil, netlist), NoKWArgs); err != nil {
 			n.log.Debug().Err(err).Msg("I-Am-Router-To-Network failed")
 		}
 	}
@@ -140,8 +140,8 @@ func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {
 func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	adapter := Get[*NetworkAdapter](args, 0)
-	npdu := Get[NPDU](args, 1)
+	adapter := GA[*NetworkAdapter](args, 0)
+	npdu := GA[NPDU](args, 1)
 
 	switch message := npdu.GetRootMessage().(type) {
 	case model.NPDU:
@@ -182,8 +182,8 @@ func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 
-	adapter := Get[*NetworkAdapter](args, 0)
-	npdu := Get[NPDU](args, 1)
+	adapter := GA[*NetworkAdapter](args, 0)
+	npdu := GA[NPDU](args, 1)
 
 	switch message := npdu.GetRootMessage().(type) {
 	case model.NPDU:
@@ -222,9 +222,9 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 }
 
 func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
-	adapter := GetOptional[*NetworkAdapter](args, 0, nil)
-	destination := GetOptional[*Address](args, 1, nil)
-	network := GetOptional[[]*uint16](args, 2, nil)
+	adapter := GAO[*NetworkAdapter](args, 0, nil)
+	destination := GAO[*Address](args, 1, nil)
+	network := GAO[[]*uint16](args, 2, nil)
 	n.log.Debug().Stringer("adapter", adapter).Stringer("destination", destination).Interface("network", network).Msg("IamRouterToNetwork")
 
 	// reference the service access point
@@ -328,7 +328,7 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 		n.log.Debug().Stringer("adapter", adapter).Stringer("iamrtn", iamrtn).Msg("adapter, iamrtn")
 
 		// send it back
-		if err := n.Request(NewArgs(adapter, iamrtn), NoKWArgs); err != nil {
+		if err := n.Request(NA(adapter, iamrtn), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error requesting NPDU")
 		}
 	}
@@ -378,7 +378,7 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			iamrtn.SetPDUDestination(npdu.GetPDUSource())
 
 			// send it back
-			if err := n.Response(NewArgs(adapter, iamrtn), NoKWArgs); err != nil {
+			if err := n.Response(NA(adapter, iamrtn), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error sendinf the response")
 			}
 		}
@@ -407,7 +407,7 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			iamrtn.SetPDUDestination(npdu.GetPDUSource())
 
 			// send it back
-			return n.Response(NewArgs(adapter, iamrtn), NoKWArgs)
+			return n.Response(NA(adapter, iamrtn), NoKWArgs)
 		}
 
 		// look for routing information from the network of one of our
@@ -440,7 +440,7 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			iamrtn.SetPDUDestination(npdu.GetPDUSource())
 
 			// send it back
-			return n.Response(NewArgs(adapter, iamrtn), NoKWArgs)
+			return n.Response(NA(adapter, iamrtn), NoKWArgs)
 		} else {
 			n.log.Trace().Msg("forwarding to other adapters")
 
@@ -466,7 +466,7 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			for _, xadapter := range sap.adapters {
 				if xadapter != adapter {
 					n.log.Debug().Stringer("xadapter", xadapter).Msg("Sending to adapter")
-					if err := n.Request(NewArgs(xadapter, whoisrtn), NoKWArgs); err != nil {
+					if err := n.Request(NA(xadapter, whoisrtn), NoKWArgs); err != nil {
 						return errors.Wrap(err, "error sending Who is router to network")
 					}
 				}
@@ -505,7 +505,7 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 		for _, xadapter := range sap.adapters {
 			if xadapter != adapter {
 				n.log.Debug().Stringer("xadapter", xadapter).Msg("Sending to adapter")
-				if err := n.Request(NewArgs(xadapter, iamrtn), NoKWArgs); err != nil {
+				if err := n.Request(NA(xadapter, iamrtn), NoKWArgs); err != nil {
 					return errors.Wrap(err, "error sending I am router to network")
 				}
 			}

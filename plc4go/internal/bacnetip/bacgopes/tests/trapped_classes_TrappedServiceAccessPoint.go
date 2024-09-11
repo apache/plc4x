@@ -95,24 +95,24 @@ func (s *TrappedServiceAccessPoint) GetSapConfirmationReceived() PDU {
 
 func (s *TrappedServiceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapRequest")
-	s.sapRequestSent = Get[PDU](args, 0)
+	s.sapRequestSent = GA[PDU](args, 0)
 	return s.ServiceAccessPointContract.SapRequest(args, kwargs)
 }
 
 func (s *TrappedServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapIndication")
-	s.sapIndicationReceived = Get[PDU](args, 0)
+	s.sapIndicationReceived = GA[PDU](args, 0)
 	return s.requirements.SapIndication(args, kwargs)
 }
 
 func (s *TrappedServiceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapResponse")
-	s.sapResponseSent = Get[PDU](args, 0)
+	s.sapResponseSent = GA[PDU](args, 0)
 	return s.ServiceAccessPointContract.SapResponse(args, kwargs)
 }
 
 func (s *TrappedServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapConfirmation")
-	s.sapConfirmationReceived = Get[PDU](args, 0)
+	s.sapConfirmationReceived = GA[PDU](args, 0)
 	return s.requirements.SapConfirmation(args, kwargs)
 }

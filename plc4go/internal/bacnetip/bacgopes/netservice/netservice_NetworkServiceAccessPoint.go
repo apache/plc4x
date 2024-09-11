@@ -200,7 +200,7 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address 
 func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// make sure our configuration is OK
 	if len(n.adapters) == 0 {
@@ -357,7 +357,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 
 		// send it to all the adapters
 		for _, adapter := range n.adapters {
-			if err := n.SapIndication(NewArgs(adapter, xnpdu), NoKWArgs); err != nil {
+			if err := n.SapIndication(NA(adapter, xnpdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error doing SapIndication")
 			}
 		}
@@ -458,7 +458,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			if len(n.adapters) > 1 && adapter != n.localAdapter {
 				// combine the source address
 				if !npdu.GetControl().GetSourceSpecified() {
-					remoteStationAddress, err := NewAddress(NewArgs(adapter.adapterNet))
+					remoteStationAddress, err := NewAddress(NA(adapter.adapterNet))
 					if err != nil {
 						return errors.Wrap(err, "error creating remote address")
 					}
@@ -504,7 +504,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			n.log.Debug().Stringer("pduDestination", apdu.GetPDUDestination()).Msg("apdu.pduDestination")
 
 			// pass upstream to the application layer
-			if err := n.Response(NewArgs(apdu), NoKWArgs); err != nil {
+			if err := n.Response(NA(apdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error passing response")
 			}
 		}
@@ -526,7 +526,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass to the service element
-			if err := n.SapRequest(NewArgs(adapter, xpdu), NoKWArgs); err != nil {
+			if err := n.SapRequest(NA(adapter, xpdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error passing sap _request")
 			}
 		}
@@ -658,7 +658,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass this along as if it came from the NSE
-			if err := n.SapIndication(NewArgs(xadapter, NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, xnpdu, KWCPCIDestination, pduDestination))), NoKWArgs); err != nil {
+			if err := n.SapIndication(NA(xadapter, NewPDU(NoArgs, NKW(KWCompRootMessage, xnpdu, KWCPCIDestination, pduDestination))), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error sending indication")
 			}
 		}
@@ -675,8 +675,8 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 
 func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
-	adapter := Get[*NetworkAdapter](args, 0)
-	npdu := Get[NPDU](args, 1)
+	adapter := GA[*NetworkAdapter](args, 0)
+	npdu := GA[NPDU](args, 1)
 
 	// encode it as a generic NPDU
 	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
@@ -694,8 +694,8 @@ func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) erro
 
 func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
-	adapter := Get[*NetworkAdapter](args, 0)
-	npdu := Get[NPDU](args, 1)
+	adapter := GA[*NetworkAdapter](args, 0)
+	npdu := GA[NPDU](args, 1)
 
 	// encode it as a generic NPDU
 	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...

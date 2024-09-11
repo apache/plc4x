@@ -221,7 +221,7 @@ func (s *SnifferNode) Request(args Args, kwargs KWArgs) error {
 
 func (s *SnifferNode) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("confirmation")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// it's and NPDU
 	npdu := pdu.GetRootMessage().(model.NPDU)
@@ -305,7 +305,7 @@ func (s *SnifferStateMachine) Send(args Args, kwargs KWArgs) error {
 
 func (s *SnifferStateMachine) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("confirmation")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// it's and NPDU
 	npdu := pdu.GetRootMessage().(model.NPDU)
@@ -433,13 +433,13 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 func (a *ApplicationStateMachine) Send(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 	// build a IOCB to wrap the request
 	iocb, err := NewIOCB(a.log, pdu, nil)
 	if err != nil {
 		return errors.Wrap(err, "error creating iocb")
 	}
-	return a.Request(NewArgs(iocb), NoKWArgs)
+	return a.Request(NA(iocb), NoKWArgs)
 }
 
 func (a *ApplicationStateMachine) Indication(args Args, kwargs KWArgs) error {

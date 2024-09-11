@@ -75,7 +75,7 @@ func bitStringTag(t *testing.T, x string) Tag {
 	t.Helper()
 	b, err := Xtob(x)
 	require.NoError(t, err)
-	tag, err := NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, TagBitStringAppTag, len(b), b))
+	tag, err := NewTag(NA(model.TagClass_APPLICATION_TAGS, TagBitStringAppTag, len(b), b))
 	require.NoError(t, err)
 	return tag
 }

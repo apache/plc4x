@@ -129,7 +129,7 @@ func WithBIPForeignTTL(ttl int) func(*BIPForeign) {
 
 func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// check for local stations
 	switch pdu.GetPDUDestination().AddrType {
@@ -142,7 +142,7 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs)
 	case LOCAL_BROADCAST_ADDRESS:
 		// check the BBMD registration status, we may not be registered
 		if b.registrationStatus != 0 {
@@ -158,7 +158,7 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs)
 	default:
 		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
 	}
@@ -166,7 +166,7 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 
 func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	switch msg := pdu.GetRootMessage().(type) {
 	// check for a registration request result
@@ -195,11 +195,11 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		return nil
 	case model.BVLCOriginalUnicastNPDU:
 		// build a vanilla _PDU
-		xpdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, pdu.GetPDUDestination()))
+		xpdu := NewPDU(NoArgs, NKW(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, pdu.GetPDUDestination()))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
-		return b.Response(NewArgs(xpdu), NoKWArgs)
+		return b.Response(NA(xpdu), NoKWArgs)
 	case model.BVLCForwardedNPDU:
 		// check the BBMD registration status, we may not be registered
 		if b.registrationStatus != 0 {
@@ -216,15 +216,15 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		// build a _PDU with the source from the real source
 		ip := msg.GetIp()
 		port := msg.GetPort()
-		source, err := NewAddress(NewArgs(append(ip, Uint16ToPort(port)...)))
+		source, err := NewAddress(NA(append(ip, Uint16ToPort(port)...)))
 		if err != nil {
 			return errors.Wrap(err, "error building a ip")
 		}
-		xpdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, source, KWCPCIDestination, NewLocalBroadcast(nil)))
+		xpdu := NewPDU(NoArgs, NKW(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, source, KWCPCIDestination, NewLocalBroadcast(nil)))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
-		return b.Response(NewArgs(xpdu), NoKWArgs)
+		return b.Response(NA(xpdu), NoKWArgs)
 	case model.BVLCReadBroadcastDistributionTableAck:
 		// send this to the service access point
 		return b.SapResponse(args, NoKWArgs)
@@ -241,7 +241,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs)
 	case model.BVLCReadBroadcastDistributionTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK))
@@ -252,7 +252,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs)
 	case model.BVLCRegisterForeignDevice:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK))
@@ -263,7 +263,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs)
 	case model.BVLCReadForeignDeviceTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK))
@@ -274,7 +274,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs)
 	case model.BVLCDeleteForeignDeviceTableEntry:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK))
@@ -285,7 +285,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs)
 	case model.BVLCDistributeBroadcastToNetwork:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK))
@@ -296,7 +296,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs)
 	case model.BVLCOriginalBroadcastNPDU:
 		b.log.Debug().Msg("packet dropped")
 		return nil
@@ -332,10 +332,10 @@ func (b *BIPForeign) Register(addr *Address, ttl int) error {
 // Immediately drops active foreign device registration and stops further
 // registration renewals.
 func (b *BIPForeign) Unregister() {
-	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCRegisterForeignDevice(0), KWCPCIDestination, b.bbmdAddress))
+	pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCRegisterForeignDevice(0), KWCPCIDestination, b.bbmdAddress))
 
 	// send it downstream
-	if err := b.Request(NewArgs(pdu), NoKWArgs); err != nil {
+	if err := b.Request(NA(pdu), NoKWArgs); err != nil {
 		b.log.Debug().Err(err).Msg("error sending request")
 		return
 	}
@@ -362,7 +362,7 @@ func (b *BIPForeign) ProcessTask() error {
 	pdu.SetPDUDestination(b.bbmdAddress)
 
 	// send it downstream
-	if err := b.Request(NewArgs(pdu), NoKWArgs); err != nil {
+	if err := b.Request(NA(pdu), NoKWArgs); err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 

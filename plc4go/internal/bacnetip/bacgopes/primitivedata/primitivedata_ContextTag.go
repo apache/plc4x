@@ -60,7 +60,7 @@ func NewContextTag(args Args) (*ContextTag, error) {
 		if len(tdata) == 0 {
 			tdata = nil
 		}
-		_tag, err := NewTag(NewArgs(model.TagClass_CONTEXT_SPECIFIC_TAGS, tnum, len(tdata), tdata))
+		_tag, err := NewTag(NA(model.TagClass_CONTEXT_SPECIFIC_TAGS, tnum, len(tdata), tdata))
 		if err != nil {
 			return nil, errors.New("error creating tag")
 		}

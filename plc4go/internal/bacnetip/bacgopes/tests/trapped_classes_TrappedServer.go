@@ -82,7 +82,7 @@ func (t *TrappedServer) GetResponseSent() PDU {
 func (t *TrappedServer) Indication(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 	// a reference for checking
-	t.indicationReceived = Get[PDU](args, 0)
+	t.indicationReceived = GA[PDU](args, 0)
 
 	return nil
 }
@@ -90,7 +90,7 @@ func (t *TrappedServer) Indication(args Args, kwargs KWArgs) error {
 func (t *TrappedServer) Response(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Response")
 	// a reference for checking
-	t.responseSent = Get[PDU](args, 0)
+	t.responseSent = GA[PDU](args, 0)
 
 	// continue with regular processing
 	return t.Server.Response(args, kwargs)

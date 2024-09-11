@@ -126,7 +126,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 
 	// if there is a traffic log call it with the network name and PDU
 	if tl := n.trafficLogger; tl != nil {
-		tl.Call(NewArgs(n.name, pdu))
+		tl.Call(NA(n.name, pdu))
 	}
 
 	// randomly drop a packet
@@ -142,7 +142,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 		for _, node := range n.nodes {
 			if !pdu.GetPDUSource().Equals(node.getAddress()) {
 				n.log.Debug().Stringer("node", node).Msg("match")
-				if err := node.Response(NewArgs(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
+				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
 				}
 			}
@@ -152,7 +152,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 		for _, node := range n.nodes {
 			if node.isPromiscuous() || pdu.GetPDUDestination().Equals(node.getAddress()) {
 				n.log.Debug().Stringer("node", node).Msg("match")
-				if err := node.Response(NewArgs(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
+				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
 				}
 			}

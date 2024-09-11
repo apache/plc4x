@@ -85,7 +85,7 @@ func WithIPRouterNodeCid(cid int) func(*IPRouterNode) {
 }
 
 func (n *IPRouterNode) Confirmation(args Args, kwargs KWArgs) error {
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 	n.log.Debug().Stringer("pdu", pdu).Msg("confirmation")
 	n.router.ProcessPDU(n, pdu)
 	return nil
@@ -93,7 +93,7 @@ func (n *IPRouterNode) Confirmation(args Args, kwargs KWArgs) error {
 
 func (n *IPRouterNode) ProcessPDU(pdu PDU) error {
 	n.log.Debug().Stringer("pdu", pdu).Msg("ProcessPDU")
-	return n.Request(NewArgs(pdu), NoKWArgs)
+	return n.Request(NA(pdu), NoKWArgs)
 }
 
 func (n *IPRouterNode) AlternateString() (string, bool) {

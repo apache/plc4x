@@ -72,7 +72,7 @@ func (a *UDPActor) idleTimeout(_ Args, _ KWArgs) error {
 
 func (a *UDPActor) Indication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// reschedule the timer
 	if a.timer != nil {

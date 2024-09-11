@@ -105,20 +105,20 @@ func NewFauxMultiplexer(localLog zerolog.Logger, addr *Address, network *IPNetwo
 func (s *FauxMultiplexer) Indication(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	var dest *Address
 	// check for a broadcast message
 	if pdu.GetPDUDestination().AddrType == LOCAL_BROADCAST_ADDRESS {
 		var err error
-		dest, err = NewAddress(NewArgs(NewArgs(s.broadcastTuple)))
+		dest, err = NewAddress(NA(NA(s.broadcastTuple)))
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
 		}
 		s.log.Debug().Stringer("dest", dest).Msg("Requesting local broadcast")
 	} else if pdu.GetPDUDestination().AddrType == LOCAL_STATION_ADDRESS {
 		var err error
-		dest, err = NewAddress(NewArgs(NewArgs(pdu.GetPDUDestination().AddrAddress)))
+		dest, err = NewAddress(NA(NA(pdu.GetPDUDestination().AddrAddress)))
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
 		}
@@ -127,21 +127,21 @@ func (s *FauxMultiplexer) Indication(args Args, kwargs KWArgs) error {
 		return errors.New("unknown destination type")
 	}
 
-	unicast, err := NewAddress(NewArgs(NewArgs(s.unicastTuple)))
+	unicast, err := NewAddress(NA(NA(s.unicastTuple)))
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
-	return s.Request(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, pdu, KWCPCISource, unicast, KWCPCIDestination, dest))), NoKWArgs)
+	return s.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCISource, unicast, KWCPCIDestination, dest))), NoKWArgs)
 }
 
 func (s *FauxMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// the PDU source and destination are tuples, convert them to Address instances
 	src := pdu.GetPDUSource()
 
-	broadcast, err := NewAddress(NewArgs(s.broadcastTuple))
+	broadcast, err := NewAddress(NA(s.broadcastTuple))
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
@@ -150,13 +150,13 @@ func (s *FauxMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	if pdu.GetPDUDestination().Equals(broadcast) {
 		dest = NewLocalBroadcast(nil)
 	} else {
-		dest, err = NewAddress(NewArgs(pdu.GetPDUDestination().AddrAddress))
+		dest, err = NewAddress(NA(pdu.GetPDUDestination().AddrAddress))
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
 		}
 	}
 
-	return s.Response(NewArgs(NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, pdu, KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
+	return s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
 }
 
 type SnifferStateMachine struct {
@@ -180,7 +180,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *IPNet
 	s.ClientStateMachine = machine
 
 	// save the name and address
-	s.address, err = NewAddress(NewArgs(address))
+	s.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -231,7 +231,7 @@ func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *IPNetwork
 	}
 
 	// save the name and address
-	b.address, err = NewAddress(NewArgs(address))
+	b.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -277,7 +277,7 @@ func NewBIPSimpleStateMachine(localLog zerolog.Logger, netstring string, vlan *I
 	}
 
 	// save the name and address
-	b.address, err = NewAddress(NewArgs(netstring))
+	b.address, err = NewAddress(NA(netstring))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -331,7 +331,7 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *IP
 	}
 
 	// save the name and address
-	b.address, err = NewAddress(NewArgs(address))
+	b.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -382,7 +382,7 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *IPNet
 	}
 
 	// save the name and address
-	b.address, err = NewAddress(NewArgs(address))
+	b.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -428,7 +428,7 @@ func NewBIPSimpleNode(localLog zerolog.Logger, address string, vlan *IPNetwork) 
 	// save the name and address
 	b.name = address
 	var err error
-	b.address, err = NewAddress(NewArgs(address))
+	b.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -474,7 +474,7 @@ func NewBIPBBMDNode(localLog zerolog.Logger, address string, vlan *IPNetwork) (*
 	// build a name, save the address
 	b.name = fmt.Sprintf("app @ %s", address)
 	var err error
-	b.address, err = NewAddress(NewArgs(address))
+	b.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -495,7 +495,7 @@ func NewBIPBBMDNode(localLog zerolog.Logger, address string, vlan *IPNetwork) (*
 	b.log.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
 
 	// add itself as the first entry in the BDT
-	bbmdAddress, err := NewAddress(NewArgs(bdtAddress))
+	bbmdAddress, err := NewAddress(NA(bdtAddress))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating bbmd address")
 	}
@@ -546,7 +546,7 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	// build a name, save the address
 	b.name = fmt.Sprintf("app @ %s", address)
 	var err error
-	b.address, err = NewAddress(NewArgs(address))
+	b.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -672,7 +672,7 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *IPNetw
 	// build a name, save the address
 	b.name = fmt.Sprintf("app @ %s", address)
 	var err error
-	b.address, err = NewAddress(NewArgs(address))
+	b.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -745,7 +745,7 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *IPNetw
 	localLog.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
 
 	// add itself as the first entry in the BDT
-	bbmdAddress, err := NewAddress(NewArgs(bdtAddress))
+	bbmdAddress, err := NewAddress(NA(bdtAddress))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating bbmd address")
 	}

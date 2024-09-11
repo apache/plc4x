@@ -26,6 +26,7 @@ import (
 	"iter"
 	"os"
 	"path"
+	"reflect"
 	"runtime"
 	"sort"
 	"strings"
@@ -45,15 +46,11 @@ func NewArgs(args ...any) Args {
 	return args
 }
 
-func Get[T any](args Args, index int) T {
-	return argsGetOrPanic[T](args, index)
-}
+// NA is a shortcut for NewArgs
+var NA = NewArgs
 
-func GetOptional[T any](args Args, index int, defaultValue T) T {
-	return argsGetOrDefault(args, index, defaultValue)
-}
-
-func argsGetOrPanic[T any](args Args, index int) T {
+// GetFromArgs gets a value fromArgs and if not present panics
+func GetFromArgs[T any](args Args, index int) T {
 	if index > len(args)-1 {
 		panic(fmt.Sprintf("index out of bounds: %d(len %d of %s)", index, len(args), args))
 	}
@@ -65,11 +62,22 @@ func argsGetOrPanic[T any](args Args, index int) T {
 	return v
 }
 
-func argsGetOrDefault[T any](args Args, index int, defaultValue T) T {
+// GA is a shortcut for GetFromArgs
+func GA[T any](args Args, index int) T {
+	return GetFromArgs[T](args, index)
+}
+
+// GetFromArgsOptional gets a value from Args or return default if not present
+func GetFromArgsOptional[T any](args Args, index int, defaultValue T) T {
 	if index > len(args)-1 {
 		return defaultValue
 	}
 	return args[index].(T)
+}
+
+// GAO is a shortcut for GetFromArgsOptional
+func GAO[T any](args Args, index int, defaultValue T) T {
+	return GetFromArgsOptional(args, index, defaultValue)
 }
 
 func (a Args) Format(f fmt.State, verb rune) {
@@ -122,6 +130,9 @@ func NewKWArgs(kw ...any) KWArgs {
 	}
 	return r
 }
+
+// NKW is a shortcut for NewKWArgs
+var NKW = NewKWArgs
 
 func (k KWArgs) Format(f fmt.State, verb rune) {
 	switch verb {
@@ -252,7 +263,7 @@ func (p *PriorityItem[P, V]) String() string {
 	return fmt.Sprintf("[%v: prio %v - value %s], ", p.Index, p.Priority, v)
 }
 
-// A PriorityQueue implements heap.Interface and holds Items.
+// GA PriorityQueue implements heap.Interface and holds Items.
 type PriorityQueue[P cmp.Ordered, V any] []*PriorityItem[P, V]
 
 //goland:noinspection GoMixedReceiverTypes
@@ -456,4 +467,13 @@ func CreateDebugPrinter() DebugPrinter {
 		}
 	}
 	return nil
+}
+
+// OR returns a or b
+func OR[T comparable](a T, b T) T {
+	if reflect.ValueOf(a).IsNil() || (reflect.ValueOf(a).Kind() == reflect.Ptr && reflect.ValueOf(a).IsNil()) { // TODO: check if there is another way than using reflect
+		return b
+	} else {
+		return a
+	}
 }

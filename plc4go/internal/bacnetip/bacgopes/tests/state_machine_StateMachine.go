@@ -34,7 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-// StateMachine A state machine consisting of states.  Every state machine has a start
+// StateMachine GA state machine consisting of states.  Every state machine has a start
 //
 //	state where the state machine begins when it is started.  It also has
 //	an *unexpected receive* fail state where the state machine goes if
@@ -463,7 +463,7 @@ func (s *stateMachine) gotoState(state State) error {
 		for _, transition := range currentState.getSendTransitions() {
 			s.log.Debug().Stringer("transition", transition).Msg("sending transition")
 			currentState.getInterceptor().BeforeSend(transition.pdu)
-			if err := s.requirements.Send(NewArgs(transition.pdu), NewKWArgs()); err != nil {
+			if err := s.requirements.Send(NA(transition.pdu), NKW()); err != nil {
 				return errors.Wrap(err, "failed to send")
 			}
 			currentState.getInterceptor().AfterSend(transition.pdu)
@@ -495,7 +495,7 @@ func (s *stateMachine) gotoState(state State) error {
 		for s.running {
 			select {
 			case pdu := <-s.transitionQueue:
-				if err := s.Receive(NewArgs(pdu), NewKWArgs()); err != nil {
+				if err := s.Receive(NA(pdu), NKW()); err != nil {
 					return errors.Wrap(err, "failed to receive")
 				}
 			default:
@@ -519,7 +519,7 @@ func (s *stateMachine) BeforeReceive(pdu PDU) {
 
 func (s *stateMachine) Receive(args Args, kwargs KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Receive")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 	if s.currentState == nil || s.stateTransitioning != 0 {
 		s.log.Trace().Msg("queue for later")
 		s.transitionQueue <- pdu

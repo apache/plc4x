@@ -176,19 +176,19 @@ func TestNet2(t *testing.T) {
 			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
 			tnet.td.GetStartState().Doc("1-1-0").
 				Send(whois, nil).Doc("1-1-1").
-				Receive(NewArgs((*IAmRouterToNetwork)(nil)), NewKWArgs(KWIartnNetworkList, []uint16{2})).Doc("1-1-2").
+				Receive(NA((*IAmRouterToNetwork)(nil)), NKW(KWIartnNetworkList, []uint16{2})).Doc("1-1-2").
 				Success("")
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("1-2-0").
-				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWCPCIData, xtob(
+				Receive(NA(PDUMatcher),
+					NKW(KWCPCIData, xtob(
 						"01.80"+ //version, network layer
 							"00", //message type, no network
 					)),
 				).Doc("1-2-1").
-				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWCPCIData, xtob(
+				Receive(NA(PDUMatcher),
+					NKW(KWCPCIData, xtob(
 						"01.80"+ //version, network layer
 							"01 0002", //message type and network list
 					)),
@@ -220,7 +220,7 @@ func TestNet2(t *testing.T) {
 			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
 			tnet.td.GetStartState().Doc("2-1-0").
 				Send(whois, nil).Doc("2-1-1").
-				Receive(NewArgs((*IAmRouterToNetwork)(nil)), NewKWArgs(KWIartnNetworkList, []uint16{2})).Doc("2-1-2").
+				Receive(NA((*IAmRouterToNetwork)(nil)), NKW(KWIartnNetworkList, []uint16{2})).Doc("2-1-2").
 				Success("")
 
 			tnet.sniffer1.GetStartState().Success("")
@@ -255,8 +255,8 @@ func TestNet2(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
-				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWCPCIData, xtob(
+				Receive(NA(PDUMatcher),
+					NKW(KWCPCIData, xtob(
 						"01.80"+ //version, network layer
 							"00 0004", //message type, and network
 					)),
@@ -265,8 +265,8 @@ func TestNet2(t *testing.T) {
 
 			// sniffer on network 2 sees request forwarded by router
 			tnet.sniffer2.GetStartState().Doc("3-3-0").
-				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWCPCIData, xtob(
+				Receive(NA(PDUMatcher),
+					NKW(KWCPCIData, xtob(
 						"01.88"+ //version, network layer
 							"0001 01 01"+ // snet/slen/sadr
 							"00 0004", //message type, and network
@@ -275,8 +275,8 @@ func TestNet2(t *testing.T) {
 				Success("")
 
 			tnet.sniffer3.GetStartState().Doc("3-4-0").
-				Receive(NewArgs(PDUMatcher),
-					NewKWArgs(KWCPCIData, xtob(
+				Receive(NA(PDUMatcher),
+					NKW(KWCPCIData, xtob(
 						"01.88"+ //version, network layer
 							"0001 01 01"+ // snet/slen/sadr
 							"00 0004", //message type, and network

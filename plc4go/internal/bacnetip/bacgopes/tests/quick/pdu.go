@@ -39,8 +39,8 @@ func AddressTuple[L any, R any](l L, r R) *pdu.AddressTuple[L, R] {
 
 func PDUData(args ...any) pdu.PDUData {
 	if args == nil {
-		return pdu.NewPDUData(NoArgs, NewKWArgs(KWCompRootMessage, NewMessageBridge()))
+		return pdu.NewPDUData(NoArgs, NKW(KWCompRootMessage, NewMessageBridge()))
 	} else {
-		return pdu.NewPDUData(NoArgs, NewKWArgs(KWCompRootMessage, NewMessageBridge(args[0].([]byte)...)))
+		return pdu.NewPDUData(NoArgs, NKW(KWCompRootMessage, NewMessageBridge(args[0].([]byte)...)))
 	}
 }

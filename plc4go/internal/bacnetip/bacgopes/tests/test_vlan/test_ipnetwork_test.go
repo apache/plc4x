@@ -137,7 +137,7 @@ func TestIPVLAN(t *testing.T) {
 		tnode1, tnode2 := stateMachines[0], stateMachines[1]
 
 		// make a PDU from node 1 to node 2
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage([]byte("data")...),
+		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
 			KWCPCISource, quick.Address("192.168.2.1:47808"),
 			KWCPCIDestination, quick.Address("192.168.2.2:47808")),
 		)
@@ -145,7 +145,7 @@ func TestIPVLAN(t *testing.T) {
 
 		// node 1 sends the pdu, mode 2 gets it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(NewArgs((PDU)(nil)), NewKWArgs(
+		tnode2.GetStartState().Receive(NA((PDU)(nil)), NKW(
 			KWCPCISource, quick.AddressTuple("192.168.2.1", 47808),
 		)).Success("")
 
@@ -163,7 +163,7 @@ func TestIPVLAN(t *testing.T) {
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a broadcast PDU
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage([]byte("data")...),
+		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
 			KWCPCISource, quick.Address("192.168.3.1:47808"),
 			KWCPCIDestination, quick.Address("192.168.3.255:47808")),
 		)
@@ -171,10 +171,10 @@ func TestIPVLAN(t *testing.T) {
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode2.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, quick.AddressTuple("192.168.3.1", 47808),
 		)).Success("")
-		tnode3.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode3.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, quick.AddressTuple("192.168.3.1", 47808),
 		)).Success("")
 
@@ -192,7 +192,7 @@ func TestIPVLAN(t *testing.T) {
 		tnode1 := stateMachines[0]
 
 		// make an unicast PDU with the wrong source
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage([]byte("data")...),
+		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
 			KWCPCISource, quick.Address("192.168.4.2:47808"),
 			KWCPCIDestination, quick.Address("192.168.4.3:47808")),
 		)
@@ -215,7 +215,7 @@ func TestIPVLAN(t *testing.T) {
 		tnode1 := stateMachines[0]
 
 		// make an unicast PDU from a fictitious node
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage([]byte("data")...),
+		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
 			KWCPCISource, quick.Address("192.168.5.3:47808"),
 			KWCPCIDestination, quick.Address("192.168.5.1:47808")),
 		)
@@ -224,7 +224,7 @@ func TestIPVLAN(t *testing.T) {
 		// node 1 sends the pdu, but gets it back as if it was from node 3
 		tnode1.GetStartState().
 			Send(pdu, nil).
-			Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+			Receive(NA(NewPDU(Nothing())), NKW(
 				KWCPCISource, quick.AddressTuple("192.168.5.3", 47808),
 			)).
 			Success("")
@@ -248,15 +248,15 @@ func TestIPVLAN(t *testing.T) {
 		require.NoError(t, err)
 		dest, err := NewAddress("192.168.6.2:47808")
 		require.NoError(t, err)
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, src, KWCPCIDestination, dest))
+		pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode2.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, src,
 		)).Success("")
-		tnode3.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode3.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCIDestination, dest,
 		)).Success("")
 
@@ -274,12 +274,12 @@ func TestIPVLAN(t *testing.T) {
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a PDU from node 1 to node 2
-		pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, quick.Address("192.168.7.1:47808"), KWCPCIDestination, quick.Address("192.168.7.2:47808")))
+		pdu := NewPDU(NoArgs, NKW(KWCPCISource, quick.Address("192.168.7.1:47808"), KWCPCIDestination, quick.Address("192.168.7.2:47808")))
 		t.Log(pdu)
 
 		// node 1 sends the pdu to node 2, node 3 waits and gets nothing
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+		tnode2.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 			KWCPCISource, quick.AddressTuple("192.168.7.1", 47808),
 		)).Success("")
 
@@ -371,14 +371,14 @@ func (suite *RouterSuite) TestSendReceive() { // Test that a node can send a mes
 	csm_10_2, csm_10_3, csm_20_2, csm_20_3 := stateMachines[0], stateMachines[1], stateMachines[2], stateMachines[3]
 
 	// make a PDU from network 10 node 1 to network 20 node 2
-	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage([]byte("data")...),
+	pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
 		KWCPCISource, quick.Address("192.168.10.2:47808"),
 		KWCPCIDestination, quick.Address("192.168.20.3:47808")))
 	suite.T().Log(pdu)
 
 	// node 1 sends the pdu, mode 2 gets it
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
-	csm_20_3.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+	csm_20_3.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 		KWCPCISource, quick.AddressTuple("192.168.10.2", 47808),
 	)).Success("")
 
@@ -396,12 +396,12 @@ func (suite *RouterSuite) TestLocalBroadcast() { // Test that a node can send a 
 	suite.Require().NoError(err)
 	dest, err := NewAddress("192.168.10.255:47808")
 	suite.Require().NoError(err)
-	pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, src, KWCPCIDestination, dest))
+	pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 	suite.T().Log(pdu)
 
 	//  node 10-2 sends the pdu, node 10-3 gets pdu, nodes 20-2 and 20-3 dont
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
-	csm_10_3.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+	csm_10_3.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 		KWCPCISource, src,
 	)).Success("")
 	csm_20_3.GetStartState().Timeout(1*time.Second, nil).Success("")
@@ -419,16 +419,16 @@ func (suite *RouterSuite) TestRemoteBroadcast() { // Test that a node can send a
 	require.NoError(t, err)
 	dest, err := NewAddress("192.168.20.255:47808")
 	require.NoError(t, err)
-	pdu := NewPDU(NoArgs, NewKWArgs(KWCPCISource, src, KWCPCIDestination, dest))
+	pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 	t.Log(pdu)
 
 	//  node 10-2 sends the pdu, node 10-3 gets pdu, nodes 20-2 and 20-3 dont
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
 	csm_10_3.GetStartState().Timeout(1*time.Second, nil).Success("")
-	csm_20_2.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+	csm_20_2.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 		KWCPCISource, src,
 	)).Success("")
-	csm_20_3.GetStartState().Receive(NewArgs(NewPDU(Nothing())), NewKWArgs(
+	csm_20_3.GetStartState().Receive(NA(NewPDU(Nothing())), NKW(
 		KWCPCISource, src,
 	)).Success("")
 }

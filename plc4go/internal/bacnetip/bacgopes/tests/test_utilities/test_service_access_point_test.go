@@ -28,7 +28,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
@@ -196,10 +195,10 @@ func (suite *TestApplicationSuite) TearDownSuite() {
 
 func (suite *TestApplicationSuite) TestSapRequest() {
 	// make a pdu
-	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage()))
+	pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage()))
 
 	// service access point is going to request something
-	err := suite.sap.SapRequest(NewArgs(pdu), NoKWArgs)
+	err := suite.sap.SapRequest(NA(pdu), NoKWArgs)
 	suite.Assert().NoError(err)
 
 	// make sure the request was sent and received
@@ -213,10 +212,10 @@ func (suite *TestApplicationSuite) TestSapRequest() {
 
 func (suite *TestApplicationSuite) TestAseRequest() {
 	// make a pdu
-	pdu := NewPDU(NoArgs, NewKWArgs(KWCompRootMessage, NewDummyMessage()))
+	pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage()))
 
 	// service access point is going to request something
-	err := suite.ase.Request(NewArgs(pdu), NoKWArgs)
+	err := suite.ase.Request(NA(pdu), NoKWArgs)
 	suite.Assert().NoError(err)
 
 	// make sure the request was sent and received

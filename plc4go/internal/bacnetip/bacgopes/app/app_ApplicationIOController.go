@@ -147,7 +147,7 @@ func (a *ApplicationIOController) _AppRequest(apdu PDU) {
 	a.log.Debug().Stringer("apdu", apdu).Msg("_AppRequest")
 
 	// send it downstream, bypass the guard
-	if err := a.Application.Request(NewArgs(apdu), NoKWArgs); err != nil {
+	if err := a.Application.Request(NA(apdu), NoKWArgs); err != nil {
 		a.log.Error().Stack().Err(err).Msg("Uh oh")
 		return
 	}
@@ -163,7 +163,7 @@ func (a *ApplicationIOController) _AppRequest(apdu PDU) {
 
 func (a *ApplicationIOController) Request(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
-	apdu := Get[PDU](args, 0)
+	apdu := GA[PDU](args, 0)
 
 	// if this is not unconfirmed request, tell the application to use the IOCB interface
 	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequest); !ok {
@@ -176,7 +176,7 @@ func (a *ApplicationIOController) Request(args Args, kwargs KWArgs) error {
 
 func (a *ApplicationIOController) Confirmation(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
-	apdu := Get[PDU](args, 0)
+	apdu := GA[PDU](args, 0)
 
 	// this is an ack, error, reject or abort
 	return a._AppComplete(apdu.GetPDUSource(), apdu)

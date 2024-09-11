@@ -49,7 +49,7 @@ func (q *quickBrownFox) SetEnumerated(enumerated *Enumerated) {
 func QuickBrownFox(args ...any) *quickBrownFox {
 	q := &quickBrownFox{}
 	var err error
-	q.Enumerated, err = NewEnumerated(NewArgs(append([]any{q}, args...)...))
+	q.Enumerated, err = NewEnumerated(NA(append([]any{q}, args...)...))
 	if err != nil {
 		panic(err)
 	}

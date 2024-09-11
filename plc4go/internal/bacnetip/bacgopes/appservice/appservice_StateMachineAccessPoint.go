@@ -188,7 +188,7 @@ func (s *StateMachineAccessPoint) GetDefaultMaximumApduLengthAccepted() readWrit
 // Confirmation Packets coming up the stack are APDU's
 func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error { // TODO: note we need a special method here as we don't contain src in the apdu
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
-	apdu := Get[PDU](args, 0)
+	apdu := GA[PDU](args, 0)
 
 	// check device communication control
 	switch s.dccEnableDisable {
@@ -239,12 +239,12 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 		}
 
 		// let it run with the apdu
-		if err := tr.Indication(NewArgs(apdu), NoKWArgs); err != nil {
+		if err := tr.Indication(NA(apdu), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error runnning indication")
 		}
 	case readWriteModel.APDUUnconfirmedRequest:
 		// deliver directly to the application
-		if err := s.SapRequest(NewArgs(apdu), NoKWArgs); err != nil {
+		if err := s.SapRequest(NA(apdu), NoKWArgs); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
 	case readWriteModel.APDUSimpleAck, readWriteModel.APDUComplexAck, readWriteModel.APDUError, readWriteModel.APDUReject:
@@ -262,7 +262,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 		}
 
 		// send the packet on to the transaction
-		if err := tr.Confirmation(NewArgs(apdu), NoKWArgs); err != nil {
+		if err := tr.Confirmation(NA(apdu), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error running confirmation")
 		}
 	case readWriteModel.APDUAbort:
@@ -280,7 +280,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 			}
 
 			// send the packet on to the transaction
-			if err := tr.Confirmation(NewArgs(apdu), NoKWArgs); err != nil {
+			if err := tr.Confirmation(NA(apdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error running confirmation")
 			}
 		} else {
@@ -297,7 +297,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 			}
 
 			// send the packet on to the transaction
-			if err := tr.Indication(NewArgs(apdu), NoKWArgs); err != nil {
+			if err := tr.Indication(NA(apdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error running indication")
 			}
 		}
@@ -316,7 +316,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 			}
 
 			// send the packet on to the transaction
-			if err := tr.Confirmation(NewArgs(apdu), NoKWArgs); err != nil {
+			if err := tr.Confirmation(NA(apdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error running confirmation")
 			}
 		} else {
@@ -333,7 +333,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 			}
 
 			// send the packet on to the transaction
-			if err := tr.Indication(NewArgs(apdu), NoKWArgs); err != nil {
+			if err := tr.Indication(NA(apdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error running indication")
 			}
 		}
@@ -346,7 +346,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 // SapIndication This function is called when the application is requesting a new transaction as a client.
 func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
-	apdu := Get[PDU](args, 0)
+	apdu := GA[PDU](args, 0)
 
 	pduDestination := apdu.GetPDUDestination()
 
@@ -371,7 +371,7 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUUnconfirmedRequest:
 		// deliver to the device
-		if err := s.Request(NewArgs(apdu), NoKWArgs); err != nil {
+		if err := s.Request(NA(apdu), NoKWArgs); err != nil {
 			s.log.Debug().Err(err).Msg("error sending the request")
 		}
 	case readWriteModel.APDUConfirmedRequest:
@@ -397,7 +397,7 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error 
 		s.clientTransactions = append(s.clientTransactions, tr)
 
 		// let it run
-		if err := tr.Indication(NewArgs(apdu), NoKWArgs); err != nil {
+		if err := tr.Indication(NA(apdu), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error doing indication")
 		}
 	default:
@@ -412,7 +412,7 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error 
 //	ack, complex ack, error, reject or abort
 func (s *StateMachineAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
-	apdu := Get[PDU](args, 0)
+	apdu := GA[PDU](args, 0)
 	pduDestination := apdu.GetPDUDestination()
 	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUSimpleAck, readWriteModel.APDUComplexAck, readWriteModel.APDUError, readWriteModel.APDUReject:
@@ -429,7 +429,7 @@ func (s *StateMachineAccessPoint) SapConfirmation(args Args, kwargs KWArgs) erro
 		}
 
 		// pass control to the transaction
-		if err := tr.Confirmation(NewArgs(apdu), NoKWArgs); err != nil {
+		if err := tr.Confirmation(NA(apdu), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error running confirmation")
 		}
 	default:

@@ -199,7 +199,7 @@ func (s *SnifferNode) Request(args Args, kwargs KWArgs) error {
 
 func (s *SnifferNode) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("confirmation")
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// it's and NPDU
 	npdu := pdu.GetRootMessage().(model.NPDU)
@@ -429,13 +429,13 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 
 	// send the request, get it acked
 	anet.td.GetStartState().Doc(prefix+"-0").
-		Send(quick.ConfirmedPrivateTransferRequest(NewKWArgs(
+		Send(quick.ConfirmedPrivateTransferRequest(NKW(
 			KnownKey("vendorId"), 999,
 			KnownKey("serviceNumber"), 1,
 			KnownKey("serviceParameters"), requestString,
 			KnownKey("destination"), anet.iut.address,
 		)), nil).Doc(prefix+"-1").
-		Receive(NewArgs((*apdu.ConfirmedPrivateTransferRequest)(nil)), NoKWArgs).Doc(prefix + "-2").
+		Receive(NA((*apdu.ConfirmedPrivateTransferRequest)(nil)), NoKWArgs).Doc(prefix + "-2").
 		Success("")
 
 	// no IUT application layer matching
