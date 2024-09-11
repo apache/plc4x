@@ -27,13 +27,12 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 //go:generate plc4xGenerator -type=IPRouterNode -prefix=vlan_
 type IPRouterNode struct {
-	Client
+	ClientContract
 
 	router     *IPRouter
 	lan        *IPNetwork
@@ -59,7 +58,7 @@ func NewIPRouterNode(localLog zerolog.Logger, router *IPRouter, addr *Address, l
 		opt(i)
 	}
 	var err error
-	i.Client, err = NewClient(localLog, i, OptionalOption(i.argCid, WithClientCID))
+	i.ClientContract, err = NewClient(localLog, OptionalOption2(i.argCid, ToPtr[ClientRequirements](i), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client")
 	}
@@ -96,9 +95,9 @@ func (n *IPRouterNode) ProcessPDU(pdu PDU) error {
 	return n.Request(NA(pdu), NoKWArgs)
 }
 
-func (n *IPRouterNode) AlternateString() (string, bool) {
-	if ExtendedGeneralOutput {
-		return "", false
+func (n *IPRouterNode) Format(s fmt.State, v rune) {
+	switch v {
+	case 'r':
+		_, _ = s.Write([]byte(fmt.Sprintf("<%T for %s>", n, n.lan.name)))
 	}
-	return fmt.Sprintf("IPRouterNode for '%s' (@%p)", n.lan.name, n.lan), true
 }

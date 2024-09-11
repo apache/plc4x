@@ -41,7 +41,7 @@ type TrappedClientContract interface {
 //go:generate plc4xGenerator -type=TrappedClient -prefix=trapped_classes_
 type TrappedClient struct {
 	TrappedClientContract `ignore:"true"`
-	Client
+	ClientContract
 
 	requestSent          PDU
 	confirmationReceived PDU
@@ -58,7 +58,7 @@ func NewTrappedClient(localLog zerolog.Logger, opts ...func(*TrappedClient)) (*T
 		opt(t)
 	}
 	var err error
-	t.Client, err = NewClient(localLog, t)
+	t.ClientContract, err = NewClient(localLog) // TODO: do we need to pass client id?
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client")
 	}
@@ -85,7 +85,7 @@ func (t *TrappedClient) Request(args Args, kwargs KWArgs) error {
 	t.requestSent = GA[PDU](args, 0)
 
 	// continue with regular processing
-	return t.Client.Request(args, kwargs)
+	return t.ClientContract.Request(args, kwargs)
 }
 
 func (t *TrappedClient) Confirmation(args Args, kwargs KWArgs) error {

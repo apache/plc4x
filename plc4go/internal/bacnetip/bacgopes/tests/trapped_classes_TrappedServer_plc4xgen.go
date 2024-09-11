@@ -48,7 +48,7 @@ func (d *TrappedServer) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := writeBuffer.PushContext("TrappedServer"); err != nil {
 		return err
 	}
-	if err := d.Server.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ServerContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	{

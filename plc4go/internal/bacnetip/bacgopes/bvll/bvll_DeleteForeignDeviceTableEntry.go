@@ -43,7 +43,7 @@ func NewDeleteForeignDeviceTableEntry(opts ...func(*DeleteForeignDeviceTableEntr
 	for _, opt := range opts {
 		opt(d)
 	}
-	d._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, readWriteModel.NewBVLCDeleteForeignDeviceTableEntry(d.buildIPArgs()))).(*_BVLPDU)
+	d._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewBVLCDeleteForeignDeviceTableEntry(d.buildIPArgs()))).(*_BVLPDU)
 	return d, nil
 }
 
@@ -65,7 +65,7 @@ func (d *DeleteForeignDeviceTableEntry) buildIPArgs() (ip []uint8, port uint16) 
 func (d *DeleteForeignDeviceTableEntry) buildAddress(ip []uint8, port uint16) *Address {
 	var portArray = make([]byte, 2)
 	binary.BigEndian.PutUint16(portArray, port)
-	address, _ := NewAddress(NewArgs(append(ip, portArray...)))
+	address, _ := NewAddress(NA(append(ip, portArray...)))
 	return address
 }
 

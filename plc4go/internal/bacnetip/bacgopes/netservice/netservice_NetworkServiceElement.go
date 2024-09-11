@@ -59,7 +59,7 @@ func NewNetworkServiceElement(localLog zerolog.Logger, opts ...func(*NetworkServ
 	}
 	n.log.Trace().Interface("eid", n.argEID).Msg("NewNetworkServiceElement")
 	var err error
-	n.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOptionDual(n.argEID, n.argAse, WithApplicationServiceElementAseID))
+	n.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(n.argEID, n.argAse, WithApplicationServiceElementAseID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}

@@ -45,7 +45,7 @@ type ClientStateMachineContract interface {
 //
 //go:generate plc4xGenerator -type=ClientStateMachine -prefix=state_machine_
 type ClientStateMachine struct {
-	Client
+	ClientContract
 	StateMachineContract
 
 	contract ClientStateMachineContract
@@ -71,7 +71,7 @@ func NewClientStateMachine(localLog zerolog.Logger, opts ...func(*ClientStateMac
 		c.log = c.log.With().Str("name", c.name).Logger()
 	}
 	var err error
-	c.Client, err = NewClient(localLog, c.contract)
+	c.ClientContract, err = NewClient(localLog) // TODO: do we need to pass cid?
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}

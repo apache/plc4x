@@ -26,7 +26,6 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 )
 
 var _debug = CreateDebugPrinter()
@@ -50,8 +49,8 @@ func init() {
 
 // Bind a list of clients and servers together, top down
 func Bind(localLog zerolog.Logger, args ...any) error {
-	if !LogComm {
-		localLog = zerolog.Nop()
+	if _debug != nil {
+		_debug("bind %r", args)
 	}
 	// generic bind is pairs of names
 	if len(args) == 0 {
@@ -127,9 +126,15 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 	// go through the argument pairs
 	for i := 0; i < len(args)-1; i++ {
 		left := args[i]
+		if _debug != nil {
+			_debug("    - client: %r", left)
+		}
 		leftStringer, _ := left.(fmt.Stringer)
 		localLog.Debug().Stringer("left", leftStringer).Type("leftType", left).Msg("left pair element")
 		right := args[i+1]
+		if _debug != nil {
+			_debug("    - server: %r", right)
+		}
 		rightStringer, _ := right.(fmt.Stringer)
 		localLog.Debug().Stringer("right", rightStringer).Type("rightType", right).Msg("right pair element")
 
@@ -156,6 +161,9 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 			return errors.New("Bind() requires a client and a server")
 		}
 	}
-	localLog.Debug().Msg("bound")
+	if _debug != nil {
+		_debug("    - bound")
+	}
+	localLog.Trace().Msg("bound")
 	return nil
 }

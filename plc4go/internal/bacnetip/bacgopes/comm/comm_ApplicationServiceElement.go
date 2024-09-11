@@ -24,7 +24,6 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -72,8 +71,8 @@ func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applica
 	for _, opt := range opts {
 		opt(a)
 	}
-	if LogComm {
-		a.log.Trace().Msg("NewApplicationServiceElement")
+	if _debug != nil {
+		_debug("__init__(%v)", a.argASEExtension)
 	}
 	if a.elementID != nil {
 		aseID := *a.elementID
@@ -94,9 +93,6 @@ func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applica
 			}
 		}
 	}
-	if !LogComm {
-		a.log = zerolog.Nop()
-	}
 	return a, nil
 }
 
@@ -111,6 +107,9 @@ func WithApplicationServiceElementAseID(aseID int, ase ApplicationServiceElement
 }
 
 func (a *applicationServiceElement) Request(args Args, kwargs KWArgs) error {
+	if _debug != nil {
+		_debug("request(%v) %r %r", a.elementID, args, kwargs)
+	}
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
 
 	if a.elementService == nil {
@@ -121,6 +120,9 @@ func (a *applicationServiceElement) Request(args Args, kwargs KWArgs) error {
 }
 
 func (a *applicationServiceElement) Response(args Args, kwargs KWArgs) error {
+	if _debug != nil {
+		_debug("response(%v) %r %r", a.elementID, args, kwargs)
+	}
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	if a.elementService == nil {

@@ -21,10 +21,14 @@ package bvll
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -128,4 +132,13 @@ func (b *_BVLPDU) deepCopy() *_BVLPDU {
 
 func (b *_BVLPDU) DeepCopy() any {
 	return b.deepCopy()
+}
+
+func (b *_BVLPDU) String() string {
+	if ExtendedPDUOutput {
+		return fmt.Sprintf("BVLPDU{%s}", b._BVLCI)
+	} else {
+		npci := "\t" + strings.Join(strings.Split(b._BVLCI.String(), "\n"), "\n\t")
+		return fmt.Sprintf("<BVLPDU instance at %p>%s\n\tpduData = %s", b, npci, Btox(b.GetPduData(), "."))
+	}
 }

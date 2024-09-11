@@ -48,7 +48,7 @@ func (d *_MultiplexClient) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	if err := writeBuffer.PushContext("_MultiplexClient"); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if d.multiplexer != nil {

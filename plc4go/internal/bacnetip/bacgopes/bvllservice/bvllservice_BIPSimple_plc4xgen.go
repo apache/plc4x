@@ -51,10 +51,10 @@ func (d *BIPSimple) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	if err := d.BIPSAP.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	if err := d.Server.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ServerContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("BIPSimple"); err != nil {

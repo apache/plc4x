@@ -33,8 +33,8 @@ import (
 //go:generate plc4xGenerator -type=BIPSimple -prefix=bvllservice_
 type BIPSimple struct {
 	*BIPSAP
-	Client
-	Server
+	ClientContract
+	ServerContract
 
 	// pass through args
 	argSapID *int `ignore:"true"`
@@ -51,6 +51,9 @@ func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BI
 	for _, opt := range opts {
 		opt(b)
 	}
+	if _debug != nil {
+		_debug("__init__ sapID=%r cid=%r sid=%r", b.argSapID, b.argCid, b.argSid)
+	}
 	localLog.Debug().
 		Interface("sapID", b.argSapID).
 		Interface("cid", b.argCid).
@@ -63,22 +66,23 @@ func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BI
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	client, err := NewClient(localLog, b, OptionalOption(b.argCid, WithClientCID))
+	b.ClientContract, err = NewClient(localLog, OptionalOption2(b.argCid, ToPtr[ClientRequirements](b), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	b.Client = client
-	server, err := NewServer(localLog, b, OptionalOption(b.argSid, WithServerSID))
+	b.ServerContract, err = NewServer(localLog, OptionalOption2(b.argSid, ToPtr[ServerRequirements](b), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	b.Server = server
 	return b, nil
 }
 
 func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", pdu)
+	}
 	if pdu == nil {
 		return errors.New("no pdu")
 	}
@@ -95,6 +99,9 @@ func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 			return errors.Wrap(err, "error creating original unicastNPDU")
 		}
 		// TODO: route aware stuff missing here
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
@@ -106,6 +113,9 @@ func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 			return errors.Wrap(err, "error creating original BroadcastNPDU")
 		}
 		// TODO: route aware stuff missing here
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
@@ -118,6 +128,9 @@ func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
 
 	switch msg := pdu.GetRootMessage().(type) {
 	// some kind of response to a request
@@ -133,6 +146,9 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 	case model.BVLCOriginalUnicastNPDU:
 		// build a vanilla _PDU
 		xpdu := NewPDU(NoArgs, NKW(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, pdu.GetPDUDestination()))
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
@@ -140,6 +156,9 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 	case model.BVLCOriginalBroadcastNPDU:
 		// build a _PDU with a local broadcast address
 		xpdu := NewPDU(NoArgs, NKW(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, NewLocalBroadcast(nil)))
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
@@ -153,6 +172,9 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 			return errors.Wrap(err, "error building a ip")
 		}
 		xpdu := NewPDU(NoArgs, NKW(KWCompRootMessage, msg.GetNpdu(), KWCPCISource, source, KWCPCIDestination, NewLocalBroadcast(nil)))
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream

@@ -55,7 +55,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, opt
 		opt(n)
 	}
 	var err error
-	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, OptionalOptionDual(n.argEID, n.argASE, WithNetworkServiceElementEID))
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, OptionalOption2(n.argEID, n.argASE, WithNetworkServiceElementEID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}

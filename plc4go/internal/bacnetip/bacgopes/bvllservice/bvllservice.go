@@ -18,3 +18,9 @@
  */
 
 package bvllservice
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+)
+
+var _debug = CreateDebugPrinter()

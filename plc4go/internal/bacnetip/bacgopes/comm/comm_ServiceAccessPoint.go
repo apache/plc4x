@@ -26,7 +26,6 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -76,6 +75,9 @@ func NewServiceAccessPoint(localLog zerolog.Logger, opts ...func(point *serviceA
 	for _, opt := range opts {
 		opt(s)
 	}
+	if _debug != nil {
+		_debug("__init__(%v)", s.serviceID)
+	}
 	if s.serviceID != nil {
 		sapID := *s.serviceID
 		if _, ok := serviceMap[sapID]; ok {
@@ -95,9 +97,6 @@ func NewServiceAccessPoint(localLog zerolog.Logger, opts ...func(point *serviceA
 			}
 		}
 	}
-	if !LogComm {
-		s.log = zerolog.Nop()
-	}
 	return s, nil
 }
 
@@ -112,6 +111,9 @@ func WithServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) func(*servic
 }
 
 func (s *serviceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
+	if _debug != nil {
+		_debug("sap_request(%v) %r %r", s.serviceID, args, kwargs)
+	}
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapRequest")
 
 	if s.serviceElement == nil {
@@ -121,6 +123,9 @@ func (s *serviceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
 }
 
 func (s *serviceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
+	if _debug != nil {
+		_debug("sap_response(%v) %r %r", s.serviceID, args, kwargs)
+	}
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapResponse")
 
 	if s.serviceElement == nil {

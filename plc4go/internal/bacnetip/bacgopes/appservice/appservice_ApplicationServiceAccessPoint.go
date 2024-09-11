@@ -52,11 +52,11 @@ func NewApplicationServiceAccessPoint(localLog zerolog.Logger, opts ...func(*App
 		opt(a)
 	}
 	var err error
-	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOptionDual(a.argAseID, a.argASEExtension, WithApplicationServiceElementAseID))
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(a.argAseID, a.argASEExtension, WithApplicationServiceElementAseID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}
-	a.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOptionDual(a.argSapID, a.argSap, WithServiceAccessPointSapID))
+	a.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(a.argSapID, a.argSap, WithServiceAccessPointSapID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}

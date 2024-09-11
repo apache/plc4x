@@ -41,7 +41,7 @@ type NodeNetworkReference interface {
 
 //go:generate plc4xGenerator -type=Node -prefix=vlan_
 type Node struct {
-	Server
+	ServerContract
 
 	lan     NodeNetworkReference
 	address *Address
@@ -77,7 +77,7 @@ func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node
 			Msg("NewNode")
 	}
 	var err error
-	n.Server, err = NewServer(localLog, n, OptionalOption(n.argSid, WithServerSID))
+	n.ServerContract, err = NewServer(localLog, OptionalOption2(n.argSid, ToPtr[ServerRequirements](n), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -179,10 +179,9 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 	return nil
 }
 
-func (n *Node) AlternateString() (string, bool) {
-	if ExtendedGeneralOutput {
-		return fmt.Sprintf("Node: %s(%v)", n.name, n.GetServerId()), true
-	} else {
-		return "", false
+func (n *Node) Format(s fmt.State, v rune) {
+	switch v {
+	case 'r':
+		_, _ = s.Write([]byte(fmt.Sprintf("<%s(%s) at %p>", StructName(), n.name, n)))
 	}
 }

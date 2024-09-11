@@ -401,12 +401,12 @@ func OptionalOption[V any, T any](value *V, opt func(V) func(*T)) func(*T) {
 	return func(c *T) {}
 }
 
-// OptionalOptionDual allows options to be applied that might be optional
-func OptionalOptionDual[V1 any, V2 any, T any](value1 *V1, value2 *V2, opt func(V1, V2) func(*T)) func(*T) {
+// OptionalOption2 allows options to be applied that might be optional
+func OptionalOption2[V1 any, V2 any, T any](value1 *V1, value2 *V2, opt func(V1, V2) func(*T)) func(*T) {
 	v1Set := value1 != nil
 	v2Set := value2 != nil
 	if (v1Set && !v2Set) || (!v1Set && v2Set) {
-		panic("Dual options must be both set together")
+		return func(c *T) {}
 	}
 	if v1Set {
 		return opt(*value1, *value2)
@@ -476,4 +476,51 @@ func OR[T comparable](a T, b T) T {
 	} else {
 		return a
 	}
+}
+
+// ToPtr gives a Ptr
+func ToPtr[T any](value T) *T {
+	return &value
+}
+
+type DefaultRFormatter struct {
+	output []byte
+}
+
+func NewDefaultRFormatter() DefaultRFormatter {
+	pc, file, _, ok := runtime.Caller(1)
+	if !ok {
+		return DefaultRFormatter{}
+	}
+	dir := path.Dir(file)
+	rootIndex := strings.Index(dir, "bacgopes")
+	dir = dir[rootIndex:]
+	dirPrefix := path.Base(dir) + "_"
+	base := path.Base(file)
+	prefix := strings.TrimSuffix(base, ".go")
+	prefix = strings.TrimPrefix(prefix, dirPrefix)
+	return DefaultRFormatter{
+		output: []byte(fmt.Sprintf("<%s at 0x%x>", prefix, pc)),
+	}
+}
+
+func (d DefaultRFormatter) Format(s fmt.State, v rune) {
+	switch v {
+	case 'r':
+		_, _ = s.Write(d.output)
+	}
+}
+
+func StructName() string {
+	_, file, _, ok := runtime.Caller(1)
+	if !ok {
+		return ""
+	}
+	dir := path.Dir(file)
+	rootIndex := strings.Index(dir, "bacgopes")
+	dir = dir[rootIndex:]
+	dirPrefix := path.Base(dir) + "_"
+	base := path.Base(file)
+	prefix := strings.TrimSuffix(base, ".go")
+	return strings.TrimPrefix(prefix, dirPrefix)
 }

@@ -43,7 +43,7 @@ func NewReadForeignDeviceTableAck(opts ...func(*ReadForeignDeviceTableAck)) (*Re
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCReadForeignDeviceTableAck(b.produceForeignDeviceTable(), 0))).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCReadForeignDeviceTableAck(b.produceForeignDeviceTable(), 0))).(*_BVLPDU)
 	return b, nil
 }
 
@@ -76,7 +76,7 @@ func (r *ReadForeignDeviceTableAck) produceBvlciFDT(entries []model.BVLCForeignD
 		port := entry.GetPort()
 		var portArray = make([]byte, 2)
 		binary.BigEndian.PutUint16(portArray, port)
-		address, _ := NewAddress(NewArgs(append(addr, portArray...)))
+		address, _ := NewAddress(NA(append(addr, portArray...)))
 		bvlciFDT = append(bvlciFDT, &FDTEntry{
 			FDAddress: address,
 			FDTTL:     entry.GetTtl(),

@@ -404,7 +404,7 @@ func (a *Address) decodeAddress(addr any) error {
 						if err != nil {
 							return errors.Wrap(err, "can't parse route addr")
 						}
-						a.AddrRoute, err = NewAddress(NewArgs(xtob))
+						a.AddrRoute, err = NewAddress(NA(xtob))
 						if err != nil {
 							return errors.Wrap(err, "can't parse route")
 						}
@@ -413,7 +413,7 @@ func (a *Address) decodeAddress(addr any) error {
 						if err != nil {
 							return errors.Wrap(err, "can't parse route addr")
 						}
-						a.AddrRoute, err = NewAddress(NewArgs(routeAddr))
+						a.AddrRoute, err = NewAddress(NA(routeAddr))
 						if err != nil {
 							return errors.Wrap(err, "can't create route")
 						}
@@ -427,7 +427,7 @@ func (a *Address) decodeAddress(addr any) error {
 					}
 					var err error
 					tuple := &AddressTuple[string, string]{routeIpAddr, routeIpPort}
-					a.AddrRoute, err = NewAddress(NewArgs(tuple))
+					a.AddrRoute, err = NewAddress(NA(tuple))
 					if err != nil {
 						return errors.Wrap(err, "can't create route")
 					}
@@ -796,6 +796,8 @@ func (a *Address) Equals(other any) bool {
 func (a *Address) Format(s fmt.State, v rune) {
 	switch v {
 	case 'r':
+		_, _ = s.Write([]byte("<" + StructName() + " " + a.String() + ">"))
+	case 'v', 's':
 		_, _ = s.Write([]byte(a.String()))
 	}
 }

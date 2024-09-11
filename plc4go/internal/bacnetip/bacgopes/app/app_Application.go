@@ -75,7 +75,7 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 		Interface("aseID", a.argAseID).
 		Msg("NewApplication")
 	var err error
-	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOptionDual(a.argAseID, a.argAse, WithApplicationServiceElementAseID))
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(a.argAseID, a.argAse, WithApplicationServiceElementAseID))
 	if err != nil {
 		return nil, err
 	}

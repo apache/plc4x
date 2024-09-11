@@ -39,13 +39,13 @@ type ClientContract interface {
 	fmt.Stringer
 	utils.Serializable
 	Request(args Args, kwargs KWArgs) error
-	Confirmation(args Args, kwargs KWArgs) error
 	_setClientPeer(server Server)
 	getClientId() *int
 }
 
 // ClientRequirements provides a set of functions which must be overwritten by a sub struct
 type ClientRequirements interface {
+	Confirmation(args Args, kwargs KWArgs) error
 }
 
 //go:generate plc4xGenerator -type=client -prefix=comm_
@@ -53,17 +53,23 @@ type client struct {
 	clientID   *int
 	clientPeer Server `asPtr:"true"`
 
+	// args
+	argClientRequirements ClientRequirements `ignore:"true"`
+
 	log zerolog.Logger
 }
 
 var _ ClientContract = (*client)(nil)
 
-func NewClient(localLog zerolog.Logger, requirements ClientRequirements, opts ...func(*client)) (Client, error) {
+func NewClient(localLog zerolog.Logger, opts ...func(*client)) (ClientContract, error) {
 	c := &client{
 		log: localLog,
 	}
 	for _, opt := range opts {
 		opt(c)
+	}
+	if _debug != nil {
+		_debug("__init__ cid=%v", c.clientID)
 	}
 	if c.clientID != nil {
 		cid := *c.clientID
@@ -79,7 +85,7 @@ func NewClient(localLog zerolog.Logger, requirements ClientRequirements, opts ..
 			}
 
 			// Note: we need to pass the requirements (which should contain c as delegate) here
-			if err := Bind(localLog, requirements, server); err != nil {
+			if err := Bind(localLog, c.argClientRequirements, server); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -87,23 +93,23 @@ func NewClient(localLog zerolog.Logger, requirements ClientRequirements, opts ..
 	return c, nil
 }
 
-func WithClientCID(cid int) func(*client) {
+func WithClientCID(cid int, requirements ClientRequirements) func(*client) {
 	return func(c *client) {
 		c.clientID = &cid
+		c.argClientRequirements = requirements
 	}
 }
 
 func (c *client) Request(args Args, kwargs KWArgs) error {
+	if _debug != nil {
+		_debug("request %r %r", args, kwargs)
+	}
 	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
 
 	if c.clientPeer == nil {
 		return errors.Errorf("unbound client: %s", c)
 	}
 	return c.clientPeer.Indication(args, kwargs)
-}
-
-func (c *client) Confirmation(args Args, kwargs KWArgs) error {
-	panic("this should be implemented by outer struct")
 }
 
 func (c *client) _setClientPeer(server Server) {

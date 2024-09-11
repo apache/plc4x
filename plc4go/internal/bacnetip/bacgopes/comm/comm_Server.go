@@ -38,7 +38,6 @@ type Server interface {
 type ServerContract interface {
 	fmt.Stringer
 	utils.Serializable
-	Indication(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
 	_setServerPeer(serverPeer Client)
 	HasServerPeer() bool
@@ -47,6 +46,7 @@ type ServerContract interface {
 
 // ServerRequirements provides a set of functions which must be overwritten by a sub struct
 type ServerRequirements interface {
+	Indication(args Args, kwargs KWArgs) error
 }
 
 // Server is an "abstract" struct which is used in another struct as delegate
@@ -56,15 +56,21 @@ type server struct {
 	serverID   *int
 	serverPeer Client `asPtr:"true"`
 
+	// args
+	argServerRequirements ServerRequirements `ignore:"true"`
+
 	log zerolog.Logger
 }
 
-func NewServer(localLog zerolog.Logger, requirements ServerRequirements, opts ...func(server *server)) (Server, error) {
+func NewServer(localLog zerolog.Logger, opts ...func(server *server)) (ServerContract, error) {
 	s := &server{
 		log: localLog,
 	}
 	for _, opt := range opts {
 		opt(s)
+	}
+	if _debug != nil {
+		_debug("__init__ sid=%v", s.serverID)
 	}
 	if s.serverID != nil {
 		sid := *s.serverID
@@ -74,13 +80,13 @@ func NewServer(localLog zerolog.Logger, requirements ServerRequirements, opts ..
 		serverMap[sid] = s
 
 		// automatically bind
-		if client, ok := clientMap[sid]; ok {
-			if client.clientPeer != nil {
+		if c, ok := clientMap[sid]; ok {
+			if c.clientPeer != nil {
 				return nil, errors.Errorf("client %d already bound", sid)
 			}
 
 			// Note: we need to pass the requirements (which should contain s as delegate) here
-			if err := Bind(localLog, client, requirements); err != nil {
+			if err := Bind(localLog, c, s.argServerRequirements); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -88,17 +94,17 @@ func NewServer(localLog zerolog.Logger, requirements ServerRequirements, opts ..
 	return s, nil
 }
 
-func WithServerSID(sid int) func(*server) {
-	return func(server *server) {
-		server.serverID = &sid
+func WithServerSID(sid int, requirements ServerRequirements) func(*server) {
+	return func(s *server) {
+		s.serverID = &sid
+		s.argServerRequirements = requirements
 	}
 }
 
-func (s *server) Indication(Args, KWArgs) error {
-	panic("this should be implemented by outer struct")
-}
-
 func (s *server) Response(args Args, kwargs KWArgs) error {
+	if _debug != nil {
+		_debug("response %r %r", args, kwargs)
+	}
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	if s.serverPeer == nil {

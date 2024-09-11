@@ -231,8 +231,8 @@ func TestForeign(t *testing.T) {
 		//make a PDU from node 1 to node 2
 		pduData, err := Xtob("dead.beef")
 		require.NoError(t, err)
-		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewMessageBridge(pduData...), KWCPCISource, tnet.fd.address, KWCPCIDestination, tnet.bbmd.address))
-		t.Logf("pdu: %v", pdu)
+		pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.fd.address, KWCPCIDestination, tnet.bbmd.address))
+		t.Logf("    - pdu: %s", pdu)
 
 		// register, wait for ack, send some beef
 		tnet.fd.GetStartState().Doc("3-1-0").

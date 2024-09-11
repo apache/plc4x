@@ -78,6 +78,12 @@ func new__PCI(args Args, kwargs KWArgs) *__PCI {
 			otherKwargs[k] = v
 		}
 	}
+	if _debug != nil {
+		_debug("    - my_kwargs: %r", myKwargs)
+	}
+	if _debug != nil {
+		_debug("    - other_kwargs: %r", otherKwargs)
+	}
 
 	i.pduUserData = KWO[spi.Message](kwargs, KWCPCIUserData, nil)
 	i.pduSource = KWO[*Address](kwargs, KWCPCISource, nil)

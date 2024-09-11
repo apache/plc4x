@@ -37,7 +37,7 @@ import (
 //go:generate plc4xGenerator -type=NetworkServiceAccessPoint -prefix=netservice_
 type NetworkServiceAccessPoint struct {
 	ServiceAccessPointContract
-	Server
+	ServerContract
 	adapters        map[netKey]*NetworkAdapter
 	routerInfoCache *RouterInfoCache `stringer:"true"`
 	pendingNets     map[netKey][]NPDU
@@ -59,11 +59,11 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 		opt(n)
 	}
 	var err error
-	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOptionDual(n.argSapID, n.argSap, WithServiceAccessPointSapID))
+	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(n.argSapID, n.argSap, WithServiceAccessPointSapID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
-	n.Server, err = NewServer(localLog, n, OptionalOption(n.argSid, WithServerSID))
+	n.ServerContract, err = NewServer(localLog, OptionalOption2(n.argSid, ToPtr[ServerRequirements](n), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}

@@ -27,6 +27,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 type BIPSAPRequirements interface {
@@ -35,6 +36,7 @@ type BIPSAPRequirements interface {
 }
 
 type BIPSAP struct {
+	DefaultRFormatter `ignore:"true"`
 	ServiceAccessPointContract
 	requirements BIPSAPRequirements
 
@@ -47,17 +49,21 @@ type BIPSAP struct {
 
 func NewBIPSAP(localLog zerolog.Logger, requirements BIPSAPRequirements, opts ...func(*BIPSAP)) (*BIPSAP, error) {
 	b := &BIPSAP{
-		log: localLog,
+		DefaultRFormatter: NewDefaultRFormatter(),
+		log:               localLog,
 	}
 	for _, opt := range opts {
 		opt(b)
+	}
+	if _debug != nil {
+		_debug("__init__ sap=%r", b.argSapID)
 	}
 	localLog.Debug().
 		Interface("sapID", b.argSapID).
 		Interface("requirements", requirements).
 		Msg("NewBIPSAP")
 	var err error
-	b.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOptionDual(b.argSapID, b.argSap, WithServiceAccessPointSapID))
+	b.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(b.argSapID, b.argSap, WithServiceAccessPointSapID))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error creating service access point")
 	}
@@ -78,12 +84,20 @@ func (b *BIPSAP) String() string {
 
 func (b *BIPSAP) SapIndication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
+	pdu := GetFromArgs[PDU](args, 0)
+	if _debug != nil {
+		_debug("sap_indication %r", pdu)
+	}
 	// this is a request initiated by the ASE, send this downstream
 	return b.requirements.Request(args, kwargs)
 }
 
 func (b *BIPSAP) SapConfirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
+	pdu := GetFromArgs[PDU](args, 0)
+	if _debug != nil {
+		_debug("sap_confirmation %r", pdu)
+	}
 	// this is a response from the ASE, send this downstream
 	return b.requirements.Request(args, kwargs)
 }

@@ -29,7 +29,7 @@ import (
 
 //go:generate plc4xGenerator -type=ServerStateMachine -prefix=state_machine_
 type ServerStateMachine struct {
-	Server
+	ServerContract
 	StateMachineContract
 
 	name string
@@ -45,7 +45,7 @@ func NewServerStateMachine(localLog zerolog.Logger, opts ...func(*ServerStateMac
 		opt(c)
 	}
 	var err error
-	c.Server, err = NewServer(localLog, c)
+	c.ServerContract, err = NewServer(localLog) // TODO: do we need to pass server id
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating Server")
 	}

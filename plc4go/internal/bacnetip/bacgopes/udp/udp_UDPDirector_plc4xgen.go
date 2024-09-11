@@ -48,7 +48,7 @@ func (d *UDPDirector) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	if err := writeBuffer.PushContext("UDPDirector"); err != nil {
 		return err
 	}
-	if err := d.Server.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ServerContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if err := d.ServiceAccessPointContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {

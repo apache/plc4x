@@ -33,7 +33,7 @@ import (
 
 //go:generate plc4xGenerator -type=StateMachineAccessPoint -prefix=appservice_
 type StateMachineAccessPoint struct {
-	Client
+	ClientContract
 	ServiceAccessPointContract
 
 	localDevice           *LocalDeviceObject
@@ -104,11 +104,11 @@ func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDevic
 	}
 	// basic initialization
 	var err error
-	s.Client, err = NewClient(s.log, s, OptionalOption(s.argCid, WithClientCID))
+	s.ClientContract, err = NewClient(s.log, OptionalOption2(s.argCid, ToPtr[ClientRequirements](s), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrapf(err, "error building client for %d", s.argCid)
 	}
-	s.ServiceAccessPointContract, err = NewServiceAccessPoint(s.log, OptionalOptionDual(s.argSapID, s.argSap, WithServiceAccessPointSapID))
+	s.ServiceAccessPointContract, err = NewServiceAccessPoint(s.log, OptionalOption2(s.argSapID, s.argSap, WithServiceAccessPointSapID))
 	if err != nil {
 		return nil, errors.Wrapf(err, "error building serviceAccessPoint for %d", s.argSapID)
 	}

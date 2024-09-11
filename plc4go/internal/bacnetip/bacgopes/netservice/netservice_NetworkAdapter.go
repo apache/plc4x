@@ -31,7 +31,7 @@ import (
 
 //go:generate plc4xGenerator -type=NetworkAdapter -prefix=netservice_
 type NetworkAdapter struct {
-	Client
+	ClientContract
 	adapterSAP           *NetworkServiceAccessPoint `asPtr:"true"`
 	adapterNet           *uint16
 	adapterAddr          *Address
@@ -56,7 +56,7 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 	}
 	n.log.Trace().Stringer("sap", sap).Interface("net", net).Stringer("addr", addr).Interface("cid", n.argCid).Msg("NewNetworkAdapter")
 	var err error
-	n.Client, err = NewClient(n.log, n, OptionalOption(n.argCid, WithClientCID))
+	n.ClientContract, err = NewClient(n.log, OptionalOption2(n.argCid, ToPtr[ClientRequirements](n), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}

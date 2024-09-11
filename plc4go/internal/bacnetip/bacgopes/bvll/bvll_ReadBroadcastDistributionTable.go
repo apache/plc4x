@@ -40,7 +40,7 @@ func NewReadBroadcastDistributionTable(opts ...func(*ReadBroadcastDistributionTa
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCReadBroadcastDistributionTable())).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCReadBroadcastDistributionTable())).(*_BVLPDU)
 	return b, nil
 }
 

@@ -54,7 +54,7 @@ func NewPCI(args Args, kwargs KWArgs) *_PCI {
 	}
 	var myKwargs = make(KWArgs)
 	var otherKwargs = make(KWArgs)
-	for _, element := range []KnownKey{KWCPCIUserData, KWCPCISource, KWCPCIDestination} {
+	for _, element := range []KnownKey{KWPCIExpectingReply, KWPCINetworkPriority} {
 		if v, ok := kwargs[element]; ok {
 			myKwargs[element] = v
 		}
@@ -63,6 +63,12 @@ func NewPCI(args Args, kwargs KWArgs) *_PCI {
 		if _, ok := myKwargs[k]; !ok {
 			otherKwargs[k] = v
 		}
+	}
+	if _debug != nil {
+		_debug("    - my_kwargs: %r", myKwargs)
+	}
+	if _debug != nil {
+		_debug("    - other_kwargs: %r", otherKwargs)
 	}
 	return &_PCI{
 		new__PCI(args, otherKwargs),

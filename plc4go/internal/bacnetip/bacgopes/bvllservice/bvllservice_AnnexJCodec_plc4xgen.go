@@ -48,10 +48,10 @@ func (d *AnnexJCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	if err := writeBuffer.PushContext("AnnexJCodec"); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	if err := d.Server.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ServerContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("AnnexJCodec"); err != nil {

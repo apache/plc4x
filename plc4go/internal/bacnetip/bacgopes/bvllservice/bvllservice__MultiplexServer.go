@@ -29,7 +29,7 @@ import (
 
 //go:generate plc4xGenerator -type=_MultiplexServer -prefix=bvllservice_
 type _MultiplexServer struct {
-	Server
+	ServerContract
 	multiplexer *UDPMultiplexer `stringer:"true"`
 }
 
@@ -38,7 +38,7 @@ func _New_MultiplexServer(localLog zerolog.Logger, multiplexer *UDPMultiplexer) 
 		multiplexer: multiplexer,
 	}
 	var err error
-	m.Server, err = NewServer(localLog, m)
+	m.ServerContract, err = NewServer(localLog) // TODO: do we need to pass sid?
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}

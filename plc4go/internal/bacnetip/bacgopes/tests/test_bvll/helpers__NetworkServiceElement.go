@@ -17,34 +17,28 @@
  * under the License.
  */
 
-package bvllservice
+package test_bvll
 
 import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 )
 
-//go:generate plc4xGenerator -type=_MultiplexClient -prefix=appservice_
-type _MultiplexClient struct {
-	ClientContract
-	multiplexer *UDPMultiplexer
+type _NetworkServiceElement struct {
+	*NetworkServiceElement
 }
 
-func _New_MultiplexClient(localLog zerolog.Logger, multiplexer *UDPMultiplexer) (*_MultiplexClient, error) {
-	m := &_MultiplexClient{
-		multiplexer: multiplexer,
-	}
+func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement, error) {
+	i := &_NetworkServiceElement{}
+
+	// This class turns off the deferred startup function call that broadcasts
+	// I-Am-Router-To-Network and Network-Number-Is messages.
 	var err error
-	m.ClientContract, err = NewClient(localLog) // TODO: do we need to pass cid?
+	i.NetworkServiceElement, err = NewNetworkServiceElement(localLog, WithNetworkServiceElementStartupDisabled(true))
 	if err != nil {
-		return nil, errors.Wrap(err, "error creating client")
+		return nil, errors.Wrap(err, "error creating network service element")
 	}
-	return m, nil
-}
-
-func (m *_MultiplexClient) Confirmation(args Args, kwargs KWArgs) error {
-	return m.multiplexer.Confirmation(NA(m, args), NoKWArgs)
+	return i, nil
 }

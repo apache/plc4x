@@ -48,7 +48,7 @@ func (d *StateMachineAccessPoint) SerializeWithWriteBuffer(ctx context.Context, 
 	if err := writeBuffer.PushContext("StateMachineAccessPoint"); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if err := d.ServiceAccessPointContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {

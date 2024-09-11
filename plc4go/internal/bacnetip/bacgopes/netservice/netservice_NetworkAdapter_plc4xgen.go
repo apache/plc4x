@@ -48,7 +48,7 @@ func (d *NetworkAdapter) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	if err := writeBuffer.PushContext("NetworkAdapter"); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 

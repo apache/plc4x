@@ -42,7 +42,7 @@ func NewResult(opts ...func(result *Result)) (*Result, error) {
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, readWriteModel.NewBVLCResult(b.bvlciResultCode))).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewBVLCResult(b.bvlciResultCode))).(*_BVLPDU)
 	return b, nil
 }
 

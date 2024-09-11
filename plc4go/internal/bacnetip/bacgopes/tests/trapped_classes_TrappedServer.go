@@ -41,7 +41,7 @@ type TrappedServerContract interface {
 //go:generate plc4xGenerator -type=TrappedServer -prefix=trapped_classes_
 type TrappedServer struct {
 	TrappedServerContract `ignore:"true"`
-	Server
+	ServerContract
 
 	indicationReceived PDU
 	responseSent       PDU
@@ -58,7 +58,7 @@ func NewTrappedServer(localLog zerolog.Logger, opts ...func(*TrappedServer)) (*T
 		opt(t)
 	}
 	var err error
-	t.Server, err = NewServer(localLog, t)
+	t.ServerContract, err = NewServer(localLog) // TODO: do we need to pass server id
 	if err != nil {
 		return nil, errors.Wrap(err, "error building server")
 	}
@@ -93,5 +93,5 @@ func (t *TrappedServer) Response(args Args, kwargs KWArgs) error {
 	t.responseSent = GA[PDU](args, 0)
 
 	// continue with regular processing
-	return t.Server.Response(args, kwargs)
+	return t.ServerContract.Response(args, kwargs)
 }

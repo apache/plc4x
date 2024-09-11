@@ -31,8 +31,9 @@ import (
 
 //go:generate plc4xGenerator -type=AnnexJCodec -prefix=bvllservice_
 type AnnexJCodec struct {
-	Client
-	Server
+	DefaultRFormatter `ignore:"true"`
+	ClientContract
+	ServerContract
 
 	// pass through args
 	argCid *int `ignore:"true"`
@@ -43,25 +44,28 @@ type AnnexJCodec struct {
 
 func NewAnnexJCodec(localLog zerolog.Logger, opts ...func(*AnnexJCodec)) (*AnnexJCodec, error) {
 	a := &AnnexJCodec{
-		log: localLog,
+		DefaultRFormatter: NewDefaultRFormatter(),
+		log:               localLog,
 	}
 	for _, opt := range opts {
 		opt(a)
+	}
+	if _debug != nil {
+		_debug("__init__ cid=%r sid=%r", a.argCid, a.argSid)
 	}
 	localLog.Debug().
 		Interface("cid", a.argCid).
 		Interface("sid", a.argSid).
 		Msg("NewAnnexJCodec")
-	client, err := NewClient(localLog, a, OptionalOption(a.argCid, WithClientCID))
+	var err error
+	a.ClientContract, err = NewClient(localLog, OptionalOption2(a.argCid, ToPtr[ClientRequirements](a), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	a.Client = client
-	server, err := NewServer(localLog, a, OptionalOption(a.argSid, WithServerSID))
+	a.ServerContract, err = NewServer(localLog, OptionalOption2(a.argSid, ToPtr[ServerRequirements](a), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	a.Server = server
 	return a, nil
 }
 
@@ -79,8 +83,10 @@ func WithAnnexJCodecSid(sid int) func(*AnnexJCodec) {
 
 func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
-
 	rpdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", rpdu)
+	}
 
 	// encode it as a generic BVLL PDU
 	bvlpdu := NewBVLPDU(Nothing())
@@ -100,8 +106,10 @@ func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
 
 func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
-
 	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
 
 	// interpret as a BVLL PDU
 	bvlpdu := NewBVLPDU(Nothing())

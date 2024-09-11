@@ -47,7 +47,7 @@ func NewDistributeBroadcastToNetwork(pdu PDU, opts ...func(*DistributeBroadcastT
 	}
 	switch npdu := pdu.(type) {
 	case model.NPDU:
-		o._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCDistributeBroadcastToNetwork(o.produceInnerNPDU(npdu)))).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCDistributeBroadcastToNetwork(o.produceInnerNPDU(npdu)))).(*_BVLPDU)
 	case nil:
 		o._BVLPDU = NewBVLPDU(Nothing()).(*_BVLPDU)
 	default:
@@ -57,7 +57,7 @@ func NewDistributeBroadcastToNetwork(pdu PDU, opts ...func(*DistributeBroadcastT
 		if err != nil {
 			return nil, errors.Wrap(err, "error re-encoding")
 		}
-		o._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCDistributeBroadcastToNetwork(o.produceInnerNPDU(parse)))).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCDistributeBroadcastToNetwork(o.produceInnerNPDU(parse)))).(*_BVLPDU)
 	}
 	// Do a post construct for a bit more easy initialization
 	for _, f := range o._postConstruct {

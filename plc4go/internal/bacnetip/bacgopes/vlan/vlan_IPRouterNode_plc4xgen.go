@@ -48,7 +48,7 @@ func (d *IPRouterNode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.PushContext("IPRouterNode"); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if d.router != nil {

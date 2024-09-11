@@ -35,9 +35,10 @@ import (
 
 //go:generate plc4xGenerator -type=BIPForeign -prefix=bvllservice_
 type BIPForeign struct {
+	DefaultRFormatter `ignore:"true"`
 	*BIPSAP
-	Client
-	Server
+	ClientContract
+	ServerContract
 	*OneShotTask
 
 	registrationStatus      int
@@ -59,10 +60,14 @@ type BIPForeign struct {
 
 func NewBIPForeign(localLog zerolog.Logger, opts ...func(*BIPForeign)) (*BIPForeign, error) {
 	b := &BIPForeign{
-		log: localLog,
+		DefaultRFormatter: NewDefaultRFormatter(),
+		log:               localLog,
 	}
 	for _, opt := range opts {
 		opt(b)
+	}
+	if _debug != nil {
+		_debug("__init__ addr=%r ttl=%r sapID=%r cid=%r sid=%r", b.argAddr, b.argTTL, b.argSapID, b.argCid, b.argSid)
 	}
 	localLog.Debug().
 		Stringer("addrs", b.argAddr).
@@ -78,16 +83,14 @@ func NewBIPForeign(localLog zerolog.Logger, opts ...func(*BIPForeign)) (*BIPFore
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	client, err := NewClient(localLog, b, OptionalOption(b.argCid, WithClientCID))
+	b.ClientContract, err = NewClient(localLog, OptionalOption2(b.argCid, ToPtr[ClientRequirements](b), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	b.Client = client
-	server, err := NewServer(localLog, b, OptionalOption(b.argSid, WithServerSID))
+	b.ServerContract, err = NewServer(localLog, OptionalOption2(b.argSid, ToPtr[ServerRequirements](b), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	b.Server = server
 	b.OneShotTask = NewOneShotTask(b, nil)
 
 	// -2=unregistered, -1=not attempted or no ack, 0=OK, >0 error
@@ -130,6 +133,9 @@ func WithBIPForeignTTL(ttl int) func(*BIPForeign) {
 func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", pdu)
+	}
 
 	// check for local stations
 	switch pdu.GetPDUDestination().AddrType {
@@ -139,6 +145,9 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 		if err != nil {
 			return errors.Wrap(err, "error creating original unicast NPDU")
 		}
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
@@ -146,6 +155,9 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 	case LOCAL_BROADCAST_ADDRESS:
 		// check the BBMD registration status, we may not be registered
 		if b.registrationStatus != 0 {
+			if _debug != nil {
+				_debug("    - packet dropped, unregistered")
+			}
 			b.log.Debug().Msg("packet dropped, unregistered")
 			return nil
 		}
@@ -154,6 +166,9 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 		xpdu, err := NewOriginalBroadcastNPDU(pdu, WithOriginalBroadcastNPDUDestination(b.bbmdAddress), WithOriginalBroadcastNPDUUserData(pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error creating original unicast NPDU")
+		}
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
 		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
@@ -167,6 +182,9 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
 
 	switch msg := pdu.GetRootMessage().(type) {
 	// check for a registration request result
@@ -181,6 +199,9 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		// make sure the result is from the bbmd
 
 		if !pdu.GetPDUSource().Equals(b.bbmdAddress) {
+			if _debug != nil {
+				_debug("    - packet dropped, not from the BBMD")
+			}
 			b.log.Debug().Msg("packet dropped, not from the BBMD")
 			return nil
 		}
@@ -203,12 +224,18 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 	case model.BVLCForwardedNPDU:
 		// check the BBMD registration status, we may not be registered
 		if b.registrationStatus != 0 {
+			if _debug != nil {
+				_debug("    - packet dropped, unregistered")
+			}
 			b.log.Debug().Msg("packet dropped, unregistered")
 			return nil
 		}
 
 		// make sure the forwarded _PDU from the bbmd
 		if !pdu.GetPDUSource().Equals(b.bbmdAddress) {
+			if _debug != nil {
+				_debug("    - packet dropped, not from the BBMD")
+			}
 			b.log.Debug().Msg("packet dropped, not from the BBMD")
 			return nil
 		}
@@ -298,6 +325,9 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		// send it downstream
 		return b.Request(NA(xpdu), NoKWArgs)
 	case model.BVLCOriginalBroadcastNPDU:
+		if _debug != nil {
+			_debug("    - packet dropped")
+		}
 		b.log.Debug().Msg("packet dropped")
 		return nil
 	default:

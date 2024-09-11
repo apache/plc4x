@@ -43,7 +43,7 @@ func NewReadBroadcastDistributionTableAck(opts ...func(*ReadBroadcastDistributio
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NewKWArgs(KWCompRootMessage, model.NewBVLCReadBroadcastDistributionTableAck(b.produceBroadcastDistributionTable(), 0))).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCReadBroadcastDistributionTableAck(b.produceBroadcastDistributionTable(), 0))).(*_BVLPDU)
 	return b, nil
 }
 
@@ -79,7 +79,7 @@ func (r *ReadBroadcastDistributionTableAck) produceBvlciBDT(entries []model.BVLC
 		port := entry.GetPort()
 		var portArray = make([]byte, 2)
 		binary.BigEndian.PutUint16(portArray, port)
-		address, _ := NewAddress(NewArgs(append(addr, portArray...)))
+		address, _ := NewAddress(NA(append(addr, portArray...)))
 		mask := binary.BigEndian.Uint32(entry.GetBroadcastDistributionMap())
 		address.AddrMask = &mask
 		bvlciBDT = append(bvlciBDT, address)

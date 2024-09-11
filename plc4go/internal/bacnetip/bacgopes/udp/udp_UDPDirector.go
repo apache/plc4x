@@ -38,7 +38,7 @@ import (
 
 //go:generate plc4xGenerator -type=UDPDirector -prefix=udp_
 type UDPDirector struct {
-	Server
+	ServerContract
 	ServiceAccessPointContract
 
 	timeout uint32
@@ -69,11 +69,11 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 		opt(d)
 	}
 	var err error
-	d.Server, err = NewServer(localLog, d, OptionalOption(d.argSid, WithServerSID))
+	d.ServerContract, err = NewServer(localLog, OptionalOption2(d.argSid, ToPtr[ServerRequirements](d), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	d.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOptionDual(d.argSapID, d.argSap, WithServiceAccessPointSapID))
+	d.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(d.argSapID, d.argSap, WithServiceAccessPointSapID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}

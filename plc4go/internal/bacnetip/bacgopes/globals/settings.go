@@ -28,9 +28,6 @@ var (
 	// ExtendedPDUOutput switches the PDU output to an extended format for debugging
 	ExtendedPDUOutput bool
 
-	// LogComm enables logging for communications
-	LogComm bool
-
 	// LogAppService enables logging for application services
 	LogAppService bool
 
@@ -41,7 +38,6 @@ var (
 func init() {
 	ExtendedGeneralOutput = os.Getenv("ExtendedGeneralOutput") == "true"
 	ExtendedPDUOutput = os.Getenv("ExtendedPDUOutput") == "true"
-	LogComm = os.Getenv("LogComm") == "true"
 	LogAppService = os.Getenv("LogAppService") == "true"
 	LogVlan = os.Getenv("LogVlan") == "true"
 }
