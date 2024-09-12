@@ -264,7 +264,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
 
             // If adding the current coil would exceed the maximum number of coils that can be read by one request,
             // finish this one and start a new one.
-            if ((tag.getAddress() - firstRegister) + (sizeInRegisters * tag.getNumberOfElements()) > maxRegisterCurRequest) {
+            if (tag.getAddress() + (sizeInRegisters * tag.getNumberOfElements()) > maxRegisterCurRequest) {
                 // Finish the current sub-request
                 LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
                 subTags.put("registers" + subRequests.size(), tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD));
