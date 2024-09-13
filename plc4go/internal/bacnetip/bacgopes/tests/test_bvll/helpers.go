@@ -20,8 +20,11 @@
 package test_bvll
 
 import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 )
+
+var _debug = CreateDebugPrinter()
 
 type TestDeviceObject struct {
 	*LocalDeviceObject

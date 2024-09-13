@@ -156,8 +156,8 @@ func (m *UDPMultiplexer) Close() error {
 	return nil
 }
 
-func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
-	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (m *UDPMultiplexer) Indication(args Args, kwArgs KWArgs) error {
+	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	server := GA[*_MultiplexServer](args, 0)
 	pdu := GA[PDU](args, 1)
 	if _debug != nil {
@@ -200,8 +200,8 @@ func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 	return m.directPort.Indication(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCIDestination, dest))), NoKWArgs)
 }
 
-func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
-	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (m *UDPMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
+	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 	client := GA[*_MultiplexClient](args, 0)
 	pdu := GA[PDU](args, 1)
 	if _debug != nil {

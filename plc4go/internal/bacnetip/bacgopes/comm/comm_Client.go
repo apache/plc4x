@@ -38,14 +38,14 @@ type Client interface {
 type ClientContract interface {
 	fmt.Stringer
 	utils.Serializable
-	Request(args Args, kwargs KWArgs) error
+	Request(args Args, kwArgs KWArgs) error
 	_setClientPeer(server Server)
 	getClientId() *int
 }
 
 // ClientRequirements provides a set of functions which must be overwritten by a sub struct
 type ClientRequirements interface {
-	Confirmation(args Args, kwargs KWArgs) error
+	Confirmation(args Args, kwArgs KWArgs) error
 }
 
 //go:generate plc4xGenerator -type=client -prefix=comm_
@@ -100,16 +100,16 @@ func WithClientCID(cid int, requirements ClientRequirements) func(*client) {
 	}
 }
 
-func (c *client) Request(args Args, kwargs KWArgs) error {
+func (c *client) Request(args Args, kwArgs KWArgs) error {
 	if _debug != nil {
-		_debug("request %r %r", args, kwargs)
+		_debug("request %r %r", args, kwArgs)
 	}
-	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Request")
 
 	if c.clientPeer == nil {
 		return errors.Errorf("unbound client: %s", c)
 	}
-	return c.clientPeer.Indication(args, kwargs)
+	return c.clientPeer.Indication(args, kwArgs)
 }
 
 func (c *client) _setClientPeer(server Server) {

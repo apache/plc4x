@@ -31,6 +31,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/iocb"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
@@ -66,7 +67,7 @@ func NewApplicationLayerMessageCodec(localLog zerolog.Logger, udpTransport *udp.
 
 		log: localLog,
 	}
-	address, err := pdu.NewAddress(localLog, localAddress)
+	address, err := pdu.NewAddress(comp.NewArgs(localAddress))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -112,11 +113,11 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 }
 
 func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
-	address, err := pdu.NewAddress(m.log, m.remoteAddress)
+	address, err := pdu.NewAddress(comp.NewArgs(m.remoteAddress))
 	if err != nil {
 		return err
 	}
-	iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(message, pdu.WithPDUDestination(address)), address)
+	iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(comp.NewArgs(message), comp.NewKWArgs(comp.KWCPCIDestination, address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
@@ -146,11 +147,11 @@ func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessag
 }
 
 func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	address, err := pdu.NewAddress(m.log, m.remoteAddress)
+	address, err := pdu.NewAddress(comp.NewArgs(m.remoteAddress))
 	if err != nil {
 		return err
 	}
-	iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(message, pdu.WithPDUDestination(address)), address)
+	iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(comp.NewArgs(message), comp.NewKWArgs(comp.KWCPCIDestination, address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}

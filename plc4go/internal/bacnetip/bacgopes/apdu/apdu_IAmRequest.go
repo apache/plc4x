@@ -36,7 +36,7 @@ type IAmRequest struct {
 	sequenceElements []Element
 }
 
-func NewIAmRequest(_ Args, kwargs KWArgs) (*IAmRequest, error) {
+func NewIAmRequest(_ Args, kwArgs KWArgs) (*IAmRequest, error) {
 	w := &IAmRequest{
 		serviceChoice: readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS,
 		sequenceElements: []Element{
@@ -55,7 +55,7 @@ func NewIAmRequest(_ Args, kwargs KWArgs) (*IAmRequest, error) {
 			readWriteModel.CreateBACnetVendorIdApplicationTagged(0),
 			0,
 		),
-		kwargs,
+		kwArgs,
 		WithUnconfirmedRequestSequenceExtension(w),
 	)
 	if err != nil {

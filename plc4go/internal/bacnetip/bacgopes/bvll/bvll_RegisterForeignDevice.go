@@ -20,13 +20,11 @@
 package bvll
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type RegisterForeignDevice struct {
@@ -37,13 +35,28 @@ type RegisterForeignDevice struct {
 
 var _ BVLPDU = (*RegisterForeignDevice)(nil)
 
-func NewRegisterForeignDevice(opts ...func(RegisterForeignDevice *RegisterForeignDevice)) (*RegisterForeignDevice, error) {
-	b := &RegisterForeignDevice{}
-	for _, opt := range opts {
-		opt(b)
+func NewRegisterForeignDevice(ttl *uint16, args Args, kwArgs KWArgs) (*RegisterForeignDevice, error) {
+	r := &RegisterForeignDevice{}
+	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	if r.GetRootMessage() == nil {
+		r.SetRootMessage(readWriteModel.NewBVLCRegisterForeignDevice(r.bvlciTimeToLive))
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCRegisterForeignDevice(b.bvlciTimeToLive))).(*_BVLPDU)
-	return b, nil
+	r.AddDebugContents(r, "bvlciTimeToLive")
+	r.bvlciFunction = BVLCIRegisterForeignDevice
+	r.bvlciLength = 6
+	if ttl != nil {
+		r.bvlciTimeToLive = *ttl
+	}
+	return r, nil
+}
+
+func (r *RegisterForeignDevice) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciTimeToLive":
+		return r.bvlciTimeToLive
+	default:
+		return nil
+	}
 }
 
 func WithRegisterForeignDeviceBvlciTimeToLive(ttl uint16) func(*RegisterForeignDevice) {
@@ -79,9 +92,9 @@ func (r *RegisterForeignDevice) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCRegisterForeignDevice:
+		case readWriteModel.BVLCRegisterForeignDevice:
 			switch bvlc := rm.(type) {
-			case model.BVLCRegisterForeignDevice:
+			case readWriteModel.BVLCRegisterForeignDevice:
 				r.bvlciTimeToLive = bvlc.GetTtl()
 				r.SetRootMessage(rm)
 			}
@@ -92,11 +105,4 @@ func (r *RegisterForeignDevice) Decode(bvlpdu Arg) error {
 		r.SetPduData(bvlpdu.GetPduData())
 	}
 	return nil
-}
-
-func (r *RegisterForeignDevice) String() string {
-	if r == nil {
-		return "(*RegisterForeignDevice)(nil)"
-	}
-	return fmt.Sprintf("RegisterForeignDevice{\n%v, bvlciTimeToLive: %v}", r._BVLPDU, r.bvlciTimeToLive)
 }

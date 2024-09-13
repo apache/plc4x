@@ -23,7 +23,7 @@ import (
 	"fmt"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	"github.com/apache/plc4x/plc4go/spi"
 )
 
@@ -34,18 +34,19 @@ type PDU interface {
 }
 
 type _PDU struct {
+	*DefaultRFormatter
 	*_PCI
 	*_PDUData
 }
 
-func NewPDU(args Args, kwargs KWArgs) PDU {
+func NewPDU(args Args, kwArgs KWArgs) PDU {
 	if _debug != nil {
-		_debug("__init__ %r %r", args, kwargs)
+		_debug("__init__ %r %r", args, kwArgs)
 	}
-	p := &_PDU{
-		_PCI: NewPCI(args, kwargs),
-	}
-	p._PDUData = NewPDUData(args, kwargs).(*_PDUData)
+	p := &_PDU{}
+	p._PCI = NewPCI(args, kwArgs)
+	p._PDUData = NewPDUData(args, kwArgs).(*_PDUData)
+	p.DefaultRFormatter = NewDefaultRFormatter(p._PCI, p._PDUData)
 	return p
 }
 
@@ -54,7 +55,7 @@ func (p *_PDU) GetRootMessage() spi.Message {
 }
 
 func (p *_PDU) deepCopy() *_PDU {
-	pduCopy := &_PDU{_PCI: p._PCI.deepCopy(), _PDUData: p._PDUData.deepCopy()}
+	pduCopy := &_PDU{p.DefaultRFormatter, p._PCI.deepCopy(), p._PDUData.deepCopy()}
 	return pduCopy
 }
 
@@ -63,8 +64,5 @@ func (p *_PDU) DeepCopy() any {
 }
 
 func (p *_PDU) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("_PDU{%s}", p._PCI)
-	}
 	return fmt.Sprintf("<%T %s -> %s : %s>", p, p.GetPDUSource(), p.GetPDUDestination(), p._PDUData)
 }

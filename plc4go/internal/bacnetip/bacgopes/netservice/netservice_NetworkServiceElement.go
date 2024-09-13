@@ -137,8 +137,8 @@ func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {
 	return nil
 }
 
-func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (n *NetworkServiceElement) Indication(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 
 	adapter := GA[*NetworkAdapter](args, 0)
 	npdu := GA[NPDU](args, 1)
@@ -179,8 +179,8 @@ func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 	return nil
 }
 
-func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (n *NetworkServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 
 	adapter := GA[*NetworkAdapter](args, 0)
 	npdu := GA[NPDU](args, 1)

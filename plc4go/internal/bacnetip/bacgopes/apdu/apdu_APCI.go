@@ -28,7 +28,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -72,7 +71,7 @@ type APCI interface {
 
 type _APCI struct {
 	PCI
-	*DebugContents `ignore:"true"`
+	*DebugContents
 
 	apduType              *readWriteModel.ApduType
 	apduSeg               bool   // segmented
@@ -89,19 +88,72 @@ type _APCI struct {
 	apduAbortRejectReason *uint8
 
 	// Deprecated: hacky workaround
-	bytesToDiscard int `ignore:"true"`
+	bytesToDiscard int
 }
 
 var _ APCI = (*_APCI)(nil)
 
 func NewAPCI(apdu readWriteModel.APDU) APCI {
 	a := &_APCI{}
+	a.DebugContents = NewDebugContents(a, "apduType", "apduSeg", "apduMor", "apduSA", "apduSrv",
+		"apduNak", "apduSeq", "apduWin", "apduMaxSegs", "apduMaxResp",
+		"apduService", "apduInvokeID", "apduAbortRejectReason")
 	a.PCI = NewPCI(NoArgs, NKW(KWCompRootMessage, apdu)) // TODO: convert to args so we can solve all those todos
+	a.AddExtraPrinters(a.PCI.(DebugContentPrinter))
 	if apdu != nil {
 		apduType := apdu.GetApduType()
 		a.apduType = &apduType
 	}
 	return a
+}
+
+func (a *_APCI) GetDebugAttr(attr string) any {
+	switch attr {
+	case "apduType":
+		return a.apduType
+	case "apduSeg":
+		return a.apduSeq
+	case "apduMor":
+		return a.apduMor
+	case "apduSA":
+		return a.apduSA
+	case "apduSrv":
+		return a.apduSrv
+	case "apduNak":
+		return a.apduNak
+	case "apduSeq":
+		if a.apduSeq != nil {
+			return *a.apduSeq
+		}
+	case "apduWin":
+		if a.apduWin != nil {
+			return *a.apduWin
+		}
+	case "apduMaxSegs":
+		if a.apduMaxSegs != nil {
+			return *a.apduMaxSegs
+		}
+	case "apduMaxResp":
+		if a.apduMaxResp != nil {
+			return *a.apduMaxResp
+		}
+	case "apduService":
+		if a.apduService != nil {
+			return *a.apduService
+		}
+	case "apduInvokeID":
+		if a.apduInvokeID != nil {
+			return *a.apduInvokeID
+		}
+	case "apduAbortRejectReason":
+		if a.apduAbortRejectReason != nil {
+			return *a.apduAbortRejectReason
+		}
+		panic("implement me")
+	default:
+		return nil
+	}
+	return nil
 }
 
 func (a *_APCI) setApduType(apduType *readWriteModel.ApduType) {
@@ -314,15 +366,13 @@ func (a *_APCI) Decode(pdu Arg) error {
 	if err := a.PCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}
-	switch rm := a.GetRootMessage().(type) {
-	case MessageBridge:
-		data := rm.GetPduData()
-		parse, err := readWriteModel.APDUParse[readWriteModel.APDU](context.Background(), data, uint16(len(data)))
-		if err != nil {
-			return errors.Wrap(err, "error parsing apdu")
-		}
-		a.SetRootMessage(parse)
+	// TODO: check if we want to stay with parsing or ditch that for now
+	data := pdu.(PDUData).GetPduData()
+	parse, err := readWriteModel.APDUParse[readWriteModel.APDU](context.Background(), data, uint16(len(data)))
+	if err != nil {
+		return errors.Wrap(err, "error parsing apdu")
 	}
+	a.SetRootMessage(parse)
 	readBytes := 0
 
 	// simulate the APCI type decode

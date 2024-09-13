@@ -32,7 +32,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
@@ -148,12 +148,12 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	return b, nil
 }
 
-func (b *BIPSimpleApplicationLayerStateMachine) Indication(args Args, kwargs KWArgs) error {
-	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (b *BIPSimpleApplicationLayerStateMachine) Indication(args Args, kwArgs KWArgs) error {
+	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	return b.Receive(args, NoKWArgs)
 }
 
-func (b *BIPSimpleApplicationLayerStateMachine) Confirmation(args Args, kwargs KWArgs) error {
-	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (b *BIPSimpleApplicationLayerStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
+	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 	return b.Receive(args, NoKWArgs)
 }

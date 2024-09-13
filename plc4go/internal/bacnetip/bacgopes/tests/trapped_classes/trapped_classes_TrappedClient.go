@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package trapped_classes
 
 import (
 	"github.com/pkg/errors"
@@ -33,7 +33,7 @@ import (
 type TrappedClientContract interface {
 	utils.Serializable
 	Request(Args, KWArgs) error
-	Confirmation(args Args, kwargs KWArgs) error
+	Confirmation(args Args, kwArgs KWArgs) error
 }
 
 // TrappedClient  An instance of this class sits at the top of a stack.
@@ -79,17 +79,17 @@ func (t *TrappedClient) GetConfirmationReceived() PDU {
 	return t.confirmationReceived
 }
 
-func (t *TrappedClient) Request(args Args, kwargs KWArgs) error {
-	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Request")
+func (t *TrappedClient) Request(args Args, kwArgs KWArgs) error {
+	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Request")
 	// a reference for checking
 	t.requestSent = GA[PDU](args, 0)
 
 	// continue with regular processing
-	return t.ClientContract.Request(args, kwargs)
+	return t.ClientContract.Request(args, kwArgs)
 }
 
-func (t *TrappedClient) Confirmation(args Args, kwargs KWArgs) error {
-	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
+func (t *TrappedClient) Confirmation(args Args, kwArgs KWArgs) error {
+	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 	// a reference for checking
 	t.confirmationReceived = GA[PDU](args, 0)
 	return nil

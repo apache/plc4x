@@ -46,7 +46,7 @@ type UnconfirmedRequestSequence struct {
 	_contract UnconfirmedRequestSequenceContract
 }
 
-func NewUnconfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consistency, maybe we just convert it to args to be flexible*/ model.BACnetUnconfirmedServiceRequest, kwargs KWArgs, opts ...func(*UnconfirmedRequestSequence)) (*UnconfirmedRequestSequence, error) {
+func NewUnconfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consistency, maybe we just convert it to args to be flexible*/ model.BACnetUnconfirmedServiceRequest, kwArgs KWArgs, opts ...func(*UnconfirmedRequestSequence)) (*UnconfirmedRequestSequence, error) {
 	u := &UnconfirmedRequestSequence{}
 	for _, opt := range opts {
 		opt(u)
@@ -57,7 +57,7 @@ func NewUnconfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consi
 		u._contract.(UnconfirmedRequestSequenceContractRequirement).SetUnconfirmedRequestSequence(u)
 	}
 	var err error
-	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUUnconfirmedRequest(serviceRequest, 0)), kwargs, WithAPCISequenceExtension(u._contract))
+	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUUnconfirmedRequest(serviceRequest, 0)), kwArgs, WithAPCISequenceExtension(u._contract))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APCISequence")
 	}

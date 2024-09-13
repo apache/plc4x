@@ -25,7 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -46,6 +46,9 @@ func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, opts ...f
 		addrTuple:          addr.AddrTuple,
 		addrBroadcastTuple: addr.AddrBroadcastTuple,
 	}
+	if _debug != nil {
+		_debug("__init__ %r lan=%r", addr, lan)
+	}
 	var err error
 	i.Node, err = NewNode(localLog, addr, opts...)
 	if err != nil {
@@ -62,7 +65,7 @@ func (n *IPNode) bind(lan NodeNetworkReference) { // This is used to preserve th
 
 func (n *IPNode) Format(s fmt.State, v rune) {
 	switch v {
-	case 'r':
-		_, _ = s.Write([]byte(fmt.Sprintf("<%s(%s) at %p>", StructName(), n.name, n)))
+	case 's', 'v', 'r':
+		_, _ = fmt.Fprintf(s, "<%s(%s) at %p>", StructName(), n.name, n)
 	}
 }

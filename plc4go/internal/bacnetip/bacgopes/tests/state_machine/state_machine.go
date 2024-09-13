@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package state_machine
 
 import (
 	"bytes"
@@ -29,11 +29,13 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
+
+var _debug = CreateDebugPrinter()
 
 // Transition Instances of this class are transitions betweeen getStates of a state machine.
 type Transition struct {
@@ -92,11 +94,11 @@ func (t TimeoutTransition) String() string {
 type fnargs struct {
 	fn     GenericFunction
 	args   Args
-	kwargs KWArgs
+	kwArgs KWArgs
 }
 
 func (f fnargs) String() string {
-	return fmt.Sprintf("fnargs{fn: %t, args: %s, kwargs: %s}", f.fn == nil, f.args, f.kwargs)
+	return fmt.Sprintf("fnargs{fn: %t, args: %s, kwArgs: %s}", f.fn == nil, f.args, f.kwArgs)
 }
 
 type CallTransition struct {
@@ -109,15 +111,24 @@ func (t CallTransition) String() string {
 }
 
 func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownKey]any) (matches bool) {
+	if _debug != nil {
+		_debug("match_pdu %r %r %r", pdu, pduType, pduAttrs)
+	}
 	// check the type
 	switch pduType := pduType.(type) {
 	case func(any) bool:
 		if !pduType(pdu) {
+			if _debug != nil {
+				_debug("    - failed match, wrong type")
+			}
 			localLog.Debug().Type("got", pdu).Interface("gotValue", pdu).Msg("failed match, func says no")
 			return false
 		}
 	default:
 		if pduType != nil && fmt.Sprintf("%T", pdu) != fmt.Sprintf("%T", pduType) {
+			if _debug != nil {
+				_debug("    - failed match, wrong type")
+			}
 			localLog.Debug().Type("got", pdu).Interface("gotValue", pdu).Type("want", pduType).Msg("failed match, wrong type")
 			return false
 		}
@@ -129,18 +140,27 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 		case KWCPCISource:
 			equals := pdu.(PDU).GetPDUSource().Equals(attrValue)
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWCPCIDestination:
 			equals := pdu.(PDU).GetPDUDestination().Equals(attrValue)
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case "x": // only used in test cases
 			equals := bytes.Equal(pdu.(interface{ X() []byte }).X(), attrValue.([]byte))
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -153,6 +173,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			}
 			equals := a == attrValue.(int)
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -163,6 +186,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			}
 			equals := b == attrValue.(int)
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -175,6 +201,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			case PDUData:
 				want = attrValue.GetPduData()
 			default:
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Debug().Type("type", attrValue).Msg("mismatch, attr unhandled")
 			}
 			equals := bytes.Equal(got, want)
@@ -182,12 +211,18 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 				attrLog.Debug().Hex("got", got).Hex("want", want).Stringer("diff", utils.DiffHex(want, got)).Msg("mismatch")
 			}
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Debug().Msg("pduData doesn't match")
 				return false
 			}
 		case KWWirtnNetwork:
 			wirtn, ok := pdu.(*WhoIsRouterToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -197,113 +232,173 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			}
 			equals := *net == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWIartnNetworkList:
 			iamrtn, ok := pdu.(*IAmRouterToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			net := iamrtn.GetIartnNetworkList()
 			uint16s, ok := attrValue.([]uint16)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := slices.Equal(net, uint16s)
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWIcbrtnNetwork:
 			iamrtn, ok := pdu.(*ICouldBeRouterToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := iamrtn.GetIcbrtnNetwork() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWIcbrtnPerformanceIndex:
 			iamrtn, ok := pdu.(*ICouldBeRouterToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := iamrtn.GetIcbrtnPerformanceIndex() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWRmtnRejectionReason:
 			iamrtn, ok := pdu.(*RejectMessageToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := iamrtn.GetRmtnRejectionReason() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWRmtnDNET:
 			iamrtn, ok := pdu.(*RejectMessageToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := iamrtn.GetRmtnDNET() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWRbtnNetworkList:
 			rbtn, ok := pdu.(*RouterBusyToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			net := rbtn.GetRbtnNetworkList()
 			uint16s, ok := attrValue.([]uint16)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := slices.Equal(net, uint16s)
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWRatnNetworkList:
 			ratn, ok := pdu.(*RouterAvailableToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			net := ratn.GetRatnNetworkList()
 			uint16s, ok := attrValue.([]uint16)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := slices.Equal(net, uint16s)
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWIrtTable:
 			irt, ok := pdu.(*InitializeRoutingTable)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			irts := irt.GetIrtTable()
 			oirts, ok := attrValue.([]*RoutingTableEntry)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -311,18 +406,27 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 				return entry.Equals(entry2)
 			})
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWIrtaTable:
 			irta, ok := pdu.(*InitializeRoutingTableAck)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			irts := irta.GetIrtaTable()
 			oirts, ok := attrValue.([]*RoutingTableEntry)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -330,56 +434,86 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 				return entry.Equals(entry2)
 			})
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWEctnDNET:
 			ectn, ok := pdu.(*EstablishConnectionToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := ectn.GetEctnDNET() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWEctnTerminationTime:
 			ectn, ok := pdu.(*EstablishConnectionToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := ectn.GetEctnTerminationTime() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWDctnDNET:
 			dctn, ok := pdu.(*DisconnectConnectionToNetwork)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := dctn.GetDctnDNET() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWNniNet:
 			nni, ok := pdu.(*NetworkNumberIs)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := nni.GetNniNet() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWNniFlag:
 			nni, ok := pdu.(*NetworkNumberIs)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -387,11 +521,17 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 		case KWBvlciResultCode:
 			r, ok := pdu.(*Result)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			equals := r.GetBvlciResultCode() == attrValue
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -408,6 +548,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			}
 			owbdt, ok := attrValue.([]*Address)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -415,6 +558,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 				return a.Equals(b)
 			})
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -431,6 +577,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			}
 			equals := address.Equals(attrValue)
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -438,6 +587,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			panic("implement me")
 			equals := true // TODO temporary
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -445,6 +597,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			panic("implement me")
 			equals := true // TODO temporary
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -452,12 +607,18 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 			panic("implement me")
 			equals := true // TODO temporary
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case KWBvlciTimeToLive:
 			rfd, ok := pdu.(*RegisterForeignDevice)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -469,12 +630,18 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 		case KWBvlciFDT:
 			rfdta, ok := pdu.(*ReadForeignDeviceTableAck)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			ifdt := rfdta.GetBvlciFDT()
 			oifdt, ok := attrValue.([]*FDTEntry)
 			if !ok {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -486,6 +653,9 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 				return equals
 			})
 			if !equals {
+				if _debug != nil {
+					_debug("    - failed match, attr value: %r, %r", attrName, attrValue)
+				}
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
@@ -495,27 +665,4 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 	}
 	localLog.Trace().Msg("successful match")
 	return true
-}
-
-//go:generate plc4xGenerator -type=TimeoutTask -prefix=task_
-type TimeoutTask struct {
-	*OneShotTask
-
-	fn     GenericFunction `ignore:"true"`
-	args   Args
-	kwargs KWArgs
-}
-
-func NewTimeoutTask(fn GenericFunction, args Args, kwargs KWArgs, when *time.Time) *TimeoutTask {
-	_task := &TimeoutTask{
-		fn:     fn,
-		args:   args,
-		kwargs: kwargs,
-	}
-	_task.OneShotTask = NewOneShotTask(_task, when)
-	return _task
-}
-
-func (t *TimeoutTask) ProcessTask() error {
-	return t.fn(t.args, t.kwargs)
 }

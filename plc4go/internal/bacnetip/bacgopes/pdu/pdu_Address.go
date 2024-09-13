@@ -89,8 +89,8 @@ func (a *AddressTuple[L, R]) DeepCopy() any {
 
 func (a *AddressTuple[L, R]) Format(s fmt.State, v rune) {
 	switch v {
-	case 'r':
-		_, _ = s.Write([]byte(a.String()))
+	case 's', 'v', 'r':
+		_, _ = fmt.Fprint(s, a.String())
 	}
 }
 
@@ -634,7 +634,7 @@ func (a *Address) decodeAddress(addr any) error {
 			}
 			a.AddrTuple = &AddressTuple[string, uint16]{uaddr, *a.AddrPort}
 			if _debug != nil {
-				_debug("    - addrstr: %r", addrstr)
+				_debug("    - addrstr: %v", addrstr)
 			}
 
 			ip := ipv4ToUint32(addrstr)
@@ -796,9 +796,9 @@ func (a *Address) Equals(other any) bool {
 func (a *Address) Format(s fmt.State, v rune) {
 	switch v {
 	case 'r':
-		_, _ = s.Write([]byte("<" + StructName() + " " + a.String() + ">"))
+		_, _ = fmt.Fprintf(s, "<%s %s>", StructName(), a.String())
 	case 'v', 's':
-		_, _ = s.Write([]byte(a.String()))
+		_, _ = fmt.Fprint(s, a.String())
 	}
 }
 

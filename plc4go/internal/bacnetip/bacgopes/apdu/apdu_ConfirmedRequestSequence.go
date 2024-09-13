@@ -46,7 +46,7 @@ type ConfirmedRequestSequence struct {
 	_contract ConfirmedRequestSequenceContract
 }
 
-func NewConfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consistency, maybe we just convert it to args to be flexible*/ model.BACnetConfirmedServiceRequest, kwargs KWArgs, opts ...func(*ConfirmedRequestSequence)) (*ConfirmedRequestSequence, error) {
+func NewConfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consistency, maybe we just convert it to args to be flexible*/ model.BACnetConfirmedServiceRequest, kwArgs KWArgs, opts ...func(*ConfirmedRequestSequence)) (*ConfirmedRequestSequence, error) {
 	u := &ConfirmedRequestSequence{}
 	for _, opt := range opts {
 		opt(u)
@@ -57,7 +57,7 @@ func NewConfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consist
 		u._contract.(ConfirmedRequestSequenceContractRequirement).SetConfirmedRequestSequence(u)
 	}
 	var err error
-	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)), kwargs, WithAPCISequenceExtension(u._contract))
+	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)), kwArgs, WithAPCISequenceExtension(u._contract))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APCISequence")
 	}

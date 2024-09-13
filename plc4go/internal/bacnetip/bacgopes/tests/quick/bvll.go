@@ -22,13 +22,12 @@ package quick
 import (
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 func Result(i uint16) *bvll.Result {
-	result, err := bvll.NewResult(bvll.WithResultBvlciResultCode(readWriteModel.BVLCResultCode(i)))
+	result, err := bvll.NewResult(ToPtr(readWriteModel.BVLCResultCode(i)), NoArgs, NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +35,7 @@ func Result(i uint16) *bvll.Result {
 }
 
 func WriteBroadcastDistributionTable(bdt ...*pdu.Address) *bvll.WriteBroadcastDistributionTable {
-	writeBroadcastDistributionTable, err := bvll.NewWriteBroadcastDistributionTable(bvll.WithWriteBroadcastDistributionTableBDT(bdt...))
+	writeBroadcastDistributionTable, err := bvll.NewWriteBroadcastDistributionTable(bdt, NoArgs, NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +43,7 @@ func WriteBroadcastDistributionTable(bdt ...*pdu.Address) *bvll.WriteBroadcastDi
 }
 
 func ReadBroadcastDistributionTable() *bvll.ReadBroadcastDistributionTable {
-	readBroadcastDistributionTable, err := bvll.NewReadBroadcastDistributionTable()
+	readBroadcastDistributionTable, err := bvll.NewReadBroadcastDistributionTable(Nothing())
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +51,7 @@ func ReadBroadcastDistributionTable() *bvll.ReadBroadcastDistributionTable {
 }
 
 func ReadBroadcastDistributionTableAck(bdt ...*pdu.Address) *bvll.ReadBroadcastDistributionTableAck {
-	readBroadcastDistributionTable, err := bvll.NewReadBroadcastDistributionTableAck(bvll.WithReadBroadcastDistributionTableAckBDT(bdt...))
+	readBroadcastDistributionTable, err := bvll.NewReadBroadcastDistributionTableAck(bdt, NoArgs, NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +59,7 @@ func ReadBroadcastDistributionTableAck(bdt ...*pdu.Address) *bvll.ReadBroadcastD
 }
 
 func ForwardedNPDU(addr *pdu.Address, pduBytes []byte) *bvll.ForwardedNPDU {
-	npdu, err := bvll.NewForwardedNPDU(pdu.NewPDU(NoArgs, NKW(NewMessageBridge(pduBytes...))), bvll.WithForwardedNPDUAddress(addr))
+	npdu, err := bvll.NewForwardedNPDU(addr, NA(pduBytes), NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -68,7 +67,7 @@ func ForwardedNPDU(addr *pdu.Address, pduBytes []byte) *bvll.ForwardedNPDU {
 }
 
 func RegisterForeignDevice(ttl uint16) *bvll.RegisterForeignDevice {
-	registerForeignDevice, err := bvll.NewRegisterForeignDevice(bvll.WithRegisterForeignDeviceBvlciTimeToLive(ttl))
+	registerForeignDevice, err := bvll.NewRegisterForeignDevice(&ttl, NoArgs, NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +75,7 @@ func RegisterForeignDevice(ttl uint16) *bvll.RegisterForeignDevice {
 }
 
 func ReadForeignDeviceTable() *bvll.ReadForeignDeviceTable {
-	readForeignDeviceTable, err := bvll.NewReadForeignDeviceTable()
+	readForeignDeviceTable, err := bvll.NewReadForeignDeviceTable(Nothing())
 	if err != nil {
 		panic(err)
 	}
@@ -88,7 +87,7 @@ func FDTEntry() (entry *bvll.FDTEntry) {
 }
 
 func ReadForeignDeviceTableAck(fdts ...*bvll.FDTEntry) *bvll.ReadForeignDeviceTableAck {
-	readForeignDeviceTableAck, err := bvll.NewReadForeignDeviceTableAck(bvll.WithReadForeignDeviceTableAckFDT(fdts...))
+	readForeignDeviceTableAck, err := bvll.NewReadForeignDeviceTableAck(fdts, NoArgs, NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -96,7 +95,7 @@ func ReadForeignDeviceTableAck(fdts ...*bvll.FDTEntry) *bvll.ReadForeignDeviceTa
 }
 
 func DeleteForeignDeviceTableEntry(address *pdu.Address) *bvll.DeleteForeignDeviceTableEntry {
-	deleteForeignDeviceTableEntry, err := bvll.NewDeleteForeignDeviceTableEntry(bvll.WithDeleteForeignDeviceTableEntryAddress(address))
+	deleteForeignDeviceTableEntry, err := bvll.NewDeleteForeignDeviceTableEntry(address, NoArgs, NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -104,7 +103,7 @@ func DeleteForeignDeviceTableEntry(address *pdu.Address) *bvll.DeleteForeignDevi
 }
 
 func DistributeBroadcastToNetwork(pduBytes []byte) *bvll.DistributeBroadcastToNetwork {
-	distributeBroadcastToNetwork, err := bvll.NewDistributeBroadcastToNetwork(pdu.NewPDU(NoArgs, NKW(NewMessageBridge(pduBytes...))))
+	distributeBroadcastToNetwork, err := bvll.NewDistributeBroadcastToNetwork(NA(pduBytes), NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -112,7 +111,7 @@ func DistributeBroadcastToNetwork(pduBytes []byte) *bvll.DistributeBroadcastToNe
 }
 
 func OriginalUnicastNPDU(pduBytes []byte) *bvll.OriginalUnicastNPDU {
-	npdu, err := bvll.NewOriginalUnicastNPDU(pdu.NewPDU(NoArgs, NKW(NewMessageBridge(pduBytes...))))
+	npdu, err := bvll.NewOriginalUnicastNPDU(NA(pduBytes), NoKWArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -120,7 +119,7 @@ func OriginalUnicastNPDU(pduBytes []byte) *bvll.OriginalUnicastNPDU {
 }
 
 func OriginalBroadcastNPDU(pduBytes []byte) *bvll.OriginalBroadcastNPDU {
-	npdu, err := bvll.NewOriginalBroadcastNPDU(pdu.NewPDU(NoArgs, NKW(NewMessageBridge(pduBytes...))))
+	npdu, err := bvll.NewOriginalBroadcastNPDU(NA(pduBytes), NoKWArgs)
 	if err != nil {
 		panic(err)
 	}

@@ -99,6 +99,9 @@ type taskManager struct {
 }
 
 func NewTaskManager(localLog zerolog.Logger) TaskManager {
+	if _debug != nil {
+		_debug("__init__")
+	}
 	_taskManagerMutex.Lock()
 	defer _taskManagerMutex.Unlock()
 	if _taskManager != nil {
@@ -125,7 +128,10 @@ func NewTaskManager(localLog zerolog.Logger) TaskManager {
 	return t
 }
 
-func (m *taskManager) GetTime() time.Time {
+func (t *taskManager) GetTime() time.Time {
+	if _debug != nil {
+		_debug("get_time")
+	}
 	return time.Now()
 }
 
@@ -136,14 +142,17 @@ func GetTaskManagerTime() time.Time {
 	return _taskManager.GetTime()
 }
 
-func (m *taskManager) ClearTasks() {
-	m.tasks.Clear()
+func (t *taskManager) ClearTasks() {
+	t.tasks.Clear()
 }
 
-func (m *taskManager) InstallTask(task TaskRequirements) {
-	m.log.Debug().Stringer("task", task).Msg("InstallTask")
-	m.Lock()
-	defer m.Unlock()
+func (t *taskManager) InstallTask(task TaskRequirements) {
+	if _debug != nil {
+		_debug("install_task %r @ %r", task, task.GetTaskTime())
+	}
+	t.log.Debug().Stringer("task", task).Msg("InstallTask")
+	t.Lock()
+	defer t.Unlock()
 
 	// if the taskTime is None it hasn't been computed correctly
 	if task.GetTaskTime() == nil {
@@ -152,35 +161,44 @@ func (m *taskManager) InstallTask(task TaskRequirements) {
 
 	// if this is already installed, suspend it
 	if task.GetIsScheduled() {
-		m.Unlock()
-		m.SuspendTask(task)
-		m.Lock()
+		t.Unlock()
+		t.SuspendTask(task)
+		t.Lock()
 	}
 
 	// save this in the task list
-	m.count++
-	heap.Push(&m.tasks, &PriorityItem[int64, *taskItem]{
-		Value:    &taskItem{taskTime: task.GetTaskTime(), id: m.count, task: task},
+	t.count++
+	heap.Push(&t.tasks, &PriorityItem[int64, *taskItem]{
+		Value:    &taskItem{taskTime: task.GetTaskTime(), id: t.count, task: task},
 		Priority: task.GetTaskTime().UnixNano() - time.Time{}.UnixNano(),
 	})
-	m.log.Debug().Stringer("tasks", m.tasks).Msg("tasks")
+	if _debug != nil {
+		_debug("    - tasks: %r", t.tasks)
+	}
+	t.log.Debug().Stringer("tasks", t.tasks).Msg("tasks")
 
 	task.SetIsScheduled(true)
 }
 
-func (m *taskManager) SuspendTask(task TaskRequirements) {
-	m.log.Debug().Stringer("task", task).Msg("SuspendTask ")
-	m.Lock()
-	defer m.Unlock()
+func (t *taskManager) SuspendTask(task TaskRequirements) {
+	if _debug != nil {
+		_debug("suspend_task %r", task)
+	}
+	t.log.Debug().Stringer("task", task).Msg("SuspendTask ")
+	t.Lock()
+	defer t.Unlock()
 
 	deleted := false
-	for i, pqi := range m.tasks {
+	for i, pqi := range t.tasks {
 		//when := _value.taskTime
 		//n := _value.id
 		curtask := pqi.Value.task
 		if task == curtask {
-			m.log.Debug().Msg("task found")
-			heap.Remove(&m.tasks, i)
+			if _debug != nil {
+				_debug("    - task found")
+			}
+			t.log.Debug().Msg("task found")
+			heap.Remove(&t.tasks, i)
 			deleted = true
 
 			task.SetIsScheduled(false)
@@ -188,43 +206,52 @@ func (m *taskManager) SuspendTask(task TaskRequirements) {
 		}
 	}
 	if !deleted {
-		m.log.Debug().Msg("task not found")
+		if _debug != nil {
+			_debug("    - task not found")
+		}
+		t.log.Debug().Msg("task not found")
 	}
 }
 
-func (m *taskManager) ResumeTask(task TaskRequirements) {
-	m.log.Debug().Stringer("task", task).Msg("ResumeTask")
-	m.Lock()
-	defer m.Unlock()
+func (t *taskManager) ResumeTask(task TaskRequirements) {
+	if _debug != nil {
+		_debug("resume_task %r", task)
+	}
+	t.log.Debug().Stringer("task", task).Msg("ResumeTask")
+	t.Lock()
+	defer t.Unlock()
 
 	// just re-install it
-	m.InstallTask(task)
+	t.InstallTask(task)
 }
 
-func (m *taskManager) GetNextTask() (TaskRequirements, *time.Duration) {
-	m.log.Trace().Msg("GetNextTask")
-	m.Lock()
-	defer m.Unlock()
+func (t *taskManager) GetNextTask() (TaskRequirements, *time.Duration) {
+	if _debug != nil {
+		_debug("get_next_task")
+	}
+	t.log.Trace().Msg("GetNextTask")
+	t.Lock()
+	defer t.Unlock()
 
-	now := m.GetTime()
+	now := t.GetTime()
 
 	var task TaskRequirements
 	var delta *time.Duration
 
-	if len(m.tasks) > 0 {
-		pqi := m.tasks[0]
+	if len(t.tasks) > 0 {
+		pqi := t.tasks[0]
 		when := pqi.Value.taskTime
 		id := pqi.Value.id
 		_ = id
 		nextTask := pqi.Value.task
 		if when.Before(now) {
 			// pull it off the list and mark that it's no longer scheduled
-			heap.Pop(&m.tasks)
+			heap.Pop(&t.tasks)
 			task = nextTask
 			task.SetIsScheduled(false)
 
-			if len(m.tasks) > 0 {
-				pqi := m.tasks[0]
+			if len(t.tasks) > 0 {
+				pqi := t.tasks[0]
 				when := pqi.Value.taskTime
 				id := pqi.Value.id
 				_ = id
@@ -245,12 +272,15 @@ func (m *taskManager) GetNextTask() (TaskRequirements, *time.Duration) {
 	return task, delta
 }
 
-func (m *taskManager) ProcessTask(task TaskRequirements) {
-	m.log.Debug().Stringer("task", task).Msg("ProcessTask")
+func (t *taskManager) ProcessTask(task TaskRequirements) {
+	if _debug != nil {
+		_debug("process_task %r", task)
+	}
+	t.log.Debug().Stringer("task", task).Msg("ProcessTask")
 
 	// process the task
 	if err := task.ProcessTask(); err != nil {
-		m.log.Error().Err(err).Msg("Error processing Task")
+		t.log.Error().Err(err).Msg("Error processing Task")
 	}
 
 	switch task.(type) {
@@ -261,28 +291,28 @@ func (m *taskManager) ProcessTask(task TaskRequirements) {
 	}
 }
 
-func (m *taskManager) GetTasks() []TaskRequirements {
-	m.Lock()
-	defer m.Unlock()
-	tasks := make([]TaskRequirements, len(m.tasks))
-	for i, pqi := range m.tasks {
+func (t *taskManager) GetTasks() []TaskRequirements {
+	t.Lock()
+	defer t.Unlock()
+	tasks := make([]TaskRequirements, len(t.tasks))
+	for i, pqi := range t.tasks {
 		tasks[i] = pqi.Value.task
 	}
 	return tasks
 }
 
-func (m *taskManager) PopTask() TaskRequirements {
-	m.log.Trace().Msg("pop task")
-	m.Lock()
-	defer m.Unlock()
-	pqi := heap.Pop(&m.tasks).(*PriorityItem[int64, *taskItem])
+func (t *taskManager) PopTask() TaskRequirements {
+	t.log.Trace().Msg("pop task")
+	t.Lock()
+	defer t.Unlock()
+	pqi := heap.Pop(&t.tasks).(*PriorityItem[int64, *taskItem])
 	return pqi.Value.task
 }
 
-func (m *taskManager) CountTasks() int {
-	return m.tasks.Len()
+func (t *taskManager) CountTasks() int {
+	return t.tasks.Len()
 }
 
-func (m *taskManager) String() string {
-	return fmt.Sprintf("TaskManager{tasks: %v}", m.tasks)
+func (t *taskManager) String() string {
+	return fmt.Sprintf("TaskManager{tasks: %v}", t.tasks)
 }

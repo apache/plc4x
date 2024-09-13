@@ -34,13 +34,13 @@ import (
 )
 
 type WhoIsIAmServicesRequirements interface {
-	Request(args Args, kwargs KWArgs) error
+	Request(args Args, kwArgs KWArgs) error
 	RegisterHelperFn(name string, fn func(apdu APDU) error) error
 }
 
 //go:generate plc4xGenerator -type=WhoIsIAmServices -prefix=service_device_
 type WhoIsIAmServices struct {
-	_requirements WhoIsIAmServicesRequirements
+	_requirements WhoIsIAmServicesRequirements `ignore:"true"`
 	Capability
 
 	localDevice *LocalDeviceObject

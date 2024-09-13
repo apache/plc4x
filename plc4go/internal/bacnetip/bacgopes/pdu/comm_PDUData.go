@@ -23,6 +23,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"os"
+	"strings"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
@@ -52,9 +54,10 @@ type _PDUData struct {
 
 var _ PDUData = (*_PDUData)(nil)
 
-func NewPDUData(args Args, kwargs KWArgs) PDUData {
+func NewPDUData(args Args, kwArgs KWArgs) PDUData {
+	data := GAO[any](args, 0, nil)
 	if _debug != nil {
-		_debug("__init__ %r %r", args, kwargs)
+		_debug("__init__ %r %r %r", data, args, kwArgs)
 	}
 	p := &_PDUData{}
 	if len(args) == 0 {
@@ -150,6 +153,23 @@ func (d *_PDUData) deepCopy() *_PDUData {
 
 func (d *_PDUData) DeepCopy() any {
 	return d.deepCopy()
+}
+
+func (d *_PDUData) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
+	if indent == 0 {
+		indent = 1
+	}
+	if file == nil {
+		file = os.Stderr
+	}
+
+	var hexed string
+	if len(d.data) > 20 {
+		hexed = Btox(d.data[:20], ".") + "..."
+	} else {
+		hexed = Btox(d.data, ".")
+	}
+	_, _ = fmt.Fprintf(file, "%spduData = x'%s'\n", strings.Repeat("    ", indent), hexed)
 }
 
 func (d *_PDUData) String() string {

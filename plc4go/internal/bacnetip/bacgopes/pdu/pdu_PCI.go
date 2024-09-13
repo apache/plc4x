@@ -20,12 +20,9 @@
 package pdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
@@ -42,38 +39,51 @@ type PCI interface {
 
 type _PCI struct {
 	*__PCI
-	expectingReply  bool
-	networkPriority model.NPDUNetworkPriority
+	pduExpectingReply  bool
+	pduNetworkPriority model.NPDUNetworkPriority
 }
 
 var _ PCI = (*_PCI)(nil)
 
-func NewPCI(args Args, kwargs KWArgs) *_PCI {
+func NewPCI(args Args, kwArgs KWArgs) *_PCI {
 	if _debug != nil {
-		_debug("__init__ %r %r", args, kwargs)
+		_debug("__init__ %r %r", args, kwArgs)
 	}
 	var myKwargs = make(KWArgs)
 	var otherKwargs = make(KWArgs)
 	for _, element := range []KnownKey{KWPCIExpectingReply, KWPCINetworkPriority} {
-		if v, ok := kwargs[element]; ok {
+		if v, ok := kwArgs[element]; ok {
 			myKwargs[element] = v
 		}
 	}
-	for k, v := range kwargs {
+	for k, v := range kwArgs {
 		if _, ok := myKwargs[k]; !ok {
 			otherKwargs[k] = v
 		}
 	}
 	if _debug != nil {
-		_debug("    - my_kwargs: %r", myKwargs)
+		_debug("    - my_kwArgs: %r", myKwargs)
 	}
 	if _debug != nil {
-		_debug("    - other_kwargs: %r", otherKwargs)
+		_debug("    - other_kwArgs: %r", otherKwargs)
 	}
-	return &_PCI{
+	i := &_PCI{
 		new__PCI(args, otherKwargs),
 		KWO(myKwargs, KWPCIExpectingReply, false),
 		KWO(myKwargs, KWPCINetworkPriority, model.NPDUNetworkPriority_NORMAL_MESSAGE),
+	}
+	i.AddDebugContents(i, "pduExpectingReply", "pduNetworkPriority")
+	return i
+}
+
+func (p *_PCI) GetDebugAttr(attr string) any {
+	switch attr {
+	case "pduExpectingReply":
+		return p.pduExpectingReply
+	case "pduNetworkPriority":
+		return p.pduNetworkPriority
+	default:
+		return nil
 	}
 }
 
@@ -83,8 +93,8 @@ func (p *_PCI) Update(pci Arg) error {
 	}
 	switch pci := pci.(type) {
 	case PCI:
-		p.expectingReply = pci.GetExpectingReply()
-		p.networkPriority = pci.GetNetworkPriority()
+		p.pduExpectingReply = pci.GetExpectingReply()
+		p.pduNetworkPriority = pci.GetNetworkPriority()
 		return nil
 	default:
 		return errors.Errorf("invalid PCI type %T", pci)
@@ -92,19 +102,19 @@ func (p *_PCI) Update(pci Arg) error {
 }
 
 func (p *_PCI) SetExpectingReply(expectingReply bool) {
-	p.expectingReply = expectingReply
+	p.pduExpectingReply = expectingReply
 }
 
 func (p *_PCI) GetExpectingReply() bool {
-	return p.expectingReply
+	return p.pduExpectingReply
 }
 
 func (p *_PCI) SetNetworkPriority(priority model.NPDUNetworkPriority) {
-	p.networkPriority = priority
+	p.pduNetworkPriority = priority
 }
 
 func (p *_PCI) GetNetworkPriority() model.NPDUNetworkPriority {
-	return p.networkPriority
+	return p.pduNetworkPriority
 }
 
 func (p *_PCI) GetPCI() PCI {
@@ -113,19 +123,11 @@ func (p *_PCI) GetPCI() PCI {
 
 func (p *_PCI) deepCopy() *_PCI {
 	__pci := p.__PCI.deepCopy()
-	expectingReply := p.expectingReply
-	networkPriority := p.networkPriority // Those are immutable so no copy needed
+	expectingReply := p.pduExpectingReply
+	networkPriority := p.pduNetworkPriority // Those are immutable so no copy needed
 	return &_PCI{__pci, expectingReply, networkPriority}
 }
 
 func (p *_PCI) DeepCopy() any {
 	return p.deepCopy()
-}
-
-func (p *_PCI) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("_PCI{%s, expectingReply: %t, networkPriority: %s}", p.__PCI, p.expectingReply, p.networkPriority)
-	} else {
-		return fmt.Sprintf("%s\npduExpectingReply = %t\npduNetworkPriority = %s", p.__PCI, p.expectingReply, p.networkPriority)
-	}
 }

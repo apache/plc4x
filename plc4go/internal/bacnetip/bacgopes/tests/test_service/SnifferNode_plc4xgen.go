@@ -48,7 +48,7 @@ func (d *SnifferNode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	if err := writeBuffer.PushContext("SnifferNode"); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 

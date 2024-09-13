@@ -48,10 +48,10 @@ func (d *NPDUCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	if err := writeBuffer.PushContext("NPDUCodec"); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	if err := d.Server.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ServerContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("NPDUCodec"); err != nil {

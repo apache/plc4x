@@ -25,13 +25,14 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 //go:generate plc4xGenerator -type=FauxMultiplexer -prefix=helpers_
 type FauxMultiplexer struct {
-	DefaultRFormatter `ignore:"true"`
+	*DefaultRFormatter `ignore:"true"`
 	ClientContract
 	ServerContract
 
@@ -49,6 +50,9 @@ func NewFauxMultiplexer(localLog zerolog.Logger, addr *Address, network *IPNetwo
 		DefaultRFormatter: NewDefaultRFormatter(),
 		address:           addr,
 		log:               localLog,
+	}
+	if _debug != nil {
+		_debug("__init__")
 	}
 	var err error
 	f.ClientContract, err = NewClient(localLog) // TODO: do we need to pass ids?
@@ -76,59 +80,69 @@ func NewFauxMultiplexer(localLog zerolog.Logger, addr *Address, network *IPNetwo
 	return f, nil
 }
 
-func (s *FauxMultiplexer) Indication(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-
+func (s *FauxMultiplexer) Indication(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", pdu)
+	}
 
 	var dest *Address
 	// check for a broadcast message
 	if pdu.GetPDUDestination().AddrType == LOCAL_BROADCAST_ADDRESS {
 		var err error
-		dest, err = NewAddress(NA(NA(s.broadcastTuple)))
+		dest, err = NewAddress(NA(s.broadcastTuple))
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
+		}
+		if _debug != nil {
+			_debug("    - requesting local broadcast: %r", dest)
 		}
 		s.log.Debug().Stringer("dest", dest).Msg("Requesting local broadcast")
 	} else if pdu.GetPDUDestination().AddrType == LOCAL_STATION_ADDRESS {
 		var err error
-		dest, err = NewAddress(NA(NA(pdu.GetPDUDestination().AddrAddress)))
+		dest, err = NewAddress(NA(pdu.GetPDUDestination().AddrAddress))
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
+		}
+		if _debug != nil {
+			_debug("    - requesting local station: %r", dest)
 		}
 		s.log.Debug().Stringer("dest", dest).Msg("Requesting local station")
 	} else {
 		return errors.New("unknown destination type")
 	}
 
-	unicast, err := NewAddress(NA(NA(s.unicastTuple)))
+	unicast, err := NewAddress(NA(s.unicastTuple))
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
-	return s.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCISource, unicast, KWCPCIDestination, dest))), NoKWArgs)
+	return s.Request(NA(NewPDU(NewArgs(pdu), NKW(KWCPCISource, unicast, KWCPCIDestination, dest))), NoKWArgs)
 }
 
-func (s *FauxMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (s *FauxMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
 
-	// the PDU source and destination are tuples, convert them to Address instances
+	// the PDU source and destination are tuples, convert them to Address instances // TODO: not for us... why should they?
 	src := pdu.GetPDUSource()
 
-	broadcast, err := NewAddress(NA(s.broadcastTuple))
-	if err != nil {
-		return errors.Wrap(err, "error creating address")
-	}
 	var dest *Address
 	// see if the destination was our broadcast address
-	if pdu.GetPDUDestination().Equals(broadcast) {
+	if pdu.GetPDUDestination().Equals(s.broadcastTuple) {
 		dest = NewLocalBroadcast(nil)
 	} else {
-		dest, err = NewAddress(NA(pdu.GetPDUDestination().AddrAddress))
+		// TODO: again... no tuple. Why should it?
+		/*var err error
+		dest, err = NewAddress(NA(pdu.GetPDUDestination()))
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
-		}
+		}*/
+		dest = pdu.GetPDUDestination()
 	}
 
-	return s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
+	return s.Response(NA(NewPDU(NA(pdu), NKW(KWCompRootMessage, pdu, KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
 }

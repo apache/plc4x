@@ -26,22 +26,22 @@ type OneShotFunctionTask struct {
 	*OneShotDeleteTask
 	fn     GenericFunction `ignore:"true"`
 	args   Args
-	kwargs KWArgs
+	kwArgs KWArgs
 }
 
-func OneShotFunction(fn GenericFunction, args Args, kwargs KWArgs) *OneShotFunctionTask {
-	task := &OneShotFunctionTask{fn: fn, args: args, kwargs: kwargs}
+func OneShotFunction(fn GenericFunction, args Args, kwArgs KWArgs) *OneShotFunctionTask {
+	task := &OneShotFunctionTask{fn: fn, args: args, kwArgs: kwArgs}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 	task.InstallTask(WithInstallTaskOptionsDelta(0))
 	return task
 }
 
-func FunctionTask(fn GenericFunction, args Args, kwargs KWArgs) *OneShotFunctionTask {
-	task := &OneShotFunctionTask{fn: fn, args: args, kwargs: kwargs}
+func FunctionTask(fn GenericFunction, args Args, kwArgs KWArgs) *OneShotFunctionTask {
+	task := &OneShotFunctionTask{fn: fn, args: args, kwArgs: kwArgs}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 	return task
 }
 
 func (m *OneShotFunctionTask) ProcessTask() error {
-	return m.fn(m.args, m.kwargs)
+	return m.fn(m.args, m.kwArgs)
 }

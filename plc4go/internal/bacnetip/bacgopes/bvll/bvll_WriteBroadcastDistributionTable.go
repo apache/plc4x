@@ -38,26 +38,36 @@ type WriteBroadcastDistributionTable struct {
 
 var _ BVLPDU = (*WriteBroadcastDistributionTable)(nil)
 
-func NewWriteBroadcastDistributionTable(opts ...func(*WriteBroadcastDistributionTable)) (*WriteBroadcastDistributionTable, error) {
-	b := &WriteBroadcastDistributionTable{}
-	for _, opt := range opts {
-		opt(b)
+func NewWriteBroadcastDistributionTable(bdt []*Address, args Args, kwArgs KWArgs) (*WriteBroadcastDistributionTable, error) {
+	w := &WriteBroadcastDistributionTable{}
+	w._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	w.AddDebugContents(w, "bvlciBDT")
+	if w.GetRootMessage() == nil {
+		w.SetRootMessage(readWriteModel.NewBVLCWriteBroadcastDistributionTable(w.produceBroadcastDistributionTable()))
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewBVLCWriteBroadcastDistributionTable(b.produceBroadcastDistributionTable(), 0))).(*_BVLPDU)
-	return b, nil
+	w.bvlciFunction = BVLCIWriteBroadcastDistributionTable
+	w.bvlciLength = uint16(4 + 10*len(bdt))
+	w.bvlciBDT = bdt
+	return w, nil
 }
 
-func WithWriteBroadcastDistributionTableBDT(bdt ...*Address) func(*WriteBroadcastDistributionTable) {
-	return func(b *WriteBroadcastDistributionTable) {
-		b.bvlciBDT = bdt
+func (w *WriteBroadcastDistributionTable) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciBDT":
+		if w.bvlciBDT != nil {
+			return w.bvlciBDT
+		}
+	default:
+		return nil
 	}
+	return nil
 }
 
 func (w *WriteBroadcastDistributionTable) GetBvlciBDT() []*Address {
 	return w.bvlciBDT
 }
 
-func (w *WriteBroadcastDistributionTable) produceBroadcastDistributionTable() (entries []readWriteModel.BVLCBroadcastDistributionTableEntry) {
+func (w *WriteBroadcastDistributionTable) produceBroadcastDistributionTable() (entries []readWriteModel.BVLCBroadcastDistributionTableEntry, _ uint16) {
 	for _, address := range w.bvlciBDT {
 		addr := address.AddrAddress[:4]
 		port := uint16(47808)

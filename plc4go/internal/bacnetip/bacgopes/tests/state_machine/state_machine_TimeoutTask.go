@@ -17,29 +17,48 @@
  * under the License.
  */
 
-package quick
+package state_machine
 
 import (
+	"fmt"
+	"time"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
-func Address(args ...any) *pdu.Address {
-	address, err := pdu.NewAddress(args)
-	if err != nil {
-		panic(err)
+//go:generate plc4xGenerator -type=TimeoutTask -prefix=state_machine_
+type TimeoutTask struct {
+	*OneShotTask
+
+	fn     GenericFunction `ignore:"true"`
+	args   Args
+	kwArgs KWArgs
+}
+
+func NewTimeoutTask(fn GenericFunction, args Args, kwArgs KWArgs, when *time.Time) *TimeoutTask {
+	if _debug != nil {
+		_debug("__init__ %r %r %r", fn, args, kwArgs)
 	}
-	return address
+	_task := &TimeoutTask{
+		fn:     fn,
+		args:   args,
+		kwArgs: kwArgs,
+	}
+	_task.OneShotTask = NewOneShotTask(_task, when)
+	return _task
 }
 
-func AddressTuple[L any, R any](l L, r R) *pdu.AddressTuple[L, R] {
-	return &pdu.AddressTuple[L, R]{Left: l, Right: r}
+func (t *TimeoutTask) ProcessTask() error {
+	if _debug != nil {
+		_debug("process_task %r", t.fn)
+	}
+	return t.fn(t.args, t.kwArgs)
 }
 
-func PDUData(args ...any) pdu.PDUData {
-	if args == nil {
-		return pdu.NewPDUData(NoArgs, NoKWArgs)
-	} else {
-		return pdu.NewPDUData(NA(args[0].([]byte)), NoKWArgs)
+func (t *TimeoutTask) Format(s fmt.State, c rune) {
+	switch c {
+	case 's', 'v', 'r':
+		_, _ = s.Write([]byte(fmt.Sprintf("process_task %p", t.fn)))
 	}
 }

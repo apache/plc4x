@@ -36,6 +36,9 @@ type IPNetwork struct {
 }
 
 func NewIPNetwork(localLog zerolog.Logger, opts ...func(*Network)) *IPNetwork {
+	if _debug != nil {
+		_debug("__init__")
+	}
 	return &IPNetwork{
 		Network: NewNetwork(localLog, opts...),
 	}
@@ -43,6 +46,9 @@ func NewIPNetwork(localLog zerolog.Logger, opts ...func(*Network)) *IPNetwork {
 
 // AddNode Add a node to this network, let the node know which network it's on.
 func (n *IPNetwork) AddNode(node NetworkNode) {
+	if _debug != nil {
+		_debug("add_node %r", node)
+	}
 	n.log.Debug().Stringer("node", node).Msg("Adding node")
 
 	ipNode := node.(*IPNode)

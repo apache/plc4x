@@ -32,15 +32,21 @@ type RecurringFunctionTask struct {
 	*RecurringTask
 	fn     GenericFunction
 	args   Args
-	kwargs KWArgs
+	kwArgs KWArgs
 }
 
-func NewRecurringFunctionTask(localLog zerolog.Logger, fn GenericFunction, args Args, kwargs KWArgs, opts ...func(*RecurringFunctionTask)) *RecurringFunctionTask {
-	r := &RecurringFunctionTask{fn: fn, args: args, kwargs: kwargs}
+func NewRecurringFunctionTask(localLog zerolog.Logger, fn GenericFunction, args Args, kwArgs KWArgs, opts ...func(*RecurringFunctionTask)) *RecurringFunctionTask {
+	r := &RecurringFunctionTask{fn: fn, args: args, kwArgs: kwArgs}
 	for _, opt := range opts {
 		opt(r)
 	}
+	if _debug != nil {
+		_debug("RecurringFunctionTask %r %r %r", fn, args, kwArgs)
+	}
 	r.RecurringTask = NewRecurringTask(localLog, r)
+	if _debug != nil {
+		_debug("    - task: %r", r)
+	}
 	return r
 }
 
@@ -51,9 +57,12 @@ func WithRecurringFunctionTaskInterval(interval time.Duration) func(*RecurringFu
 }
 
 func (r *RecurringFunctionTask) ProcessTask() error {
-	return r.fn(r.args, r.kwargs)
+	if _debug != nil {
+		_debug("process_task %r %r %r", r.fn, r.args, r.kwArgs)
+	}
+	return r.fn(r.args, r.kwArgs)
 }
 
 func (r *RecurringFunctionTask) String() string {
-	return fmt.Sprintf("RecurringFunctionTask(%v, fn: %t, args: %s, kwargs: %s)", r.RecurringTask, r.fn != nil, r.args, r.kwargs)
+	return fmt.Sprintf("RecurringFunctionTask(%v, fn: %t, args: %s, kwArgs: %s)", r.RecurringTask, r.fn != nil, r.args, r.kwArgs)
 }

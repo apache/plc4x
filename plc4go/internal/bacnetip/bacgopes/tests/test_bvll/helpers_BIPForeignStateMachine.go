@@ -27,7 +27,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
@@ -35,7 +35,6 @@ import (
 //
 //	parameters are NPDUs.
 type BIPForeignStateMachine struct {
-	DefaultRFormatter `ignore:"true"`
 	*ClientStateMachine
 
 	address *Address
@@ -48,8 +47,10 @@ type BIPForeignStateMachine struct {
 
 func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPForeignStateMachine, error) {
 	b := &BIPForeignStateMachine{
-		DefaultRFormatter: NewDefaultRFormatter(),
-		log:               localLog,
+		log: localLog,
+	}
+	if _debug != nil {
+		_debug("__init__ %s %r", address, vlan)
 	}
 	var err error
 	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b))

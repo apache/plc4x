@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package trapped_classes
 
 import (
 	"github.com/rs/zerolog"

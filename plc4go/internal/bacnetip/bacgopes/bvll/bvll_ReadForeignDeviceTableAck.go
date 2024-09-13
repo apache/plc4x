@@ -27,7 +27,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type ReadForeignDeviceTableAck struct {
@@ -38,26 +38,36 @@ type ReadForeignDeviceTableAck struct {
 
 var _ BVLPDU = (*ReadForeignDeviceTableAck)(nil)
 
-func NewReadForeignDeviceTableAck(opts ...func(*ReadForeignDeviceTableAck)) (*ReadForeignDeviceTableAck, error) {
-	b := &ReadForeignDeviceTableAck{}
-	for _, opt := range opts {
-		opt(b)
+func NewReadForeignDeviceTableAck(fdt []*FDTEntry, args Args, kwArgs KWArgs) (*ReadForeignDeviceTableAck, error) {
+	r := &ReadForeignDeviceTableAck{}
+	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	r.AddDebugContents(r, "bvlciFDT++")
+	if r.GetRootMessage() == nil {
+		r.SetRootMessage(readWriteModel.NewBVLCReadForeignDeviceTableAck(r.produceForeignDeviceTable()))
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCReadForeignDeviceTableAck(b.produceForeignDeviceTable(), 0))).(*_BVLPDU)
-	return b, nil
+	r.bvlciFunction = BVLCIReadBroadcastDistributionTableAck
+	r.bvlciLength = uint16(4 + 10*len(fdt))
+	r.bvlciFDT = fdt
+	return r, nil
 }
 
-func WithReadForeignDeviceTableAckFDT(fdts ...*FDTEntry) func(*ReadForeignDeviceTableAck) {
-	return func(b *ReadForeignDeviceTableAck) {
-		b.bvlciFDT = fdts
+func (r *ReadForeignDeviceTableAck) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciFDT":
+		if r.bvlciFDT != nil {
+			return r.bvlciFDT
+		}
+	default:
+		return nil
 	}
+	return nil
 }
 
 func (r *ReadForeignDeviceTableAck) GetBvlciFDT() []*FDTEntry {
 	return r.bvlciFDT
 }
 
-func (r *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []model.BVLCForeignDeviceTableEntry) {
+func (r *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []readWriteModel.BVLCForeignDeviceTableEntry, _ uint16) {
 	for _, entry := range r.bvlciFDT {
 		address := entry.FDAddress
 		addr := address.AddrAddress[:4]
@@ -65,12 +75,12 @@ func (r *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []model
 		if address.AddrPort != nil {
 			port = *address.AddrPort
 		}
-		entries = append(entries, model.NewBVLCForeignDeviceTableEntry(addr, port, entry.FDTTL, entry.FDRemain))
+		entries = append(entries, readWriteModel.NewBVLCForeignDeviceTableEntry(addr, port, entry.FDTTL, entry.FDRemain))
 	}
 	return
 }
 
-func (r *ReadForeignDeviceTableAck) produceBvlciFDT(entries []model.BVLCForeignDeviceTableEntry) (bvlciFDT []*FDTEntry) {
+func (r *ReadForeignDeviceTableAck) produceBvlciFDT(entries []readWriteModel.BVLCForeignDeviceTableEntry) (bvlciFDT []*FDTEntry) {
 	for _, entry := range entries {
 		addr := entry.GetIp()
 		port := entry.GetPort()
@@ -113,7 +123,7 @@ func (r *ReadForeignDeviceTableAck) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCReadForeignDeviceTableAck:
+		case readWriteModel.BVLCReadForeignDeviceTableAck:
 			r.bvlciFDT = r.produceBvlciFDT(rm.GetTable())
 			r.SetRootMessage(rm)
 		}

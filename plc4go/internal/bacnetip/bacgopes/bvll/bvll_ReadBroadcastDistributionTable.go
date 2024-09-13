@@ -26,7 +26,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type ReadBroadcastDistributionTable struct {
@@ -35,13 +35,15 @@ type ReadBroadcastDistributionTable struct {
 
 var _ BVLPDU = (*ReadBroadcastDistributionTable)(nil)
 
-func NewReadBroadcastDistributionTable(opts ...func(*ReadBroadcastDistributionTable)) (*ReadBroadcastDistributionTable, error) {
-	b := &ReadBroadcastDistributionTable{}
-	for _, opt := range opts {
-		opt(b)
+func NewReadBroadcastDistributionTable(args Args, kwArgs KWArgs) (*ReadBroadcastDistributionTable, error) {
+	r := &ReadBroadcastDistributionTable{}
+	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	if r.GetRootMessage() == nil {
+		r.SetRootMessage(readWriteModel.NewBVLCReadBroadcastDistributionTable())
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCReadBroadcastDistributionTable())).(*_BVLPDU)
-	return b, nil
+	r.bvlciFunction = BVLCIReadBroadcastDistributionTable
+	r.bvlciLength = 4
+	return r, nil
 }
 
 func (r *ReadBroadcastDistributionTable) Encode(bvlpdu Arg) error {
@@ -61,7 +63,7 @@ func (r *ReadBroadcastDistributionTable) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCReadBroadcastDistributionTable:
+		case readWriteModel.BVLCReadBroadcastDistributionTable:
 			r.SetRootMessage(rm)
 		}
 	}

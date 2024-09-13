@@ -40,7 +40,7 @@ type BIPNetworkApplication struct {
 
 	// passThroughArgs
 	argBBMDAddress **Address                  `ignore:"true"`
-	argBBMDTTL     *int                       `ignore:"true"`
+	argBBMDTTL     *uint16                    `ignore:"true"`
 	argEID         *int                       `ignore:"true"`
 	argASE         *ApplicationServiceElement `ignore:"true"`
 

@@ -75,9 +75,9 @@ func WithNetworkAdapterCid(cid int) func(*NetworkAdapter) {
 }
 
 // Confirmation Decode upstream PDUs and pass them up to the service access point.
-func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
+func (n *NetworkAdapter) Confirmation(args Args, kwArgs KWArgs) error {
 	n.log.Debug().
-		Stringer("Args", args).Stringer("KWArgs", kwargs).
+		Stringer("Args", args).Stringer("KWArgs", kwArgs).
 		Interface("adapterNet", n.adapterNet).
 		Msg("confirmation")
 

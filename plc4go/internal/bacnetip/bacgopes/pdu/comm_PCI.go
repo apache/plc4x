@@ -21,14 +21,11 @@ package pdu
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -50,6 +47,7 @@ type IPCI interface {
 }
 
 type __PCI struct {
+	*DebugContents
 	rootMessage    spi.Message
 	pduUserData    spi.Message
 	pduSource      *Address
@@ -58,37 +56,56 @@ type __PCI struct {
 
 var _ IPCI = (*__PCI)(nil)
 
-func new__PCI(args Args, kwargs KWArgs) *__PCI {
+func new__PCI(args Args, kwArgs KWArgs) *__PCI {
 	if _debug != nil {
-		_debug("__init__ %r %r", args, kwargs)
+		_debug("__init__ %r %r", args, kwArgs)
 	}
 	i := &__PCI{
-		rootMessage: KWO[spi.Message](kwargs, KWCompRootMessage, nil),
+		rootMessage: KWO[spi.Message](kwArgs, KWCompRootMessage, nil),
 	}
-	delete(kwargs, KWCompRootMessage)
+	delete(kwArgs, KWCompRootMessage)
+	i.DebugContents = NewDebugContents(i, "pduUserData+", "pduSource", "pduDestination")
 	var myKwargs = make(KWArgs)
 	var otherKwargs = make(KWArgs)
 	for _, element := range []KnownKey{KWCPCIUserData, KWCPCISource, KWCPCIDestination} {
-		if v, ok := kwargs[element]; ok {
+		if v, ok := kwArgs[element]; ok {
 			myKwargs[element] = v
 		}
 	}
-	for k, v := range kwargs {
+	for k, v := range kwArgs {
 		if _, ok := myKwargs[k]; !ok {
 			otherKwargs[k] = v
 		}
 	}
 	if _debug != nil {
-		_debug("    - my_kwargs: %r", myKwargs)
+		_debug("    - my_kwArgs: %r", myKwargs)
 	}
 	if _debug != nil {
-		_debug("    - other_kwargs: %r", otherKwargs)
+		_debug("    - other_kwArgs: %r", otherKwargs)
 	}
 
-	i.pduUserData = KWO[spi.Message](kwargs, KWCPCIUserData, nil)
-	i.pduSource = KWO[*Address](kwargs, KWCPCISource, nil)
-	i.pduDestination = KWO[*Address](kwargs, KWCPCIDestination, nil)
+	i.pduUserData = KWO[spi.Message](kwArgs, KWCPCIUserData, nil)
+	i.pduSource = KWO[*Address](kwArgs, KWCPCISource, nil)
+	i.pduDestination = KWO[*Address](kwArgs, KWCPCIDestination, nil)
 	return i
+}
+
+func (p *__PCI) GetDebugAttr(attr string) any {
+	switch attr {
+	case "pduUserData":
+		return p.pduUserData
+	case "pduSource":
+		if p.pduSource != nil {
+			return p.pduSource
+		}
+	case "pduDestination":
+		if p.pduDestination != nil {
+			return p.pduDestination
+		}
+	default:
+		return nil
+	}
+	return nil
 }
 
 func (p *__PCI) SetRootMessage(rootMessage spi.Message) {
@@ -149,7 +166,7 @@ func (p *__PCI) deepCopy() *__PCI {
 		copyPduDestination := *pduDestination
 		pduDestination = &copyPduDestination
 	}
-	return &__PCI{rootMessage, pduUserData, pduSource, pduDestination}
+	return &__PCI{p.DebugContents, rootMessage, pduUserData, pduSource, pduDestination}
 }
 
 func (p *__PCI) DeepCopy() any {
@@ -185,46 +202,8 @@ func (p *__PCI) GetLengthInBits(ctx context.Context) uint16 {
 }
 
 func (p *__PCI) String() string {
-	if ExtendedPDUOutput {
-		rootMessageString := "nil"
-		if p.rootMessage != nil && ExtendedPDUOutput {
-			rootMessageString = p.rootMessage.String()
-			if strings.Contains(rootMessageString, "\n") {
-				rootMessageString = "\n" + rootMessageString + "\n"
-			}
-		} else if p.rootMessage != nil {
-			if bytes, err := p.rootMessage.Serialize(); err != nil {
-				rootMessageString = err.Error()
-			} else {
-				rootMessageString = Btox(bytes, ".")
-			}
-		}
-		pduUserDataString := "nil"
-		if p.pduUserData != nil && ExtendedPDUOutput {
-			pduUserDataString = p.pduUserData.String()
-			if strings.Contains(pduUserDataString, "\n") {
-				pduUserDataString = "\n" + pduUserDataString + "\n"
-			}
-		} else if p.pduUserData != nil {
-			if bytes, err := p.pduUserData.Serialize(); err != nil {
-				pduUserDataString = err.Error()
-			} else {
-				pduUserDataString = Btox(bytes, ".")
-			}
-		}
-		return fmt.Sprintf("__PCI{rootMessage: %s, pduUserData: %s, pduSource: %s, pduDestination: %s}", rootMessageString, pduUserDataString, p.pduSource, p.pduDestination)
-	} else {
-		pduSourceStr := ""
-		if p.pduSource != nil {
-			pduSourceStr = "pduSource = " + p.pduSource.String()
-		}
-		pduDestinationStr := ""
-		if p.pduDestination != nil {
-			pduDestinationStr = "\npduDestination = " + p.pduDestination.String()
-			if pduSourceStr == "" {
-				pduDestinationStr = pduDestinationStr[1:]
-			}
-		}
-		return fmt.Sprintf("%s%s", pduSourceStr, pduDestinationStr)
+	if p.rootMessage == nil {
+		return "_PCI<nil>"
 	}
+	return p.rootMessage.String()
 }

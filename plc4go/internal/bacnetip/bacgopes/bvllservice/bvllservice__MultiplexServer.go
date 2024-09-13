@@ -45,6 +45,6 @@ func _New_MultiplexServer(localLog zerolog.Logger, multiplexer *UDPMultiplexer) 
 	return m, nil
 }
 
-func (m *_MultiplexServer) Indication(args Args, kwargs KWArgs) error {
+func (m *_MultiplexServer) Indication(args Args, kwArgs KWArgs) error {
 	return m.multiplexer.Indication(NA(m, args), NoKWArgs)
 }

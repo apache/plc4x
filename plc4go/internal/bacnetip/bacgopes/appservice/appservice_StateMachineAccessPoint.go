@@ -186,8 +186,8 @@ func (s *StateMachineAccessPoint) GetDefaultMaximumApduLengthAccepted() readWrit
 }
 
 // Confirmation Packets coming up the stack are APDU's
-func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error { // TODO: note we need a special method here as we don't contain src in the apdu
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error { // TODO: note we need a special method here as we don't contain src in the apdu
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 	apdu := GA[PDU](args, 0)
 
 	// check device communication control
@@ -344,8 +344,8 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 }
 
 // SapIndication This function is called when the application is requesting a new transaction as a client.
-func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
+func (s *StateMachineAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapIndication")
 	apdu := GA[PDU](args, 0)
 
 	pduDestination := apdu.GetPDUDestination()
@@ -410,8 +410,8 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error 
 // SapConfirmation This function is called when the application is responding to a request, the apdu may be a simple
 //
 //	ack, complex ack, error, reject or abort
-func (s *StateMachineAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
+func (s *StateMachineAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapConfirmation")
 	apdu := GA[PDU](args, 0)
 	pduDestination := apdu.GetPDUDestination()
 	switch apdu.GetRootMessage().(type) {

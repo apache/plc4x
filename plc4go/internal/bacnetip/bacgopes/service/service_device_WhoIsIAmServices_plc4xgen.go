@@ -48,13 +48,6 @@ func (d *WhoIsIAmServices) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	if err := writeBuffer.PushContext("WhoIsIAmServices"); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d._requirements)
-
-		if err := writeBuffer.WriteString("_requirements", uint32(len(_value)*8), _value); err != nil {
-			return err
-		}
-	}
 	if err := d.Capability.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}

@@ -24,12 +24,8 @@ import "os"
 var (
 	// LogTimeMachine enables logging for the time machine
 	LogTimeMachine bool
-
-	// LogStateMachine enables logging for the state machine
-	LogStateMachine bool
 )
 
 func init() {
 	LogTimeMachine = os.Getenv("LogTimeMachine") == "true"
-	LogStateMachine = os.Getenv("LogStateMachine") == "true"
 }

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package time_machine
 
 import (
 	"fmt"
@@ -29,6 +29,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/core"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
@@ -43,7 +44,7 @@ func IsGlobalTimeMachineSet() bool {
 // Usually it is sufficient to use ExclusiveGlobalTimeMachine
 func NewGlobalTimeMachine(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
-	if !LogTimeMachine {
+	if !tests.LogTimeMachine {
 		testingLogger = zerolog.Nop()
 	}
 	if globalTimeMachine != nil {
@@ -103,35 +104,63 @@ func NewTimeMachine(localLog zerolog.Logger) *TimeMachine {
 	t := &TimeMachine{
 		log: localLog,
 	}
+	if _debug != nil {
+		_debug("__init__")
+	}
 	t.TaskManager = NewTaskManager(localLog)
 	return t
 }
 
 func (t *TimeMachine) GetTime() time.Time {
+	if _debug != nil {
+		_debug("get_time @ %r:", t.currentTime)
+	}
 	t.log.Trace().Time("currentTime", t.currentTime).Msg("GetTime")
 	return t.currentTime
 }
 
 func (t *TimeMachine) InstallTask(task TaskRequirements) {
+	if _debug != nil {
+		_debug("install_task @ %r: %r @ %r", t.currentTime, task, task.GetTaskTime())
+	}
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("InstallTask")
 	t.TaskManager.InstallTask(task)
 }
 
 func (t *TimeMachine) SuspendTask(task TaskRequirements) {
+	if _debug != nil {
+		_debug("suspend_task @ %r: %r", t.currentTime, task)
+	}
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("SuspendTask")
 	t.TaskManager.SuspendTask(task)
 }
 
 func (t *TimeMachine) ResumeTask(task TaskRequirements) {
+	if _debug != nil {
+		_debug("resume_task @ %r: %r", t.currentTime, task)
+	}
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("ResumeTask")
 	t.TaskManager.ResumeTask(task)
 }
 
 func (t *TimeMachine) MoreToDo() bool {
+	if _debug != nil {
+		_debug("more_to_do @ %r:", t.currentTime)
+	}
 	t.log.Debug().Time("currentTime", t.currentTime).Msg("MoreToDo")
 	if len(DeferredFunctions) > 0 {
+		if _debug != nil {
+			_debug("    - deferred functions")
+		}
 		t.log.Trace().Msg("deferredFunctions")
 		return true
+	}
+
+	if _debug != nil {
+		_debug("    - time_limit: %r", t.timeLimit)
+	}
+	if _debug != nil {
+		_debug("    - tasks: %r", t.GetTasks())
 	}
 
 	t.log.Debug().Time("timeLimit", t.timeLimit).Msg("timeLimit")
@@ -144,11 +173,17 @@ func (t *TimeMachine) MoreToDo() bool {
 	}
 
 	if !t.timeLimit.IsZero() && t.currentTime.After(t.timeLimit) {
+		if _debug != nil {
+			_debug("    - time limit reached or exceeded")
+		}
 		t.log.Trace().Msg("time limit reached")
 		return false
 	}
 
 	if len(t.GetTasks()) == 0 {
+		if _debug != nil {
+			_debug("    - no more tasks")
+		}
 		t.log.Trace().Msg("no more tasks")
 		return false
 	}
@@ -156,14 +191,29 @@ func (t *TimeMachine) MoreToDo() bool {
 	task := t.GetTasks()[0]
 	when := task.GetTaskTime()
 	if when.After(t.timeLimit) {
+		if _debug != nil {
+			_debug("    - next task at or exceeds time limit")
+		}
 		t.log.Debug().Msg("New tasks exceeded time limit")
 		return false
+	}
+	if _debug != nil {
+		_debug("    - task: %r", task)
 	}
 	t.log.Debug().Stringer("task", task).Msg("task")
 	return true
 }
 
 func (t *TimeMachine) GetNextTask() (TaskRequirements, *time.Duration) {
+	if _debug != nil {
+		_debug("get_next_task @ %r:", t.currentTime)
+	}
+	if _debug != nil {
+		_debug("    - time_limit: %r", t.timeLimit)
+	}
+	if _debug != nil {
+		_debug("    - tasks: %r", t.GetTasks())
+	}
 	t.log.Debug().Time("currentTime", t.currentTime).Msg("GetNextTask")
 	t.log.Debug().Time("timeLimit", t.timeLimit).Msg("timeLimit")
 	if t.log.Debug().Enabled() {
@@ -178,16 +228,30 @@ func (t *TimeMachine) GetNextTask() (TaskRequirements, *time.Duration) {
 	var delta *time.Duration
 
 	if !t.timeLimit.IsZero() && t.currentTime.After(t.timeLimit) {
+		if _debug != nil {
+			_debug("    - time limit reached")
+		}
 		t.log.Trace().Msg("time limit reached")
 	} else if len(t.GetTasks()) == 0 {
+		if _debug != nil {
+			_debug("    - no more tasks")
+		}
 		t.log.Trace().Msg("no more tasks")
 	} else {
+		// peek at the next task and see when it is supposed to run
 		task = t.GetTasks()[0]
 		if taskTime := task.GetTaskTime(); taskTime != nil && task.GetTaskTime().After(t.timeLimit) {
+			if _debug != nil {
+				_debug("    - time limit reached")
+			}
+
 			t.currentTime = *taskTime
 		} else {
 			// pull it off the list
 			task = t.PopTask()
+			if _debug != nil {
+				_debug("    - when, task: %r, %s", task.GetTaskTime(), task)
+			}
 			t.log.Debug().Stringer("task", task).Msg("when, task")
 
 			// mark that it is no longer scheduled
@@ -207,6 +271,9 @@ func (t *TimeMachine) GetNextTask() (TaskRequirements, *time.Duration) {
 }
 
 func (t *TimeMachine) ProcessTask(task TaskRequirements) {
+	if _debug != nil {
+		_debug("process_task @ %r: %r", t.currentTime, task)
+	}
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("ProcessTask")
 	t.TaskManager.ProcessTask(task)
 }
@@ -221,6 +288,9 @@ func ResetTimeMachine(startTime time.Time) {
 		panic("no time machine")
 	}
 
+	if _debug != nil {
+		_debug("reset_time_machine %r", startTime)
+	}
 	globalTimeMachine.ClearTasks()
 	globalTimeMachine.currentTime = startTime
 	globalTimeMachine.timeLimit = time.Time{}
@@ -235,8 +305,11 @@ func RunTimeMachine(localLog zerolog.Logger, duration time.Duration, stopTime ti
 	if globalTimeMachine == nil {
 		panic("no time machine")
 	}
-	if !LogTimeMachine {
+	if !tests.LogTimeMachine {
 		localLog = zerolog.Nop()
+	}
+	if _debug != nil {
+		_debug("run_time_machine %r %r", duration, stopTime)
 	}
 	localLog.Debug().Dur("duration", duration).Time("stopTime", stopTime).Msg("RunTimeMachine")
 
@@ -248,20 +321,32 @@ func RunTimeMachine(localLog zerolog.Logger, duration time.Duration, stopTime ti
 	if duration != 0 {
 		globalTimeMachine.timeLimit = globalTimeMachine.currentTime.Add(duration)
 	} else if !stopTime.IsZero() {
+		if _debug != nil {
+			_debug("    - stop_time: %r", stopTime)
+		}
 		globalTimeMachine.timeLimit = stopTime
 	} else {
 		panic("duration or stopTime is required")
 	}
 
 	if len(DeferredFunctions) > 0 {
+		if _debug != nil {
+			_debug("    - deferred functions!")
+		}
 		localLog.Debug().Msg("deferredFunctions")
 	}
 
 	for {
 		RunOnce(localLog)
 		localLog.Trace().Msg("ran once")
+		if _debug != nil {
+			_debug("    - ran once")
+		}
 		if !globalTimeMachine.MoreToDo() {
 			localLog.Trace().Msg("no more to do")
+			if _debug != nil {
+				_debug("    - no more to do")
+			}
 			break
 		}
 	}

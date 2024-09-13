@@ -26,12 +26,13 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 //go:generate plc4xGenerator -type=AnnexJCodec -prefix=bvllservice_
 type AnnexJCodec struct {
-	DefaultRFormatter `ignore:"true"`
+	*DefaultRFormatter `ignore:"true"`
 	ClientContract
 	ServerContract
 
@@ -81,8 +82,8 @@ func WithAnnexJCodecSid(sid int) func(*AnnexJCodec) {
 	}
 }
 
-func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
-	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+func (b *AnnexJCodec) Indication(args Args, kwArgs KWArgs) error {
+	b.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 	rpdu := GA[PDU](args, 0)
 	if _debug != nil {
 		_debug("indication %r", rpdu)
@@ -104,8 +105,8 @@ func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
 	return b.Request(NA(pdu), NoKWArgs)
 }
 
-func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
-	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
+func (b *AnnexJCodec) Confirmation(args Args, kwArgs KWArgs) error {
+	b.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
 		_debug("confirmation %r", pdu)

@@ -236,8 +236,8 @@ func (a *Application) GetServicesSupported() []string {
 	return servicesSupported
 }
 
-func (a *Application) Request(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+func (a *Application) Request(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Request")
 	pdu := GA[PDU](args, 0)
 
 	// double-check the input is the right kind of APDU
@@ -246,11 +246,11 @@ func (a *Application) Request(args Args, kwargs KWArgs) error {
 	default:
 		return errors.New("APDU expected")
 	}
-	return a.ApplicationServiceElementContract.Request(args, kwargs)
+	return a.ApplicationServiceElementContract.Request(args, kwArgs)
 }
 
-func (a *Application) Indication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (a *Application) Indication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	apdu := GA[APDU](args, 0)
 
 	// get a helper function

@@ -56,10 +56,10 @@ type EmptySequence struct {
 	*SequenceEquality
 }
 
-func NewEmptySequence(kwargs KWArgs) (*EmptySequence, error) {
+func NewEmptySequence(kwArgs KWArgs) (*EmptySequence, error) {
 	e := &EmptySequence{}
 	var err error
-	e.Sequence, err = NewSequence(NoArgs, kwargs, WithSequenceExtension(e))
+	e.Sequence, err = NewSequence(NoArgs, kwArgs, WithSequenceExtension(e))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -78,14 +78,14 @@ type SimpleSequence struct {
 	sequenceElements []Element
 }
 
-func NewSimpleSequence(kwargs KWArgs) (*SimpleSequence, error) {
+func NewSimpleSequence(kwArgs KWArgs) (*SimpleSequence, error) {
 	s := &SimpleSequence{
 		sequenceElements: []Element{
 			NewElement("hydrogen", V2E(NewBoolean)),
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(NoArgs, kwargs, WithSequenceExtension(s))
+	s.Sequence, err = NewSequence(NoArgs, kwArgs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -108,7 +108,7 @@ type CompoundSequence1 struct {
 	sequenceElements []Element
 }
 
-func NewCompoundSequence1(kwargs KWArgs) (*CompoundSequence1, error) {
+func NewCompoundSequence1(kwArgs KWArgs) (*CompoundSequence1, error) {
 	s := &CompoundSequence1{
 		sequenceElements: []Element{
 			NewElement("hydrogen", V2E(NewBoolean)),
@@ -116,7 +116,7 @@ func NewCompoundSequence1(kwargs KWArgs) (*CompoundSequence1, error) {
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(NoArgs, kwargs, WithSequenceExtension(s))
+	s.Sequence, err = NewSequence(NoArgs, kwArgs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -139,7 +139,7 @@ type CompoundSequence2 struct {
 	sequenceElements []Element
 }
 
-func NewCompoundSequence2(kwargs KWArgs) (*CompoundSequence2, error) {
+func NewCompoundSequence2(kwArgs KWArgs) (*CompoundSequence2, error) {
 	s := &CompoundSequence2{
 		sequenceElements: []Element{
 			NewElement("lithium", V2E(NewBoolean), WithElementOptional(true)),
@@ -147,7 +147,7 @@ func NewCompoundSequence2(kwargs KWArgs) (*CompoundSequence2, error) {
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(NoArgs, kwargs, WithSequenceExtension(s))
+	s.Sequence, err = NewSequence(NoArgs, kwArgs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}

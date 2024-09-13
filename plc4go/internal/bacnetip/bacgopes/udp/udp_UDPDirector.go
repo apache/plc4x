@@ -271,8 +271,8 @@ func (d *UDPDirector) handleError(err error) {
 }
 
 // Indication Client requests are queued for delivery.
-func (d *UDPDirector) Indication(args Args, kwargs KWArgs) error {
-	d.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (d *UDPDirector) Indication(args Args, kwArgs KWArgs) error {
+	d.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	pdu := GA[PDU](args, 0)
 
 	// get the destination
@@ -285,7 +285,7 @@ func (d *UDPDirector) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// send the message
-	return peer.Indication(args, kwargs)
+	return peer.Indication(args, kwArgs)
 }
 
 // _response Incoming datagrams are routed through an actor.

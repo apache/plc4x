@@ -37,8 +37,9 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
@@ -156,7 +157,7 @@ func (a *ApplicationNetwork) _debug(format string, args Args) {
 
 //go:generate plc4xGenerator -type=SnifferNode -suffix=_test
 type SnifferNode struct {
-	Client
+	ClientContract
 
 	name    string
 	address *Address
@@ -170,9 +171,9 @@ func NewSnifferNode(localLog zerolog.Logger, vlan *Network) (*SnifferNode, error
 		name: "sniffer",
 		log:  localLog,
 	}
-	s.address, _ = NewAddress(localLog)
+	s.address, _ = NewAddress(NoArgs)
 	var err error
-	s.Client, err = NewClient(localLog, s)
+	s.ClientContract, err = NewClient(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -192,13 +193,13 @@ func NewSnifferNode(localLog zerolog.Logger, vlan *Network) (*SnifferNode, error
 	return s, nil
 }
 
-func (s *SnifferNode) Request(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("request")
+func (s *SnifferNode) Request(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("request")
 	return errors.New("sniffers don't request")
 }
 
-func (s *SnifferNode) Confirmation(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("confirmation")
+func (s *SnifferNode) Confirmation(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("confirmation")
 	pdu := GA[PDU](args, 0)
 
 	// it's and NPDU
@@ -259,7 +260,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	// build and address and save it
 	_, instance := ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
 	var err error
-	a.address, err = NewAddress(instance)
+	a.address, err = NewAddress(NA(instance))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -327,15 +328,15 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	return a, nil
 }
 
-func (a *ApplicationStateMachine) Send(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
+func (a *ApplicationStateMachine) Send(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Send")
 
 	// send the apdu down the stack
-	return a.Request(args, kwargs)
+	return a.Request(args, kwArgs)
 }
 
-func (a *ApplicationStateMachine) Indication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+func (a *ApplicationStateMachine) Indication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 
 	// let the state machine know the request was received
 	err := a.Receive(args, NoKWArgs)
@@ -344,14 +345,14 @@ func (a *ApplicationStateMachine) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// allow the application to process it
-	return a.Application.Indication(args, kwargs)
+	return a.Application.Indication(args, kwArgs)
 }
 
-func (a *ApplicationStateMachine) Confirmation(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
+func (a *ApplicationStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 
 	// forward the confirmation to the state machine
-	return a.Receive(args, kwargs)
+	return a.Receive(args, kwArgs)
 }
 
 // TODO

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package state_machine
 
 import (
 	"github.com/pkg/errors"
@@ -61,12 +61,12 @@ func WithServerStateMachineName(name string) func(*ServerStateMachine) {
 	}
 }
 
-func (s *ServerStateMachine) Send(args Args, kwargs KWArgs) error {
-	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
-	return s.Response(args, kwargs)
+func (s *ServerStateMachine) Send(args Args, kwArgs KWArgs) error {
+	s.log.Trace().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Send")
+	return s.Response(args, kwArgs)
 }
 
-func (s *ServerStateMachine) Indication(args Args, kwargs KWArgs) error {
-	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
-	return s.Receive(args, kwargs)
+func (s *ServerStateMachine) Indication(args Args, kwArgs KWArgs) error {
+	s.log.Trace().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
+	return s.Receive(args, kwArgs)
 }

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package trapped_classes
 
 import (
 	"github.com/pkg/errors"
@@ -44,12 +44,12 @@ func NewTrappedServerStateMachine(localLog zerolog.Logger) (*TrappedServerStateM
 	return t, nil
 }
 
-func (t *TrappedServerStateMachine) Send(args Args, kwargs KWArgs) error {
-	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
-	return t.Response(args, kwargs)
+func (t *TrappedServerStateMachine) Send(args Args, kwArgs KWArgs) error {
+	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Send")
+	return t.Response(args, kwArgs)
 }
 
-func (t *TrappedServerStateMachine) Indication(args Args, kwargs KWArgs) error {
-	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
-	return t.Receive(args, kwargs)
+func (t *TrappedServerStateMachine) Indication(args Args, kwArgs KWArgs) error {
+	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
+	return t.Receive(args, kwArgs)
 }

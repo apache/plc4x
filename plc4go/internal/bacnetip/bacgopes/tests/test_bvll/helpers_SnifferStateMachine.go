@@ -26,13 +26,14 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvllservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type SnifferStateMachine struct {
-	DefaultRFormatter `ignore:"true"`
+	*DefaultRFormatter `ignore:"true"`
 	*ClientStateMachine
 
 	address *Address
@@ -46,6 +47,9 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *IPNet
 	s := &SnifferStateMachine{
 		DefaultRFormatter: NewDefaultRFormatter(),
 		log:               localLog,
+	}
+	if _debug != nil {
+		_debug("__init__ %r %r", address, vlan)
 	}
 	machine, err := NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(s))
 	if err != nil {

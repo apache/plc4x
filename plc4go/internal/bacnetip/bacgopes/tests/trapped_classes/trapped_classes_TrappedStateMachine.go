@@ -17,13 +17,14 @@
  * under the License.
  */
 
-package tests
+package trapped_classes
 
 import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 )
 
 // TrappedStateMachine This class is a simple wrapper around the stateMachine class that keeps the
@@ -34,7 +35,7 @@ import (
 //	throw an exception.
 type TrappedStateMachine struct {
 	*Trapper
-	StateMachineContract
+	state_machine.StateMachineContract
 
 	sent PDU
 
@@ -46,7 +47,7 @@ func NewTrappedStateMachine(localLog zerolog.Logger) *TrappedStateMachine {
 		log: localLog,
 	}
 	var init func()
-	t.StateMachineContract, init = NewStateMachine(localLog, t, WithStateMachineStateInterceptor(t), WithStateMachineStateDecorator(t.DecorateState))
+	t.StateMachineContract, init = state_machine.NewStateMachine(localLog, t, state_machine.WithStateMachineStateInterceptor(t), state_machine.WithStateMachineStateDecorator(t.DecorateState))
 	t.Trapper = NewTrapper(localLog, t.StateMachineContract)
 	init() // bit later so everything is set up
 	return t
@@ -60,8 +61,8 @@ func (t *TrappedStateMachine) BeforeSend(pdu PDU) {
 	t.StateMachineContract.BeforeSend(pdu)
 }
 
-func (t *TrappedStateMachine) Send(args Args, kwargs KWArgs) error {
-	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
+func (t *TrappedStateMachine) Send(args Args, kwArgs KWArgs) error {
+	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Send")
 	// keep a copy
 	t.sent = GA[PDU](args, 0)
 	return nil
@@ -83,6 +84,6 @@ func (t *TrappedStateMachine) UnexpectedReceive(pdu PDU) {
 	t.StateMachineContract.UnexpectedReceive(pdu)
 }
 
-func (t *TrappedStateMachine) DecorateState(state State) State {
+func (t *TrappedStateMachine) DecorateState(state state_machine.State) state_machine.State {
 	return NewTrappedState(state, t.Trapper)
 }

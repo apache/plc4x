@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package trapped_classes
 
 import (
 	"fmt"
@@ -31,8 +31,8 @@ import (
 )
 
 type TrappedApplicationServiceElementRequirements interface {
-	Indication(args Args, kwargs KWArgs) error
-	Confirmation(args Args, kwargs KWArgs) error
+	Indication(args Args, kwArgs KWArgs) error
+	Confirmation(args Args, kwArgs KWArgs) error
 }
 
 // TrappedApplicationServiceElement  Note that while this class inherits from ApplicationServiceElement, it
@@ -99,26 +99,26 @@ func (s *TrappedApplicationServiceElement) String() string {
 	return fmt.Sprintf("TrappedApplicationServiceElement(TBD...)") // TODO: fill some info here
 }
 
-func (s *TrappedApplicationServiceElement) Request(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Request")
+func (s *TrappedApplicationServiceElement) Request(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Request")
 	s.requestSent = GA[PDU](args, 0)
-	return s.ApplicationServiceElementContract.Request(args, kwargs)
+	return s.ApplicationServiceElementContract.Request(args, kwArgs)
 }
 
-func (s *TrappedApplicationServiceElement) Indication(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+func (s *TrappedApplicationServiceElement) Indication(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 	s.indicationReceived = GA[PDU](args, 0)
-	return s.requirements.Indication(args, kwargs)
+	return s.requirements.Indication(args, kwArgs)
 }
 
-func (s *TrappedApplicationServiceElement) Response(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Response")
+func (s *TrappedApplicationServiceElement) Response(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Response")
 	s.responseSent = GA[PDU](args, 0)
-	return s.ApplicationServiceElementContract.Response(args, kwargs)
+	return s.ApplicationServiceElementContract.Response(args, kwArgs)
 }
 
-func (s *TrappedApplicationServiceElement) Confirmation(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
+func (s *TrappedApplicationServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 	s.confirmationReceived = GA[PDU](args, 0)
-	return s.requirements.Confirmation(args, kwargs)
+	return s.requirements.Confirmation(args, kwArgs)
 }

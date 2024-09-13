@@ -22,6 +22,8 @@ package task
 import (
 	"fmt"
 	"time"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 )
 
 type TaskRequirements interface {
@@ -35,6 +37,7 @@ type TaskRequirements interface {
 
 //go:generate plc4xGenerator -type=Task -prefix=task_
 type Task struct {
+	*DebugContents   `ignore:"true"`
 	TaskRequirements `ignore:"true"`
 	taskTime         *time.Time
 	isScheduled      bool
@@ -42,10 +45,23 @@ type Task struct {
 
 func NewTask(taskRequirements TaskRequirements, opts ...func(*Task)) *Task {
 	t := &Task{TaskRequirements: taskRequirements}
+	t.DebugContents = NewDebugContents(t, "taskTime", "isScheduled")
 	for _, opt := range opts {
 		opt(t)
 	}
 	return t
+}
+
+func (t *Task) GetDebugAttr(attr string) any {
+	switch attr {
+	case "taskTime":
+		if t.taskTime != nil {
+			return *t.taskTime
+		}
+	case "isScheduled":
+		return t.isScheduled
+	}
+	return nil
 }
 
 func (t *Task) InstallTask(options InstallTaskOptions) {

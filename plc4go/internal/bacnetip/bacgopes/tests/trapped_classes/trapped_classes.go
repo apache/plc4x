@@ -17,41 +17,4 @@
  * under the License.
  */
 
-package tests
-
-import (
-	"time"
-
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
-)
-
-type TrafficLog struct {
-	traffic []struct {
-		time.Time
-		Args
-	}
-}
-
-// Call Capture the current time and the arguments.
-func (t *TrafficLog) Call(args Args) {
-	t.traffic = append(t.traffic, struct {
-		time.Time
-		Args
-	}{Time: GetTaskManagerTime(), Args: args})
-}
-
-// Dump the traffic, pass the correct handler like SomeClass._debug
-func (t *TrafficLog) Dump(handlerFn func(format string, args Args)) {
-	if t == nil {
-		return
-	}
-	for _, args := range t.traffic {
-		argFormat := "   %6.3f:"
-		for _, arg := range args.Args[1:] {
-			_ = arg
-			argFormat += " %v"
-		}
-		handlerFn(argFormat, args.Args)
-	}
-}
+package trapped_classes

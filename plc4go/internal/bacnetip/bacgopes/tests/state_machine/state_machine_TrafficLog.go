@@ -17,27 +17,41 @@
  * under the License.
  */
 
-package comm
+package state_machine
 
 import (
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	"time"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
-var _debug = CreateDebugPrinter()
+type TrafficLog struct {
+	traffic []struct {
+		time.Time
+		Args
+	}
+}
 
-// maps of named clients and servers
-var clientMap map[int]*client
+// Call Capture the current time and the arguments.
+func (t *TrafficLog) Call(args Args) {
+	t.traffic = append(t.traffic, struct {
+		time.Time
+		Args
+	}{Time: GetTaskManagerTime(), Args: args})
+}
 
-var serverMap map[int]*server
-
-// maps of named SAPs and ASEs
-var serviceMap map[int]*serviceAccessPoint
-
-var elementMap map[int]*applicationServiceElement
-
-func init() {
-	clientMap = make(map[int]*client)
-	serverMap = make(map[int]*server)
-	serviceMap = make(map[int]*serviceAccessPoint)
-	elementMap = make(map[int]*applicationServiceElement)
+// Dump the traffic, pass the correct handler like SomeClass._debug
+func (t *TrafficLog) Dump(handlerFn func(format string, args Args)) {
+	if t == nil {
+		return
+	}
+	for _, args := range t.traffic {
+		argFormat := "   %6.3f:"
+		for _, arg := range args.Args[1:] {
+			_ = arg
+			argFormat += " %v"
+		}
+		handlerFn(argFormat, args.Args)
+	}
 }

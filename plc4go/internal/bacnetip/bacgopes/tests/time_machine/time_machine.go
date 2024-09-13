@@ -17,27 +17,8 @@
  * under the License.
  */
 
-package comm
+package time_machine
 
-import (
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-)
+import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 
 var _debug = CreateDebugPrinter()
-
-// maps of named clients and servers
-var clientMap map[int]*client
-
-var serverMap map[int]*server
-
-// maps of named SAPs and ASEs
-var serviceMap map[int]*serviceAccessPoint
-
-var elementMap map[int]*applicationServiceElement
-
-func init() {
-	clientMap = make(map[int]*client)
-	serverMap = make(map[int]*server)
-	serviceMap = make(map[int]*serviceAccessPoint)
-	elementMap = make(map[int]*applicationServiceElement)
-}

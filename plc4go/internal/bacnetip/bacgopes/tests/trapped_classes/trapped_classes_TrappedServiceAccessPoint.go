@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package trapped_classes
 
 import (
 	"github.com/pkg/errors"
@@ -29,8 +29,8 @@ import (
 )
 
 type TrappedServiceAccessPointRequirements interface {
-	SapIndication(args Args, kwargs KWArgs) error
-	SapConfirmation(args Args, kwargs KWArgs) error
+	SapIndication(args Args, kwArgs KWArgs) error
+	SapConfirmation(args Args, kwArgs KWArgs) error
 }
 
 // TrappedServiceAccessPoint  Note that while this class inherits from ServiceAccessPoint, it doesn't
@@ -93,26 +93,26 @@ func (s *TrappedServiceAccessPoint) GetSapConfirmationReceived() PDU {
 	return s.sapConfirmationReceived
 }
 
-func (s *TrappedServiceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapRequest")
+func (s *TrappedServiceAccessPoint) SapRequest(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapRequest")
 	s.sapRequestSent = GA[PDU](args, 0)
-	return s.ServiceAccessPointContract.SapRequest(args, kwargs)
+	return s.ServiceAccessPointContract.SapRequest(args, kwArgs)
 }
 
-func (s *TrappedServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapIndication")
+func (s *TrappedServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapIndication")
 	s.sapIndicationReceived = GA[PDU](args, 0)
-	return s.requirements.SapIndication(args, kwargs)
+	return s.requirements.SapIndication(args, kwArgs)
 }
 
-func (s *TrappedServiceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapResponse")
+func (s *TrappedServiceAccessPoint) SapResponse(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapResponse")
 	s.sapResponseSent = GA[PDU](args, 0)
-	return s.ServiceAccessPointContract.SapResponse(args, kwargs)
+	return s.ServiceAccessPointContract.SapResponse(args, kwArgs)
 }
 
-func (s *TrappedServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapConfirmation")
+func (s *TrappedServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapConfirmation")
 	s.sapConfirmationReceived = GA[PDU](args, 0)
-	return s.requirements.SapConfirmation(args, kwargs)
+	return s.requirements.SapConfirmation(args, kwArgs)
 }

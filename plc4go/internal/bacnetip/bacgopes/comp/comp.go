@@ -24,17 +24,14 @@ import (
 	"container/heap"
 	"fmt"
 	"iter"
-	"os"
-	"path"
 	"reflect"
-	"runtime"
 	"sort"
 	"strings"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 )
 
-type GenericFunction = func(args Args, kwargs KWArgs) error
+type GenericFunction = func(args Args, kwArgs KWArgs) error
 
 type Arg any
 
@@ -80,11 +77,10 @@ func GAO[T any](args Args, index int, defaultValue T) T {
 	return GetFromArgsOptional(args, index, defaultValue)
 }
 
-func (a Args) Format(f fmt.State, verb rune) {
+func (a Args) Format(s fmt.State, verb rune) {
 	switch verb {
-	case 'r':
-		s := a.String()[1 : len(a.String())-1]
-		_, _ = f.Write([]byte("(" + s + ")"))
+	case 's', 'v', 'r':
+		_, _ = fmt.Fprintf(s, "(%s)", a.String()[1:len(a.String())-1])
 	}
 }
 
@@ -137,7 +133,7 @@ var NKW = NewKWArgs
 func (k KWArgs) Format(f fmt.State, verb rune) {
 	switch verb {
 	case 'r':
-		_, _ = f.Write([]byte(k.String()))
+		_, _ = fmt.Fprint(f, k.String())
 	}
 }
 
@@ -162,21 +158,25 @@ func (k KWArgs) String() string {
 }
 
 // KW gets a value from KWArgs and if not present panics
-func KW[T any](kwargs KWArgs, key KnownKey) T {
-	r, ok := kwargs[key]
+func KW[T any](kwArgs KWArgs, key KnownKey) T {
+	r, ok := kwArgs[key]
 	if !ok {
-		panic(fmt.Sprintf("key %v not found in kwargs", key))
+		panic(fmt.Sprintf("key %v not found in kwArgs", key))
 	}
 	return r.(T)
 }
 
 // KWO gets a value from KWArgs and if not present returns the supplied default value
-func KWO[T any](kwargs KWArgs, key KnownKey, defaultValue T) T {
-	r, ok := kwargs[key]
+func KWO[T any](kwArgs KWArgs, key KnownKey, defaultValue T) T {
+	r, ok := kwArgs[key]
 	if !ok {
 		return defaultValue
 	}
-	return r.(T)
+	v, ok := r.(T)
+	if !ok {
+		return defaultValue
+	}
+	return v
 }
 
 type KnownKey string
@@ -440,35 +440,6 @@ func SortedMapIterator[K cmp.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
 	}
 }
 
-type DebugPrinter = func(format string, a ...any)
-
-func CreateDebugPrinter() DebugPrinter {
-	_, file, _, ok := runtime.Caller(1)
-	if !ok {
-		return nil
-	}
-	dir := path.Dir(file)
-	rootIndex := strings.Index(dir, "bacgopes")
-	dir = dir[rootIndex:]
-	qualifier := strings.ReplaceAll(dir, "/", ".")
-	dirPrefix := path.Base(dir) + "_"
-
-	bacgopesDebug := os.Getenv("BACGOPES_DEBUG")
-	if strings.Contains(bacgopesDebug, qualifier) {
-		return func(format string, a ...any) {
-			_, file, _, ok := runtime.Caller(1)
-			if !ok {
-				return
-			}
-			base := path.Base(file)
-			prefix := strings.TrimSuffix(base, ".go")
-			prefix = strings.TrimPrefix(prefix, dirPrefix)
-			_, _ = fmt.Fprintf(os.Stderr, "DEBUG:"+qualifier+"."+prefix+":"+format+"\n", a...)
-		}
-	}
-	return nil
-}
-
 // OR returns a or b
 func OR[T comparable](a T, b T) T {
 	if reflect.ValueOf(a).IsNil() || (reflect.ValueOf(a).Kind() == reflect.Ptr && reflect.ValueOf(a).IsNil()) { // TODO: check if there is another way than using reflect
@@ -483,44 +454,22 @@ func ToPtr[T any](value T) *T {
 	return &value
 }
 
-type DefaultRFormatter struct {
-	output []byte
+// Try something and return panic as error
+func Try(f func() error) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic: %v", r)
+		}
+	}()
+	return f()
 }
 
-func NewDefaultRFormatter() DefaultRFormatter {
-	pc, file, _, ok := runtime.Caller(1)
-	if !ok {
-		return DefaultRFormatter{}
-	}
-	dir := path.Dir(file)
-	rootIndex := strings.Index(dir, "bacgopes")
-	dir = dir[rootIndex:]
-	dirPrefix := path.Base(dir) + "_"
-	base := path.Base(file)
-	prefix := strings.TrimSuffix(base, ".go")
-	prefix = strings.TrimPrefix(prefix, dirPrefix)
-	return DefaultRFormatter{
-		output: []byte(fmt.Sprintf("<%s at 0x%x>", prefix, pc)),
-	}
-}
-
-func (d DefaultRFormatter) Format(s fmt.State, v rune) {
-	switch v {
-	case 'r':
-		_, _ = s.Write(d.output)
-	}
-}
-
-func StructName() string {
-	_, file, _, ok := runtime.Caller(1)
-	if !ok {
-		return ""
-	}
-	dir := path.Dir(file)
-	rootIndex := strings.Index(dir, "bacgopes")
-	dir = dir[rootIndex:]
-	dirPrefix := path.Base(dir) + "_"
-	base := path.Base(file)
-	prefix := strings.TrimSuffix(base, ".go")
-	return strings.TrimPrefix(prefix, dirPrefix)
+// Try1 something and return panic as error
+func Try1[T any](f func() (T, error)) (v T, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic: %v", r)
+		}
+	}()
+	return f()
 }

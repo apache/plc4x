@@ -38,19 +38,29 @@ type DeleteForeignDeviceTableEntry struct {
 
 var _ BVLPDU = (*DeleteForeignDeviceTableEntry)(nil)
 
-func NewDeleteForeignDeviceTableEntry(opts ...func(*DeleteForeignDeviceTableEntry)) (*DeleteForeignDeviceTableEntry, error) {
+func NewDeleteForeignDeviceTableEntry(addr *Address, args Args, kwArgs KWArgs) (*DeleteForeignDeviceTableEntry, error) {
 	d := &DeleteForeignDeviceTableEntry{}
-	for _, opt := range opts {
-		opt(d)
+	d._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	d.AddDebugContents(d, "bvlciAddress")
+	if d.GetRootMessage() == nil {
+		d.SetRootMessage(readWriteModel.NewBVLCDeleteForeignDeviceTableEntry(d.buildIPArgs()))
 	}
-	d._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewBVLCDeleteForeignDeviceTableEntry(d.buildIPArgs()))).(*_BVLPDU)
+	d.bvlciFunction = BVLCIDeleteForeignDeviceTableEntry
+	d.bvlciLength = 10
+	d.bvlciAddress = addr
 	return d, nil
 }
 
-func WithDeleteForeignDeviceTableEntryAddress(address *Address) func(*DeleteForeignDeviceTableEntry) {
-	return func(d *DeleteForeignDeviceTableEntry) {
-		d.bvlciAddress = address
+func (d *DeleteForeignDeviceTableEntry) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciAddress":
+		if d.bvlciAddress != nil {
+			return d.bvlciAddress
+		}
+	default:
+		return nil
 	}
+	return nil
 }
 
 func (d *DeleteForeignDeviceTableEntry) buildIPArgs() (ip []uint8, port uint16) {

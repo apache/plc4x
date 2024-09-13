@@ -50,7 +50,7 @@ type APCISequence struct {
 	tagList *TagList
 }
 
-func NewAPCISequence(args Args, kwargs KWArgs, opts ...func(*APCISequence)) (*APCISequence, error) {
+func NewAPCISequence(args Args, kwArgs KWArgs, opts ...func(*APCISequence)) (*APCISequence, error) {
 	a := &APCISequence{}
 	for _, opt := range opts {
 		opt(a)
@@ -63,7 +63,7 @@ func NewAPCISequence(args Args, kwargs KWArgs, opts ...func(*APCISequence)) (*AP
 	apdu := GA[readWriteModel.APDU](args, 0) // TODO: might break but should be fine as we are a GA*
 	a._APCI = NewAPCI(apdu).(*_APCI)
 	var err error
-	a.Sequence, err = NewSequence(args, kwargs, WithSequenceExtension(a._contract))
+	a.Sequence, err = NewSequence(args, kwArgs, WithSequenceExtension(a._contract))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating sequence")
 	}

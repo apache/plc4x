@@ -77,8 +77,8 @@ func WithApplicationServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) f
 	}
 }
 
-func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	apdu := GA[APDU](args, 0)
 
 	switch _apdu := apdu.GetRootMessage().(type) {
@@ -157,8 +157,8 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
+func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapIndication")
 
 	apdu := GA[APDU](args, 0)
 
@@ -203,20 +203,20 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) 
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (a *ApplicationServiceAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 
 	// TODO: check if we need to check apdu here
 
 	// forward the decoded packet
-	return a.SapResponse(args, kwargs)
+	return a.SapResponse(args, kwArgs)
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
+func (a *ApplicationServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapConfirmation")
 
 	// TODO: check if we need to check apdu here
 
-	return a.Response(args, kwargs)
+	return a.Response(args, kwArgs)
 }

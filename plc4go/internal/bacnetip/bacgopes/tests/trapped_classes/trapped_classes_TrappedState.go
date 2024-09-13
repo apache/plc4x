@@ -17,22 +17,23 @@
  * under the License.
  */
 
-package tests
+package trapped_classes
 
 import (
 	"fmt"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 )
 
 // TrappedState This class is a simple wrapper around the state class that keeps the latest copy of the pdu parameter in
 // the BeforeSend(), AfterSend(), BeforeReceive(), AfterReceive() and UnexpectedReceive() calls.
 type TrappedState struct {
 	*Trapper
-	State
+	state_machine.State
 }
 
-func NewTrappedState(state State, trapper *Trapper) *TrappedState {
+func NewTrappedState(state state_machine.State, trapper *Trapper) *TrappedState {
 	t := &TrappedState{
 		State:   state,
 		Trapper: trapper,
@@ -40,7 +41,7 @@ func NewTrappedState(state State, trapper *Trapper) *TrappedState {
 	return t
 }
 
-func (t *TrappedState) Equals(other State) bool {
+func (t *TrappedState) Equals(other state_machine.State) bool {
 	if t.State.Equals(other) { //TODO: we always want to match the inner
 		return true
 	}
@@ -74,6 +75,6 @@ func (t *TrappedState) UnexpectedReceive(pdu PDU) {
 	t.Trapper.UnexpectedReceive(pdu)
 }
 
-func (t *TrappedState) getInterceptor() StateInterceptor {
+func (t *TrappedState) getInterceptor() state_machine.StateInterceptor {
 	return t
 }

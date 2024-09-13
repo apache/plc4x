@@ -161,8 +161,8 @@ func (a *ApplicationIOController) _AppRequest(apdu PDU) {
 	}
 }
 
-func (a *ApplicationIOController) Request(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+func (a *ApplicationIOController) Request(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Request")
 	apdu := GA[PDU](args, 0)
 
 	// if this is not unconfirmed request, tell the application to use the IOCB interface
@@ -171,11 +171,11 @@ func (a *ApplicationIOController) Request(args Args, kwargs KWArgs) error {
 	}
 
 	// send it downstream
-	return a.Application.Request(args, kwargs)
+	return a.Application.Request(args, kwArgs)
 }
 
-func (a *ApplicationIOController) Confirmation(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (a *ApplicationIOController) Confirmation(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 	apdu := GA[PDU](args, 0)
 
 	// this is an ack, error, reject or abort

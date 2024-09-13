@@ -59,9 +59,9 @@ func (d *OneShotFunctionTask) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 	}
 	{
-		_value := fmt.Sprintf("%v", d.kwargs)
+		_value := fmt.Sprintf("%v", d.kwArgs)
 
-		if err := writeBuffer.WriteString("kwargs", uint32(len(_value)*8), _value); err != nil {
+		if err := writeBuffer.WriteString("kwArgs", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}

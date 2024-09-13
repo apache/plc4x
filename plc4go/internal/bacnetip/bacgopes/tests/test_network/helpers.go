@@ -30,14 +30,13 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
@@ -60,8 +59,8 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 
 //go:generate plc4xGenerator -type=NPDUCodec -prefix=
 type NPDUCodec struct {
-	Client
-	Server
+	ClientContract
+	ServerContract
 
 	log zerolog.Logger
 }
@@ -71,11 +70,11 @@ func NewNPDUCodec(localLog zerolog.Logger) (*NPDUCodec, error) {
 		log: localLog,
 	}
 	var err error
-	n.Client, err = NewClient(localLog, n)
+	n.ClientContract, err = NewClient(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	n.Server, err = NewServer(localLog, n)
+	n.ServerContract, err = NewServer(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -85,8 +84,8 @@ func NewNPDUCodec(localLog zerolog.Logger) (*NPDUCodec, error) {
 	return n, nil
 }
 
-func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (n *NPDUCodec) Indication(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 
 	npdu := GA[NPDU](args, 0)
 
@@ -100,7 +99,7 @@ func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// Now as a vanilla PDU
-	ypdu := NewPDU(NoArgs, NKW(NewMessageBridge()))
+	ypdu := NewPDU(Nothing())
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}
@@ -110,8 +109,8 @@ func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	return n.Request(NA(ypdu), NoKWArgs)
 }
 
-func (n *NPDUCodec) Confirmation(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 
 	pdu := GA[PDU](args, 0)
 
@@ -159,7 +158,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *Netwo
 	}
 
 	// save the name and address
-	s.address, err = NewAddress(address)
+	s.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -205,7 +204,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 	}
 
 	// save the name and address
-	n.address, err = NewAddress(address)
+	n.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creaing address")
 	}
@@ -272,7 +271,7 @@ func (r *RouterNode) AddNetwork(address string, vlan *Network, net uint16) error
 	r.log.Debug().Str("address", address).Stringer("vlan", vlan).Uint16("net", net).Msg("AddNetwork")
 
 	// convert the address to an Address
-	addr, err := NewAddress(address)
+	addr, err := NewAddress(NA(address))
 	if err != nil {
 		return errors.Wrap(err, "error creaing address")
 	}
@@ -312,7 +311,7 @@ func NewRouterStateMachine(localLog zerolog.Logger) (*RouterStateMachine, error)
 	return r, nil
 }
 
-func (r *RouterStateMachine) Send(args Args, kwargs KWArgs) error {
+func (r *RouterStateMachine) Send(args Args, kwArgs KWArgs) error {
 	panic("not available")
 }
 
@@ -349,7 +348,7 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	// save the name and address
 	a.name = fmt.Sprintf("app @ %s", address)
 	var err error
-	a.address, err = NewAddress(address)
+	a.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creaing address")
 	}
@@ -435,13 +434,13 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	return a, nil
 }
 
-func (a *ApplicationLayerStateMachine) Indication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (a *ApplicationLayerStateMachine) Indication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	return a.Receive(args, NoKWArgs)
 }
 
-func (a *ApplicationLayerStateMachine) Confirmation(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (a *ApplicationLayerStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 	return a.Receive(args, NoKWArgs)
 }
 
@@ -470,7 +469,7 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) 
 	// build a name, save the address
 	a.name = fmt.Sprintf("app @ %s", address)
 	var err error
-	a.address, err = NewAddress(address)
+	a.address, err = NewAddress(NA(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}

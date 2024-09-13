@@ -197,8 +197,8 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address 
 	return n.routerInfoCache.DeleteRouterInfo(nk(snet), address, dnets)
 }
 
-func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 
 	pdu := GA[PDU](args, 0)
 
@@ -673,8 +673,8 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 	return nil
 }
 
-func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
+func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapIndication")
 	adapter := GA[*NetworkAdapter](args, 0)
 	npdu := GA[NPDU](args, 1)
 
@@ -692,8 +692,8 @@ func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) erro
 	return adapter.ProcessNPDU(xpdu)
 }
 
-func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
+func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapConfirmation")
 	adapter := GA[*NetworkAdapter](args, 0)
 	npdu := GA[NPDU](args, 1)
 

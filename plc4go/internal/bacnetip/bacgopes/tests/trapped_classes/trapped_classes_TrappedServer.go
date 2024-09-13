@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package trapped_classes
 
 import (
 	"github.com/pkg/errors"
@@ -32,7 +32,7 @@ import (
 // TrappedServerContract provides a set of functions which can be overwritten by a sub struct
 type TrappedServerContract interface {
 	utils.Serializable
-	Indication(args Args, kwargs KWArgs) error
+	Indication(args Args, kwArgs KWArgs) error
 	Response(Args, KWArgs) error
 }
 
@@ -79,19 +79,19 @@ func (t *TrappedServer) GetResponseSent() PDU {
 	return t.responseSent
 }
 
-func (t *TrappedServer) Indication(args Args, kwargs KWArgs) error {
-	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+func (t *TrappedServer) Indication(args Args, kwArgs KWArgs) error {
+	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 	// a reference for checking
 	t.indicationReceived = GA[PDU](args, 0)
 
 	return nil
 }
 
-func (t *TrappedServer) Response(args Args, kwargs KWArgs) error {
-	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Response")
+func (t *TrappedServer) Response(args Args, kwArgs KWArgs) error {
+	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Response")
 	// a reference for checking
 	t.responseSent = GA[PDU](args, 0)
 
 	// continue with regular processing
-	return t.ServerContract.Response(args, kwargs)
+	return t.ServerContract.Response(args, kwArgs)
 }

@@ -38,7 +38,7 @@ type Server interface {
 type ServerContract interface {
 	fmt.Stringer
 	utils.Serializable
-	Response(args Args, kwargs KWArgs) error
+	Response(args Args, kwArgs KWArgs) error
 	_setServerPeer(serverPeer Client)
 	HasServerPeer() bool
 	GetServerId() *int
@@ -46,7 +46,7 @@ type ServerContract interface {
 
 // ServerRequirements provides a set of functions which must be overwritten by a sub struct
 type ServerRequirements interface {
-	Indication(args Args, kwargs KWArgs) error
+	Indication(args Args, kwArgs KWArgs) error
 }
 
 // Server is an "abstract" struct which is used in another struct as delegate
@@ -101,16 +101,16 @@ func WithServerSID(sid int, requirements ServerRequirements) func(*server) {
 	}
 }
 
-func (s *server) Response(args Args, kwargs KWArgs) error {
+func (s *server) Response(args Args, kwArgs KWArgs) error {
 	if _debug != nil {
-		_debug("response %r %r", args, kwargs)
+		_debug("response %r %r", args, kwArgs)
 	}
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Response")
 
 	if s.serverPeer == nil {
 		return errors.New("unbound server")
 	}
-	return s.serverPeer.Confirmation(args, kwargs)
+	return s.serverPeer.Confirmation(args, kwArgs)
 }
 
 func (s *server) _setServerPeer(serverPeer Client) {

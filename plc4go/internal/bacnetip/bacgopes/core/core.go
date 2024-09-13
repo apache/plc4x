@@ -39,7 +39,7 @@ var sleepTime = 0 * time.Nanosecond
 type deferredFunctionTuple struct {
 	fn     GenericFunction
 	args   Args
-	kwargs KWArgs
+	kwArgs KWArgs
 }
 
 var DeferredFunctions []deferredFunctionTuple
@@ -96,8 +96,8 @@ func run() {
 				for _, fnTuple := range fnlist {
 					fn := fnTuple.fn
 					args := fnTuple.args
-					kwargs := fnTuple.kwargs
-					if err := fn(args, kwargs); err != nil {
+					kwArgs := fnTuple.kwArgs
+					if err := fn(args, kwArgs); err != nil {
 						if ErrorCallback != nil {
 							ErrorCallback(err)
 						}
@@ -142,8 +142,8 @@ func RunOnce(localLog zerolog.Logger) {
 			for _, fnTuple := range fnlist {
 				fn := fnTuple.fn
 				args := fnTuple.args
-				kwargs := fnTuple.kwargs
-				if err := fn(args, kwargs); err != nil {
+				kwArgs := fnTuple.kwArgs
+				if err := fn(args, kwArgs); err != nil {
 					if ErrorCallback != nil {
 						ErrorCallback(err)
 					}
@@ -156,9 +156,9 @@ func RunOnce(localLog zerolog.Logger) {
 	}
 }
 
-func Deferred(fn GenericFunction, args Args, kwargs KWArgs) {
+func Deferred(fn GenericFunction, args Args, kwArgs KWArgs) {
 	// append it to the list
-	DeferredFunctions = append(DeferredFunctions, deferredFunctionTuple{fn, args, kwargs})
+	DeferredFunctions = append(DeferredFunctions, deferredFunctionTuple{fn, args, kwArgs})
 
 	// trigger the task manager event
 	// TODO: there is no trigger

@@ -20,70 +20,35 @@
 package bvll
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type OriginalBroadcastNPDU struct {
 	*_BVLPDU
-
-	// post construct function
-	_postConstruct []func()
 }
 
 var _ BVLPDU = (*OriginalBroadcastNPDU)(nil)
 
-func NewOriginalBroadcastNPDU(pdu PDU, opts ...func(*OriginalBroadcastNPDU)) (*OriginalBroadcastNPDU, error) {
+func NewOriginalBroadcastNPDU(args Args, kwArgs KWArgs) (*OriginalBroadcastNPDU, error) {
 	o := &OriginalBroadcastNPDU{}
-	for _, opt := range opts {
-		opt(o)
+	o._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	switch npdu := o.GetRootMessage().(type) {
+	case readWriteModel.NPDU:
+		// Repackage
+		o.SetRootMessage(readWriteModel.NewBVLCOriginalBroadcastNPDU(o.produceInnerNPDU(npdu)))
 	}
-	switch npdu := pdu.(type) {
-	case model.NPDU:
-		o._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCOriginalBroadcastNPDU(o.produceInnerNPDU(npdu)))).(*_BVLPDU)
-	case nil:
-		o._BVLPDU = NewBVLPDU(Nothing()).(*_BVLPDU)
-	default:
-		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
-		data := pdu.GetPduData()
-		parse, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
-		if err != nil {
-			return nil, errors.Wrap(err, "error re-encoding")
-		}
-		o._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCOriginalBroadcastNPDU(o.produceInnerNPDU(parse)))).(*_BVLPDU)
-	}
-	// Do a post construct for a bit more easy initialization
-	for _, f := range o._postConstruct {
-		f()
-	}
-	o._postConstruct = nil
+	o.bvlciFunction = BVLCIOriginalBroadcastNPDU
+	o.bvlciLength = uint16(4 + len(o.GetPduData()))
 	return o, nil
 }
 
-func WithOriginalBroadcastNPDUDestination(destination *Address) func(*OriginalBroadcastNPDU) {
-	return func(o *OriginalBroadcastNPDU) {
-		o._postConstruct = append(o._postConstruct, func() {
-			o.SetPDUDestination(destination)
-		})
-	}
-}
-
-func WithOriginalBroadcastNPDUUserData(userData spi.Message) func(*OriginalBroadcastNPDU) {
-	return func(o *OriginalBroadcastNPDU) {
-		o._postConstruct = append(o._postConstruct, func() {
-			o.SetPDUUserData(userData)
-		})
-	}
-}
-
-func (o *OriginalBroadcastNPDU) produceInnerNPDU(inNpdu model.NPDU) (npdu model.NPDU, bvlcPayloadLength uint16) {
+func (o *OriginalBroadcastNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
 	npdu = inNpdu
 	return
 }
@@ -111,7 +76,7 @@ func (o *OriginalBroadcastNPDU) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCOriginalBroadcastNPDU:
+		case readWriteModel.BVLCOriginalBroadcastNPDU:
 			o.SetRootMessage(rm)
 		}
 	}

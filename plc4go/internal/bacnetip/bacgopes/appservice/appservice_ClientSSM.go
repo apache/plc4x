@@ -79,22 +79,22 @@ func (c *ClientSSM) setState(newState SSMState, timer *uint) error {
 }
 
 // Request This function is called by client transaction functions when it wants to send a message to the device
-func (c *ClientSSM) Request(args Args, kwargs KWArgs) error {
-	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("request")
+func (c *ClientSSM) Request(args Args, kwArgs KWArgs) error {
+	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("request")
 	apdu := GA[PDU](args, 0)
 
 	// make sure it has a good source and destination
 	apdu = NewPDU(NoArgs, NKW(KWCompRootMessage, apdu, KWCPCIDestination, c.pduAddress))
 
 	// send it via the device
-	return c.ssmSAP.Request(NA(apdu), kwargs)
+	return c.ssmSAP.Request(NA(apdu), kwArgs)
 }
 
 // Indication This function is called after the device has bound a new transaction and wants to start the process
 //
 //	rolling
-func (c *ClientSSM) Indication(args Args, kwargs KWArgs) error {
-	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("indication")
+func (c *ClientSSM) Indication(args Args, kwArgs KWArgs) error {
+	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("indication")
 	apdu := GA[PDU](args, 0)
 	// make sure we're getting confirmed requests
 	var apduConfirmedRequest readWriteModel.APDUConfirmedRequest
@@ -139,7 +139,7 @@ func (c *ClientSSM) Indication(args Args, kwargs KWArgs) error {
 			if err != nil {
 				return errors.Wrap(err, "Error creating abort")
 			}
-			return c.Response(NA(abort), kwargs)
+			return c.Response(NA(abort), kwArgs)
 		}
 
 		if c.deviceInfo == nil {
@@ -150,7 +150,7 @@ func (c *ClientSSM) Indication(args Args, kwargs KWArgs) error {
 			if err != nil {
 				return errors.Wrap(err, "Error creating abort")
 			}
-			return c.Response(NA(abort), kwargs)
+			return c.Response(NA(abort), kwArgs)
 		}
 
 		// make sure we don't exceed the number of segments in our request that the server said it was willing to accept
@@ -164,7 +164,7 @@ func (c *ClientSSM) Indication(args Args, kwargs KWArgs) error {
 			if err != nil {
 				return errors.Wrap(err, "Error creating abort")
 			}
-			return c.Response(NA(abort), kwargs)
+			return c.Response(NA(abort), kwArgs)
 		}
 	}
 
@@ -193,12 +193,12 @@ func (c *ClientSSM) Indication(args Args, kwargs KWArgs) error {
 	if err != nil {
 		return errors.Wrap(err, "error getting segment")
 	}
-	return c.Request(NA(segment), kwargs)
+	return c.Request(NA(segment), kwArgs)
 }
 
 // Response This function is called by client transaction functions when they want to send a message to the application.
-func (c *ClientSSM) Response(args Args, kwargs KWArgs) error {
-	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("response")
+func (c *ClientSSM) Response(args Args, kwArgs KWArgs) error {
+	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("response")
 
 	apdu := GA[PDU](args, 0)
 
@@ -206,12 +206,12 @@ func (c *ClientSSM) Response(args Args, kwargs KWArgs) error {
 	apdu = NewPDU(NoArgs, NKW(KWCompRootMessage, apdu, KWCPCISource, c.pduAddress))
 
 	// send it to the application
-	return c.ssmSAP.SapResponse(NA(apdu), kwargs)
+	return c.ssmSAP.SapResponse(NA(apdu), kwArgs)
 }
 
 // Confirmation This function is called by the device for all upstream messages related to the transaction.
-func (c *ClientSSM) Confirmation(args Args, kwargs KWArgs) error {
-	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("confirmation")
+func (c *ClientSSM) Confirmation(args Args, kwArgs KWArgs) error {
+	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("confirmation")
 	apdu := GA[PDU](args, 0)
 
 	switch c.state {

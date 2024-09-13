@@ -74,7 +74,7 @@ func (d *BIPForeign) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		}
 	}
 	if d.bbmdTimeToLive != nil {
-		if err := writeBuffer.WriteInt64("bbmdTimeToLive", 64, int64(*d.bbmdTimeToLive)); err != nil {
+		if err := writeBuffer.WriteUint16("bbmdTimeToLive", 16, *d.bbmdTimeToLive); err != nil {
 			return err
 		}
 	}

@@ -24,15 +24,15 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
-func ConfirmedPrivateTransferRequest(kwargs KWArgs) *apdu.ConfirmedPrivateTransferRequest {
-	confirmedPrivateTransferRequest, err := apdu.NewConfirmedPrivateTransferRequest(NoArgs, kwargs)
+func ConfirmedPrivateTransferRequest(kwArgs KWArgs) *apdu.ConfirmedPrivateTransferRequest {
+	confirmedPrivateTransferRequest, err := apdu.NewConfirmedPrivateTransferRequest(NoArgs, kwArgs)
 	if err != nil {
 		panic(err)
 	}
 	return confirmedPrivateTransferRequest
 }
 
-func WhoIsRequest(kwargs KWArgs) *apdu.WhoIsRequest {
+func WhoIsRequest(kwArgs KWArgs) *apdu.WhoIsRequest {
 	whoIsRequest, err := apdu.NewWhoIsRequest()
 	if err != nil {
 		panic(err)

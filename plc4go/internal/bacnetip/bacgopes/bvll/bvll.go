@@ -21,61 +21,78 @@ package bvll
 
 import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 )
 
 var _debug = CreateDebugPrinter()
+
+const (
+	BVLCIResult                          = uint8(0x00)
+	BVLCIWriteBroadcastDistributionTable = uint8(0x01)
+
+	BVLCIReadBroadcastDistributionTable    = uint8(0x02)
+	BVLCIReadBroadcastDistributionTableAck = uint8(0x03)
+	BVLCIForwardedNPDU                     = uint8(0x04)
+	BVLCIRegisterForeignDevice             = uint8(0x05)
+	BVLCIReadForeignDeviceTable            = uint8(0x06)
+	BVLCIReadForeignDeviceTableAck         = uint8(0x07)
+	BVLCIDeleteForeignDeviceTableEntry     = uint8(0x08)
+	BVLCIDistributeBroadcastToNetwork      = uint8(0x09)
+	BVLCIOriginalUnicastNPDU               = uint8(0x0A)
+	BVLCIOriginalBroadcastNPDU             = uint8(0x0B)
+)
 
 // BVLPDUTypes is a dictionary of message type values and structs
 var BVLPDUTypes map[uint8]func() Decoder
 
 func init() {
 	BVLPDUTypes = map[uint8]func() Decoder{
-		0x00: func() Decoder {
-			v, _ := NewResult()
+		BVLCIResult: func() Decoder {
+			v, _ := NewResult(nil, NoArgs, NoKWArgs)
 			return v
 		},
-		0x01: func() Decoder {
-			v, _ := NewWriteBroadcastDistributionTable()
+		BVLCIWriteBroadcastDistributionTable: func() Decoder {
+			v, _ := NewWriteBroadcastDistributionTable(nil, NoArgs, NoKWArgs)
 			return v
 		},
-		0x02: func() Decoder {
-			v, _ := NewReadBroadcastDistributionTable()
+		BVLCIReadBroadcastDistributionTable: func() Decoder {
+			v, _ := NewReadBroadcastDistributionTable(Nothing())
 			return v
 		},
-		0x03: func() Decoder {
-			v, _ := NewReadBroadcastDistributionTableAck()
+		BVLCIReadBroadcastDistributionTableAck: func() Decoder {
+			v, _ := NewReadBroadcastDistributionTableAck(nil, NoArgs, NoKWArgs)
 			return v
 		},
-		0x04: func() Decoder {
-			v, _ := NewForwardedNPDU(nil)
+		BVLCIForwardedNPDU: func() Decoder {
+			v, _ := NewForwardedNPDU(nil, NoArgs, NoKWArgs)
 			return v
 		},
-		0x05: func() Decoder {
-			v, _ := NewRegisterForeignDevice()
+		BVLCIRegisterForeignDevice: func() Decoder {
+			v, _ := NewRegisterForeignDevice(nil, NoArgs, NoKWArgs)
 			return v
 		},
-		0x06: func() Decoder {
-			v, _ := NewReadForeignDeviceTable()
+		BVLCIReadForeignDeviceTable: func() Decoder {
+			v, _ := NewReadForeignDeviceTable(Nothing())
 			return v
 		},
-		0x07: func() Decoder {
-			v, _ := NewReadForeignDeviceTableAck()
+		BVLCIReadForeignDeviceTableAck: func() Decoder {
+			v, _ := NewReadForeignDeviceTableAck(nil, NoArgs, NoKWArgs)
 			return v
 		},
-		0x08: func() Decoder {
-			v, _ := NewDeleteForeignDeviceTableEntry()
+		BVLCIDeleteForeignDeviceTableEntry: func() Decoder {
+			v, _ := NewDeleteForeignDeviceTableEntry(nil, NoArgs, NoKWArgs)
 			return v
 		},
-		0x09: func() Decoder {
-			v, _ := NewDistributeBroadcastToNetwork(nil)
+		BVLCIDistributeBroadcastToNetwork: func() Decoder {
+			v, _ := NewDistributeBroadcastToNetwork(Nothing())
 			return v
 		},
-		0x0A: func() Decoder {
-			v, _ := NewOriginalUnicastNPDU(nil)
+		BVLCIOriginalUnicastNPDU: func() Decoder {
+			v, _ := NewOriginalUnicastNPDU(Nothing())
 			return v
 		},
-		0x0B: func() Decoder {
-			v, _ := NewOriginalBroadcastNPDU(nil)
+		BVLCIOriginalBroadcastNPDU: func() Decoder {
+			v, _ := NewOriginalBroadcastNPDU(Nothing())
 			return v
 		},
 	}

@@ -31,6 +31,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
@@ -79,9 +80,9 @@ func (s *SampleOneShotTask) ProcessTask() error {
 }
 
 func (suite *TimeMachineSuite) SampleTaskFunction() GenericFunction {
-	return func(args Args, kwargs KWArgs) error {
+	return func(args Args, kwArgs KWArgs) error {
 		currentTime := GlobalTimeMachineCurrentTime()
-		suite.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Time("current_time", currentTime).Msg("sample_task_function")
+		suite.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Time("current_time", currentTime).Msg("sample_task_function")
 
 		suite.sampleTaskFunctionCalled = append(suite.sampleTaskFunctionCalled, currentTime)
 		return nil
@@ -170,7 +171,7 @@ func (suite *TimeMachineSuite) TestOneShotImmediate2() {
 
 func (suite *TimeMachineSuite) TestFunctionTaskImmediate() {
 	// create a function task
-	ft := FunctionTask(suite.SampleTaskFunction(), Nothing())
+	ft := FunctionTask(suite.SampleTaskFunction(), NoArgs, NoKWArgs)
 	suite.sampleTaskFunctionCalled = nil
 
 	// reset the time machine to midnight, install the task, let it run
@@ -188,7 +189,7 @@ func (suite *TimeMachineSuite) TestFunctionTaskDelay() {
 	sampleDelay := 10 * time.Second
 
 	// create a function task
-	ft := FunctionTask(suite.SampleTaskFunction(), Nothing())
+	ft := FunctionTask(suite.SampleTaskFunction(), NoArgs, NoKWArgs)
 	suite.sampleTaskFunctionCalled = nil
 
 	// reset the time machine to midnight, install the task, let it run

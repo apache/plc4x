@@ -26,7 +26,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -41,6 +41,7 @@ type NetworkNode interface {
 }
 
 type Network struct {
+	*DefaultRFormatter
 	name string
 
 	nodes []NetworkNode
@@ -55,21 +56,16 @@ type Network struct {
 
 func NewNetwork(localLog zerolog.Logger, opts ...func(*Network)) *Network {
 	n := &Network{
-		log: localLog,
+		DefaultRFormatter: NewDefaultRFormatter(),
+		log:               localLog,
 	}
 	for _, opt := range opts {
 		opt(n)
 	}
-	if LogVlan {
-		n.log.Trace().
-			Str("name", n.name).
-			Stringer("broadcastAddress", n.broadcastAddress).
-			Float32("dropPercent", n.dropPercent).
-			Msg("NewNetwork")
+	if _debug != nil {
+		_debug("__init__ name=%r broadcast_address=%r drop_percent=%r", n.name, n.broadcastAddress, n.dropPercent)
 	}
-	if !LogVlan {
-		n.log = zerolog.Nop()
-	}
+	n.DefaultRFormatter = NewDefaultRFormatter()
 	return n
 }
 
@@ -99,6 +95,9 @@ func WithNetworkTrafficLogger(trafficLogger TrafficLogger) func(*Network) {
 
 // AddNode Add a node to this network, let the node know which network it's on.
 func (n *Network) AddNode(node NetworkNode) {
+	if _debug != nil {
+		_debug("add_node %r", node)
+	}
 	n.log.Debug().Stringer("node", node).Msg("Adding node")
 	n.nodes = append(n.nodes, node)
 	node.setLan(n)
@@ -111,6 +110,9 @@ func (n *Network) AddNode(node NetworkNode) {
 
 // RemoveNode Remove a node from this network.
 func (n *Network) RemoveNode(node NetworkNode) {
+	if _debug != nil {
+		_debug("remove_node %r", node)
+	}
 	n.log.Debug().Stringer("node", node).Msg("Remove node")
 	for i, _node := range n.nodes {
 		if _node == node {
@@ -122,6 +124,9 @@ func (n *Network) RemoveNode(node NetworkNode) {
 
 // ProcessPDU Process a PDU by sending a copy to each node as dictated by the addressing and if a node is promiscuous.
 func (n *Network) ProcessPDU(pdu PDU) error {
+	if _debug != nil {
+		_debug("process_pdu(%s) %r", n.name, pdu)
+	}
 	n.log.Debug().Stringer("pdu", pdu).Msg("processing pdu")
 
 	// if there is a traffic log call it with the network name and PDU
@@ -132,15 +137,24 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 	// randomly drop a packet
 	if n.dropPercent != 0.0 {
 		if rand.Float32()*100 < n.dropPercent {
+			if _debug != nil {
+				_debug("    - packet dropped")
+			}
 			n.log.Trace().Msg("Dropping PDU")
 			return nil
 		}
 	}
 
 	if n.broadcastAddress != nil && pdu.GetPDUDestination().Equals(n.broadcastAddress) {
+		if _debug != nil {
+			_debug("    - broadcast")
+		}
 		n.log.Trace().Msg("broadcast")
 		for _, node := range n.nodes {
 			if !pdu.GetPDUSource().Equals(node.getAddress()) {
+				if _debug != nil {
+					_debug("    - match: %r", node)
+				}
 				n.log.Debug().Stringer("node", node).Msg("match")
 				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
@@ -148,9 +162,15 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 			}
 		}
 	} else {
+		if _debug != nil {
+			_debug("    - unicast")
+		}
 		n.log.Debug().Msg("unicast")
 		for _, node := range n.nodes {
 			if node.isPromiscuous() || pdu.GetPDUDestination().Equals(node.getAddress()) {
+				if _debug != nil {
+					_debug("    - match: %r", node)
+				}
 				n.log.Debug().Stringer("node", node).Msg("match")
 				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")

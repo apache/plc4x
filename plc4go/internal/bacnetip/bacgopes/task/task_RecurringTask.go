@@ -42,8 +42,26 @@ func NewRecurringTask(localLog zerolog.Logger, taskRequirements TaskRequirements
 	for _, opt := range opts {
 		opt(r)
 	}
+	if _debug != nil {
+		_debug("__init__ interval=%r offset=%r", r.taskInterval, r.taskIntervalOffset)
+	}
 	r.Task = NewTask(taskRequirements)
+	r.AddDebugContents(r, "taskInterval", "taskIntervalOffset")
 	return r
+}
+
+func (r *RecurringTask) GetDebugAttr(attr string) any {
+	switch attr {
+	case "taskInterval":
+		if r.taskInterval != nil {
+			return *r.taskInterval
+		}
+	case "taskIntervalOffset":
+		if r.taskIntervalOffset != nil {
+			return *r.taskIntervalOffset
+		}
+	}
+	return nil
 }
 
 func WithRecurringTaskInterval(interval time.Duration) func(task *RecurringTask) {
@@ -61,6 +79,9 @@ func WithRecurringTaskOffset(offset time.Duration) func(task *RecurringTask) {
 func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 	interval := options.Interval
 	offset := options.Offset
+	if _debug != nil {
+		_debug("install_task interval=%r offset=%r", interval, offset)
+	}
 
 	// set the interval if it hasn't already been set
 	if interval != nil {
@@ -80,6 +101,9 @@ func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 	// if there is no task manager, postpone the install
 	if _taskManager == nil {
 		r.log.Trace().Msg("No task manager")
+		if _debug != nil {
+			_debug("    - no task manager")
+		}
 		_unscheduledTasks = append(_unscheduledTasks, r.TaskRequirements)
 	} else {
 		// get ready for the next interval plus a jitter
@@ -96,9 +120,16 @@ func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 			Dur("offset", offset).
 			Msg("Now, interval, offset:")
 
+		if _debug != nil {
+			_debug("    - now, interval, offset: %r, %r, %r", now, interval, offset)
+		}
+
 		// compute the time
 		_taskTime := now.Add(-offset).Add(interval).Add(-(time.Duration((now.Add(-offset).UnixNano() - time.Time{}.UnixNano()) % int64(interval)))).Add(offset)
 		r.taskTime = &_taskTime
+		if _debug != nil {
+			_debug("    - task time: %r", r.taskTime)
+		}
 		r.log.Debug().Time("taskTime", _taskTime).Msg("task time")
 
 		// install it

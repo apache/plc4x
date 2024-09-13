@@ -27,7 +27,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
@@ -64,17 +64,11 @@ func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node
 	for _, opt := range opts {
 		opt(n)
 	}
+	if _debug != nil {
+		_debug("__init__ %r lan=%r name=%r, promiscuous=%r spoofing=%r sid=%r", addr, n.lan, n.name, n.promiscuous, n.spoofing, n.argSid)
+	}
 	if n.name != "" {
 		n.log = n.log.With().Str("name", n.name).Logger()
-	}
-	if LogVlan {
-		n.log.Trace().
-			Stringer("address", n.address).
-			Stringer("lan", n.lan).
-			Bool("promiscuous", n.promiscuous).
-			Bool("spoofing", n.spoofing).
-			Interface("sid", n.argSid).
-			Msg("NewNode")
 	}
 	var err error
 	n.ServerContract, err = NewServer(localLog, OptionalOption2(n.argSid, ToPtr[ServerRequirements](n), WithServerSID))
@@ -85,9 +79,6 @@ func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node
 	// bind to a lan if it was provided
 	if n.lan != nil {
 		n.bind(n.lan)
-	}
-	if !LogVlan {
-		n.log = zerolog.Nop()
 	}
 	return n, nil
 }
@@ -151,12 +142,19 @@ func (n *Node) SetSpoofing(spoofing bool) {
 }
 
 func (n *Node) bind(lan NodeNetworkReference) {
+	if _debug != nil {
+		_debug("bind %r", lan)
+	}
 	n.log.Debug().Stringer("lan", lan).Msg("binding lan")
 	lan.AddNode(n)
 }
 
-func (n *Node) Indication(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+func (n *Node) Indication(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication(%s) %r", n.name, pdu)
+	}
 
 	// Make sure we are connected
 	if n.lan == nil {
@@ -165,7 +163,6 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 
 	// if the pduSource is unset, fill in our address, otherwise
 	// leave it alone to allow for simulated spoofing
-	pdu := GA[PDU](args, 0)
 	if pduSource := pdu.GetPDUSource(); pduSource == nil {
 		pdu.SetPDUSource(n.address)
 	} else if !n.spoofing && !pduSource.Equals(n.address) {
@@ -173,7 +170,7 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// actual network delivery is a zero-delay task
-	OneShotFunction(func(args Args, kwargs KWArgs) error {
+	OneShotFunction(func(args Args, kwArgs KWArgs) error {
 		return n.lan.ProcessPDU(pdu)
 	}, args, NoKWArgs)
 	return nil
@@ -181,7 +178,7 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 
 func (n *Node) Format(s fmt.State, v rune) {
 	switch v {
-	case 'r':
-		_, _ = s.Write([]byte(fmt.Sprintf("<%s(%s) at %p>", StructName(), n.name, n)))
+	case 's', 'v', 'r':
+		_, _ = fmt.Fprintf(s, "<%s(%s) at %p>", StructName(), n.name, n)
 	}
 }

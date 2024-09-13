@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package state_machine
 
 import (
 	"fmt"
@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
@@ -44,7 +45,7 @@ type State interface {
 	fmt.Stringer
 
 	Send(pdu PDU, nextState State) State
-	Receive(args Args, kwargs KWArgs) State
+	Receive(args Args, kwArgs KWArgs) State
 	Reset()
 	Fail(docstring string) State
 	Success(docstring string) State
@@ -56,7 +57,7 @@ type State interface {
 	SetEvent(eventId string) State
 	Doc(docstring string) State
 	DocString() string
-	Call(fn GenericFunction, args Args, kwargs KWArgs) State
+	Call(fn GenericFunction, args Args, kwArgs KWArgs) State
 
 	getStateMachine() StateMachine
 	setStateMachine(StateMachine)
@@ -154,6 +155,9 @@ func NewState(localLog zerolog.Logger, stateMachine StateMachine, docString stri
 	for _, opt := range opts {
 		opt(s)
 	}
+	if _debug != nil {
+		_debug("__init__ %r docString=%r", stateMachine, docString)
+	}
 	if s.interceptor == nil {
 		s.interceptor = s
 	}
@@ -173,6 +177,9 @@ func WithStateStateInterceptor(interceptor StateInterceptor) func(state *state) 
 //
 //	associated state machine is Reset.
 func (s *state) Reset() {
+	if _debug != nil {
+		_debug("reset")
+	}
 	s.log.Trace().Msg("Reset")
 }
 
@@ -180,6 +187,9 @@ func (s *state) Reset() {
 //
 //	is returned for method chaining.
 func (s *state) Doc(docString string) State {
+	if _debug != nil {
+		_debug("doc %r", docString)
+	}
 	s.log = s.log.With().Str("docString", docString).Logger() // TODO: would be better to use stringer or object to dynamically retrieve docstring and only build logger once
 	s.log.Debug().Msg("Doc")
 	s.docString = docString
@@ -194,6 +204,9 @@ func (s *state) DocString() string {
 //
 //	label for the state
 func (s *state) Success(docString string) State {
+	if _debug != nil {
+		_debug("success %r", docString)
+	}
 	s.log.Debug().Str("docString", docString).Msg("Success")
 	if s.isSuccessState {
 		panic("already a Success state")
@@ -220,6 +233,9 @@ func (s *state) IsSuccessState() bool {
 //
 //	label for the state
 func (s *state) Fail(docString string) State {
+	if _debug != nil {
+		_debug("fail %r", docString)
+	}
 	s.log.Debug().Str("docString", docString).Msg("Fail")
 	if s.isSuccessState {
 		panic("already a Success state")
@@ -244,19 +260,34 @@ func (s *state) IsFailState() bool {
 
 // EnterState Called when the state machine is entering the state.
 func (s *state) EnterState() {
+	if _debug != nil {
+		_debug("enter_state(%s)", s.docString)
+	}
 	s.log.Debug().Msg("EnterState")
 	if s.timeoutTransition != nil {
+		if _debug != nil {
+			_debug("    - waiting: %r", s.timeoutTransition.timeout)
+		}
 		s.log.Debug().Time("timeout", s.timeoutTransition.timeout).Msg("waiting")
 		s.stateMachine.getStateTimeoutTask().InstallTask(WithInstallTaskOptionsWhen(s.timeoutTransition.timeout))
 	} else {
+		if _debug != nil {
+			_debug("    - no timeout")
+		}
 		s.log.Trace().Msg("no timeout")
 	}
 }
 
 // ExitState Called when the state machine is existing the state.
 func (s *state) ExitState() {
+	if _debug != nil {
+		_debug("exit_state(%s)", s.docString)
+	}
 	s.log.Debug().Msg("ExitState")
 	if s.timeoutTransition != nil {
+		if _debug != nil {
+			_debug("    - canceling timeout")
+		}
 		s.log.Trace().Msg("canceling timeout")
 		s.stateMachine.getStateTimeoutTask().SuspendTask()
 	}
@@ -266,10 +297,16 @@ func (s *state) ExitState() {
 //
 //	chaining. pdu tPDU to send nextState state to transition to after sending
 func (s *state) Send(pdu PDU, nextState State) State {
+	if _debug != nil {
+		_debug("send(%s) %r next_state=%r", s.docString, pdu, nextState)
+	}
 	s.log.Debug().Stringer("pdu", pdu).Msg("Send")
 	if nextState == nil {
 		nextState = s.stateMachine.NewState("")
 		s.log.Debug().Stringer("nextState", nextState).Msg("new nextState")
+		if _debug != nil {
+			_debug("    - new next_state: %r", nextState)
+		}
 	} else if !slices.ContainsFunc(s.stateMachine.getStates(), nextState.Equals) {
 		panic("off the rails")
 	}
@@ -297,18 +334,27 @@ func (s *state) AfterSend(pdu PDU) {
 //
 //	criteria tPDU to match
 //	 next_state destination state after a successful match
-func (s *state) Receive(args Args, kwargs KWArgs) State {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Receive")
+func (s *state) Receive(args Args, kwArgs KWArgs) State {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Receive")
 	pduType := args[0]
-	pduAttrs := kwargs
+	pduAttrs := kwArgs
+	if _debug != nil {
+		_debug("receive(%s) %r %r", s.docString, pduType, pduAttrs)
+	}
 	var nextState State
 	if _nextState, ok := pduAttrs["next_state"]; ok {
 		nextState = _nextState.(State)
+		if _debug != nil {
+			_debug("    - next_state: %r", nextState)
+		}
 		s.log.Debug().Stringer("nextState", nextState).Msg("nextState")
 	}
 
 	if nextState == nil {
 		nextState = s.stateMachine.NewState("")
+		if _debug != nil {
+			_debug("    - new next_state: %r", nextState)
+		}
 		s.log.Debug().Stringer("nextState", nextState).Msg("nextState")
 	} else if !slices.ContainsFunc(s.stateMachine.getStates(), nextState.Equals) {
 		panic("off the rails")
@@ -318,6 +364,9 @@ func (s *state) Receive(args Args, kwargs KWArgs) State {
 	criteria := criteria{
 		pduType:  pduType,
 		pduAttrs: pduAttrs,
+	}
+	if _debug != nil {
+		_debug("    - criteria: %r", criteria)
 	}
 	s.log.Debug().Interface("criteria", criteria).Msg("criteria")
 	s.receiveTransitions = append(s.receiveTransitions, ReceiveTransition{
@@ -338,17 +387,24 @@ func (s *state) AfterReceive(pdu PDU) {
 	s.stateMachine.AfterReceive(pdu)
 }
 
-// Ignore Create a ReceiveTransition from this state to itself, if match is successful the effect is to Ignore the tPDU.
+// Ignore Create a ReceiveTransition from this state to its, if match is successful the effect is to Ignore the tPDU.
 //
 //	criteria tPDU to match
 func (s *state) Ignore(pduType any, pduAttrs map[KnownKey]any) State {
+	if _debug != nil {
+		_debug("ignore(%s) %r %r", s.docString, pduType, pduAttrs)
+	}
 	s.log.Debug().Interface("pduType", pduType).Interface("pduAttrs", pduAttrs).Msg("Ignore")
+	criteria := criteria{
+		pduType:  pduType,
+		pduAttrs: pduAttrs,
+	}
+	if _debug != nil {
+		_debug("    - criteria: %r", criteria)
+	}
 	s.receiveTransitions = append(s.receiveTransitions, ReceiveTransition{
 		Transition: Transition{},
-		criteria: criteria{
-			pduType:  pduType,
-			pduAttrs: pduAttrs,
-		},
+		criteria:   criteria,
 	})
 
 	return s
@@ -358,6 +414,9 @@ func (s *state) Ignore(pduType any, pduAttrs map[KnownKey]any) State {
 //
 // Unless this is trapped by the state, the default behaviour is to fail.
 func (s *state) UnexpectedReceive(pdu PDU) {
+	if _debug != nil {
+		_debug("unexpected_receive(%s) %r", s.docString, pdu)
+	}
 	s.log.Debug().Stringer("pdu", pdu).Msg("UnexpectedReceive")
 	s.stateMachine.UnexpectedReceive(pdu)
 }
@@ -366,6 +425,9 @@ func (s *state) UnexpectedReceive(pdu PDU) {
 //
 //	chaining. event_id event identifier
 func (s *state) SetEvent(eventId string) State {
+	if _debug != nil {
+		_debug("set_event(%s) %r", s.docString, eventId)
+	}
 	s.log.Debug().Str("eventId", eventId).Msg("SetEvent")
 	s.setEventTransitions = append(s.setEventTransitions, EventTransition{
 		Transition: Transition{},
@@ -383,6 +445,9 @@ func (s *state) EventSet(eventId string) {
 //
 //	chaining. event_id event identifier
 func (s *state) ClearEvent(eventId string) State {
+	if _debug != nil {
+		_debug("clear_event(%s) %r", s.docString, eventId)
+	}
 	s.log.Debug().Str("eventId", eventId).Msg("ClearEvent")
 	s.clearEventTransitions = append(s.clearEventTransitions, EventTransition{
 		Transition: Transition{},
@@ -395,14 +460,19 @@ func (s *state) ClearEvent(eventId string) State {
 //
 //	method chaining. pdu tPDU to send next_state state to transition to after sending
 func (s *state) WaitEvent(eventId string, nextState State) State {
+	if _debug != nil {
+		_debug("wait_event(%s) %r next_state=%r", s.docString, eventId, nextState)
+	}
 	s.log.Debug().Str("eventId", eventId).Msg("WaitEvent")
 	if nextState == nil {
 		nextState = s.stateMachine.NewState("")
+		if _debug != nil {
+			_debug("    - new next_state: %r", nextState)
+		}
 		s.log.Debug().Stringer("nextState", nextState).Msg("nextState")
 	} else if !slices.ContainsFunc(s.stateMachine.getStates(), nextState.Equals) {
 		panic("off the rails")
 	}
-
 	s.waitEventTransitions = append(s.waitEventTransitions, EventTransition{
 		Transition: Transition{
 			nextState: nextState,
@@ -420,6 +490,9 @@ func (s *state) WaitEvent(eventId string, nextState State) State {
 //	delay the amount of time to wait for a matching tPDU
 //	next_state destination state after timeout
 func (s *state) Timeout(delay time.Duration, nextState State) State {
+	if _debug != nil {
+		_debug("timeout(%s) %r next_state=%r", s.docString, delay, nextState)
+	}
 	s.log.Debug().Dur("delay", delay).Stringer("nextState", nextState).Msg("Timeout")
 	if s.timeoutTransition != nil {
 		panic("state already has a timeout")
@@ -427,6 +500,9 @@ func (s *state) Timeout(delay time.Duration, nextState State) State {
 
 	if nextState == nil {
 		nextState = s.stateMachine.NewState("")
+		if _debug != nil {
+			_debug("    - new next_state: %r", nextState)
+		}
 		s.log.Debug().Stringer("nextState", nextState).Msg("nextState")
 	} else if !slices.ContainsFunc(s.stateMachine.getStates(), nextState.Equals) {
 		panic("off the rails")
@@ -444,34 +520,54 @@ func (s *state) Timeout(delay time.Duration, nextState State) State {
 // Call Create a CallTransition from this state to another, possibly new, state.  The next state is returned for method
 //
 //	chaining. criteria tPDU to match next_state destination state after a successful match
-func (s *state) Call(fn GenericFunction, args Args, kwargs KWArgs) State {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Call")
+func (s *state) Call(fn GenericFunction, args Args, kwArgs KWArgs) State {
+	if _debug != nil {
+		_debug("call(%s) %r %r %r", s.docString, fn, args, kwArgs)
+	}
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Call")
 	if s.callTransition != nil {
 		panic("state already has a 'Call' per state")
 	}
 	var nextState State
-	if _nextState, ok := kwargs["next_state"]; ok {
+	if _nextState, ok := kwArgs["next_state"]; ok {
 		nextState = _nextState.(State)
+		if _debug != nil {
+			_debug("    - next_state: %r", nextState)
+		}
 		s.log.Debug().Stringer("nextState", nextState).Msg("nextState")
-		delete(kwargs, "next_state")
+		delete(kwArgs, "next_state")
 	}
 
 	if nextState == nil {
 		nextState = s.stateMachine.NewState("")
+		if _debug != nil {
+			_debug("    - new next_state: %r", nextState)
+		}
 		s.log.Debug().Stringer("nextState", nextState).Msg("nextState")
 	} else if !slices.ContainsFunc(s.stateMachine.getStates(), nextState.Equals) {
 		panic("off the rails")
 	}
 
+	fnargs := fnargs{
+		fn:     fn,
+		args:   args,
+		kwArgs: kwArgs,
+	}
+	if _debug != nil {
+		_debug("    - fnargs: %r", fnargs)
+	}
 	s.callTransition = &CallTransition{
 		Transition: Transition{nextState: nextState},
-		fnargs: fnargs{
-			fn:     fn,
-			args:   args,
-			kwargs: kwargs,
-		},
+		fnargs:     fnargs,
 	}
 	return nextState
+}
+
+func (s *state) Format(state fmt.State, v rune) {
+	switch v {
+	case 's', 'v', 'r':
+		_, _ = fmt.Fprintf(state, "<%s(%s) at %p>", StructName(), s.docString, s)
+	}
 }
 
 func (s *state) String() string {

@@ -50,37 +50,50 @@ type BVLCI interface {
 	getBVLCI() BVLCI
 }
 
-//go:generate plc4xGenerator -type=_BVLCI -prefix=bvll
 type _BVLCI struct {
 	PCI
-	*DebugContents `ignore:"true"`
+	*DebugContents
 
-	requirements BVLCIRequirements `ignore:"true"`
+	requirements BVLCIRequirements
 
 	bvlciType     uint8
 	bvlciFunction uint8
 	bvlciLength   uint16
 
 	// Deprecated: hacky workaround
-	bytesToDiscard int `ignore:"true"`
+	bytesToDiscard int
 }
 
 var _ BVLCI = (*_BVLCI)(nil)
 
-func NewBVLCI(args Args, kwargs KWArgs) BVLCI {
+func NewBVLCI(args Args, kwArgs KWArgs) BVLCI {
 	if _debug != nil {
-		_debug("__init__ %r %r", args, kwargs)
+		_debug("__init__ %r %r", args, kwArgs)
 	}
 	b := &_BVLCI{
 		bvlciType:    0x81,
-		requirements: KW[BVLCIRequirements](kwargs, KWCompBVLCIRequirements),
+		requirements: KW[BVLCIRequirements](kwArgs, KWCompBVLCIRequirements),
 	}
-	b.PCI = NewPCI(NoArgs, kwargs)
-	if bvlc := KWO[readWriteModel.BVLC](kwargs, KWCompRootMessage, nil); bvlc != nil {
+	b.DebugContents = NewDebugContents(b, "bvlciType", "bvlciFunction", "bvlciLength")
+	b.PCI = NewPCI(NoArgs, kwArgs)
+	b.AddExtraPrinters(b.PCI.(DebugContentPrinter))
+	if bvlc := KWO[readWriteModel.BVLC](kwArgs, KWCompRootMessage, nil); bvlc != nil {
 		b.bvlciFunction = bvlc.GetBvlcFunction()
 		b.bvlciLength = bvlc.GetLengthInBytes(context.Background())
 	}
 	return b
+}
+
+func (b *_BVLCI) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciType":
+		return b.bvlciType
+	case "bvlciFunction":
+		return b.bvlciFunction
+	case "bvlciLength":
+		return b.bvlciLength
+	}
+	return nil
 }
 
 func (b *_BVLCI) Update(bvlci Arg) error {

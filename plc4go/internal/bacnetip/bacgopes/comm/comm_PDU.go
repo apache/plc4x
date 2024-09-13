@@ -41,16 +41,16 @@ type _PDU struct {
 	PDUData
 }
 
-func NewCPDU(args Args, kwargs KWArgs) CPDU {
+func NewCPDU(args Args, kwArgs KWArgs) CPDU {
 	data := GAO[any](args, 0, nil)
 	if _debug != nil {
-		_debug("__init__ %r %r", args, kwargs)
+		_debug("__init__ %r %r", args, kwArgs)
 	}
 
-	// pick up some optional kwargs
-	userData := KWO[spi.Message](kwargs, KWCPCIUserData, nil)
-	source := KWO[*Address](kwargs, KWCPCISource, nil)
-	destination := KWO[*Address](kwargs, KWCPCIDestination, nil)
+	// pick up some optional kwArgs
+	userData := KWO[spi.Message](kwArgs, KWCPCIUserData, nil)
+	source := KWO[*Address](kwArgs, KWCPCISource, nil)
+	destination := KWO[*Address](kwArgs, KWCPCIDestination, nil)
 
 	// carry source and destination from another PDU
 	// so this can act like a copy constructor
@@ -65,7 +65,7 @@ func NewCPDU(args Args, kwargs KWArgs) CPDU {
 	p := &_PDU{
 		PCI: NewPCI(args, NKW(KWCPCIUserData, userData, KWCPCISource, source, destination, KWCPCIDestination, destination)),
 	}
-	p.PDUData = NewPDUData(NA(KWO[spi.Message](kwargs, KWCompRootMessage, nil)), NoKWArgs)
+	p.PDUData = NewPDUData(NA(KWO[spi.Message](kwArgs, KWCompRootMessage, nil)), NoKWArgs)
 	return p
 }
 

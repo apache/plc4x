@@ -48,7 +48,7 @@ func (d *SnifferStateMachine) SerializeWithWriteBuffer(ctx context.Context, writ
 	if err := writeBuffer.PushContext("SnifferStateMachine"); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if err := d.StateMachineContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {

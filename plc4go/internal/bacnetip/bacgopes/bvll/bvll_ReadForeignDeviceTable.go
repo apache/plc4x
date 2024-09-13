@@ -26,7 +26,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type ReadForeignDeviceTable struct {
@@ -35,13 +35,15 @@ type ReadForeignDeviceTable struct {
 
 var _ BVLPDU = (*ReadForeignDeviceTable)(nil)
 
-func NewReadForeignDeviceTable(opts ...func(*ReadForeignDeviceTable)) (*ReadForeignDeviceTable, error) {
-	b := &ReadForeignDeviceTable{}
-	for _, opt := range opts {
-		opt(b)
+func NewReadForeignDeviceTable(args Args, kwArgs KWArgs) (*ReadForeignDeviceTable, error) {
+	r := &ReadForeignDeviceTable{}
+	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	if r.GetRootMessage() == nil {
+		r.SetRootMessage(readWriteModel.NewBVLCReadForeignDeviceTable())
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCReadForeignDeviceTable())).(*_BVLPDU)
-	return b, nil
+	r.bvlciFunction = BVLCIReadForeignDeviceTable
+	r.bvlciLength = 4
+	return r, nil
 }
 
 func (r *ReadForeignDeviceTable) Encode(bvlpdu Arg) error {
@@ -63,7 +65,7 @@ func (r *ReadForeignDeviceTable) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLCI:
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCReadForeignDeviceTable:
+		case readWriteModel.BVLCReadForeignDeviceTable:
 			r.SetRootMessage(rm)
 		}
 	}

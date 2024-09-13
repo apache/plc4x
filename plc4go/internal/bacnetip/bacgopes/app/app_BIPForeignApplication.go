@@ -49,7 +49,7 @@ type BIPForeignApplication struct {
 	log zerolog.Logger
 }
 
-func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, localAddress Address, bbmdAddress *Address, bbmdTTL *int, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPForeignApplication, error) {
+func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, localAddress Address, bbmdAddress *Address, bbmdTTL *uint16, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPForeignApplication, error) {
 	b := &BIPForeignApplication{
 		log: localLog,
 	}

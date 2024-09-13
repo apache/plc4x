@@ -26,7 +26,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 

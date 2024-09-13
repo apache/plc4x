@@ -51,8 +51,8 @@ type ServiceAccessPointRequirements interface {
 }
 
 type ServiceElement interface {
-	Indication(args Args, kwargs KWArgs) error
-	Confirmation(args Args, kwargs KWArgs) error
+	Indication(args Args, kwArgs KWArgs) error
+	Confirmation(args Args, kwArgs KWArgs) error
 }
 
 //go:generate plc4xGenerator -type=serviceAccessPoint -prefix=comm_
@@ -110,28 +110,28 @@ func WithServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) func(*servic
 	}
 }
 
-func (s *serviceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
+func (s *serviceAccessPoint) SapRequest(args Args, kwArgs KWArgs) error {
 	if _debug != nil {
-		_debug("sap_request(%v) %r %r", s.serviceID, args, kwargs)
+		_debug("sap_request(%v) %r %r", s.serviceID, args, kwArgs)
 	}
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapRequest")
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Interface("serviceID", s.serviceID).Msg("SapRequest")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
 	}
-	return s.serviceElement.Indication(args, kwargs)
+	return s.serviceElement.Indication(args, kwArgs)
 }
 
-func (s *serviceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
+func (s *serviceAccessPoint) SapResponse(args Args, kwArgs KWArgs) error {
 	if _debug != nil {
-		_debug("sap_response(%v) %r %r", s.serviceID, args, kwargs)
+		_debug("sap_response(%v) %r %r", s.serviceID, args, kwArgs)
 	}
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapResponse")
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Interface("serviceID", s.serviceID).Msg("SapResponse")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
 	}
-	return s.serviceElement.Confirmation(args, kwargs)
+	return s.serviceElement.Confirmation(args, kwArgs)
 }
 
 func (s *serviceAccessPoint) _setServiceElement(serviceElement ServiceElement) {

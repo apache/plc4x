@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package tests
+package state_machine
 
 import (
 	"fmt"
@@ -28,14 +28,15 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 type ClientStateMachineContract interface {
 	fmt.Stringer
 	Client
 	StateMachineContract
-	Send(args Args, kwargs KWArgs) error
-	Confirmation(args Args, kwargs KWArgs) error
+	Send(args Args, kwArgs KWArgs) error
+	Confirmation(args Args, kwArgs KWArgs) error
 }
 
 // ClientStateMachine An instance of this class sits at the top of a stack.  tPDU's that the
@@ -67,6 +68,9 @@ func NewClientStateMachine(localLog zerolog.Logger, opts ...func(*ClientStateMac
 	if c.contract == nil {
 		c.contract = c
 	}
+	if _debug != nil {
+		_debug("__init__")
+	}
 	if c.name != "" {
 		c.log = c.log.With().Str("name", c.name).Logger()
 	}
@@ -78,9 +82,6 @@ func NewClientStateMachine(localLog zerolog.Logger, opts ...func(*ClientStateMac
 	var init func()
 	c.StateMachineContract, init = NewStateMachine(localLog, c.contract, WithStateMachineName(c.name))
 	init()
-	if !LogStateMachine {
-		c.log = zerolog.Nop()
-	}
 	return c, nil
 }
 
@@ -96,14 +97,22 @@ func WithClientStateMachineExtension(contract ClientStateMachineContract) func(*
 	}
 }
 
-func (s *ClientStateMachine) Send(args Args, kwargs KWArgs) error {
-	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
-	return s.contract.Request(args, kwargs)
+func (s *ClientStateMachine) Send(args Args, kwArgs KWArgs) error {
+	s.log.Trace().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Send")
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("send(%s) %r", s.name, pdu)
+	}
+	return s.contract.Request(args, kwArgs)
 }
 
-func (s *ClientStateMachine) Confirmation(args Args, kwargs KWArgs) error {
-	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
-	return s.contract.Receive(args, kwargs)
+func (s *ClientStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
+	s.log.Trace().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation(%s) %r", s.name, pdu)
+	}
+	return s.contract.Receive(args, kwArgs)
 }
 
 func (s *ClientStateMachine) AlternateString() (string, bool) {

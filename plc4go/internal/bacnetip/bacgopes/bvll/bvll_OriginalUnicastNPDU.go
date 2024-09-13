@@ -20,7 +20,6 @@
 package bvll
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -28,7 +27,6 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 )
 
 type OriginalUnicastNPDU struct {
@@ -40,47 +38,17 @@ type OriginalUnicastNPDU struct {
 
 var _ BVLPDU = (*OriginalUnicastNPDU)(nil)
 
-func NewOriginalUnicastNPDU(pdu PDU, opts ...func(*OriginalUnicastNPDU)) (*OriginalUnicastNPDU, error) {
+func NewOriginalUnicastNPDU(args Args, kwArgs KWArgs) (*OriginalUnicastNPDU, error) {
 	o := &OriginalUnicastNPDU{}
-	for _, opt := range opts {
-		opt(o)
-	}
-	switch npdu := pdu.(type) {
+	o._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	switch npdu := o.GetRootMessage().(type) {
 	case readWriteModel.NPDU:
-		o._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(npdu)))).(*_BVLPDU)
-	case nil:
-		o._BVLPDU = NewBVLPDU(Nothing()).(*_BVLPDU)
-	default:
-		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
-		data := pdu.GetPduData()
-		parse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
-		if err != nil {
-			return nil, errors.Wrap(err, "error re-encoding")
-		}
-		o._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(parse)))).(*_BVLPDU)
+		// Repackage
+		o.SetRootMessage(readWriteModel.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(npdu)))
 	}
-	// Do a post construct for a bit more easy initialization
-	for _, f := range o._postConstruct {
-		f()
-	}
-	o._postConstruct = nil
+	o.bvlciFunction = BVLCIOriginalUnicastNPDU
+	o.bvlciLength = uint16(4 + len(o.GetPduData()))
 	return o, nil
-}
-
-func WithOriginalUnicastNPDUDestination(destination *Address) func(*OriginalUnicastNPDU) {
-	return func(o *OriginalUnicastNPDU) {
-		o._postConstruct = append(o._postConstruct, func() {
-			o.SetPDUDestination(destination)
-		})
-	}
-}
-
-func WithOriginalUnicastNPDUUserData(userData spi.Message) func(*OriginalUnicastNPDU) {
-	return func(o *OriginalUnicastNPDU) {
-		o._postConstruct = append(o._postConstruct, func() {
-			o.SetPDUUserData(userData)
-		})
-	}
 }
 
 func (o *OriginalUnicastNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {

@@ -35,10 +35,24 @@ type RoutingTableEntry struct {
 
 func NewRoutingTableEntry(opts ...func(*RoutingTableEntry)) *RoutingTableEntry {
 	r := &RoutingTableEntry{}
+	r.DebugContents = NewDebugContents(r, "rtDNET", "rtPortID", "rtPortInfo")
 	for _, opt := range opts {
 		opt(r)
 	}
 	return r
+}
+
+func (r *RoutingTableEntry) GetDebugAttr(attr string) any {
+	switch attr {
+	case "rtDNET":
+		return r.rtDNET
+	case "rtPortID":
+		return r.rtPortId
+	case "rtPortInfo":
+		return r.rtPortInfo
+	default:
+		return nil
+	}
 }
 
 func WithRoutingTableEntryDestinationNetworkAddress(dnet uint16) func(*RoutingTableEntry) {

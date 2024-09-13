@@ -23,19 +23,10 @@ import (
 	"fmt"
 	"time"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 var StartTime = time.Time{}
-
-type DummyMessage struct {
-	MessageBridge
-}
-
-func NewDummyMessage(data ...byte) *DummyMessage {
-	return &DummyMessage{NewMessageBridge(data...)}
-}
 
 type AssertionError struct {
 	Message string

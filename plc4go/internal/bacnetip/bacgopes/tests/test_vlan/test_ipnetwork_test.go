@@ -36,6 +36,8 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
@@ -62,7 +64,7 @@ func NewTIPNetwork(t *testing.T, nodeCount int, addressPattern string, promiscuo
 	tn.vlan = NewIPNetwork(localLog)
 
 	for i := range nodeCount {
-		nodeAddress, err := NewAddress(fmt.Sprintf(addressPattern, i+1))
+		nodeAddress, err := NewAddress(NA(fmt.Sprintf(addressPattern, i+1)))
 		require.NoError(t, err)
 		node, err := NewIPNode(localLog, nodeAddress, tn.vlan, WithNodePromiscuous(promiscuous), WithNodeSpoofing(spoofing), WithNodeName("node"+strconv.Itoa(i+1)))
 		require.NoError(t, err)
@@ -137,10 +139,7 @@ func TestIPVLAN(t *testing.T) {
 		tnode1, tnode2 := stateMachines[0], stateMachines[1]
 
 		// make a PDU from node 1 to node 2
-		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
-			KWCPCISource, quick.Address("192.168.2.1:47808"),
-			KWCPCIDestination, quick.Address("192.168.2.2:47808")),
-		)
+		pdu := NewPDU(NA([]byte("data")), NKW(KWCPCISource, quick.Address("192.168.2.1:47808"), KWCPCIDestination, quick.Address("192.168.2.2:47808")))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, mode 2 gets it
@@ -163,10 +162,7 @@ func TestIPVLAN(t *testing.T) {
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a broadcast PDU
-		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
-			KWCPCISource, quick.Address("192.168.3.1:47808"),
-			KWCPCIDestination, quick.Address("192.168.3.255:47808")),
-		)
+		pdu := NewPDU(NA([]byte("data")), NKW(KWCPCISource, quick.Address("192.168.3.1:47808"), KWCPCIDestination, quick.Address("192.168.3.255:47808")))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
@@ -192,10 +188,7 @@ func TestIPVLAN(t *testing.T) {
 		tnode1 := stateMachines[0]
 
 		// make an unicast PDU with the wrong source
-		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
-			KWCPCISource, quick.Address("192.168.4.2:47808"),
-			KWCPCIDestination, quick.Address("192.168.4.3:47808")),
-		)
+		pdu := NewPDU(NA([]byte("data")), NKW(KWCPCISource, quick.Address("192.168.4.2:47808"), KWCPCIDestination, quick.Address("192.168.4.3:47808")))
 		t.Log(pdu)
 
 		// when the node attempts to send it raises an error
@@ -215,10 +208,7 @@ func TestIPVLAN(t *testing.T) {
 		tnode1 := stateMachines[0]
 
 		// make an unicast PDU from a fictitious node
-		pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
-			KWCPCISource, quick.Address("192.168.5.3:47808"),
-			KWCPCIDestination, quick.Address("192.168.5.1:47808")),
-		)
+		pdu := NewPDU(NA([]byte("data")), NKW(KWCPCISource, quick.Address("192.168.5.3:47808"), KWCPCIDestination, quick.Address("192.168.5.1:47808")))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, but gets it back as if it was from node 3
@@ -234,7 +224,6 @@ func TestIPVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_promiscuous_pass", func(t *testing.T) { // Test 'promiscuous mode' of a node which allows it to receive every packet sent on the network.  This is like the network is a hub, or the node is connected to a 'monitor' port on a managed switch.
-		testingLogger := testutils.ProduceTestingLogger(t)
 		ExclusiveGlobalTimeMachine(t)
 
 		// three element network
@@ -244,9 +233,9 @@ func TestIPVLAN(t *testing.T) {
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a PDU from node 1 to node 2
-		src, err := NewAddress("192.168.6.1:47808")
+		src, err := NewAddress(NA("192.168.6.1:47808"))
 		require.NoError(t, err)
-		dest, err := NewAddress("192.168.6.2:47808")
+		dest, err := NewAddress(NA("192.168.6.2:47808"))
 		require.NoError(t, err)
 		pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 		t.Log(pdu)
@@ -321,7 +310,7 @@ func (suite *RouterSuite) SetupTest() {
 		"192.168.20.%d/24": vlan20,
 	}) {
 		for i := range 2 {
-			nodeAddress, err := NewAddress(fmt.Sprintf(pattern, i+2))
+			nodeAddress, err := NewAddress(NA(fmt.Sprintf(pattern, i+2)))
 			suite.NoError(err)
 			node, err := NewIPNode(suite.log, nodeAddress, lan)
 			suite.NoError(err)
@@ -371,9 +360,7 @@ func (suite *RouterSuite) TestSendReceive() { // Test that a node can send a mes
 	csm_10_2, csm_10_3, csm_20_2, csm_20_3 := stateMachines[0], stateMachines[1], stateMachines[2], stateMachines[3]
 
 	// make a PDU from network 10 node 1 to network 20 node 2
-	pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage([]byte("data")...),
-		KWCPCISource, quick.Address("192.168.10.2:47808"),
-		KWCPCIDestination, quick.Address("192.168.20.3:47808")))
+	pdu := NewPDU(NA([]byte("data")), NKW(KWCPCISource, quick.Address("192.168.10.2:47808"), KWCPCIDestination, quick.Address("192.168.20.3:47808")))
 	suite.T().Log(pdu)
 
 	// node 1 sends the pdu, mode 2 gets it
@@ -392,9 +379,9 @@ func (suite *RouterSuite) TestLocalBroadcast() { // Test that a node can send a 
 	csm_10_2, csm_10_3, csm_20_2, csm_20_3 := stateMachines[0], stateMachines[1], stateMachines[2], stateMachines[3]
 
 	// make a PDU from network 10 node 1 to network 20 node 2
-	src, err := NewAddress("192.168.10.2:47808")
+	src, err := NewAddress(NA("192.168.10.2:47808"))
 	suite.Require().NoError(err)
-	dest, err := NewAddress("192.168.10.255:47808")
+	dest, err := NewAddress(NA("192.168.10.255:47808"))
 	suite.Require().NoError(err)
 	pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 	suite.T().Log(pdu)
@@ -415,9 +402,9 @@ func (suite *RouterSuite) TestRemoteBroadcast() { // Test that a node can send a
 	csm_10_2, csm_10_3, csm_20_2, csm_20_3 := stateMachines[0], stateMachines[1], stateMachines[2], stateMachines[3]
 
 	//  make a PDU from network 10 node 1 to network 20 node 2
-	src, err := NewAddress("192.168.10.2:47808")
+	src, err := NewAddress(NA("192.168.10.2:47808"))
 	require.NoError(t, err)
-	dest, err := NewAddress("192.168.20.255:47808")
+	dest, err := NewAddress(NA("192.168.20.255:47808"))
 	require.NoError(t, err)
 	pdu := NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest))
 	t.Log(pdu)

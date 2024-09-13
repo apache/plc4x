@@ -28,12 +28,13 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/trapped_classes"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 type EchoAccessPointRequirements interface {
-	SapResponse(args Args, kwargs KWArgs) error
+	SapResponse(args Args, kwArgs KWArgs) error
 }
 
 type EchoAccessPoint struct {
@@ -51,13 +52,13 @@ func NewEchoAccessPoint(localLog zerolog.Logger, requirements EchoAccessPointReq
 	return e
 }
 
-func (e *EchoAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
-	e.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapIndication")
+func (e *EchoAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
+	e.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapIndication")
 	return e.requirements.SapResponse(args, NoKWArgs)
 }
 
-func (e *EchoAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
-	e.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapConfirmation")
+func (e *EchoAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
+	e.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapConfirmation")
 	return nil
 }
 
@@ -79,20 +80,20 @@ func NewTrappedEchoAccessPoint(localLog zerolog.Logger) (*TrappedEchoAccessPoint
 	return t, nil
 }
 
-func (t *TrappedEchoAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
-	return t.TrappedServiceAccessPoint.SapRequest(args, kwargs)
+func (t *TrappedEchoAccessPoint) SapRequest(args Args, kwArgs KWArgs) error {
+	return t.TrappedServiceAccessPoint.SapRequest(args, kwArgs)
 }
 
-func (t *TrappedEchoAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
-	return t.TrappedServiceAccessPoint.SapIndication(args, kwargs)
+func (t *TrappedEchoAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
+	return t.TrappedServiceAccessPoint.SapIndication(args, kwArgs)
 }
 
-func (t *TrappedEchoAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
-	return t.TrappedServiceAccessPoint.SapResponse(args, kwargs)
+func (t *TrappedEchoAccessPoint) SapResponse(args Args, kwArgs KWArgs) error {
+	return t.TrappedServiceAccessPoint.SapResponse(args, kwArgs)
 }
 
-func (t *TrappedEchoAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
-	return t.TrappedServiceAccessPoint.SapConfirmation(args, kwargs)
+func (t *TrappedEchoAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
+	return t.TrappedServiceAccessPoint.SapConfirmation(args, kwArgs)
 }
 
 func (t *TrappedEchoAccessPoint) String() string {
@@ -100,7 +101,7 @@ func (t *TrappedEchoAccessPoint) String() string {
 }
 
 type EchoServiceElementRequirements interface {
-	Response(args Args, kwargs KWArgs) error
+	Response(args Args, kwArgs KWArgs) error
 }
 
 type EchoServiceElement struct {
@@ -117,13 +118,13 @@ func NewEchoServiceElement(localLog zerolog.Logger, requirements EchoServiceElem
 	return e
 }
 
-func (e *EchoServiceElement) Indication(args Args, kwargs KWArgs) error {
-	e.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+func (e *EchoServiceElement) Indication(args Args, kwArgs KWArgs) error {
+	e.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 	return e.requirements.Response(args, NoKWArgs)
 }
 
-func (e *EchoServiceElement) Confirmation(args Args, kwargs KWArgs) error {
-	e.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
+func (e *EchoServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
+	e.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 	return nil
 }
 
@@ -147,20 +148,20 @@ func NewTrappedEchoServiceElement(localLog zerolog.Logger) (*TrappedEchoServiceE
 	return t, nil
 }
 
-func (t *TrappedEchoServiceElement) Request(args Args, kwargs KWArgs) error {
-	return t.TrappedApplicationServiceElement.Request(args, kwargs)
+func (t *TrappedEchoServiceElement) Request(args Args, kwArgs KWArgs) error {
+	return t.TrappedApplicationServiceElement.Request(args, kwArgs)
 }
 
-func (t *TrappedEchoServiceElement) Indication(args Args, kwargs KWArgs) error {
-	return t.TrappedApplicationServiceElement.Indication(args, kwargs)
+func (t *TrappedEchoServiceElement) Indication(args Args, kwArgs KWArgs) error {
+	return t.TrappedApplicationServiceElement.Indication(args, kwArgs)
 }
 
-func (t *TrappedEchoServiceElement) Response(args Args, kwargs KWArgs) error {
-	return t.TrappedApplicationServiceElement.Response(args, kwargs)
+func (t *TrappedEchoServiceElement) Response(args Args, kwArgs KWArgs) error {
+	return t.TrappedApplicationServiceElement.Response(args, kwArgs)
 }
 
-func (t *TrappedEchoServiceElement) Confirmation(args Args, kwargs KWArgs) error {
-	return t.TrappedApplicationServiceElement.Confirmation(args, kwargs)
+func (t *TrappedEchoServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
+	return t.TrappedApplicationServiceElement.Confirmation(args, kwArgs)
 }
 
 func (t *TrappedEchoServiceElement) String() string {
@@ -195,7 +196,7 @@ func (suite *TestApplicationSuite) TearDownSuite() {
 
 func (suite *TestApplicationSuite) TestSapRequest() {
 	// make a pdu
-	pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage()))
+	pdu := NewPDU(Nothing())
 
 	// service access point is going to request something
 	err := suite.sap.SapRequest(NA(pdu), NoKWArgs)
@@ -212,7 +213,7 @@ func (suite *TestApplicationSuite) TestSapRequest() {
 
 func (suite *TestApplicationSuite) TestAseRequest() {
 	// make a pdu
-	pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, NewDummyMessage()))
+	pdu := NewPDU(Nothing())
 
 	// service access point is going to request something
 	err := suite.ase.Request(NA(pdu), NoKWArgs)

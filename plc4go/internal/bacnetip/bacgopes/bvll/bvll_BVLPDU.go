@@ -21,14 +21,10 @@ package bvll
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -47,14 +43,14 @@ type _BVLPDU struct {
 
 var _ BVLPDU = (*_BVLPDU)(nil)
 
-func NewBVLPDU(args Args, kwargs KWArgs) BVLPDU {
+func NewBVLPDU(args Args, kwArgs KWArgs) BVLPDU {
 	if _debug != nil {
-		_debug("__init__ %r %r", args, kwargs)
+		_debug("__init__ %r %r", args, kwArgs)
 	}
 	b := &_BVLPDU{}
-	kwargs[KWCompBVLCIRequirements] = b
-	b._BVLCI = NewBVLCI(args, kwargs).(*_BVLCI)
-	b.PDUData = NewPDUData(args, kwargs)
+	kwArgs[KWCompBVLCIRequirements] = b
+	b._BVLCI = NewBVLCI(args, kwArgs).(*_BVLCI)
+	b.PDUData = NewPDUData(args, kwArgs)
 	if b.GetRootMessage() != nil {
 		data, _ := b.GetRootMessage().Serialize()
 		b.SetPduData(data[4:])
@@ -83,7 +79,9 @@ func (b *_BVLPDU) Decode(pdu Arg) error {
 	var rootMessage spi.Message
 	switch pdu := pdu.(type) { // Save a root message as long as we have enough data
 	case PDUData:
-		rootMessage, _ = readWriteModel.BVLCParse[readWriteModel.BVLC](context.Background(), pdu.GetPduData())
+		rootMessage, _ = Try1(func() (readWriteModel.BVLC, error) {
+			return readWriteModel.BVLCParse[readWriteModel.BVLC](context.Background(), pdu.GetPduData())
+		})
 	}
 	switch pdu := pdu.(type) {
 	case IPCI:
@@ -132,13 +130,4 @@ func (b *_BVLPDU) deepCopy() *_BVLPDU {
 
 func (b *_BVLPDU) DeepCopy() any {
 	return b.deepCopy()
-}
-
-func (b *_BVLPDU) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("BVLPDU{%s}", b._BVLCI)
-	} else {
-		npci := "\t" + strings.Join(strings.Split(b._BVLCI.String(), "\n"), "\n\t")
-		return fmt.Sprintf("<BVLPDU instance at %p>%s\n\tpduData = %s", b, npci, Btox(b.GetPduData(), "."))
-	}
 }

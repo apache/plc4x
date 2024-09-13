@@ -37,18 +37,27 @@ type Result struct {
 
 var _ BVLPDU = (*Result)(nil)
 
-func NewResult(opts ...func(result *Result)) (*Result, error) {
-	b := &Result{}
-	for _, opt := range opts {
-		opt(b)
+func NewResult(code *readWriteModel.BVLCResultCode, args Args, kwArgs KWArgs) (*Result, error) {
+	r := &Result{}
+	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	if r.GetRootMessage() == nil {
+		r.SetRootMessage(readWriteModel.NewBVLCResult(r.bvlciResultCode))
 	}
-	b._BVLPDU = NewBVLPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewBVLCResult(b.bvlciResultCode))).(*_BVLPDU)
-	return b, nil
+	r.AddDebugContents(r, "bvlciResultCode")
+	r.bvlciFunction = BVLCIResult
+	r.bvlciLength = 6
+	if code != nil {
+		r.bvlciResultCode = *code
+	}
+	return r, nil
 }
 
-func WithResultBvlciResultCode(code readWriteModel.BVLCResultCode) func(*Result) {
-	return func(b *Result) {
-		b.bvlciResultCode = code
+func (r *Result) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciResultCode":
+		return r.bvlciResultCode
+	default:
+		return nil
 	}
 }
 

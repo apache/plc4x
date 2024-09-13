@@ -36,6 +36,8 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
@@ -209,10 +211,7 @@ func (suite *NonBBMDSuite) TestDeleteFail() {
 func (suite *NonBBMDSuite) TestDistributeFail() {
 	// read the broadcast distribution table, get a nack
 	pduBytes, err := Xtob(
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-			"01 0001 0002 0003", // message type and network list
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
 	distributeBroadcastToNetwork := quick.DistributeBroadcastToNetwork(pduBytes)
