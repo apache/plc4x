@@ -1527,6 +1527,16 @@ const (
 	BACnetVendorId_ADVECO                                                                       BACnetVendorId = 1490
 	BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD                                                  BACnetVendorId = 1491
 	BACnetVendorId_CALEB_CONTROLS                                                               BACnetVendorId = 1492
+	BACnetVendorId_IN_BIOT_MONITORINGSL                                                         BACnetVendorId = 1493
+	BACnetVendorId_QINGDAO_HAIER_AIR_CONDITIONER_ELECTRIC_CO_LTD                                BACnetVendorId = 1494
+	BACnetVendorId_HANGZHOU_WEIYL_TECHNOLOGY_CO_LTD                                             BACnetVendorId = 1495
+	BACnetVendorId_YORDSRL                                                                      BACnetVendorId = 1496
+	BACnetVendorId_INFINITUM_ELECTRIC                                                           BACnetVendorId = 1497
+	BACnetVendorId_RED_BEAN_SYSTEMS_LIMITED                                                     BACnetVendorId = 1498
+	BACnetVendorId_BLUE_TIME_CONCEPTSA                                                          BACnetVendorId = 1499
+	BACnetVendorId_SHENZHENINVT_ELECTRIC_CO_LTD                                                 BACnetVendorId = 1500
+	BACnetVendorId_MESSUNG_SYSTEMS_PVT_LTD                                                      BACnetVendorId = 1501
+	BACnetVendorId_ABB_ELECTRIFICATION_CANADA_INC                                               BACnetVendorId = 1502
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3019,6 +3029,16 @@ func init() {
 		BACnetVendorId_ADVECO,
 		BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD,
 		BACnetVendorId_CALEB_CONTROLS,
+		BACnetVendorId_IN_BIOT_MONITORINGSL,
+		BACnetVendorId_QINGDAO_HAIER_AIR_CONDITIONER_ELECTRIC_CO_LTD,
+		BACnetVendorId_HANGZHOU_WEIYL_TECHNOLOGY_CO_LTD,
+		BACnetVendorId_YORDSRL,
+		BACnetVendorId_INFINITUM_ELECTRIC,
+		BACnetVendorId_RED_BEAN_SYSTEMS_LIMITED,
+		BACnetVendorId_BLUE_TIME_CONCEPTSA,
+		BACnetVendorId_SHENZHENINVT_ELECTRIC_CO_LTD,
+		BACnetVendorId_MESSUNG_SYSTEMS_PVT_LTD,
+		BACnetVendorId_ABB_ELECTRIFICATION_CANADA_INC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5217,6 +5237,34 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1492' */
 			return 1492
 		}
+	case 1493:
+		{ /* '1493' */
+			return 1493
+		}
+	case 1494:
+		{ /* '1494' */
+			return 1494
+		}
+	case 1495:
+		{ /* '1495' */
+			return 1495
+		}
+	case 1496:
+		{ /* '1496' */
+			return 1496
+		}
+	case 1497:
+		{ /* '1497' */
+			return 1497
+		}
+	case 1498:
+		{ /* '1498' */
+			return 1498
+		}
+	case 1499:
+		{ /* '1499' */
+			return 1499
+		}
 	case 15:
 		{ /* '15' */
 			return 15
@@ -5224,6 +5272,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 150:
 		{ /* '150' */
 			return 150
+		}
+	case 1500:
+		{ /* '1500' */
+			return 1500
+		}
+	case 1501:
+		{ /* '1501' */
+			return 1501
+		}
+	case 1502:
+		{ /* '1502' */
+			return 1502
 		}
 	case 151:
 		{ /* '151' */
@@ -11175,6 +11235,34 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1492' */
 			return "Caleb Controls"
 		}
+	case 1493:
+		{ /* '1493' */
+			return "InBiot Monitoring S.L"
+		}
+	case 1494:
+		{ /* '1494' */
+			return "Qingdao Haier Air Conditioner Electric Co., Ltd."
+		}
+	case 1495:
+		{ /* '1495' */
+			return "Hangzhou Weiyl Technology Co., Ltd."
+		}
+	case 1496:
+		{ /* '1496' */
+			return "yord sàrl"
+		}
+	case 1497:
+		{ /* '1497' */
+			return "Infinitum Electric"
+		}
+	case 1498:
+		{ /* '1498' */
+			return "Red Bean Systems Limited"
+		}
+	case 1499:
+		{ /* '1499' */
+			return "Blue Time Concept SA"
+		}
 	case 15:
 		{ /* '15' */
 			return "Cornell University"
@@ -11182,6 +11270,18 @@ func (e BACnetVendorId) VendorName() string {
 	case 150:
 		{ /* '150' */
 			return "Advantech Corporation"
+		}
+	case 1500:
+		{ /* '1500' */
+			return "Shenzhen INVT Electric Co., Ltd."
+		}
+	case 1501:
+		{ /* '1501' */
+			return "Messung Systems Pvt Ltd."
+		}
+	case 1502:
+		{ /* '1502' */
+			return "ABB Electrification Canada Inc."
 		}
 	case 151:
 		{ /* '151' */
@@ -16036,10 +16136,30 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD, true
 	case 1492:
 		return BACnetVendorId_CALEB_CONTROLS, true
+	case 1493:
+		return BACnetVendorId_IN_BIOT_MONITORINGSL, true
+	case 1494:
+		return BACnetVendorId_QINGDAO_HAIER_AIR_CONDITIONER_ELECTRIC_CO_LTD, true
+	case 1495:
+		return BACnetVendorId_HANGZHOU_WEIYL_TECHNOLOGY_CO_LTD, true
+	case 1496:
+		return BACnetVendorId_YORDSRL, true
+	case 1497:
+		return BACnetVendorId_INFINITUM_ELECTRIC, true
+	case 1498:
+		return BACnetVendorId_RED_BEAN_SYSTEMS_LIMITED, true
+	case 1499:
+		return BACnetVendorId_BLUE_TIME_CONCEPTSA, true
 	case 15:
 		return BACnetVendorId_CORNELL_UNIVERSITY, true
 	case 150:
 		return BACnetVendorId_ADVANTECH_CORPORATION, true
+	case 1500:
+		return BACnetVendorId_SHENZHENINVT_ELECTRIC_CO_LTD, true
+	case 1501:
+		return BACnetVendorId_MESSUNG_SYSTEMS_PVT_LTD, true
+	case 1502:
+		return BACnetVendorId_ABB_ELECTRIFICATION_CANADA_INC, true
 	case 151:
 		return BACnetVendorId_TITAN_PRODUCTS_LTD, true
 	case 152:
@@ -19012,10 +19132,30 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD, true
 	case "CALEB_CONTROLS":
 		return BACnetVendorId_CALEB_CONTROLS, true
+	case "IN_BIOT_MONITORINGSL":
+		return BACnetVendorId_IN_BIOT_MONITORINGSL, true
+	case "QINGDAO_HAIER_AIR_CONDITIONER_ELECTRIC_CO_LTD":
+		return BACnetVendorId_QINGDAO_HAIER_AIR_CONDITIONER_ELECTRIC_CO_LTD, true
+	case "HANGZHOU_WEIYL_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_HANGZHOU_WEIYL_TECHNOLOGY_CO_LTD, true
+	case "YORDSRL":
+		return BACnetVendorId_YORDSRL, true
+	case "INFINITUM_ELECTRIC":
+		return BACnetVendorId_INFINITUM_ELECTRIC, true
+	case "RED_BEAN_SYSTEMS_LIMITED":
+		return BACnetVendorId_RED_BEAN_SYSTEMS_LIMITED, true
+	case "BLUE_TIME_CONCEPTSA":
+		return BACnetVendorId_BLUE_TIME_CONCEPTSA, true
 	case "CORNELL_UNIVERSITY":
 		return BACnetVendorId_CORNELL_UNIVERSITY, true
 	case "ADVANTECH_CORPORATION":
 		return BACnetVendorId_ADVANTECH_CORPORATION, true
+	case "SHENZHENINVT_ELECTRIC_CO_LTD":
+		return BACnetVendorId_SHENZHENINVT_ELECTRIC_CO_LTD, true
+	case "MESSUNG_SYSTEMS_PVT_LTD":
+		return BACnetVendorId_MESSUNG_SYSTEMS_PVT_LTD, true
+	case "ABB_ELECTRIFICATION_CANADA_INC":
+		return BACnetVendorId_ABB_ELECTRIFICATION_CANADA_INC, true
 	case "TITAN_PRODUCTS_LTD":
 		return BACnetVendorId_TITAN_PRODUCTS_LTD, true
 	case "REGEL_PARTNERS":
@@ -22060,10 +22200,30 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "EURA_DRIVES_ELECTRIC_CO_LTD"
 	case BACnetVendorId_CALEB_CONTROLS:
 		return "CALEB_CONTROLS"
+	case BACnetVendorId_IN_BIOT_MONITORINGSL:
+		return "IN_BIOT_MONITORINGSL"
+	case BACnetVendorId_QINGDAO_HAIER_AIR_CONDITIONER_ELECTRIC_CO_LTD:
+		return "QINGDAO_HAIER_AIR_CONDITIONER_ELECTRIC_CO_LTD"
+	case BACnetVendorId_HANGZHOU_WEIYL_TECHNOLOGY_CO_LTD:
+		return "HANGZHOU_WEIYL_TECHNOLOGY_CO_LTD"
+	case BACnetVendorId_YORDSRL:
+		return "YORDSRL"
+	case BACnetVendorId_INFINITUM_ELECTRIC:
+		return "INFINITUM_ELECTRIC"
+	case BACnetVendorId_RED_BEAN_SYSTEMS_LIMITED:
+		return "RED_BEAN_SYSTEMS_LIMITED"
+	case BACnetVendorId_BLUE_TIME_CONCEPTSA:
+		return "BLUE_TIME_CONCEPTSA"
 	case BACnetVendorId_CORNELL_UNIVERSITY:
 		return "CORNELL_UNIVERSITY"
 	case BACnetVendorId_ADVANTECH_CORPORATION:
 		return "ADVANTECH_CORPORATION"
+	case BACnetVendorId_SHENZHENINVT_ELECTRIC_CO_LTD:
+		return "SHENZHENINVT_ELECTRIC_CO_LTD"
+	case BACnetVendorId_MESSUNG_SYSTEMS_PVT_LTD:
+		return "MESSUNG_SYSTEMS_PVT_LTD"
+	case BACnetVendorId_ABB_ELECTRIFICATION_CANADA_INC:
+		return "ABB_ELECTRIFICATION_CANADA_INC"
 	case BACnetVendorId_TITAN_PRODUCTS_LTD:
 		return "TITAN_PRODUCTS_LTD"
 	case BACnetVendorId_REGEL_PARTNERS:
