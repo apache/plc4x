@@ -59,13 +59,6 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
-      <version>3.9.7</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <profiles>
@@ -76,7 +69,6 @@
           <plugin>
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>groovy-maven-plugin</artifactId>
-            <version>2.1.1</version>
             <executions>
               <execution>
                 <id>manipulate-services-csv</id>
@@ -218,8 +210,7 @@
               <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <!-- REMARK: 11.3 is currently the newest version, however when updating to that, the build breaks -->
-                <version>12.4</version>
+                <version>12.5</version>
               </dependency>
             </dependencies>
           </plugin>

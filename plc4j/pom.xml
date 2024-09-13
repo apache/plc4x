@@ -107,9 +107,7 @@
                 <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
                 <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
                 <ignoredDependency>org.apache.groovy:groovy-test-junit5</ignoredDependency>
-                <ignoredDependency>org.apache.groovy:groovy</ignoredDependency>
                 <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
-                <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>
               </ignoredDependencies>
             </configuration>
           </execution>
@@ -268,7 +266,8 @@
             Also do we have to pass in the byte-buddy agent to work around issues
             with dynamic loading of jvm agents.
           -->
-          <argLine>-javaagent:${project.basedir}/target/byte-buddy-agent-${byte-buddy.version}.jar -Xmx512m @{surefireArgLine}</argLine>
+          <!--argLine>-javaagent:${project.basedir}/target/byte-buddy-agent-${byte-buddy.version}.jar -Xmx512m @{surefireArgLine}</argLine-->
+          <argLine>-Xmx512m @{surefireArgLine}</argLine>
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
