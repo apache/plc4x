@@ -86,7 +86,7 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -96,7 +96,7 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
     serializeBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChild(writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass");
   }
@@ -126,26 +126,6 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
   }
 
   public static BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
-  public static BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass staticParse(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass");
     PositionAware positionAware = readBuffer;
@@ -154,14 +134,13 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
 
@@ -190,7 +169,7 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass");

@@ -119,8 +119,7 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
     List<BACnetAddressBinding> deviceAddressBinding =
         readTerminatedArrayField(
             "deviceAddressBinding",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAddressBinding.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetAddressBinding.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

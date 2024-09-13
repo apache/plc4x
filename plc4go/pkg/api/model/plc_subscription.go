@@ -28,7 +28,7 @@ import (
 )
 
 //go:generate stringer -type PlcSubscriptionType
-//go:generate go run ../../../tools/plc4xlicenser/gen.go -type=PlcSubscriptionType
+//go:generate plc4xLicencer -type=PlcSubscriptionType
 type PlcSubscriptionType uint8
 
 const (

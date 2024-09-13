@@ -24,9 +24,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 func TestNewFixedSizeExecutor(t *testing.T) {

@@ -81,10 +81,10 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
     writeSimpleField("version", version, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (limits)
-    writeSimpleField("limits", limits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("limits", limits, writeComplex(writeBuffer));
 
     // Simple Field (endpoint)
-    writeSimpleField("endpoint", endpoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpoint", endpoint, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaHelloRequest");
   }
@@ -122,14 +122,11 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
 
     OpcuaProtocolLimits limits =
         readSimpleField(
-            "limits",
-            new DataReaderComplexDefault<>(
-                () -> OpcuaProtocolLimits.staticParse(readBuffer), readBuffer));
+            "limits", readComplex(() -> OpcuaProtocolLimits.staticParse(readBuffer), readBuffer));
 
     PascalString endpoint =
         readSimpleField(
-            "endpoint",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpoint", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpcuaHelloRequest");
     // Create the instance

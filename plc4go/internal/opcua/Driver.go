@@ -25,14 +25,14 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 type Driver struct {

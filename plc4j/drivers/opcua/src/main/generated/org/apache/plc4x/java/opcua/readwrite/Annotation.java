@@ -74,10 +74,10 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("Annotation");
 
     // Simple Field (message)
-    writeSimpleField("message", message, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     // Simple Field (userName)
-    writeSimpleField("userName", userName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userName", userName, writeComplex(writeBuffer));
 
     // Simple Field (annotationTime)
     writeSimpleField("annotationTime", annotationTime, writeSignedLong(writeBuffer, 64));
@@ -116,13 +116,11 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
 
     PascalString message =
         readSimpleField(
-            "message",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "message", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long annotationTime = readSimpleField("annotationTime", readSignedLong(readBuffer, 64));
 

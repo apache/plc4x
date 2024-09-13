@@ -75,13 +75,13 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("QueryDataDescription");
 
     // Simple Field (relativePath)
-    writeSimpleField("relativePath", relativePath, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relativePath", relativePath, writeComplex(writeBuffer));
 
     // Simple Field (attributeId)
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (indexRange)
-    writeSimpleField("indexRange", indexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("indexRange", indexRange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("QueryDataDescription");
   }
@@ -118,7 +118,7 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition relativePath =
         readSimpleField(
             "relativePath",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("542")),
                 readBuffer));
 
@@ -126,8 +126,7 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
 
     PascalString indexRange =
         readSimpleField(
-            "indexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "indexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("QueryDataDescription");
     // Create the instance

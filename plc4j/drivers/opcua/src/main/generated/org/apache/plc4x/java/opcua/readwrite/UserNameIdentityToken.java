@@ -75,14 +75,13 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
     writeBuffer.pushContext("UserNameIdentityToken");
 
     // Simple Field (userName)
-    writeSimpleField("userName", userName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userName", userName, writeComplex(writeBuffer));
 
     // Simple Field (password)
-    writeSimpleField("password", password, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("password", password, writeComplex(writeBuffer));
 
     // Simple Field (encryptionAlgorithm)
-    writeSimpleField(
-        "encryptionAlgorithm", encryptionAlgorithm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("encryptionAlgorithm", encryptionAlgorithm, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserNameIdentityToken");
   }
@@ -118,19 +117,16 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString password =
         readSimpleField(
-            "password",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "password", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalString encryptionAlgorithm =
         readSimpleField(
             "encryptionAlgorithm",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("UserNameIdentityToken");
     // Create the instance

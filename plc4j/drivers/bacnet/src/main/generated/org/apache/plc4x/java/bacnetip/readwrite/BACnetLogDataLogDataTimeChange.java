@@ -68,7 +68,7 @@ public class BACnetLogDataLogDataTimeChange extends BACnetLogData implements Mes
     writeBuffer.pushContext("BACnetLogDataLogDataTimeChange");
 
     // Simple Field (timeChange)
-    writeSimpleField("timeChange", timeChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeChange", timeChange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataTimeChange");
   }
@@ -99,7 +99,7 @@ public class BACnetLogDataLogDataTimeChange extends BACnetLogData implements Mes
     BACnetContextTagReal timeChange =
         readSimpleField(
             "timeChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

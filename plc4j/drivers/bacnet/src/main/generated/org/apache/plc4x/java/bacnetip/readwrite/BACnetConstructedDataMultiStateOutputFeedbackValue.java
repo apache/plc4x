@@ -83,7 +83,7 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
     writeBuffer.pushContext("BACnetConstructedDataMultiStateOutputFeedbackValue");
 
     // Simple Field (feedbackValue)
-    writeSimpleField("feedbackValue", feedbackValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("feedbackValue", feedbackValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
     BACnetApplicationTagUnsignedInteger feedbackValue =
         readSimpleField(
             "feedbackValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

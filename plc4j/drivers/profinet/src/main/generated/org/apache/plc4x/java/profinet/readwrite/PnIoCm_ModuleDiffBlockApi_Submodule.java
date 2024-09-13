@@ -144,7 +144,7 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "identInfo",
         "PnIoCm_IdentInfo",
         identInfo,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_IdentInfo::getValue, PnIoCm_IdentInfo::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -153,8 +153,7 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "arInfo",
         "PnIoCm_ArInfo",
         arInfo,
-        new DataWriterEnumDefault<>(
-            PnIoCm_ArInfo::getValue, PnIoCm_ArInfo::name, writeUnsignedByte(writeBuffer, 4)),
+        writeEnum(PnIoCm_ArInfo::getValue, PnIoCm_ArInfo::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (diagInfoAvailable)
@@ -190,7 +189,7 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "addInfo",
         "PnIoCm_AddInfo",
         addInfo,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_AddInfo::getValue, PnIoCm_AddInfo::name, writeUnsignedByte(writeBuffer, 3)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -241,12 +240,6 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_ModuleDiffBlockApi_Submodule staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_ModuleDiffBlockApi_Submodule staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_ModuleDiffBlockApi_Submodule");
@@ -275,16 +268,14 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         readEnumField(
             "identInfo",
             "PnIoCm_IdentInfo",
-            new DataReaderEnumDefault<>(
-                PnIoCm_IdentInfo::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(PnIoCm_IdentInfo::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_ArInfo arInfo =
         readEnumField(
             "arInfo",
             "PnIoCm_ArInfo",
-            new DataReaderEnumDefault<>(
-                PnIoCm_ArInfo::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(PnIoCm_ArInfo::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean diagInfoAvailable =
@@ -315,8 +306,7 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         readEnumField(
             "addInfo",
             "PnIoCm_AddInfo",
-            new DataReaderEnumDefault<>(
-                PnIoCm_AddInfo::enumForValue, readUnsignedByte(readBuffer, 3)),
+            readEnum(PnIoCm_AddInfo::enumForValue, readUnsignedByte(readBuffer, 3)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_ModuleDiffBlockApi_Submodule");

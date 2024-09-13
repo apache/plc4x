@@ -82,7 +82,7 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataUpdateInterval");
 
     // Simple Field (updateInterval)
-    writeSimpleField("updateInterval", updateInterval, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("updateInterval", updateInterval, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger updateInterval =
         readSimpleField(
             "updateInterval",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

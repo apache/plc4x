@@ -143,26 +143,6 @@ public abstract class DF1ResponseMessage implements Message {
     return lengthInBits;
   }
 
-  public static DF1ResponseMessage staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Integer payloadLength;
-    if (args[0] instanceof Integer) {
-      payloadLength = (Integer) args[0];
-    } else if (args[0] instanceof String) {
-      payloadLength = Integer.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Integer or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, payloadLength);
-  }
-
   public static DF1ResponseMessage staticParse(ReadBuffer readBuffer, Integer payloadLength)
       throws ParseException {
     readBuffer.pullContext("DF1ResponseMessage");

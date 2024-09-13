@@ -21,9 +21,10 @@ package ads
 
 import (
 	"context"
-	"github.com/pkg/errors"
 	"runtime/debug"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"

@@ -84,7 +84,7 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
     writeBuffer.pushContext("DeleteMonitoredItemsRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (subscriptionId)
     writeSimpleField("subscriptionId", subscriptionId, writeUnsignedLong(writeBuffer, 32));
@@ -136,7 +136,7 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 

@@ -66,8 +66,7 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
     writeBuffer.pushContext("BACnetPriorityValueOctetString");
 
     // Simple Field (octetStringValue)
-    writeSimpleField(
-        "octetStringValue", octetStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("octetStringValue", octetStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueOctetString");
   }
@@ -98,7 +97,7 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
     BACnetApplicationTagOctetString octetStringValue =
         readSimpleField(
             "octetStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

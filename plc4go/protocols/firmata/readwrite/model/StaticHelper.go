@@ -25,23 +25,32 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-func IsSysexEnd(ctx context.Context, io utils.ReadBuffer) bool {
-	return io.(utils.ReadBufferByteBased).PeekByte(0) == 0xF7
-}
-
-func ParseSysexString(ctx context.Context, io utils.ReadBuffer) int8 {
-	aByte, err := io.ReadInt8("", 8)
-	if err != nil {
-		return 0
+func IsSysexEnd(ctx context.Context, io utils.ReadBuffer) func([]byte) bool {
+	return func(bytes []byte) bool {
+		return io.(utils.ReadBufferByteBased).PeekByte(0) == 0xF7
 	}
-	// Skip the empty byte.
-	_, _ = io.ReadByte("")
-	return aByte
 }
 
-func SerializeSysexString(ctx context.Context, io utils.WriteBuffer, data byte) {
-	_ = io.WriteByte("", data)
-	_ = io.WriteByte("", 0x00)
+func ParseSysexString(ctx context.Context, io utils.ReadBuffer) func(context.Context) (byte, error) {
+	return func(context.Context) (byte, error) {
+		aByte, err := io.ReadByte("")
+		if err != nil {
+			return 0, err
+		}
+		// Skip the empty byte.
+		_, _ = io.ReadByte("")
+		return aByte, err
+	}
+}
+
+func SerializeSysexString(ctx context.Context, io utils.WriteBuffer, data byte) error {
+	if err := io.WriteByte("", data); err != nil {
+		return err
+	}
+	if err := io.WriteByte("", 0x00); err != nil {
+		return err
+	}
+	return nil
 }
 
 func LengthSysexString(ctx context.Context, data []byte) uint16 {

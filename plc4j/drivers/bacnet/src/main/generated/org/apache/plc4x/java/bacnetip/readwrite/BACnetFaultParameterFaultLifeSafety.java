@@ -82,20 +82,16 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     writeBuffer.pushContext("BACnetFaultParameterFaultLifeSafety");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (listOfFaultValues)
-    writeSimpleField(
-        "listOfFaultValues", listOfFaultValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfFaultValues", listOfFaultValues, writeComplex(writeBuffer));
 
     // Simple Field (modePropertyReference)
-    writeSimpleField(
-        "modePropertyReference",
-        modePropertyReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("modePropertyReference", modePropertyReference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultLifeSafety");
   }
@@ -135,13 +131,12 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer));
 
     BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues =
         readSimpleField(
             "listOfFaultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultLifeSafetyListOfFaultValues.staticParse(
                         readBuffer, (short) (0)),
@@ -150,7 +145,7 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference =
         readSimpleField(
             "modePropertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -159,8 +154,7 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultLifeSafety");
     // Create the instance

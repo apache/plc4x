@@ -72,7 +72,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
     writeBuffer.pushContext("ParameterValueSerialNumber");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
@@ -114,8 +114,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
 
     SerialNumber value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> SerialNumber.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> SerialNumber.staticParse(readBuffer), readBuffer));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((numBytes) - (4)));
 

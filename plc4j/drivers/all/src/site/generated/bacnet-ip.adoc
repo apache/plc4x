@@ -45,7 +45,7 @@
 +++
 <h4>udp</h4>
 +++
-|`udp.local-port` |INT |-1| |Some connections require a UDP listener to listen on a fixed port.
+|`udp.local-port` |INT |-1| |Some connections require a UDP listener to listen on a fixed port. +
 Use this configuration option in order to define the port number of the local port.
 5+|
 +++
@@ -59,13 +59,13 @@ Use this configuration option in order to define the port number of the local po
 <h4>pcap</h4>
 +++
 |`pcap.support-vlans` |BOOLEAN |false| |Enables support for VLans
-|`pcap.replay-speed-factor` |FLOAT |1.0| |Numeric value for changing the replay speed:
-- 1 = Normal speed (default)
-- 0 = Maximum speed
-- 0.5 = Half speed
+|`pcap.replay-speed-factor` |FLOAT |1.0| |Numeric value for changing the replay speed: +
+- 1 = Normal speed (default) +
+- 0 = Maximum speed +
+- 0.5 = Half speed +
 - 2 = Double speed
-|`pcap.loop` |BOOLEAN |false| |Should the replay start at the beginning of the file as soon as the end is reached?
-- true = Automatically start again
+|`pcap.loop` |BOOLEAN |false| |Should the replay start at the beginning of the file as soon as the end is reached? +
+- true = Automatically start again +
 - false = Stop at the end (default)
 |`pcap.filter` |STRING | | |Filter expression used to filter out unwanted packets from the replay.
 |`pcap.support-vlans` |BOOLEAN |false| |Should VLan packets be automatically unpacked?

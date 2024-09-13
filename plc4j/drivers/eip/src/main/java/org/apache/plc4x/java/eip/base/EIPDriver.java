@@ -20,6 +20,8 @@ package org.apache.plc4x.java.eip.base;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.eip.base.discovery.EipPlcDiscoverer;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -33,6 +35,7 @@ import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.transport.Transport;
 
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -99,6 +102,11 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         return new org.apache.plc4x.java.spi.values.PlcValueHandler();
     }
 
+    @Override
+    public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
+        return new DefaultPlcDiscoveryRequest.Builder(new EipPlcDiscoverer());
+    }
+
     /**
      * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
      * @return false
@@ -119,11 +127,15 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
+    protected boolean canDiscover() {
+        return true;
+    }
+
+    @Override
     protected ProtocolStackConfigurer<EipPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
+        return SingleProtocolStackConfigurer.builder(EipPacket.class, io -> EipPacket.staticParse(io, true))
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withParserArgs(true)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .byteOrder(this.configuration.getByteOrder())
             .build();

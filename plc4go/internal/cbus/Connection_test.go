@@ -22,27 +22,27 @@ package cbus
 import (
 	"context"
 	"encoding/hex"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/stretchr/testify/require"
 	"net/url"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestAlphaGenerator_getAndIncrement(t *testing.T) {
@@ -505,9 +505,9 @@ func TestConnection_String(t *testing.T) {
 			name: "a string",
 			want: `
 ╔═Connection══════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═defaultConnection═══════╗╔═alphaGenerator════════════════════╗╔═messageCodec╗                          ║
-║║╔═defaultTtl╗╔═connected╗║║╔═AlphaGenerator/currentAlpha═════╗║║    <nil>    ║                          ║
-║║║    10s    ║║ b0 false ║║║║            0x67 'g'             ║║╚═════════════╝                          ║
+║╔═defaultConnection═══════╗╔═alphaGenerator════════════════════╗                                         ║
+║║╔═defaultTtl╗╔═connected╗║║╔═AlphaGenerator/currentAlpha═════╗║                                         ║
+║║║    10s    ║║ b0 false ║║║║            0x67 'g'             ║║                                         ║
 ║║╚═══════════╝╚══════════╝║║╚═════════════════════════════════╝║                                         ║
 ║╚═════════════════════════╝╚═══════════════════════════════════╝                                         ║
 ║╔═configuration═════════════════════════════════════════════════════════════════════════════════════════╗║
@@ -527,7 +527,7 @@ func TestConnection_String(t *testing.T) {
 ║║║╚═══════════════════╝╚════════════════════════╝║║                                                      ║
 ║║╚═══════════════════════════════════════════════╝║                                                      ║
 ║╚═════════════════════════════════════════════════╝                                                      ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:], // TODO: configuration is not redered right now
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {
@@ -1759,7 +1759,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				go func() {
 					defer dispatchWg.Done()
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
-					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
+					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(0, nil, nil, nil, readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5, nil, 0, nil)
 				}()
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -1784,7 +1784,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				go func() {
 					defer dispatchWg.Done()
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
-					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
+					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(0, nil, nil, nil, readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5, nil, 0, nil)
 					close(written)
 				}()
 				t.Cleanup(func() {

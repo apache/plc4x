@@ -57,7 +57,7 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
         "subType",
         "TlvProfibusSubType",
         getSubType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TlvProfibusSubType::getValue,
             TlvProfibusSubType::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -87,12 +87,6 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
     return lengthInBits;
   }
 
-  public static TlvOrgSpecificProfibusUnit staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TlvOrgSpecificProfibusUnit staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TlvOrgSpecificProfibusUnit");
@@ -103,8 +97,7 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
         readDiscriminatorEnumField(
             "subType",
             "TlvProfibusSubType",
-            new DataReaderEnumDefault<>(
-                TlvProfibusSubType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(TlvProfibusSubType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TlvOrgSpecificProfibusUnitBuilder builder = null;

@@ -107,12 +107,6 @@ public class BVLCBroadcastDistributionTableEntry implements Message {
     return lengthInBits;
   }
 
-  public static BVLCBroadcastDistributionTableEntry staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BVLCBroadcastDistributionTableEntry staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BVLCBroadcastDistributionTableEntry");

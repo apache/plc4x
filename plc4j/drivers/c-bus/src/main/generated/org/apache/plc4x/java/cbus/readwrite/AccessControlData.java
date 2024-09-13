@@ -81,7 +81,7 @@ public abstract class AccessControlData implements Message {
         "commandTypeContainer",
         "AccessControlCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AccessControlCommandTypeContainer::getValue,
             AccessControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -129,12 +129,6 @@ public abstract class AccessControlData implements Message {
     return lengthInBits;
   }
 
-  public static AccessControlData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AccessControlData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AccessControlData");
     PositionAware positionAware = readBuffer;
@@ -149,7 +143,7 @@ public abstract class AccessControlData implements Message {
         readEnumField(
             "commandTypeContainer",
             "AccessControlCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 AccessControlCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     AccessControlCommandType commandType =
         readVirtualField(

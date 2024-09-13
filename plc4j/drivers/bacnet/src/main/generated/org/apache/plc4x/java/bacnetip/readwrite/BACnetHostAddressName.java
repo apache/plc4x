@@ -60,7 +60,7 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
     writeBuffer.pushContext("BACnetHostAddressName");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetHostAddressName");
   }
@@ -91,7 +91,7 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
     BACnetContextTagCharacterString name =
         readSimpleField(
             "name",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

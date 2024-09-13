@@ -20,8 +20,9 @@
 package utils
 
 import (
-	"github.com/rs/zerolog"
 	"io"
+
+	"github.com/rs/zerolog"
 )
 
 type TransportLogger struct {

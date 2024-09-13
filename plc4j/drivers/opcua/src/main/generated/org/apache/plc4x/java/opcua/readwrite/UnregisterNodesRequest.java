@@ -77,7 +77,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("UnregisterNodesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToUnregister)
     writeSimpleField(
@@ -127,7 +127,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -137,7 +137,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     List<NodeId> nodesToUnregister =
         readCountArrayField(
             "nodesToUnregister",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NodeId.staticParse(readBuffer), readBuffer),
             noOfNodesToUnregister);
 
     readBuffer.closeContext("UnregisterNodesRequest");

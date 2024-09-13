@@ -21,35 +21,21 @@ package org.apache.plc4x.java.opcua.protocol.chunk;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-import javax.security.auth.x500.X500Principal;
 import org.apache.plc4x.java.opcua.TestCertificateGenerator;
 import org.apache.plc4x.java.opcua.readwrite.MessageSecurityMode;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.X509v3CertificateBuilder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.apache.plc4x.test.DisableOnJenkinsFlag;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
+@DisableOnJenkinsFlag
 class ChunkFactoryTest {
 
     public static final Map<Integer, Entry<PrivateKey, X509Certificate>> CERTIFICATES = new HashMap<>();

@@ -96,13 +96,11 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
 
     @Override
     protected ProtocolStackConfigurer<FirmataMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(FirmataMessage.class, FirmataMessage::staticParse)
+        return SingleProtocolStackConfigurer.builder(FirmataMessage.class, io -> FirmataMessage.staticParse(io, true))
             .withProtocol(FirmataProtocolLogic.class)
             .withDriverContext(FirmataDriverContext.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)
-            // Every incoming message is to be treated as a response.
-            .withParserArgs(true)
             .build();
     }
 

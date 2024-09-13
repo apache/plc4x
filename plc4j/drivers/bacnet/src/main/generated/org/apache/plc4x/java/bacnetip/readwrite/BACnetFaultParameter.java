@@ -91,12 +91,6 @@ public abstract class BACnetFaultParameter implements Message {
     return lengthInBits;
   }
 
-  public static BACnetFaultParameter staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetFaultParameter staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameter");
     PositionAware positionAware = readBuffer;
@@ -105,8 +99,7 @@ public abstract class BACnetFaultParameter implements Message {
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
 

@@ -62,7 +62,7 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
     writeBuffer.pushContext("FirmataCommandSysex");
 
     // Simple Field (command)
-    writeSimpleField("command", command, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("command", command, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (short) 0xF7, writeUnsignedShort(writeBuffer, 8));
@@ -99,7 +99,7 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
     SysexCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> SysexCommand.staticParse(readBuffer, (boolean) (response)), readBuffer));
 
     Short reservedField0 =

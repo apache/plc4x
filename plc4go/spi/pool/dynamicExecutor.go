@@ -20,19 +20,21 @@
 package pool
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var upScaleInterval = 100 * time.Millisecond
 var downScaleInterval = 5 * time.Second
 var timeToBecomeUnused = 5 * time.Second
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=dynamicExecutor
+//go:generate plc4xGenerator -type=dynamicExecutor
 type dynamicExecutor struct {
 	*executor
 

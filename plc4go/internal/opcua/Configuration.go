@@ -25,15 +25,15 @@ import (
 	"reflect"
 	"strconv"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Configuration
+//go:generate plc4xGenerator -type=Configuration
 type Configuration struct {
 	Code              string
 	Host              string
@@ -53,7 +53,7 @@ type Configuration struct {
 	KeyStorePassword  string
 	Ckp               *CertificateKeyPair
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {

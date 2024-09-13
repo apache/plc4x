@@ -75,7 +75,7 @@ public abstract class ClockAndTimekeepingData implements Message {
         "commandTypeContainer",
         "ClockAndTimekeepingCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ClockAndTimekeepingCommandTypeContainer::getValue,
             ClockAndTimekeepingCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -117,12 +117,6 @@ public abstract class ClockAndTimekeepingData implements Message {
     return lengthInBits;
   }
 
-  public static ClockAndTimekeepingData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ClockAndTimekeepingData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClockAndTimekeepingData");
     PositionAware positionAware = readBuffer;
@@ -137,7 +131,7 @@ public abstract class ClockAndTimekeepingData implements Message {
         readEnumField(
             "commandTypeContainer",
             "ClockAndTimekeepingCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ClockAndTimekeepingCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     ClockAndTimekeepingCommandType commandType =

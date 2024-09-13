@@ -65,7 +65,7 @@ public class CIPData implements Message {
         "dataType",
         "CIPDataTypeCode",
         dataType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CIPDataTypeCode::getValue, CIPDataTypeCode::name, writeUnsignedInt(writeBuffer, 16)));
 
     // Array Field (data)
@@ -96,25 +96,6 @@ public class CIPData implements Message {
     return lengthInBits;
   }
 
-  public static CIPData staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Integer packetLength;
-    if (args[0] instanceof Integer) {
-      packetLength = (Integer) args[0];
-    } else if (args[0] instanceof String) {
-      packetLength = Integer.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Integer or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, packetLength);
-  }
-
   public static CIPData staticParse(ReadBuffer readBuffer, Integer packetLength)
       throws ParseException {
     readBuffer.pullContext("CIPData");
@@ -125,8 +106,7 @@ public class CIPData implements Message {
         readEnumField(
             "dataType",
             "CIPDataTypeCode",
-            new DataReaderEnumDefault<>(
-                CIPDataTypeCode::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(CIPDataTypeCode::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((packetLength) - (2)));
 

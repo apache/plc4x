@@ -77,19 +77,18 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("MonitoredItemCreateRequest");
 
     // Simple Field (itemToMonitor)
-    writeSimpleField("itemToMonitor", itemToMonitor, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("itemToMonitor", itemToMonitor, writeComplex(writeBuffer));
 
     // Simple Field (monitoringMode)
     writeSimpleEnumField(
         "monitoringMode",
         "MonitoringMode",
         monitoringMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MonitoringMode::getValue, MonitoringMode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (requestedParameters)
-    writeSimpleField(
-        "requestedParameters", requestedParameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestedParameters", requestedParameters, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredItemCreateRequest");
   }
@@ -126,7 +125,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
     ExtensionObjectDefinition itemToMonitor =
         readSimpleField(
             "itemToMonitor",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("628")),
                 readBuffer));
 
@@ -134,13 +133,12 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
         readEnumField(
             "monitoringMode",
             "MonitoringMode",
-            new DataReaderEnumDefault<>(
-                MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     ExtensionObjectDefinition requestedParameters =
         readSimpleField(
             "requestedParameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("742")),
                 readBuffer));
 

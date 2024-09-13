@@ -82,7 +82,7 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataArchive");
 
     // Simple Field (archive)
-    writeSimpleField("archive", archive, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("archive", archive, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
     BACnetApplicationTagBoolean archive =
         readSimpleField(
             "archive",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

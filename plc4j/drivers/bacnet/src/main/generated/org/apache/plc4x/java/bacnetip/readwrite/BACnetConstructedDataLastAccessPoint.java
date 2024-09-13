@@ -82,8 +82,7 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataLastAccessPoint");
 
     // Simple Field (lastAccessPoint)
-    writeSimpleField(
-        "lastAccessPoint", lastAccessPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastAccessPoint", lastAccessPoint, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();
@@ -125,8 +124,7 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
     BACnetDeviceObjectReference lastAccessPoint =
         readSimpleField(
             "lastAccessPoint",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, lastAccessPoint);
 

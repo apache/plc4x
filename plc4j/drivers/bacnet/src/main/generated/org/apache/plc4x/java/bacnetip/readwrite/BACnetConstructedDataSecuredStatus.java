@@ -82,7 +82,7 @@ public class BACnetConstructedDataSecuredStatus extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataSecuredStatus");
 
     // Simple Field (securedStatus)
-    writeSimpleField("securedStatus", securedStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securedStatus", securedStatus, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDoorSecuredStatusTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataSecuredStatus extends BACnetConstructedData im
     BACnetDoorSecuredStatusTagged securedStatus =
         readSimpleField(
             "securedStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorSecuredStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

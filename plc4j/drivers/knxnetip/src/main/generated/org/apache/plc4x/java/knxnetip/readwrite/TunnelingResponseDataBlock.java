@@ -84,8 +84,7 @@ public class TunnelingResponseDataBlock implements Message {
         "status",
         "Status",
         status,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("TunnelingResponseDataBlock");
   }
@@ -116,12 +115,6 @@ public class TunnelingResponseDataBlock implements Message {
     return lengthInBits;
   }
 
-  public static TunnelingResponseDataBlock staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TunnelingResponseDataBlock staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TunnelingResponseDataBlock");
@@ -137,9 +130,7 @@ public class TunnelingResponseDataBlock implements Message {
 
     Status status =
         readEnumField(
-            "status",
-            "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "status", "Status", readEnum(Status::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("TunnelingResponseDataBlock");
     // Create the instance

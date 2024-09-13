@@ -34,54 +34,74 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 )
 
-func RegisterAdsDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(ads.NewDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterAdsDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := ads.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
 }
 
-func RegisterBacnetDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(bacnetip.NewDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterBacnetDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := bacnetip.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterUdpTransport(driverManager)
+	return driver
 }
 
-func RegisterCBusDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(cbus.NewDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterCBusDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := cbus.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
 }
 
-func RegisterEipDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(eip.NewDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterEipDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := eip.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
 }
 
-func RegisterKnxDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(knxnetip.NewDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterKnxDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := knxnetip.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterUdpTransport(driverManager)
+	return driver
 }
 
-func RegisterModbusTcpDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(modbus2.NewModbusTcpDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterModbusTcpDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := modbus2.NewModbusTcpDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
 }
 
-func RegisterModbusRtuDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(modbus2.NewModbusRtuDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterModbusRtuDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := modbus2.NewModbusRtuDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterSerialTransport(driverManager)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
 }
 
-func RegisterModbusAsciiDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(modbus2.NewModbusAsciiDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterModbusAsciiDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := modbus2.NewModbusAsciiDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterSerialTransport(driverManager)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
 }
 
-func RegisterOpcuaDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(opcua.NewDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterOpcuaDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := opcua.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
 }
 
-func RegisterS7Driver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
-	driverManager.RegisterDriver(s7.NewDriver(converter.WithOptionToInternal(_options...)...))
+func RegisterS7Driver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := s7.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
 }

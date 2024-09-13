@@ -47,6 +47,8 @@ public class FieldReaderArray<T> implements FieldCommons {
         int itemCount = Math.max(0, (int) count);
         List<T> result = new ArrayList<>(itemCount);
         for (int curItem = 0; curItem < itemCount; curItem++) {
+            // Make some variables available that would be otherwise challenging to forward.
+            ThreadLocalHelper.curItemThreadLocal.set(curItem);
             ThreadLocalHelper.lastItemThreadLocal.set(curItem == itemCount - 1);
             result.add(dataReader.read("", readerArgs));
         }

@@ -83,7 +83,7 @@ public class BACnetConstructedDataLargeAnalogValueDeadband extends BACnetConstru
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueDeadband");
 
     // Simple Field (deadband)
-    writeSimpleField("deadband", deadband, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deadband", deadband, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValueDeadband extends BACnetConstru
     BACnetApplicationTagDouble deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

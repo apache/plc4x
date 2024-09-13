@@ -25,9 +25,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestS7MessageBytes(t *testing.T) {

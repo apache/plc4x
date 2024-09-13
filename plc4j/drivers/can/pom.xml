@@ -107,7 +107,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-socketcan</artifactId>
+      <artifactId>plc4j-transport-test</artifactId>
       <version>0.13.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
@@ -121,6 +121,10 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
     </dependency>
 
     <!-- Logging -->

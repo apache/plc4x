@@ -126,10 +126,10 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("RegisteredServer");
 
     // Simple Field (serverUri)
-    writeSimpleField("serverUri", serverUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverUri", serverUri, writeComplex(writeBuffer));
 
     // Simple Field (productUri)
-    writeSimpleField("productUri", productUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productUri", productUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfServerNames)
     writeSimpleField("noOfServerNames", noOfServerNames, writeSignedInt(writeBuffer, 32));
@@ -142,12 +142,11 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         "serverType",
         "ApplicationType",
         serverType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationType::getValue, ApplicationType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (gatewayServerUri)
-    writeSimpleField(
-        "gatewayServerUri", gatewayServerUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("gatewayServerUri", gatewayServerUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfDiscoveryUrls)
     writeSimpleField("noOfDiscoveryUrls", noOfDiscoveryUrls, writeSignedInt(writeBuffer, 32));
@@ -156,8 +155,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     writeComplexTypeArrayField("discoveryUrls", discoveryUrls, writeBuffer);
 
     // Simple Field (semaphoreFilePath)
-    writeSimpleField(
-        "semaphoreFilePath", semaphoreFilePath, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("semaphoreFilePath", semaphoreFilePath, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -235,46 +233,43 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
 
     PascalString serverUri =
         readSimpleField(
-            "serverUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfServerNames = readSimpleField("noOfServerNames", readSignedInt(readBuffer, 32));
 
     List<LocalizedText> serverNames =
         readCountArrayField(
             "serverNames",
-            new DataReaderComplexDefault<>(() -> LocalizedText.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer),
             noOfServerNames);
 
     ApplicationType serverType =
         readEnumField(
             "serverType",
             "ApplicationType",
-            new DataReaderEnumDefault<>(
-                ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString gatewayServerUri =
         readSimpleField(
             "gatewayServerUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfDiscoveryUrls = readSimpleField("noOfDiscoveryUrls", readSignedInt(readBuffer, 32));
 
     List<PascalString> discoveryUrls =
         readCountArrayField(
             "discoveryUrls",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfDiscoveryUrls);
 
     PascalString semaphoreFilePath =
         readSimpleField(
             "semaphoreFilePath",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);

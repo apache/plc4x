@@ -21,15 +21,16 @@ package cbus
 
 import (
 	"context"
-	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewSubscriber(t *testing.T) {
@@ -163,7 +164,12 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 		{
 			name: "handle the MMI short",
 			args: args{
-				calReply: readWriteModel.NewCALReplyShort(1, nil, nil, nil),
+				calReply: readWriteModel.NewCALReplyShort(
+					1,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+					nil,
+					nil,
+				),
 			},
 		},
 		{
@@ -181,7 +187,12 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 				},
 			},
 			args: args{
-				calReply: readWriteModel.NewCALReplyShort(1, nil, nil, nil),
+				calReply: readWriteModel.NewCALReplyShort(
+					1,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+					nil,
+					nil,
+				),
 			},
 		},
 		{
@@ -191,11 +202,11 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 					0,
 					readWriteModel.NewUnitAddress(0),
 					nil,
-					nil,
+					readWriteModel.NewSerialInterfaceAddress(0),
 					nil,
 					nil,
 					0,
-					nil,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 					nil,
 					nil,
 				),
@@ -208,7 +219,7 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 					1,
 					readWriteModel.NewUnitAddress(0),
 					readWriteModel.NewBridgeAddress(1),
-					nil,
+					readWriteModel.NewSerialInterfaceAddress(0),
 					nil,
 					readWriteModel.NewReplyNetwork(
 						readWriteModel.NewNetworkRoute(
@@ -221,7 +232,7 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 						readWriteModel.NewUnitAddress(1),
 					),
 					0,
-					nil,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 					nil,
 					nil,
 				),

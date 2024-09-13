@@ -69,7 +69,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedValue
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue");
 
     // Simple Field (changedValue)
-    writeSimpleField("changedValue", changedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("changedValue", changedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue");
   }
@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedValue
     BACnetContextTagReal changedValue =
         readSimpleField(
             "changedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

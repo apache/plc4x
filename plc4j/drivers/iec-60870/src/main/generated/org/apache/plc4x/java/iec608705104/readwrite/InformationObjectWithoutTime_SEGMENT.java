@@ -77,24 +77,15 @@ public class InformationObjectWithoutTime_SEGMENT extends InformationObjectWitho
 
     // Simple Field (nof)
     writeSimpleField(
-        "nof",
-        nof,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nof", nof, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (nos)
     writeSimpleField(
-        "nos",
-        nos,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nos", nos, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (los)
     writeSimpleField(
-        "los",
-        los,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "los", los, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_SEGMENT");
   }
@@ -132,20 +123,19 @@ public class InformationObjectWithoutTime_SEGMENT extends InformationObjectWitho
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     NameOfSection nos =
         readSimpleField(
             "nos",
-            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfSection.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     LengthOfSegment los =
         readSimpleField(
             "los",
-            new DataReaderComplexDefault<>(
-                () -> LengthOfSegment.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LengthOfSegment.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_SEGMENT");

@@ -60,7 +60,6 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
     private final Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass;
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
     private final MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler;
-    private final Object[] parserArgs;
 
     private Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = null;
 
@@ -77,7 +76,6 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
      */
     S7HSingleProtocolStackConfigurer(Class<BASE_PACKET_CLASS> basePacketClass,
                                      ByteOrder byteOrder,
-                                     Object[] parserArgs,
                                      Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
                                      Class<? extends DriverContext> driverContextClass,
                                      MessageInput<BASE_PACKET_CLASS> messageInput,
@@ -87,7 +85,6 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
                                      MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler) {
         this.basePacketClass = basePacketClass;
         this.byteOrder = byteOrder;
-        this.parserArgs = parserArgs;
         this.protocolClass = protocol;
         this.driverContextClass = driverContextClass;
         this.messageInput = messageInput;
@@ -98,7 +95,7 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
     }
 
     private ChannelHandler getMessageCodec(PlcConnectionConfiguration configuration) {
-        return new GeneratedProtocolMessageCodec<>(basePacketClass, messageInput, messageOutput, byteOrder, parserArgs,
+        return new GeneratedProtocolMessageCodec<>(basePacketClass, messageInput, messageOutput, byteOrder,
             packetSizeEstimatorClass != null ? configure(configuration, createInstance(packetSizeEstimatorClass)) : null,
             corruptPacketRemoverClass != null ? configure(configuration, createInstance(corruptPacketRemoverClass)) : null);
     }
@@ -154,7 +151,6 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
         private final MessageOutput<BASE_PACKET_CLASS> messageOutput;
         private Class<? extends DriverContext> driverContextClass;
         private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
-        private Object[] parserArgs;
         private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
         private Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
         private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
@@ -186,11 +182,6 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
             return this;
         }
 
-        public S7HSingleProtocolStackBuilder<BASE_PACKET_CLASS> withParserArgs(Object... parserArgs) {
-            this.parserArgs = parserArgs;
-            return this;
-        }
-
         public S7HSingleProtocolStackBuilder<BASE_PACKET_CLASS> withProtocol(Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol) {
             this.protocol = protocol;
             return this;
@@ -213,7 +204,7 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
 
         public S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
-            return new S7HSingleProtocolStackConfigurer<>(basePacketClass, byteOrder, parserArgs, protocol,
+            return new S7HSingleProtocolStackConfigurer<>(basePacketClass, byteOrder, protocol,
                 driverContextClass, messageInput, messageOutput, packetSizeEstimator, corruptPacketRemover,
                 encryptionHandler);
         }

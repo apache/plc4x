@@ -82,7 +82,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataCommand");
 
     // Simple Field (command)
-    writeSimpleField("command", command, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("command", command, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetNetworkPortCommandTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
     BACnetNetworkPortCommandTagged command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkPortCommandTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

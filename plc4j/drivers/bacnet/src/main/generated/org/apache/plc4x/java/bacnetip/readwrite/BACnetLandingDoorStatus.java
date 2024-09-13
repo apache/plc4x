@@ -55,7 +55,7 @@ public class BACnetLandingDoorStatus implements Message {
     writeBuffer.pushContext("BACnetLandingDoorStatus");
 
     // Simple Field (landingDoors)
-    writeSimpleField("landingDoors", landingDoors, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("landingDoors", landingDoors, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingDoorStatus");
   }
@@ -77,12 +77,6 @@ public class BACnetLandingDoorStatus implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLandingDoorStatus staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLandingDoorStatus staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLandingDoorStatus");
     PositionAware positionAware = readBuffer;
@@ -91,7 +85,7 @@ public class BACnetLandingDoorStatus implements Message {
     BACnetLandingDoorStatusLandingDoorsList landingDoors =
         readSimpleField(
             "landingDoors",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLandingDoorStatusLandingDoorsList.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

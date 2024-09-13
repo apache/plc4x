@@ -60,7 +60,7 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesProgramChange");
 
     // Simple Field (programState)
-    writeSimpleField("programState", programState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("programState", programState, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesProgramChange");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     BACnetProgramStateTagged programState =
         readSimpleField(
             "programState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProgramStateTagged.staticParse(
                         readBuffer,

@@ -91,7 +91,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     writeBuffer.pushContext("RegisterServer2Response");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfConfigurationResults)
     writeSimpleField(
@@ -159,7 +159,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -169,7 +169,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     List<StatusCode> configurationResults =
         readCountArrayField(
             "configurationResults",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfConfigurationResults);
 
     int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
@@ -177,8 +177,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("RegisterServer2Response");

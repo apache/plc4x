@@ -361,7 +361,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     /**
-     * can be used to throw a exception from the template
+     * can be used to throw an exception from the template
      *
      * @param message the message
      * @return the exception

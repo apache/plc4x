@@ -68,10 +68,10 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("DataTypeDescription");
 
     // Simple Field (dataTypeId)
-    writeSimpleField("dataTypeId", dataTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataTypeId", dataTypeId, writeComplex(writeBuffer));
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DataTypeDescription");
   }
@@ -104,14 +104,11 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
 
     NodeId dataTypeId =
         readSimpleField(
-            "dataTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "dataTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     QualifiedName name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("DataTypeDescription");
     // Create the instance

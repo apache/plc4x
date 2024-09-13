@@ -379,7 +379,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     .append(toParseExpression(null, argumentType, paramTerm, null))
                     .append(")");
             }
-            return "new DataReaderComplexDefault<>(() -> " + parserCallString + "IO.staticParse(readBuffer" + paramsString + "), readBuffer)";
+            return "readComplex(() -> " + parserCallString + "IO.staticParse(readBuffer" + paramsString + "), readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }

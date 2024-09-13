@@ -98,6 +98,7 @@
 [type NPDU(uint 16 npduLength)
     [simple   uint 8      protocolVersionNumber                                                                   ]
     [simple   NPDUControl control                                                                                 ]
+    [validation    'control != null'    "control required for further processing"                                 ]
     [optional uint 16     destinationNetworkAddress   'control.destinationSpecified'                              ]
     [optional uint 8      destinationLength           'control.destinationSpecified'                              ]
     [array    uint 8      destinationAddress count    'control.destinationSpecified ? destinationLength : 0'      ]
@@ -145,8 +146,8 @@
             [simple   uint 16     destinationNetworkAddress   ]
             [simple   uint 8      performanceIndex            ]
         ]
-        ['0x03' *RejectRouterToNetwork
-            [simple   NLMRejectRouterToNetworkRejectReason
+        ['0x03' *RejectMessageToNetwork
+            [simple   NLMRejectMessageToNetworkRejectReason
                                     rejectReason              ]
             [simple   uint 16     destinationNetworkAddress   ]
         ]
@@ -156,15 +157,15 @@
         ['0x05' *RouterAvailableToNetwork
             [array    uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
-        ['0x06' *InitalizeRoutingTable
+        ['0x06' *InitializeRoutingTable
             [simple   uint 8      numberOfPorts               ]
-            [array    NLMInitalizeRoutingTablePortMapping
+            [array    NLMInitializeRoutingTablePortMapping
                                     portMappings
                         count 'numberOfPorts'                 ]
         ]
-        ['0x07' *InitalizeRoutingTableAck
+        ['0x07' *InitializeRoutingTableAck
             [simple   uint 8      numberOfPorts               ]
-            [array    NLMInitalizeRoutingTablePortMapping
+            [array    NLMInitializeRoutingTablePortMapping
                                     portMappings
                         count 'numberOfPorts'                 ]
         ]
@@ -250,7 +251,7 @@
     ]
 ]
 
-[type NLMInitalizeRoutingTablePortMapping
+[type NLMInitializeRoutingTablePortMapping
     [simple   uint 16     destinationNetworkAddress       ]
     [simple   uint 8      portId                          ]
     [simple   uint 8      portInfoLength                  ]

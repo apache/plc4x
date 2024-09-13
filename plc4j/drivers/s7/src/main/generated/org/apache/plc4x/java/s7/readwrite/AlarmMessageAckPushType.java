@@ -77,7 +77,7 @@ public class AlarmMessageAckPushType implements Message {
     writeBuffer.pushContext("AlarmMessageAckPushType");
 
     // Simple Field (timeStamp)
-    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeStamp", timeStamp, writeComplex(writeBuffer));
 
     // Simple Field (functionId)
     writeSimpleField("functionId", functionId, writeUnsignedShort(writeBuffer, 8));
@@ -123,12 +123,6 @@ public class AlarmMessageAckPushType implements Message {
     return lengthInBits;
   }
 
-  public static AlarmMessageAckPushType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AlarmMessageAckPushType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AlarmMessageAckPushType");
     PositionAware positionAware = readBuffer;
@@ -136,8 +130,7 @@ public class AlarmMessageAckPushType implements Message {
 
     DateAndTime timeStamp =
         readSimpleField(
-            "timeStamp",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeStamp", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));
 
@@ -146,8 +139,7 @@ public class AlarmMessageAckPushType implements Message {
     List<AlarmMessageAckObjectPushType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageAckObjectPushType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageAckObjectPushType.staticParse(readBuffer), readBuffer),
             numberOfObjects);
 
     readBuffer.closeContext("AlarmMessageAckPushType");

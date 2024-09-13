@@ -71,16 +71,13 @@ public class InformationObjectWithTreeByteTime_INTEGRATED_TOTALS
 
     // Simple Field (bcr)
     writeSimpleField(
-        "bcr",
-        bcr,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "bcr", bcr, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp24Time2a)
     writeSimpleField(
         "cp24Time2a",
         cp24Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithTreeByteTime_INTEGRATED_TOTALS");
@@ -117,15 +114,13 @@ public class InformationObjectWithTreeByteTime_INTEGRATED_TOTALS
     BinaryCounterReading bcr =
         readSimpleField(
             "bcr",
-            new DataReaderComplexDefault<>(
-                () -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     ThreeOctetBinaryTime cp24Time2a =
         readSimpleField(
             "cp24Time2a",
-            new DataReaderComplexDefault<>(
-                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithTreeByteTime_INTEGRATED_TOTALS");

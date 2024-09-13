@@ -82,7 +82,7 @@ public class BACnetConstructedDataLocalDate extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataLocalDate");
 
     // Simple Field (localDate)
-    writeSimpleField("localDate", localDate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("localDate", localDate, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagDate actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataLocalDate extends BACnetConstructedData implem
     BACnetApplicationTagDate localDate =
         readSimpleField(
             "localDate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDate actualValue =

@@ -83,10 +83,7 @@ public class BACnetConstructedDataTimeOfActiveTimeReset extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataTimeOfActiveTimeReset");
 
     // Simple Field (timeOfActiveTimeReset)
-    writeSimpleField(
-        "timeOfActiveTimeReset",
-        timeOfActiveTimeReset,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeOfActiveTimeReset", timeOfActiveTimeReset, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();
@@ -128,8 +125,7 @@ public class BACnetConstructedDataTimeOfActiveTimeReset extends BACnetConstructe
     BACnetDateTime timeOfActiveTimeReset =
         readSimpleField(
             "timeOfActiveTimeReset",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, timeOfActiveTimeReset);
 

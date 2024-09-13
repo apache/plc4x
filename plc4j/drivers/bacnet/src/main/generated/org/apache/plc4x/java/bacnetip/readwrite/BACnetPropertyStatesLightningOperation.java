@@ -61,8 +61,7 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
     writeBuffer.pushContext("BACnetPropertyStatesLightningOperation");
 
     // Simple Field (lightningOperation)
-    writeSimpleField(
-        "lightningOperation", lightningOperation, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightningOperation", lightningOperation, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLightningOperation");
   }
@@ -93,7 +92,7 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
     BACnetLightingOperationTagged lightningOperation =
         readSimpleField(
             "lightningOperation",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingOperationTagged.staticParse(
                         readBuffer,

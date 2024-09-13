@@ -82,7 +82,7 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataWriteStatus");
 
     // Simple Field (writeStatus)
-    writeSimpleField("writeStatus", writeStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("writeStatus", writeStatus, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetWriteStatusTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
     BACnetWriteStatusTagged writeStatus =
         readSimpleField(
             "writeStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetWriteStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

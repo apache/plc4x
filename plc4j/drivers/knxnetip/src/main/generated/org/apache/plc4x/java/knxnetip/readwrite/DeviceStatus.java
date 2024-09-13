@@ -83,12 +83,6 @@ public class DeviceStatus implements Message {
     return lengthInBits;
   }
 
-  public static DeviceStatus staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DeviceStatus staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DeviceStatus");
     PositionAware positionAware = readBuffer;

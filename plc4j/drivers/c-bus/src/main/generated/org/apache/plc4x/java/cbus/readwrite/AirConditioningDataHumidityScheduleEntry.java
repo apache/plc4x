@@ -114,7 +114,7 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (entry)
     writeSimpleField("entry", entry, writeUnsignedShort(writeBuffer, 8));
@@ -123,25 +123,18 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
     writeSimpleField("format", format, writeByte(writeBuffer, 8));
 
     // Simple Field (humidityModeAndFlags)
-    writeSimpleField(
-        "humidityModeAndFlags", humidityModeAndFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("humidityModeAndFlags", humidityModeAndFlags, writeComplex(writeBuffer));
 
     // Simple Field (startTime)
-    writeSimpleField("startTime", startTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("startTime", startTime, writeComplex(writeBuffer));
 
     // Optional Field (level) (Can be skipped, if the value is null)
     writeOptionalField(
-        "level",
-        level,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHumidityModeAndFlags().getIsLevelHumidity());
+        "level", level, writeComplex(writeBuffer), getHumidityModeAndFlags().getIsLevelHumidity());
 
     // Optional Field (rawLevel) (Can be skipped, if the value is null)
     writeOptionalField(
-        "rawLevel",
-        rawLevel,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHumidityModeAndFlags().getIsLevelRaw());
+        "rawLevel", rawLevel, writeComplex(writeBuffer), getHumidityModeAndFlags().getIsLevelRaw());
 
     writeBuffer.popContext("AirConditioningDataHumidityScheduleEntry");
   }
@@ -198,8 +191,7 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     short entry = readSimpleField("entry", readUnsignedShort(readBuffer, 8));
 
@@ -208,25 +200,22 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
     HVACHumidityModeAndFlags humidityModeAndFlags =
         readSimpleField(
             "humidityModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
 
     HVACStartTime startTime =
         readSimpleField(
-            "startTime",
-            new DataReaderComplexDefault<>(
-                () -> HVACStartTime.staticParse(readBuffer), readBuffer));
+            "startTime", readComplex(() -> HVACStartTime.staticParse(readBuffer), readBuffer));
 
     HVACHumidity level =
         readOptionalField(
             "level",
-            new DataReaderComplexDefault<>(() -> HVACHumidity.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACHumidity.staticParse(readBuffer), readBuffer),
             humidityModeAndFlags.getIsLevelHumidity());
 
     HVACRawLevels rawLevel =
         readOptionalField(
             "rawLevel",
-            new DataReaderComplexDefault<>(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
             humidityModeAndFlags.getIsLevelRaw());
 
     readBuffer.closeContext("AirConditioningDataHumidityScheduleEntry");

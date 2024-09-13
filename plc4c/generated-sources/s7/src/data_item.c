@@ -222,7 +222,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_char_data(value);
+                *data_item = plc4c_data_create_char_data(*value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_WCHAR") == 0) { /* CHAR */
 
@@ -233,7 +233,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_char_data(value);
+                *data_item = plc4c_data_create_char_data(*value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_STRING") == 0) { /* STRING */
 
@@ -593,14 +593,14 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
         } else         if(strcmp(dataProtocolId, "IEC61131_CHAR") == 0) { /* CHAR */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (*data_item)->data.char_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (char*) (*data_item)->data.char_value);
                     if(_res != OK) {
                         return _res;
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_WCHAR") == 0) { /* CHAR */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (*data_item)->data.char_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (char*) (*data_item)->data.char_value);
                     if(_res != OK) {
                         return _res;
                     }

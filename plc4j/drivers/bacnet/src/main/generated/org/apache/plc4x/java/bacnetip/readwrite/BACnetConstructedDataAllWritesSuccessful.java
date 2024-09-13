@@ -83,8 +83,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataAllWritesSuccessful");
 
     // Simple Field (allWritesSuccessful)
-    writeSimpleField(
-        "allWritesSuccessful", allWritesSuccessful, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("allWritesSuccessful", allWritesSuccessful, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
     BACnetApplicationTagBoolean allWritesSuccessful =
         readSimpleField(
             "allWritesSuccessful",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

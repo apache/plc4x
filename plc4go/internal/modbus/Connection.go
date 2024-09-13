@@ -22,11 +22,11 @@ package modbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -35,8 +35,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
 
 type Connection struct {
@@ -117,7 +117,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		pingRequest := readWriteModel.NewModbusTcpADU(1, c.unitIdentifier, diagnosticRequestPdu, false)
 		if err := c.messageCodec.SendRequest(ctx, pingRequest,
 			func(message spi.Message) bool {
-				responseAdu, ok := message.(readWriteModel.ModbusTcpADUExactly)
+				responseAdu, ok := message.(readWriteModel.ModbusTcpADU)
 				if !ok {
 					return false
 				}

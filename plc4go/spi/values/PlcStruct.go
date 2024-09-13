@@ -23,12 +23,13 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type PlcStruct struct {

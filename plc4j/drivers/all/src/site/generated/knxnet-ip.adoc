@@ -40,36 +40,36 @@
 5+|Config options:
 |`knxproj-file-path` |STRING | | |Path to the `knxproj` file. The default KNXnet/IP protocol doesn't provide all the information needed to be able to fully decode the messages.
 |`knxproj-password` |STRING | | |Optional password needed to read the knxproj file.
-|`group-address-num-levels` |INT |3| |KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally:
-
-- 3 Levels: {main-group (5 bit)}/{middle-group (3 bit)}/{sub-group (8 bit)}
-- 2 Levels: {main-group (5 bit)}/{sub-group (11 bit)}
-- 1 Level: {sub-group (16 bit)}
-
+|`group-address-num-levels` |INT |3| |KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally: +
+ +
+- 3 Levels: {main-group (5 bit)}/{middle-group (3 bit)}/{sub-group (8 bit)} +
+- 2 Levels: {main-group (5 bit)}/{sub-group (11 bit)} +
+- 1 Level: {sub-group (16 bit)} +
+ +
 The default is 3 levels. If the `knxproj-file-path` this information is provided by the file.
-|`connection-type` |STRING |LINK_LAYER| |Type of connection used to communicate. Possible values are:
-
-- 'LINK_LAYER' (default): The client becomes a participant of the KNX bus and gets it's own individual KNX address.
-- 'RAW': The client gets unmanaged access to the bus (be careful with this)
+|`connection-type` |STRING |LINK_LAYER| |Type of connection used to communicate. Possible values are: +
+ +
+- 'LINK_LAYER' (default): The client becomes a participant of the KNX bus and gets it's own individual KNX address. +
+- 'RAW': The client gets unmanaged access to the bus (be careful with this) +
 - 'BUSMONITOR': The client operates as a busmonitor where he can't actively participate on the bus. Only one 'BUSMONITOR' connection is allowed at the same time on a KNXnet/IP gateway.
 5+|Transport config options:
 5+|
 +++
 <h4>udp</h4>
 +++
-|`udp.local-port` |INT |-1| |Some connections require a UDP listener to listen on a fixed port.
+|`udp.local-port` |INT |-1| |Some connections require a UDP listener to listen on a fixed port. +
 Use this configuration option in order to define the port number of the local port.
 5+|
 +++
 <h4>pcap</h4>
 +++
-|`pcap.replay-speed-factor` |FLOAT |1.0| |Numeric value for changing the replay speed:
-- 1 = Normal speed (default)
-- 0 = Maximum speed
-- 0.5 = Half speed
+|`pcap.replay-speed-factor` |FLOAT |1.0| |Numeric value for changing the replay speed: +
+- 1 = Normal speed (default) +
+- 0 = Maximum speed +
+- 0.5 = Half speed +
 - 2 = Double speed
-|`pcap.loop` |BOOLEAN |false| |Should the replay start at the beginning of the file as soon as the end is reached?
-- true = Automatically start again
+|`pcap.loop` |BOOLEAN |false| |Should the replay start at the beginning of the file as soon as the end is reached? +
+- true = Automatically start again +
 - false = Stop at the end (default)
 |`pcap.filter` |STRING | | |Filter expression used to filter out unwanted packets from the replay.
 |`pcap.support-vlans` |BOOLEAN |false| |Should VLan packets be automatically unpacked?

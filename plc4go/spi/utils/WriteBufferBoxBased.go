@@ -22,9 +22,11 @@ package utils
 import (
 	"container/list"
 	"context"
+	"encoding/binary"
 	"fmt"
-	"github.com/pkg/errors"
 	"math/big"
+
+	"github.com/pkg/errors"
 )
 
 type WriteBufferBoxBased interface {
@@ -66,11 +68,20 @@ type boxedWriteBuffer struct {
 	pos                 uint
 }
 
+var _ WriteBuffer = (*boxedWriteBuffer)(nil)
+
 //
 // Internal section
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
+
+func (*boxedWriteBuffer) GetByteOrder() binary.ByteOrder {
+	return binary.BigEndian
+}
+
+func (*boxedWriteBuffer) SetByteOrder(_ binary.ByteOrder) {
+}
 
 func (b *boxedWriteBuffer) GetBox() AsciiBox {
 	back := b.Back()
@@ -206,7 +217,7 @@ func (b *boxedWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, va
 	return nil
 }
 
-func (b *boxedWriteBuffer) WriteString(logicalName string, bitLength uint32, _ string, value string, writerArgs ...WithWriterArgs) error {
+func (b *boxedWriteBuffer) WriteString(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs) error {
 	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%s%s", value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))

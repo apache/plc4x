@@ -28,11 +28,11 @@ import (
 	"crypto/x509"
 	"encoding/binary"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type EncryptionHandler struct {
@@ -130,10 +130,10 @@ func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteMode
 	case "Basic256Sha256":
 		var message []byte
 		switch pduMessage := pdu.GetMessage().(type) {
-		case readWriteModel.OpcuaOpenResponseExactly:
-			message = pduMessage.(readWriteModel.BinaryPayloadExactly).GetPayload()
-		case readWriteModel.OpcuaMessageResponseExactly:
-			message = pduMessage.(readWriteModel.BinaryPayloadExactly).GetPayload()
+		case readWriteModel.OpcuaOpenResponse:
+			message = pduMessage.(readWriteModel.BinaryPayload).GetPayload()
+		case readWriteModel.OpcuaMessageResponse:
+			message = pduMessage.(readWriteModel.BinaryPayload).GetPayload()
 		default:
 			h.log.Trace().Type("pdu", pdu).Msg("unhandled type")
 			return pdu, nil

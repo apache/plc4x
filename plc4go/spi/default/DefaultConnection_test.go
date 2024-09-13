@@ -22,9 +22,12 @@ package _default
 import (
 	"context"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -34,9 +37,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestDefaultConnectionMetadata_CanBrowse(t *testing.T) {

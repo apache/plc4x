@@ -17,7 +17,9 @@
  limitations under the License.
 
  -->
-<project name="PLC4X">
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+         name="PLC4X">
 
   <skin>
     <groupId>org.apache.plc4x.plugins</groupId>
@@ -25,7 +27,7 @@
     <version>1.1.0</version>
   </skin>
 
-  <!-- Hide the publish date as this will cause changes on every generated page every day -->
+  <!-- Hide the publish-date as this will cause changes on every generated page every day -->
   <publishDate position="none"/>
   <!-- Hide the version as we are usually deploying the develop version -->
   <version position="none" />
@@ -50,7 +52,7 @@
       <item name="Section Home" href="users/index.html"/>
       <item name="Download" href="users/download.html"/>
       <item name="Adopters" href="users/adopters.html"/>
-      <item name="Bug &amp; Issue Tracker" href="developers/infrastructure/issues.html"/>
+      <item name="Bug &amp; Issue Tracker" href="users/issues.html"/>
       <item name="Commercial support" href="users/commercial-support.html"/>
       <item name="Getting Started" href="users/getting-started/index.html">
         <item name="C" href="users/getting-started/plc4c.html"/>
@@ -135,6 +137,7 @@
       </item>
       <item name="Protocols" href="developers/protocols/index.html">
         <item name="ADS/AMS" href="developers/protocols/ads/protocol.html"/>
+        <item name="EIP" href="developers/protocols/eip/protocol.html"/>
       </item>
       <item name="Infrastructure" href="developers/infrastructure/index.html">
         <item name="Continuous Integration" href="developers/infrastructure/ci.html"/>
@@ -143,7 +146,6 @@
         <item name="Wiki" href="developers/infrastructure/wiki.html"/>
         <item name="Build VM" href="developers/infrastructure/vm.html"/>
         <item name="Website" href="developers/infrastructure/website.html"/>
-        <item name="IoT VPN" href="developers/infrastructure/vpn.html"/>
       </item>
       <item name="Releasing" href="developers/release/index.html">
         <item name="Releasing" href="developers/release/release.html"/>

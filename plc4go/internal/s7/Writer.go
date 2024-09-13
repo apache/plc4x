@@ -21,19 +21,19 @@ package s7
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 )
 
 type Writer struct {
@@ -108,11 +108,11 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		transaction.Submit(func(transaction transactions.RequestTransaction) {
 			// Send the  over the wire
 			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
 				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 				if !ok {
 					return false
 				}

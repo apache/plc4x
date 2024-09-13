@@ -22,23 +22,23 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"math"
 	"net"
 	"net/url"
 	"strconv"
 	"sync"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Driver struct {
@@ -48,7 +48,7 @@ type Driver struct {
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 
-	log zerolog.Logger // TODO: use it
+	log zerolog.Logger
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
@@ -56,6 +56,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	driver := &Driver{
 		applicationManager: ApplicationManager{
 			applications: map[string]*ApplicationLayerMessageCodec{},
+			log:          customLogger,
 		},
 		tm:                      transactions.NewRequestTransactionManager(math.MaxInt),
 		awaitSetupComplete:      true,
@@ -95,7 +96,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	case *udp.Transport:
 		udpTransport = transport
 	default:
-		log.Error().Stringer("transportUrl", &transportUrl).Msg("Only udp supported at the moment")
+		m.log.Error().Stringer("transportUrl", &transportUrl).Msg("Only udp supported at the moment")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
@@ -107,11 +108,11 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "error getting application layer message codec"))
 		return ch
 	}
-	log.Debug().Stringer("codec", codec).Msg("working with codec")
+	m.log.Debug().Stringer("codec", codec).Msg("working with codec")
 
 	// Create the new connection
 	connection := NewConnection(codec, m.GetPlcTagHandler(), m.tm, driverOptions)
-	log.Debug().Msg("created connection, connecting now")
+	m.log.Debug().Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }
 
@@ -130,6 +131,8 @@ func (m *Driver) Close() error {
 type ApplicationManager struct {
 	sync.Mutex
 	applications map[string]*ApplicationLayerMessageCodec
+
+	log zerolog.Logger
 }
 
 func (a *ApplicationManager) getApplicationLayerMessageCodec(transport *udp.Transport, transportUrl url.URL, options map[string][]string) (*ApplicationLayerMessageCodec, error) {
@@ -160,7 +163,7 @@ func (a *ApplicationManager) getApplicationLayerMessageCodec(transport *udp.Tran
 	defer a.Unlock()
 	messageCodec, ok := a.applications[localAddress.String()]
 	if !ok {
-		newMessageCodec, err := NewApplicationLayerMessageCodec(transport, transportUrl, options, localAddress, remoteAddr)
+		newMessageCodec, err := NewApplicationLayerMessageCodec(a.log, transport, transportUrl, options, localAddress, remoteAddr)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating application layer code")
 		}

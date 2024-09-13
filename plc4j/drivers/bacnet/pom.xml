@@ -28,7 +28,7 @@
 
   <artifactId>plc4j-driver-bacnet</artifactId>
 
-  <name>PLC4J: Driver: BACNet/IP Driver</name>
+  <name>PLC4J: Driver: BACNet/IP</name>
 
   <properties>
     <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>

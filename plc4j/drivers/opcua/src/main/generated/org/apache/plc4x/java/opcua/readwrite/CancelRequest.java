@@ -68,7 +68,7 @@ public class CancelRequest extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("CancelRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (requestHandle)
     writeSimpleField("requestHandle", requestHandle, writeUnsignedLong(writeBuffer, 32));
@@ -105,7 +105,7 @@ public class CancelRequest extends ExtensionObjectDefinition implements Message 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 

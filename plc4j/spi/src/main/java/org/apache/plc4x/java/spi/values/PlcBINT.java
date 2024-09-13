@@ -210,6 +210,11 @@ public class PlcBINT extends PlcIECValue<BigInteger> {
     public String toString() {
         return value.toString();
     }
+    
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
 
     public byte[] getBytes() {
         byte[] tmp = value.toByteArray();

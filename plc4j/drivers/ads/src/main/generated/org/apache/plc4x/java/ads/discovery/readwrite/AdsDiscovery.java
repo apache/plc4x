@@ -109,15 +109,14 @@ public class AdsDiscovery implements Message {
         "operation",
         "Operation",
         operation,
-        new DataWriterEnumDefault<>(
-            Operation::getValue, Operation::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Operation::getValue, Operation::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (amsNetId)
     writeSimpleField(
         "amsNetId",
         amsNetId,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (portNumber)
@@ -125,7 +124,7 @@ public class AdsDiscovery implements Message {
         "portNumber",
         "AdsPortNumbers",
         portNumber,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AdsPortNumbers::getValue, AdsPortNumbers::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -186,12 +185,6 @@ public class AdsDiscovery implements Message {
     return lengthInBits;
   }
 
-  public static AdsDiscovery staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsDiscovery staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsDiscovery");
     PositionAware positionAware = readBuffer;
@@ -214,21 +207,20 @@ public class AdsDiscovery implements Message {
         readEnumField(
             "operation",
             "Operation",
-            new DataReaderEnumDefault<>(Operation::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Operation::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     AmsNetId amsNetId =
         readSimpleField(
             "amsNetId",
-            new DataReaderComplexDefault<>(() -> AmsNetId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AmsNetId.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     AdsPortNumbers portNumber =
         readEnumField(
             "portNumber",
             "AdsPortNumbers",
-            new DataReaderEnumDefault<>(
-                AdsPortNumbers::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(AdsPortNumbers::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     long numBlocks =
@@ -240,8 +232,7 @@ public class AdsDiscovery implements Message {
     List<AdsDiscoveryBlock> blocks =
         readCountArrayField(
             "blocks",
-            new DataReaderComplexDefault<>(
-                () -> AdsDiscoveryBlock.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsDiscoveryBlock.staticParse(readBuffer), readBuffer),
             numBlocks,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

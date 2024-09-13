@@ -39,26 +39,26 @@
 |`protocol-code` |STRING | | |
 |`transport-code` |STRING | | |
 |`transport-config` |STRING | | |
-|`discovery` |BOOLEAN |true| |Controls the feature of the discovery endpoint of an OPC UA server which every server
-will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly
-configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by
-configuring it with a `false` value.
-
+|`discovery` |BOOLEAN |true| |Controls the feature of the discovery endpoint of an OPC UA server which every server +
+will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly +
+configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by +
+configuring it with a `false` value. +
+ +
 The discovery phase is always conducted using `NONE` security policy.
 |`username` |STRING | | |A username to authenticate to the OPCUA server with.
 |`password` |STRING | | |A password to authenticate to the OPCUA server with.
-|`security-policy` |STRING |NONE| |The security policy applied to communication channel between driver and OPC UA server.
+|`security-policy` |STRING |NONE| |The security policy applied to communication channel between driver and OPC UA server. +
 Default value assumes. Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.
-|`message-security` |STRING |SIGN_ENCRYPT| |The security policy applied to messages exchanged after handshake phase.
-Possible options are `NONE`, `SIGN`, `SIGN_ENCRYPT`.
+|`message-security` |STRING |SIGN_ENCRYPT| |The security policy applied to messages exchanged after handshake phase. +
+Possible options are `NONE`, `SIGN`, `SIGN_ENCRYPT`. +
 This option is effective only when `securityPolicy` turns encryption (anything beyond `NONE`).
 |`key-store-file` |STRING | | |The Keystore file used to lookup client certificate and its private key.
-|`key-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+).
+|`key-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+). +
 Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`key-store-password` |STRING | | |Java keystore password used to access keystore and private key.
 |`server-certificate-file` |STRING | | |Filesystem location where server certificate is located, supported formats are `DER` and `PEM`.
 |`trust-store-file` |STRING | | |The trust store file used to verify server certificates and its chain.
-|`trust-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+).
+|`trust-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+). +
 Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`trust-store-password` |STRING | | |Password used to open trust store.
 |`channel-lifetime` |LONG |3600000| |Time for which negotiated secure channel, its keys and session remains open. Value in milliseconds, by default 60 minutes.

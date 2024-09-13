@@ -79,11 +79,6 @@ public class Uuid implements Message {
     return lengthInBits;
   }
 
-  public static Uuid staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Uuid staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Uuid");
     PositionAware positionAware = readBuffer;

@@ -91,10 +91,10 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("BrowseRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (view)
-    writeSimpleField("view", view, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("view", view, writeComplex(writeBuffer));
 
     // Simple Field (requestedMaxReferencesPerNode)
     writeSimpleField(
@@ -155,14 +155,14 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObjectDefinition view =
         readSimpleField(
             "view",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("513")),
                 readBuffer));
 
@@ -174,7 +174,7 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     List<ExtensionObjectDefinition> nodesToBrowse =
         readCountArrayField(
             "nodesToBrowse",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("516")),
                 readBuffer),
             noOfNodesToBrowse);

@@ -48,7 +48,7 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
     public CANOpenFrame fromCAN(FrameData frame) {
         CANOpenService service = StaticHelper.serviceId((short) frame.getNodeId());
         int nodeId = Math.abs(service.getMin() - frame.getNodeId());
-        return new CANOpenFrame((short) nodeId, service, frame.read(CANOpenPayload::staticParse, service));
+        return new CANOpenFrame((short) nodeId, service, frame.read(io -> CANOpenPayload.staticParse(io, service)));
     }
 
     @Override

@@ -26,12 +26,17 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -43,6 +48,8 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcPinger, PlcReader, PlcWriter, PlcSubscriber, PlcBrowser {
 
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractPlcConnection.class);
+
     private boolean canPing = false;
     private boolean canRead = false;
     private boolean canWrite = false;
@@ -50,7 +57,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private boolean canBrowse = false;
     private PlcTagHandler tagHandler;
     private PlcValueHandler valueHandler;
-    private Plc4xProtocolBase<?> protocol;
+    private Plc4xProtocolBase<? extends Message> protocol;
     private BaseOptimizer optimizer;
     private PlcAuthentication authentication;
 
@@ -76,8 +83,12 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         this.authentication = authentication;
     }
 
-    public void setProtocol(Plc4xProtocolBase<?> protocol) {
+    public void setProtocol(Plc4xProtocolBase<? extends Message> protocol) {
         this.protocol = protocol;
+    }
+
+    public Plc4xProtocolBase<? extends Message> getProtocol() {
+        return protocol;
     }
 
     @Override
@@ -224,4 +235,15 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         return protocol.browseWithInterceptor(browseRequest, interceptor);
     }
 
+    @Override
+    public Optional<PlcTag> parseTagAddress(String tagAddress) {
+        PlcTag plcTag;
+        try {
+            plcTag = tagHandler.parseTag(tagAddress);
+        } catch (Exception e) {
+            logger.error("Error parsing tag address {}", tagAddress);
+            return Optional.empty();
+        }
+        return Optional.ofNullable(plcTag);
+    }
 }

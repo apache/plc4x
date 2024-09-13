@@ -23,7 +23,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/rs/zerolog/pkgerrors"
 	"os"
 	"runtime"
 	"runtime/debug"
@@ -33,18 +32,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func CompareResults(t *testing.T, actualString []byte, referenceString []byte) error {
@@ -70,7 +70,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	}
 	cleanDiff := make([]xdiff.Delta, 0)
 	for _, delta := range diff {
-		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil {
+		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil || delta.Operation == xdiff.InsertSubtree && delta.Subject.Value == nil {
 			localLog.Info().Interface("delta", delta).Msg("We ignore empty elements which should be deleted")
 			continue
 		}
@@ -125,6 +125,7 @@ func TestContext(t *testing.T) context.Context {
 }
 
 var (
+	muteLog                             bool
 	highLogPrecision                    bool
 	passLoggerToModel                   bool
 	receiveTimeout                      time.Duration
@@ -136,6 +137,7 @@ var (
 )
 
 func init() {
+	getOrLeaveBool("PLC4X_TEST_MUTE_LOG", &muteLog)
 	getOrLeaveBool("PLC4X_TEST_HIGH_TEST_LOG_PRECISION", &highLogPrecision)
 	if highLogPrecision {
 		zerolog.TimeFieldFormat = time.RFC3339Nano
@@ -180,8 +182,17 @@ func shouldNoColor() bool {
 	return noColor
 }
 
+type TestingLog interface {
+	Log(args ...interface{})
+	Logf(format string, args ...interface{})
+	Helper()
+}
+
 // ProduceTestingLogger produces a logger which redirects to testing.T
-func ProduceTestingLogger(t *testing.T) zerolog.Logger {
+func ProduceTestingLogger(t TestingLog) zerolog.Logger {
+	if muteLog {
+		return zerolog.Nop()
+	}
 	noColor := shouldNoColor()
 	consoleWriter := zerolog.NewConsoleWriter(
 		zerolog.ConsoleTestWriter(t),
@@ -195,25 +206,68 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 		},
 		func(w *zerolog.ConsoleWriter) {
 			w.FormatFieldValue = func(i interface{}) string {
-				if aString, ok := i.(string); ok && strings.Contains(aString, "\\n") {
-					if noColor {
-						return "see below"
-					} else {
-						return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+				switch i := i.(type) {
+				case string:
+					if strings.Contains(i, "\\n") {
+						if noColor {
+							return "see below"
+						} else {
+							return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+						}
+					}
+				case []uint8:
+					if len(i) > 4 && i[0] == '[' && i[len(i)-1] == ']' && strings.Contains(string(i), "\\n") {
+						if noColor {
+							return "see below"
+						} else {
+							return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+						}
 					}
 				}
 				return fmt.Sprintf("%s", i)
 			}
 			w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
 				for key, i := range m {
-					if aString, ok := i.(string); ok && strings.Contains(aString, "\n") {
-						buffer.WriteString("\n")
-						if noColor {
-							buffer.WriteString("field " + key)
-						} else {
-							buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+					switch i := i.(type) {
+					case string:
+						if strings.Contains(i, "\n") {
+							buffer.WriteString("\n")
+							if noColor {
+								buffer.WriteString("field " + key)
+							} else {
+								buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+							}
+							buffer.WriteString(":\n" + i)
 						}
-						buffer.WriteString(":\n" + aString)
+					case []any:
+						allStrings := false
+						containsNewLine := false
+						stringsElems := make([]string, len(i))
+						for i, elem := range i {
+							if aString, ok := elem.(string); ok {
+								containsNewLine = containsNewLine || strings.Contains(aString, "\n")
+								allStrings = true
+								stringsElems[i] = strings.Trim(aString, "\n")
+							} else {
+								allStrings = false
+								break
+							}
+						}
+						if allStrings && containsNewLine {
+							buffer.WriteString("\n")
+							if noColor {
+								buffer.WriteString("field " + key)
+							} else {
+								buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+							}
+							var sb strings.Builder
+							for j, elem := range stringsElems {
+								sb.WriteString(strconv.Itoa(j) + ":\n")
+								sb.WriteString(elem)
+								sb.WriteString("\n")
+							}
+							buffer.WriteString(":\n" + sb.String())
+						}
 					}
 				}
 				return nil
@@ -227,7 +281,24 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 		logger = logger.With().Timestamp().Logger()
 	}
 	stackSetter.Do(func() {
-		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+		zerolog.ErrorStackMarshaler = func(err error) interface{} {
+			if err == nil {
+				return nil
+			}
+			var r strings.Builder
+			stack := pkgerrors.MarshalStack(err)
+			if stack == nil {
+				return nil
+			}
+			stackMap := stack.([]map[string]string)
+			for _, entry := range stackMap {
+				stackSourceFileName := entry[pkgerrors.StackSourceFileName]
+				stackSourceLineName := entry[pkgerrors.StackSourceLineName]
+				stackSourceFunctionName := entry[pkgerrors.StackSourceFunctionName]
+				r.WriteString(fmt.Sprintf("\tat %v (%v:%v)\n", stackSourceFunctionName, stackSourceFileName, stackSourceLineName))
+			}
+			return r.String()
+		}
 	})
 	logger = logger.With().Stack().Logger()
 	return logger

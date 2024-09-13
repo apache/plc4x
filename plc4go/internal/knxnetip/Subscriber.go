@@ -21,21 +21,22 @@ package knxnetip
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
+//go:generate plc4xGenerator -type=Subscriber
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
@@ -111,7 +112,7 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
 	ctxForModel := options.GetLoggerContextForModel(ctx, s.log, options.WithPassLoggerToModel(s.passLogToModel))
-	groupAddress, err := driverModel.KnxGroupAddressParse(ctxForModel, destinationAddress, s.connection.getGroupAddressNumLevels())
+	groupAddress, err := driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, destinationAddress, s.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
 	}

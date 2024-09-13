@@ -121,25 +121,25 @@ public class AlarmMessageObjectQueryType implements Message {
     writeConstField("variableSpec", VARIABLESPEC, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (eventState)
-    writeSimpleField("eventState", eventState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventState", eventState, writeComplex(writeBuffer));
 
     // Simple Field (ackStateGoing)
-    writeSimpleField("ackStateGoing", ackStateGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateGoing", ackStateGoing, writeComplex(writeBuffer));
 
     // Simple Field (ackStateComing)
-    writeSimpleField("ackStateComing", ackStateComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateComing", ackStateComing, writeComplex(writeBuffer));
 
     // Simple Field (timeComing)
-    writeSimpleField("timeComing", timeComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeComing", timeComing, writeComplex(writeBuffer));
 
     // Simple Field (valueComing)
-    writeSimpleField("valueComing", valueComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("valueComing", valueComing, writeComplex(writeBuffer));
 
     // Simple Field (timeGoing)
-    writeSimpleField("timeGoing", timeGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeGoing", timeGoing, writeComplex(writeBuffer));
 
     // Simple Field (valueGoing)
-    writeSimpleField("valueGoing", valueGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("valueGoing", valueGoing, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AlarmMessageObjectQueryType");
   }
@@ -188,12 +188,6 @@ public class AlarmMessageObjectQueryType implements Message {
     return lengthInBits;
   }
 
-  public static AlarmMessageObjectQueryType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AlarmMessageObjectQueryType staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AlarmMessageObjectQueryType");
@@ -212,41 +206,33 @@ public class AlarmMessageObjectQueryType implements Message {
             AlarmMessageObjectQueryType.VARIABLESPEC);
 
     State eventState =
-        readSimpleField(
-            "eventState",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+        readSimpleField("eventState", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateGoing =
         readSimpleField(
-            "ackStateGoing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateGoing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateComing =
         readSimpleField(
-            "ackStateComing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateComing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     DateAndTime timeComing =
         readSimpleField(
-            "timeComing",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeComing", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     AssociatedValueType valueComing =
         readSimpleField(
             "valueComing",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedValueType.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AssociatedValueType.staticParse(readBuffer), readBuffer));
 
     DateAndTime timeGoing =
         readSimpleField(
-            "timeGoing",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeGoing", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     AssociatedValueType valueGoing =
         readSimpleField(
             "valueGoing",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedValueType.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AssociatedValueType.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AlarmMessageObjectQueryType");
     // Create the instance

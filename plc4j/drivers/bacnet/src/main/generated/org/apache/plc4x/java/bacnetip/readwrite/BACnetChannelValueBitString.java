@@ -60,7 +60,7 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
     writeBuffer.pushContext("BACnetChannelValueBitString");
 
     // Simple Field (bitStringValue)
-    writeSimpleField("bitStringValue", bitStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bitStringValue", bitStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueBitString");
   }
@@ -91,7 +91,7 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
     BACnetApplicationTagBitString bitStringValue =
         readSimpleField(
             "bitStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

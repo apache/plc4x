@@ -74,13 +74,13 @@ public class AnnotationDataType extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("AnnotationDataType");
 
     // Simple Field (annotation)
-    writeSimpleField("annotation", annotation, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("annotation", annotation, writeComplex(writeBuffer));
 
     // Simple Field (discipline)
-    writeSimpleField("discipline", discipline, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("discipline", discipline, writeComplex(writeBuffer));
 
     // Simple Field (uri)
-    writeSimpleField("uri", uri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("uri", uri, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AnnotationDataType");
   }
@@ -116,18 +116,14 @@ public class AnnotationDataType extends ExtensionObjectDefinition implements Mes
 
     PascalString annotation =
         readSimpleField(
-            "annotation",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "annotation", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString discipline =
         readSimpleField(
-            "discipline",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "discipline", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString uri =
-        readSimpleField(
-            "uri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+        readSimpleField("uri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AnnotationDataType");
     // Create the instance

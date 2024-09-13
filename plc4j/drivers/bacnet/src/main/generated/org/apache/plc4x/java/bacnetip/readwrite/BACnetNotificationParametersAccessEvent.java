@@ -121,33 +121,28 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     writeBuffer.pushContext("BACnetNotificationParametersAccessEvent");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (accessEvent)
-    writeSimpleField("accessEvent", accessEvent, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEvent", accessEvent, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (accessEventTag)
-    writeSimpleField("accessEventTag", accessEventTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEventTag", accessEventTag, writeComplex(writeBuffer));
 
     // Simple Field (accessEventTime)
-    writeSimpleField(
-        "accessEventTime", accessEventTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEventTime", accessEventTime, writeComplex(writeBuffer));
 
     // Simple Field (accessCredential)
-    writeSimpleField(
-        "accessCredential", accessCredential, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessCredential", accessCredential, writeComplex(writeBuffer));
 
     // Optional Field (authenticationFactor) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "authenticationFactor", authenticationFactor, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("authenticationFactor", authenticationFactor, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersAccessEvent");
   }
@@ -205,14 +200,14 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetAccessEventTagged accessEvent =
         readSimpleField(
             "accessEvent",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessEventTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -221,7 +216,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -230,7 +225,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     BACnetContextTagUnsignedInteger accessEventTag =
         readSimpleField(
             "accessEventTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -242,20 +237,20 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     BACnetTimeStampEnclosed accessEventTime =
         readSimpleField(
             "accessEventTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3)), readBuffer));
 
     BACnetDeviceObjectReferenceEnclosed accessCredential =
         readSimpleField(
             "accessCredential",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (4)),
                 readBuffer));
 
     BACnetAuthenticationFactorTypeTagged authenticationFactor =
         readOptionalField(
             "authenticationFactor",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthenticationFactorTypeTagged.staticParse(
                         readBuffer, (short) (5), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -264,7 +259,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

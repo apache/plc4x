@@ -118,8 +118,7 @@ public class BACnetConstructedDataEntryPoints extends BACnetConstructedData impl
     List<BACnetDeviceObjectReference> entryPoints =
         readTerminatedArrayField(
             "entryPoints",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

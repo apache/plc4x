@@ -20,11 +20,14 @@
 package utils
 
 import (
-	"github.com/rs/zerolog/log"
 	"math"
 	"regexp"
 	"strings"
+
+	"github.com/rs/zerolog"
 )
+
+var AsciiBoxLogger zerolog.Logger
 
 // AsciiBox is a string surrounded by an ascii border (and an optional name)
 type AsciiBox struct {
@@ -158,11 +161,13 @@ type asciiBoxWriter struct {
 }
 
 func (a *asciiBoxWriter) boxString(name string, data string, charWidth int) AsciiBox {
+	data = strings.ReplaceAll(data, "\r\n", "\n") // carriage return just messes with boxes
+	data = strings.ReplaceAll(data, "\t", "  ")   // Tabs just don't work well as they distort the boxes so we convert them to a double space
 	rawBox := AsciiBox{data, a, a.compressBoxSet()}
 	longestLine := rawBox.Width()
 	if charWidth < longestLine {
 		if DebugAsciiBox {
-			log.Debug().Int("nChars", longestLine-charWidth).Msg("Overflow by nChars chars")
+			AsciiBoxLogger.Debug().Int("nChars", longestLine-charWidth).Msg("Overflow by nChars chars")
 		}
 		charWidth = longestLine + a.borderWidth + a.borderWidth
 	}
@@ -355,13 +360,13 @@ func (a *asciiBoxWriter) AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox
 		boxWidth := box.Width()
 		if boxWidth > actualWidth {
 			if DebugAsciiBox {
-				log.Debug().Int("nChars", boxWidth-desiredWidth).Msg("Overflow by nChars chars")
+				AsciiBoxLogger.Debug().Int("nChars", boxWidth-desiredWidth).Msg("Overflow by nChars chars")
 			}
 			actualWidth = boxWidth
 		}
 	}
 	if DebugAsciiBox {
-		log.Debug().Int("actualWidth", actualWidth).Msg("Working with actualWidth chars")
+		AsciiBoxLogger.Debug().Int("actualWidth", actualWidth).Msg("Working with actualWidth chars")
 	}
 	bigBox := AsciiBox{"", a, a.compressBoxSet()}
 	currentBoxRow := make([]AsciiBox, 0)

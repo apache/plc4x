@@ -23,13 +23,13 @@ import (
 	"context"
 	"time"
 
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
-
-	"github.com/rs/zerolog"
 )
 
 type SubscriptionEvent struct {
@@ -70,11 +70,11 @@ func (m SubscriptionEvent) GetAddress(name string) string {
 	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	switch tag.(type) {
 	case GroupAddress3LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 3)
+		groupAddress, err = driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, rawAddress, 3)
 	case GroupAddress2LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 2)
+		groupAddress, err = driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, rawAddress, 2)
 	case GroupAddress1LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 1)
+		groupAddress, err = driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, rawAddress, 1)
 	}
 	if err != nil {
 		m.log.Debug().Err(err).Msg("error parsing")

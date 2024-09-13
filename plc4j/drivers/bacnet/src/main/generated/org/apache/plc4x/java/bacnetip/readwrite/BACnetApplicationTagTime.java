@@ -59,7 +59,7 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
     writeBuffer.pushContext("BACnetApplicationTagTime");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetApplicationTagTime");
   }
@@ -89,9 +89,7 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
 
     BACnetTagPayloadTime payload =
         readSimpleField(
-            "payload",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagPayloadTime.staticParse(readBuffer), readBuffer));
+            "payload", readComplex(() -> BACnetTagPayloadTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetApplicationTagTime");
     // Create the instance

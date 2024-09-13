@@ -126,7 +126,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("DataSetWriterDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -142,7 +142,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         "dataSetFieldContentMask",
         "DataSetFieldContentMask",
         dataSetFieldContentMask,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataSetFieldContentMask::getValue,
             DataSetFieldContentMask::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -151,7 +151,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("keyFrameCount", keyFrameCount, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (dataSetName)
-    writeSimpleField("dataSetName", dataSetName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataSetName", dataSetName, writeComplex(writeBuffer));
 
     // Simple Field (noOfDataSetWriterProperties)
     writeSimpleField(
@@ -163,12 +163,10 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeComplexTypeArrayField("dataSetWriterProperties", dataSetWriterProperties, writeBuffer);
 
     // Simple Field (transportSettings)
-    writeSimpleField(
-        "transportSettings", transportSettings, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportSettings", transportSettings, writeComplex(writeBuffer));
 
     // Simple Field (messageSettings)
-    writeSimpleField(
-        "messageSettings", messageSettings, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("messageSettings", messageSettings, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DataSetWriterDataType");
   }
@@ -234,8 +232,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -248,15 +245,13 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         readEnumField(
             "dataSetFieldContentMask",
             "DataSetFieldContentMask",
-            new DataReaderEnumDefault<>(
-                DataSetFieldContentMask::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(DataSetFieldContentMask::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     long keyFrameCount = readSimpleField("keyFrameCount", readUnsignedLong(readBuffer, 32));
 
     PascalString dataSetName =
         readSimpleField(
-            "dataSetName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "dataSetName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfDataSetWriterProperties =
         readSimpleField("noOfDataSetWriterProperties", readSignedInt(readBuffer, 32));
@@ -264,7 +259,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     List<ExtensionObjectDefinition> dataSetWriterProperties =
         readCountArrayField(
             "dataSetWriterProperties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfDataSetWriterProperties);
@@ -272,13 +267,13 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     ExtensionObject transportSettings =
         readSimpleField(
             "transportSettings",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     ExtensionObject messageSettings =
         readSimpleField(
             "messageSettings",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("DataSetWriterDataType");

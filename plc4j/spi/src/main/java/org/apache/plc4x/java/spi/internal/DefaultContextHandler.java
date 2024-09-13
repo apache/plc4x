@@ -43,7 +43,7 @@ class DefaultContextHandler implements ConversationContext.ContextHandler {
     }
 
     @Override
-    public void awaitResponse() throws InterruptedException, ExecutionException {
+    public void await() throws InterruptedException, ExecutionException {
         this.awaitable.get();
     }
 }

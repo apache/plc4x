@@ -23,8 +23,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"runtime/debug"
@@ -32,10 +30,13 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )

@@ -21,19 +21,19 @@ package _default
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
@@ -72,7 +72,7 @@ type withCustomMessageHandler struct {
 	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultCodec
+//go:generate plc4xGenerator -type=defaultCodec
 type defaultCodec struct {
 	DefaultCodecRequirements `ignore:"true"`
 
@@ -87,10 +87,10 @@ type defaultCodec struct {
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
 
-	receiveTimeout                 time.Duration `stringer:"true"`
+	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {

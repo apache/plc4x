@@ -64,10 +64,7 @@ public class InformationObjectWithoutTime_INTEGRATED_TOTALS extends InformationO
 
     // Simple Field (bcr)
     writeSimpleField(
-        "bcr",
-        bcr,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "bcr", bcr, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_INTEGRATED_TOTALS");
   }
@@ -99,8 +96,7 @@ public class InformationObjectWithoutTime_INTEGRATED_TOTALS extends InformationO
     BinaryCounterReading bcr =
         readSimpleField(
             "bcr",
-            new DataReaderComplexDefault<>(
-                () -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_INTEGRATED_TOTALS");

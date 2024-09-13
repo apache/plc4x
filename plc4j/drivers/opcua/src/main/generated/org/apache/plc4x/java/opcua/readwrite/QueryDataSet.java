@@ -84,11 +84,10 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("QueryDataSet");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (typeDefinitionNode)
-    writeSimpleField(
-        "typeDefinitionNode", typeDefinitionNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("typeDefinitionNode", typeDefinitionNode, writeComplex(writeBuffer));
 
     // Simple Field (noOfValues)
     writeSimpleField("noOfValues", noOfValues, writeSignedInt(writeBuffer, 32));
@@ -139,23 +138,18 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
 
     ExpandedNodeId nodeId =
         readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "nodeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     ExpandedNodeId typeDefinitionNode =
         readSimpleField(
             "typeDefinitionNode",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     int noOfValues = readSimpleField("noOfValues", readSignedInt(readBuffer, 32));
 
     List<Variant> values =
         readCountArrayField(
-            "values",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer),
-            noOfValues);
+            "values", readComplex(() -> Variant.staticParse(readBuffer), readBuffer), noOfValues);
 
     readBuffer.closeContext("QueryDataSet");
     // Create the instance

@@ -71,7 +71,7 @@ public class ManualAdsDriverTest extends ManualTest {
      */
 
     public ManualAdsDriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {

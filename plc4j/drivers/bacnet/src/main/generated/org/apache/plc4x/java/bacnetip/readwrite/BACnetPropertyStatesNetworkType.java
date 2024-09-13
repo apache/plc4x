@@ -60,7 +60,7 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
     writeBuffer.pushContext("BACnetPropertyStatesNetworkType");
 
     // Simple Field (networkType)
-    writeSimpleField("networkType", networkType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkType", networkType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesNetworkType");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
     BACnetNetworkTypeTagged networkType =
         readSimpleField(
             "networkType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkTypeTagged.staticParse(
                         readBuffer,

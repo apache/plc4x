@@ -72,10 +72,7 @@ public class APDUIFormat extends APDU implements Message {
 
     // Simple Field (asdu)
     writeSimpleField(
-        "asdu",
-        asdu,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "asdu", asdu, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("APDUIFormat");
   }
@@ -114,7 +111,7 @@ public class APDUIFormat extends APDU implements Message {
     ASDU asdu =
         readSimpleField(
             "asdu",
-            new DataReaderComplexDefault<>(() -> ASDU.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ASDU.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("APDUIFormat");

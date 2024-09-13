@@ -82,7 +82,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataValueSource");
 
     // Simple Field (valueSource)
-    writeSimpleField("valueSource", valueSource, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("valueSource", valueSource, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetValueSource actualValue = getActualValue();
@@ -124,8 +124,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
     BACnetValueSource valueSource =
         readSimpleField(
             "valueSource",
-            new DataReaderComplexDefault<>(
-                () -> BACnetValueSource.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetValueSource.staticParse(readBuffer), readBuffer));
     BACnetValueSource actualValue =
         readVirtualField("actualValue", BACnetValueSource.class, valueSource);
 

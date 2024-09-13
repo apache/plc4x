@@ -68,7 +68,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("DeleteNodesItem");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -109,9 +109,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("nodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);

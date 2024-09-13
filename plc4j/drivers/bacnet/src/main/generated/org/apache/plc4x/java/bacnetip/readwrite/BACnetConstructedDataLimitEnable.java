@@ -82,7 +82,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataLimitEnable");
 
     // Simple Field (limitEnable)
-    writeSimpleField("limitEnable", limitEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("limitEnable", limitEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLimitEnableTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
     BACnetLimitEnableTagged limitEnable =
         readSimpleField(
             "limitEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLimitEnableTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -59,7 +59,7 @@ public class ZoneStatus implements Message {
         "value",
         "ZoneStatusTemp",
         value,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ZoneStatusTemp::getValue, ZoneStatusTemp::name, writeUnsignedByte(writeBuffer, 2)));
 
     writeBuffer.popContext("ZoneStatus");
@@ -82,12 +82,6 @@ public class ZoneStatus implements Message {
     return lengthInBits;
   }
 
-  public static ZoneStatus staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ZoneStatus staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ZoneStatus");
     PositionAware positionAware = readBuffer;
@@ -97,8 +91,7 @@ public class ZoneStatus implements Message {
         readEnumField(
             "value",
             "ZoneStatusTemp",
-            new DataReaderEnumDefault<>(
-                ZoneStatusTemp::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(ZoneStatusTemp::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     readBuffer.closeContext("ZoneStatus");
     // Create the instance

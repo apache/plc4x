@@ -77,7 +77,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("GetEndpointsResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfEndpoints)
     writeSimpleField("noOfEndpoints", noOfEndpoints, writeSignedInt(writeBuffer, 32));
@@ -126,7 +126,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     List<ExtensionObjectDefinition> endpoints =
         readCountArrayField(
             "endpoints",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("314")),
                 readBuffer),
             noOfEndpoints);

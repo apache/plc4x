@@ -82,7 +82,7 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataDoNotHide");
 
     // Simple Field (doNotHide)
-    writeSimpleField("doNotHide", doNotHide, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doNotHide", doNotHide, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
     BACnetApplicationTagBoolean doNotHide =
         readSimpleField(
             "doNotHide",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

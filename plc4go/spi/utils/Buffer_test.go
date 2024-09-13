@@ -20,8 +20,9 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUpcastReaderArgs(t *testing.T) {
@@ -181,7 +182,7 @@ func Test_readerWriterArg_isWriterArgs(t *testing.T) {
 				WithReaderArgs: tt.fields.readerArg,
 				WithWriterArgs: tt.fields.writerArg,
 			}
-			assert.Equalf(t, tt.want, re.isWriterArgs(), "isWriterArgs()")
+			assert.Equalf(t, tt.want, re.isWriterArgs(), "IsWriterArgs()")
 		})
 	}
 }

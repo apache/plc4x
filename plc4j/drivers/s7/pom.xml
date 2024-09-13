@@ -28,7 +28,7 @@
 
   <artifactId>plc4j-driver-s7</artifactId>
       
-  <name>PLC4J: Driver: S7 (Step7)</name>
+  <name>PLC4J: Driver: S7</name>
   <description>Implementation of a PLC4X driver for the classic Step7 S7 protocol.</description>
 
   <properties>
@@ -107,6 +107,18 @@
     </dependency>
 
     <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+      <!-- Override the "provided" scope -->
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-packetfactory-static</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
@@ -133,10 +145,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.vavr</groupId>
-      <artifactId>vavr</artifactId>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
@@ -187,6 +195,19 @@
                 </goals>
                 <configuration>
                   <protocolName>s7</protocolName>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-discovery</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>s7-discovery</protocolName>
                   <languageName>java</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>src/main/generated</outputDir>

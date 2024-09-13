@@ -66,10 +66,7 @@ public class BVLCOriginalBroadcastNPDU extends BVLC implements Message {
 
     // Simple Field (npdu)
     writeSimpleField(
-        "npdu",
-        npdu,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        "npdu", npdu, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCOriginalBroadcastNPDU");
   }
@@ -100,8 +97,7 @@ public class BVLCOriginalBroadcastNPDU extends BVLC implements Message {
     NPDU npdu =
         readSimpleField(
             "npdu",
-            new DataReaderComplexDefault<>(
-                () -> NPDU.staticParse(readBuffer, (int) (bvlcPayloadLength)), readBuffer),
+            readComplex(() -> NPDU.staticParse(readBuffer, (int) (bvlcPayloadLength)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("BVLCOriginalBroadcastNPDU");

@@ -96,22 +96,22 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
     writeBuffer.pushContext("BACnetEventParameterSignedOutOfRange");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timeDelay)
-    writeSimpleField("timeDelay", timeDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelay", timeDelay, writeComplex(writeBuffer));
 
     // Simple Field (lowLimit)
-    writeSimpleField("lowLimit", lowLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lowLimit", lowLimit, writeComplex(writeBuffer));
 
     // Simple Field (highLimit)
-    writeSimpleField("highLimit", highLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("highLimit", highLimit, writeComplex(writeBuffer));
 
     // Simple Field (deadband)
-    writeSimpleField("deadband", deadband, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deadband", deadband, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterSignedOutOfRange");
   }
@@ -157,13 +157,12 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (15)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (15)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -175,7 +174,7 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
     BACnetContextTagSignedInteger lowLimit =
         readSimpleField(
             "lowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(
@@ -187,7 +186,7 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
     BACnetContextTagSignedInteger highLimit =
         readSimpleField(
             "highLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(
@@ -199,7 +198,7 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
     BACnetContextTagUnsignedInteger deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -211,8 +210,7 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (15)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (15)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterSignedOutOfRange");
     // Create the instance

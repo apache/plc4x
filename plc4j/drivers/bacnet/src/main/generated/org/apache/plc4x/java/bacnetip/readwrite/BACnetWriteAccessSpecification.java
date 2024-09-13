@@ -77,18 +77,17 @@ public class BACnetWriteAccessSpecification implements Message {
     writeBuffer.pushContext("BACnetWriteAccessSpecification");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfPropertyWriteDefinition)
     writeComplexTypeArrayField(
         "listOfPropertyWriteDefinition", listOfPropertyWriteDefinition, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetWriteAccessSpecification");
   }
@@ -123,12 +122,6 @@ public class BACnetWriteAccessSpecification implements Message {
     return lengthInBits;
   }
 
-  public static BACnetWriteAccessSpecification staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetWriteAccessSpecification staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetWriteAccessSpecification");
@@ -138,7 +131,7 @@ public class BACnetWriteAccessSpecification implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -150,13 +143,12 @@ public class BACnetWriteAccessSpecification implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer));
 
     List<BACnetPropertyWriteDefinition> listOfPropertyWriteDefinition =
         readTerminatedArrayField(
             "listOfPropertyWriteDefinition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyWriteDefinition.staticParse(
                         readBuffer, (BACnetObjectType) (objectIdentifier.getObjectType())),
@@ -169,8 +161,7 @@ public class BACnetWriteAccessSpecification implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (1)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetWriteAccessSpecification");
     // Create the instance

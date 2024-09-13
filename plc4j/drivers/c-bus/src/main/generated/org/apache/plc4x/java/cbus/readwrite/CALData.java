@@ -86,7 +86,7 @@ public abstract class CALData implements Message {
         "commandTypeContainer",
         "CALCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CALCommandTypeContainer::getValue,
             CALCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -103,8 +103,7 @@ public abstract class CALData implements Message {
     serializeCALDataChild(writeBuffer);
 
     // Optional Field (additionalData) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "additionalData", additionalData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("additionalData", additionalData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALData");
   }
@@ -137,23 +136,6 @@ public abstract class CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALData staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    RequestContext requestContext;
-    if (args[0] instanceof RequestContext) {
-      requestContext = (RequestContext) args[0];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type RequestContext or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, requestContext);
-  }
-
   public static CALData staticParse(ReadBuffer readBuffer, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALData");
@@ -169,8 +151,7 @@ public abstract class CALData implements Message {
         readEnumField(
             "commandTypeContainer",
             "CALCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                CALCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(CALCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     CALCommandType commandType =
         readVirtualField(
             "commandType", CALCommandType.class, commandTypeContainer.getCommandType());
@@ -226,7 +207,7 @@ public abstract class CALData implements Message {
     CALData additionalData =
         readOptionalField(
             "additionalData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CALData.staticParse(readBuffer, (RequestContext) (null)), readBuffer));
 
     readBuffer.closeContext("CALData");

@@ -155,7 +155,7 @@ When using Maven, all you need to do is add this dependency:
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>{project-version}</version>
+      <version>{current-last-released-version}</version>
     </dependency>
 ----
 
@@ -169,7 +169,7 @@ For example in order to communicate using the `Modbus` protocol, you would need 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>{project-version}</version>
+      <version>{current-last-released-version}</version>
       <scope>runtime</scope>
     </dependency>
 ----
@@ -226,10 +226,10 @@ This is done by getting a `PlcRequestBuilder`:
 // Create a new read request:
 // - Give the single item requested the alias name "value"
 PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-builder.addItem("value-1", "coil:1");
-builder.addItem("value-2", "coil:3[4]");
-builder.addItem("value-3", "holding-register:1");
-builder.addItem("value-4", "holding-register:3[4]");
+builder.addTagAddress("value-1", "coil:1");
+builder.addTagAddress("value-2", "coil:3[4]");
+builder.addTagAddress("value-3", "holding-register:1");
+builder.addTagAddress("value-4", "holding-register:3[4]");
 PlcReadRequest readRequest = builder.build();
 ----
 
@@ -260,31 +260,6 @@ PlcReadResponse response = readRequest.execute().get();
 Processing of the responses is identical in both cases.
 The following example will demonstrate some of the options you have:
 
-.Up to version 0.10.0
-----
-for (String fieldName : response.getFieldNames()) {
-    if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-        int numValues = response.getNumberOfValues(fieldName);
-        // If it's just one element, output just one single line.
-        if(numValues == 1) {
-            logger.info("Value[" + fieldName + "]: " + response.getObject(fieldName));
-        }
-        // If it's more than one element, output each in a single row.
-        else {
-            logger.info("Value[" + fieldName + "]:");
-            for(int i = 0; i < numValues; i++) {
-                logger.info(" - " + response.getObject(fieldName, i));
-            }
-        }
-    }
-    // Something went wrong, to output an error message instead.
-    else {
-        logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
-    }
-}
-----
-
-.SNAPSHOT version
 ----
 for (String tagName : response.getTagNames()) {
     if(response.getResponseCode(tagName) == PlcResponseCode.OK) {
@@ -361,10 +336,10 @@ This is done by getting a `PlcRequestBuilder`:
 // Create a new read request:
 // - Give the single item requested the alias name "value"
 PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-builder.addItem("value-1", "coil:1", true);
-builder.addItem("value-2", "coil:3[4]", true, false, true, true);
-builder.addItem("value-3", "holding-register:1", 42);
-builder.addItem("value-4", "holding-register:3[4]", 1, 2, 3, 4);
+builder.addTagAddress("value-1", "coil:1", new PlcBOOL(true);
+builder.addTagAddress("value-2", "coil:3[4]", new PlcBOOL(true), new PlcBOOL(false), new PlcBOOL(true), new PlcBOOL(true));
+builder.addTagAddress("value-3", "holding-register:1", new PlcINT(42);
+builder.addTagAddress("value-4", "holding-register:3[4]", new PlcINT(1), new PlcINT(2), new PlcINT(3), new PlcINT(4));
 PlcWriteRequest writeRequest = builder.build();
 ----
 

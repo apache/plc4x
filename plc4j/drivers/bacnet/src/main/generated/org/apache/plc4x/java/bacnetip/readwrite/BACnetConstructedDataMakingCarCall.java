@@ -99,7 +99,7 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (makingCarCall)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
     List<BACnetApplicationTagUnsignedInteger> makingCarCall =
         readTerminatedArrayField(
             "makingCarCall",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -84,7 +84,7 @@ public class ModifySubscriptionResponse extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("ModifySubscriptionResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (revisedPublishingInterval)
     writeSimpleField(
@@ -136,7 +136,7 @@ public class ModifySubscriptionResponse extends ExtensionObjectDefinition implem
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 

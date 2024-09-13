@@ -20,11 +20,13 @@ package cbus
 
 import (
 	"fmt"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/stretchr/testify/assert"
 	"regexp"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 )
 
 func TestNewTagHandler(t *testing.T) {

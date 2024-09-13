@@ -22,9 +22,9 @@ services:
   releaser:
     build:
       context: ..
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     # Builds all modules and uses an alternate maven local repo and deploys artifacts to a local directory.
-    command: ["/ws/mvnw", "-e", "-Dskip-pgp-signing=true", "-P", "with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks,apache-release", "-Dmaven.repo.local=/ws/out/.repository", "-DaltDeploymentRepository=snapshot-repo::default::file:/ws/out/.local-snapshots-dir", "clean", "deploy"]
+    command: ["/ws/mvnw", "-e", "-Dskip-pgp-signing=true", "-P", "with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,apache-release", "-Dmaven.repo.local=/ws/out/.repository", "-DaltDeploymentRepository=snapshot-repo::default::file:/ws/out/.local-snapshots-dir", "clean", "deploy"]
     volumes:
       # Bind the local directory as "/ws"
       - type: bind

@@ -23,12 +23,14 @@ import (
 	"container/list"
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 )
 
 func TestNewRequestTransactionManager(t *testing.T) {

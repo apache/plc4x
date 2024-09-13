@@ -45,6 +45,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
+import org.apache.plc4x.test.DisableOnJenkinsFlag;
 import org.assertj.core.api.Condition;
 import org.assertj.core.api.SoftAssertions;
 import org.eclipse.milo.examples.server.TestMiloServer;
@@ -61,14 +62,31 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
+import org.testcontainers.containers.BindMode;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.jib.JibImage;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+@Testcontainers(disabledWithoutDocker = true)
+@DisableOnJenkinsFlag
 public class OpcuaPlcDriverTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
+
+    @Container
+    public static final GenericContainer milo = new MiloTestContainer()
+        //.withCreateContainerCmdModifier(cmd -> cmd.withHostName("test-opcua-server"))
+        .withReuse(true)
+        .withLogConsumer(new Slf4jLogConsumer(LOGGER))
+        .withFileSystemBind("target/tmp/server/security", "/tmp/server/security", BindMode.READ_WRITE);
 
     // Read only variables of milo example server of version 3.6
     private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Boolean";
@@ -120,50 +138,55 @@ public class OpcuaPlcDriverTest {
     //Restricted
     public static final String STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE = "ns=2;s=HelloWorld/OnlyAdminCanRead/String";
 
-    // Address of local milo server
-    private final String miloLocalAddress = "127.0.0.1:12686/milo";
+    // Address of local milo server, since it comes from test container its hostname and port is not static
+    private final String miloLocalAddress = "%s:%d/milo";
     //Tcp pattern of OPC UA
     private final String opcPattern = "opcua:tcp://";
 
     private final String paramSectionDivider = "?";
     private final String paramDivider = "&";
 
-    private final String tcpConnectionAddress = opcPattern + miloLocalAddress;
-
-    private final List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
-    private final List<String> connectionStringCorruptedSet = List.of();
-
     private final String discoveryValidParamTrue = "discovery=true";
     private final String discoveryValidParamFalse = "discovery=false";
     private final String discoveryCorruptedParamWrongValueNum = "discovery=1";
     private final String discoveryCorruptedParamWrongName = "diskovery=false";
+
+    private String tcpConnectionAddress;
+    private List<String> connectionStringValidSet;
 
     final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
     List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWrongName);
 
     private static TestMiloServer exampleServer;
 
+    @BeforeEach
+    public void startUp() {
+        //System.out.println(milo.getMappedPort(12686));
+        tcpConnectionAddress = String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686));
+        connectionStringValidSet = List.of(tcpConnectionAddress);
+    }
+
     @BeforeAll
     public static void setup() throws Exception {
         // When switching JDK versions from a newer to an older version,
         // this can cause the server to not start correctly.
         // Deleting the directory makes sure the key-store is initialized correctly.
-        Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
-        try {
-            Files.delete(securityBaseDir);
-        } catch (Exception e) {
-            // Ignore this ...
-        }
-
-        exampleServer = new TestMiloServer();
-        exampleServer.startup().get();
+//        Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
+//        try {
+//            Files.delete(securityBaseDir);
+//        } catch (Exception e) {
+//            // Ignore this ...
+//        }
+//
+//        exampleServer = new TestMiloServer();
+//        exampleServer.startup().get();
     }
 
     @AfterAll
     public static void tearDown() throws Exception {
-        if (exampleServer != null) {
-            exampleServer.shutdown().get();
-        }
+//        if (exampleServer != null) {
+//            exampleServer.shutdown().get();
+//        }
     }
 
     @Nested
@@ -397,7 +420,7 @@ public class OpcuaPlcDriverTest {
 
             PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
             tags.forEach((tagName, tagEntry) -> {
-                System.out.println("Write tag " + tagName);
+                System.out.println("Write tag " + tagName + " " + tagEntry);
                 try {
                     Object value = tagEntry.getValue();
                     if (value.getClass().isArray()) {
@@ -523,7 +546,8 @@ public class OpcuaPlcDriverTest {
             case Basic256Sha256:
             case Aes128_Sha256_RsaOaep:
             case Aes256_Sha256_RsaPss:
-                Path keyStoreFile = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security", "example-server.pfx");
+                // this file and its contents should be populated by milo container
+                Path keyStoreFile = Paths.get("target/tmp/server/security/example-server.pfx");
                 String connectionParams = Stream.of(
                         entry("key-store-file", keyStoreFile.toAbsolutePath().toString().replace("\\", "/")), // handle windows paths
                         entry("key-store-password", "password"),

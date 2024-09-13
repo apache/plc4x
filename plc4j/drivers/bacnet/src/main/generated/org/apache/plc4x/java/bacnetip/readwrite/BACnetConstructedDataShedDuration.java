@@ -82,7 +82,7 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataShedDuration");
 
     // Simple Field (shedDuration)
-    writeSimpleField("shedDuration", shedDuration, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("shedDuration", shedDuration, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
     BACnetApplicationTagUnsignedInteger shedDuration =
         readSimpleField(
             "shedDuration",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -71,11 +71,11 @@ public class StaticHelper {
     public static void serializeString(WriteBuffer io, String data) {
     }
 
-    public static short readManualField(ReadBuffer io, short simpleField) {
+    public static short readAManualField(ReadBuffer io, short simpleField) {
         return 0;
     }
 
-    public static void writeManualField(WriteBuffer io, short simpleFlied) {
+    public static void writeAManualField(WriteBuffer io, short simpleFlied) {
 
     }
 

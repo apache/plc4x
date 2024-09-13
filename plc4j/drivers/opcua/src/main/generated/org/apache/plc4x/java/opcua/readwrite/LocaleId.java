@@ -63,11 +63,6 @@ public class LocaleId implements Message {
     return lengthInBits;
   }
 
-  public static LocaleId staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LocaleId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LocaleId");
     PositionAware positionAware = readBuffer;

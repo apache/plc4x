@@ -62,10 +62,10 @@ public class BACnetBDTEntry implements Message {
     writeBuffer.pushContext("BACnetBDTEntry");
 
     // Simple Field (bbmdAddress)
-    writeSimpleField("bbmdAddress", bbmdAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bbmdAddress", bbmdAddress, writeComplex(writeBuffer));
 
     // Optional Field (broadcastMask) (Can be skipped, if the value is null)
-    writeOptionalField("broadcastMask", broadcastMask, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("broadcastMask", broadcastMask, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetBDTEntry");
   }
@@ -92,12 +92,6 @@ public class BACnetBDTEntry implements Message {
     return lengthInBits;
   }
 
-  public static BACnetBDTEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetBDTEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetBDTEntry");
     PositionAware positionAware = readBuffer;
@@ -106,13 +100,13 @@ public class BACnetBDTEntry implements Message {
     BACnetHostNPortEnclosed bbmdAddress =
         readSimpleField(
             "bbmdAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetHostNPortEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagOctetString broadcastMask =
         readOptionalField(
             "broadcastMask",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(

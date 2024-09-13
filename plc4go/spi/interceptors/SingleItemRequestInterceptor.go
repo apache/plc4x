@@ -22,14 +22,14 @@ package interceptors
 import (
 	"context"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 type ReaderExposer interface {
@@ -98,7 +98,7 @@ func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writ
 // Internal section
 //
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=interceptedPlcReadRequestResult
+//go:generate plc4xGenerator -type=interceptedPlcReadRequestResult
 type interceptedPlcReadRequestResult struct {
 	Request  apiModel.PlcReadRequest
 	Response apiModel.PlcReadResponse
@@ -117,7 +117,7 @@ func (d *interceptedPlcReadRequestResult) GetErr() error {
 	return d.Err
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=interceptedPlcWriteRequestResult
+//go:generate plc4xGenerator -type=interceptedPlcWriteRequestResult
 type interceptedPlcWriteRequestResult struct {
 	Request  apiModel.PlcWriteRequest
 	Response apiModel.PlcWriteResponse

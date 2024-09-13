@@ -84,25 +84,23 @@ public class EndpointType extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("EndpointType");
 
     // Simple Field (endpointUrl)
-    writeSimpleField("endpointUrl", endpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (securityMode)
     writeSimpleEnumField(
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (transportProfileUri)
-    writeSimpleField(
-        "transportProfileUri", transportProfileUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportProfileUri", transportProfileUri, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EndpointType");
   }
@@ -141,25 +139,23 @@ public class EndpointType extends ExtensionObjectDefinition implements Message {
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     MessageSecurityMode securityMode =
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString transportProfileUri =
         readSimpleField(
             "transportProfileUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("EndpointType");
     // Create the instance

@@ -87,25 +87,6 @@ public class UserData implements Message {
     return lengthInBits;
   }
 
-  public static UserData staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Long recordDataLength;
-    if (args[0] instanceof Long) {
-      recordDataLength = (Long) args[0];
-    } else if (args[0] instanceof String) {
-      recordDataLength = Long.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Long or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, recordDataLength);
-  }
-
   public static UserData staticParse(ReadBuffer readBuffer, Long recordDataLength)
       throws ParseException {
     readBuffer.pullContext("UserData");

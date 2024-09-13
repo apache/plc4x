@@ -23,9 +23,9 @@ import (
 	"fmt"
 	"testing"
 
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-
 	"github.com/stretchr/testify/assert"
+
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 func TestPlcValueUint8ListToByteArray(t *testing.T) {

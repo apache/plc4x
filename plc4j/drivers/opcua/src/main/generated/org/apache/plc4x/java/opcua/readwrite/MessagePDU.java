@@ -70,8 +70,7 @@ public abstract class MessagePDU implements Message {
         "chunk",
         "ChunkType",
         chunk,
-        new DataWriterEnumDefault<>(
-            ChunkType::getValue, ChunkType::name, writeString(writeBuffer, 8)));
+        writeEnum(ChunkType::getValue, ChunkType::name, writeString(writeBuffer, 8)));
 
     // Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
@@ -109,26 +108,6 @@ public abstract class MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static MessagePDU staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Boolean response;
-    if (args[0] instanceof Boolean) {
-      response = (Boolean) args[0];
-    } else if (args[0] instanceof String) {
-      response = Boolean.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Boolean or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, response);
-  }
-
   public static MessagePDU staticParse(ReadBuffer readBuffer, Boolean response)
       throws ParseException {
     readBuffer.pullContext("MessagePDU");
@@ -139,9 +118,7 @@ public abstract class MessagePDU implements Message {
 
     ChunkType chunk =
         readEnumField(
-            "chunk",
-            "ChunkType",
-            new DataReaderEnumDefault<>(ChunkType::enumForValue, readString(readBuffer, 8)));
+            "chunk", "ChunkType", readEnum(ChunkType::enumForValue, readString(readBuffer, 8)));
 
     long totalLength = readImplicitField("totalLength", readUnsignedLong(readBuffer, 32));
 

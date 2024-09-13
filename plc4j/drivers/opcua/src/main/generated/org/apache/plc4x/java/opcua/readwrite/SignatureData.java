@@ -68,10 +68,10 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("SignatureData");
 
     // Simple Field (algorithm)
-    writeSimpleField("algorithm", algorithm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("algorithm", algorithm, writeComplex(writeBuffer));
 
     // Simple Field (signature)
-    writeSimpleField("signature", signature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("signature", signature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SignatureData");
   }
@@ -104,14 +104,11 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
 
     PascalString algorithm =
         readSimpleField(
-            "algorithm",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "algorithm", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString signature =
         readSimpleField(
-            "signature",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "signature", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SignatureData");
     // Create the instance

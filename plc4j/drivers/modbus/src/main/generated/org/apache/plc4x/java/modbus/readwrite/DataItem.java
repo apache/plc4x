@@ -45,14 +45,26 @@ public class DataItem {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataItem.class);
 
   public static PlcValue staticParse(
-      ReadBuffer readBuffer, ModbusDataType dataType, Integer numberOfValues)
+      ReadBuffer readBuffer, ModbusDataType dataType, Integer numberOfValues, Boolean bigEndian)
       throws ParseException {
     if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BOOL
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // BOOL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 15), (short) 0x0000);
 
       boolean value = readSimpleField("value", readBoolean(readBuffer));
+      return new PlcBOOL(value);
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // BOOL
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
+
+      boolean value = readSimpleField("value", readBoolean(readBuffer));
+
+      Short reservedField1 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
       return new PlcBOOL(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) { // List
       List<Boolean> _value = readCountArrayField("value", readBoolean(readBuffer), numberOfValues);
@@ -62,11 +74,20 @@ public class DataItem {
       }
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BYTE
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // BYTE
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
       short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+      return new PlcBYTE(value);
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // BYTE
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
       return new PlcBYTE(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) { // List
       List<Boolean> _value =
@@ -86,11 +107,20 @@ public class DataItem {
       BigInteger value = readSimpleField("value", readUnsignedBigInteger(readBuffer, 64));
       return new PlcLWORD(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // SINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // SINT
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
       byte value = readSimpleField("value", readSignedByte(readBuffer, 8));
+      return new PlcSINT(value);
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // SINT
+      byte value = readSimpleField("value", readSignedByte(readBuffer, 8));
+
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
       return new PlcSINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) { // List
       List<Byte> _value =
@@ -137,11 +167,20 @@ public class DataItem {
       }
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // USINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // USINT
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
       short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+      return new PlcUSINT(value);
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // USINT
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) { // List
       List<Short> _value =
@@ -246,31 +285,53 @@ public class DataItem {
   }
 
   public static int getLengthInBytes(
-      PlcValue _value, ModbusDataType dataType, Integer numberOfValues) {
-    return (int) Math.ceil((float) getLengthInBits(_value, dataType, numberOfValues) / 8.0);
+      PlcValue _value, ModbusDataType dataType, Integer numberOfValues, Boolean bigEndian) {
+    return (int)
+        Math.ceil((float) getLengthInBits(_value, dataType, numberOfValues, bigEndian) / 8.0);
   }
 
   public static int getLengthInBits(
-      PlcValue _value, ModbusDataType dataType, Integer numberOfValues) {
+      PlcValue _value, ModbusDataType dataType, Integer numberOfValues, Boolean bigEndian) {
     int lengthInBits = 0;
     if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BOOL
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // BOOL
       // Reserved Field (reserved)
       lengthInBits += 15;
 
       // Simple field (value)
       lengthInBits += 1;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // BOOL
+      // Reserved Field (reserved)
+      lengthInBits += 7;
+
+      // Simple field (value)
+      lengthInBits += 1;
+
+      // Reserved Field (reserved)
+      lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) { // List
       // Array field
       if (_value != null) {
         lengthInBits += 1 * _value.getList().size();
       }
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BYTE
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // BYTE
       // Reserved Field (reserved)
       lengthInBits += 8;
 
       // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // BYTE
+      // Simple field (value)
+      lengthInBits += 8;
+
+      // Reserved Field (reserved)
       lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) { // List
       // Array field
@@ -287,11 +348,20 @@ public class DataItem {
       // Simple field (value)
       lengthInBits += 64;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // SINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // SINT
       // Reserved Field (reserved)
       lengthInBits += 8;
 
       // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // SINT
+      // Simple field (value)
+      lengthInBits += 8;
+
+      // Reserved Field (reserved)
       lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) { // List
       // Array field
@@ -326,11 +396,20 @@ public class DataItem {
         lengthInBits += 64 * _value.getList().size();
       }
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // USINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // USINT
       // Reserved Field (reserved)
       lengthInBits += 8;
 
       // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // USINT
+      // Simple field (value)
+      lengthInBits += 8;
+
+      // Reserved Field (reserved)
       lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) { // List
       // Array field
@@ -406,9 +485,13 @@ public class DataItem {
   }
 
   public static void staticSerialize(
-      WriteBuffer writeBuffer, PlcValue _value, ModbusDataType dataType, Integer numberOfValues)
+      WriteBuffer writeBuffer,
+      PlcValue _value,
+      ModbusDataType dataType,
+      Integer numberOfValues,
+      Boolean bigEndian)
       throws SerializationException {
-    staticSerialize(writeBuffer, _value, dataType, numberOfValues, ByteOrder.BIG_ENDIAN);
+    staticSerialize(writeBuffer, _value, dataType, numberOfValues, bigEndian, ByteOrder.BIG_ENDIAN);
   }
 
   public static void staticSerialize(
@@ -416,15 +499,28 @@ public class DataItem {
       PlcValue _value,
       ModbusDataType dataType,
       Integer numberOfValues,
+      Boolean bigEndian,
       ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BOOL
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // BOOL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x0000, writeUnsignedShort(writeBuffer, 15));
 
       // Simple Field (value)
       writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // BOOL
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
+
+      // Simple Field (value)
+      writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
+
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) { // List
       // Array Field (value)
       writeSimpleTypeArrayField(
@@ -432,12 +528,21 @@ public class DataItem {
           _value.getList().stream().map(PlcValue::getBoolean).collect(Collectors.toList()),
           writeBoolean(writeBuffer));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BYTE
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // BYTE
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
       writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // BYTE
+      // Simple Field (value)
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) { // List
       // Array Field (value)
       writeSimpleTypeArrayField(
@@ -455,12 +560,21 @@ public class DataItem {
       writeSimpleField(
           "value", (BigInteger) _value.getBigInteger(), writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // SINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // SINT
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
       writeSimpleField("value", (byte) _value.getByte(), writeSignedByte(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // SINT
+      // Simple Field (value)
+      writeSimpleField("value", (byte) _value.getByte(), writeSignedByte(writeBuffer, 8));
+
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) { // List
       // Array Field (value)
       writeSimpleTypeArrayField(
@@ -498,12 +612,21 @@ public class DataItem {
           _value.getList().stream().map(PlcValue::getLong).collect(Collectors.toList()),
           writeSignedLong(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
-        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // USINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) true)) { // USINT
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
       writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)
+        && EvaluationHelper.equals(bigEndian, (boolean) false)) { // USINT
+      // Simple Field (value)
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) { // List
       // Array Field (value)
       writeSimpleTypeArrayField(

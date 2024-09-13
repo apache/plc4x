@@ -147,7 +147,6 @@ public class Conversation {
             this.remoteCertificate = configuration.getServerCertificate();
             this.encryptionHandler = new EncryptionHandler(this, senderKeyPair.getPrivateKey());
             this.localCertificate = senderKeyPair.getCertificate();
-            this.localNonce = createNonce();
         } else {
             this.messageSecurity = MessageSecurity.NONE;
             this.encryptionHandler = new EncryptionHandler(this, null);
@@ -383,8 +382,12 @@ public class Conversation {
         return FINAL.equals(chunkType);
     }
 
+    public void setLocalNonce(byte[] localNonce) {
+        this.localNonce = localNonce;
+    }
+
     // generate nonce used for setting up signing/encryption keys
-    private byte[] createNonce() {
+    byte[] createNonce() {
         return createNonce(securityPolicy.getNonceLength());
     }
 
@@ -494,4 +497,13 @@ public class Conversation {
     public void setAuthenticationToken(NodeIdTypeDefinition authenticationToken) {
         this.authenticationToken.set(authenticationToken);
     }
+
+    public int getSecurityChannelId() {
+        return Long.valueOf(securityHeader.get().getSecureChannelId()).intValue();
+    }
+
+    public int getRequestId() {
+        return tm.getRequestHandle();
+    }
+
 }

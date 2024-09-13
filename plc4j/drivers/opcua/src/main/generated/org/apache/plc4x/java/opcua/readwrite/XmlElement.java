@@ -91,12 +91,6 @@ public class XmlElement implements Message {
     return lengthInBits;
   }
 
-  public static XmlElement staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static XmlElement staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("XmlElement");
     PositionAware positionAware = readBuffer;

@@ -122,7 +122,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     writeBuffer.pushContext("ErrorReportingDataGeneric");
 
     // Simple Field (systemCategory)
-    writeSimpleField("systemCategory", systemCategory, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("systemCategory", systemCategory, writeComplex(writeBuffer));
 
     // Simple Field (mostRecent)
     writeSimpleField("mostRecent", mostRecent, writeBoolean(writeBuffer));
@@ -150,7 +150,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
         "severity",
         "ErrorReportingSeverity",
         severity,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSeverity::getValue,
             ErrorReportingSeverity::name,
             writeUnsignedByte(writeBuffer, 3)));
@@ -220,8 +220,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     ErrorReportingSystemCategory systemCategory =
         readSimpleField(
             "systemCategory",
-            new DataReaderComplexDefault<>(
-                () -> ErrorReportingSystemCategory.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ErrorReportingSystemCategory.staticParse(readBuffer), readBuffer));
 
     boolean mostRecent = readSimpleField("mostRecent", readBoolean(readBuffer));
 
@@ -242,8 +241,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
         readEnumField(
             "severity",
             "ErrorReportingSeverity",
-            new DataReaderEnumDefault<>(
-                ErrorReportingSeverity::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(ErrorReportingSeverity::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     short deviceId = readSimpleField("deviceId", readUnsignedShort(readBuffer, 8));
 

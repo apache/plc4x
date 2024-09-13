@@ -69,7 +69,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned");
 
     // Simple Field (unsignedValue)
-    writeSimpleField("unsignedValue", unsignedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned");
   }
@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

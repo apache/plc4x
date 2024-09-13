@@ -75,7 +75,7 @@ public class NodeIdByteString extends NodeIdTypeDefinition implements Message {
     writeSimpleField("namespaceIndex", namespaceIndex, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (id)
-    writeSimpleField("id", id, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("id", id, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String identifier = getIdentifier();
@@ -116,9 +116,7 @@ public class NodeIdByteString extends NodeIdTypeDefinition implements Message {
 
     PascalByteString id =
         readSimpleField(
-            "id",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "id", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
     String identifier = readVirtualField("identifier", String.class, id.getStringValue());
 
     readBuffer.closeContext("NodeIdByteString");

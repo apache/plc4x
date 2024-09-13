@@ -24,10 +24,6 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/options/converter"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"runtime/debug"
 	"strconv"
@@ -35,15 +31,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
+	"github.com/subchen/go-xmldom"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/subchen/go-xmldom"
 )
 
 var DriverTestsuiteConnectTimeout = 30 * time.Second
@@ -498,7 +498,7 @@ type DriverTestStep struct {
 type StepType uint8
 
 //go:generate stringer -type StepType
-//go:generate go run ../../tools/plc4xlicenser/gen.go -type=StepType
+//go:generate plc4xLicencer -type=StepType
 const (
 	StepTypeOutgoingPlcMessage StepType = 0x01
 	StepTypeOutgoingPlcBytes   StepType = 0x02

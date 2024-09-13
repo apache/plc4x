@@ -22,13 +22,12 @@ package s7
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strings"
 	"sync"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -36,8 +35,10 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type TpduGenerator struct {
@@ -192,19 +193,19 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		s7ConnectionResult := make(chan readWriteModel.S7ParameterSetupCommunication, 1)
 		s7ConnectionErrorChan := make(chan error, 1)
 		if err := c.messageCodec.SendRequest(ctx, c.createS7ConnectionRequest(cotpPacketConnectionResponse), func(message spi.Message) bool {
-			tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+			tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 			if !ok {
 				return false
 			}
-			cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+			cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 			if !ok {
 				return false
 			}
-			messageResponseData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseDataExactly)
+			messageResponseData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseData)
 			if !ok {
 				return false
 			}
-			_, ok = messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunicationExactly)
+			_, ok = messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunication)
 			return ok
 		}, func(message spi.Message) error {
 			tpktPacket := message.(readWriteModel.TPKTPacket)
@@ -253,19 +254,19 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData, 1)
 			s7IdentificationErrorChan := make(chan error, 1)
 			if err := c.messageCodec.SendRequest(ctx, c.createIdentifyRemoteMessage(), func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
 				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 				if !ok {
 					return false
 				}
-				messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserDataExactly)
+				messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
 				if !ok {
 					return false
 				}
-				_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserDataExactly)
+				_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
 				return ok
 			}, func(message spi.Message) error {
 				tpktPacket := message.(readWriteModel.TPKTPacket)

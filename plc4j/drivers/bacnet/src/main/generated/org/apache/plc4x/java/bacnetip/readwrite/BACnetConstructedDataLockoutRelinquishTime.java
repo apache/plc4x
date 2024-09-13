@@ -83,10 +83,7 @@ public class BACnetConstructedDataLockoutRelinquishTime extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataLockoutRelinquishTime");
 
     // Simple Field (lockoutRelinquishTime)
-    writeSimpleField(
-        "lockoutRelinquishTime",
-        lockoutRelinquishTime,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lockoutRelinquishTime", lockoutRelinquishTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataLockoutRelinquishTime extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger lockoutRelinquishTime =
         readSimpleField(
             "lockoutRelinquishTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

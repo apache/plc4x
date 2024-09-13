@@ -71,17 +71,11 @@ public class InformationObjectWithoutTime_SET_POINT_COMMAND_NORMALISED_VALUE
 
     // Simple Field (nva)
     writeSimpleField(
-        "nva",
-        nva,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nva", nva, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qos)
     writeSimpleField(
-        "qos",
-        qos,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qos", qos, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_SET_POINT_COMMAND_NORMALISED_VALUE");
   }
@@ -116,15 +110,13 @@ public class InformationObjectWithoutTime_SET_POINT_COMMAND_NORMALISED_VALUE
     NormalizedValue nva =
         readSimpleField(
             "nva",
-            new DataReaderComplexDefault<>(
-                () -> NormalizedValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NormalizedValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualifierOfSetPointCommand qos =
         readSimpleField(
             "qos",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_SET_POINT_COMMAND_NORMALISED_VALUE");

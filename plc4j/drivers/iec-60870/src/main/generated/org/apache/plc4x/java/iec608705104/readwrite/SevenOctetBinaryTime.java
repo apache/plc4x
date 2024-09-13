@@ -265,12 +265,6 @@ public class SevenOctetBinaryTime implements Message {
     return lengthInBits;
   }
 
-  public static SevenOctetBinaryTime staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SevenOctetBinaryTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SevenOctetBinaryTime");
     PositionAware positionAware = readBuffer;

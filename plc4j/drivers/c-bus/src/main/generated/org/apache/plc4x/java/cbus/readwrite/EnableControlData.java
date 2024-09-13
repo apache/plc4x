@@ -78,7 +78,7 @@ public class EnableControlData implements Message {
         "commandTypeContainer",
         "EnableControlCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             EnableControlCommandTypeContainer::getValue,
             EnableControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -121,12 +121,6 @@ public class EnableControlData implements Message {
     return lengthInBits;
   }
 
-  public static EnableControlData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static EnableControlData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("EnableControlData");
     PositionAware positionAware = readBuffer;
@@ -141,7 +135,7 @@ public class EnableControlData implements Message {
         readEnumField(
             "commandTypeContainer",
             "EnableControlCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 EnableControlCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     EnableControlCommandType commandType =
         readVirtualField(

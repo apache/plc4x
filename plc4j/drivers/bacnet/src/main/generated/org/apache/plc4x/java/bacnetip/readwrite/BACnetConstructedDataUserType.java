@@ -82,7 +82,7 @@ public class BACnetConstructedDataUserType extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataUserType");
 
     // Simple Field (userType)
-    writeSimpleField("userType", userType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userType", userType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccessUserTypeTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataUserType extends BACnetConstructedData impleme
     BACnetAccessUserTypeTagged userType =
         readSimpleField(
             "userType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessUserTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

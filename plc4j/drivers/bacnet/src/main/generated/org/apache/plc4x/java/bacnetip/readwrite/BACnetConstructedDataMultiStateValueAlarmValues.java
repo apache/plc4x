@@ -119,7 +119,7 @@ public class BACnetConstructedDataMultiStateValueAlarmValues extends BACnetConst
     List<BACnetApplicationTagUnsignedInteger> alarmValues =
         readTerminatedArrayField(
             "alarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

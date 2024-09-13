@@ -163,12 +163,6 @@ public class BACnetTagPayloadTime implements Message {
     return lengthInBits;
   }
 
-  public static BACnetTagPayloadTime staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetTagPayloadTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetTagPayloadTime");
     PositionAware positionAware = readBuffer;

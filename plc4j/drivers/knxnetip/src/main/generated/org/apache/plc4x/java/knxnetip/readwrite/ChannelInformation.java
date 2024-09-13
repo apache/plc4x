@@ -89,12 +89,6 @@ public class ChannelInformation implements Message {
     return lengthInBits;
   }
 
-  public static ChannelInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ChannelInformation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ChannelInformation");
     PositionAware positionAware = readBuffer;

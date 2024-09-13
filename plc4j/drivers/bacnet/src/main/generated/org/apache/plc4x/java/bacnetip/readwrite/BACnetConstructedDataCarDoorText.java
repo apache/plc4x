@@ -99,7 +99,7 @@ public class BACnetConstructedDataCarDoorText extends BACnetConstructedData impl
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (carDoorText)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataCarDoorText extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataCarDoorText extends BACnetConstructedData impl
     List<BACnetApplicationTagCharacterString> carDoorText =
         readTerminatedArrayField(
             "carDoorText",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

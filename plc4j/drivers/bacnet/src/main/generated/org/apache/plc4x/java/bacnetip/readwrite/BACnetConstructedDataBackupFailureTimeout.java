@@ -83,8 +83,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataBackupFailureTimeout");
 
     // Simple Field (backupFailureTimeout)
-    writeSimpleField(
-        "backupFailureTimeout", backupFailureTimeout, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("backupFailureTimeout", backupFailureTimeout, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
     BACnetApplicationTagUnsignedInteger backupFailureTimeout =
         readSimpleField(
             "backupFailureTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

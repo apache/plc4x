@@ -101,13 +101,13 @@ public class TlvManagementAddress extends LldpUnit implements Message {
         "addressSubType",
         "ManagementAddressSubType",
         addressSubType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ManagementAddressSubType::getValue,
             ManagementAddressSubType::name,
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (ipAddress)
-    writeSimpleField("ipAddress", ipAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipAddress", ipAddress, writeComplex(writeBuffer));
 
     // Simple Field (interfaceSubType)
     writeSimpleField("interfaceSubType", interfaceSubType, writeUnsignedShort(writeBuffer, 8));
@@ -166,13 +166,11 @@ public class TlvManagementAddress extends LldpUnit implements Message {
         readEnumField(
             "addressSubType",
             "ManagementAddressSubType",
-            new DataReaderEnumDefault<>(
-                ManagementAddressSubType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ManagementAddressSubType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     IpAddress ipAddress =
         readSimpleField(
-            "ipAddress",
-            new DataReaderComplexDefault<>(() -> IpAddress.staticParse(readBuffer), readBuffer));
+            "ipAddress", readComplex(() -> IpAddress.staticParse(readBuffer), readBuffer));
 
     short interfaceSubType = readSimpleField("interfaceSubType", readUnsignedShort(readBuffer, 8));
 

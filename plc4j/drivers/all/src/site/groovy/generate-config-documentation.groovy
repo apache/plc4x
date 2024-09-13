@@ -24,7 +24,12 @@ import org.apache.plc4x.java.api.metadata.Option
 def static outputOptions(List<Option> options, String prefix, PrintStream printStream) {
     options.each {option->
         def name = prefix?"$prefix.$option.key":option.key
-        printStream.println "|`$name` |$option.type |${option.defaultValue.orElse(' ')}|${option.required?'required':''} |$option.description"
+        // Convert java line-breaks into asciidoctor line-breaks.
+        def description = option.description.replaceAll('\n', " +\n")
+        option.since.ifPresent {
+            description += " +\n*Since: " + option.since.get() + "*"
+        }
+        printStream.println "|`$name` |$option.type |${option.defaultValue.orElse(' ')}|${option.required?'required':''} |$description"
     }
 }
 

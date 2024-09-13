@@ -112,13 +112,13 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     writeBuffer.pushContext("StructureField");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     // Simple Field (dataType)
-    writeSimpleField("dataType", dataType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataType", dataType, writeComplex(writeBuffer));
 
     // Simple Field (valueRank)
     writeSimpleField("valueRank", valueRank, writeSignedInt(writeBuffer, 32));
@@ -193,19 +193,14 @@ public class StructureField extends ExtensionObjectDefinition implements Message
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     NodeId dataType =
-        readSimpleField(
-            "dataType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("dataType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     int valueRank = readSimpleField("valueRank", readSignedInt(readBuffer, 32));
 

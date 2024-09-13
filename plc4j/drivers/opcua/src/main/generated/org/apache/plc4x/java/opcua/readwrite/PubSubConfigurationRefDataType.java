@@ -88,7 +88,7 @@ public class PubSubConfigurationRefDataType extends ExtensionObjectDefinition im
         "configurationMask",
         "PubSubConfigurationRefMask",
         configurationMask,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PubSubConfigurationRefMask::getValue,
             PubSubConfigurationRefMask::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -141,8 +141,7 @@ public class PubSubConfigurationRefDataType extends ExtensionObjectDefinition im
         readEnumField(
             "configurationMask",
             "PubSubConfigurationRefMask",
-            new DataReaderEnumDefault<>(
-                PubSubConfigurationRefMask::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(PubSubConfigurationRefMask::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int elementIndex = readSimpleField("elementIndex", readUnsignedInt(readBuffer, 16));
 

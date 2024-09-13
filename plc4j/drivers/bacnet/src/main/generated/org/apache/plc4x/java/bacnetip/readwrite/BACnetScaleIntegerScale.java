@@ -59,7 +59,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
     writeBuffer.pushContext("BACnetScaleIntegerScale");
 
     // Simple Field (integerScale)
-    writeSimpleField("integerScale", integerScale, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("integerScale", integerScale, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetScaleIntegerScale");
   }
@@ -90,7 +90,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
     BACnetContextTagSignedInteger integerScale =
         readSimpleField(
             "integerScale",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(

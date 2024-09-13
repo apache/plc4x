@@ -61,7 +61,7 @@ public class ApduControlContainer extends Apdu implements Message {
     writeBuffer.pushContext("ApduControlContainer");
 
     // Simple Field (controlApdu)
-    writeSimpleField("controlApdu", controlApdu, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("controlApdu", controlApdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ApduControlContainer");
   }
@@ -91,8 +91,7 @@ public class ApduControlContainer extends Apdu implements Message {
 
     ApduControl controlApdu =
         readSimpleField(
-            "controlApdu",
-            new DataReaderComplexDefault<>(() -> ApduControl.staticParse(readBuffer), readBuffer));
+            "controlApdu", readComplex(() -> ApduControl.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ApduControlContainer");
     // Create the instance

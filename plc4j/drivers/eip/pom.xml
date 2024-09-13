@@ -28,7 +28,7 @@
 
   <artifactId>plc4j-driver-eip</artifactId>
 
-  <name>PLC4J: Driver: Ethernet IP</name>
+  <name>PLC4J: Driver: EtherNet/IP</name>
   <description>Implementation of a PLC4X driver able to speak using the EthernetIP Protocol with CIP Encapsulation.
   </description>
 
@@ -110,6 +110,10 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

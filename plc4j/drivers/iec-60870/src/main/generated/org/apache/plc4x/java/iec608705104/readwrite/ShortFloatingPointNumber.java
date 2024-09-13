@@ -81,12 +81,6 @@ public class ShortFloatingPointNumber implements Message {
     return lengthInBits;
   }
 
-  public static ShortFloatingPointNumber staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ShortFloatingPointNumber staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ShortFloatingPointNumber");
     PositionAware positionAware = readBuffer;

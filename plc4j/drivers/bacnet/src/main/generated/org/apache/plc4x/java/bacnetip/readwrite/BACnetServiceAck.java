@@ -65,7 +65,7 @@ public abstract class BACnetServiceAck implements Message {
         "serviceChoice",
         "BACnetConfirmedServiceChoice",
         getServiceChoice(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -101,26 +101,6 @@ public abstract class BACnetServiceAck implements Message {
     return lengthInBits;
   }
 
-  public static BACnetServiceAck staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Long serviceAckLength;
-    if (args[0] instanceof Long) {
-      serviceAckLength = (Long) args[0];
-    } else if (args[0] instanceof String) {
-      serviceAckLength = Long.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Long or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, serviceAckLength);
-  }
-
   public static BACnetServiceAck staticParse(ReadBuffer readBuffer, Long serviceAckLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAck");
@@ -131,8 +111,7 @@ public abstract class BACnetServiceAck implements Message {
         readDiscriminatorEnumField(
             "serviceChoice",
             "BACnetConfirmedServiceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
     long serviceAckPayloadLength =
         readVirtualField(
             "serviceAckPayloadLength",

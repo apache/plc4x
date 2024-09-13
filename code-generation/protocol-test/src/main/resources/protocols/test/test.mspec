@@ -48,8 +48,8 @@
     //[manualArray    uint 8  manualArrayField count      '1'    ] // TODO: Implement ...
     //[manualArray    uint 8  manualArrayField length     '1'    ] // TODO: Implement ...
     //[manualArray    uint 8  manualArrayField terminated '1'    ] // TODO: Implement ...
-    [manual         uint 8  manualField 'STATIC_CALL("readManualField", readBuffer, simpleField)'
-                                        'STATIC_CALL("writeManualField", writeBuffer, simpleField)'
+    [manual         uint 8  manualField 'STATIC_CALL("readAManualField", readBuffer, simpleField)'
+                                        'STATIC_CALL("writeAManualField", writeBuffer, simpleField)'
                                         'simpleField*8'                   ]
     [optional       uint 8  optionalField 'simpleField == 5'   ]
     [padding        uint 8  paddingField  '0x00'  'simpleField']
@@ -121,6 +121,7 @@
             [simple string 8 abstractStringField]
         ]
     ]
+    //[abstract bit oneMoreBit] // TODO: apparently this breaks java
 ]
 
 [type ArrayTypeTest
@@ -476,6 +477,28 @@
 ////////////////////////////////////////////////////////////////
 
 /* Needs to be ported to C and GO
+[discriminatedType TTGranddad
+    [discriminator uint 8 dadNumber]
+    [simple uint 8 warStories]
+    [typeSwitch dadNumber
+        ['0x00' TTDad
+            [discriminator uint 8 sonNumber]
+            [simple uint 8 beerBottles]
+            [typeSwitch sonNumber
+                ['0x01' TTSon
+                    [simple uint 8 gameConsoles]
+                    [discriminator uint 8 babyNumber]
+                    [typeSwitch babyNumber
+                        ['0x02' TTBaby
+                            [simple uint 8 lalalala]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ]
+]
+
 [discriminatedType TypeSwitchInTypeSwitchParentType
     [discriminator uint 8 typeNumber]
     [simple uint 8 parentFieldHurz]

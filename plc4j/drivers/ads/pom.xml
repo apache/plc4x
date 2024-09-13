@@ -28,7 +28,7 @@
 
   <artifactId>plc4j-driver-ads</artifactId>
 
-  <name>PLC4J: Driver: Beckhoff TwinCat ADS Driver</name>
+  <name>PLC4J: Driver: ADS</name>
 
   <properties>
     <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>

@@ -26,6 +26,7 @@ import java.util.function.ToIntFunction;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.socketcan.readwrite.SocketCANFrame;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
@@ -58,6 +59,14 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
     public ToIntFunction<ByteBuf> getEstimator() {
         return (buff) -> 16;
     }
+
+    public static class EmptyConfiguration implements PlcTransportConfiguration {}
+
+    @Override
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
+        return EmptyConfiguration.class;
+    }
+
 
     @Override
     public MessageInput<SocketCANFrame> getMessageInput(PlcConnectionConfiguration cfg) {
@@ -93,9 +102,9 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
             }
 
             @Override
-            public <T extends Message> T read(MessageInput<T> input, Object... args) {
+            public <T extends Message> T read(MessageInput<T> input) {
                 try {
-                    return input.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN), args);
+                    return input.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN));
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
                 }

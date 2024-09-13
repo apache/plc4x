@@ -20,21 +20,23 @@ package org.apache.plc4x.java.modbus.base.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
+import org.apache.plc4x.java.spi.tag.TagConfigParser;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ModbusTagHoldingRegister extends ModbusTag {
 
     public static final String ADDRESS_PREFIX = "4x";
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("holding-register:" + ModbusTag.ADDRESS_PATTERN);
-    public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("4" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN);
-    public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("4x" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("holding-register:" + ModbusTag.ADDRESS_PATTERN + TagConfigParser.TAG_CONFIG_PATTERN);
+    public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("4" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN + TagConfigParser.TAG_CONFIG_PATTERN);
+    public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("4x" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN + TagConfigParser.TAG_CONFIG_PATTERN);
 
     protected static final int REGISTER_MAXADDRESS = 65535;
 
-    protected ModbusTagHoldingRegister(int address, Integer quantity, ModbusDataType dataType) {
-        super(address, quantity, dataType);
+    public ModbusTagHoldingRegister(int address, Integer quantity, ModbusDataType dataType, Map<String, String> config) {
+        super(address, quantity, dataType, config);
     }
 
     protected String getAddressStringPrefix() {
@@ -87,7 +89,7 @@ public class ModbusTagHoldingRegister extends ModbusTag {
 
         ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.INT;
 
-        return new ModbusTagHoldingRegister(address, quantity, dataType);
+        return new ModbusTagHoldingRegister(address, quantity, dataType, TagConfigParser.parse(addressString));
     }
 
 }

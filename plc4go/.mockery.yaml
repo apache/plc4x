@@ -15,11 +15,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-all: True
-mockname: "{{.Mock}}{{.InterfaceName}}"
+with-expecter: true
 inpackage: True
 testonly: True
-with-expecter: True
+mockname: "{{.Mock}}{{.InterfaceName}}"
 boilerplate-file: .mockery.asl.header
-exclude:
-  - protocols
+
+packages:
+  github.com/apache/plc4x/plc4go:
+    config:
+      recursive: true
+      include-regex: ".*.go"
+      exclude-regex: "Element"
+      exclude:
+      - .idea
+      - .git
+      - protocols
+      - target

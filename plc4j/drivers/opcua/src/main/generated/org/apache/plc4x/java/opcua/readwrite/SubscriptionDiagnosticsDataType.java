@@ -273,7 +273,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     writeBuffer.pushContext("SubscriptionDiagnosticsDataType");
 
     // Simple Field (sessionId)
-    writeSimpleField("sessionId", sessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sessionId", sessionId, writeComplex(writeBuffer));
 
     // Simple Field (subscriptionId)
     writeSimpleField("subscriptionId", subscriptionId, writeUnsignedLong(writeBuffer, 32));
@@ -522,9 +522,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
-        readSimpleField(
-            "sessionId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("sessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
 

@@ -68,7 +68,7 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
         "categoryForType",
         "ErrorReportingSystemCategoryTypeForSupportUnits",
         categoryForType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSystemCategoryTypeForSupportUnits::getValue,
             ErrorReportingSystemCategoryTypeForSupportUnits::name,
             writeUnsignedByte(writeBuffer, 4)));
@@ -106,7 +106,7 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
         readEnumField(
             "categoryForType",
             "ErrorReportingSystemCategoryTypeForSupportUnits",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingSystemCategoryTypeForSupportUnits::enumForValue,
                 readUnsignedByte(readBuffer, 4)));
 

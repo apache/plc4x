@@ -70,13 +70,13 @@ public class BACnetAuthenticationFactor implements Message {
     writeBuffer.pushContext("BACnetAuthenticationFactor");
 
     // Simple Field (formatType)
-    writeSimpleField("formatType", formatType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("formatType", formatType, writeComplex(writeBuffer));
 
     // Simple Field (formatClass)
-    writeSimpleField("formatClass", formatClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("formatClass", formatClass, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationFactor");
   }
@@ -104,12 +104,6 @@ public class BACnetAuthenticationFactor implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAuthenticationFactor staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAuthenticationFactor staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationFactor");
@@ -119,7 +113,7 @@ public class BACnetAuthenticationFactor implements Message {
     BACnetAuthenticationFactorTypeTagged formatType =
         readSimpleField(
             "formatType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthenticationFactorTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -128,7 +122,7 @@ public class BACnetAuthenticationFactor implements Message {
     BACnetContextTagUnsignedInteger formatClass =
         readSimpleField(
             "formatClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -140,7 +134,7 @@ public class BACnetAuthenticationFactor implements Message {
     BACnetContextTagOctetString value =
         readSimpleField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(

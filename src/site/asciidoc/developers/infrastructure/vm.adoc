@@ -73,7 +73,11 @@ Instead of now entering a password, a challenge is displayed:
 
 If you now enter your normal password, you'll simply get `permission denied` errors.
 
-In order to execute operations as root on the machine, you need to use an opie client.
+In order to execute operations as root on the machine, you firstly need to run ortpasswd to generate a new seed.
+
+    ortpasswd
+
+You can then use an opie client on your local machine or online at https://selfserve.apache.org/otp-calculator.html
 
    otp-md5 496 pl8230
 
@@ -86,7 +90,9 @@ When hitting enter or clicking on `Compute` the tool should automatically genera
 Now all you need to do is copy & paste that as password into your SSH client session.
 
 TIP: As with the latest version of Mac Catalina the existing clients no longer work and using a public web service is a bad idea, Apache has its own service to calculate it:
-https://selfserve.apache.org/otp-md5.html
+https://selfserve.apache.org/otp-calculator.html
+
+TIP: More help can be found for Apache committers at https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=122916896
 
 === Required software
 

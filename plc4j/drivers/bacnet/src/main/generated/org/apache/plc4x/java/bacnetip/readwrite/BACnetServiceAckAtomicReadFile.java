@@ -75,10 +75,10 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFile");
 
     // Simple Field (endOfFile)
-    writeSimpleField("endOfFile", endOfFile, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endOfFile", endOfFile, writeComplex(writeBuffer));
 
     // Simple Field (accessMethod)
-    writeSimpleField("accessMethod", accessMethod, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessMethod", accessMethod, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckAtomicReadFile");
   }
@@ -112,14 +112,14 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
     BACnetApplicationTagBoolean endOfFile =
         readSimpleField(
             "endOfFile",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod =
         readSimpleField(
             "accessMethod",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetServiceAckAtomicReadFileStreamOrRecord.staticParse(readBuffer),
                 readBuffer));
 

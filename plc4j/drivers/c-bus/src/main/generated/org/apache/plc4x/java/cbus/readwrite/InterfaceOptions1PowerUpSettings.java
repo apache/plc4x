@@ -55,8 +55,7 @@ public class InterfaceOptions1PowerUpSettings implements Message {
     writeBuffer.pushContext("InterfaceOptions1PowerUpSettings");
 
     // Simple Field (interfaceOptions1)
-    writeSimpleField(
-        "interfaceOptions1", interfaceOptions1, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("interfaceOptions1", interfaceOptions1, writeComplex(writeBuffer));
 
     writeBuffer.popContext("InterfaceOptions1PowerUpSettings");
   }
@@ -78,12 +77,6 @@ public class InterfaceOptions1PowerUpSettings implements Message {
     return lengthInBits;
   }
 
-  public static InterfaceOptions1PowerUpSettings staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static InterfaceOptions1PowerUpSettings staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("InterfaceOptions1PowerUpSettings");
@@ -93,8 +86,7 @@ public class InterfaceOptions1PowerUpSettings implements Message {
     InterfaceOptions1 interfaceOptions1 =
         readSimpleField(
             "interfaceOptions1",
-            new DataReaderComplexDefault<>(
-                () -> InterfaceOptions1.staticParse(readBuffer), readBuffer));
+            readComplex(() -> InterfaceOptions1.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("InterfaceOptions1PowerUpSettings");
     // Create the instance

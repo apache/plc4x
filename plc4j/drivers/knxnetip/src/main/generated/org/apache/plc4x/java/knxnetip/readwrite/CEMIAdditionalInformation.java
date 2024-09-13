@@ -83,12 +83,6 @@ public abstract class CEMIAdditionalInformation implements Message {
     return lengthInBits;
   }
 
-  public static CEMIAdditionalInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CEMIAdditionalInformation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CEMIAdditionalInformation");
     PositionAware positionAware = readBuffer;

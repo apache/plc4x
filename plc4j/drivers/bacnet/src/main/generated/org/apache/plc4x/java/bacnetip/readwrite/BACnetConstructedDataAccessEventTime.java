@@ -82,8 +82,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataAccessEventTime");
 
     // Simple Field (accessEventTime)
-    writeSimpleField(
-        "accessEventTime", accessEventTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEventTime", accessEventTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetTimeStamp actualValue = getActualValue();
@@ -125,8 +124,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
     BACnetTimeStamp accessEventTime =
         readSimpleField(
             "accessEventTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
     BACnetTimeStamp actualValue =
         readVirtualField("actualValue", BACnetTimeStamp.class, accessEventTime);
 

@@ -129,6 +129,10 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 // Wait till the connection is established.
                 sessionDiscoveredCompleteFuture.get();
             }
+            if (fireDiscoverEvent) {
+                // clean up resources we created earlier, even if it didn't complete till now (asynchronously)
+                close();
+            }
 
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {

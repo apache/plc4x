@@ -64,7 +64,7 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
     writeBuffer.pushContext("BACnetApplicationTagEnumerated");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     long actualValue = getActualValue();
@@ -101,7 +101,7 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
     BACnetTagPayloadEnumerated payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadEnumerated.staticParse(
                         readBuffer, (long) (header.getActualLength())),

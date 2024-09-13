@@ -28,7 +28,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=worker
+//go:generate plc4xGenerator -type=worker
 type worker struct {
 	id       int
 	executor interface {
@@ -45,7 +45,7 @@ type worker struct {
 	interrupted atomic.Bool
 	interrupter chan struct{}
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func newWorker(localLog zerolog.Logger, workerId int, executor interface {

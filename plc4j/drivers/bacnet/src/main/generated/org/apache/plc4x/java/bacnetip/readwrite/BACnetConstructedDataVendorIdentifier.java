@@ -83,8 +83,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataVendorIdentifier");
 
     // Simple Field (vendorIdentifier)
-    writeSimpleField(
-        "vendorIdentifier", vendorIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorIdentifier", vendorIdentifier, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetVendorIdTagged actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
     BACnetVendorIdTagged vendorIdentifier =
         readSimpleField(
             "vendorIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

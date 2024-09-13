@@ -107,30 +107,22 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     writeSimpleField(
         "acknowledgingProcessIdentifier",
         acknowledgingProcessIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     // Simple Field (eventObjectIdentifier)
-    writeSimpleField(
-        "eventObjectIdentifier",
-        eventObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventObjectIdentifier", eventObjectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (eventStateAcknowledged)
-    writeSimpleField(
-        "eventStateAcknowledged",
-        eventStateAcknowledged,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventStateAcknowledged", eventStateAcknowledged, writeComplex(writeBuffer));
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (acknowledgmentSource)
-    writeSimpleField(
-        "acknowledgmentSource", acknowledgmentSource, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("acknowledgmentSource", acknowledgmentSource, writeComplex(writeBuffer));
 
     // Simple Field (timeOfAcknowledgment)
-    writeSimpleField(
-        "timeOfAcknowledgment", timeOfAcknowledgment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeOfAcknowledgment", timeOfAcknowledgment, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestAcknowledgeAlarm");
   }
@@ -177,7 +169,7 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     BACnetContextTagUnsignedInteger acknowledgingProcessIdentifier =
         readSimpleField(
             "acknowledgingProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -189,7 +181,7 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     BACnetContextTagObjectIdentifier eventObjectIdentifier =
         readSimpleField(
             "eventObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -201,7 +193,7 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     BACnetEventStateTagged eventStateAcknowledged =
         readSimpleField(
             "eventStateAcknowledged",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -210,13 +202,13 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     BACnetTimeStampEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3)), readBuffer));
 
     BACnetContextTagCharacterString acknowledgmentSource =
         readSimpleField(
             "acknowledgmentSource",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(
@@ -228,7 +220,7 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     BACnetTimeStampEnclosed timeOfAcknowledgment =
         readSimpleField(
             "timeOfAcknowledgment",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (5)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAcknowledgeAlarm");

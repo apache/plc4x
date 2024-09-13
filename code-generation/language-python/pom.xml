@@ -33,8 +33,6 @@
   <description>Code generation template for generating Python code</description>
 
   <properties>
-    <!-- Disabled for now as the python code doesn't seem to build -->
-    <skip-code-generation-tests>true</skip-code-generation-tests>
     <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
   </properties>
 

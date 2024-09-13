@@ -73,14 +73,14 @@ public class InformationObjectWithSevenByteTime_EVENT_OF_PROTECTION_EQUIPMENT
     writeSimpleField(
         "cp16Time2a",
         cp16Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp56Time2a)
     writeSimpleField(
         "cp56Time2a",
         cp56Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithSevenByteTime_EVENT_OF_PROTECTION_EQUIPMENT");
@@ -117,15 +117,13 @@ public class InformationObjectWithSevenByteTime_EVENT_OF_PROTECTION_EQUIPMENT
     TwoOctetBinaryTime cp16Time2a =
         readSimpleField(
             "cp16Time2a",
-            new DataReaderComplexDefault<>(
-                () -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithSevenByteTime_EVENT_OF_PROTECTION_EQUIPMENT");

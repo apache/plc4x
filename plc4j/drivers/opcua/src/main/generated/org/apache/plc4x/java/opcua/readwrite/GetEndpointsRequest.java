@@ -98,10 +98,10 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("GetEndpointsRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (endpointUrl)
-    writeSimpleField("endpointUrl", endpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (noOfLocaleIds)
     writeSimpleField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
@@ -171,21 +171,20 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfLocaleIds = readSimpleField("noOfLocaleIds", readSignedInt(readBuffer, 32));
 
     List<PascalString> localeIds =
         readCountArrayField(
             "localeIds",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfLocaleIds);
 
     int noOfProfileUris = readSimpleField("noOfProfileUris", readSignedInt(readBuffer, 32));
@@ -193,7 +192,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     List<PascalString> profileUris =
         readCountArrayField(
             "profileUris",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfProfileUris);
 
     readBuffer.closeContext("GetEndpointsRequest");

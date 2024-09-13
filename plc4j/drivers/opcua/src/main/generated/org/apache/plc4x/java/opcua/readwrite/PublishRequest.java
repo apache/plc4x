@@ -77,7 +77,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     writeBuffer.pushContext("PublishRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfSubscriptionAcknowledgements)
     writeSimpleField(
@@ -130,7 +130,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -140,7 +140,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     List<ExtensionObjectDefinition> subscriptionAcknowledgements =
         readCountArrayField(
             "subscriptionAcknowledgements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("823")),
                 readBuffer),
             noOfSubscriptionAcknowledgements);

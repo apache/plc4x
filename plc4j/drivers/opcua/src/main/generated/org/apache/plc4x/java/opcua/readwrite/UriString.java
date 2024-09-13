@@ -63,11 +63,6 @@ public class UriString implements Message {
     return lengthInBits;
   }
 
-  public static UriString staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static UriString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("UriString");
     PositionAware positionAware = readBuffer;

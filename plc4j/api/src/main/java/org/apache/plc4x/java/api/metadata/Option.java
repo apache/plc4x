@@ -32,5 +32,6 @@ public interface Option {
     String getDescription();
     boolean isRequired();
     Optional<Object> getDefaultValue();
+    Optional<String> getSince();
 
 }

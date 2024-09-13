@@ -18,13 +18,15 @@
 //
 module github.com/apache/plc4x/plc4go
 
-go 1.16
+go 1.23
 
 require (
-	github.com/ajankovic/xdiff v0.0.1
-	github.com/icza/bitio v1.0.0
-	github.com/pkg/errors v0.9.1
-	github.com/rs/zerolog v1.20.0
-	github.com/subchen/go-xmldom v1.1.2
-	github.com/tebeka/go2xunit v1.4.10 // indirect
+    github.com/ajankovic/xdiff v0.0.1
+    github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e // indirect
+    github.com/icza/bitio v1.1.0
+    github.com/pkg/errors v0.9.1
+    github.com/rs/zerolog v1.33.0
+    github.com/subchen/go-xmldom v1.1.2
+    github.com/tebeka/go2xunit v1.4.10 // indirect
+    golang.org/x/tools v0.0.0-20190828213141-aed303cbaa74 // indirect
 )

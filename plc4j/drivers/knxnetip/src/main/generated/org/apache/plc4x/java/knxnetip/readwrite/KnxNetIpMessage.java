@@ -125,12 +125,6 @@ public abstract class KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetIpMessage staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static KnxNetIpMessage staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("KnxNetIpMessage");
     PositionAware positionAware = readBuffer;

@@ -66,10 +66,7 @@ public class InformationObjectWithoutTime_MEASURED_VALUE_NORMALIZED_VALUE_WITHOU
 
     // Simple Field (nva)
     writeSimpleField(
-        "nva",
-        nva,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nva", nva, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObjectWithoutTime_MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR");
@@ -104,8 +101,7 @@ public class InformationObjectWithoutTime_MEASURED_VALUE_NORMALIZED_VALUE_WITHOU
     NormalizedValue nva =
         readSimpleField(
             "nva",
-            new DataReaderComplexDefault<>(
-                () -> NormalizedValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NormalizedValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext(

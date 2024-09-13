@@ -58,7 +58,7 @@ public class OpcuaAPU implements Message {
     writeSimpleField(
         "message",
         message,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("OpcuaAPU");
@@ -81,25 +81,6 @@ public class OpcuaAPU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaAPU staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Boolean response;
-    if (args[0] instanceof Boolean) {
-      response = (Boolean) args[0];
-    } else if (args[0] instanceof String) {
-      response = Boolean.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Boolean or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, response);
-  }
-
   public static OpcuaAPU staticParse(ReadBuffer readBuffer, Boolean response)
       throws ParseException {
     readBuffer.pullContext("OpcuaAPU");
@@ -109,8 +90,7 @@ public class OpcuaAPU implements Message {
     MessagePDU message =
         readSimpleField(
             "message",
-            new DataReaderComplexDefault<>(
-                () -> MessagePDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
+            readComplex(() -> MessagePDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("OpcuaAPU");

@@ -113,7 +113,7 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
     List<ExtensionObjectDefinition> parameters =
         readCountArrayField(
             "parameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfParameters);

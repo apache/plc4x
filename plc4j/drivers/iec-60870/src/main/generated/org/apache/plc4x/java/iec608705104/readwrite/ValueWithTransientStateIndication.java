@@ -97,12 +97,6 @@ public class ValueWithTransientStateIndication implements Message {
     return lengthInBits;
   }
 
-  public static ValueWithTransientStateIndication staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ValueWithTransientStateIndication staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ValueWithTransientStateIndication");

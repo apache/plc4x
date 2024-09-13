@@ -99,7 +99,7 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (linkSpeeds)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
     List<BACnetApplicationTagReal> linkSpeeds =
         readTerminatedArrayField(
             "linkSpeeds",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             () ->

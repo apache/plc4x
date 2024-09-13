@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.mock.tag.MockTagHandler;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -58,6 +60,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return device;
     }
 
+    private final MockTagHandler mockTagHandler = new MockTagHandler();
     public void setDevice(MockDevice device) {
         LOGGER.info("Set Mock Device on Mock Connection {} with device {}", this, device);
         this.device = device;
@@ -111,7 +114,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcBrowseRequest.Builder browseRequestBuilder() {
-        return new DefaultPlcBrowseRequest.Builder(this, new MockTagHandler());
+        return new DefaultPlcBrowseRequest.Builder(this, mockTagHandler);
     }
 
     @Override
@@ -134,7 +137,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new MockTagHandler());
+        return new DefaultPlcReadRequest.Builder(this, mockTagHandler);
     }
 
     @Override
@@ -204,12 +207,12 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new MockTagHandler(), new PlcValueHandler());
+        return new DefaultPlcWriteRequest.Builder(this, mockTagHandler, new PlcValueHandler());
     }
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(this, new MockTagHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, mockTagHandler);
     }
 
     @Override
@@ -221,4 +224,15 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return authentication;
     }
 
+    @Override
+    public Optional<PlcTag> parseTagAddress(String tagAddress) {
+        PlcTag plcTag;
+        try {
+            plcTag = mockTagHandler.parseTag(tagAddress);
+        } catch (Exception e) {
+            LOGGER.error("Error parsing tag address {}", tagAddress);
+            return Optional.empty();
+        }
+        return Optional.ofNullable(plcTag);
+    }
 }

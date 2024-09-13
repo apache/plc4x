@@ -74,7 +74,7 @@ public abstract class SecurityData implements Message {
         "commandTypeContainer",
         "SecurityCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SecurityCommandTypeContainer::getValue,
             SecurityCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -116,12 +116,6 @@ public abstract class SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SecurityData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SecurityData");
     PositionAware positionAware = readBuffer;
@@ -136,8 +130,7 @@ public abstract class SecurityData implements Message {
         readEnumField(
             "commandTypeContainer",
             "SecurityCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                SecurityCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SecurityCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     SecurityCommandType commandType =
         readVirtualField(
             "commandType", SecurityCommandType.class, commandTypeContainer.getCommandType());

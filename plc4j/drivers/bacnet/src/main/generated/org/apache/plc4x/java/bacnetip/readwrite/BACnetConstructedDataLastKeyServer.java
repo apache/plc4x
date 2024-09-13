@@ -82,7 +82,7 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataLastKeyServer");
 
     // Simple Field (lastKeyServer)
-    writeSimpleField("lastKeyServer", lastKeyServer, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastKeyServer", lastKeyServer, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAddressBinding actualValue = getActualValue();
@@ -124,8 +124,7 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
     BACnetAddressBinding lastKeyServer =
         readSimpleField(
             "lastKeyServer",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAddressBinding.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAddressBinding.staticParse(readBuffer), readBuffer));
     BACnetAddressBinding actualValue =
         readVirtualField("actualValue", BACnetAddressBinding.class, lastKeyServer);
 

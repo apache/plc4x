@@ -82,7 +82,7 @@ public class BACnetConstructedDataProfileName extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataProfileName");
 
     // Simple Field (profileName)
-    writeSimpleField("profileName", profileName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("profileName", profileName, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataProfileName extends BACnetConstructedData impl
     BACnetApplicationTagCharacterString profileName =
         readSimpleField(
             "profileName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

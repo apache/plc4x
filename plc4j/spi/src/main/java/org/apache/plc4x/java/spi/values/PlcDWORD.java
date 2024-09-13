@@ -267,6 +267,11 @@ public class PlcDWORD extends PlcIECValue<Long> {
         return Long.toString(value);
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         byte[] bytes = new byte[4];
         bytes[0] = (byte) ((value >> 24) & 0xff);

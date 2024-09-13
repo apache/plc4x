@@ -21,12 +21,12 @@ package org.apache.plc4x.java.transport.virtualcan;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport;
 import org.apache.plc4x.java.transport.can.FrameData;
 import org.apache.plc4x.java.transport.test.TestTransport;
-import org.apache.plc4x.java.transport.virtualcan.io.VirtualCANFrameIO;
 
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -45,12 +45,19 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
 
     @Override
     public ToIntFunction<ByteBuf> getEstimator() {
-        return value -> value.getShort(value.readerIndex());
+        return ByteBuf::readableBytes;
     }
 
     @Override
     public Class<VirtualCANFrame> getMessageType() {
         return VirtualCANFrame.class;
+    }
+
+    public static class EmptyConfiguration implements PlcTransportConfiguration {}
+
+    @Override
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
+        return EmptyConfiguration.class;
     }
 
     @Override
@@ -88,9 +95,9 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
             }
 
             @Override
-            public <T extends Message> T read(MessageInput<T> input, Object... args) {
+            public <T extends Message> T read(MessageInput<T> input) {
                 try {
-                    return input.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN), args);
+                    return input.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN));
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
                 }
@@ -110,7 +117,7 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
 
     @Override
     public MessageInput<VirtualCANFrame> getMessageInput(PlcConnectionConfiguration configuration) {
-        return new VirtualCANFrameIO();
+        return VirtualCANFrame.PARSER;
     }
 
 }

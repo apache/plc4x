@@ -38,7 +38,7 @@
 # Run a standard build
 function build() {
   echo "Building ..."
-  mvn -U -P apache-release,with-c,with-dotnet,with-go,with-java,with-python,with-sandbox -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy
+  mvn -U -P apache-release,with-c,with-dotnet,with-go,with-java,with-python -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy
   echo "Done"
 }
 
@@ -68,7 +68,7 @@ function renameArtifacts() {
   pwd
 }
 
-# Package the remaiing files into one tgz archive
+# Package the remaining files into one tgz archive
 function packageDirectory() {
   echo "Packaging ..."
   tar -cvf reproducible-build-candidate.tgz local-snapshots-dir/

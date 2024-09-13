@@ -80,10 +80,10 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
     writeBuffer.pushContext("CBusPointToPointToMultiPointCommand");
 
     // Simple Field (bridgeAddress)
-    writeSimpleField("bridgeAddress", bridgeAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bridgeAddress", bridgeAddress, writeComplex(writeBuffer));
 
     // Simple Field (networkRoute)
-    writeSimpleField("networkRoute", networkRoute, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkRoute", networkRoute, writeComplex(writeBuffer));
 
     // Switch field (Serialize the sub-type)
     serializeCBusPointToPointToMultiPointCommandChild(writeBuffer);
@@ -114,24 +114,6 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
   }
 
   public static CBusPointToPointToMultiPointCommand staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    CBusOptions cBusOptions;
-    if (args[0] instanceof CBusOptions) {
-      cBusOptions = (CBusOptions) args[0];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type CBusOptions or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, cBusOptions);
-  }
-
-  public static CBusPointToPointToMultiPointCommand staticParse(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointToMultiPointCommand");
     PositionAware positionAware = readBuffer;
@@ -139,14 +121,11 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
 
     BridgeAddress bridgeAddress =
         readSimpleField(
-            "bridgeAddress",
-            new DataReaderComplexDefault<>(
-                () -> BridgeAddress.staticParse(readBuffer), readBuffer));
+            "bridgeAddress", readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer));
 
     NetworkRoute networkRoute =
         readSimpleField(
-            "networkRoute",
-            new DataReaderComplexDefault<>(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
+            "networkRoute", readComplex(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
 
     byte peekedApplication = readPeekField("peekedApplication", readByte(readBuffer, 8));
 

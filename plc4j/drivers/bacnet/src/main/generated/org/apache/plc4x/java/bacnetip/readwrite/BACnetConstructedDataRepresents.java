@@ -82,7 +82,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataRepresents");
 
     // Simple Field (represents)
-    writeSimpleField("represents", represents, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("represents", represents, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();
@@ -124,8 +124,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
     BACnetDeviceObjectReference represents =
         readSimpleField(
             "represents",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, represents);
 

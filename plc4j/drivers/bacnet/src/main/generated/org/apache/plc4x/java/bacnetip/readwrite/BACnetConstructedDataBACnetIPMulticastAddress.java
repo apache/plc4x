@@ -83,8 +83,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPMulticastAddress");
 
     // Simple Field (ipMulticastAddress)
-    writeSimpleField(
-        "ipMulticastAddress", ipMulticastAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipMulticastAddress", ipMulticastAddress, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
     BACnetApplicationTagOctetString ipMulticastAddress =
         readSimpleField(
             "ipMulticastAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

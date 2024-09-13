@@ -82,7 +82,7 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataErrorLimit");
 
     // Simple Field (errorLimit)
-    writeSimpleField("errorLimit", errorLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorLimit", errorLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
     BACnetApplicationTagReal errorLimit =
         readSimpleField(
             "errorLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

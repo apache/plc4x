@@ -187,8 +187,28 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
             tags.forEach((name, tagValues) -> {
                 // Compile the query string.
                 PlcTag tag = tagValues.getLeft().get();
-                Object[] value = tagValues.getRight();
-                PlcValue plcValue = valueHandler.newPlcValue(tag, value);
+                PlcValue plcValue;
+                // If this is more than one element the value itself will definitely be a list.
+                if(tagValues.getRight().length > 1) {
+                    List<PlcValue> listItems = new ArrayList<>(tagValues.getRight().length);
+                    for (Object tagValue : tagValues.getRight()) {
+                        if(tagValue instanceof PlcValue) {
+                            listItems.add((PlcValue) tagValue);
+                        } else {
+                            PlcValue plcItemValue = valueHandler.newPlcValue(tag, tagValue);
+                            listItems.add(plcItemValue);
+                        }
+                    }
+                    plcValue = new PlcList(listItems);
+                }
+                // If the values are already PlcValues, just use them.
+                else if(tagValues.getRight()[0] instanceof PlcValue) {
+                    plcValue = (PlcValue) tagValues.getRight()[0];
+                }
+                // In all other cases use the value-handler.
+                else {
+                    plcValue = valueHandler.newPlcValue(tag, tagValues.getRight()[0]);
+                }
                 parsedTags.put(name, new TagValueItem(tag, plcValue));
             });
             return new DefaultPlcWriteRequest(writer, parsedTags);

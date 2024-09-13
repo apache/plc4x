@@ -101,12 +101,6 @@ public abstract class BACnetChannelValue implements Message {
     return lengthInBits;
   }
 
-  public static BACnetChannelValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetChannelValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValue");
     PositionAware positionAware = readBuffer;
@@ -115,8 +109,7 @@ public abstract class BACnetChannelValue implements Message {
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
     boolean peekedIsContextTag =

@@ -71,10 +71,10 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition");
 
     // Simple Field (referenceIndex)
-    writeSimpleField("referenceIndex", referenceIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceIndex", referenceIndex, writeComplex(writeBuffer));
 
     // Simple Field (count)
-    writeSimpleField("count", count, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("count", count, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition");
   }
@@ -109,7 +109,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
     BACnetApplicationTagUnsignedInteger referenceIndex =
         readSimpleField(
             "referenceIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -118,7 +118,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
     BACnetApplicationTagSignedInteger count =
         readSimpleField(
             "count",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

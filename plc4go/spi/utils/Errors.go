@@ -21,9 +21,10 @@ package utils
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // ErrorIdentify is an interface defining the inline interface defined in errors.Is(err, target error) bool (wrap.go)
@@ -74,6 +75,7 @@ func (m MultiError) Is(target error) bool {
 
 type ParseAssertError struct {
 	Message string
+	Err     error // TODO: make available as root cause
 }
 
 func (e ParseAssertError) Error() string {

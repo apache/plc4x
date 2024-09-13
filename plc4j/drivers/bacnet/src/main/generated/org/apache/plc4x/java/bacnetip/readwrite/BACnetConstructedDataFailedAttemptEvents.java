@@ -119,7 +119,7 @@ public class BACnetConstructedDataFailedAttemptEvents extends BACnetConstructedD
     List<BACnetAccessEventTagged> failedAttemptEvents =
         readTerminatedArrayField(
             "failedAttemptEvents",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessEventTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

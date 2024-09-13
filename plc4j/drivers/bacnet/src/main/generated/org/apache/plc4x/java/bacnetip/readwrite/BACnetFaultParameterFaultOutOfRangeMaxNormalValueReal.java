@@ -69,7 +69,7 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal");
 
     // Simple Field (realValue)
-    writeSimpleField("realValue", realValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("realValue", realValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal");
   }
@@ -101,7 +101,7 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
     BACnetApplicationTagReal realValue =
         readSimpleField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

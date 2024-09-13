@@ -36,9 +36,11 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
-|`backplane` |INT | | |Without using routing information the backplane defaults to 1. This is overridden if communicationPath is provided.
-|`slot` |INT | | |The slot within the backplane the CPU is located.
-|`bigEndian` |BOOLEAN | | |Configure if the connection should be set to transport data in Big-Endian format, or not.
+|`backplane` |INT |1| |Without using routing information the backplane defaults to 1. This is overridden if communicationPath is provided.
+|`slot` |INT |0| |The slot within the backplane the CPU is located.
+|`big-endian` |BOOLEAN |true| |Configure if the connection should be set to transport data in Big-Endian format, or not.
+|`force-unconnected-operation` |BOOLEAN |false| |Forces the driver to use unconnected requests. +
+*Since: 0.13.0*
 5+|Transport config options:
 5+|
 +++

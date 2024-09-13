@@ -81,12 +81,6 @@ public class StatusChangeDetection implements Message {
     return lengthInBits;
   }
 
-  public static StatusChangeDetection staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static StatusChangeDetection staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusChangeDetection");
     PositionAware positionAware = readBuffer;

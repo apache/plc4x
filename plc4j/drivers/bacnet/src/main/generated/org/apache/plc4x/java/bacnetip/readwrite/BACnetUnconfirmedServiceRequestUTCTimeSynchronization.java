@@ -76,12 +76,10 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization");
 
     // Simple Field (synchronizedDate)
-    writeSimpleField(
-        "synchronizedDate", synchronizedDate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("synchronizedDate", synchronizedDate, writeComplex(writeBuffer));
 
     // Simple Field (synchronizedTime)
-    writeSimpleField(
-        "synchronizedTime", synchronizedTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("synchronizedTime", synchronizedTime, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization");
   }
@@ -116,14 +114,14 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
     BACnetApplicationTagDate synchronizedDate =
         readSimpleField(
             "synchronizedDate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetApplicationTagTime synchronizedTime =
         readSimpleField(
             "synchronizedTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

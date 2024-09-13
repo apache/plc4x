@@ -82,7 +82,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataNumberOfStates");
 
     // Simple Field (numberOfState)
-    writeSimpleField("numberOfState", numberOfState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("numberOfState", numberOfState, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger numberOfState =
         readSimpleField(
             "numberOfState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

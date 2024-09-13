@@ -240,6 +240,11 @@ public class PlcDINT extends PlcIECValue<Integer> {
         return Integer.toString(value);
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         return new byte[]{
             (byte) ((value >> 24) & 0xff),

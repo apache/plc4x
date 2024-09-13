@@ -68,7 +68,7 @@ public class BACnetLogRecordLogDatumLogStatus extends BACnetLogRecordLogDatum im
     writeBuffer.pushContext("BACnetLogRecordLogDatumLogStatus");
 
     // Simple Field (logStatus)
-    writeSimpleField("logStatus", logStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logStatus", logStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecordLogDatumLogStatus");
   }
@@ -99,7 +99,7 @@ public class BACnetLogRecordLogDatumLogStatus extends BACnetLogRecordLogDatum im
     BACnetLogStatusTagged logStatus =
         readSimpleField(
             "logStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLogStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

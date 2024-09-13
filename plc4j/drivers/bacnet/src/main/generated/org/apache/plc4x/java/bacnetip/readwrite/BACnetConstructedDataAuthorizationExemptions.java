@@ -119,7 +119,7 @@ public class BACnetConstructedDataAuthorizationExemptions extends BACnetConstruc
     List<BACnetAuthorizationExemptionTagged> authorizationExemption =
         readTerminatedArrayField(
             "authorizationExemption",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthorizationExemptionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

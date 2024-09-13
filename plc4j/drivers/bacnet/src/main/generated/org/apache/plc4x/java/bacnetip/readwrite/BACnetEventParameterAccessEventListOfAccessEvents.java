@@ -75,13 +75,13 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
     writeBuffer.pushContext("BACnetEventParameterAccessEventListOfAccessEvents");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfAccessEvents)
     writeComplexTypeArrayField("listOfAccessEvents", listOfAccessEvents, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterAccessEventListOfAccessEvents");
   }
@@ -114,26 +114,6 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
   }
 
   public static BACnetEventParameterAccessEventListOfAccessEvents staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
-  public static BACnetEventParameterAccessEventListOfAccessEvents staticParse(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterAccessEventListOfAccessEvents");
     PositionAware positionAware = readBuffer;
@@ -142,13 +122,13 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetDeviceObjectPropertyReference> listOfAccessEvents =
         readTerminatedArrayField(
             "listOfAccessEvents",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
@@ -158,7 +138,7 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterAccessEventListOfAccessEvents");

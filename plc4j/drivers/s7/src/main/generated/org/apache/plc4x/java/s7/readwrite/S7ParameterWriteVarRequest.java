@@ -112,8 +112,7 @@ public class S7ParameterWriteVarRequest extends S7Parameter implements Message {
     List<S7VarRequestParameterItem> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
-                () -> S7VarRequestParameterItem.staticParse(readBuffer), readBuffer),
+            readComplex(() -> S7VarRequestParameterItem.staticParse(readBuffer), readBuffer),
             numItems);
 
     readBuffer.closeContext("S7ParameterWriteVarRequest");

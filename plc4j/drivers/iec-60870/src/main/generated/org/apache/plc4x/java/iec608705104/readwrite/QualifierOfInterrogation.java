@@ -81,12 +81,6 @@ public class QualifierOfInterrogation implements Message {
     return lengthInBits;
   }
 
-  public static QualifierOfInterrogation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static QualifierOfInterrogation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("QualifierOfInterrogation");
     PositionAware positionAware = readBuffer;

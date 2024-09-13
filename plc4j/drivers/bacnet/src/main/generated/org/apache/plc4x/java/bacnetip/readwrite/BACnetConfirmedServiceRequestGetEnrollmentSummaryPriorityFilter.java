@@ -82,16 +82,16 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (minPriority)
-    writeSimpleField("minPriority", minPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minPriority", minPriority, writeComplex(writeBuffer));
 
     // Simple Field (maxPriority)
-    writeSimpleField("maxPriority", maxPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxPriority", maxPriority, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");
   }
@@ -123,26 +123,6 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
   }
 
   public static BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
-  public static BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter staticParse(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");
     PositionAware positionAware = readBuffer;
@@ -151,13 +131,13 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetContextTagUnsignedInteger minPriority =
         readSimpleField(
             "minPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -169,7 +149,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetContextTagUnsignedInteger maxPriority =
         readSimpleField(
             "maxPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -181,7 +161,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");

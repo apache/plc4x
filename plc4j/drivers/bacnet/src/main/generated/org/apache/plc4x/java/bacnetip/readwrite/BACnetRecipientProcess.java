@@ -62,11 +62,10 @@ public class BACnetRecipientProcess implements Message {
     writeBuffer.pushContext("BACnetRecipientProcess");
 
     // Simple Field (recipient)
-    writeSimpleField("recipient", recipient, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("recipient", recipient, writeComplex(writeBuffer));
 
     // Optional Field (processIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "processIdentifier", processIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("processIdentifier", processIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetRecipientProcess");
   }
@@ -93,12 +92,6 @@ public class BACnetRecipientProcess implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRecipientProcess staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetRecipientProcess staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetRecipientProcess");
     PositionAware positionAware = readBuffer;
@@ -107,13 +100,13 @@ public class BACnetRecipientProcess implements Message {
     BACnetRecipientEnclosed recipient =
         readSimpleField(
             "recipient",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetRecipientEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagUnsignedInteger processIdentifier =
         readOptionalField(
             "processIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

@@ -100,7 +100,7 @@ public class BACnetConstructedDataSupportedFormats extends BACnetConstructedData
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (supportedFormats)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataSupportedFormats extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataSupportedFormats extends BACnetConstructedData
     List<BACnetAuthenticationFactorFormat> supportedFormats =
         readTerminatedArrayField(
             "supportedFormats",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAuthenticationFactorFormat.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetAuthenticationFactorFormat.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

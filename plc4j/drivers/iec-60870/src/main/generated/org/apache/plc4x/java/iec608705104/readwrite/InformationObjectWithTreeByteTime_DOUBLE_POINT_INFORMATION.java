@@ -71,16 +71,13 @@ public class InformationObjectWithTreeByteTime_DOUBLE_POINT_INFORMATION
 
     // Simple Field (diq)
     writeSimpleField(
-        "diq",
-        diq,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "diq", diq, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp24Time2a)
     writeSimpleField(
         "cp24Time2a",
         cp24Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithTreeByteTime_DOUBLE_POINT_INFORMATION");
@@ -117,15 +114,13 @@ public class InformationObjectWithTreeByteTime_DOUBLE_POINT_INFORMATION
     DoublePointInformation diq =
         readSimpleField(
             "diq",
-            new DataReaderComplexDefault<>(
-                () -> DoublePointInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DoublePointInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     ThreeOctetBinaryTime cp24Time2a =
         readSimpleField(
             "cp24Time2a",
-            new DataReaderComplexDefault<>(
-                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithTreeByteTime_DOUBLE_POINT_INFORMATION");

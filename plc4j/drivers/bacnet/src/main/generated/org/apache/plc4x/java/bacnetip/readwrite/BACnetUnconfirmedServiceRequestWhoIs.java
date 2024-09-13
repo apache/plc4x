@@ -77,15 +77,13 @@ public class BACnetUnconfirmedServiceRequestWhoIs extends BACnetUnconfirmedServi
 
     // Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if the value is null)
     writeOptionalField(
-        "deviceInstanceRangeLowLimit",
-        deviceInstanceRangeLowLimit,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "deviceInstanceRangeLowLimit", deviceInstanceRangeLowLimit, writeComplex(writeBuffer));
 
     // Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if the value is null)
     writeOptionalField(
         "deviceInstanceRangeHighLimit",
         deviceInstanceRangeHighLimit,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (getDeviceInstanceRangeLowLimit()) != (null));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestWhoIs");
@@ -125,7 +123,7 @@ public class BACnetUnconfirmedServiceRequestWhoIs extends BACnetUnconfirmedServi
     BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit =
         readOptionalField(
             "deviceInstanceRangeLowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -137,7 +135,7 @@ public class BACnetUnconfirmedServiceRequestWhoIs extends BACnetUnconfirmedServi
     BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit =
         readOptionalField(
             "deviceInstanceRangeHighLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

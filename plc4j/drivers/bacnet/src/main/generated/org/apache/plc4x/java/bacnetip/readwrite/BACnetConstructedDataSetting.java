@@ -82,7 +82,7 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataSetting");
 
     // Simple Field (setting)
-    writeSimpleField("setting", setting, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("setting", setting, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
     BACnetApplicationTagUnsignedInteger setting =
         readSimpleField(
             "setting",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

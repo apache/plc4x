@@ -83,7 +83,7 @@ public class BACnetConstructedDataLifeSafetyZonePresentValue extends BACnetConst
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyZonePresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLifeSafetyStateTagged actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataLifeSafetyZonePresentValue extends BACnetConst
     BACnetLifeSafetyStateTagged presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

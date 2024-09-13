@@ -82,7 +82,7 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataAccompaniment");
 
     // Simple Field (accompaniment)
-    writeSimpleField("accompaniment", accompaniment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accompaniment", accompaniment, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();
@@ -124,8 +124,7 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
     BACnetDeviceObjectReference accompaniment =
         readSimpleField(
             "accompaniment",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, accompaniment);
 

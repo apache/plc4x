@@ -60,7 +60,7 @@ public class BACnetPropertyStatesWriteStatus extends BACnetPropertyStates implem
     writeBuffer.pushContext("BACnetPropertyStatesWriteStatus");
 
     // Simple Field (writeStatus)
-    writeSimpleField("writeStatus", writeStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("writeStatus", writeStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesWriteStatus");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesWriteStatus extends BACnetPropertyStates implem
     BACnetWriteStatusTagged writeStatus =
         readSimpleField(
             "writeStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetWriteStatusTagged.staticParse(
                         readBuffer,

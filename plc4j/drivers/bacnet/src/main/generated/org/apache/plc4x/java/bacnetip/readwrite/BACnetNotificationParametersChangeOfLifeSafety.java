@@ -107,25 +107,22 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfLifeSafety");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (newState)
-    writeSimpleField("newState", newState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("newState", newState, writeComplex(writeBuffer));
 
     // Simple Field (newMode)
-    writeSimpleField("newMode", newMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("newMode", newMode, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (operationExpected)
-    writeSimpleField(
-        "operationExpected", operationExpected, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("operationExpected", operationExpected, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfLifeSafety");
   }
@@ -175,14 +172,14 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetLifeSafetyStateTagged newState =
         readSimpleField(
             "newState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -191,7 +188,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetLifeSafetyModeTagged newMode =
         readSimpleField(
             "newMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyModeTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -200,7 +197,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -209,7 +206,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetLifeSafetyOperationTagged operationExpected =
         readSimpleField(
             "operationExpected",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyOperationTagged.staticParse(
                         readBuffer, (short) (3), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -218,7 +215,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

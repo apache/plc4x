@@ -61,7 +61,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
     writeBuffer.pushContext("SecurityDataSystemArmedDisarmed");
 
     // Simple Field (armCodeType)
-    writeSimpleField("armCodeType", armCodeType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("armCodeType", armCodeType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SecurityDataSystemArmedDisarmed");
   }
@@ -91,9 +91,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
 
     SecurityArmCode armCodeType =
         readSimpleField(
-            "armCodeType",
-            new DataReaderComplexDefault<>(
-                () -> SecurityArmCode.staticParse(readBuffer), readBuffer));
+            "armCodeType", readComplex(() -> SecurityArmCode.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SecurityDataSystemArmedDisarmed");
     // Create the instance

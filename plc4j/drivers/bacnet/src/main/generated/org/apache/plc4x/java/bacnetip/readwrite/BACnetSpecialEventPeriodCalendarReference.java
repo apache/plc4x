@@ -61,8 +61,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
     writeBuffer.pushContext("BACnetSpecialEventPeriodCalendarReference");
 
     // Simple Field (calendarReference)
-    writeSimpleField(
-        "calendarReference", calendarReference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("calendarReference", calendarReference, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSpecialEventPeriodCalendarReference");
   }
@@ -93,7 +92,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
     BACnetContextTagObjectIdentifier calendarReference =
         readSimpleField(
             "calendarReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

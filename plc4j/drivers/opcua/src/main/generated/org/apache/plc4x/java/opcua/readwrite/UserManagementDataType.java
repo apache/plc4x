@@ -75,20 +75,20 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("UserManagementDataType");
 
     // Simple Field (userName)
-    writeSimpleField("userName", userName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userName", userName, writeComplex(writeBuffer));
 
     // Simple Field (userConfiguration)
     writeSimpleEnumField(
         "userConfiguration",
         "UserConfigurationMask",
         userConfiguration,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             UserConfigurationMask::getValue,
             UserConfigurationMask::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserManagementDataType");
   }
@@ -124,20 +124,17 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     UserConfigurationMask userConfiguration =
         readEnumField(
             "userConfiguration",
             "UserConfigurationMask",
-            new DataReaderEnumDefault<>(
-                UserConfigurationMask::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(UserConfigurationMask::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("UserManagementDataType");
     // Create the instance

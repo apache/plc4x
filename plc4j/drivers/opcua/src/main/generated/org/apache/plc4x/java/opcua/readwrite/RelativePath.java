@@ -113,7 +113,7 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
     List<ExtensionObjectDefinition> elements =
         readCountArrayField(
             "elements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("539")),
                 readBuffer),
             noOfElements);

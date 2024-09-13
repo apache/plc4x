@@ -86,14 +86,13 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (limit)
-    writeSimpleField("limit", limit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("limit", limit, writeComplex(writeBuffer));
 
     // Simple Field (hvacModeAndFlags)
-    writeSimpleField(
-        "hvacModeAndFlags", hvacModeAndFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hvacModeAndFlags", hvacModeAndFlags, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AirConditioningDataSetHvacLowerGuardLimit");
   }
@@ -134,20 +133,16 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACTemperature limit =
         readSimpleField(
-            "limit",
-            new DataReaderComplexDefault<>(
-                () -> HVACTemperature.staticParse(readBuffer), readBuffer));
+            "limit", readComplex(() -> HVACTemperature.staticParse(readBuffer), readBuffer));
 
     HVACModeAndFlags hvacModeAndFlags =
         readSimpleField(
             "hvacModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACModeAndFlags.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AirConditioningDataSetHvacLowerGuardLimit");
     // Create the instance

@@ -59,7 +59,7 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
     writeBuffer.pushContext("BACnetCalendarEntryDate");
 
     // Simple Field (dateValue)
-    writeSimpleField("dateValue", dateValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateValue", dateValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCalendarEntryDate");
   }
@@ -90,7 +90,7 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
     BACnetContextTagDate dateValue =
         readSimpleField(
             "dateValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagDate)
                         BACnetContextTag.staticParse(

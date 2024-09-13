@@ -66,7 +66,7 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
     writeBuffer.pushContext("ParameterValueCustomTypes");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ParameterValueCustomTypes");
   }
@@ -97,8 +97,7 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
     CustomTypes value =
         readSimpleField(
             "value",
-            new DataReaderComplexDefault<>(
-                () -> CustomTypes.staticParse(readBuffer, (short) (numBytes)), readBuffer));
+            readComplex(() -> CustomTypes.staticParse(readBuffer, (short) (numBytes)), readBuffer));
 
     readBuffer.closeContext("ParameterValueCustomTypes");
     // Create the instance

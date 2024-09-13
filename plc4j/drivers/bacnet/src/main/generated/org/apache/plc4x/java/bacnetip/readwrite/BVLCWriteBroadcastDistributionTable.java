@@ -102,7 +102,7 @@ public class BVLCWriteBroadcastDistributionTable extends BVLC implements Message
     List<BVLCBroadcastDistributionTableEntry> table =
         readLengthArrayField(
             "table",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BVLCBroadcastDistributionTableEntry.staticParse(readBuffer), readBuffer),
             bvlcPayloadLength,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

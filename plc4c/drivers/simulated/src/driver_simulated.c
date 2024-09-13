@@ -232,7 +232,7 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(
   return OK;
 }
 
-plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
+plc4c_return_code plc4c_driver_simulated_encode_address(char *address_string, void** item) {
   plc4c_driver_simulated_tag_type type = RANDOM;
   char *name = NULL;
   plc4c_data_type data_type = -1;
@@ -252,7 +252,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
         type = STDOUT;
       } else {
         free(type_str);
-        return NULL;
+        return INVALID_ADDRESS;
       }
       free(type_str);
       start_segment = address_string + i + 1;
@@ -280,7 +280,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
       } else {
         free(datatype_name);
         free(name);
-        return NULL;
+        return INVALID_ADDRESS;
       }
       free(datatype_name);
 
@@ -304,14 +304,15 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
   }
 
   // Create a new driver specific item.
-  plc4c_driver_simulated_item *item = (plc4c_driver_simulated_item *)malloc(
+  plc4c_driver_simulated_item *curItem = (plc4c_driver_simulated_item *)malloc(
       sizeof(plc4c_driver_simulated_item));
-  item->type = type;
-  item->name = name;
-  item->data_type = data_type;
-  item->num_elements = num_elements;
+  curItem->type = type;
+  curItem->name = name;
+  curItem->data_type = data_type;
+  curItem->num_elements = num_elements;
 
-  return (plc4c_item *)item;
+  *item = curItem;
+  return OK;
 }
 
 plc4c_return_code plc4c_driver_simulated_connect_function(
@@ -412,7 +413,7 @@ plc4c_driver *plc4c_driver_simulated_create() {
   driver->protocol_code = "simulated";
   driver->protocol_name = "Simulated PLC4X Datasource";
   driver->default_transport_code = "dummy";
-  driver->parse_address_function = &plc4c_driver_simulated_parse_address;
+  driver->parse_address_function = &plc4c_driver_simulated_encode_address;
   driver->connect_function = &plc4c_driver_simulated_connect_function;
   driver->disconnect_function = &plc4c_driver_simulated_disconnect_function;
   driver->read_function = &plc4c_driver_simulated_read_function;

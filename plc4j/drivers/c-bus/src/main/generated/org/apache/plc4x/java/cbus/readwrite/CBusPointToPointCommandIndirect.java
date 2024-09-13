@@ -81,13 +81,13 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
     writeBuffer.pushContext("CBusPointToPointCommandIndirect");
 
     // Simple Field (bridgeAddress)
-    writeSimpleField("bridgeAddress", bridgeAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bridgeAddress", bridgeAddress, writeComplex(writeBuffer));
 
     // Simple Field (networkRoute)
-    writeSimpleField("networkRoute", networkRoute, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkRoute", networkRoute, writeComplex(writeBuffer));
 
     // Simple Field (unitAddress)
-    writeSimpleField("unitAddress", unitAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unitAddress", unitAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToPointCommandIndirect");
   }
@@ -123,19 +123,15 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
 
     BridgeAddress bridgeAddress =
         readSimpleField(
-            "bridgeAddress",
-            new DataReaderComplexDefault<>(
-                () -> BridgeAddress.staticParse(readBuffer), readBuffer));
+            "bridgeAddress", readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer));
 
     NetworkRoute networkRoute =
         readSimpleField(
-            "networkRoute",
-            new DataReaderComplexDefault<>(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
+            "networkRoute", readComplex(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
 
     UnitAddress unitAddress =
         readSimpleField(
-            "unitAddress",
-            new DataReaderComplexDefault<>(() -> UnitAddress.staticParse(readBuffer), readBuffer));
+            "unitAddress", readComplex(() -> UnitAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CBusPointToPointCommandIndirect");
     // Create the instance

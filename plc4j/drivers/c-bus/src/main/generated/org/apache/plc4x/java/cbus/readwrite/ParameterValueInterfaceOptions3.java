@@ -72,7 +72,7 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
     writeBuffer.pushContext("ParameterValueInterfaceOptions3");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
@@ -114,9 +114,7 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
 
     InterfaceOptions3 value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> InterfaceOptions3.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> InterfaceOptions3.staticParse(readBuffer), readBuffer));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((numBytes) - (1)));
 

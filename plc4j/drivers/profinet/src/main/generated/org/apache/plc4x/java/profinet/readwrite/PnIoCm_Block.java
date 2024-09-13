@@ -57,7 +57,7 @@ public abstract class PnIoCm_Block implements Message {
         "blockType",
         "PnIoCm_BlockType",
         getBlockType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_BlockType::getValue, PnIoCm_BlockType::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -86,12 +86,6 @@ public abstract class PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_Block staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnIoCm_Block");
     PositionAware positionAware = readBuffer;
@@ -101,8 +95,7 @@ public abstract class PnIoCm_Block implements Message {
         readDiscriminatorEnumField(
             "blockType",
             "PnIoCm_BlockType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_BlockType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_BlockType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

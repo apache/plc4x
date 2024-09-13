@@ -62,7 +62,7 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("ServiceFault");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ServiceFault");
   }
@@ -93,7 +93,7 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 

@@ -82,7 +82,7 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataBufferSize");
 
     // Simple Field (bufferSize)
-    writeSimpleField("bufferSize", bufferSize, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bufferSize", bufferSize, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger bufferSize =
         readSimpleField(
             "bufferSize",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

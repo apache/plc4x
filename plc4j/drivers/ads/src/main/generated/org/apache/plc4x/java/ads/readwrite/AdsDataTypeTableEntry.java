@@ -429,12 +429,6 @@ public class AdsDataTypeTableEntry implements Message {
     return lengthInBits;
   }
 
-  public static AdsDataTypeTableEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsDataTypeTableEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsDataTypeTableEntry");
     PositionAware positionAware = readBuffer;
@@ -562,16 +556,14 @@ public class AdsDataTypeTableEntry implements Message {
     List<AdsDataTypeArrayInfo> arrayInfo =
         readCountArrayField(
             "arrayInfo",
-            new DataReaderComplexDefault<>(
-                () -> AdsDataTypeArrayInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsDataTypeArrayInfo.staticParse(readBuffer), readBuffer),
             arrayDimensions,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     List<AdsDataTypeTableChildEntry> children =
         readCountArrayField(
             "children",
-            new DataReaderComplexDefault<>(
-                () -> AdsDataTypeTableChildEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsDataTypeTableChildEntry.staticParse(readBuffer), readBuffer),
             numChildren,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

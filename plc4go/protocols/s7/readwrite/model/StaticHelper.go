@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	"time"
+
+	"github.com/pkg/errors"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"time"
 )
 
 func ParseTiaTime(ctx context.Context, io utils.ReadBuffer) (uint32, error) {
@@ -140,7 +142,7 @@ func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32,
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.ReadString("", uint32(stringLength*multiplier), encoding)
+	return io.ReadString("", uint32(stringLength*multiplier), utils.WithEncoding(encoding))
 }
 
 func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
@@ -151,7 +153,7 @@ func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.P
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
+	return io.WriteString("", uint32(stringLength*multiplier), value.GetString(), utils.WithEncoding(encoding))
 }
 
 func ParseS7Char(ctx context.Context, io utils.ReadBuffer, encoding string) (uint8, error) {

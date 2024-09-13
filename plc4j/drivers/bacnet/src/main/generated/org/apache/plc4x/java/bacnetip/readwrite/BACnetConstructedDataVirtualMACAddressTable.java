@@ -119,8 +119,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
     List<BACnetVMACEntry> virtualMacAddressTable =
         readTerminatedArrayField(
             "virtualMacAddressTable",
-            new DataReaderComplexDefault<>(
-                () -> BACnetVMACEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetVMACEntry.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -72,17 +72,11 @@ public class InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_SCALED_VA
 
     // Simple Field (sva)
     writeSimpleField(
-        "sva",
-        sva,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "sva", sva, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qpm)
     writeSimpleField(
-        "qpm",
-        qpm,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qpm", qpm, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE");
@@ -119,13 +113,13 @@ public class InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_SCALED_VA
     ScaledValue sva =
         readSimpleField(
             "sva",
-            new DataReaderComplexDefault<>(() -> ScaledValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ScaledValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualifierOfParameterOfMeasuredValues qpm =
         readSimpleField(
             "qpm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> QualifierOfParameterOfMeasuredValues.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

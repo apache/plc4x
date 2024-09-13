@@ -75,7 +75,7 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("NetworkGroupDataType");
 
     // Simple Field (serverUri)
-    writeSimpleField("serverUri", serverUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverUri", serverUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfNetworkPaths)
     writeSimpleField("noOfNetworkPaths", noOfNetworkPaths, writeSignedInt(writeBuffer, 32));
@@ -123,15 +123,14 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
 
     PascalString serverUri =
         readSimpleField(
-            "serverUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfNetworkPaths = readSimpleField("noOfNetworkPaths", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> networkPaths =
         readCountArrayField(
             "networkPaths",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("11945")),
                 readBuffer),
             noOfNetworkPaths);

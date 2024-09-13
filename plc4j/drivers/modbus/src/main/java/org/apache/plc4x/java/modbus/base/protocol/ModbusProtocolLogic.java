@@ -19,14 +19,12 @@
 package org.apache.plc4x.java.modbus.base.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcPingRequest;
-import org.apache.plc4x.java.api.messages.PlcPingResponse;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.modbus.base.tag.*;
 import org.apache.plc4x.java.modbus.readwrite.*;
+import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.*;
@@ -34,13 +32,13 @@ import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcRawByteArray;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProtocolBase<T> {
@@ -49,6 +47,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     protected Duration requestTimeout;
     protected short unitIdentifier;
     protected PlcTag pingAddress;
+    protected ModbusByteOrder defaultPayloadByteOrder;
 
     protected RequestTransactionManager tm;
     protected final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
@@ -95,6 +94,15 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                 // This generally implies that something went wrong which we didn't anticipate.
                 return PlcResponseCode.INTERNAL_ERROR;
         }
+    }
+
+    protected short getUnitId(PlcTag tag) {
+        if (tag instanceof ModbusTag) {
+            Short unitId = ((ModbusTag) tag).getUnitId();
+            return unitId == null ? unitIdentifier : unitId;
+        }
+
+        return unitIdentifier;
     }
 
     protected ModbusPDU getReadRequestPdu(PlcTag tag) {
@@ -145,9 +153,13 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     protected ModbusPDU getWriteRequestPdu(PlcTag tag, PlcValue plcValue) {
         if (tag instanceof ModbusTagCoil) {
             ModbusTagCoil coil = (ModbusTagCoil) tag;
+            ModbusByteOrder byteOrder = defaultPayloadByteOrder;
+            if(coil.getByteOrder() != null) {
+                byteOrder = coil.getByteOrder();
+            }
             ModbusPDUWriteMultipleCoilsRequest request =
                 new ModbusPDUWriteMultipleCoilsRequest(coil.getAddress(), coil.getNumberOfElements(),
-                    fromPlcValue(tag, plcValue));
+                    fromPlcValue(tag, plcValue, byteOrder));
             if (request.getQuantity() == coil.getNumberOfElements()) {
                 return request;
             } else {
@@ -156,9 +168,13 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             }
         } else if (tag instanceof ModbusTagHoldingRegister) {
             ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) tag;
+            ModbusByteOrder byteOrder = defaultPayloadByteOrder;
+            if(holdingRegister.getByteOrder() != null) {
+                byteOrder = holdingRegister.getByteOrder();
+            }
             ModbusPDUWriteMultipleHoldingRegistersRequest request =
                 new ModbusPDUWriteMultipleHoldingRegistersRequest(holdingRegister.getAddress(),
-                    holdingRegister.getLengthWords(), fromPlcValue(tag, plcValue));
+                    holdingRegister.getLengthWords(), fromPlcValue(tag, plcValue, byteOrder));
             if (request.getValue().length == holdingRegister.getLengthWords() * 2) {
                 return request;
             } else {
@@ -167,6 +183,10 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             }
         } else if (tag instanceof ModbusTagExtendedRegister) {
             ModbusTagExtendedRegister extendedRegister = (ModbusTagExtendedRegister) tag;
+            ModbusByteOrder byteOrder = defaultPayloadByteOrder;
+            if(extendedRegister.getByteOrder() != null) {
+                byteOrder = extendedRegister.getByteOrder();
+            }
             int group1Address = extendedRegister.getAddress() % FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH;
             int group2Address = 0;
             int group1Quantity;
@@ -180,7 +200,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                 //If request doesn't span file records, use a single group
                 group1Quantity = extendedRegister.getLengthWords();
                 ModbusPDUWriteFileRecordRequestItem group1 = new ModbusPDUWriteFileRecordRequestItem(
-                    (short) 6, group1FileNumber, group1Address, fromPlcValue(tag, plcValue));
+                    (short) 6, group1FileNumber, group1Address, fromPlcValue(tag, plcValue, byteOrder));
                 itemArray = Collections.singletonList(group1);
             } else {
                 //If it doesn't span a file record. e.g. 609998[10] request 2 words in first group and 8 in second.
@@ -188,9 +208,9 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                 group2Quantity = extendedRegister.getLengthWords() - group1Quantity;
                 group2FileNumber = (short) (group1FileNumber + 1);
 
-                plcValue1 = ArrayUtils.subarray(fromPlcValue(tag, plcValue), 0, group1Quantity);
+                plcValue1 = ArrayUtils.subarray(fromPlcValue(tag, plcValue, byteOrder), 0, group1Quantity);
                 plcValue2 = ArrayUtils.subarray(
-                    fromPlcValue(tag, plcValue), group1Quantity, fromPlcValue(tag, plcValue).length);
+                    fromPlcValue(tag, plcValue, byteOrder), group1Quantity, fromPlcValue(tag, plcValue, byteOrder).length);
                 ModbusPDUWriteFileRecordRequestItem group1 = new ModbusPDUWriteFileRecordRequestItem(
                     (short) 6, group1FileNumber, group1Address, plcValue1);
                 ModbusPDUWriteFileRecordRequestItem group2 = new ModbusPDUWriteFileRecordRequestItem(
@@ -202,7 +222,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
         throw new PlcRuntimeException("Unsupported write tag type " + tag.getClass().getName());
     }
 
-    protected PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType) throws ParseException {
+    protected PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType, ModbusByteOrder byteOrder) throws ParseException {
         short tagDataTypeSize = dataType.getDataTypeSize();
 
         if (request instanceof ModbusPDUReadDiscreteInputsRequest) {
@@ -210,72 +230,42 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadDiscreteInputsResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadDiscreteInputsRequest req = (ModbusPDUReadDiscreteInputsRequest) request;
             ModbusPDUReadDiscreteInputsResponse resp = (ModbusPDUReadDiscreteInputsResponse) response;
-            return readCoilBooleanList(req.getQuantity(), resp.getValue());
+            return new PlcRawByteArray(resp.getValue());
         } else if (request instanceof ModbusPDUReadCoilsRequest) {
             if (!(response instanceof ModbusPDUReadCoilsResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadCoilsResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadCoilsRequest req = (ModbusPDUReadCoilsRequest) request;
             ModbusPDUReadCoilsResponse resp = (ModbusPDUReadCoilsResponse) response;
-            return readCoilBooleanList(req.getQuantity(), resp.getValue());
+            return new PlcRawByteArray(resp.getValue());
         } else if (request instanceof ModbusPDUReadInputRegistersRequest) {
             if (!(response instanceof ModbusPDUReadInputRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadInputRegistersResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadInputRegistersRequest req = (ModbusPDUReadInputRegistersRequest) request;
             ModbusPDUReadInputRegistersResponse resp = (ModbusPDUReadInputRegistersResponse) response;
-            ReadBuffer io = new ReadBufferByteBased(resp.getValue());
-            if (tagDataTypeSize < 2) {
-                io.readByte();
-            }
-            return DataItem.staticParse(io, dataType, Math.max(Math.round(req.getQuantity() / (tagDataTypeSize / 2.0f)), 1));
+            return new PlcRawByteArray(resp.getValue());
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadHoldingRegistersResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadHoldingRegistersRequest req = (ModbusPDUReadHoldingRegistersRequest) request;
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
-            ReadBuffer io = new ReadBufferByteBased(resp.getValue());
-            if ((dataType != ModbusDataType.STRING) && tagDataTypeSize < 2) {
-                io.readByte();
-            }
-            return DataItem.staticParse(io, dataType, Math.max(Math.round(req.getQuantity() / (tagDataTypeSize / 2.0f)), 1));
+            return new PlcRawByteArray(resp.getValue());
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadFileRecordResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadFileRecordRequest req = (ModbusPDUReadFileRecordRequest) request;
             ModbusPDUReadFileRecordResponse resp = (ModbusPDUReadFileRecordResponse) response;
-            ReadBuffer io;
-            short dataLength;
-
-            if (resp.getItems().size() == 2 && resp.getItems().size() == req.getItems().size()) {
-                //If request was split over file records, two groups in response should be received.
-                io = new ReadBufferByteBased(ArrayUtils.addAll(resp.getItems().get(0).getData(), resp.getItems().get(1).getData()));
-                dataLength = (short) (resp.getItems().get(0).getLengthInBytes() + resp.getItems().get(1).getLengthInBytes() - (2 * FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH));
-            } else if (resp.getItems().size() == 1 && resp.getItems().size() == req.getItems().size()) {
-                //If request was within a single file record, one group should be received.
-                io = new ReadBufferByteBased(resp.getItems().get(0).getData());
-                dataLength = (short) (resp.getItems().get(0).getLengthInBytes() - FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH);
-            } else {
-                throw new PlcRuntimeException("Unexpected number of groups in response. " +
-                    "Expected " + req.getItems().size() + ", but got " + resp.getItems().size());
-            }
-            if (tagDataTypeSize < 2) {
-                io.readByte();
-            }
-            return DataItem.staticParse(io, dataType, Math.round(Math.max(dataLength / 2.0f, 1) / Math.max(tagDataTypeSize / 2.0f, 1)));
+            // TODO: This is an over-simplification ...
+            return new PlcRawByteArray(resp.getItems().get(0).getData());
         }
         return null;
     }
 
-    protected byte[] fromPlcValue(PlcTag tag, PlcValue plcValue) {
+    protected byte[] fromPlcValue(PlcTag tag, PlcValue plcValue, ModbusByteOrder byteOrder) {
         ModbusDataType tagDataType = ((ModbusTag) tag).getDataType();
         try {
             if (tag instanceof ModbusTagCoil) {
@@ -287,7 +277,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                 // If it's a List, convert the booleans in the list into an array of bytes.
                 else if(plcValue instanceof PlcList) {
                     PlcList valueList = (PlcList) plcValue;
-                    WriteBufferByteBased wb = new WriteBufferByteBased(((plcValue.getLength() - 1) / 8) + 1);
+                    WriteBufferByteBased wb = getWriteBuffer(((plcValue.getLength() - 1) / 8) + 1, byteOrder);
                     int paddingBits = 8 - (plcValue.getLength() % 8);
                     if(paddingBits < 8) {
                         for(int i = 0; i < paddingBits; i++) {
@@ -303,8 +293,13 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                         PlcBOOL boolValue = (PlcBOOL) value;
                         wb.writeBit(boolValue.getBoolean());
                     }
-                    // Reverse the bytes to have the "unfinished bytes" at the end.
+
+                    // Do the byte-swapping, if needed.
                     byte[] bytes = wb.getBytes();
+                    if(byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP || byteOrder == ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP) {
+                        bytes = byteSwap(bytes);
+                    }
+                    // Reverse the bytes to have the "unfinished bytes" at the end.
                     ArrayUtils.reverse(bytes);
                     return bytes;
                 }
@@ -313,9 +308,12 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                }
             }
             else if (plcValue instanceof PlcList) {
-                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength()));
-                DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
+                WriteBufferByteBased writeBuffer = getWriteBuffer(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength(), byteOrder == ModbusByteOrder.BIG_ENDIAN), byteOrder);
+                DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), byteOrder == ModbusByteOrder.BIG_ENDIAN);
                 byte[] data = writeBuffer.getBytes();
+                if(byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP || byteOrder == ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP) {
+                    data = byteSwap(data);
+                }
                 if (((ModbusTag) tag).getDataType() == ModbusDataType.BOOL) {
                     //Reverse Bits in each byte as
                     //they should be ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
@@ -327,9 +325,13 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                 }
                 return data;
             } else {
-                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength()));
-                DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                return writeBuffer.getBytes();
+                WriteBufferByteBased writeBuffer = getWriteBuffer(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength(), byteOrder == ModbusByteOrder.BIG_ENDIAN), byteOrder);
+                DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), byteOrder == ModbusByteOrder.BIG_ENDIAN);
+                byte[] bytes = writeBuffer.getBytes();
+                if(byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP || byteOrder == ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP) {
+                    bytes = byteSwap(bytes);
+                }
+                return bytes;
             }
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);
@@ -375,6 +377,69 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             }
         }
         return new PlcList(Arrays.asList(values));
+    }
+
+    private ReadBuffer getReadBuffer(byte[] data, ModbusByteOrder byteOrder) {
+        switch (byteOrder) {
+            case LITTLE_ENDIAN: {
+                // [4, 3, 2, 1]
+                // [8, 7, 6, 5, 4, 3, 2, 1]
+                return new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
+            }
+            case BIG_ENDIAN_BYTE_SWAP: {
+                // [2, 1, 4, 3]
+                // [2, 1, 4, 3, 6, 5, 8, 7]
+                byte[] reordered = byteSwap(data);
+                return new ReadBufferByteBased(reordered, ByteOrder.BIG_ENDIAN);
+            }
+            case LITTLE_ENDIAN_BYTE_SWAP: {
+                // [3, 4, 1, 2]
+                // [7, 8, 5, 6, 3, 4, 1, 2]
+                byte[] reordered = byteSwap(data);
+                return new ReadBufferByteBased(reordered, ByteOrder.LITTLE_ENDIAN);
+            }
+            default:
+                // 16909060
+                // [1, 2, 3, 4]
+                // 72623859790382856
+                // [1, 2, 3, 4, 5, 6, 7, 8]
+                return new ReadBufferByteBased(data, ByteOrder.BIG_ENDIAN);
+        }
+    }
+
+    private WriteBufferByteBased getWriteBuffer(int size, ModbusByteOrder byteOrder) {
+        switch (byteOrder) {
+            case LITTLE_ENDIAN: {
+                // [4, 3, 2, 1]
+                // [8, 7, 6, 5, 4, 3, 2, 1]
+                return new WriteBufferByteBased(size, ByteOrder.LITTLE_ENDIAN);
+            }
+            case BIG_ENDIAN_BYTE_SWAP: {
+                // [2, 1, 4, 3]
+                // [2, 1, 4, 3, 6, 5, 8, 7]
+                return new WriteBufferByteBased(size, ByteOrder.BIG_ENDIAN);
+            }
+            case LITTLE_ENDIAN_BYTE_SWAP: {
+                // [3, 4, 1, 2]
+                // [7, 8, 5, 6, 3, 4, 1, 2]
+                return new WriteBufferByteBased(size, ByteOrder.LITTLE_ENDIAN);
+            }
+            default:
+                // 16909060
+                // [1, 2, 3, 4]
+                // 72623859790382856
+                // [1, 2, 3, 4, 5, 6, 7, 8]
+                return new WriteBufferByteBased(size, ByteOrder.BIG_ENDIAN);
+        }
+    }
+
+    public static byte[] byteSwap(byte[] in) {
+        byte[] out = new byte[in.length];
+        for(int i = 0; i < out.length; i += 2) {
+            out[i] = in[i + 1];
+            out[i + 1] = in[i];
+        }
+        return out;
     }
 
 }

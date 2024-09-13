@@ -68,8 +68,7 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
     writeBuffer.pushContext("BACnetConfirmedServiceRequestDeleteObject");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestDeleteObject");
   }
@@ -101,7 +100,7 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

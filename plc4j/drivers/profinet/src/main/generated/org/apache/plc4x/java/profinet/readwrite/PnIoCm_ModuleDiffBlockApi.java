@@ -113,12 +113,6 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_ModuleDiffBlockApi staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_ModuleDiffBlockApi staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnIoCm_ModuleDiffBlockApi");
     PositionAware positionAware = readBuffer;
@@ -140,8 +134,7 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
     List<PnIoCm_ModuleDiffBlockApi_Module> modules =
         readCountArrayField(
             "modules",
-            new DataReaderComplexDefault<>(
-                () -> PnIoCm_ModuleDiffBlockApi_Module.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_ModuleDiffBlockApi_Module.staticParse(readBuffer), readBuffer),
             numModules,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

@@ -176,7 +176,7 @@ public class IODReadResponseHeader extends PnIoCm_Block implements Message {
     writeSimpleField(
         "arUuid",
         arUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (api)
@@ -338,7 +338,7 @@ public class IODReadResponseHeader extends PnIoCm_Block implements Message {
     Uuid arUuid =
         readSimpleField(
             "arUuid",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Uuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     long api =

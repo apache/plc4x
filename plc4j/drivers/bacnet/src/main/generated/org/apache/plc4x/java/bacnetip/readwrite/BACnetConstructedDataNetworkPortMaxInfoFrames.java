@@ -83,7 +83,7 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
     writeBuffer.pushContext("BACnetConstructedDataNetworkPortMaxInfoFrames");
 
     // Simple Field (maxInfoFrames)
-    writeSimpleField("maxInfoFrames", maxInfoFrames, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxInfoFrames", maxInfoFrames, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
     BACnetApplicationTagUnsignedInteger maxInfoFrames =
         readSimpleField(
             "maxInfoFrames",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

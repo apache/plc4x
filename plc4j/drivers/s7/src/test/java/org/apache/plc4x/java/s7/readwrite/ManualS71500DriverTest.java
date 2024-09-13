@@ -26,7 +26,7 @@ import java.time.*;
 public class ManualS71500DriverTest extends ManualTest {
 
     public ManualS71500DriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {
