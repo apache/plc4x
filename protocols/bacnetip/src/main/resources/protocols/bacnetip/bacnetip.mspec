@@ -98,14 +98,21 @@
 [type NPDU(uint 16 npduLength)
     [simple   uint 8      protocolVersionNumber                                                                   ]
     [simple   NPDUControl control                                                                                 ]
-    [validation    'control != null'    "control required for further processing"                                 ]
     [optional uint 16     destinationNetworkAddress   'control.destinationSpecified'                              ]
     [optional uint 8      destinationLength           'control.destinationSpecified'                              ]
+    // TODO: check if we don't treat a optional as optional when the condition meets
+    [validation    '(control.destinationSpecified && destinationNetworkAddress != null && destinationLength != null)
+                 || (!control.destinationSpecified && destinationNetworkAddress == null && destinationLength == null)'
+                    "inconsistent control"                                                                        ]
     [array    uint 8      destinationAddress count    'control.destinationSpecified ? destinationLength : 0'      ]
                                                         // (destinationNetworkAddress(16bit) + destinationLength(8bit) + destinationLength)?
     [virtual  uint 16     destinationLengthAddon      'control.destinationSpecified ? (3 + destinationLength) : 0'  ]
     [optional uint 16     sourceNetworkAddress        'control.sourceSpecified'                                   ]
     [optional uint 8      sourceLength                'control.sourceSpecified'                                   ]
+    // TODO: check if we don't treat a optional as optional when the condition meets
+    [validation    '(control.sourceSpecified && sourceNetworkAddress != null && sourceLength != null)
+                 || (!control.sourceSpecified && sourceNetworkAddress == null && sourceLength == null)'
+                    "inconsistent control"                                                                        ]
     [array    uint 8      sourceAddress count         'control.sourceSpecified ? sourceLength : 0'                ]
                                                         // (sourceNetworkAddress(16bit) + sourceLength(8bit) + sourceLength)?
     [virtual  uint 16     sourceLengthAddon           'control.sourceSpecified ? (3 + sourceLength) : 0'            ]

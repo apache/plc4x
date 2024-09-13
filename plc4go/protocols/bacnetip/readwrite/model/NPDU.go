@@ -342,11 +342,6 @@ func (m *_NPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, npduLeng
 	}
 	m.Control = control
 
-	// Validation
-	if !(bool((control) != (nil))) {
-		return nil, errors.WithStack(utils.ParseValidationError{Message: "control required for further processing"})
-	}
-
 	var destinationNetworkAddress *uint16
 	destinationNetworkAddress, err = ReadOptionalField[uint16](ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)), control.GetDestinationSpecified())
 	if err != nil {
@@ -360,6 +355,11 @@ func (m *_NPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, npduLeng
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationLength' field"))
 	}
 	m.DestinationLength = destinationLength
+
+	// Validation
+	if !(bool((bool(bool(control.GetDestinationSpecified()) && bool(bool((destinationNetworkAddress) != (nil)))) && bool(bool((destinationLength) != (nil))))) || bool((bool(bool(!(control.GetDestinationSpecified())) && bool(bool((destinationNetworkAddress) == (nil)))) && bool(bool((destinationLength) == (nil)))))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "inconsistent control"})
+	}
 
 	destinationAddress, err := ReadCountArrayField[uint8](ctx, "destinationAddress", ReadUnsignedByte(readBuffer, uint8(8)), uint64(utils.InlineIf(control.GetDestinationSpecified(), func() any { return int32((*destinationLength)) }, func() any { return int32(int32(0)) }).(int32)))
 	if err != nil {
@@ -386,6 +386,11 @@ func (m *_NPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, npduLeng
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceLength' field"))
 	}
 	m.SourceLength = sourceLength
+
+	// Validation
+	if !(bool((bool(bool(control.GetSourceSpecified()) && bool(bool((sourceNetworkAddress) != (nil)))) && bool(bool((sourceLength) != (nil))))) || bool((bool(bool(!(control.GetSourceSpecified())) && bool(bool((sourceNetworkAddress) == (nil)))) && bool(bool((sourceLength) == (nil)))))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "inconsistent control"})
+	}
 
 	sourceAddress, err := ReadCountArrayField[uint8](ctx, "sourceAddress", ReadUnsignedByte(readBuffer, uint8(8)), uint64(utils.InlineIf(control.GetSourceSpecified(), func() any { return int32((*sourceLength)) }, func() any { return int32(int32(0)) }).(int32)))
 	if err != nil {
